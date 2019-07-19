@@ -1,7 +1,4 @@
-module DrizzleProvider = {
-  [@bs.module "./DrizzleProvider"] [@react.component]
-  external make: (~children: React.element) => React.element = "default";
-};
+open Providers;
 
 ReactDOMRe.renderToElementWithId(
   <DrizzleProvider> <Layout /> </DrizzleProvider>,

@@ -92,6 +92,12 @@ class Web3ProviderSwitcher {
     return this.providerIsUnlocked
   }
 
+  public async unlockWeb3WithCallback(callback: any) {
+    const unlockResult = await this.switchToInjectedWeb3()
+
+    callback(unlockResult)
+  }
+
   public createSwitchableWeb3() {
     const web3RequestHandler = {
       get: (obj: any, prop: string) =>

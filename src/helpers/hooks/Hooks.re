@@ -7,10 +7,7 @@ open Providers.UsdPriceProvider;
 
 let useCurrentUser: unit => option(string) =
   () => {
-    let state1 = useDrizzleState(state => state);
     let state = useDrizzleState(state => state##accounts);
-    Js.log(state1);
-    Js.log(state);
     state[1];
   };
 

@@ -1,5 +1,6 @@
 open Hooks;
 open Providers.UsdPriceProvider;
+open Providers.DrizzleProvider;
 open Belt.Option;
 
 // [@bs.module "../../web3ProvideSwitcher"]
@@ -25,12 +26,17 @@ let make = () => {
   };
 
   let buyObj = useBuyTransaction();
+  let unlockWeb3IfNotAlready = useUnlockWeb3IfNotAlready();
+  let isUnlocked = useIsUnlocked();
+
+  // let onUnlockMetamask = () => {
+  //   let isUnlocked = unlockWeb3IfNotAlready();
+  // }
 
   let onSubmitBuy = event => {
     ReactEvent.Form.preventDefault(event);
 
     let setFunctionObj = [%bs.raw {| (value, from) => ({ value, from }) |}];
-    let isUnlocked = Web3Unlocked.unlock();
     let amountToSend =
       BN.new_(buyAmountEther)
       ->BN.addGet(. BN.new_(currentPrice))
@@ -81,14 +87,24 @@ let make = () => {
        useForeclosureTime()->map(Js.Date.toString),
      )}
     <br />
-    <Rimble.Input
-      className="test"
-      _type="number"
-      placeholder="Your Initial Sale Price"
-      onChange=onChangeBuyEther
-      value=buyAmountEther
-    />
-    <Rimble.Button onClick=onSubmitBuy> {React.string("Buy")} </Rimble.Button>
+    {if (isUnlocked) {
+       <React.Fragment>
+         <Rimble.Input
+           className="test"
+           _type="number"
+           placeholder="Your Initial Sale Price"
+           onChange=onChangeBuyEther
+           value=buyAmountEther
+         />
+         <Rimble.Button onClick=onSubmitBuy>
+           {React.string("Buy")}
+         </Rimble.Button>
+       </React.Fragment>;
+     } else {
+       <Rimble.Button onClick=unlockWeb3IfNotAlready>
+         {React.string("Enable Metamask")}
+       </Rimble.Button>;
+     }}
     <br />
   </div>;
 };
