@@ -5,55 +5,41 @@ open Belt.Option;
 
 let getToDisplay = (label, value) =>
   React.string(label ++ ": " ++ value->mapWithDefault("loading", a => a));
-
 module Transaction = {
   [@react.component]
   let make = () => {
-    let (initialBuyPrice, setInitialPrice) = React.useState(() => "");
-    let (initialDeposit, setInitialDeposit) = React.useState(() => "");
+    let (newBuyPrice, setNewBuyPrice) = React.useState(() => "");
     let currentPrice = useCurrentPriceWei();
     let currentUser = useCurrentUser();
-    let buyObj = useBuyTransaction();
+    let changePriceObj = useChangePriceTransaction();
+
+    Js.log(changePriceObj);
 
     let onSubmitBuy = event => {
       ReactEvent.Form.preventDefault(event);
 
       // TODO: Abstract this better into a utility library of sorts.
-      let setFunctionObj = [%bs.raw {| (value, from) => ({ value, from }) |}];
-      let amountToSend =
-        BN.new_(initialBuyPrice)
-        ->BN.addGet(. BN.new_(currentPrice))
-        ->BN.addGet(. BN.new_(Web3Utils.toWei(initialDeposit, "ether")))
-        ->BN.toStringGet(.);
+      let setFunctionObj = [%bs.raw {| (from) => ({ from }) |}];
       // TODO: this `##` on the send is clunky, and not so type safe. Find ways to improve it.
-      buyObj##send(.
-        initialBuyPrice->Web3Utils.toWeiFromEth,
-        setFunctionObj(. amountToSend, currentUser),
+      changePriceObj##send(.
+        newBuyPrice->Web3Utils.toWeiFromEth,
+        setFunctionObj(currentUser),
       );
     };
 
     <Rimble.Box p=4 mb=3>
-      <Rimble.HeadingS> "Purchase" </Rimble.HeadingS>
+      <Rimble.HeadingS> "Update Price" </Rimble.HeadingS>
       <Rimble.TextS>
         "Enter the desired values for the transaction."
       </Rimble.TextS>
       <Rimble.Input
         _type="number"
-        placeholder="Your Initial Sale Price"
+        placeholder="New Sale Price"
         onChange={InputHelp.onlyUpdateIfPositiveFloat(
-          initialBuyPrice,
-          setInitialPrice,
+          newBuyPrice,
+          setNewBuyPrice,
         )}
-        value=initialBuyPrice
-      />
-      <Rimble.Input
-        _type="number"
-        placeholder="Your Initial Deposit"
-        onChange={InputHelp.onlyUpdateIfPositiveFloat(
-          initialDeposit,
-          setInitialDeposit,
-        )}
-        value=initialDeposit
+        value=newBuyPrice
       />
       <br />
       <Rimble.Button onClick=onSubmitBuy>
@@ -95,7 +81,7 @@ let make = () => {
 
   <React.Fragment>
     <Rimble.Button onClick=onUnlockMetamaskAndOpenModal>
-      {React.string("Buy")}
+      {React.string("Update Price")}
     </Rimble.Button>
     <Rimble.Modal isOpen=isModalOpen>
       <Rimble.Card width="420px" p=0>

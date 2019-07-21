@@ -8,7 +8,7 @@ open Providers.UsdPriceProvider;
 let useCurrentUser: unit => option(string) =
   () => {
     let state = useDrizzleState(state => state##accounts);
-    state[1];
+    state[0];
   };
 
 let useTotalPatronageWei = () => {
@@ -71,7 +71,8 @@ let useCurrentPriceUsd = () => {
   };
 };
 
-let useCurrentPatron = () => (useCacheCall())(. "ERC721Full", "ownerOf", 42);
+let useCurrentPatron: unit => option(string) =
+  () => (useCacheCall())(. "ERC721Full", "ownerOf", 42);
 // let useTotalTimeHeld = (addressOfUser) =>
 //       let currentTimeHeld = parseInt(this.getTimeHeld(props, timeHeldKey)) + (parseInt(date.getTime()/1000) - parseInt(this.getTimeAcquired(props))
 
@@ -80,3 +81,10 @@ let useAvailableDeposit = () =>
 // // let useBuyTransaction: unit => string => = (newPriceInEther: string) =>
 // //   (useCacheSend())(. "VitalikSteward", "buy", newPriceInEther);
 let useBuyTransaction = () => (useCacheSend())(. "VitalikSteward", "buy");
+let useChangePriceTransaction = () =>
+  (useCacheSend())(. "VitalikSteward", "changePrice");
+let useExitTransaction = () => (useCacheSend())(. "VitalikSteward", "exit");
+let useAddDepositTransaction = () =>
+  (useCacheSend())(. "VitalikSteward", "addDeposit");
+let useWithdrawTransaction = () =>
+  (useCacheSend())(. "VitalikSteward", "withdrawDeposit");

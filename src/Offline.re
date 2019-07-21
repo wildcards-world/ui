@@ -12,12 +12,31 @@ module NoInjectedWeb3 = {
     </h3>;
 };
 
+module Loader = {
+  module SmartContracts = {
+    [@react.component]
+    let make = () =>
+      <div>
+        <Loader />
+        <p> {React.string("Web3 loaded")} </p>
+        <p> {React.string("Connecting to SmartContracts...")} </p>
+      </div>;
+  };
+  module Web3 = {
+    [@react.component]
+    let make = () =>
+      <div> <p> {React.string("Connecting to Web3...")} </p> </div>;
+  };
+};
+
 [@react.component]
 let make =
     (
       ~requireSmartContractsLoaded: bool=false,
       ~children,
       ~alturnateNoWeb3=<NoInjectedWeb3 />,
+      ~alturnateLoaderSmartContracts=<Loader.SmartContracts />,
+      ~alturnateLoaderWeb3=<Loader.Web3 />,
     ) => {
   let state = useDrizzleState(a => a);
   let web3Status = state##web3##status;
@@ -33,19 +52,11 @@ let make =
       // TODO: it may be needed to check for more than just a web3 providor
       //        eg. what if the provider has no ethereum accounts?
       let isWeb3Enabled = Web3Unlocked.isUsingProvider();
-      if (isWeb3Enabled) {
-        <React.Fragment> children </React.Fragment>;
-      } else {
-        <React.Fragment> alturnateNoWeb3 </React.Fragment>;
-      };
+      if (isWeb3Enabled) {children} else {alturnateNoWeb3};
     } else {
-      <div>
-        <Loader />
-        <p> {React.string("Web3 loaded")} </p>
-        <p> {React.string("Connecting to SmartContracts...")} </p>
-      </div>;
+      alturnateLoaderSmartContracts;
     };
   } else {
-    <div> <Loader /> <p> {React.string("Connecting to Web3...")} </p> </div>;
+    alturnateLoaderWeb3;
   };
 };
