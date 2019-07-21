@@ -24,11 +24,12 @@
   "scripts": {
     "start": "concurrently npm:cra-start npm:re:watch",
     "cra-start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "npm run re:build && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "re:build": "bsb -make-world -clean-world",
-    "re:watch": "bsb -make-world -clean-world -w"
+    "re:watch": "bsb -make-world -clean-world -w",
+    "deploy": "npm run build && cp CNAME ./build && gh-pages -d build #--remote JasoonS"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -47,6 +48,8 @@
   },
   "devDependencies": {
     "concurrently": "^4.1.1",
-    "deep-object-diff": "^1.1.0"
-  }
+    "deep-object-diff": "^1.1.0",
+    "gh-pages": "^2.0.1"
+  },
+  "homepage": "."
 }
