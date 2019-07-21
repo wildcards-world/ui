@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.js": "./static/js/main.c3f907ab.chunk.js",
-    "main.js.map": "./static/js/main.c3f907ab.chunk.js.map",
+    "main.js": "./static/js/main.884d3836.chunk.js",
+    "main.js.map": "./static/js/main.884d3836.chunk.js.map",
     "runtime~main.js": "./static/js/runtime~main.d653cc00.js",
     "runtime~main.js.map": "./static/js/runtime~main.d653cc00.js.map",
-    "static/js/2.7003734d.chunk.js": "./static/js/2.7003734d.chunk.js",
-    "static/js/2.7003734d.chunk.js.map": "./static/js/2.7003734d.chunk.js.map",
+    "static/js/2.68a33e3b.chunk.js": "./static/js/2.68a33e3b.chunk.js",
+    "static/js/2.68a33e3b.chunk.js.map": "./static/js/2.68a33e3b.chunk.js.map",
     "index.html": "./index.html",
-    "precache-manifest.353a41937b8f9ae79a53b21f3338011e.js": "./precache-manifest.353a41937b8f9ae79a53b21f3338011e.js",
+    "precache-manifest.8a9aaf646309e6611848edf789af2004.js": "./precache-manifest.8a9aaf646309e6611848edf789af2004.js",
     "service-worker.js": "./service-worker.js",
     "static/media/gorilla1.png": "./static/media/gorilla1.d41fa749.png",
     "static/media/gorilla2.png": "./static/media/gorilla2.d1afd4be.png",
