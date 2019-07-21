@@ -43,7 +43,7 @@ module Transaction = {
       />
       <br />
       <Rimble.Button onClick=onSubmitBuy>
-        {React.string("Buy")}
+        {React.string("Update")}
       </Rimble.Button>
     </Rimble.Box>;
   };

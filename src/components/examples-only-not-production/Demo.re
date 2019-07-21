@@ -90,7 +90,6 @@ let make = () => {
     {if (isUnlocked) {
        <React.Fragment>
          <Rimble.Input
-           className="test"
            _type="number"
            placeholder="Your Initial Sale Price"
            onChange=onChangeBuyEther

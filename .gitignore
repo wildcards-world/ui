@@ -28,3 +28,9 @@ yarn-error.log*
 lib
 .merlin
 .bsb.lock
+
+# pacel cache
+.cache
+
+# build
+dist
