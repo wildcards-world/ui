@@ -1,11 +1,6 @@
 // TODO: there must be a better way of importing images in reason react...
 let smallIcon = [%bs.raw {|require('./img/logos/wild-cards-small.png')|}];
 
-module JsDemo = {
-  [@bs.module "./Demo"] [@react.component]
-  external make: unit => React.element = "default";
-};
-
 [@react.component]
 let make = () =>
   <div className=Styles.app>
@@ -15,46 +10,41 @@ let make = () =>
           <img src=smallIcon />
           <ul className=Styles.navList>
             <li className=Styles.navListItem>
-              <span className=Styles.navListText>
-                <a
-                  href="https://ventureburn.com/2019/05/ethcapetown-blockchain-winning-applications/">
-                  {ReasonReact.string("BACKGROUND")}
-                </a>
-              </span>
+              <a
+                className=Styles.navListText
+                href="https://ventureburn.com/2019/05/ethcapetown-blockchain-winning-applications/">
+                {ReasonReact.string("BACKGROUND")}
+              </a>
+              // className=Styles.highlightGreen
               <Rimble.Button _as="a" href="/signup" target="\_blank">
-                {ReasonReact.string("Test")}
+                {ReasonReact.string("Subscribe")}
               </Rimble.Button>
             </li>
           </ul>
           <li />
         </div>
       </nav>
-      <div className="container container--large header-23__container">
-        <div className="header-23__left">
-          <div className="header-23__left_content" />
-        </div>
-      </div>
     </header>
     <div className=Styles.topBody>
-      <div className="header-23__left">
-        <div className="header-23__left_content">
-          <h1 className="heading heading--accent header-23__heading">
+      // TODO: we should be using a library for some of this, eg : https://rimble.consensys.design/components/rimble-ui/Flex
+
+        <div className=Styles.leftTopHeader>
+          <h1 className=Styles.heading>
             {ReasonReact.string("Ethereum based")}
             <br />
-            <span> {ReasonReact.string("conservation")} </span>
-            {ReasonReact.string("tokens")}
+            <span className=Styles.colorGreen>
+              {ReasonReact.string("conservation")}
+            </span>
+            {ReasonReact.string(" tokens")}
           </h1>
           <hr />
-          <h3 className="header-23__text">
+          <h3 className=Styles.subHeading>
             {ReasonReact.string(
                "Let your digital assets make a valuable contribution to the world.",
              )}
           </h3>
         </div>
+        <Dapp />
       </div>
-      <Providers.UsdPriceProvider>
-        <Offline requireSmartContractsLoaded=true> <Dapp /> </Offline>
-        <Offline requireSmartContractsLoaded=true> <JsDemo /> </Offline>
-      </Providers.UsdPriceProvider>
-    </div>
   </div>;
+// <Offline requireSmartContractsLoaded=true> <JsDemo /> </Offline>

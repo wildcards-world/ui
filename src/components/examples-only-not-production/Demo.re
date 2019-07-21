@@ -101,7 +101,7 @@ let make = () => {
          </Rimble.Button>
        </React.Fragment>;
      } else {
-       <Rimble.Button onClick=unlockWeb3IfNotAlready>
+       <Rimble.Button onClick={_ => unlockWeb3IfNotAlready()}>
          {React.string("Enable Metamask")}
        </Rimble.Button>;
      }}

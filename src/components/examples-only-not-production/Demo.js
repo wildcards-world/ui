@@ -1,3 +1,4 @@
+// This 
 import React from "react"
 import {
   useTotalPatronageWei,
@@ -13,7 +14,7 @@ import {
   useCurrentPatron,
   useAvailableDeposit,
   useBuyTransaction,
-} from "./helpers/hooks/Hooks.bs"
+} from "../../helpers/hooks/Hooks.bs"
 
 export default () => {
   const TotalPatronageWei = useTotalPatronageWei()

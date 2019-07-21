@@ -5,7 +5,8 @@ import { Drizzle, generateStore } from "drizzle"
 import VitalikSteward from "../../contracts/VitalikSteward.json"
 import ERC721Full from "../../contracts/ERC721Full.json"
 import web3ProvideSwitcher from "../web3/web3ProvideSwitcher"
-import DrizzleSingleton from "../../drizzle"
+import { theme as rimbleTheme } from 'rimble-ui'
+import { ThemeProvider } from 'styled-components'
 
 // todo: read env var for fallback
 const fallbackUrl = "wss://mainnet.infura.io/ws/v3/e811479f4c414e219e7673b6671c2aba"
@@ -46,17 +47,22 @@ const options: Options = {
   },
 }
 
+const theme = {
+  ...rimbleTheme,
+  colors: {
+    ...rimbleTheme.colors,
+    primary: 'rgb(107, 173, 62)', // This is the primary green used by wildcards theme
+  }
+}
+
 const drizzleStore = generateStore(options)
-const drizzle = DrizzleSingleton.createDrizzle(options, drizzleStore)
+const drizzle = new Drizzle(options, drizzleStore)
 
 export default ({ children }: any) => {
   const [isWeb3Unlocked, setIsWeb3Unlocked] = useState(false);
 
   const unlockWeb3IfNotAlready = () => {
     if (isWeb3Unlocked) return
-    console.log(' we are trying to unlock...')
-    console.log(web3ProvideSwitcher)
-    console.log(web3ProvideSwitcher.unlockWeb3WithCallback)
 
     web3ProvideSwitcher.unlockWeb3WithCallback(setIsWeb3Unlocked)
   }
@@ -64,7 +70,9 @@ export default ({ children }: any) => {
   return (
     <drizzleReactHooks.DrizzleProvider drizzle={drizzle}>
       <ProviderContext.Provider value={{ isWeb3Unlocked, unlockWeb3IfNotAlready }}>
-        {children}
+        <ThemeProvider theme={theme}>
+          {children}
+        </ThemeProvider>
       </ProviderContext.Provider>
     </drizzleReactHooks.DrizzleProvider>
   )

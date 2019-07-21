@@ -15,6 +15,6 @@ module DrizzleProvider = {
   external useUnlockAndCheck: unit => 'a = "useUnlockAndCheck";
 
   let useIsUnlocked = () => useUnlockAndCheck()##isWeb3Unlocked;
-  let useUnlockWeb3IfNotAlready = () =>
-    useUnlockAndCheck()##unlockWeb3IfNotAlready;
+  let useUnlockWeb3IfNotAlready: (unit, unit) => unit =
+    () => useUnlockAndCheck()##unlockWeb3IfNotAlready;
 };
