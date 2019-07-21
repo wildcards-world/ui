@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.js": "/static/js/main.aa754c2d.chunk.js",
+    "main.js.map": "/static/js/main.aa754c2d.chunk.js.map",
+    "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
+    "runtime~main.js.map": "/static/js/runtime~main.a8a9905a.js.map",
+    "static/js/2.08084da9.chunk.js": "/static/js/2.08084da9.chunk.js",
+    "static/js/2.08084da9.chunk.js.map": "/static/js/2.08084da9.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.d9be388562b3df1ea91482abc386bc6f.js": "/precache-manifest.d9be388562b3df1ea91482abc386bc6f.js",
+    "service-worker.js": "/service-worker.js",
+    "static/media/gorilla1.png": "/static/media/gorilla1.d41fa749.png",
+    "static/media/gorilla2.png": "/static/media/gorilla2.d1afd4be.png",
+    "static/media/gorilla3.png": "/static/media/gorilla3.4eb0db0d.png",
+    "static/media/wild-cards-small.png": "/static/media/wild-cards-small.a59c97f6.png"
+  }
+}
