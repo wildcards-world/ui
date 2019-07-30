@@ -1,5 +1,14 @@
+open StaticContent;
+
+module T = {
+  [@react.component]
+  let make = (~children: string) => {
+    React.string(children);
+  };
+};
+
 // TODO: there must be a better way of importing images in reason react...
-let smallIcon = [%bs.raw {|require('./img/logos/wild-cards-small.png')|}];
+let smallIcon = [%bs.raw {|require('../img/logos/wild-cards-small.png')|}];
 
 [@react.component]
 let make = () =>
@@ -25,10 +34,12 @@ let make = () =>
         </div>
       </nav>
     </header>
-    <div className=Styles.topBody>
-      // TODO: we should be using a library for some of this, eg : https://rimble.consensys.design/components/rimble-ui/Flex
+    // <div> {React.string("WAAAT")} </div>
+    // <div className=Styles.topBody>
+    <Rimble.Flex flexWrap="wrap" className=Styles.topBody>
+      // <Rimble.Flex>
 
-        <div className=Styles.leftTopHeader>
+        <Rimble.Box p=1 width=[|1., 1., 0.5|]>
           <h1 className=Styles.heading>
             {ReasonReact.string("Ethereum based")}
             <br />
@@ -43,8 +54,20 @@ let make = () =>
                "Let your digital assets make a valuable contribution to the world.",
              )}
           </h3>
-        </div>
-        <Dapp />
-      </div>
+        </Rimble.Box>
+        <Rimble.Box p=1 width=[|1., 1., 0.5|]> <Dapp /> </Rimble.Box>
+        <Rimble.Box width=[|1., 1., 1.|]> <CustomerBenefit /> </Rimble.Box>
+      </Rimble.Flex>
+    // </div>
+    // TODO: we should be using a library for some of this, eg : https://rimble.consensys.design/components/rimble-ui/Flex
+    //   <div className=Styles.leftTopHeader>
+    //   </div>
+    <div>
+      <HowItWorks />
+      <About />
+      <CoreConcepts />
+      <EmailSignup />
+      <FinalNote />
+      <Footer />
+    </div>
   </div>;
-// <Offline requireSmartContractsLoaded=true> <JsDemo /> </Offline>

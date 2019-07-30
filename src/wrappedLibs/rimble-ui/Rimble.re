@@ -82,7 +82,15 @@ module HeadingS = {
 module Box = {
   [@bs.module "rimble-ui"] [@react.component]
   external make:
-    (~p: int=?, ~mb: int=?, ~children: React.element) => React.element =
+    (
+      ~p: int=?,
+      ~mb: int=?,
+      ~children: React.element,
+      ~width: array(float)=?,
+      ~color: string=?,
+      ~bg: string=?
+    ) =>
+    React.element =
     "Box";
 };
 module Text = {
@@ -92,4 +100,12 @@ module Text = {
 module TextS = {
   [@bs.module "rimble-ui"] [@react.component]
   external make: (~children: string) => React.element = "Text";
+};
+
+module Flex = {
+  [@bs.module "rimble-ui"] [@react.component]
+  external make:
+    (~children: React.element, ~flexWrap: string=?, ~className: string=?) =>
+    React.element =
+    "Flex";
 };

@@ -14,16 +14,16 @@ let app =
 
 let topBody =
   style([
-    zIndex(50),
-    display(`flex),
+    // zIndex(50),
+    // display(`flex),
     // flexDirection(`row),
     justifyContent(`spaceBetween),
     // alignItems(center),
-    flexWrap(`wrap),
+    // flexWrap(`wrap),
     paddingTop(px(120)),
     paddingLeft(px(15)),
     paddingRight(px(15)),
-    paddingBottom(px(120)),
+    // paddingBottom(px(120)),
     maxWidth(px(1200)),
     marginRight(auto),
     marginLeft(auto),
@@ -71,13 +71,13 @@ let leftTopHeader =
 
 let rightTopHeader =
   style([
-    position(relative),
+    // position(relative),
     // width(px(550)),
-    maxWidth(px(550)),
-    float(`none),
-    paddingTop(px(65)),
+    // maxWidth(px(550)),
+    // float(`none),
+    // paddingTop(px(65)),
     // paddingBottom(px(70)),
-    width(`calc((`sub, `percent(100.), px(600)))),
+    // width(`calc((`sub, `percent(100.), px(600)))),
     textAlign(center),
     // boxSizing(`borderBox),
     // margin(px(0)),
@@ -91,22 +91,8 @@ let subHeading = style([fontSize(em(1.8)), fontWeight(`num(200))]);
 let wildCardGreen = rgb(107, 173, 62);
 let colorGreen = style([color(wildCardGreen)]);
 
-let gorillaColumn = style([position(relative), width(`percent(50.))]);
-
-let gorillas =
-  style([
-    position(relative),
-    width(`percent(30.)),
-    float(`right),
-    margin(auto),
-    display(block),
-  ]);
-
 let gorillaBack =
   style([
-    position(absolute),
-    zIndex(3),
-    width(vw(20.)),
     filter([`grayscale(90.)]),
     hover([
       filter([`grayscale(0.)]),
@@ -114,17 +100,15 @@ let gorillaBack =
     ]),
   ]);
 
-let gorillaTransform = (horizontal, vertical) =>
-  style([transform(translate(vw(horizontal), vh(vertical)))]);
+let gorillaBox =
+  style([marginLeft(`percent(12.)), marginLeft(`percent(12.))]);
 
 let headerImg =
   style([
     position(relative),
     zIndex(10),
     maxHeight(px(500)),
-    maxWidth(`percent(100.)),
+    maxWidth(`percent(150.)),
     textAlign(center),
+    transform(translateX(`percent(-25.))),
   ]);
-
-let gorillaCentreFront =
-  style([position(absolute), zIndex(5), width(vw(20.))]);

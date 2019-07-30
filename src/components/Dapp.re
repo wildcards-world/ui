@@ -32,24 +32,21 @@ module DefaultLook = {
            </Rimble.Button>
          </React.Fragment>;
        } else {
-         <div className=Styles.gorillaColumn>
-           <div className=Styles.gorillas>
-             <div
-               className={
-                 Styles.gorillaBack
-                 ++ " "
-                 ++ Styles.gorillaTransform(-10., 3.)
-               }>
-               <img className=Styles.headerImg src=gorilla2 />
-               <div className={Styles.gorillaTransform(-5., 0.)}>
-                 <h2> {React.string("Simon")} </h2>
-                 <h3 className=Styles.colorGreen>
-                   {React.string("COMING SOON")}
-                 </h3>
+         <Rimble.Flex className=Styles.gorillaBox>
+
+             <Rimble.Box>
+               <div className=Styles.gorillaBack>
+                 <img className=Styles.headerImg src=gorilla1 />
+                 <div>
+                   <h2> {React.string("Simon")} </h2>
+                   <h3 className=Styles.colorGreen>
+                     {React.string("COMING SOON")}
+                   </h3>
+                 </div>
                </div>
-             </div>
-             <div className=Styles.gorillaCentreFront>
-               <img className=Styles.headerImg src=gorilla1 />
+             </Rimble.Box>
+             <Rimble.Box>
+               <img className=Styles.headerImg src=gorilla2 />
                <div>
                  <div className="gorilla-purchase-container">
                    <h2> {React.string("Vitalik")} </h2>
@@ -58,21 +55,61 @@ module DefaultLook = {
                    <BuyModal />
                  </Offline>
                </div>
-             </div>
-             <div
-               className={
-                 Styles.gorillaBack ++ " " ++ Styles.gorillaTransform(10., 1.)
-               }>
-               <img className=Styles.headerImg src=gorilla3 />
-               <div className={Styles.gorillaTransform(5., -1.)}>
-                 <h2> {React.string("Andy")} </h2>
-                 <h3 className=Styles.colorGreen>
-                   {React.string("COMING SOON")}
-                 </h3>
+             </Rimble.Box>
+             <Rimble.Box>
+               <div className=Styles.gorillaBack>
+                 <img className=Styles.headerImg src=gorilla3 />
+                 <div>
+                   <h2> {React.string("Andy")} </h2>
+                   <h3 className=Styles.colorGreen>
+                     {React.string("COMING SOON")}
+                   </h3>
+                 </div>
                </div>
-             </div>
-           </div>
-         </div>;
+             </Rimble.Box>
+           </Rimble.Flex>;
+           //  <div>
+           //  <div className=Styles.gorillaColumn>
+           //    <div className=Styles.gorillas>
+           //      <div
+           //        className={
+           //          Styles.gorillaBack
+           //          ++ " "
+           //          ++ Styles.gorillaTransform(-10., 3.)
+           //        }>
+           //        <img className=Styles.headerImg src=gorilla2 />
+           //        <div className={Styles.gorillaTransform(-5., 0.)}>
+           //          <h2> {React.string("Simon")} </h2>
+           //          <h3 className=Styles.colorGreen>
+           //            {React.string("COMING SOON")}
+           //          </h3>
+           //        </div>
+           //      </div>
+           //      <div className=Styles.gorillaCentreFront>
+           //        <img className=Styles.headerImg src=gorilla1 />
+           //        <div>
+           //          <div className="gorilla-purchase-container">
+           //            <h2> {React.string("Vitalik")} </h2>
+           //          </div>
+           //          <Offline requireSmartContractsLoaded=true>
+           //            <BuyModal />
+           //          </Offline>
+           //        </div>
+           //      </div>
+           //      <div
+           //        className={
+           //          Styles.gorillaBack ++ " " ++ Styles.gorillaTransform(10., 1.)
+           //        }>
+           //        <img className=Styles.headerImg src=gorilla3 />
+           //        <div className={Styles.gorillaTransform(5., -1.)}>
+           //          <h2> {React.string("Andy")} </h2>
+           //          <h3 className=Styles.colorGreen>
+           //            {React.string("COMING SOON")}
+           //          </h3>
+           //        </div>
+           //      </div>
+           //    </div>
+           //  </div>;
        }}
     </div>;
   };
