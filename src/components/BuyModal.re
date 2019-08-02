@@ -98,7 +98,7 @@ let make = () => {
       {React.string("Buy")}
     </Rimble.Button>
     <Rimble.Modal isOpen=isModalOpen>
-      <Rimble.Card width="420px" p=0>
+      <Rimble.Card width={Rimble.AnyStr("420px")} p=0>
         <Rimble.Button.Text
           icononly=true
           icon="Close"

@@ -2,6 +2,10 @@
 /* Open the Css module, so we can access the style properties below without prefixing them with Css. */
 open Css;
 
+let backgroundImageGorilla = [%bs.raw
+  {|require("../src/img/wildcardsimages/wild-jungle-background.png")|}
+];
+
 Css.(global("body", [fontFamily("Lato, Helvetica, sans-serif")]));
 Css.(global("a", [textDecoration(none)]));
 
@@ -112,3 +116,25 @@ let headerImg =
     textAlign(center),
     transform(translateX(`percent(-25.))),
   ]);
+
+let horizantalBlueTile =
+  style([
+    width(`percent(100.)),
+    padding2(~v=em(2.), ~h=em(10.)),
+    backgroundColor(`hex("73c7d7ff")),
+  ]);
+
+let explainerLargeText =
+  style([fontSize(rem(2.)), color(`hex("486269")), textAlign(`center)]);
+
+let boldExplainerLargeText =
+  style([color(`hex("303030")), fontWeight(`bold)]);
+
+let infoBackground =
+  style([
+    backgroundSize(`cover),
+    backgroundRepeat(`noRepeat),
+    backgroundImage(`url(backgroundImageGorilla)),
+  ]);
+
+let infoCardStyles = style([margin(`rem(6.))]);

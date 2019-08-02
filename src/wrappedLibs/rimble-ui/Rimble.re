@@ -1,3 +1,9 @@
+type width =
+  | AnyStr(string)
+  | AnyStryArray(array(string))
+  | Float(float)
+  | FloatArray(array(float));
+
 module Button = {
   [@bs.module "rimble-ui"] [@react.component]
   external make:
@@ -63,7 +69,13 @@ module Modal = {
 module Card = {
   [@bs.module "rimble-ui"] [@react.component]
   external make:
-    (~width: string, ~p: int, ~children: React.element) => React.element =
+    (
+      ~width: width=?,
+      ~className: string=?,
+      ~p: int=?,
+      ~children: React.element
+    ) =>
+    React.element =
     "Card";
 };
 module Heading = {
@@ -88,14 +100,26 @@ module Box = {
       ~children: React.element,
       ~width: array(float)=?,
       ~color: string=?,
-      ~bg: string=?
+      ~bg: string=?,
+      ~className: string=?
     ) =>
     React.element =
     "Box";
 };
 module Text = {
   [@bs.module "rimble-ui"] [@react.component]
-  external make: (~children: React.element) => React.element = "Text";
+  external make:
+    (
+      ~children: React.element,
+      ~color: string=?,
+      ~fontFamily: string=?,
+      ~fontSize: string=?,
+      ~fontWeight: string=?,
+      ~lineHeight: string=?,
+      ~textAlign: string=?
+    ) =>
+    React.element =
+    "Text";
 };
 module TextS = {
   [@bs.module "rimble-ui"] [@react.component]
