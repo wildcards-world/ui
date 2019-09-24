@@ -4,10 +4,8 @@ module About = {
   [@react.component]
   let make = () => {
     <Rimble.Box className=Styles.horizantalBlueTile>
-      <p className=Styles.explainerLargeText>
-        <span className=Styles.boldExplainerLargeText>
-          <S> "Wildcards" </S>
-        </span>
+      <p className=Styles.explainerMediumText>
+        <span className=Styles.boldExplainerText> <S> "Wildcards" </S> </span>
         <S> " is an idea born out of the " </S>
         <a href="https://ethcapetown.com/"> <S> "#ETHCapeTown2019" </S> </a>
         <S> " hackathon which saw team Wildcards as overall " </S>

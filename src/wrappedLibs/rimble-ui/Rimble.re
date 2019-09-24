@@ -13,7 +13,8 @@ module Button = {
       ~href: string=?,
       ~target: string=?,
       ~children: React.element,
-      ~onClick: ReactEvent.Form.t => unit=?
+      ~onClick: ReactEvent.Form.t => unit=?,
+      ~width: float=?
     ) =>
     React.element =
     "Button";
@@ -81,7 +82,12 @@ module Card = {
 module Heading = {
   [@bs.module "rimble-ui"] [@react.component]
   external make:
-    (~_as: string=?, ~fontSize: int=?, ~children: React.element) =>
+    (
+      ~_as: string=?,
+      ~fontSize: int=?,
+      ~children: React.element,
+      ~className: string=?
+    ) =>
     React.element =
     "Heading";
 };
@@ -129,7 +135,42 @@ module TextS = {
 module Flex = {
   [@bs.module "rimble-ui"] [@react.component]
   external make:
-    (~children: React.element, ~flexWrap: string=?, ~className: string=?) =>
+    (
+      ~children: React.element,
+      ~flexWrap: string=?,
+      ~alignItems: string=?,
+      ~className: string=?
+    ) =>
     React.element =
     "Flex";
+};
+
+module Form = {
+  [@bs.module "rimble-ui"] [@react.component]
+  external make:
+    (
+      ~onSubmit: ReactEvent.Form.t => unit=?,
+      ~children: React.element,
+      ~action: string=?,
+      ~method: string=?
+    ) =>
+    React.element =
+    "Form";
+
+  module Input = {
+    [@bs.module "rimble-ui"] [@bs.scope "Form"] [@react.component]
+    external make:
+      (
+        ~_type: string,
+        ~required: bool=?,
+        ~placeholder: string=?,
+        ~name: string=?,
+        ~className: string=?,
+        ~onChange: ReactEvent.Form.t => unit=?,
+        ~value: string=?,
+        ~width: float=?
+      ) =>
+      React.element =
+      "Input";
+  };
 };

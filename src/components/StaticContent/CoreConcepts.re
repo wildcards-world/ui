@@ -1,37 +1,55 @@
 let gorillaOnVine = [%bs.raw
-  {|require('../../img/wildcardsimages/hanging-gorilla-from-vine.png')|}
+  {|require('../../img/wildcardsimages/gorilla-on-vine.png')|}
 ];
 
 open Components;
+open Rimble;
 
 module CoreConcepts = {
   [@react.component]
   let make = () =>
-    <Rimble.Box className=Styles.infoBackground>
-      <Rimble.Flex flexWrap="wrap">
-        <Rimble.Box width=[|0.75|]>
-          <Rimble.Card className=Styles.infoCardStyles>
-            <h3> <S> "How it works" </S> </h3>
-            <hr />
-            <p>
-              <S> "A " </S>
-              <strong> <S> "non-fungible token" </S> </strong>
-              <S>
-                " is a way to ensure digital assets are unique and easily tradable on a blockchain."
-              </S>
-            </p>
-            <p>
-              <span className="red-disclaimer">
+    <Box className=Styles.infoBackground>
+      <Flex flexWrap="wrap">
+        // <Flex flexWrap="wrap" alignItems="center">
+
+          <Box width=[|0.25|]> <img src=gorillaOnVine width="100%" /> </Box>
+          <Box width=[|0.60|]>
+            <Card className=Styles.infoCardStyles>
+              <Heading _as="h2" fontSize=5> <S> "Core Concepts" </S> </Heading>
+              <br />
+              <hr />
+              <br />
+              <Heading _as="h3"> <S> "Non-fungible token" </S> </Heading>
+              <br />
+              <Text>
+                <S> "A " </S>
+                <strong> <S> "non-fungible token" </S> </strong>
                 <S>
-                  "For the first gorilla, Vitalik, the 30% Harberger tax will flow equally between both the conservation fund and the development of the platform. The future gorillas patronage fees will go directly to the relevant conservations' wallets."
+                  " is a way to ensure digital assets are unique and easily tradable on a blockchain."
                 </S>
-              </span>
-            </p>
-          </Rimble.Card>
-        </Rimble.Box>
-        <Rimble.Box width=[|0.25|]>
-          <img src=gorillaOnVine width="100%" />
-        </Rimble.Box>
-      </Rimble.Flex>
-    </Rimble.Box>;
+              </Text>
+              <br />
+              <Heading _as="h3"> <S> "Always For Sale" </S> </Heading>
+              <br />
+              <Text>
+                <S>
+                  "When an asset is bought a new selling price is stipulated by the buyer. Assets are "
+                </S>
+                <strong> <S> "always for sale" </S> </strong>
+                <S> " ferever!" </S>
+              </Text>
+              <br />
+              <Heading _as="h3"> <S> "Harberger Tax" </S> </Heading>
+              <br />
+              <Text>
+                <S>
+                  "When an asset is bought a new selling price is stipulated by the buyer. Assets are "
+                </S>
+                <strong> <S> "always for sale" </S> </strong>
+                <S> " ferever!" </S>
+              </Text>
+            </Card>
+          </Box>
+        </Flex>
+    </Box>;
 };

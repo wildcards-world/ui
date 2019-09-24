@@ -23,7 +23,8 @@
   "bs-dependencies": [
     "reason-react",
     "bs-css",
-    "bs-fetch"
+    "bs-fetch",
+    "re-formality"
   ],
   "ppx-flags": [],
   "refmt": 3

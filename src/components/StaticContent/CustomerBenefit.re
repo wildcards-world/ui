@@ -5,9 +5,7 @@ module CustomerBenefit = {
   let make = () => {
     <Rimble.Box className=Styles.horizantalBlueTile>
       <p className=Styles.explainerLargeText>
-        <span className=Styles.boldExplainerLargeText>
-          <S> "Wildcards" </S>
-        </span>
+        <span className=Styles.boldExplainerText> <S> "Wildcards" </S> </span>
         <S>
           " lets you support conservation, become a patron of endangered gorillas and even earn a profit from trading your digital crypto collectable."
         </S>
