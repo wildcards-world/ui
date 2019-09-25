@@ -11,13 +11,13 @@ module EmailSignup = {
     <div className=Styles.horizantalBlueTile id="signup">
       <Box className=Styles.floatingSignupBox>
         <Flex flexWrap="wrap" alignItems="center">
-          <Box width=[|1., 0.4|]>
+          <Box width=[|1., 1., 0.4|]>
             <h2> <S> "Want to stay in the loop?" </S> </h2>
             <span> <S> "Sign up for our newsletter" </S> </span>
             <br />
             <br />
           </Box>
-          <Box width=[|1., 0.55|]>
+          <Box width=[|1., 1., 0.55|]>
             <Form
               action="https://world.us20.list-manage.com/subscribe/post?u=11056167825e6c3d276b0a362&id=66d23199dd"
               method="post">

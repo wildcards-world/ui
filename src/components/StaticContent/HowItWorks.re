@@ -12,7 +12,8 @@ module HowItWorks = {
       <Rimble.Flex flexWrap="wrap" /* alignItems="center"*/>
         // <Rimble.Flex flexWrap="wrap" >
 
-          <Rimble.Box width=[|0.59|]>
+          <Rimble.Box
+            width=[|1., 1., 0.59|] className=Styles.infoCardContainer>
             <Rimble.Card className=Styles.infoCardStyles>
               <Heading> <S> "How it works" </S> </Heading>
               <br />
@@ -29,11 +30,11 @@ module HowItWorks = {
               <br />
               <Text>
                 <S>
-                  "Through adopting Vitalik the gorilla, you pay an annual"
+                  "Through adopting Vitalik the gorilla, you pay an annual "
                 </S>
                 <strong> <S> "Harberger tax" </S> </strong>
                 <S>
-                  "of 30% on your newly set sale price (5 ETH). Your harberger tax of 30% goes towards supporting gorilla conservation. "
+                  " of 30% on your newly set sale price (5 ETH). Your harberger tax of 30% goes towards supporting gorilla conservation. "
                 </S>
                 <strong> <S> "Here's where it gets interesting." </S> </strong>
                 <S>
@@ -50,13 +51,9 @@ module HowItWorks = {
               </Text>
             </Rimble.Card>
           </Rimble.Box>
-          <Rimble.Box width=[|0.35|]>
+          <Rimble.Box width=[|0.41|] className=Styles.gorillaImage>
             <img src=gorillaOnVine width="100%" />
           </Rimble.Box>
         </Rimble.Flex>
     </Rimble.Box>;
-  // <div>
-  //   <div>
-  //   </div>
-  // </div>
 };

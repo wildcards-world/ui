@@ -37,7 +37,7 @@ module DefaultLook = {
              <Rimble.Box>
                <div className=Styles.gorillaBack>
                  <img className=Styles.headerImg src=gorilla1 />
-                 <div>
+                 <div className=Styles.gorillaText>
                    <h2> {React.string("Simon")} </h2>
                    <h3 className=Styles.colorGreen>
                      {React.string("COMING SOON")}
@@ -48,18 +48,18 @@ module DefaultLook = {
              <Rimble.Box>
                <img className=Styles.headerImg src=gorilla2 />
                <div>
-                 <div className="gorilla-purchase-container">
+                 <div className=Styles.gorillaText>
                    <h2> {React.string("Vitalik")} </h2>
+                   <Offline requireSmartContractsLoaded=true>
+                     <BuyModal />
+                   </Offline>
                  </div>
-                 <Offline requireSmartContractsLoaded=true>
-                   <BuyModal />
-                 </Offline>
                </div>
              </Rimble.Box>
              <Rimble.Box>
                <div className=Styles.gorillaBack>
                  <img className=Styles.headerImg src=gorilla3 />
-                 <div>
+                 <div className=Styles.gorillaText>
                    <h2> {React.string("Andy")} </h2>
                    <h3 className=Styles.colorGreen>
                      {React.string("COMING SOON")}

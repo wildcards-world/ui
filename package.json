@@ -11,12 +11,12 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "reason-react": "^0.7.0",
-    "rimble-ui": "^0.9.3",
+    "rimble-ui": "^0.9.8",
     "styled-components": "^4.3.2"
   },
   "scripts": {
     "start": "parcel ./public/index.html --open",
-    "build": "parcel build ./public/index.html",
+    "build": "parcel build ./public/index.html --public-url /wild-cards-playground/",
     "test": "echo 'no tests yet'",
     "re:build": "bsb -make-world -clean-world",
     "re:watch": "bsb -make-world -clean-world -w",

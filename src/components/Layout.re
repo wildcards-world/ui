@@ -24,7 +24,6 @@ let make = () =>
               </Rimble.Button>
             </li>
           </ul>
-          <li />
         </div>
       </nav>
     </header>

@@ -23,14 +23,14 @@ let topBody =
     // flexDirection(`row),
     justifyContent(`spaceBetween),
     // alignItems(center),
+    media("(max-width: 831px)", [textAlign(center)]),
     // flexWrap(`wrap),
     paddingTop(px(120)),
     paddingLeft(px(15)),
     paddingRight(px(15)),
     // paddingBottom(px(120)),
     maxWidth(px(1200)),
-    marginRight(auto),
-    marginLeft(auto),
+    margin2(~v=em(0.), ~h=auto),
   ]);
 
 let header = style([position(relative)]);
@@ -43,8 +43,7 @@ let nav =
     top(px(0)),
     right(px(0)),
     left(px(0)),
-    marginRight(auto),
-    marginLeft(auto),
+    margin2(~v=em(0.), ~h=auto),
   ]);
 
 let navBox =
@@ -54,7 +53,12 @@ let navBox =
     alignItems(center),
   ]);
 
-let navList = style([marginLeft(`auto), listStyle(`none, `inside, `none)]);
+let navList =
+  style([
+    media("(max-width: 630px)", [display(none)]),
+    marginLeft(`auto),
+    listStyle(`none, `inside, `none),
+  ]);
 
 let navListItem = style([display(inlineBlock)]);
 
@@ -104,8 +108,7 @@ let gorillaBack =
     ]),
   ]);
 
-let gorillaBox =
-  style([marginLeft(`percent(12.)), marginLeft(`percent(12.))]);
+let gorillaBox = style([marginRight(`percent(12.))]);
 
 let headerImg =
   style([
@@ -116,27 +119,41 @@ let headerImg =
     textAlign(center),
     // transform(translateX(`percent(-25.))),
   ]);
+let gorillaText = style([transform(translateX(`percent(25.)))]);
 
 let horizantalBlueTile =
   style([
     width(`percent(100.)),
     padding2(~v=em(2.), ~h=em(0.)),
     backgroundColor(`hex("73c7d7ff")),
+    // media("(max-width: 831px)", [padding2(~v=rem(2.), ~h=rem(2.4))]),
+    textAlign(`center),
   ]);
 
 let explainerLargeText =
   style([
     fontSize(rem(2.)),
     color(`hex("486269")),
-    textAlign(`center),
-    margin2(~v=em(0.), ~h=em(8.)),
+    padding2(~v=em(0.), ~h=em(6.)),
+    margin2(~v=em(0.), ~h=auto),
+    maxWidth(px(1200)),
+    media(
+      "(max-width: 760px)",
+      [fontSize(rem(1.2)), padding2(~v=em(0.), ~h=em(2.))],
+    ),
   ]);
 let explainerMediumText =
   style([
+    media(
+      "(max-width: 760px)",
+      [fontSize(rem(1.1)), padding2(~v=em(0.), ~h=em(2.))],
+    ),
+    padding2(~v=em(0.), ~h=em(3.)),
+    margin2(~v=em(0.), ~h=auto),
+    maxWidth(px(1200)),
     fontSize(rem(1.6)),
     color(`hex("486269")),
     textAlign(`center),
-    margin2(~v=em(0.), ~h=em(8.)),
   ]);
 
 let boldExplainerText = style([color(`hex("303030")), fontWeight(`bold)]);
@@ -158,18 +175,23 @@ let infoBackground =
     height(`percent(100.)),
   ]);
 
-let infoCardStyles = style([margin(`rem(6.))]);
+let infoCardContainer = style([padding(`rem(1.))]);
+
+let infoCardStyles =
+  style([
+    margin(`rem(4.)),
+    media("(max-width: 831px)", [margin(`rem(0.)), textAlign(center)]),
+  ]);
+
+let gorillaImage = style([media("(max-width: 831px)", [display(none)])]);
 
 let redDisclaimer = style([fontSize(`rem(0.9)), color(`hex("e85723"))]);
 
 let floatingSignupBox =
   style([
     maxWidth(px(900)),
+    margin2(~v=em(0.), ~h=auto),
     backgroundColor(`hex("fff")),
-    marginLeft(auto),
-    marginRight(auto),
-    padding2(~h=em(2.), ~v=em(2.)),
-    // box-shadow: 0 2px 4px 0 rgba(136,144,195,.2),0 5px 15px 0 rgba(37,44,97,.15);
   ]);
 
 let inputElements = style([padding(em(0.1))]);
@@ -179,10 +201,7 @@ let extraInfoFooterBox =
     textAlign(center),
     maxWidth(px(600)),
     backgroundColor(rgb(107, 173, 62)),
-    marginLeft(auto),
-    marginRight(auto),
-    marginTop(em(6.)),
-    marginBottom(em(6.)),
+    margin2(~v=em(6.), ~h=auto),
     position(relative),
   ]);
 
@@ -252,7 +271,7 @@ let footerLink =
 let footerSocialButtons =
   style([
     padding(px(0)),
-    margin(px(0)),
+    marginRight(em(6.)), // This is needed to cater for the 'crisp' chat help.
     listStyle(`none, `inside, `none),
     display(`flex),
     justifyContent(center),
@@ -275,6 +294,8 @@ let footerSocailButtonLink =
   style([
     display(inlineBlock),
     textDecoration(none),
+    maxWidth(px(32)),
+    maxHeight(px(32)),
     hover([
       filter([`grayscale(0.)]),
       transition(~duration=2000, ~delay=0, ~timingFunction=ease, "all"),
