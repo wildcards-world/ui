@@ -26,8 +26,8 @@ let make = () => {
   };
 
   let buyObj = useBuyTransaction();
-  let unlockWeb3IfNotAlready = useUnlockWeb3IfNotAlready();
-  let isUnlocked = useIsUnlocked();
+  // let unlockWeb3IfNotAlready = useUnlockWeb3IfNotAlready();
+  // let isUnlocked = useIsUnlocked();
 
   // let onUnlockMetamask = () => {
   //   let isUnlocked = unlockWeb3IfNotAlready();
@@ -87,23 +87,23 @@ let make = () => {
        useForeclosureTime()->map(Js.Date.toString),
      )}
     <br />
-    {if (isUnlocked) {
-       <React.Fragment>
-         <Rimble.Input
-           _type="number"
-           placeholder="Your Initial Sale Price"
-           onChange=onChangeBuyEther
-           value=buyAmountEther
-         />
-         <Rimble.Button onClick=onSubmitBuy>
-           {React.string("Buy")}
-         </Rimble.Button>
-       </React.Fragment>;
-     } else {
-       <Rimble.Button onClick={_ => unlockWeb3IfNotAlready()}>
-         {React.string("Enable Metamask")}
-       </Rimble.Button>;
-     }}
+    // {if (isUnlocked) {
+    //    <React.Fragment>
+    //      <Rimble.Input
+    //        _type="number"
+    //        placeholder="Your Initial Sale Price"
+    //        onChange=onChangeBuyEther
+    //        value=buyAmountEther
+    //      />
+    //      <Rimble.Button onClick=onSubmitBuy>
+    //        {React.string("Buy")}
+    //      </Rimble.Button>
+    //    </React.Fragment>;
+    //  } else {
+    //    <Rimble.Button onClick={_ => unlockWeb3IfNotAlready()}>
+    //      {React.string("Enable Metamask")}
+    //    </Rimble.Button>;
+    //  }}
     <br />
   </div>;
 };

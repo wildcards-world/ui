@@ -24,8 +24,11 @@ let useTotalPatronageWei = () => {
   };
 };
 
-let useTotalPatronageEth = () =>
-  useTotalPatronageWei()->flatMap(price => Some(fromWeiToEth(price)));
+let useTotalPatronageEth = (~decimals=5, ()) =>
+  useTotalPatronageWei()
+  ->flatMap(price =>
+      Some(toFixedWithPrecision(fromString(fromWeiToEth(price)), decimals))
+    );
 let useTotalPatronageUsd = () => {
   let totalPatronageEth = useTotalPatronageEth();
   let currentUsdEthPrice = useUsdPrice();
@@ -78,8 +81,6 @@ let useCurrentPatron: unit => option(string) =
 
 let useAvailableDeposit = () =>
   useCacheCall((), "VitalikSteward", "availableDeposit");
-// // let useBuyTransaction: unit => string => = (newPriceInEther: string) =>
-// //   (useCacheSend())(. "VitalikSteward", "buy", newPriceInEther);
 let useBuyTransaction = () => (useCacheSend())(. "VitalikSteward", "buy");
 let useChangePriceTransaction = () =>
   (useCacheSend())(. "VitalikSteward", "changePrice");

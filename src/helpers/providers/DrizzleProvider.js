@@ -1,25 +1,16 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { drizzleReactHooks } from "drizzle-react"
 import { Drizzle, generateStore } from "drizzle"
-
+import { theme as rimbleTheme } from 'rimble-ui'
+import { ThemeProvider } from 'styled-components'
 import VitalikSteward from "../../contracts/VitalikSteward.json"
 import ERC721Full from "../../contracts/ERC721Full.json"
 import web3ProvideSwitcher from "../web3/web3ProvideSwitcher"
-import { theme as rimbleTheme } from 'rimble-ui'
-import { ThemeProvider } from 'styled-components'
 
-// todo: read env var for fallback
-const fallbackUrl = "wss://mainnet.infura.io/ws/v3/e811479f4c414e219e7673b6671c2aba"
+const fallbackUrl = "wss://mainnet.infura.io/ws/v3/a5d64a2052ab4d1da240cdfe3a6c519b";
 const switchableWeb3 = web3ProvideSwitcher.createSwitchableWeb3()
-const ProviderContext = createContext<any>('');
 
-interface Options {
-  web3: any
-  contracts: any[]
-  syncAlways: boolean
-  polls: any
-}
-const options: Options = {
+const options = {
   web3: {
     block: false,
     fallback: {
@@ -45,8 +36,16 @@ const options: Options = {
   polls: {
     accounts: 1500,
   },
-}
+};
 
+// export default ({ children }) =>
+// <DrizzleProvider options={options}>{children}</DrizzleProvider>
+
+
+// // todo: read env var for fallback
+// const fallbackUrl = "wss://mainnet.infura.io/ws/v3/e811479f4c414e219e7673b6671c2aba"
+// const switchableWeb3 = web3ProvideSwitcher.createSwitchableWeb3()
+const ProviderContext = createContext('');
 const theme = {
   ...rimbleTheme,
   colors: {
@@ -58,18 +57,35 @@ const theme = {
 const drizzleStore = generateStore(options)
 const drizzle = new Drizzle(options, drizzleStore)
 
-export default ({ children }: any) => {
-  const [isWeb3Unlocked, setIsWeb3Unlocked] = useState(false);
-
-  const unlockWeb3IfNotAlready = () => {
-    if (isWeb3Unlocked) return
-
-    web3ProvideSwitcher.unlockWeb3WithCallback(setIsWeb3Unlocked)
+export default ({ children }) => {
+  const [isProviderSelected, setIsProviderSelected] = useState(false)
+  const setProvider = (provider) => {
+    console.log(provider)
+    web3ProvideSwitcher.setExternalProvider(provider)
+    setIsProviderSelected(true)
+    console.log(isProviderSelected)
   }
+
+  // fetching: false,
+  // address: '',
+  // web3: null,
+  // connected: false,
+  // chainId: 1,
+  // networkId: 1,
+  // assets: [],
+  // showModal: false,
+  // pendingRequest: false,
+  // result: null
+
+  const resetApp = () => {
+    console.log('reset the app')
+  }
+
+  const providedValues = { isProviderSelected, setProvider }
 
   return (
     <drizzleReactHooks.DrizzleProvider drizzle={drizzle}>
-      <ProviderContext.Provider value={{ isWeb3Unlocked, unlockWeb3IfNotAlready }}>
+      <ProviderContext.Provider value={providedValues}>
         <ThemeProvider theme={theme}>
           {children}
         </ThemeProvider>
@@ -78,4 +94,5 @@ export default ({ children }: any) => {
   )
 }
 
-export const useUnlockAndCheck = () => useContext(ProviderContext);
+export const useWeb3Setup = () => useContext(ProviderContext);
+

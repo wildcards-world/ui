@@ -52,30 +52,19 @@ module Transaction = {
 module ModalContainer = {
   [@react.component]
   let make = () => {
-    let isUnlocked = useIsUnlocked();
-
-    if (isUnlocked) {
-      <Transaction />;
-    } else {
-      <Rimble.Box p=4 mb=3>
-        <Rimble.HeadingS> "NOTICE" </Rimble.HeadingS>
-        <Rimble.TextS>
-          "Unable to connect to metamask, so unable to sign transactions."
-        </Rimble.TextS>
-      </Rimble.Box>;
-    };
+    <Transaction />;
   };
 };
 
 [@react.component]
 let make = () => {
   let (isModalOpen, setModalOpen) = React.useState(() => false);
-  let unlockWeb3IfNotAlready = useUnlockWeb3IfNotAlready();
+  // let unlockWeb3IfNotAlready = useUnlockWeb3IfNotAlready();
 
   let onUnlockMetamaskAndOpenModal = event => {
     ReactEvent.Form.preventDefault(event);
 
-    unlockWeb3IfNotAlready();
+    // unlockWeb3IfNotAlready();
     setModalOpen(_ => true);
   };
 
@@ -84,7 +73,7 @@ let make = () => {
       {React.string("Update Price")}
     </Rimble.Button>
     <Rimble.Modal isOpen=isModalOpen>
-      <Rimble.Card width=Rimble.AnyStr("420px") p=0>
+      <Rimble.Card width={Rimble.AnyStr("420px")} p=0>
         <Rimble.Button.Text
           icononly=true
           icon="Close"

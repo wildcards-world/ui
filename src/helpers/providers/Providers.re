@@ -12,9 +12,9 @@ module DrizzleProvider = {
   external make: (~children: React.element) => React.element = "default";
 
   [@bs.module "./DrizzleProvider"]
-  external useUnlockAndCheck: unit => 'a = "useUnlockAndCheck";
-
-  let useIsUnlocked = () => useUnlockAndCheck()##isWeb3Unlocked;
-  let useUnlockWeb3IfNotAlready: (unit, unit) => unit =
-    () => useUnlockAndCheck()##unlockWeb3IfNotAlready;
+  external useWeb3Setup: unit => 'a = "useWeb3Setup";
+  let useIsProviderSelected: (unit, unit) => unit =
+    () => useWeb3Setup()##isProviderSelected;
+  let useSetProvider: (unit, unit) => unit =
+    () => useWeb3Setup()##isProviderSelected;
 };

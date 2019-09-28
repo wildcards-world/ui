@@ -51,8 +51,9 @@ let make =
     if (!requireSmartContractsLoaded || smartContractsLoaded) {
       // TODO: it may be needed to check for more than just a web3 providor
       //        eg. what if the provider has no ethereum accounts?
-      let isWeb3Enabled = Web3Unlocked.isUsingProvider();
-      if (isWeb3Enabled) {children} else {alturnateNoWeb3};
+      // let isWeb3Enabled = Web3Unlocked.isUsingProvider();
+      // if (isWeb3Enabled) {children} else {alturnateNoWeb3};
+      children;
     } else {
       alturnateLoaderSmartContracts;
     };
