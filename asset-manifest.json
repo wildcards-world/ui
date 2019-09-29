@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.js": "./static/js/main.3793b5a9.chunk.js",
+    "main.js.map": "./static/js/main.3793b5a9.chunk.js.map",
+    "runtime-main.js": "./static/js/runtime-main.c3289c7e.js",
+    "runtime-main.js.map": "./static/js/runtime-main.c3289c7e.js.map",
+    "static/js/2.a43c41f9.chunk.js": "./static/js/2.a43c41f9.chunk.js",
+    "static/js/2.a43c41f9.chunk.js.map": "./static/js/2.a43c41f9.chunk.js.map",
+    "index.html": "./index.html",
+    "precache-manifest.15c310271e2eae9acd601682758f104d.js": "./precache-manifest.15c310271e2eae9acd601682758f104d.js",
+    "service-worker.js": "./service-worker.js",
+    "static/media/gorilla-on-vine.png": "./static/media/gorilla-on-vine.c448e535.png",
+    "static/media/gorilla1.png": "./static/media/gorilla1.d41fa749.png",
+    "static/media/gorilla2.png": "./static/media/gorilla2.d1afd4be.png",
+    "static/media/gorilla3.png": "./static/media/gorilla3.4eb0db0d.png",
+    "static/media/hanging-gorilla-from-vine.png": "./static/media/hanging-gorilla-from-vine.28738cf6.png",
+    "static/media/instagram.svg": "./static/media/instagram.9351fd92.svg",
+    "static/media/raising_hands.png": "./static/media/raising_hands.9d92bf94.png",
+    "static/media/twitter.svg": "./static/media/twitter.358d6cce.svg",
+    "static/media/wild-cards-small.png": "./static/media/wild-cards-small.a59c97f6.png",
+    "static/media/wild-jungle-background.png": "./static/media/wild-jungle-background.ae5d91e2.png"
+  }
+}
