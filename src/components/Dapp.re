@@ -60,7 +60,7 @@ module DefaultLook = {
              <div className=Styles.gorillaBack>
                <img className=Styles.headerImg src=gorilla3 />
                <div className=Styles.gorillaText>
-                 <h2> {React.string("Boommm")} </h2>
+                 <h2> {React.string("Andy")} </h2>
                  <h3 className=Styles.colorGreen>
                    {React.string("COMING SOON")}
                  </h3>

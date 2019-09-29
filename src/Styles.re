@@ -113,7 +113,7 @@ let gorillaBox = style([marginRight(`percent(12.))]);
 let headerImg =
   style([
     position(relative),
-    zIndex(10),
+    zIndex(1),
     maxHeight(px(500)),
     maxWidth(`percent(150.)),
     textAlign(center),

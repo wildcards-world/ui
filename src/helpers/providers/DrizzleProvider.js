@@ -7,6 +7,7 @@ import VitalikSteward from "../../contracts/VitalikSteward.json"
 import ERC721Full from "../../contracts/ERC721Full.json"
 import web3ProvideSwitcher from "../web3/web3ProvideSwitcher"
 
+// todo: read env var for fallback
 const fallbackUrl = "wss://mainnet.infura.io/ws/v3/a5d64a2052ab4d1da240cdfe3a6c519b";
 const switchableWeb3 = web3ProvideSwitcher.createSwitchableWeb3()
 
@@ -38,13 +39,6 @@ const options = {
   },
 };
 
-// export default ({ children }) =>
-// <DrizzleProvider options={options}>{children}</DrizzleProvider>
-
-
-// // todo: read env var for fallback
-// const fallbackUrl = "wss://mainnet.infura.io/ws/v3/e811479f4c414e219e7673b6671c2aba"
-// const switchableWeb3 = web3ProvideSwitcher.createSwitchableWeb3()
 const ProviderContext = createContext('');
 const theme = {
   ...rimbleTheme,
@@ -60,24 +54,12 @@ const drizzle = new Drizzle(options, drizzleStore)
 export default ({ children }) => {
   const [isProviderSelected, setIsProviderSelected] = useState(false)
   const setProvider = (provider) => {
-    console.log(provider)
     web3ProvideSwitcher.setExternalProvider(provider)
     setIsProviderSelected(true)
-    console.log(isProviderSelected)
   }
 
-  // fetching: false,
-  // address: '',
-  // web3: null,
-  // connected: false,
-  // chainId: 1,
-  // networkId: 1,
-  // assets: [],
-  // showModal: false,
-  // pendingRequest: false,
-  // result: null
-
   const resetApp = () => {
+    // TODO
     console.log('reset the app')
   }
 

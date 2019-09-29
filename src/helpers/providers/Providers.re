@@ -13,8 +13,8 @@ module DrizzleProvider = {
 
   [@bs.module "./DrizzleProvider"]
   external useWeb3Setup: unit => 'a = "useWeb3Setup";
-  let useIsProviderSelected: (unit, unit) => unit =
+  let useIsProviderSelected: unit => bool =
     () => useWeb3Setup()##isProviderSelected;
-  let useSetProvider: (unit, unit) => unit =
-    () => useWeb3Setup()##isProviderSelected;
+  let useSetProvider: (unit, 'provider) => unit =
+    () => useWeb3Setup()##setProvider;
 };
