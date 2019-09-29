@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { drizzleReactHooks } from "drizzle-react"
-import { Drizzle, generateStore } from "drizzle"
+import { drizzleReactHooks } from "@drizzle/react-plugin"
+import { Drizzle, generateStore } from "@drizzle/store"
 import { theme as rimbleTheme } from 'rimble-ui'
 import { ThemeProvider } from 'styled-components'
 import VitalikSteward from "../../contracts/VitalikSteward.json"

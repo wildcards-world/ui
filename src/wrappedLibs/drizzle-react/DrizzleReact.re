@@ -1,8 +1,8 @@
 module Hooks = {
-  [@bs.module "drizzle-react"] [@bs.scope "drizzleReactHooks"]
+  [@bs.module "@drizzle/react-plugin"] [@bs.scope "drizzleReactHooks"]
   external useDrizzleState: ([@bs.uncurry] ('a => 'b)) => 'b = "";
 
-  [@bs.module "drizzle-react"] [@bs.scope "drizzleReactHooks"]
+  [@bs.module "@drizzle/react-plugin"] [@bs.scope "drizzleReactHooks"]
   external useDrizzle: unit => 'drizzle = "";
 
   // TODO: Need to make this return a `some` since drizzle has a bug where if the contract isn't initialised then it throws an error!
