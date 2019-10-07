@@ -5,10 +5,13 @@ import { theme as rimbleTheme } from 'rimble-ui'
 import { ThemeProvider } from 'styled-components'
 import VitalikSteward from "../../contracts/VitalikSteward.json"
 import ERC721Full from "../../contracts/ERC721Full.json"
+import WildcardSteward_v0 from "../../contracts/WildcardSteward_v0.json"
+import ERC721Patronage_v0 from "../../contracts/ERC721Patronage_v0.json"
 import web3ProvideSwitcher from "../web3/web3ProvideSwitcher"
 
 // todo: read env var for fallback
-const fallbackUrl = "wss://mainnet.infura.io/ws/v3/a5d64a2052ab4d1da240cdfe3a6c519b";
+// const fallbackUrl = "wss://mainnet.infura.io/ws/v3/a5d64a2052ab4d1da240cdfe3a6c519b";
+const fallbackUrl = "wss://goerli.infura.io/ws/v3/a5d64a2052ab4d1da240cdfe3a6c519b";
 const switchableWeb3 = web3ProvideSwitcher.createSwitchableWeb3()
 
 const options = {
@@ -31,7 +34,9 @@ const options = {
   },
   contracts: [
     VitalikSteward,
-    ERC721Full
+    ERC721Full,
+    WildcardSteward_v0,
+    ERC721Patronage_v0,
   ],
   syncAlways: true,
   polls: {

@@ -5,6 +5,8 @@ open Web3Utils;
 open Js.Float;
 open Providers.UsdPriceProvider;
 
+include NewHooks;
+
 let useCurrentUser: unit => option(string) =
   () => {
     let state = useDrizzleState(state => state##accounts);

@@ -8,12 +8,13 @@ let getToDisplay = (label, value) =>
 
 module Transaction = {
   [@react.component]
-  let make = () => {
+  let make = (~tokenId: option(string)) => {
     let (initialBuyPrice, setInitialPrice) = React.useState(() => "");
     let (initialDeposit, setInitialDeposit) = React.useState(() => "");
     let currentPrice = useCurrentPriceWei();
     let currentUser = useCurrentUser();
     let buyObj = useBuyTransaction();
+    let buyObjNew = useBuyTransactionNew();
 
     let onSubmitBuy = event => {
       ReactEvent.Form.preventDefault(event);
@@ -26,10 +27,21 @@ module Transaction = {
         ->BN.addGet(. BN.new_(Web3Utils.toWei(initialDeposit, "ether")))
         ->BN.toStringGet(.);
       // TODO: this `##` on the send is clunky, and not so type safe. Find ways to improve it.
-      buyObj##send(.
-        initialBuyPrice->Web3Utils.toWeiFromEth,
-        setFunctionObj(. amountToSend, currentUser),
-      );
+
+      switch (tokenId) {
+      | None =>
+        Js.log("OLDDD");
+        buyObj##send(.
+          initialBuyPrice->Web3Utils.toWeiFromEth,
+          setFunctionObj(. amountToSend, currentUser),
+        );
+      | Some(tokenIdSet) =>
+        buyObjNew##send(.
+          tokenIdSet,
+          initialBuyPrice->Web3Utils.toWeiFromEth,
+          setFunctionObj(. amountToSend, currentUser),
+        )
+      };
     };
 
     <Rimble.Box p=4 mb=3>
@@ -65,13 +77,13 @@ module Transaction = {
 
 module ModalContainer = {
   [@react.component]
-  let make = () => {
-    <Transaction />;
+  let make = (~tokenId: option(string)) => {
+    <Transaction tokenId />;
   };
 };
 
 [@react.component]
-let make = () => {
+let make = (~tokenId: option(string)) => {
   let (isModalOpen, setModalOpen) = React.useState(() => false);
   let setProvider = useSetProvider();
   let isProviderSelected = useIsProviderSelected();
@@ -148,7 +160,7 @@ let make = () => {
           m=3
           onClick={_ => setModalOpen(_ => false)}
         />
-        <ModalContainer />
+        <ModalContainer tokenId />
       </Rimble.Card>
     </Rimble.Modal>
   </React.Fragment>;
