@@ -257,10 +257,12 @@ let footerWrapper =
     display(`flex),
     justifyContent(spaceBetween),
     alignItems(flexStart),
+    alignSelf(center),
     flexWrap(`wrap),
   ]);
 
-let footerText = style([color(hex("919797"))]);
+let footerText =
+  style([marginTop(auto), marginBottom(auto), color(hex("919797"))]);
 
 let footerLink =
   style([
@@ -292,14 +294,12 @@ let footerSocialButton =
 
 let footerSocailButtonLink =
   style([
-    display(inlineBlock),
-    textDecoration(none),
     maxWidth(px(32)),
     maxHeight(px(32)),
-    hover([
-      filter([`grayscale(0.)]),
-      transition(~duration=2000, ~delay=0, ~timingFunction=ease, "all"),
-    ]),
+    // hover([
+    //   filter([`grayscale(0.)]),
+    //   transition(~duration=2000, ~delay=0, ~timingFunction=ease, "all"),
+    // ]),
     // transition(~duration=2000, ~delay=0, ~timingFunction=ease, "opacity"),
     // // -webkit-transition: opacity .2s ease,box-shadow .2s ease,-webkit-transform .2s ease;
     // // transition: opacity .2s ease,box-shadow .2s ease,-webkit-transform .2s ease;

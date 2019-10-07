@@ -17,6 +17,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "^3.1.2",
+    "react-social-icons": "^4.1.0",
     "reason-react": "^0.7.0",
     "rimble-ui": "^0.9.8",
     "squarelink": "^1.0.10",
@@ -32,7 +33,7 @@
     "test": "echo 'no tests yet'",
     "re:build": "bsb -make-world -clean-world",
     "re:watch": "bsb -make-world -clean-world -w",
-    "deploy": "npm run build && gh-pages -d dist --remote JasoonS"
+    "deploy": "npm run build && gh-pages -d dist --remote jasoons"
   },
   "eslintConfig": {
     "extends": "react-app"
