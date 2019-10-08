@@ -41,7 +41,7 @@ module CoreConcepts = {
                 <S> " ferever!" </S>
               </Text>
               <br />
-              <Heading _as="h3"> <S> "Harberger Tax" </S> </Heading>
+              <Heading _as="h3"> <S> "Harberger Patronage" </S> </Heading>
               <br />
               <Text>
                 <S>

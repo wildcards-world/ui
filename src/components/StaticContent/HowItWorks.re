@@ -32,20 +32,20 @@ module HowItWorks = {
                 <S>
                   "Through adopting Vitalik the gorilla, you pay an annual "
                 </S>
-                <strong> <S> "Harberger tax" </S> </strong>
+                <strong> <S> "Harberger patronage" </S> </strong>
                 <S>
-                  " of 30% on your newly set sale price (5 ETH). Your harberger tax of 30% goes towards supporting gorilla conservation. "
+                  " of 30% on your newly set sale price (5 ETH). Your harberger patronage of 30% goes towards supporting gorilla conservation. "
                 </S>
                 <strong> <S> "Here's where it gets interesting." </S> </strong>
                 <S>
-                  " If someone else decides to purchase Vitalik the gorilla from you, they pay your 'for sale' price (of 5 Eth). You benefit from the upside of 4 ETH on the trade but lose patronage of Vitalik the gorilla. The new owner pays an annual harberger tax on the 'for sale' price of 30% which goes towards gorilla conservation."
+                  " If someone else decides to purchase Vitalik the gorilla from you, they pay your 'for sale' price (of 5 Eth). You benefit from the upside of 4 ETH on the trade but lose patronage of Vitalik the gorilla. The new owner pays an annual harberger patronage on the 'for sale' price of 30% which goes towards gorilla conservation."
                 </S>
               </Text>
               <br />
               <Text>
                 <span className=Styles.redDisclaimer>
                   <S>
-                    "For the first gorilla, Vitalik, the 30% Harberger tax will flow equally between both the conservation fund and the development of the platform. The future gorillas patronage fees will go directly to the relevant conservations' wallets."
+                    "For the first gorilla, Vitalik, the 30% Harberger patronage will flow equally between both the conservation fund and the development of the platform. The future gorillas patronage fees will go directly to the relevant conservations' wallets."
                   </S>
                 </span>
               </Text>
