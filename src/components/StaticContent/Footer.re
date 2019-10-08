@@ -1,3 +1,6 @@
+let privacy_policy_link = "https://wild-cards.github.io/legal/privacy_policy.html";
+let terms_and_conditions_link = "https://wild-cards.github.io/legal/terms_and_conditions.html";
+
 module Footer = {
   open Components;
   open Rimble;
@@ -17,16 +20,15 @@ module Footer = {
             </div>
           </div>
           <div className=Styles.footerText>
-            <a className=Styles.footerLink href="/privacy_policy.html">
+            <a className=Styles.footerLink href=privacy_policy_link>
               <S> "Privacy Policy" </S>
             </a>
           </div>
           <div className=Styles.footerText>
-            <a className=Styles.footerLink href="/terms_and_conditions.html">
+            <a className=Styles.footerLink href=terms_and_conditions_link>
               <S> "Terms and Conditions" </S>
             </a>
           </div>
-          // <a className="footer-02__link" href="/privacy_policy.html">Privacy Policy</a> &ensp; <a className="footer-02__link" href="/terms_and_conditions.html">Terms and Conditions</a>
           <ul className=Styles.footerSocialButtons>
             <li className=Styles.footerSocialButton>
               <SocialButtons

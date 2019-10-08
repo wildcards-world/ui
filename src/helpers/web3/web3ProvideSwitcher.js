@@ -10,7 +10,7 @@ const getInjectedWeb3NoLoad = () => {
   }
   try {
     const provider = new Web3.providers.WebsocketProvider(
-      "wss://mainnet.infura.io/ws/v3/a5d64a2052ab4d1da240cdfe3a6c519b"
+      "wss://goerli.infura.io/ws/v3/a5d64a2052ab4d1da240cdfe3a6c519b"
     )
 
     return provider
