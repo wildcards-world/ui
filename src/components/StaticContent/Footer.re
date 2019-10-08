@@ -20,12 +20,18 @@ module Footer = {
             </div>
           </div>
           <div className=Styles.footerText>
-            <a className=Styles.footerLink href=privacy_policy_link>
+            <a
+              className=Styles.footerLink
+              target="_blank"
+              href=privacy_policy_link>
               <S> "Privacy Policy" </S>
             </a>
           </div>
           <div className=Styles.footerText>
-            <a className=Styles.footerLink href=terms_and_conditions_link>
+            <a
+              className=Styles.footerLink
+              target="_blank"
+              href=terms_and_conditions_link>
               <S> "Terms and Conditions" </S>
             </a>
           </div>
@@ -35,6 +41,7 @@ module Footer = {
                 url="https://twitter.com/wildcards_world"
                 bgColor="transparent"
                 fgColor="#aaa"
+                target="_blank"
                 className=Styles.footerSocailButtonLink
               />
             </li>
@@ -43,6 +50,7 @@ module Footer = {
                 className=Styles.footerSocailButtonLink
                 url="https://www.facebook.com/wildcardscrypto"
                 bgColor="transparent"
+                target="_blank"
                 fgColor="#aaa"
               />
             </li>

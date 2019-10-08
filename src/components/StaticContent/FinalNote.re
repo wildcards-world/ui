@@ -30,7 +30,7 @@ module FinalNote = {
                 href="https://youtu.be/ibBAlrrwjp0?t=322"
                 target="_blank">
                 <span className=Styles.linkPillText>
-                  <S> "Watch presentation at the EthCapeTown hacakthan." </S>
+                  <S> "Watch presentation at the EthCapeTown hackathon." </S>
                 </span>
               </a>
             </Box>

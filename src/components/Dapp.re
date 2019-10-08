@@ -9,13 +9,9 @@ let gorilla1 = [%bs.raw {|require('../img/gorillas/gorilla1.png')|}];
 let gorilla2 = [%bs.raw {|require('../img/gorillas/gorilla2.png')|}];
 let gorilla3 = [%bs.raw {|require('../img/gorillas/gorilla3.png')|}];
 
-type gorrilla =
-  | Andy
-  | Vitalik
-  | Simon
-  | None;
-
 module DefaultLook = {
+  open Gorilla;
+
   [@react.component]
   let make = (~areRequirementsLoaded: bool=false) => {
     let setProvider = useSetProvider();
@@ -57,29 +53,32 @@ module DefaultLook = {
 
     <div className=Styles.rightTopHeader>
       {switch (owned) {
-       | Vitalik =>
+       | Simon =>
          <React.Fragment>
-           <img className=Styles.headerImg src=gorilla2 />
+           <img className=Styles.ownedGorillaImg src=gorilla2 />
            <h2> {React.string("Simon")} </h2>
-           <UpdatePriceModal />
+           <PriceDisplay tokenId={Some("0")} />
+           <UpdatePriceModal gorilla=owned />
            <Rimble.Button>
              {React.string("Add/Remove Deposit")}
            </Rimble.Button>
          </React.Fragment>
-       | Simon =>
+       | Vitalik =>
          <React.Fragment>
-           <img className=Styles.headerImg src=gorilla1 />
+           <img className=Styles.ownedGorillaImg src=gorilla1 />
            <h2> {React.string("Vitalik")} </h2>
-           <UpdatePriceModal />
+           <UpdatePriceModal gorilla=owned />
+           <PriceDisplay tokenId=None />
            <Rimble.Button>
              {React.string("Add/Remove Deposit")}
            </Rimble.Button>
          </React.Fragment>
        | Andy =>
          <React.Fragment>
-           <img className=Styles.headerImg src=gorilla1 />
+           <img className=Styles.ownedGorillaImg src=gorilla1 />
            <h2> {React.string("Andy")} </h2>
-           <UpdatePriceModal />
+           <PriceDisplay tokenId={Some("1")} />
+           <UpdatePriceModal gorilla=owned />
            <Rimble.Button>
              {React.string("Add/Remove Deposit")}
            </Rimble.Button>
@@ -88,21 +87,23 @@ module DefaultLook = {
          <Rimble.Flex className=Styles.gorillaBox>
            <Rimble.Box>
              <div className=Styles.gorillaBack>
-               <img className=Styles.headerImg src=gorilla1 />
+               <img className=Styles.headerImg src=gorilla2 />
                <div className=Styles.gorillaText>
                  <h2> {React.string("Simon")} </h2>
                  <Offline requireSmartContractsLoaded=true>
+                   <PriceDisplay tokenId={Some("0")} />
                    <BuyModal tokenId={Some("0")} />
                  </Offline>
                </div>
              </div>
            </Rimble.Box>
            <Rimble.Box>
-             <img className=Styles.headerImg src=gorilla2 />
+             <img className=Styles.headerImg src=gorilla1 />
              <div>
                <div className=Styles.gorillaText>
                  <h2> {React.string("Vitalik")} </h2>
                  <Offline requireSmartContractsLoaded=true>
+                   <PriceDisplay tokenId=None />
                    <BuyModal tokenId=None />
                  </Offline>
                </div>
@@ -114,6 +115,7 @@ module DefaultLook = {
                <div className=Styles.gorillaText>
                  <h2> {React.string("Andy")} </h2>
                  <Offline requireSmartContractsLoaded=true>
+                   <PriceDisplay tokenId={Some("1")} />
                    <BuyModal tokenId={Some("1")} />
                  </Offline>
                </div>
@@ -128,6 +130,7 @@ module DefaultLook = {
     </div>;
   };
 };
+
 [@react.component]
 // The Offline container here shows the website, but without loading the requirements
 let make = () => {

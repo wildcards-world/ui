@@ -15,7 +15,9 @@ module HowItWorks = {
           <Rimble.Box
             width=[|1., 1., 0.59|] className=Styles.infoCardContainer>
             <Rimble.Card className=Styles.infoCardStyles>
-              <Heading> <S> "How it works" </S> </Heading>
+              <Heading className=Styles.centerText>
+                <S> "How it works" </S>
+              </Heading>
               <br />
               <hr />
               <Text>

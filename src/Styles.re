@@ -16,6 +16,8 @@ let app =
     fontSize(px(16)),
   ]);
 
+let centerText = style([textAlign(center)]);
+
 let topBody =
   style([
     // zIndex(50),
@@ -34,6 +36,8 @@ let topBody =
   ]);
 
 let header = style([position(relative)]);
+
+let headerLogo = style([media("(max-width: 630px)", [margin(`auto)])]);
 
 let nav =
   style([
@@ -110,6 +114,14 @@ let gorillaBack =
 
 let gorillaBox = style([marginRight(`percent(12.))]);
 
+let ownedGorillaImg =
+  style([
+    position(relative),
+    zIndex(1),
+    maxWidth(`percent(100.)),
+    textAlign(center),
+    // transform(translateX(`percent(-25.))),
+  ]);
 let headerImg =
   style([
     position(relative),
@@ -135,7 +147,7 @@ let explainerLargeText =
     fontSize(rem(2.)),
     color(`hex("486269")),
     padding2(~v=em(0.), ~h=em(6.)),
-    margin2(~v=em(0.), ~h=auto),
+    margin2(~v=em(1.), ~h=auto),
     maxWidth(px(1200)),
     media(
       "(max-width: 760px)",
@@ -193,6 +205,24 @@ let floatingSignupBox =
     margin2(~v=em(0.), ~h=auto),
     backgroundColor(`hex("fff")),
   ]);
+let floatingSignupBoxInner =
+  style([
+    margin2(~v=em(3.), ~h=auto),
+    // padding2(~v=em(3.), ~h=em(3.)),
+    padding(em(3.)),
+  ]);
+let emailSignupHeader =
+  style([
+    fontSize(px(24)),
+    // padding2(~v=em(3.), ~h=em(3.)),
+    // padding(em(3.)),
+  ]);
+let emailTextBox =
+  style(
+    [] // padding(`auto),
+    // padding2(~v=auto, ~h=auto),
+    // padding(em(3.)),
+  );
 
 let inputElements = style([padding(em(0.1))]);
 
@@ -225,7 +255,7 @@ let emojiStyles =
     bottom(px(1)),
   ]);
 
-let finalNoteContent = style([margin(ex(4.))]);
+let finalNoteContent = style([padding(rem(1.5)), margin(ex(4.))]);
 
 let whiteText = style([color(white)]);
 
@@ -240,7 +270,7 @@ let linkPillBox =
     backgroundColor(rgba(48, 48, 48, 0.12)),
   ]);
 let linkPillText =
-  style([marginLeft(px(10)), marginBottom(px(1)), color(hex("fff"))]);
+  style([margin(px(10)), marginBottom(px(1)), color(hex("fff"))]);
 
 let footer =
   style([backgroundColor(hex("303030")), padding2(~v=px(40), ~h=px(0))]);

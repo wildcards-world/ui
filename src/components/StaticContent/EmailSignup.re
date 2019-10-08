@@ -10,9 +10,14 @@ module EmailSignup = {
   let make = () =>
     <div className=Styles.horizantalBlueTile id="signup">
       <Box className=Styles.floatingSignupBox>
-        <Flex flexWrap="wrap" alignItems="center">
-          <Box width=[|1., 1., 0.4|]>
-            <h2> <S> "Want to stay in the loop?" </S> </h2>
+        <Flex
+          flexWrap="wrap"
+          alignItems="center"
+          className=Styles.floatingSignupBoxInner>
+          <Box className=Styles.emailTextBox width=[|1., 1., 0.4|]>
+            <p className=Styles.emailSignupHeader>
+              <strong> <S> "Want to stay in the loop?" </S> </strong>
+            </p>
             <span> <S> "Sign up for our newsletter" </S> </span>
             <br />
             <br />

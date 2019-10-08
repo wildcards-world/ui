@@ -17,7 +17,9 @@ module CoreConcepts = {
           </Box>
           <Box width=[|1., 1., 0.59|] className=Styles.infoCardContainer>
             <Card className=Styles.infoCardStyles>
-              <Heading _as="h2" fontSize=5> <S> "Core Concepts" </S> </Heading>
+              <Heading className=Styles.centerText _as="h2" fontSize=5>
+                <S> "Core Concepts" </S>
+              </Heading>
               <br />
               <hr />
               <br />

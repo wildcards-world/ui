@@ -11,13 +11,14 @@ let make = () =>
     <header className=Styles.header>
       <nav className=Styles.nav>
         <div className=Styles.navBox>
-          <img src=smallIcon />
+          <img className=Styles.headerLogo src=smallIcon />
           <ul className=Styles.navList>
             <li className=Styles.navListItem>
               <a
                 className=Styles.navListText
-                href="https://ventureburn.com/2019/05/ethcapetown-blockchain-winning-applications/">
-                <S> "BACKGROUND" </S>
+                target="_blank"
+                href="https://blog.wildcards.world/">
+                <S> "BLOG" </S>
               </a>
               <Rimble.Button _as="a" href="/signup" target="\_blank">
                 <S> "Subscribe" </S>
@@ -49,6 +50,6 @@ let make = () =>
     <About />
     <CoreConcepts />
     <EmailSignup />
-    <FinalNote />
+    <Partners />
     <Footer />
   </div>;
