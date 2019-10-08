@@ -17,10 +17,8 @@ let onlyUpdateIfPositiveFloat = (currentValue, updateFunction, event) => {
     | None =>
       // If the new value is an empty string let it through.
       if (value == "") {
-        Js.log("using the NEW value");
         value;
       } else {
-        Js.log("using the OLD value");
         currentValue;
       }
     };

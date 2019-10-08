@@ -30,11 +30,10 @@ module Transaction = {
 
       switch (tokenId) {
       | None =>
-        Js.log("OLDDD");
         buyObj##send(.
           initialBuyPrice->Web3Utils.toWeiFromEth,
           setFunctionObj(. amountToSend, currentUser),
-        );
+        )
       | Some(tokenIdSet) =>
         buyObjNew##send(.
           tokenIdSet,
@@ -85,66 +84,24 @@ module ModalContainer = {
 [@react.component]
 let make = (~tokenId: option(string)) => {
   let (isModalOpen, setModalOpen) = React.useState(() => false);
-  let setProvider = useSetProvider();
   let isProviderSelected = useIsProviderSelected();
 
-  let onSetProviderAndOpenModal = provider => {
-    setProvider(provider);
+  let onUnlockMetamaskAndOpenModal = () => {
     setModalOpen(_ => true);
   };
-
-  let onUnlockMetamaskAndOpenModal = event => {
+  let onOpenModal = event => {
     ReactEvent.Form.preventDefault(event);
     setModalOpen(_ => true);
   };
 
   <React.Fragment>
     {if (isProviderSelected) {
-       <Rimble.Button onClick=onUnlockMetamaskAndOpenModal>
+       <Rimble.Button onClick=onOpenModal>
          {React.string("Buy")}
        </Rimble.Button>;
      } else {
-       <Web3connect.CustomButton
-         onConnect=onSetProviderAndOpenModal
-         providerOptions=[%bs.raw
-           {|
-        {
-          walletconnect: {
-            package: require("@walletconnect/web3-provider").default, // required
-            options: {
-              infuraId: "a5d64a2052ab4d1da240cdfe3a6c519b" // required
-            }
-          },
-          portis: {
-            package: require("@portis/web3"), // required
-            options: {
-              id: "104b9d07-25d3-4aeb-903b-ad7452218d05" // required
-            }
-          },
-          torus: {
-            package: require("@toruslabs/torus-embed").default, // required
-            options: {
-              enableLogging: false, // optional
-              buttonPosition: "bottom-left", // optional
-              buildEnv: "production", // optional
-              showTorusButton: true // optional
-            }
-          },
-          fortmatic: {
-            package: require("fortmatic"), // required
-            options: {
-              key: "pk_live_BE64CE1BB4A49C37" // required
-            }
-          },
-          squarelink: {
-            package: require("squarelink"), // required
-            options: {
-              id: "3904cdd1b675af615ca9" // required
-            }
-          }
-        }
-      |}
-         ]>
+       //  onClick=openWeb3ConnectModal
+       <Web3connect.CustomButton afterConnect=onUnlockMetamaskAndOpenModal>
          {React.string("Buy")}
        </Web3connect.CustomButton>;
      }}

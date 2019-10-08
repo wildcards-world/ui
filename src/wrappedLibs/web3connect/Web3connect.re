@@ -1,23 +1,13 @@
 module Core = {
   [@bs.deriving {abstract: light}]
   type web3connectCore = {
-    on: (. string, unit => unit) => unit,
+    setOnConnect: (Web3.provider => unit) => unit,
+    setAfterConnectAction: (unit => unit) => unit,
     toggleModal: (. unit) => unit,
   };
 
-  let new_: (. Js.Json.t, string) => web3connectCore = [%bs.raw
-    {|
-    (providerOptions, network) => {
-      const web3connect = require('@wildcards/web3connect').default;
-      const core = new web3connect.Core({
-        network: network,
-        // lightboxOpacity: settings.lightboxOpacity,
-        providerOptions: providerOptions
-      })
-      return core
-    }
-  |}
-  ];
+  [@bs.module "./Web3connectCore"]
+  external getCore: option(string) => web3connectCore = "default";
 };
 
 module CustomButton = {
@@ -25,27 +15,23 @@ module CustomButton = {
   let make =
       (
         ~children: React.element,
-        ~providerOptions: Js.Json.t=?,
-        ~onConnect: 'provider => unit,
-        ~onClose: 'close => unit=Js.log,
-        ~onError: 'error => unit=Js.log,
-        ~onDisconnect: 'disconnect' => unit=Js.log,
-        ~network: string="mainnet",
+        // ~onConnect: Web3.provider => unit,
+        ~afterConnect: unit => unit=?,
       ) => {
-    open Core;
-    let core: Core.web3connectCore = Core.new_(. providerOptions, network);
-    core->on(. "connect", onConnect);
-    core->on(. "disconnect", onDisconnect);
-    core->on(. "error", onError);
-    core->on(. "close", onClose);
-
-    <Rimble.Button
-      onClick={event => {
-        Js.log(event);
-        Js.log(" I was clicked");
-        core->toggleModal(.);
-      }}>
-      children
-    </Rimble.Button>;
+    // ~onClose: 'close => unit=?,
+    // ~onError: 'error => unit=?,
+    // ~onDisconnect: 'disconnect => unit=?,
+    // ~network: string=?,
+    Core.(
+      <Rimble.Button
+        onClick={event => {
+          ReactEvent.Form.preventDefault(event);
+          let core = getCore(None);
+          core->setAfterConnectAction(afterConnect);
+          core->toggleModal(.);
+        }}>
+        children
+      </Rimble.Button>
+    );
   };
 };

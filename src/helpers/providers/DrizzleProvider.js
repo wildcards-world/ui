@@ -64,6 +64,7 @@ const drizzle = new Drizzle(options, drizzleStore)
 export default ({ children }) => {
   const [isProviderSelected, setIsProviderSelected] = useState(false)
   const setProvider = (provider) => {
+    console.log("web3 provider is set!!")
     web3ProvideSwitcher.setExternalProvider(provider)
     setIsProviderSelected(true)
   }

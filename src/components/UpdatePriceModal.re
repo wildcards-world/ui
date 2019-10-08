@@ -13,8 +13,6 @@ module Transaction = {
     let currentUser = useCurrentUser();
     let changePriceObj = useChangePriceTransaction();
 
-    Js.log(changePriceObj);
-
     let onSubmitBuy = event => {
       ReactEvent.Form.preventDefault(event);
 

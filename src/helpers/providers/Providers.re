@@ -15,6 +15,6 @@ module DrizzleProvider = {
   external useWeb3Setup: unit => 'a = "useWeb3Setup";
   let useIsProviderSelected: unit => bool =
     () => useWeb3Setup()##isProviderSelected;
-  let useSetProvider: (unit, 'provider) => unit =
+  let useSetProvider: (unit, Web3.provider) => unit =
     () => useWeb3Setup()##setProvider;
 };

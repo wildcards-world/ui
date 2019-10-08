@@ -1,14 +1,13 @@
 open Providers;
-[%bs.raw {|require("./styles.css")|}]
+[%bs.raw {|require("./styles.css")|}];
 
 module Router = {
   [@react.component]
   let make = () => {
     let url = ReasonReactRouter.useUrl();
-    Js.log(url);
     switch (url.hash) {
-    | "/dev-only/hidden/demo" =>
-      <Offline requireSmartContractsLoaded=true> <Demo /> </Offline>
+    // | "/dev-only/hidden/demo" =>
+    //   <Offline requireSmartContractsLoaded=true> <Demo /> </Offline>
     | _ => <Layout />
     };
   };
@@ -26,5 +25,5 @@ type hot;
 
 switch (Js.Nullable.toOption(parcelModule |> hot)) {
 | Some(h) => h |> accept()
-| _ => Js.log("We are not hot")
+| _ => Js.log("Production website.")
 };
