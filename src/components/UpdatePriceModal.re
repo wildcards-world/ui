@@ -35,45 +35,6 @@ module Transaction = {
       };
     };
 
-    // let buyObj = useBuyTransaction();
-    // let buyObjNew = useBuyTransactionNew();
-
-    // let currentPrice =
-    //   (
-    //     switch (tokenId) {
-    //     | None => useCurrentPriceWei()
-    //     | Some(tokenIdSet) => useCurrentPriceWeiNew(tokenIdSet)
-    //     }
-    //   )
-    //   ->mapWithDefault("0", price => price);
-
-    // let onSubmitBuy = event => {
-    //   ReactEvent.Form.preventDefault(event);
-
-    //   // TODO: Abstract this better into a utility library of sorts.
-    //   let setFunctionObj = [%bs.raw {| (value, from) => ({ value, from }) |}];
-    //   let amountToSend =
-    //     BN.new_(initialBuyPrice)
-    //     ->BN.addGet(. BN.new_(currentPrice))
-    //     ->BN.addGet(. BN.new_(Web3Utils.toWei(initialDeposit, "ether")))
-    //     ->BN.toStringGet(.);
-    //   // TODO: this `##` on the send is clunky, and not so type safe. Find ways to improve it.
-
-    //   switch (tokenId) {
-    //   | None =>
-    //     buyObj##send(.
-    //       initialBuyPrice->Web3Utils.toWeiFromEth,
-    //       setFunctionObj(. amountToSend, currentUser),
-    //     )
-    //   | Some(tokenIdSet) =>
-    //     buyObjNew##send(.
-    //       tokenIdSet,
-    //       initialBuyPrice->Web3Utils.toWeiFromEth,
-    //       setFunctionObj(. amountToSend, currentUser),
-    //     )
-    //   };
-    // };
-
     <Rimble.Box p=4 mb=3>
       <Rimble.HeadingS> "Update Price" </Rimble.HeadingS>
       <Rimble.TextS>
@@ -106,12 +67,10 @@ module ModalContainer = {
 [@react.component]
 let make = (~gorilla: Gorilla.gorilla) => {
   let (isModalOpen, setModalOpen) = React.useState(() => false);
-  // let unlockWeb3IfNotAlready = useUnlockWeb3IfNotAlready();
 
   let onUnlockMetamaskAndOpenModal = event => {
     ReactEvent.Form.preventDefault(event);
 
-    // unlockWeb3IfNotAlready();
     setModalOpen(_ => true);
   };
 
