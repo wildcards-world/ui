@@ -5,6 +5,9 @@ module Hooks = {
   [@bs.module "@drizzle/react-plugin"] [@bs.scope "drizzleReactHooks"]
   external useDrizzle: unit => 'drizzle = "";
 
+  [@bs.module "./jsDrizzleReactHooks.js"]
+  external useGetPriceNew: string => option(string) = "useGetPrice";
+
   // TODO: Need to make this return a `some` since drizzle has a bug where if the contract isn't initialised then it throws an error!
   let useCacheCall = () => useDrizzle()##useCacheCall;
 

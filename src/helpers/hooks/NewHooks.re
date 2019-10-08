@@ -4,8 +4,7 @@ open Web3Utils;
 open Js.Float;
 open Providers.UsdPriceProvider;
 
-let useCurrentPriceWeiNew = (tokenId: string) =>
-  useCacheCall((), "WildcardSteward_v0", "price", tokenId);
+let useCurrentPriceWeiNew = (tokenId: string) => useGetPriceNew(tokenId);
 let useCurrentPriceEthNew = (tokenId: string) =>
   useCurrentPriceWeiNew(tokenId)
   ->flatMap(price => Some(fromWeiToEth(price)));

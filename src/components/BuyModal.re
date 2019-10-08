@@ -11,10 +11,18 @@ module Transaction = {
   let make = (~tokenId: option(string)) => {
     let (initialBuyPrice, setInitialPrice) = React.useState(() => "");
     let (initialDeposit, setInitialDeposit) = React.useState(() => "");
-    let currentPrice = useCurrentPriceWei();
     let currentUser = useCurrentUser();
     let buyObj = useBuyTransaction();
     let buyObjNew = useBuyTransactionNew();
+
+    let currentPrice =
+      (
+        switch (tokenId) {
+        | None => useCurrentPriceWei()
+        | Some(tokenIdSet) => useCurrentPriceWeiNew(tokenIdSet)
+        }
+      )
+      ->mapWithDefault("0", price => price);
 
     let onSubmitBuy = event => {
       ReactEvent.Form.preventDefault(event);
