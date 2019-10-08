@@ -11,36 +11,58 @@ module Transaction = {
   let make = (~tokenId: option(string)) => {
     let (initialBuyPrice, setInitialPrice) = React.useState(() => "");
     let (initialDeposit, setInitialDeposit) = React.useState(() => "");
-    let currentPrice = useCurrentPriceWei();
+    // let currentPrice = useCurrentPriceWei();
+    // let currentPriceNew = useCurrentPriceWeiNew();
     let currentUser = useCurrentUser();
-    let buyObj = useBuyTransaction();
-    let buyObjNew = useBuyTransactionNew();
+    // let buyObj = useBuyTransaction();
+    // let buyObjNew = useBuyTransactionNew();
 
+    let setFunctionObj = [%bs.raw {| (value, from) => ({ value, from }) |}];
+    let (buyFunction, currentPrice) =
+      // TODO: this `##` on the send is clunky, and not so type safe. Find ways to improve it.
+      switch (tokenId) {
+      | None =>
+        let buyFunction = (initialBuyPrice, amountToSend) => {
+          useBuyTransaction()##send(.
+            initialBuyPrice->Web3Utils.toWeiFromEth,
+            setFunctionObj(. amountToSend, currentUser),
+          );
+        };
+        (buyFunction, useCurrentPriceWei());
+      | Some(tokenIdSet) =>
+        let buyFunction = (initialBuyPrice, amountToSend) => {
+          useBuyTransactionNew()##send(.
+            tokenIdSet,
+            initialBuyPrice->Web3Utils.toWeiFromEth,
+            setFunctionObj(. amountToSend, currentUser),
+          );
+        };
+        (buyFunction, useCurrentPriceWeiNew(tokenIdSet));
+      };
     let onSubmitBuy = event => {
       ReactEvent.Form.preventDefault(event);
 
       // TODO: Abstract this better into a utility library of sorts.
-      let setFunctionObj = [%bs.raw {| (value, from) => ({ value, from }) |}];
-      let amountToSend =
+      let amountToSend = currentPrice =>
         BN.new_(initialBuyPrice)
         ->BN.addGet(. BN.new_(currentPrice))
         ->BN.addGet(. BN.new_(Web3Utils.toWei(initialDeposit, "ether")))
         ->BN.toStringGet(.);
-      // TODO: this `##` on the send is clunky, and not so type safe. Find ways to improve it.
 
-      switch (tokenId) {
-      | None =>
-        buyObj##send(.
-          initialBuyPrice->Web3Utils.toWeiFromEth,
-          setFunctionObj(. amountToSend, currentUser),
-        )
-      | Some(tokenIdSet) =>
-        buyObjNew##send(.
-          tokenIdSet,
-          initialBuyPrice->Web3Utils.toWeiFromEth,
-          setFunctionObj(. amountToSend, currentUser),
-        )
-      };
+      buyFunction(initialBuyPrice, amountToSend);
+      // switch (tokenId) {
+      // | None =>
+      //   buyObj##send(.
+      //     initialBuyPrice->Web3Utils.toWeiFromEth,
+      //     setFunctionObj(. amountToSend, currentUser),
+      //   )
+      // | Some(tokenIdSet) =>
+      //   buyObjNew##send(.
+      //     tokenIdSet,
+      //     initialBuyPrice->Web3Utils.toWeiFromEth,
+      //     setFunctionObj(. amountToSend, currentUser),
+      //   )
+      // };
     };
 
     <Rimble.Box p=4 mb=3>
