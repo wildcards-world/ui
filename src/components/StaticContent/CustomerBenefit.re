@@ -7,7 +7,7 @@ module CustomerBenefit = {
       <p className=Styles.explainerLargeText>
         <span className=Styles.boldExplainerText> <S> "Wildcards" </S> </span>
         <S>
-          " lets you support conservation, become a patron of endangered gorillas and even earn a profit from trading your digital crypto collectable."
+          " lets you support conservation, become a patron of endangered animals and even earn a profit since wildcards are always for sale."
         </S>
       </p>
     </Rimble.Box>;

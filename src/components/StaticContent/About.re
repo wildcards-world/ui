@@ -13,12 +13,8 @@ module About = {
           <S> "winners" </S>
         </a>
         <S>
-          ". The focus of the project is providing a platform where funds can be generated for endangered animals. The wildcards platform hosts always for sale "
+          ". The focus of the project is raising funds for endangered animals through combining leading technologies and innovative economic mechanisms into a fun and engaging platform."
         </S>
-        <span> <S> "non-fungible tokens" </S> </span>
-        <S> " representing real " </S>
-        <span> <S> "endangered animals" </S> </span>
-        <S> "." </S>
       </p>
     </Rimble.Box>;
   };

@@ -18,7 +18,7 @@ const Partners = () => <div>
       <Card>        
         <img src={UbisoftLogo} style={styles.logo}/>         
         <Text>
-          Incubator program
+          Entrepreneurs lab
         </Text>
       </Card>
     </Box>

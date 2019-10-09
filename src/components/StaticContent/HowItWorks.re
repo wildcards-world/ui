@@ -22,32 +22,34 @@ module HowItWorks = {
               <hr />
               <Text>
                 <S>
-                  "You can become the patron of a gorilla, Vitalik, by adopting him for his 'for sale' price (for example 1 ETH). Vitalik the gorilla is "
+                  "You can become the patron of Vitalik the gorilla by purchasing him for his current sale price. Vitalik the gorilla is "
                 </S>
                 <strong> <S> "always for sale" </S> </strong>
                 <S>
-                  " which means that when you purchase Vitalik the gorilla, you are required to set the 'for sale' price that someone else can adopt the gorilla from you (for example 5 ETH)."
+                  " since anyone can purchase him at anytime for his current sale price. When someone purchases a wildcard, they are required to immediately set a sale price for that wildcard. This ensures wildcards are "
+                </S>
+                <strong> <S> "always for sale" </S> </strong>
+              </Text>
+              <br />
+              <Text>
+                <S> "As the gaurdian of a wildcard, you pay a " </S>
+                <strong> <S> "Harberger tax" </S> </strong>
+                <S>
+                  " (percentage based fee) on your newly set sale price. Your harberger tax goes towards supporting conservation. "
                 </S>
               </Text>
               <br />
               <Text>
-                <S>
-                  "Through adopting Vitalik the gorilla, you pay an annual "
-                </S>
-                <strong> <S> "Harberger patronage" </S> </strong>
-                <S>
-                  " of 30% on your newly set sale price (5 ETH). Your harberger patronage of 30% goes towards supporting gorilla conservation. "
-                </S>
                 <strong> <S> "Here's where it gets interesting." </S> </strong>
                 <S>
-                  " If someone else decides to purchase Vitalik the gorilla from you, they pay your 'for sale' price (of 5 Eth). You benefit from the upside of 4 ETH on the trade but lose patronage of Vitalik the gorilla. The new owner pays an annual harberger patronage on the 'for sale' price of 30% which goes towards gorilla conservation."
+                  " When someone purchases your wildcard from you, you will receive the sale price you set for that wildcard. Depending on what sale price you set and the harberger tax you have already paid, you may make a profit. The only constant is that the conservation organisation will continually receive funding based on the current selling price of each wildcard."
                 </S>
               </Text>
               <br />
               <Text>
                 <span className=Styles.redDisclaimer>
                   <S>
-                    "For the first gorilla, Vitalik, the 30% Harberger patronage will flow equally between both the conservation fund and the development of the platform. The future gorillas patronage fees will go directly to the relevant conservations' wallets."
+                    "The first wildcard, Vitalik, has a 30% Harberger tax rate where funds generated will flow equally between the conservation entity and the development of the platform. Future wildcards will have different harberger tax rates with funds flowing directly to the relevant conservations entity."
                   </S>
                 </span>
               </Text>

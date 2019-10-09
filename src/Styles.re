@@ -101,7 +101,9 @@ let heading = style([fontSize(em(3.))]);
 let subHeading = style([fontSize(em(1.8)), fontWeight(`num(200))]);
 
 let wildCardGreen = rgb(107, 173, 62);
+let wildCardBlue = rgb(114,199,215);
 let colorGreen = style([color(wildCardGreen)]);
+let colorBlue = style([color(wildCardBlue)]);
 
 let gorillaBack =
   style([
@@ -204,6 +206,7 @@ let floatingSignupBox =
     maxWidth(px(900)),
     margin2(~v=em(0.), ~h=auto),
     backgroundColor(`hex("fff")),
+    // boxShadow10(px(0), px(2), px(4), px(0), `rgba((136,144,195,0.2)), px(0), px(5), px(15), px(0), `rgba((37,44,97,0.15)))
   ]);
 let floatingSignupBoxInner =
   style([
