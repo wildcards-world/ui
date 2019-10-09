@@ -88,6 +88,6 @@ let useChangePriceTransaction = () =>
   (useCacheSend())(. "VitalikSteward", "changePrice");
 let useExitTransaction = () => (useCacheSend())(. "VitalikSteward", "exit");
 let useAddDepositTransaction = () =>
-  (useCacheSend())(. "VitalikSteward", "addDeposit");
+  (useCacheSend())(. "VitalikSteward", "depositWei");
 let useWithdrawTransaction = () =>
   (useCacheSend())(. "VitalikSteward", "withdrawDeposit");

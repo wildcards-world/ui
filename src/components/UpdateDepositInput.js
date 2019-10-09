@@ -1,9 +1,9 @@
 import React from "react"
 import { Heading, Box, Input, Button, Text, Radio } from "rimble-ui"
 
-export default ({ depositChange, updateDepositChange, isAddDeposit, updateIsAddDeposit, forecloseTokenSelected, updateForecloseTokenSelected, onSubmitDepositChange }) =>
+export default ({ depositChange, updateDepositChange, isAddDeposit, updateIsAddDeposit, onSubmitDepositChange }) =>
   <Box p={4} mb={3} >
-    <Heading> "Update Deposit" </Heading>
+    <Heading>Update Deposit</Heading>
     <Text>
       How do you want to change your deposit?
     </Text>

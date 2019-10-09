@@ -37,10 +37,10 @@ let useCurrentPriceUsdNew = (tokenId: string) => {
 
 let useChangePriceTransactionNew = () =>
   (useCacheSend())(. "WildcardSteward_v0", "changePrice");
-let useExitTransactionNew = () =>
-  (useCacheSend())(. "WildcardSteward_v0", "exit");
+// let useExitTransactionNew = () =>
+//   (useCacheSend())(. "WildcardSteward_v0", "exit");
 let useAddDepositTransactionNew = () =>
-  (useCacheSend())(. "WildcardSteward_v0", "addDeposit");
+  (useCacheSend())(. "WildcardSteward_v0", "depositWei");
 let useWithdrawTransactionNew = () =>
   (useCacheSend())(. "WildcardSteward_v0", "withdrawDeposit");
 let useCurrentPatronNew: int => option(string) = {

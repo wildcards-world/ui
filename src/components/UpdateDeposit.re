@@ -11,8 +11,6 @@ module UpdateDepositInput = {
       ~updateDepositChange: ReactEvent.Form.t => unit,
       ~isAddDeposit: bool,
       ~updateIsAddDeposit: bool => unit,
-      ~forecloseTokenSelected: bool,
-      ~updateForecloseTokenSelected: bool => unit,
       ~onSubmitDepositChange: ReactEvent.Form.t => unit
     ) =>
     React.element =
@@ -26,33 +24,64 @@ module Transaction = {
   let make = (~gorilla: Gorilla.gorilla) => {
     let (depositChange, setDepositChange) = React.useState(() => "");
     let (isAddDeposit, setIsAddDeposit) = React.useState(() => true);
-    let (forecloseTokenSelected, setForecloseTokenSelected) =
-      React.useState(() => false);
+    React.useState(() => false);
     let currentUser = useCurrentUser()->mapWithDefault("", a => a);
-    let tokenId = Gorilla.getId(gorilla);
+    // let tokenId = Gorilla.getId(gorilla);
+    let userBalance =
+      DrizzleReact.Hooks.useUserBalance()->mapWithDefault("", a => a);
+    let withdrawTxObj = useWithdrawTransaction();
+    let addDepositTxObj = useAddDepositTransaction();
+    let withdrawTxObjNew = useWithdrawTransactionNew();
+    let addDepositTxObjNew = useAddDepositTransactionNew();
 
     let availableDeposit =
       (
-        switch (tokenId) {
+        switch (gorilla) {
         | None => useDepositAbleToWithdrawWei()
-        | Some(tokenIdSet) => useDepositAbleToWithdrawWeiNew(currentUser)
+        | _ => useDepositAbleToWithdrawWeiNew(currentUser)
         }
       )
       ->mapWithDefault("0", price => price);
 
     let onSubmitDepositChange = event => {
       ReactEvent.Form.preventDefault(event);
-      Js.log("Buy Clicked");
+      let depositChangeWei = Web3Utils.toWei(depositChange, "ether");
+      let setFunctionObj = [%bs.raw {| (value, from) => ({ value, from }) |}];
+      switch (gorilla) {
+      | None =>
+        if (isAddDeposit) {
+          addDepositTxObj##send(.
+            setFunctionObj(. depositChangeWei, currentUser),
+          );
+        } else {
+          withdrawTxObj##send(.
+            depositChangeWei,
+            setFunctionObj(. "0", currentUser),
+          );
+        }
+      | _ =>
+        if (isAddDeposit) {
+          addDepositTxObjNew##send(.
+            setFunctionObj(. depositChangeWei, currentUser),
+          );
+        } else {
+          withdrawTxObjNew##send(.
+            depositChangeWei,
+            setFunctionObj(. "0", currentUser),
+          );
+        }
+      };
     };
     let updateDepositChange = event => {
       ReactEvent.Form.preventDefault(event);
-      Js.log("Set Deposit");
+      InputHelp.onlyUpdateIfPositiveFloat(
+        depositChange,
+        setDepositChange,
+        event,
+      );
     };
-    let updateIsAddDeposit = bool => {
-      Js.log("Set Is ADD Deposit");
-    };
-    let updateForecloseTokenSelected = bool => {
-      Js.log("Set Is ADD Deposit");
+    let updateIsAddDeposit = isDeposit => {
+      setIsAddDeposit(_ => isDeposit);
     };
 
     <UpdateDepositInput
@@ -60,8 +89,6 @@ module Transaction = {
       updateDepositChange
       isAddDeposit
       updateIsAddDeposit
-      forecloseTokenSelected
-      updateForecloseTokenSelected
       onSubmitDepositChange
     />;
   };
