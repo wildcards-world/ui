@@ -4,6 +4,22 @@ open Web3Utils;
 open Js.Float;
 open Providers.UsdPriceProvider;
 
+let useDepositAbleToWithdrawWeiNew = (userAddress: string) =>
+  useGetAvailableDeposit(userAddress);
+let useDepositAbleToWithdrawEthNew = (userAddress: string) =>
+  useDepositAbleToWithdrawWeiNew(userAddress)
+  ->flatMap(price => Some(fromWeiToEth(price)));
+let useDepositAbleToWithdrawUsdNew = (userAddress: string) => {
+  let depositeAbleToWithdrawEth = useDepositAbleToWithdrawEthNew(userAddress);
+  let currentUsdEthPrice = useUsdPrice();
+
+  switch (depositeAbleToWithdrawEth, currentUsdEthPrice) {
+  | (Some(price), Some(conversion)) =>
+    Some(toFixedWithPrecision(fromString(price) *. conversion, 2))
+  | _ => None
+  };
+};
+
 let useCurrentPriceWeiNew = (tokenId: string) => useGetPriceNew(tokenId);
 let useCurrentPriceEthNew = (tokenId: string) =>
   useCurrentPriceWeiNew(tokenId)

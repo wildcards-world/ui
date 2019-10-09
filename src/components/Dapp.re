@@ -59,19 +59,15 @@ module DefaultLook = {
            <h2> {React.string("Simon")} </h2>
            <PriceDisplay tokenId={Some("0")} />
            <UpdatePriceModal gorilla=owned />
-           <Rimble.Button>
-             {React.string("Add/Remove Deposit")}
-           </Rimble.Button>
+           <UpdateDeposit gorilla=owned />
          </React.Fragment>
        | Vitalik =>
          <React.Fragment>
            <img className=Styles.ownedGorillaImg src=gorilla1 />
            <h2> {React.string("Vitalik")} </h2>
-           <UpdatePriceModal gorilla=owned />
            <PriceDisplay tokenId=None />
-           <Rimble.Button>
-             {React.string("Add/Remove Deposit")}
-           </Rimble.Button>
+           <UpdatePriceModal gorilla=owned />
+           <UpdateDeposit gorilla=owned />
          </React.Fragment>
        | Andy =>
          <React.Fragment>
@@ -79,9 +75,7 @@ module DefaultLook = {
            <h2> {React.string("Andy")} </h2>
            <PriceDisplay tokenId={Some("1")} />
            <UpdatePriceModal gorilla=owned />
-           <Rimble.Button>
-             {React.string("Add/Remove Deposit")}
-           </Rimble.Button>
+           <UpdateDeposit gorilla=owned />
          </React.Fragment>
        | None =>
          <Rimble.Flex className=Styles.gorillaBox>
@@ -122,9 +116,6 @@ module DefaultLook = {
              </div>
            </Rimble.Box>
          </Rimble.Flex>
-       //  <h3 className=Styles.colorGreen>
-       //    {React.string("COMING SOON")}
-       //  </h3>
        }}
       <Offline requireSmartContractsLoaded=true> <TotalRaised /> </Offline>
     </div>;

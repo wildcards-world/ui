@@ -6,14 +6,31 @@ open Belt.Option;
 let getToDisplay = (label, value) =>
   React.string(label ++ ": " ++ value->mapWithDefault("loading", a => a));
 
+module BuyInput = {
+  [@bs.module "./BuyModelInput"] [@react.component]
+  external make:
+    (
+      ~onSubmitBuy: ReactEvent.Form.t => unit=?,
+      ~setNewPrice: ReactEvent.Form.t => unit=?,
+      ~newPrice: string=?,
+      ~setDeposit: ReactEvent.Form.t => unit=?,
+      ~deposit: string=?
+    ) =>
+    // ~depositError: option(string)=?
+    React.element =
+    "default";
+};
+
 module Transaction = {
   [@react.component]
   let make = (~tokenId: option(string)) => {
-    let (initialBuyPrice, setInitialPrice) = React.useState(() => "");
-    let (initialDeposit, setInitialDeposit) = React.useState(() => "");
+    let (newPrice, setInitialPrice) = React.useState(() => "");
+    let (deposit, setInitialDeposit) = React.useState(() => "");
     let currentUser = useCurrentUser();
     let buyObj = useBuyTransaction();
     let buyObjNew = useBuyTransactionNew();
+    let userBalance =
+      DrizzleReact.Hooks.useUserBalance()->mapWithDefault("", a => a);
 
     let currentPrice =
       (
@@ -30,55 +47,37 @@ module Transaction = {
       // TODO: Abstract this better into a utility library of sorts.
       let setFunctionObj = [%bs.raw {| (value, from) => ({ value, from }) |}];
       let amountToSend =
-        BN.new_(initialBuyPrice)
+        BN.new_(newPrice)
         ->BN.addGet(. BN.new_(currentPrice))
-        ->BN.addGet(. BN.new_(Web3Utils.toWei(initialDeposit, "ether")))
+        ->BN.addGet(. BN.new_(Web3Utils.toWei(deposit, "ether")))
         ->BN.toStringGet(.);
       // TODO: this `##` on the send is clunky, and not so type safe. Find ways to improve it.
 
       switch (tokenId) {
       | None =>
         buyObj##send(.
-          initialBuyPrice->Web3Utils.toWeiFromEth,
+          newPrice->Web3Utils.toWeiFromEth,
           setFunctionObj(. amountToSend, currentUser),
         )
       | Some(tokenIdSet) =>
         buyObjNew##send(.
           tokenIdSet,
-          initialBuyPrice->Web3Utils.toWeiFromEth,
+          newPrice->Web3Utils.toWeiFromEth,
           setFunctionObj(. amountToSend, currentUser),
         )
       };
     };
 
-    <Rimble.Box p=4 mb=3>
-      <Rimble.HeadingS> "Purchase" </Rimble.HeadingS>
-      <Rimble.TextS>
-        "Enter the desired values for the transaction."
-      </Rimble.TextS>
-      <Rimble.Input
-        _type="number"
-        placeholder="Your Initial Sale Price"
-        onChange={InputHelp.onlyUpdateIfPositiveFloat(
-          initialBuyPrice,
-          setInitialPrice,
-        )}
-        value=initialBuyPrice
-      />
-      <Rimble.Input
-        _type="number"
-        placeholder="Your Initial Deposit"
-        onChange={InputHelp.onlyUpdateIfPositiveFloat(
-          initialDeposit,
-          setInitialDeposit,
-        )}
-        value=initialDeposit
-      />
-      <br />
-      <Rimble.Button onClick=onSubmitBuy>
-        {React.string("Buy")}
-      </Rimble.Button>
-    </Rimble.Box>;
+    let setNewPrice = event => {
+      ReactEvent.Form.preventDefault(event);
+      InputHelp.onlyUpdateIfPositiveFloat(newPrice, setInitialPrice, event);
+    };
+    let setDeposit = event => {
+      ReactEvent.Form.preventDefault(event);
+      InputHelp.onlyUpdateIfPositiveFloat(deposit, setInitialDeposit, event);
+    };
+
+    <BuyInput onSubmitBuy setNewPrice newPrice deposit setDeposit />;
   };
 };
 
