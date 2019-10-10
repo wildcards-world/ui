@@ -15,28 +15,37 @@ const styles = {
 const Partners = () => <div>
   <Flex className={infoBackground} px={50}>
     <Box m={50} width={1 / 3} color="black">
-      <Card>        
-        <img src={UbisoftLogo} style={styles.logo}/>         
-        <Text>
-          Entrepreneurs lab
-        </Text>
+      <Card>
+        <a
+          href="https://www.ubisoft.com/en-us/company/start-ups/station-f.aspx">
+          <img src={UbisoftLogo} style={styles.logo} />
+          <Text>
+            Ubisoft's Entrepreneurs Lab, Season 4, participants
+          </Text>
+        </a>
       </Card>
     </Box>
-    <Box m={50} width={1 / 3} color="black">      
-      <Card>        
-        <img src={EthCapeTownLogo} style={styles.logo}/>         
+    <Box m={50} width={1 / 3} color="black">
+      <Card>
+        <a
+          href="https://ethcapetown.com/">
+          <img src={EthCapeTownLogo} style={styles.logo} />
+        </a>
         <Text>
-          Hackathon winners
+          Overall winners of EthCapeTown hackathon 
         </Text>
       </Card>
     </Box>
     <Box m={50} width={1 / 3} color="black">
-      <Card>        
-        <img src={WildTomorrowFundLogo} style={styles.logo}/>         
+      <Card>
+        <a
+          href="https://wildtomorrowfund.org">
+        <img src={WildTomorrowFundLogo} style={styles.logo} />
+        </a>
         <Text>
-          Wildlife conservation partner
+          Wild Tommorrow Fund, our wildlife conservation partner
         </Text>
-      </Card>      
+      </Card>
     </Box>
   </Flex>
 </div>

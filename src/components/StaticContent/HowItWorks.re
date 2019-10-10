@@ -49,7 +49,7 @@ module HowItWorks = {
               <Text>
                 <span className=Styles.redDisclaimer>
                   <S>
-                    "The first wildcard, Vitalik, has a 30% Harberger tax rate where funds generated will flow equally between the conservation entity and the development of the platform. Future wildcards will have different harberger tax rates with funds flowing directly to the relevant conservations entity."
+                    "The first wildcard, Vitalik, has a 30% Harberger tax rate. Future wildcards will have different harberger tax rates."
                   </S>
                 </span>
               </Text>
