@@ -23,7 +23,7 @@ module CoreConcepts = {
               <br />
               <hr />
               <br />
-              <Heading _as="h3"> <S> "Non-fungible token" </S> </Heading>
+              <Heading _as="h3"> <S> "Non-Fungible Token" </S> </Heading>
               <br />
               <Text>
                 <S> "A " </S>
@@ -33,24 +33,24 @@ module CoreConcepts = {
                 </S>
               </Text>
               <br />
-              <Heading _as="h3"> <S> "Always For Sale" </S> </Heading>
+              <Heading _as="h3"> <S> "Always for Sale" </S> </Heading>
               <br />
               <Text>
                 <S>
                   "When an asset is bought a new selling price is stipulated by the buyer. Assets are "
                 </S>
                 <strong> <S> "always for sale" </S> </strong>
-                <S> " ferever!" </S>
+                <S> ", forever!" </S>
               </Text>
               <br />
-              <Heading _as="h3"> <S> "Harberger Patronage" </S> </Heading>
+              <Heading _as="h3"> <S> "Harberger Tax" </S> </Heading>
               <br />
               <Text>
                 <S>
-                  "When an asset is bought a new selling price is stipulated by the buyer. Assets are "
+                  "The owner of an asset pays a "
                 </S>
-                <strong> <S> "always for sale" </S> </strong>
-                <S> " ferever!" </S>
+                <strong> <S> "harberger tax" </S> </strong>
+                <S> "  which is a percentage of the selling price they stipulate." </S>
               </Text>
             </Card>
           </Box>

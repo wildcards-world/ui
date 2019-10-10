@@ -1,5 +1,5 @@
-let privacy_policy_link = "https://wild-cards.github.io/legal/privacy_policy.html";
-let terms_and_conditions_link = "https://wild-cards.github.io/legal/terms_and_conditions.html";
+let privacy_policy_link = "https://wildcards.world/privacy_policy.html";
+let terms_and_conditions_link = "https://wildcards.world/terms_and_conditions.html";
 
 module Footer = {
   open Components;
