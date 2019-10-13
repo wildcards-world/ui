@@ -35,8 +35,8 @@ const options = {
   contracts: [
     VitalikSteward,
     ERC721Full,
-    WildcardSteward_v0,
-    ERC721Patronage_v0,
+    // WildcardSteward_v0,
+    // ERC721Patronage_v0,
   ],
   syncAlways: true,
   polls: {

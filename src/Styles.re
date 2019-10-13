@@ -36,6 +36,8 @@ let topBody =
   ]);
 
 let header = style([position(relative)]);
+let noMarginBottom = style([marginBottom(px(0))]);
+let noMarginTop = style([marginTop(px(0))]);
 
 let headerLogo = style([media("(max-width: 630px)", [margin(`auto)])]);
 
@@ -101,7 +103,7 @@ let heading = style([fontSize(em(3.))]);
 let subHeading = style([fontSize(em(1.8)), fontWeight(`num(200))]);
 
 let wildCardGreen = rgb(107, 173, 62);
-let wildCardBlue = rgb(114,199,215);
+let wildCardBlue = rgb(114, 199, 215);
 let colorGreen = style([color(wildCardGreen)]);
 let colorBlue = style([color(wildCardBlue)]);
 

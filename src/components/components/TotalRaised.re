@@ -7,14 +7,23 @@ open Components;
 [@react.component]
 let make = () => {
   <Offline requireSmartContractsLoaded=true>
-    <h3>
-      <S>
-        {"Wildcards has currently raised "
-         ++ useTotalPatronageEth()->mapWithDefault("loading", a => a)
-         ++ "ETH("
-         ++ useTotalPatronageUsd()->mapWithDefault("loading", a => a)
-         ++ "USD) for conservation."}
-      </S>
-    </h3>
+    <p>
+      <small>
+        {React.string("Wildcards has currently raised ")}
+        <br />
+        {React.string(
+           useTotalPatronageEth()->mapWithDefault("loading", a => a),
+         )}
+        <strong> {React.string(" ETH ")} </strong>
+        {React.string("(")}
+        {React.string(
+           useTotalPatronageUsd()->mapWithDefault("loading", a => a),
+         )}
+        <strong> {React.string(" USD")} </strong>
+        {React.string(")")}
+        <br />
+        {React.string(" for conservation.")}
+      </small>
+    </p>
   </Offline>;
 };

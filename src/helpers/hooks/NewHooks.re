@@ -36,16 +36,14 @@ let useCurrentPriceUsdNew = (tokenId: string) => {
 };
 
 let useChangePriceTransactionNew = () =>
-  (useCacheSend())(. "WildcardSteward_v0", "changePrice");
+  (useCacheSend())(. "VitalikSteward", "changePrice");
 // let useExitTransactionNew = () =>
-//   (useCacheSend())(. "WildcardSteward_v0", "exit");
+//   (useCacheSend())(. "VitalikSteward", "exit");
 let useAddDepositTransactionNew = () =>
-  (useCacheSend())(. "WildcardSteward_v0", "depositWei");
+  (useCacheSend())(. "VitalikSteward", "depositWei");
 let useWithdrawTransactionNew = () =>
-  (useCacheSend())(. "WildcardSteward_v0", "withdrawDeposit");
+  (useCacheSend())(. "VitalikSteward", "withdrawDeposit");
 let useCurrentPatronNew: int => option(string) = {
-  tokenId =>
-    (useCacheCall())(. "WildcardSteward_v0", "currentPatron", tokenId);
+  tokenId => (useCacheCall())(. "VitalikSteward", "currentPatron", tokenId);
 };
-let useBuyTransactionNew = () =>
-  (useCacheSend())(. "WildcardSteward_v0", "buy");
+let useBuyTransactionNew = () => (useCacheSend())(. "VitalikSteward", "buy");

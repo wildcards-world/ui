@@ -26,7 +26,7 @@ let useTotalPatronageWei = () => {
   };
 };
 
-let useTotalPatronageEth = (~decimals=5, ()) =>
+let useTotalPatronageEth = (~decimals=18, ()) =>
   useTotalPatronageWei()
   ->flatMap(price =>
       Some(toFixedWithPrecision(fromString(fromWeiToEth(price)), decimals))

@@ -9,7 +9,7 @@ let make = (~tokenId: option(string)) => {
   let currentPrice =
     (
       switch (tokenId) {
-      | None => useCurrentPriceUsd()
+      | None => useCurrentPriceEth()
       | Some(tokenIdSet) => useCurrentPriceEthNew(tokenIdSet)
       }
     )
@@ -24,7 +24,7 @@ let make = (~tokenId: option(string)) => {
     ->mapWithDefault("loading", a => a);
 
   <React.Fragment>
-    <p> <S> {currentPrice ++ " ETH"} </S> </p>
-    <p> <S> {"(" ++ currentPriceUsd ++ " USD)"} </S> </p>
+    <p className=Styles.noMarginTop> <S> {currentPrice ++ " ETH"} </S> </p>
+    <p className=Styles.noMarginBottom> <small> <S> {"(" ++ currentPriceUsd ++ " USD)"} </S> </small> </p>
   </React.Fragment>;
 };
