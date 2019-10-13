@@ -83,20 +83,10 @@ let leftTopHeader =
     // padding(px(0)),
   ]);
 
-let rightTopHeader =
-  style([
-    // position(relative),
-    // width(px(550)),
-    // maxWidth(px(550)),
-    // float(`none),
-    // paddingTop(px(65)),
-    // paddingBottom(px(70)),
-    // width(`calc((`sub, `percent(100.), px(600)))),
-    textAlign(center),
-    // boxSizing(`borderBox),
-    // margin(px(0)),
-    // padding(px(0)),
-  ]);
+let rightTopHeader = style([textAlign(center)]);
+
+/// NOTE: the padding of 4% is calculated as 12/3 since there is a right padding of 12% and 3 gorilla images shown.
+let dappImagesCounteractOffset = style([marginLeft(`percent(4.))]);
 
 let heading = style([fontSize(em(3.))]);
 

@@ -44,9 +44,9 @@ module DefaultLook = {
           useCurrentUser()->mapWithDefault("no-current-account", a => a);
 
         if (currentAccount == currentPatronVitalik) {
-          Vitalik// } else if (currentAccount == currentPatronAndy) {
-                 ; //   Simon;
- // } else if (currentAccount == currentPatronSimon) {
+          Vitalik//   Simon;
+                 ; // } else if (currentAccount == currentPatronSimon) {
+ // } else if (currentAccount == currentPatronAndy) {
                  //   Andy;
         } else {
           None;
@@ -129,7 +129,9 @@ module DefaultLook = {
        //    <BuyModal tokenId={Some("1")} />
        //  </Offline>
        }}
-      <Offline requireSmartContractsLoaded=true> <TotalRaised /> </Offline>
+      <Rimble.Box className=Styles.dappImagesCounteractOffset>
+        <Offline requireSmartContractsLoaded=true> <TotalRaised /> </Offline>
+      </Rimble.Box>
     </div>;
   };
 };
