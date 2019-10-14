@@ -1,0 +1,1 @@
+{"version":3,"sources":["global.css"],"names":[],"mappings":"AAAA,kBACE,aACF","file":"global.c931caf5.css","sourceRoot":"../public","sourcesContent":["h1, h2, h3, h4, h5, hr {\n  color: #3F3D4B\n}\n"]}
