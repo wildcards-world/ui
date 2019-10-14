@@ -4,6 +4,11 @@ open Providers.DrizzleProvider;
 open Belt.Option;
 open Components;
 
+module TotalRaisedEtherContup = {
+  [@bs.module "./TotalRaisedEtherCountup.js"] [@react.component]
+  external make: (~totalRaised: string) => React.element = "default";
+};
+
 [@react.component]
 let make = () => {
   <Offline requireSmartContractsLoaded=true>
@@ -11,9 +16,11 @@ let make = () => {
       <small>
         {React.string("Wildcards has currently raised ")}
         <br />
-        {React.string(
-           useTotalPatronageEth()->mapWithDefault("loading", a => a),
-         )}
+        <TotalRaisedEtherContup
+          totalRaised={
+            useTotalPatronageEth()->mapWithDefault("loading", a => a)
+          }
+        />
         <strong> {React.string(" ETH ")} </strong>
         {React.string("(")}
         {React.string(
