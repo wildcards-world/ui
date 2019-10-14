@@ -44,9 +44,9 @@ module DefaultLook = {
           useCurrentUser()->mapWithDefault("no-current-account", a => a);
 
         if (currentAccount == currentPatronVitalik) {
-          Vitalik//   Simon;
-                 ; // } else if (currentAccount == currentPatronSimon) {
- // } else if (currentAccount == currentPatronAndy) {
+          Vitalik// } else if (currentAccount == currentPatronAndy) {
+                 ; //   Simon;
+ // } else if (currentAccount == currentPatronSimon) {
                  //   Andy;
         } else {
           None;

@@ -59,7 +59,7 @@ module Input = {
 
 module Loader = {
   [@bs.module "rimble-ui"] [@react.component]
-  external make: unit => React.element = "Loader";
+  external make: (~className: string=?) => React.element = "Loader";
 };
 
 module Modal = {

@@ -20,7 +20,7 @@ export default () =>
     <iframe
       style={styles.video}
       src="https://www.youtube.com/embed/63qtVVmcpmU"
-      frameborder="0"
+      frameBorder="0"
       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen></iframe>
+      allowFullScreen></iframe>
   </div>

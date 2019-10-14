@@ -4,28 +4,23 @@ open Rimble;
 module NoInjectedWeb3 = {
   [@react.component]
   let make = () =>
-    <h3>
-      {React.string("Install ")}
-      // TODO: if the device is detected to be a mobile, it should offer an alturnative that works well on mobile
-      <a href="https://metamask.io"> {React.string("Metamask")} </a>
-      {React.string(" to BUY Vitalik.")}
-    </h3>;
+    <React.Fragment>
+      <h3> {React.string("Attempting to connect to Ethereum.")} </h3>
+    </React.Fragment>;
+  // <p>
+  //   <a href="https://metamask.io"> {React.string("Metamask")} </a>
+  //   {React.string(" to BUY Vitalik.")}
+  // </p>
 };
 
 module Loader = {
   module SmartContracts = {
     [@react.component]
-    let make = () =>
-      <div>
-        <Loader />
-        <p> {React.string("Web3 loaded")} </p>
-        <p> {React.string("Connecting to SmartContracts...")} </p>
-      </div>;
+    let make = () => <Loader className=Styles.centerItems />;
   };
   module Web3 = {
     [@react.component]
-    let make = () =>
-      <div> <p> {React.string("Connecting to Web3...")} </p> </div>;
+    let make = () => <Loader className=Styles.centerItems />;
   };
 };
 

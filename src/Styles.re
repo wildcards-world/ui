@@ -18,6 +18,9 @@ let app =
 
 let centerText = style([textAlign(center)]);
 
+let centerItems =
+  style([display(`flex), alignItems(center), width(`percent(100.))]);
+
 let topBody =
   style([
     // zIndex(50),
@@ -66,6 +69,18 @@ let navList =
     listStyle(`none, `inside, `none),
   ]);
 
+// let center =
+//   style([
+//     justifyContent(`spaceBetween),
+//     media("(max-width: 831px)", [textAlign(center)]),
+//     // flexWrap(`wrap),
+//     paddingTop(px(120)),
+//     paddingLeft(px(15)),
+//     paddingRight(px(15)),
+//     // paddingBottom(px(120)),
+//     maxWidth(px(1200)),
+//     margin2(~v=em(0.), ~h=auto),
+//   ]);
 let navListItem = style([display(inlineBlock)]);
 
 let navListText =
