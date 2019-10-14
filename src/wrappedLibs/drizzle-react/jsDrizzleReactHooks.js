@@ -2,12 +2,12 @@ import { drizzleReactHooks } from '@drizzle/react-plugin'
 
 export const useGetAvailableDeposit = (userAddress) => {
   const { useCacheCall } = drizzleReactHooks.useDrizzle()
-  return useCacheCall("WildcardSteward_v0", 'depositAbleToWithdraw', userAddress)
+  return useCacheCall("VitalikSteward", 'depositAbleToWithdraw', userAddress)
 }
 
 export const useGetPrice = (tokenId) => {
   const { useCacheCall } = drizzleReactHooks.useDrizzle()
-  return useCacheCall("WildcardSteward_v0", 'price', tokenId)
+  return useCacheCall("VitalikSteward", 'price', tokenId)
 }
 
 export const useUserBalance = (tokenId) => {

@@ -24,6 +24,9 @@ type hot;
 [@bs.send.pipe: hot] external accept: unit => unit = "accept";
 
 switch (Js.Nullable.toOption(parcelModule |> hot)) {
-| Some(h) => h |> accept()
+| Some(h) =>
+  h |> accept();
+  %bs.raw
+  {|window.isDevelopMode = true|};
 | _ => Js.log("Production website.")
 };

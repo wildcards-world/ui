@@ -43,7 +43,7 @@ const Partners = () => <div>
         <img src={WildTomorrowFundLogo} style={styles.logo} />
         </a>
         <Text>
-          Wild Tommorrow Fund, our wildlife conservation partner
+          Wild Tomorrow Fund, our wildlife conservation partner
         </Text>
       </Card>
     </Box>

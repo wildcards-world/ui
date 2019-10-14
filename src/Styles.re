@@ -18,6 +18,12 @@ let app =
 
 let centerText = style([textAlign(center)]);
 
+// Use flex box to center
+let centerItems =
+  style([display(`flex), alignItems(center), width(`percent(100.))]);
+// Use margin to center
+let centerItemsMargin = style([display(block), margin(auto)]);
+
 let topBody =
   style([
     // zIndex(50),
@@ -32,10 +38,12 @@ let topBody =
     paddingRight(px(15)),
     // paddingBottom(px(120)),
     maxWidth(px(1200)),
-    margin2(~v=em(0.), ~h=auto),
+    margin(auto),
   ]);
 
 let header = style([position(relative)]);
+let noMarginBottom = style([marginBottom(px(0))]);
+let noMarginTop = style([marginTop(px(0))]);
 
 let headerLogo = style([media("(max-width: 630px)", [margin(`auto)])]);
 
@@ -64,6 +72,18 @@ let navList =
     listStyle(`none, `inside, `none),
   ]);
 
+// let center =
+//   style([
+//     justifyContent(`spaceBetween),
+//     media("(max-width: 831px)", [textAlign(center)]),
+//     // flexWrap(`wrap),
+//     paddingTop(px(120)),
+//     paddingLeft(px(15)),
+//     paddingRight(px(15)),
+//     // paddingBottom(px(120)),
+//     maxWidth(px(1200)),
+//     margin2(~v=em(0.), ~h=auto),
+//   ]);
 let navListItem = style([display(inlineBlock)]);
 
 let navListText =
@@ -81,27 +101,17 @@ let leftTopHeader =
     // padding(px(0)),
   ]);
 
-let rightTopHeader =
-  style([
-    // position(relative),
-    // width(px(550)),
-    // maxWidth(px(550)),
-    // float(`none),
-    // paddingTop(px(65)),
-    // paddingBottom(px(70)),
-    // width(`calc((`sub, `percent(100.), px(600)))),
-    textAlign(center),
-    // boxSizing(`borderBox),
-    // margin(px(0)),
-    // padding(px(0)),
-  ]);
+let rightTopHeader = style([textAlign(center)]);
+
+/// NOTE: the padding of 4% is calculated as 12/3 since there is a right padding of 12% and 3 gorilla images shown.
+let dappImagesCounteractOffset = style([marginLeft(`percent(4.))]);
 
 let heading = style([fontSize(em(3.))]);
 
 let subHeading = style([fontSize(em(1.8)), fontWeight(`num(200))]);
 
 let wildCardGreen = rgb(107, 173, 62);
-let wildCardBlue = rgb(114,199,215);
+let wildCardBlue = rgb(114, 199, 215);
 let colorGreen = style([color(wildCardGreen)]);
 let colorBlue = style([color(wildCardBlue)]);
 
@@ -124,12 +134,13 @@ let ownedGorillaImg =
     textAlign(center),
     // transform(translateX(`percent(-25.))),
   ]);
-let headerImg =
+
+let headerImg = enlargement =>
   style([
     position(relative),
     zIndex(1),
     maxHeight(px(500)),
-    maxWidth(`percent(150.)),
+    maxWidth(`percent(enlargement)),
     textAlign(center),
     // transform(translateX(`percent(-25.))),
   ]);
@@ -298,10 +309,7 @@ let footerText =
   style([marginTop(auto), marginBottom(auto), color(hex("919797"))]);
 
 let footerLink =
-  style([
-    textDecoration(none),
-    unsafe("color", "inherit") //https://github.com/SentiaAnalytics/bs-css/issues/70
-  ]);
+  style([textDecoration(none), important(color(hex("919797")))]);
 
 let footerSocialButtons =
   style([
@@ -339,3 +347,5 @@ let footerSocailButtonLink =
     // // transition: opacity .2s ease,transform .2s ease,box-shadow .2s ease;
     // transition: opacity .2s ease,transform .2s ease,box-shadow .2s ease,-webkit-transform .2s ease;
   ]);
+
+let infoModal = style([padding(rem(2.)), borderRadius(px(5))]);

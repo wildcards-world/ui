@@ -13,7 +13,10 @@ module Footer = {
           <div className=Styles.footerText>
             <div>
               <S> {js|©|js} </S>
-              <a className=Styles.footerLink href="https://wildcards.world">
+              <a
+                className=Styles.footerLink
+                target="_blank"
+                href="https://wildcards.world">
                 <S> "Wild Cards" </S>
               </a>
               <S> ". All rights reserved." </S>

@@ -4,28 +4,23 @@ open Rimble;
 module NoInjectedWeb3 = {
   [@react.component]
   let make = () =>
-    <h3>
-      {React.string("Install ")}
-      // TODO: if the device is detected to be a mobile, it should offer an alturnative that works well on mobile
-      <a href="https://metamask.io"> {React.string("Metamask")} </a>
-      {React.string(" to BUY Vitalik.")}
-    </h3>;
+    <React.Fragment>
+      <h3> {React.string("Attempting to connect to Ethereum.")} </h3>
+    </React.Fragment>;
+  // <p>
+  //   <a href="https://metamask.io"> {React.string("Metamask")} </a>
+  //   {React.string(" to BUY Vitalik.")}
+  // </p>
 };
 
 module Loader = {
   module SmartContracts = {
     [@react.component]
-    let make = () =>
-      <div>
-        <Loader />
-        <p> {React.string("Web3 loaded")} </p>
-        <p> {React.string("Connecting to SmartContracts...")} </p>
-      </div>;
+    let make = () => <Loader className=Styles.centerItems />;
   };
   module Web3 = {
     [@react.component]
-    let make = () =>
-      <div> <p> {React.string("Connecting to Web3...")} </p> </div>;
+    let make = () => <Loader className=Styles.centerItems />;
   };
 };
 
@@ -43,16 +38,15 @@ let make =
   let vitalikStewardInitialized =
     state##contracts##_VitalikSteward##initialized;
   let erc721FullInitialized = state##contracts##_ERC721Full##initialized;
-  let erc721PatronageInitialized =
-    state##contracts##_ERC721Patronage_v0##initialized;
-  let wildcardStewardInitialized =
-    state##contracts##_WildcardSteward_v0##initialized;
+  // let erc721PatronageInitialized =
+  //   state##contracts##_ERC721Patronage_v0##initialized;
+  // let wildcardStewardInitialized =
+  //   state##contracts##_WildcardSteward_v0##initialized;
 
   let smartContractsLoaded =
-    vitalikStewardInitialized
-    && erc721FullInitialized
-    && erc721PatronageInitialized
-    && wildcardStewardInitialized;
+    vitalikStewardInitialized && erc721FullInitialized;
+  // && erc721PatronageInitialized
+  // && wildcardStewardInitialized;
 
   if (web3Status == "initialized") {
     if (!requireSmartContractsLoaded || smartContractsLoaded) {
