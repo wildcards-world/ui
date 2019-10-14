@@ -26,7 +26,7 @@ module HowItWorks = {
               <br />
               <Rimble.Box width=[|1.|]>
                 <Rimble.Button
-                  className=Styles.centerText
+                  className=Styles.centerItemsMargin
                   onClick={_ => setModalOpen(_ => true)}>
                   <S> "See More" </S>
                 </Rimble.Button>

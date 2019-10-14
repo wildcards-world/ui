@@ -18,8 +18,11 @@ let app =
 
 let centerText = style([textAlign(center)]);
 
+// Use flex box to center
 let centerItems =
   style([display(`flex), alignItems(center), width(`percent(100.))]);
+// Use margin to center
+let centerItemsMargin = style([display(block), margin(auto)]);
 
 let topBody =
   style([
@@ -35,7 +38,7 @@ let topBody =
     paddingRight(px(15)),
     // paddingBottom(px(120)),
     maxWidth(px(1200)),
-    margin2(~v=em(0.), ~h=auto),
+    margin(auto),
   ]);
 
 let header = style([position(relative)]);
