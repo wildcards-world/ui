@@ -8,10 +8,10 @@ module UpdateDepositInput = {
   external make:
     (
       ~depositChange: string,
-      ~updateDepositChange: ReactEvent.Form.t => unit,
+      ~updateDepositChange: ReactEvent.Form.t => (string, bool),
       ~isAddDeposit: bool,
       ~updateIsAddDeposit: bool => unit,
-      ~onSubmitDepositChange: ReactEvent.Form.t => unit
+      ~onSubmitDepositChange: ReactEvent.Form.t => (string, bool)
     ) =>
     React.element =
     "default";
