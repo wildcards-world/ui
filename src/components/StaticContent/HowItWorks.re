@@ -32,7 +32,10 @@ module HowItWorks = {
                 </Rimble.Button>
               </Rimble.Box>
               <Rimble.Modal isOpen=isModalOpen>
-                <Rimble.Card width={Rimble.AnyStr("640px")} p=0>
+                <Rimble.Card
+                  className=Styles.infoModal
+                  width={Rimble.AnyStr("640px")}
+                  p=0>
                   <Rimble.Button.Text
                     icononly=true
                     icon="Close"

@@ -134,12 +134,13 @@ let ownedGorillaImg =
     textAlign(center),
     // transform(translateX(`percent(-25.))),
   ]);
-let headerImg =
+
+let headerImg = enlargement =>
   style([
     position(relative),
     zIndex(1),
     maxHeight(px(500)),
-    maxWidth(`percent(150.)),
+    maxWidth(`percent(enlargement)),
     textAlign(center),
     // transform(translateX(`percent(-25.))),
   ]);
@@ -308,10 +309,7 @@ let footerText =
   style([marginTop(auto), marginBottom(auto), color(hex("919797"))]);
 
 let footerLink =
-  style([
-    textDecoration(none),
-    unsafe("color", "inherit") //https://github.com/SentiaAnalytics/bs-css/issues/70
-  ]);
+  style([textDecoration(none), important(color(hex("919797")))]);
 
 let footerSocialButtons =
   style([
@@ -349,3 +347,5 @@ let footerSocailButtonLink =
     // // transition: opacity .2s ease,transform .2s ease,box-shadow .2s ease;
     // transition: opacity .2s ease,transform .2s ease,box-shadow .2s ease,-webkit-transform .2s ease;
   ]);
+
+let infoModal = style([padding(rem(2.)), borderRadius(px(5))]);

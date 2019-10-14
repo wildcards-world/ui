@@ -85,7 +85,7 @@ module DefaultLook = {
          <Rimble.Flex className=Styles.gorillaBox>
            <Rimble.Box>
              <div className=Styles.gorillaBack>
-               <img className=Styles.headerImg src=gorilla2 />
+               <img className={Styles.headerImg(140.)} src=gorilla2 />
                <div className=Styles.gorillaText>
                  <h2> {React.string("Simon")} </h2>
                  <h3 className=Styles.colorGreen>
@@ -100,7 +100,7 @@ module DefaultLook = {
            //   //  <BuyModal tokenId={Some("0")} />
            //  </Offline>
            <Rimble.Box>
-             <img className=Styles.headerImg src=gorilla1 />
+             <img className={Styles.headerImg(155.)} src=gorilla1 />
              <div>
                <div className=Styles.gorillaText>
                  <h2> {React.string("Vitalik")} </h2>
@@ -113,7 +113,7 @@ module DefaultLook = {
            </Rimble.Box>
            <Rimble.Box>
              <div className=Styles.gorillaBack>
-               <img className=Styles.headerImg src=gorilla3 />
+               <img className={Styles.headerImg(140.)} src=gorilla3 />
                <div className=Styles.gorillaText>
                  <h2> {React.string("Andy")} </h2>
                  <h3 className=Styles.colorGreen>
