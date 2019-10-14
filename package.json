@@ -33,7 +33,8 @@
     "test": "echo 'no tests yet'",
     "re:build": "bsb -make-world -clean-world",
     "re:watch": "bsb -make-world -clean-world -w",
-    "deploy": "npm run build && gh-pages -d dist --remote jasoons"
+    "deploy": "npm run build && gh-pages -d dist --remote main",
+    "cra:deploy": "npm run cra:build && gh-pages -d build --remote main"
   },
   "eslintConfig": {
     "extends": "react-app"
