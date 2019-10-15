@@ -4,7 +4,7 @@ open Providers.DrizzleProvider;
 open Belt.Option;
 open Components;
 
-module TotalRaisedEtherContup = {
+module TotalRaisedEtherCountup = {
   [@bs.module "./TotalRaisedEtherCountup.js"] [@react.component]
   external make: (~totalRaised: string) => React.element = "default";
 };
@@ -16,7 +16,7 @@ let make = () => {
       <small>
         {React.string("Wildcards has currently raised ")}
         <br />
-        <TotalRaisedEtherContup
+        <TotalRaisedEtherCountup
           totalRaised={
             useTotalPatronageEth()->mapWithDefault("loading", a => a)
           }
