@@ -96,7 +96,7 @@ module Transaction = {
     let defaultPriceValue =
       Js.Float.toPrecisionWithPrecision(currentPriceFloat *. 1.5, 2);
     let defaultMonthlyPatronage =
-      Js.Float.toPrecisionWithPrecision(currentPriceFloat *. 0.15, 3);
+      Js.Float.toPrecisionWithPrecision(currentPriceFloat *. 1.5 *. ratio, 3);
     let priceSliderInitialMax =
       Js.Float.toPrecisionWithPrecision(currentPriceFloat *. 3., 3);
     let (defaultDepositTime, defaultDeposit) = {
