@@ -25,6 +25,13 @@ module BuyInput = {
     "default";
 };
 
+module TxTemplate = {
+  [@bs.module "./components/TxTemplate"] [@react.component]
+  // unit =>
+  external make: (~children: React.element, ~txObjects: 'a) => React.element =
+    "default";
+};
+
 let defaultZeroF = maybeFloat => mapWithDefault(maybeFloat, 0., a => a);
 let defaultZeroI = maybeInt => mapWithDefault(maybeInt, -1, a => a);
 let defaultZeroS = maybeString => mapWithDefault(maybeString, "0", a => a);
@@ -69,8 +76,31 @@ module Transaction = {
   [@react.component]
   let make = (~tokenId: option(string)) => {
     let currentUser = useCurrentUser();
-    let buyObj = useBuyTransaction();
-    let buyObjNew = useBuyTransactionNew();
+    let (buyFunc, txObjects) =
+      switch (tokenId) {
+      | None =>
+        let buyObj = useBuyTransaction();
+        (
+          (
+            (newPrice, txObject) =>
+              buyObj##send(. newPrice->Web3Utils.toWeiFromEth, txObject)
+          ),
+          buyObj##_TXObjects,
+        );
+      | Some(tokenIdSet) =>
+        let buyObj = useBuyTransactionNew();
+        (
+          (
+            (newPrice, txObject) =>
+              buyObj##send(.
+                tokenIdSet,
+                newPrice->Web3Utils.toWeiFromEth,
+                txObject,
+              )
+          ),
+          buyObj##_TXObjects,
+        );
+      };
     let userBalance = DrizzleReact.Hooks.useUserBalance()->defaultZeroS;
 
     let (currentPriceWei, numerator, denominator, ratio, ratioInverse) =
@@ -143,21 +173,7 @@ module Transaction = {
         ->BN.addGet(. BN.new_(currentPriceWei))
         ->BN.addGet(. BN.new_(Web3Utils.toWei(deposit, "ether")))
         ->BN.toStringGet(.);
-      // TODO: this `##` on the send is clunky, and not so type safe. Find ways to improve it.
-
-      switch (tokenId) {
-      | None =>
-        buyObj##send(.
-          newPrice->Web3Utils.toWeiFromEth,
-          setFunctionObj(. amountToSend, currentUser),
-        )
-      | Some(tokenIdSet) =>
-        buyObjNew##send(.
-          tokenIdSet,
-          newPrice->Web3Utils.toWeiFromEth,
-          setFunctionObj(. amountToSend, currentUser),
-        )
-      };
+      buyFunc(newPrice, setFunctionObj(. amountToSend, currentUser));
     };
 
     let setNewPrice = value => {
@@ -231,12 +247,12 @@ module Transaction = {
           );
 
         setDepositTimeInSeconds(_ => timeInSeconds);
-        ();
       } else {
         ();
       };
     };
 
+    <TxTemplate txObjects>
     <BuyInput
       onSubmitBuy
       setNewPrice
@@ -249,7 +265,8 @@ module Transaction = {
       priceSliderInitialMax
       maxAvailableDeposit
       gorillaName
-    />;
+      />
+    </TxTemplate>;
   };
 };
 
