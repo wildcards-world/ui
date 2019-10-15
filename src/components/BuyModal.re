@@ -17,7 +17,8 @@ module BuyInput = {
       ~priceSliderInitialMax: string=?,
       ~deposit: string=?,
       ~patronage: string=?,
-      ~updatePatronage: string => unit=?
+      ~updatePatronage: string => unit=?,
+      ~gorillaName: string
     ) =>
     // ~depositError: option(string)=?
     React.element =
@@ -83,6 +84,8 @@ module Transaction = {
           10.,
         )
       };
+
+    let gorillaName = Gorilla.getName(tokenId);
 
     let maxAvailableDeposit =
       BN.new_(userBalance)
@@ -245,6 +248,7 @@ module Transaction = {
       updatePatronage
       priceSliderInitialMax
       maxAvailableDeposit
+      gorillaName
     />;
   };
 };
@@ -280,7 +284,7 @@ let make = (~tokenId: option(string)) => {
        </Web3connect.CustomButton>;
      }}
     <Rimble.Modal isOpen=isModalOpen>
-      <Rimble.Card width={Rimble.AnyStr("420px")} p=0>
+      <Rimble.Card width={Rimble.AnyStr("70%")} p=0>
         <Rimble.Button.Text
           icononly=true
           icon="Close"

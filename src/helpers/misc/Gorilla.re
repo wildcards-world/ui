@@ -12,3 +12,14 @@ let getId: gorilla => option(string) =
     // | Vitalik => "42",
     | _ => None
     };
+
+let getName: option(string) => string = gorillaId =>
+      switch (gorillaId) {
+      | None => "Vitalik"
+      | Some(tokenIdSet) => 
+          switch (tokenIdSet) {
+            | "0" => "Simon"
+            | "1" => "Andy"
+            | _ => "Unknown"
+          }
+      };
