@@ -7,30 +7,34 @@ export default ({
   patronage,
   newPrice,
   deposit,
-  foreclosureTime, // in seconds?
-  patronageMax,
+  depositTimeInSeconds,
   priceSliderInitialMax,
-  newPriceMax,
-  depositMax,
-  foreclosureTimeMax, // in seconds?
+  maxAvailableDeposit,
   setNewPrice,
   updatePatronage,
   setDeposit,
-  setForeclosureTime,
   onSubmitBuy,
 }) => {
   // Debounce callback
-  const [debouncedCallback] = useDebouncedCallback(
+  const [debouncedSetPrice] = useDebouncedCallback(
     // debounced function
     setNewPrice,
+    // delay in ms
+    50
+  );
+  const [debouncedSetDeposit] = useDebouncedCallback(
+    // debounced function
+    setDeposit,
     // delay in ms
     50
   );
   const [priceSlider, setPriceSlider] = useState(newPrice)
   const [priceSliderMax, setPriceSliderMax] = useState(priceSliderInitialMax)
   const [priceSliderEnabled, setPriceSliderEnabled] = useState(true)
-  // This will create about 200 steps by default in the slider.
+  const [depositSlider, setDepositSlider] = useState(newPrice)
+  // This will create about ~200 steps by default in the slider.
   const [priceSliderStep, setPriceSliderStep] = useState((parseFloat(newPrice) / 100).toString())
+
   useEffect(() => {
     setPriceSlider(newPrice);
     let newPriceFloat = parseFloat(newPrice)
@@ -46,6 +50,9 @@ export default ({
       setTimeout(() => setPriceSliderEnabled(true), 500)
     }
   }, [newPrice]);
+  useEffect(() => {
+    setDepositSlider(deposit);
+  }, [deposit]);
 
   const eventToValue = (func) => (event) => func(event.target.value)
 
@@ -66,25 +73,33 @@ export default ({
           if (!priceSliderEnabled) return
           let value = event.target.value
           setPriceSlider(value)
-          debouncedCallback(value)
+          debouncedSetPrice(value)
         }
       }
       min={"0.00000000001"} max={priceSliderMax} step={priceSliderStep} />
     <Input
       type="number"
       placeholder="Monthly Patronage"
-      onChange={updatePatronage}
+      onChange={eventToValue(updatePatronage)}
       value={patronage}
     />
     <Input
       type="number"
       placeholder="Your Initial Deposit"
-      onChange={event => {
-        let value = event.target.value
-        setDeposit(value)
-      }}
+      onChange={eventToValue(setDeposit)}
       value={deposit}
     />
+    <Slider value={depositSlider}
+      onChange={
+        event => {
+          let value = event.target.value
+          setDepositSlider(value)
+          debouncedSetDeposit(value)
+        }
+      }
+      min={"0.0000001"} max={maxAvailableDeposit} step={"0.0000001"} />
+    <p>This deposit will last {depositTimeInSeconds} seconds</p>
+    <p>This deposit will last {depositTimeInSeconds / 2628000} months</p>
     <br />
     <Button onClick={onSubmitBuy}>
       Buy

@@ -1,11 +1,8 @@
 open Hooks;
-open Providers.UsdPriceProvider;
+// open Providers.UsdPriceProvider;
 open Providers.DrizzleProvider;
 open Belt.Option;
 open Belt;
-
-let getToDisplay = (label, value) =>
-  React.string(label ++ ": " ++ value->mapWithDefault("loading", a => a));
 
 module BuyInput = {
   [@bs.module "./BuyModelInput"] [@react.component]
@@ -14,7 +11,9 @@ module BuyInput = {
       ~onSubmitBuy: unit => unit=?,
       ~setNewPrice: string => unit=?,
       ~newPrice: string=?,
+      ~depositTimeInSeconds: int,
       ~setDeposit: string => unit=?,
+      ~maxAvailableDeposit: string,
       ~priceSliderInitialMax: string=?,
       ~deposit: string=?,
       ~patronage: string=?,
@@ -25,40 +24,113 @@ module BuyInput = {
     "default";
 };
 
+let defaultZeroF = maybeFloat => mapWithDefault(maybeFloat, 0., a => a);
+let defaultZeroI = maybeInt => mapWithDefault(maybeInt, -1, a => a);
+let defaultZeroS = maybeString => mapWithDefault(maybeString, "0", a => a);
+
+let calcPricePerSecond = (price, numerator, denominator) => {
+  let priceBn = BN.new_(price);
+  let numeratorBn = BN.new_(numerator);
+  let denominatorBn = BN.new_(denominator);
+  let fullYearSeconds = BN.new_("31536000");
+
+  priceBn
+  ->BN.mulGet(. numeratorBn)
+  ->BN.divGet(. denominatorBn)
+  ->BN.divGet(. fullYearSeconds);
+};
+
+// TODO: Could cached and stored so that all values don't need to be culculated each time!
+// this calculates pricePerSecondEach time.
+let calculateDepositDuration = (deposit, price, numerator, denominator) => {
+  let depositBn = BN.new_(deposit);
+  let pricePerSecond = calcPricePerSecond(price, numerator, denominator);
+
+  depositBn
+  ->BN.divGet(. pricePerSecond)
+  ->BN.toStringGet(.)
+  ->Int.fromString
+  ->defaultZeroI;
+  // Check, 9007199254740992 is the largest integer available to javascript.
+};
+
+let calcRequiredDepositForTime = (time, price, numerator, denominator) => {
+  let timeBn = BN.new_(string_of_int(time));
+  let pricePerSecond = calcPricePerSecond(price, numerator, denominator);
+
+  let requiredDeposit =
+    timeBn->BN.mulGet(. pricePerSecond)->BN.toStringGet(.);
+
+  requiredDeposit->Web3Utils.fromWeiToEth;
+};
+
 module Transaction = {
   [@react.component]
   let make = (~tokenId: option(string)) => {
     let currentUser = useCurrentUser();
     let buyObj = useBuyTransaction();
     let buyObjNew = useBuyTransactionNew();
-    let userBalance =
-      DrizzleReact.Hooks.useUserBalance()->mapWithDefault("0", a => a);
-    // ->Web3Utils.fromWeiToEth;
+    let userBalance = DrizzleReact.Hooks.useUserBalance()->defaultZeroS;
 
-    let currentPriceWei =
-      (
-        switch (tokenId) {
-        | None => useCurrentPriceWei()
-        | Some(tokenIdSet) => useCurrentPriceWeiNew(tokenIdSet)
-        }
-      )
-      ->mapWithDefault("0", price => price);
-    let (defaultPriceValue, defaultMonthlyPatronage, priceSliderInitialMax) = {
-      let currentPriceEth = Web3Utils.fromWeiToEth(currentPriceWei);
-      let currentPriceFloat =
-        Float.fromString(currentPriceEth)->mapWithDefault(0., a => a);
-      (
-        Js.Float.toPrecisionWithPrecision(currentPriceFloat *. 1.5, 2),
-        Js.Float.toPrecisionWithPrecision(currentPriceFloat *. 0.15, 3),
-        Js.Float.toPrecisionWithPrecision(currentPriceFloat *. 3., 3),
-      );
+    let (currentPriceWei, numerator, denominator, ratio, ratioInverse) =
+      switch (tokenId) {
+      | None => (useCurrentPriceWei()->defaultZeroS, "3", "10", 0.025, 40.)
+      | Some(tokenIdSet) => (
+          useCurrentPriceWeiNew(tokenIdSet)->defaultZeroS,
+          "12",
+          "1",
+          0.1,
+          10.,
+        )
+      };
+
+    let maxAvailableDeposit =
+      BN.new_(userBalance)
+      ->BN.subGet(. BN.new_("3000000000000000")) // 0.003 eth as gas
+      ->BN.subGet(. BN.new_(currentPriceWei))
+      ->BN.toStringGet(.)
+      ->Web3Utils.fromWeiToEth;
+
+    let currentPriceEth = Web3Utils.fromWeiToEth(currentPriceWei);
+    let currentPriceFloat = Float.fromString(currentPriceEth)->defaultZeroF;
+    let defaultPriceValue =
+      Js.Float.toPrecisionWithPrecision(currentPriceFloat *. 1.5, 2);
+    let defaultMonthlyPatronage =
+      Js.Float.toPrecisionWithPrecision(currentPriceFloat *. 0.15, 3);
+    let priceSliderInitialMax =
+      Js.Float.toPrecisionWithPrecision(currentPriceFloat *. 3., 3);
+    let (defaultDepositTime, defaultDeposit) = {
+      let defaultPriceWei = defaultPriceValue->Web3Utils.toWeiFromEth;
+      let depositForAYear =
+        calcRequiredDepositForTime(
+          31536000,
+          defaultPriceWei,
+          numerator,
+          denominator,
+        );
+
+      if (depositForAYear->float_of_string
+          < maxAvailableDeposit->float_of_string) {
+        (31536000, depositForAYear);
+      } else {
+        (
+          calculateDepositDuration(
+            maxAvailableDeposit->Web3Utils.toWeiFromEth,
+            defaultPriceWei,
+            numerator,
+            denominator,
+          ),
+          maxAvailableDeposit,
+        );
+      };
     };
 
     let (newPrice, setInitialPrice) = React.useState(() => defaultPriceValue);
     let (patronage, setPatronage) =
       React.useState(() => defaultMonthlyPatronage);
-    let (deposit, setInitialDeposit) = React.useState(() => "");
-    // let (deposit, setInitialDeposit) = React.useState(() => "");
+    let (deposit, setInitialDeposit) = React.useState(() => defaultDeposit);
+    let (depositTimeInSeconds, setDepositTimeInSeconds) =
+      React.useState(() => defaultDepositTime);
 
     let onSubmitBuy = () => {
       // TODO: Abstract this better into a utility library of sorts.
@@ -94,8 +166,17 @@ module Transaction = {
         );
       if (didUpdate) {
         // TODO: Add error checking here, - `float_of_string` is an unsafe operation in Ocaml (it can throw an error)
-        let patronage = Js.Float.toString(float_of_string(value) *. 0.1);
+        let patronage =
+          Js.Float.toString(Float.fromString(value)->defaultZeroF *. ratio);
         setPatronage(_ => patronage);
+        let timeInSeconds =
+          calculateDepositDuration(
+            deposit->Web3Utils.toWeiFromEth,
+            value->Web3Utils.toWeiFromEth,
+            numerator,
+            denominator,
+          );
+        setDepositTimeInSeconds(_ => timeInSeconds);
       } else {
         ();
       };
@@ -110,20 +191,47 @@ module Transaction = {
         );
       if (didUpdate) {
         // TODO: Add error checking here, - `float_of_string` is an unsafe operation in Ocaml (it can throw an error)
-        let price = Js.Float.toString(float_of_string(value) *. 10.);
+        let price =
+          Js.Float.toString(
+            Float.fromString(value)->defaultZeroF *. ratioInverse,
+          );
         setInitialPrice(_ => price);
-        Js.log("updated price " ++ price ++ ", " ++ value);
+
+        let timeInSeconds =
+          calculateDepositDuration(
+            deposit->Web3Utils.toWeiFromEth,
+            price->Web3Utils.toWeiFromEth,
+            numerator,
+            denominator,
+          );
+        setDepositTimeInSeconds(_ => timeInSeconds);
       } else {
         ();
       };
     };
     let setDeposit = value => {
-      InputHelp.onlyUpdateValueIfPositiveFloat(
-        deposit,
-        setInitialDeposit,
-        value,
-      );
-      ();
+      let (value, didUpdate) =
+        InputHelp.onlyUpdateValueIfInRangeFloat(
+          0.,
+          float_of_string(maxAvailableDeposit),
+          deposit,
+          setInitialDeposit,
+          value,
+        );
+      if (didUpdate) {
+        let timeInSeconds =
+          calculateDepositDuration(
+            value->Web3Utils.toWeiFromEth,
+            newPrice->Web3Utils.toWeiFromEth,
+            numerator,
+            denominator,
+          );
+
+        setDepositTimeInSeconds(_ => timeInSeconds);
+        ();
+      } else {
+        ();
+      };
     };
 
     <BuyInput
@@ -131,10 +239,12 @@ module Transaction = {
       setNewPrice
       newPrice
       deposit
+      depositTimeInSeconds
       setDeposit
       patronage
       updatePatronage
       priceSliderInitialMax
+      maxAvailableDeposit
     />;
   };
 };
@@ -165,7 +275,6 @@ let make = (~tokenId: option(string)) => {
          {React.string("Buy")}
        </Rimble.Button>;
      } else {
-       //  onClick=openWeb3ConnectModal
        <Web3connect.CustomButton afterConnect=onUnlockMetamaskAndOpenModal>
          {React.string("Buy")}
        </Web3connect.CustomButton>;

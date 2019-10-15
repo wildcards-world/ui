@@ -25,25 +25,26 @@ let onlyUpdateValueIfPositiveFloat = (currentValue, updateFunction, value) => {
 
 let onlyUpdateValueIfInRangeFloat =
     (min, max, currentValue, updateFunction, value) => {
-  let newValue =
+  let (newValue, didUpdate: bool) =
     // IF the new number isn't a float, don't update.
     switch (Belt.Float.fromString(value)) {
     | Some(valueFloat) =>
       // IF the new number isn't positive, don't update.
       if (valueFloat >= min && valueFloat <= max) {
-        value;
+        (value, true);
       } else {
-        currentValue;
+        (currentValue, false);
       }
     | None =>
       // If the new value is an empty string let it through.
       if (value == "") {
-        value;
+        (value, true);
       } else {
-        currentValue;
+        (currentValue, false);
       }
     };
   updateFunction(_ => newValue);
+  (newValue, didUpdate);
 };
 
 let onlyUpdateIfPositiveFloat = (currentValue, updateFunction, event) => {

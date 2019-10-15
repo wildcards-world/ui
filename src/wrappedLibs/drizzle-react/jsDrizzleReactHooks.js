@@ -12,7 +12,7 @@ export const useGetPrice = (tokenId) => {
 
 export const useUserBalance = () => {
   return drizzleReactHooks.useDrizzleState(state =>
-    (!!state.accounts && state.accounts.length > 0) ?
+    (!!state.accounts && !!state.accounts[0]) ?
       state.accountBalances[state.accounts[0]]
       :
       "0"
