@@ -43,10 +43,10 @@ module Transaction = {
       <Rimble.Input
         _type="number"
         placeholder="New Sale Price"
-        onChange={InputHelp.onlyUpdateIfPositiveFloat(
-          newBuyPrice,
-          setNewBuyPrice,
-        )}
+        onChange={event => {
+          InputHelp.onlyUpdateIfPositiveFloat(newBuyPrice, setNewBuyPrice);
+          ();
+        }}
         value=newBuyPrice
       />
       <br />
