@@ -44,7 +44,13 @@ module Transaction = {
         _type="number"
         placeholder="New Sale Price"
         onChange={event => {
-          InputHelp.onlyUpdateIfPositiveFloat(newBuyPrice, setNewBuyPrice);
+          let value =
+            ReactEvent.Form.target(event)##value->getWithDefault("");
+          InputHelp.onlyUpdateValueIfPositiveFloat(
+            currentPrice,
+            setNewBuyPrice,
+            value,
+          );
           ();
         }}
         value=newBuyPrice
