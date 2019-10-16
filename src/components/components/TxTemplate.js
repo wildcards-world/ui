@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import { Heading, Text, Loader } from 'rimble-ui'
 import { centerItems } from '../../Styles.bs'
+import WildcardsLoader from '../StaticContent/WildcardsLoader'
 
 export default ({ txObjects, children }) => txObjects.length > 0 ?
   <div style={{ margin: "1em" }}>
@@ -32,6 +33,7 @@ export default ({ txObjects, children }) => txObjects.length > 0 ?
         <Fragment>
           <Text>Sending transaction to signer.</Text>
           <Loader className={centerItems} color='green' size='80px' />
+          <WildcardsLoader/>
         </Fragment>
     }
   </div >
