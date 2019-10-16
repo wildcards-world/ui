@@ -3,6 +3,23 @@ open Belt.Option;
 open Web3Utils;
 open Js.Float;
 open Providers.UsdPriceProvider;
+open BN;
+
+let useTotalPatronageWeiNew = () => {
+  let totalCollected1 =
+    useGetTotalCollected("0")->mapWithDefault("0", a => a)->BN.new_;
+  let totalCollected2 =
+    useGetTotalCollected("1")->mapWithDefault("0", a => a)->BN.new_;
+  let patronageOwed1 =
+    useGetPatronageOwed("0")->mapWithDefault("0", a => a)->BN.new_;
+  let patronageOwed2 =
+    useGetPatronageOwed("1")->mapWithDefault("0", a => a)->BN.new_;
+
+  totalCollected1
+  ->addGet(. totalCollected2)
+  ->addGet(. patronageOwed1)
+  ->addGet(. patronageOwed2);
+};
 
 let useDepositAbleToWithdrawWeiNew = (userAddress: string) =>
   useGetAvailableDeposit(userAddress);

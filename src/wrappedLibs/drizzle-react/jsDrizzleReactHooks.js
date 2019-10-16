@@ -9,6 +9,14 @@ export const useGetPrice = (tokenId) => {
   const { useCacheCall } = drizzleReactHooks.useDrizzle()
   return useCacheCall("WildcardSteward_v0", 'price', tokenId)
 }
+export const useGetTotalCollected = (tokenId) => {
+  const { useCacheCall } = drizzleReactHooks.useDrizzle()
+  return useCacheCall("WildcardSteward_v0", 'totalCollected', tokenId)
+}
+export const useGetPatronageOwed = (tokenId) => {
+  const { useCacheCall } = drizzleReactHooks.useDrizzle()
+  return useCacheCall("WildcardSteward_v0", 'patronageOwed', tokenId)
+}
 
 export const useUserBalance = () => {
   return drizzleReactHooks.useDrizzleState(state =>
