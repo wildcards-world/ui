@@ -1,11 +1,9 @@
 import React from 'react'
-import WildcardsLoader from '../../img/loading.gif'
+import WildcardsLoaderGif from '../../img/loading.gif'
 
 const WildcardsLoader = () => {
-    return (
-        <div>
-            <img src={WildcardsLoader} width={'30px'}/> 
-        </div>
+    return (        
+            <img src={WildcardsLoaderGif} width={'30px'}/>
     )
 }
 
