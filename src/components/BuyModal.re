@@ -25,13 +25,6 @@ module BuyInput = {
     "default";
 };
 
-module TxTemplate = {
-  [@bs.module "./components/TxTemplate"] [@react.component]
-  // unit =>
-  external make: (~children: React.element, ~txObjects: 'a) => React.element =
-    "default";
-};
-
 let defaultZeroF = maybeFloat => mapWithDefault(maybeFloat, 0., a => a);
 let defaultZeroI = maybeInt => mapWithDefault(maybeInt, -1, a => a);
 let defaultZeroS = maybeString => mapWithDefault(maybeString, "0", a => a);

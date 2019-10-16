@@ -6,8 +6,7 @@ open Components;
 
 let getTotalPatronage = vitalikPatronage => {
   let totalPatronageOtherTokens = useTotalPatronageWeiNew();
-  Js.log(vitalikPatronage);
-  Js.log(totalPatronageOtherTokens);
+
   let totalPatronageEth =
     BN.new_(vitalikPatronage)
     ->BN.addGet(. totalPatronageOtherTokens)
@@ -15,7 +14,6 @@ let getTotalPatronage = vitalikPatronage => {
     ->Web3Utils.fromWeiToEth;
 
   let currentUsdEthPrice = useUsdPrice()->mapWithDefault(0., a => a);
-  Js.log2(totalPatronageEth, currentUsdEthPrice);
   let totaPatronageUsd =
     Js.Float.toFixedWithPrecision(
       Belt.Float.fromString(totalPatronageEth)->mapWithDefault(0., a => a)

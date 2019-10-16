@@ -1,5 +1,6 @@
-import React, { Fragment, useState } from 'react';
-import { Button, Modal, Card, Box, Heading, Text, Flex, Loader, Input, Radio } from 'rimble-ui'
+import React, { Fragment } from 'react';
+import { Heading, Text, Loader } from 'rimble-ui'
+import { centerItems } from '../../Styles.bs'
 
 export default ({ txObjects, children }) => txObjects.length > 0 ?
   <Fragment>
@@ -11,17 +12,17 @@ export default ({ txObjects, children }) => txObjects.length > 0 ?
             switch (txObjects[0].status) {
               case 'pending':
                 return <Fragment>
-                  <Text>The transaction was is being processed.</Text>
-                  <Loader color='red' size='80px' />
+                  {/* <Text>The transaction was is being processed.</Text> */}
+                  <Loader className={centerItems} color='green' size='80px' />
                 </Fragment>
               case 'error':
                 return <Text>The transaction was failed, please try again.</Text>
               case 'success':
                 return <Fragment>
                   <Text>The transaction was successful.</Text>
-                  <Text>It has been confirmed {txObjects[0].confirmations.length}.</Text>
+                  <Text>It has been confirmed in the blockchain{/*txObjects[0].confirmations.length*/}.</Text>
                   <Text>
-                    <a href={'https://etherscan.io/tx/' + txObjects[0].receipt.txHashtransactionHash} target='_blank'>View transaction on Ethersan</a>
+                    <a href={'https://etherscan.io/tx/' + txObjects[0].receipt.transactionHash} target='_blank'>View transaction on Ethersan</a>
                   </Text>
                 </Fragment>
             }
@@ -30,7 +31,7 @@ export default ({ txObjects, children }) => txObjects.length > 0 ?
         :
         <Fragment>
           <Text>Sending transaction to signer.</Text>
-          <Loader color='red' size='80px' />
+          <Loader className={centerItems} color='green' size='80px' />
         </Fragment>
     }
   </Fragment>

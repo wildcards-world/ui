@@ -24,15 +24,41 @@ module Transaction = {
   let make = (~gorilla: Gorilla.gorilla) => {
     let (depositChange, setDepositChange) = React.useState(() => "");
     let (isAddDeposit, setIsAddDeposit) = React.useState(() => true);
-    React.useState(() => false);
     let currentUser = useCurrentUser()->mapWithDefault("", a => a);
-    // let tokenId = Gorilla.getId(gorilla);
-    let userBalance =
-      DrizzleReact.Hooks.useUserBalance()->mapWithDefault("", a => a);
-    let withdrawTxObj = useWithdrawTransaction();
-    let addDepositTxObj = useAddDepositTransaction();
-    let withdrawTxObjNew = useWithdrawTransactionNew();
-    let addDepositTxObjNew = useAddDepositTransactionNew();
+    let tokenId = Gorilla.getId(gorilla);
+    // let userBalance =
+    //   DrizzleReact.Hooks.useUserBalance()->mapWithDefault("", a => a);
+
+    let (withdrawFunc, txWithdrawObjects) =
+      switch (tokenId) {
+      | None =>
+        let withdrawObj = useWithdrawTransaction();
+        (
+          (
+            (depositChange, txObject) =>
+              withdrawObj##send(. depositChange, txObject)
+          ),
+          withdrawObj##_TXObjects,
+        );
+      | Some(tokenIdSet) =>
+        let withdrawObj = useWithdrawTransactionNew();
+        (
+          (
+            (depositChange, txObject) =>
+              withdrawObj##send(. depositChange, txObject)
+          ),
+          withdrawObj##_TXObjects,
+        );
+      };
+    let (depositFunc, txDepositObjects) =
+      switch (tokenId) {
+      | None =>
+        let depositObj = useAddDepositTransaction();
+        ((txObject => depositObj##send(. txObject)), depositObj##_TXObjects);
+      | Some(tokenIdSet) =>
+        let depositObj = useAddDepositTransactionNew();
+        ((txObject => depositObj##send(. txObject)), depositObj##_TXObjects);
+      };
 
     let availableDeposit =
       (
@@ -47,31 +73,14 @@ module Transaction = {
       ReactEvent.Form.preventDefault(event);
       let depositChangeWei = Web3Utils.toWei(depositChange, "ether");
       let setFunctionObj = [%bs.raw {| (value, from) => ({ value, from }) |}];
-      switch (gorilla) {
-      | None =>
-        if (isAddDeposit) {
-          addDepositTxObj##send(.
-            setFunctionObj(. depositChangeWei, currentUser),
-          );
-        } else {
-          withdrawTxObj##send(.
-            depositChangeWei,
-            setFunctionObj(. "0", currentUser),
-          );
-        }
-      | _ =>
-        if (isAddDeposit) {
-          addDepositTxObjNew##send(.
-            setFunctionObj(. depositChangeWei, currentUser),
-          );
-        } else {
-          withdrawTxObjNew##send(.
-            depositChangeWei,
-            setFunctionObj(. "0", currentUser),
-          );
-        }
+
+      if (isAddDeposit) {
+        depositFunc(setFunctionObj(. depositChangeWei, currentUser));
+      } else {
+        withdrawFunc(depositChangeWei, setFunctionObj(. "0", currentUser));
       };
     };
+
     let updateDepositChange = event => {
       ReactEvent.Form.preventDefault(event);
       InputHelp.onlyUpdateIfPositiveFloat(
@@ -83,14 +92,18 @@ module Transaction = {
     let updateIsAddDeposit = isDeposit => {
       setIsAddDeposit(_ => isDeposit);
     };
-
-    <UpdateDepositInput
-      depositChange
-      updateDepositChange
-      isAddDeposit
-      updateIsAddDeposit
-      onSubmitDepositChange
-    />;
+    // <TxTemplate>
+    <TxTemplate txObjects=txDepositObjects>
+      <TxTemplate txObjects=txWithdrawObjects>
+        <UpdateDepositInput
+          depositChange
+          updateDepositChange
+          isAddDeposit
+          updateIsAddDeposit
+          onSubmitDepositChange
+        />
+      </TxTemplate>
+    </TxTemplate>;
   };
 };
 
@@ -112,9 +125,11 @@ let make = (~gorilla: Gorilla.gorilla) => {
   };
 
   <React.Fragment>
-    <Rimble.Button onClick=onUnlockMetamaskAndOpenModal>
-      {React.string("Add/Remove Deposit")}
-    </Rimble.Button>
+    <Rimble.Box p=2>
+      <Rimble.Button onClick=onUnlockMetamaskAndOpenModal>
+        {React.string("Add/Remove Deposit")}
+      </Rimble.Button>
+    </Rimble.Box>
     <Rimble.Modal isOpen=isModalOpen>
       <Rimble.Card width={Rimble.AnyStr("420px")} p=0>
         <Rimble.Button.Text

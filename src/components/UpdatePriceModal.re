@@ -11,55 +11,73 @@ module Transaction = {
     let (newBuyPrice, setNewBuyPrice) = React.useState(() => "");
     let currentPrice = useCurrentPriceWei();
     let currentUser = useCurrentUser();
-    let changePriceObj = useChangePriceTransaction();
-    let changePriceObjNew = useChangePriceTransactionNew();
+    // let changePriceObj = useChangePriceTransaction();
+    // let changePriceObjNew = useChangePriceTransactionNew();
+    let tokenId = Gorilla.getId(gorilla);
+    // let userBalance =
+    //   DrizzleReact.Hooks.useUserBalance()->mapWithDefault("", a => a);
+
+    let (updatePriceFunc, txObjects) =
+      switch (tokenId) {
+      | None =>
+        let priceChangeObj = useChangePriceTransaction();
+        (
+          (
+            (priceChange, txObject) =>
+              priceChangeObj##send(. priceChange, txObject)
+          ),
+          priceChangeObj##_TXObjects,
+        );
+      | Some(tokenIdSet) =>
+        let priceChangeObj = useChangePriceTransactionNew();
+        (
+          (
+            (priceChange, txObject) =>
+              priceChangeObj##send(. tokenIdSet, priceChange, txObject)
+          ),
+          priceChangeObj##_TXObjects,
+        );
+      };
 
     let onSubmitBuy = event => {
       ReactEvent.Form.preventDefault(event);
 
       // TODO: Abstract this better into a utility library of sorts.
       let setFunctionObj = [%bs.raw {| (from) => ({ from }) |}];
-      // TODO: this `##` on the send is clunky, and not so type safe. Find ways to improve it.
-      switch (Gorilla.getId(gorilla)) {
-      | None =>
-        changePriceObj##send(.
-          newBuyPrice->Web3Utils.toWeiFromEth,
-          setFunctionObj(currentUser),
-        )
-      | Some(tokenIdSet) =>
-        changePriceObjNew##send(.
-          tokenIdSet,
-          newBuyPrice->Web3Utils.toWeiFromEth,
-          setFunctionObj(currentUser),
-        )
-      };
+
+      updatePriceFunc(
+        newBuyPrice->Web3Utils.toWeiFromEth,
+        setFunctionObj(. currentUser),
+      );
     };
 
-    <Rimble.Box p=4 mb=3>
-      <Rimble.HeadingS> "Update Price" </Rimble.HeadingS>
-      <Rimble.TextS>
-        "Enter the desired values for the transaction."
-      </Rimble.TextS>
-      <Rimble.Input
-        _type="number"
-        placeholder="New Sale Price"
-        onChange={event => {
-          let value =
-            ReactEvent.Form.target(event)##value->getWithDefault("");
-          InputHelp.onlyUpdateValueIfPositiveFloat(
-            currentPrice,
-            setNewBuyPrice,
-            value,
-          );
-          ();
-        }}
-        value=newBuyPrice
-      />
-      <br />
-      <Rimble.Button onClick=onSubmitBuy>
-        {React.string("Update")}
-      </Rimble.Button>
-    </Rimble.Box>;
+    <TxTemplate txObjects>
+      <Rimble.Box p=4 mb=3>
+        <Rimble.HeadingS> "Update Price" </Rimble.HeadingS>
+        <Rimble.TextS>
+          "Enter the desired values for the transaction."
+        </Rimble.TextS>
+        <Rimble.Input
+          _type="number"
+          placeholder="New Sale Price"
+          onChange={event => {
+            let value =
+              ReactEvent.Form.target(event)##value->getWithDefault("");
+            InputHelp.onlyUpdateValueIfPositiveFloat(
+              currentPrice,
+              setNewBuyPrice,
+              value,
+            );
+            ();
+          }}
+          value=newBuyPrice
+        />
+        <br />
+        <Rimble.Button onClick=onSubmitBuy>
+          {React.string("Update")}
+        </Rimble.Button>
+      </Rimble.Box>
+    </TxTemplate>;
   };
 };
 
