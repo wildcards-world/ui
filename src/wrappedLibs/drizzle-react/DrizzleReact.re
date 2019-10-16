@@ -10,6 +10,12 @@ module Hooks = {
 
   [@bs.module "./jsDrizzleReactHooks.js"]
   external useUserBalance: unit => option(string) = "useUserBalance";
+  [@bs.module "./jsDrizzleReactHooks.js"]
+  external useGetTotalCollected: string => option(string) =
+    "useGetTotalCollected";
+  [@bs.module "./jsDrizzleReactHooks.js"]
+  external useGetPatronageOwed: string => option(string) =
+    "useGetPatronageOwed";
 
   [@bs.module "./jsDrizzleReactHooks.js"]
   external useGetAvailableDeposit: string => option(string) =

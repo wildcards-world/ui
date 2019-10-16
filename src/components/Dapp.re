@@ -59,6 +59,7 @@ module DefaultLook = {
            <h2> {React.string("Simon")} </h2>
            <PriceDisplay tokenId={Some("0")} />
            <UpdatePriceModal gorilla=owned />
+           <br />
            <UpdateDeposit gorilla=owned />
          </React.Fragment>
        | Vitalik =>
@@ -67,6 +68,7 @@ module DefaultLook = {
            <h2> {React.string("Vitalik")} </h2>
            <PriceDisplay tokenId=None />
            <UpdatePriceModal gorilla=owned />
+           <br />
            <UpdateDeposit gorilla=owned />
          </React.Fragment>
        | Andy =>
@@ -75,6 +77,7 @@ module DefaultLook = {
            <h2> {React.string("Andy")} </h2>
            <PriceDisplay tokenId={Some("1")} />
            <UpdatePriceModal gorilla=owned />
+           <br />
            <UpdateDeposit gorilla=owned />
          </React.Fragment>
        | None =>

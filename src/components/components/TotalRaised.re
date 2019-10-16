@@ -4,21 +4,48 @@ open Providers.DrizzleProvider;
 open Belt.Option;
 open Components;
 
+let getTotalPatronage = vitalikPatronage => {
+  let totalPatronageOtherTokens = useTotalPatronageWeiNew();
+
+  let totalPatronageEth =
+    BN.new_(vitalikPatronage)
+    ->BN.addGet(. totalPatronageOtherTokens)
+    ->BN.toStringGet(.)
+    ->Web3Utils.fromWeiToEth;
+
+  let currentUsdEthPrice = useUsdPrice()->mapWithDefault(0., a => a);
+  let totaPatronageUsd =
+    Js.Float.toFixedWithPrecision(
+      Belt.Float.fromString(totalPatronageEth)->mapWithDefault(0., a => a)
+      *. currentUsdEthPrice,
+      2,
+    );
+
+  (totalPatronageEth, totaPatronageUsd);
+};
+
 [@react.component]
 let make = () => {
+  let totalPatronageVitalik = useTotalPatronageWei();
+
+  let (allTokensTotalRaisedEth, allTokensTotalRaisedUsd) = {
+    switch (totalPatronageVitalik) {
+    | Some(vitalikPatronage) => getTotalPatronage(vitalikPatronage)
+    | None =>
+      getTotalPatronage("0");
+      ("Loading", "Loading");
+    };
+  };
+
   <Offline requireSmartContractsLoaded=true>
     <p>
       <small>
         {React.string("Wildcards has currently raised ")}
         <br />
-        {React.string(
-           useTotalPatronageEth()->mapWithDefault("loading", a => a),
-         )}
+        {React.string(allTokensTotalRaisedEth)}
         <strong> {React.string(" ETH ")} </strong>
         {React.string("(")}
-        {React.string(
-           useTotalPatronageUsd()->mapWithDefault("loading", a => a),
-         )}
+        {React.string(allTokensTotalRaisedUsd)}
         <strong> {React.string(" USD")} </strong>
         {React.string(")")}
         <br />
