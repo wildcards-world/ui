@@ -116,13 +116,14 @@ let colorGreen = style([color(wildCardGreen)]);
 let colorBlue = style([color(wildCardBlue)]);
 
 let gorillaBack =
-  style([
-    filter([`grayscale(90.)]),
-    hover([
-      filter([`grayscale(0.)]),
-      transition(~duration=1000, ~delay=0, ~timingFunction=ease, "all"),
-    ]),
-  ]);
+  style(
+    []// filter([`grayscale(90.)]),
+      // hover([
+      //   filter([`grayscale(0.)]),
+      //   transition(~duration=1000, ~delay=0, ~timingFunction=ease, "all"),
+      ,
+      // ]),
+  );
 
 let gorillaBox = style([marginRight(`percent(12.))]);
 
