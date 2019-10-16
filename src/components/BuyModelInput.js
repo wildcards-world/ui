@@ -1,8 +1,17 @@
 import React, { useState, useEffect, Fragment } from "react"
-import { Heading, Box, Input, Button, Text, Slider, Flex } from "rimble-ui"
+import { Heading, Box, Input, Button, Text, Slider, Flex, Tooltip, Icon } from "rimble-ui"
 
 import { useDebouncedCallback } from 'use-debounce';
 
+const inputStyle = {
+  width: '100%'
+}
+const rightAlignedText = {
+  textAlign: 'right'
+}
+const infoTooltipStyle = {
+  display: 'inline-block'
+}
 export default ({
   patronage,
   newPrice,
@@ -14,7 +23,8 @@ export default ({
   updatePatronage,
   setDeposit,
   onSubmitBuy,
-  gorillaName
+  gorillaName,
+  depositForAYear
 }) => {
   const [debouncedSetDeposit] = useDebouncedCallback(
     // debounced function
@@ -31,17 +41,24 @@ export default ({
 
   const eventToValue = (func) => (event) => func(event.target.value)
 
-  return <Fragment><Flex>
-    <Box p={2} mb={2} >
-      <Heading>Purchase {gorillaName}</Heading>
-    </Box>
-  </Flex >
+  return <Fragment>
+    <Flex>
+      <Box p={2} mb={2} >
+        <Heading>Purchase {gorillaName}</Heading>
+      </Box>
+    </Flex >
     <Flex >
       <Box p={2} mb={2} width={[1, 0.5]}>
-        <Text>
-          This will be {gorillaName}'s new for sale price:
-      </Text>
+        <Tooltip message="This is the monthly contribution that will go towards conservation of endangered animals. This will be deducted continuously from your deposit" placement="top">
+          <Text>
+            Set your monthly contribution:
+          <div style={infoTooltipStyle}>
+              <Icon color="green" name="Info" size="16" />
+            </div>
+          </Text>
+        </Tooltip>
         <Input
+          style={inputStyle}
           type="number"
           placeholder="Monthly Patronage"
           onChange={eventToValue(updatePatronage)}
@@ -49,10 +66,16 @@ export default ({
         />
       </Box>
       <Box p={2} mb={2} width={[1, 0.5]}>
-        <Text>
-          Set your monthly contribution:
-      </Text>
+        <Tooltip message={`This is the amount of money you will receive if someone purchases ${gorillaName} from you.`} placement="top">
+          <Text style={rightAlignedText}>
+            This will be {gorillaName}'s new for sale price:
+          <div style={infoTooltipStyle}>
+              <Icon color="green" name="Info" size="16" />
+            </div>
+          </Text>
+        </Tooltip>
         <Input
+          style={inputStyle}
           type="number"
           placeholder="Your Initial Sale Price"
           onChange={eventToValue(setNewPrice)}
@@ -60,19 +83,31 @@ export default ({
         />
       </Box>
     </Flex >
-    <Flex >
-      <Box p={2} mb={2} width={[1, 0.5]}>
+    <Flex layout="verticalAlign">
+      <Box p={2} mb={2} width={[1, 0.3]}>
+
+        <Tooltip message="The deposit is the funds that will be used to cover the Harbeger tax." placement="top">
+          <Text>
+            Set your deposit:
+          <div style={infoTooltipStyle}>
+              <Icon color="green" name="Info" size="16" />
+            </div>
+          </Text>
+        </Tooltip>
         <Input
           type="number"
+          style={inputStyle}
           placeholder="Your Initial Deposit"
           onChange={eventToValue(setDeposit)}
           value={deposit}
         />
       </Box>
-    </Flex >
-    <Flex >
-      <Box p={2} mb={2} width={[1, 0.5]}>
+      <Box p={2} mb={2} width={[1, 0.7]}>
+        <Text style={rightAlignedText}>
+          Use can also use this slider to adjust your deposit:
+          </Text>
         <Slider value={depositSlider}
+          style={inputStyle}
           onChange={
             event => {
               let value = event.target.value
@@ -80,14 +115,16 @@ export default ({
               debouncedSetDeposit(value)
             }
           }
-          min={"0.0000001"} max={maxAvailableDeposit} step={"0.0000001"} />
-        <p>This deposit will last {depositTimeInSeconds} seconds</p>
-        <p>This deposit will last {depositTimeInSeconds / 2628000} months</p>
+          min={"0.0001"} max={maxAvailableDeposit} step={"0.0000001"} />
         <br />
+      </Box>
+    </Flex>
+    <Flex>
+      <Box p={2} mb={2} width={[1, 0.7]}>
         <Button onClick={onSubmitBuy}>
           Buy
-    </Button>
+        </Button>
       </Box>
     </Flex >
-  </Fragment>
+  </Fragment >
 }; 
