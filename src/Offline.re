@@ -38,15 +38,16 @@ let make =
   let vitalikStewardInitialized =
     state##contracts##_VitalikSteward##initialized;
   let erc721FullInitialized = state##contracts##_ERC721Full##initialized;
-  // let erc721PatronageInitialized =
-  //   state##contracts##_ERC721Patronage_v0##initialized;
-  // let wildcardStewardInitialized =
-  //   state##contracts##_WildcardSteward_v0##initialized;
+  let erc721PatronageInitialized =
+    state##contracts##_ERC721Patronage_v0##initialized;
+  let wildcardStewardInitialized =
+    state##contracts##_WildcardSteward_v0##initialized;
 
   let smartContractsLoaded =
-    vitalikStewardInitialized && erc721FullInitialized;
-  // && erc721PatronageInitialized
-  // && wildcardStewardInitialized;
+    vitalikStewardInitialized
+    && erc721FullInitialized
+    && erc721PatronageInitialized
+    && wildcardStewardInitialized;
 
   if (web3Status == "initialized") {
     if (!requireSmartContractsLoaded || smartContractsLoaded) {

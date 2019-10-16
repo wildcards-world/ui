@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react"
-import { Heading, Box, Input, Button, Text, Slider } from "rimble-ui"
+import React, { useState, useEffect, Fragment } from "react"
+import { Heading, Box, Input, Button, Text, Slider, Flex } from "rimble-ui"
 
 import { useDebouncedCallback } from 'use-debounce';
 
@@ -14,95 +14,80 @@ export default ({
   updatePatronage,
   setDeposit,
   onSubmitBuy,
+  gorillaName
 }) => {
-  // Debounce callback
-  const [debouncedSetPrice] = useDebouncedCallback(
-    // debounced function
-    setNewPrice,
-    // delay in ms
-    50
-  );
   const [debouncedSetDeposit] = useDebouncedCallback(
     // debounced function
     setDeposit,
     // delay in ms
     50
   );
-  const [priceSlider, setPriceSlider] = useState(newPrice)
-  const [priceSliderMax, setPriceSliderMax] = useState(priceSliderInitialMax)
-  const [priceSliderEnabled, setPriceSliderEnabled] = useState(true)
+
   const [depositSlider, setDepositSlider] = useState(newPrice)
-  // This will create about ~200 steps by default in the slider.
-  const [priceSliderStep, setPriceSliderStep] = useState((parseFloat(newPrice) / 100).toString())
 
-  useEffect(() => {
-    setPriceSlider(newPrice);
-    let newPriceFloat = parseFloat(newPrice)
-    let priceSliderMaxFloat = parseFloat(priceSliderMax)
-    let sliderRatio = newPriceFloat / priceSliderMaxFloat
-    // If the slider is in the top 1% OR the bottom 5% make the slider longer or shorter respectively.
-    if (sliderRatio > 0.99 || sliderRatio < 0.05) {
-      setPriceSliderMax((newPriceFloat * 2).toString())
-      setPriceSliderStep(newPriceFloat / 100)
-
-      // Disable the price slider for half a second after the scaling is adjusted to prevent weird jitters
-      setPriceSliderEnabled(false)
-      setTimeout(() => setPriceSliderEnabled(true), 500)
-    }
-  }, [newPrice]);
   useEffect(() => {
     setDepositSlider(deposit);
   }, [deposit]);
 
   const eventToValue = (func) => (event) => func(event.target.value)
 
-  return <Box p={4} mb={3} >
-    <Heading>Purchase</Heading>
-    <Text>
-      Enter the desired values for the transaction.
+  return <Fragment><Flex>
+    <Box p={2} mb={2} >
+      <Heading>Purchase {gorillaName}</Heading>
+    </Box>
+    </Flex >
+    <Flex >
+    <Box p={2} mb={2} width={[1, 0.5]}>
+      <Text>
+        Set your monthly contribution:
       </Text>
-    <Input
-      type="number"
-      placeholder="Your Initial Sale Price"
-      onChange={eventToValue(setNewPrice)}
-      value={newPrice}
-    />
-    <Slider value={priceSlider}
-      onChange={
-        event => {
-          if (!priceSliderEnabled) return
-          let value = event.target.value
-          setPriceSlider(value)
-          debouncedSetPrice(value)
+      <Input
+        type="number"
+        placeholder="Your Initial Sale Price"
+        onChange={eventToValue(setNewPrice)}
+        value={newPrice}
+      />
+    </Box>
+    <Box p={2} mb={2} width={[1, 0.5]}>
+      <Text>
+        This will be {gorillaName}'s new for sale price:
+      </Text>
+      <Input
+        type="number"
+        placeholder="Monthly Patronage"
+        onChange={eventToValue(updatePatronage)}
+        value={patronage}
+      />
+    </Box>
+    </Flex >
+    <Flex >
+    <Box p={2} mb={2} width={[1, 0.5]}>
+      <Input
+        type="number"
+        placeholder="Your Initial Deposit"
+        onChange={eventToValue(setDeposit)}
+        value={deposit}
+      />
+    </Box>
+          </Flex >
+          <Flex >
+    <Box p={2} mb={2} width={[1, 0.5]}>
+      <Slider value={depositSlider}
+        onChange={
+          event => {
+            let value = event.target.value
+            setDepositSlider(value)
+            debouncedSetDeposit(value)
+          }
         }
-      }
-      min={"0.00000000001"} max={priceSliderMax} step={priceSliderStep} />
-    <Input
-      type="number"
-      placeholder="Monthly Patronage"
-      onChange={eventToValue(updatePatronage)}
-      value={patronage}
-    />
-    <Input
-      type="number"
-      placeholder="Your Initial Deposit"
-      onChange={eventToValue(setDeposit)}
-      value={deposit}
-    />
-    <Slider value={depositSlider}
-      onChange={
-        event => {
-          let value = event.target.value
-          setDepositSlider(value)
-          debouncedSetDeposit(value)
-        }
-      }
-      min={"0.0000001"} max={maxAvailableDeposit} step={"0.0000001"} />
-    <p>This deposit will last {depositTimeInSeconds} seconds</p>
-    <p>This deposit will last {depositTimeInSeconds / 2628000} months</p>
-    <br />
-    <Button onClick={onSubmitBuy}>
-      Buy
+        min={"0.0000001"} max={maxAvailableDeposit} step={"0.0000001"} />
+      <p>This deposit will last {depositTimeInSeconds} seconds</p>
+      <p>This deposit will last {depositTimeInSeconds / 2628000} months</p>
+      <br />
+      <Button onClick={onSubmitBuy}>
+        Buy
     </Button>
-  </Box >
+    </Box>
+  </Flex >
+  </Fragment>
 }; 

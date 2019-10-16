@@ -9,11 +9,6 @@ let gorilla1 = [%bs.raw {|require('../img/gorillas/gorilla1.png')|}];
 let gorilla2 = [%bs.raw {|require('../img/gorillas/gorilla2.png')|}];
 let gorilla3 = [%bs.raw {|require('../img/gorillas/gorilla3.png')|}];
 
-module Countdown = {
-  [@bs.module "./components/Countdown.js"] [@react.component]
-  external make: unit => React.element = "default";
-};
-
 module DefaultLook = {
   open Gorilla;
 
@@ -36,18 +31,19 @@ module DefaultLook = {
         // NOTE/TODO: this doesn't take into account token ownership
         let currentPatronVitalik =
           useCurrentPatron()->mapWithDefault("no-patron-defined", a => a);
-        // let currentPatronSimon =
-        //   useCurrentPatronNew(0)->mapWithDefault("no-patron-defined", a => a);
-        // let currentPatronAndy =
-        //   useCurrentPatronNew(1)->mapWithDefault("no-patron-defined", a => a);
+        let currentPatronSimon =
+          useCurrentPatronNew(0)->mapWithDefault("no-patron-defined", a => a);
+        let currentPatronAndy =
+          useCurrentPatronNew(1)->mapWithDefault("no-patron-defined", a => a);
         let currentAccount =
           useCurrentUser()->mapWithDefault("no-current-account", a => a);
 
         if (currentAccount == currentPatronVitalik) {
-          Vitalik// } else if (currentAccount == currentPatronAndy) {
-                 ; //   Simon;
- // } else if (currentAccount == currentPatronSimon) {
-                 //   Andy;
+          Vitalik;
+        } else if (currentAccount == currentPatronSimon) {
+          Simon;
+        } else if (currentAccount == currentPatronAndy) {
+          Andy;
         } else {
           None;
         };
@@ -88,17 +84,13 @@ module DefaultLook = {
                <img className={Styles.headerImg(140.)} src=gorilla2 />
                <div className=Styles.gorillaText>
                  <h2> {React.string("Simon")} </h2>
-                 <h3 className=Styles.colorGreen>
-                   {React.string("COMING IN")}
-                 </h3>
-                 <Countdown />
+                 <Offline requireSmartContractsLoaded=true>
+                   <PriceDisplay tokenId={Some("0")} />
+                   <BuyModal tokenId={Some("0")} />
+                 </Offline>
                </div>
              </div>
            </Rimble.Box>
-           //  <Offline requireSmartContractsLoaded=true>
-           //   //  <PriceDisplay tokenId={Some("0")} />
-           //   //  <BuyModal tokenId={Some("0")} />
-           //  </Offline>
            <Rimble.Box>
              <img className={Styles.headerImg(155.)} src=gorilla1 />
              <div>
@@ -116,18 +108,14 @@ module DefaultLook = {
                <img className={Styles.headerImg(140.)} src=gorilla3 />
                <div className=Styles.gorillaText>
                  <h2> {React.string("Andy")} </h2>
-                 <h3 className=Styles.colorGreen>
-                   {React.string("COMING IN")}
-                 </h3>
-                 <Countdown />
+                 <Offline requireSmartContractsLoaded=true>
+                   <PriceDisplay tokenId={Some("1")} />
+                   <BuyModal tokenId={Some("1")} />
+                 </Offline>
                </div>
              </div>
            </Rimble.Box>
          </Rimble.Flex>
-       //  <Offline requireSmartContractsLoaded=true>
-       //    <PriceDisplay tokenId={Some("1")} />
-       //    <BuyModal tokenId={Some("1")} />
-       //  </Offline>
        }}
       <Rimble.Box className=Styles.dappImagesCounteractOffset>
         <Offline requireSmartContractsLoaded=true> <TotalRaised /> </Offline>

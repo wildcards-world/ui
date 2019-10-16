@@ -17,7 +17,8 @@ module BuyInput = {
       ~priceSliderInitialMax: string=?,
       ~deposit: string=?,
       ~patronage: string=?,
-      ~updatePatronage: string => unit=?
+      ~updatePatronage: string => unit=?,
+      ~gorillaName: string
     ) =>
     // ~depositError: option(string)=?
     React.element =
@@ -84,6 +85,8 @@ module Transaction = {
         )
       };
 
+    let gorillaName = Gorilla.getName(tokenId);
+
     let maxAvailableDeposit =
       BN.new_(userBalance)
       ->BN.subGet(. BN.new_("3000000000000000")) // 0.003 eth as gas
@@ -96,7 +99,7 @@ module Transaction = {
     let defaultPriceValue =
       Js.Float.toPrecisionWithPrecision(currentPriceFloat *. 1.5, 2);
     let defaultMonthlyPatronage =
-      Js.Float.toPrecisionWithPrecision(currentPriceFloat *. 0.15, 3);
+      Js.Float.toPrecisionWithPrecision(currentPriceFloat *. 1.5 *. ratio, 3);
     let priceSliderInitialMax =
       Js.Float.toPrecisionWithPrecision(currentPriceFloat *. 3., 3);
     let (defaultDepositTime, defaultDeposit) = {
@@ -245,6 +248,7 @@ module Transaction = {
       updatePatronage
       priceSliderInitialMax
       maxAvailableDeposit
+      gorillaName
     />;
   };
 };
@@ -280,7 +284,7 @@ let make = (~tokenId: option(string)) => {
        </Web3connect.CustomButton>;
      }}
     <Rimble.Modal isOpen=isModalOpen>
-      <Rimble.Card width={Rimble.AnyStr("420px")} p=0>
+      <Rimble.Card width={Rimble.AnyStr("70%")} p=0>
         <Rimble.Button.Text
           icononly=true
           icon="Close"
