@@ -119,12 +119,23 @@ module Transaction = {
 
     let currentPriceEth = Web3Utils.fromWeiToEth(currentPriceWei);
     let currentPriceFloat = Float.fromString(currentPriceEth)->defaultZeroF;
+    let getMax = [%bs.raw {| (first, second) => Math.max(first,second) |}];
+    let currentPriceFloatWithMinimum = getMax(. currentPriceFloat, 0.005);
     let defaultPriceValue =
-      Js.Float.toPrecisionWithPrecision(currentPriceFloat *. 1.5, 2);
+      Js.Float.toPrecisionWithPrecision(
+        currentPriceFloatWithMinimum *. 1.5,
+        2,
+      );
     let defaultMonthlyPatronage =
-      Js.Float.toPrecisionWithPrecision(currentPriceFloat *. 1.5 *. ratio, 3);
+      Js.Float.toPrecisionWithPrecision(
+        currentPriceFloatWithMinimum *. 1.5 *. ratio,
+        3,
+      );
     let priceSliderInitialMax =
-      Js.Float.toPrecisionWithPrecision(currentPriceFloat *. 3., 3);
+      Js.Float.toPrecisionWithPrecision(
+        currentPriceFloatWithMinimum *. 3.,
+        3,
+      );
     let (defaultDepositTime, defaultDeposit) = {
       let defaultPriceWei = defaultPriceValue->Web3Utils.toWeiFromEth;
       let depositForAYear =
