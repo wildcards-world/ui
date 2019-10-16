@@ -9,6 +9,11 @@ let gorilla1 = [%bs.raw {|require('../img/gorillas/gorilla1.png')|}];
 let gorilla2 = [%bs.raw {|require('../img/gorillas/gorilla2.png')|}];
 let gorilla3 = [%bs.raw {|require('../img/gorillas/gorilla3.png')|}];
 
+module ShareSocial = {
+  [@bs.module "./components/shareSocialMedia"] [@react.component]
+  external make: unit => React.element = "default";
+};
+
 module DefaultLook = {
   open Gorilla;
 
@@ -61,6 +66,8 @@ module DefaultLook = {
            <UpdatePriceModal gorilla=owned />
            <br />
            <UpdateDeposit gorilla=owned />
+           <br />
+           <ShareSocial />
          </React.Fragment>
        | Vitalik =>
          <React.Fragment>
@@ -70,15 +77,19 @@ module DefaultLook = {
            <UpdatePriceModal gorilla=owned />
            <br />
            <UpdateDeposit gorilla=owned />
+           <br />
+           <ShareSocial />
          </React.Fragment>
        | Andy =>
          <React.Fragment>
-           <img className=Styles.ownedGorillaImg src=gorilla1 />
+           <img className=Styles.ownedGorillaImg src=gorilla3 />
            <h2> {React.string("Andy")} </h2>
            <PriceDisplay tokenId={Some("1")} />
            <UpdatePriceModal gorilla=owned />
            <br />
            <UpdateDeposit gorilla=owned />
+           <br />
+           <ShareSocial />
          </React.Fragment>
        | None =>
          <Rimble.Flex className=Styles.gorillaBox>

@@ -101,8 +101,8 @@ module Transaction = {
       | None => (useCurrentPriceWei()->defaultZeroS, "3", "10", 0.025, 40.)
       | Some(tokenIdSet) => (
           useCurrentPriceWeiNew(tokenIdSet)->defaultZeroS,
-          "12",
-          "1",
+          "24",
+          "10",
           0.1,
           10.,
         )
@@ -257,18 +257,18 @@ module Transaction = {
     };
 
     <TxTemplate txObjects>
-    <BuyInput
-      onSubmitBuy
-      setNewPrice
-      newPrice
-      deposit
-      depositTimeInSeconds
-      setDeposit
-      patronage
-      updatePatronage
-      priceSliderInitialMax
-      maxAvailableDeposit
-      gorillaName
+      <BuyInput
+        onSubmitBuy
+        setNewPrice
+        newPrice
+        deposit
+        depositTimeInSeconds
+        setDeposit
+        patronage
+        updatePatronage
+        priceSliderInitialMax
+        maxAvailableDeposit
+        gorillaName
       />
     </TxTemplate>;
   };
