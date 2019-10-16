@@ -3,7 +3,7 @@ import { Heading, Text, Loader } from 'rimble-ui'
 import { centerItems } from '../../Styles.bs'
 
 export default ({ txObjects, children }) => txObjects.length > 0 ?
-  <Fragment>
+  <div style={{ margin: "1em" }}>
     <Heading.h3>Processing Transaction</Heading.h3>
     {
       !!txObjects[0] ?
@@ -34,7 +34,7 @@ export default ({ txObjects, children }) => txObjects.length > 0 ?
           <Loader className={centerItems} color='green' size='80px' />
         </Fragment>
     }
-  </Fragment>
+  </div >
   :
   <Fragment>
     {children}
