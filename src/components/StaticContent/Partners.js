@@ -13,8 +13,9 @@ const styles = {
 }
 
 const Partners = () => <div>
-  <Flex className={infoBackground} px={50}>
-    <Box m={50} width={1 / 3} color="black">
+  <Flex flexWrap={"wrap"}
+    alignItems={"center"} className={infoBackground} px={50}>
+    <Box m={50} width={[1, 1, 1 / 3]} color="black">
       <Card>
         <a
           href="https://www.ubisoft.com/en-us/company/start-ups/station-f.aspx">
@@ -25,22 +26,22 @@ const Partners = () => <div>
         </a>
       </Card>
     </Box>
-    <Box m={50} width={1 / 3} color="black">
+    <Box m={50} width={[1, 1, 1 / 3]} color="black">
       <Card>
         <a
           href="https://ethcapetown.com/">
           <img src={EthCapeTownLogo} style={styles.logo} />
         </a>
         <Text>
-          Overall winners of EthCapeTown hackathon 
+          Overall winners of EthCapeTown hackathon
         </Text>
       </Card>
     </Box>
-    <Box m={50} width={1 / 3} color="black">
+    <Box m={50} width={[1, 1, 1 / 3]} color="black">
       <Card>
         <a
           href="https://wildtomorrowfund.org">
-        <img src={WildTomorrowFundLogo} style={styles.logo} />
+          <img src={WildTomorrowFundLogo} style={styles.logo} />
         </a>
         <Text>
           Wild Tomorrow Fund, our wildlife conservation partner
