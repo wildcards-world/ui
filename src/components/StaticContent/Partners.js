@@ -9,14 +9,21 @@ const styles = {
   logo: {
     marginLeft: '10%',
     width: '80%'
+  },
+  card: {
+    height: '100%'
   }
 }
 
-const Partners = () => <div>
-  <Flex flexWrap={"wrap"}
-    alignItems={"center"} className={infoBackground} px={50}>
-    <Box m={50} width={[1, 1, 0.265]} color="black">
-      <Card>
+const Partners = () => <div width="100%">
+  <Flex
+    flexWrap={"wrap"}
+    justifyContent={"space-around"}
+    alignItems={"stretch"}
+    className={infoBackground}
+    px={50}>
+    <Box mt={70} mb={70} width={[1, 1, 0.20]} color="black">
+      <Card style={styles.card}>
         <a
           href="https://www.ubisoft.com/en-us/company/start-ups/station-f.aspx">
           <img src={UbisoftLogo} style={styles.logo} />
@@ -26,8 +33,8 @@ const Partners = () => <div>
         </a>
       </Card>
     </Box>
-    <Box m={50} width={[1, 1, 0.265]} color="black">
-      <Card>
+    <Box mt={70} mb={70} width={[1, 1, 0.20]} color="black">
+      <Card style={styles.card}>
         <a
           href="https://ethcapetown.com/">
           <img src={EthCapeTownLogo} style={styles.logo} />
@@ -37,8 +44,8 @@ const Partners = () => <div>
         </Text>
       </Card>
     </Box>
-    <Box m={50} width={[1, 1, 0.265]} color="black">
-      <Card>
+    <Box mt={70} mb={70} width={[1, 1, 0.20]} color="black">
+      <Card style={styles.card}>
         <a
           href="https://wildtomorrowfund.org">
           <img src={WildTomorrowFundLogo} style={styles.logo} />
