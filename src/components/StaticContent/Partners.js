@@ -15,7 +15,7 @@ const styles = {
 const Partners = () => <div>
   <Flex flexWrap={"wrap"}
     alignItems={"center"} className={infoBackground} px={50}>
-    <Box m={50} width={[1, 1, 1 / 3]} color="black">
+    <Box m={50} width={[1, 1, 0.265]} color="black">
       <Card>
         <a
           href="https://www.ubisoft.com/en-us/company/start-ups/station-f.aspx">
@@ -26,7 +26,7 @@ const Partners = () => <div>
         </a>
       </Card>
     </Box>
-    <Box m={50} width={[1, 1, 1 / 3]} color="black">
+    <Box m={50} width={[1, 1, 0.265]} color="black">
       <Card>
         <a
           href="https://ethcapetown.com/">
@@ -37,7 +37,7 @@ const Partners = () => <div>
         </Text>
       </Card>
     </Box>
-    <Box m={50} width={[1, 1, 1 / 3]} color="black">
+    <Box m={50} width={[1, 1, 0.265]} color="black">
       <Card>
         <a
           href="https://wildtomorrowfund.org">
