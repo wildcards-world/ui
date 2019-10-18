@@ -5,6 +5,7 @@ type bn = {
   sub: (. bn) => bn,
   mul: (. bn) => bn,
   div: (. bn) => bn,
+  gt: (. bn) => bool,
   toString: (. unit) => string,
 };
 

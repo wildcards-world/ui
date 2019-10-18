@@ -18,7 +18,8 @@ module BuyInput = {
       ~deposit: string=?,
       ~patronage: string=?,
       ~updatePatronage: string => unit=?,
-      ~gorillaName: string
+      ~gorillaName: string,
+      ~depositForAYear: string
     ) =>
     // ~depositError: option(string)=?
     React.element =
@@ -48,7 +49,13 @@ let calculateDepositDuration = (deposit, price, numerator, denominator) => {
   let pricePerSecond = calcPricePerSecond(price, numerator, denominator);
 
   depositBn
-  ->BN.divGet(. pricePerSecond)
+  ->BN.divGet(.
+      if (pricePerSecond->BN.gtGet(. pricePerSecond)) {
+        pricePerSecond;
+      } else {
+        BN.new_("1");
+      },
+    )
   ->BN.toStringGet(.)
   ->Int.fromString
   ->defaultZeroI;
@@ -101,10 +108,10 @@ module Transaction = {
       | None => (useCurrentPriceWei()->defaultZeroS, "3", "10", 0.025, 40.)
       | Some(tokenIdSet) => (
           useCurrentPriceWeiNew(tokenIdSet)->defaultZeroS,
-          "12",
-          "1",
-          0.1,
-          10.,
+          "24",
+          "10",
+          0.2,
+          5.,
         )
       };
 
@@ -136,16 +143,16 @@ module Transaction = {
         currentPriceFloatWithMinimum *. 3.,
         3,
       );
-    let (defaultDepositTime, defaultDeposit) = {
-      let defaultPriceWei = defaultPriceValue->Web3Utils.toWeiFromEth;
-      let depositForAYear =
-        calcRequiredDepositForTime(
-          31536000,
-          defaultPriceWei,
-          numerator,
-          denominator,
-        );
-
+    let defaultPriceWei = defaultPriceValue->Web3Utils.toWeiFromEth;
+    let depositForAYear =
+      calcRequiredDepositForTime(
+        31536000,
+        defaultPriceWei,
+        numerator,
+        denominator,
+      );
+    let (defaultDepositTime, defaultDeposit) =
+      // TODO: these 'float_of_string' s can throw errors, rather use the Belt library.
       if (depositForAYear->float_of_string
           < maxAvailableDeposit->float_of_string) {
         (31536000, depositForAYear);
@@ -160,7 +167,6 @@ module Transaction = {
           maxAvailableDeposit,
         );
       };
-    };
 
     let (newPrice, setInitialPrice) = React.useState(() => defaultPriceValue);
     let (patronage, setPatronage) =
@@ -257,18 +263,19 @@ module Transaction = {
     };
 
     <TxTemplate txObjects>
-    <BuyInput
-      onSubmitBuy
-      setNewPrice
-      newPrice
-      deposit
-      depositTimeInSeconds
-      setDeposit
-      patronage
-      updatePatronage
-      priceSliderInitialMax
-      maxAvailableDeposit
-      gorillaName
+      <BuyInput
+        onSubmitBuy
+        setNewPrice
+        newPrice
+        deposit
+        depositTimeInSeconds
+        setDeposit
+        patronage
+        updatePatronage
+        priceSliderInitialMax
+        maxAvailableDeposit
+        gorillaName
+        depositForAYear
       />
     </TxTemplate>;
   };

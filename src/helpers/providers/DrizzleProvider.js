@@ -10,8 +10,8 @@ import ERC721Patronage_v0 from "../../contracts/ERC721Patronage_v0.json"
 import web3ProvideSwitcher from "../web3/web3ProvideSwitcher"
 
 // todo: read env var for fallback
-// const fallbackUrl = "wss://mainnet.infura.io/ws/v3/a5d64a2052ab4d1da240cdfe3a6c519b";
-const fallbackUrl = "wss://goerli.infura.io/ws/v3/a5d64a2052ab4d1da240cdfe3a6c519b";
+const fallbackUrl = "wss://mainnet.infura.io/ws/v3/a5d64a2052ab4d1da240cdfe3a6c519b";
+// const fallbackUrl = "wss://goerli.infura.io/ws/v3/a5d64a2052ab4d1da240cdfe3a6c519b";
 const switchableWeb3 = web3ProvideSwitcher.createSwitchableWeb3()
 
 const options = {

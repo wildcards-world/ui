@@ -9,6 +9,11 @@ let gorilla1 = [%bs.raw {|require('../img/gorillas/gorilla1.png')|}];
 let gorilla2 = [%bs.raw {|require('../img/gorillas/gorilla2.png')|}];
 let gorilla3 = [%bs.raw {|require('../img/gorillas/gorilla3.png')|}];
 
+module ShareSocial = {
+  [@bs.module "./components/shareSocialMedia"] [@react.component]
+  external make: unit => React.element = "default";
+};
+
 module DefaultLook = {
   open Gorilla;
 
@@ -20,7 +25,6 @@ module DefaultLook = {
       // Setup the Web3connect component
 
       open Web3connect.Core;
-      // let core = getCore(Some("goerli"));
       let core = getCore(None); // TOGGLE THE ABOVE LINE OUT BEFORE PRODUCTION!!
       core->setOnConnect(setProvider);
       None;
@@ -61,6 +65,8 @@ module DefaultLook = {
            <UpdatePriceModal gorilla=owned />
            <br />
            <UpdateDeposit gorilla=owned />
+           <br />
+           <ShareSocial />
          </React.Fragment>
        | Vitalik =>
          <React.Fragment>
@@ -70,15 +76,19 @@ module DefaultLook = {
            <UpdatePriceModal gorilla=owned />
            <br />
            <UpdateDeposit gorilla=owned />
+           <br />
+           <ShareSocial />
          </React.Fragment>
        | Andy =>
          <React.Fragment>
-           <img className=Styles.ownedGorillaImg src=gorilla1 />
+           <img className=Styles.ownedGorillaImg src=gorilla3 />
            <h2> {React.string("Andy")} </h2>
            <PriceDisplay tokenId={Some("1")} />
            <UpdatePriceModal gorilla=owned />
            <br />
            <UpdateDeposit gorilla=owned />
+           <br />
+           <ShareSocial />
          </React.Fragment>
        | None =>
          <Rimble.Flex className=Styles.gorillaBox>
@@ -91,6 +101,11 @@ module DefaultLook = {
                    <PriceDisplay tokenId={Some("0")} />
                    <BuyModal tokenId={Some("0")} />
                  </Offline>
+                 <p>
+                   <small> <S> "Harberger Tax" </S> </small>
+                   <br />
+                   <small> <S> "20% per month" </S> </small>
+                 </p>
                </div>
              </div>
            </Rimble.Box>
@@ -103,6 +118,11 @@ module DefaultLook = {
                    <PriceDisplay tokenId=None />
                    <BuyModal tokenId=None />
                  </Offline>
+                 <p>
+                   <small> <S> "Harberger Tax" </S> </small>
+                   <br />
+                   <small> <S> "2.5% per month" </S> </small>
+                 </p>
                </div>
              </div>
            </Rimble.Box>
@@ -115,6 +135,11 @@ module DefaultLook = {
                    <PriceDisplay tokenId={Some("1")} />
                    <BuyModal tokenId={Some("1")} />
                  </Offline>
+                 <p>
+                   <small> <S> "Harberger Tax" </S> </small>
+                   <br />
+                   <small> <S> "20% per month" </S> </small>
+                 </p>
                </div>
              </div>
            </Rimble.Box>
@@ -122,6 +147,18 @@ module DefaultLook = {
        }}
       <Rimble.Box className=Styles.dappImagesCounteractOffset>
         <Offline requireSmartContractsLoaded=true> <TotalRaised /> </Offline>
+      </Rimble.Box>
+      <Rimble.Box className=Styles.dappImagesCounteractOffset>
+        <p>
+          <small>
+            <S> "Having problems buying? " </S>
+            <a
+              href="https://blog.wildcards.world/how-to-buy-a-wildcard-web3-ethereum/"
+              target="_blank">
+              <S> "Read our guide" </S>
+            </a>
+          </small>
+        </p>
       </Rimble.Box>
     </div>;
   };

@@ -82,7 +82,7 @@ module HowItWorks = {
                   <Text>
                     <span className=Styles.redDisclaimer>
                       <S>
-                        "The first wildcard, Vitalik, has a 30% Harberger tax rate. Future wildcards will have different harberger tax rates."
+                        "The first wildcard, Vitalik, has a 2.5% Harberger tax rate per month. Andy and Simon have a Harberger tax rate of 20% per month. Future wildcards will have different harberger tax rates."
                       </S>
                     </span>
                   </Text>

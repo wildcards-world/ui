@@ -4,10 +4,12 @@ open Components;
 
 // TODO: there must be a better way of importing images in reason react...
 let smallIcon = [%bs.raw {|require('../img/logos/wild-cards-small.png')|}];
+let betaBanner = [%bs.raw {|require('../img/beta-banner.png')|}];
 
 [@react.component]
 let make = () =>
   <div className=Styles.app>
+    <img src=betaBanner className=Styles.betaBanner />
     <header className=Styles.header>
       <nav className=Styles.nav>
         <div className=Styles.navBox>
