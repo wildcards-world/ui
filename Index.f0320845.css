@@ -1,0 +1,23 @@
+body{
+    margin: 0
+}
+
+a {
+  color: #303030;;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:active {
+  color: #303030;
+}
+
+a:visited {
+  color: #303030;
+}
+
+
+/*# sourceMappingURL=/Index.f0320845.css.map */
