@@ -4,6 +4,11 @@ open Providers.DrizzleProvider;
 open Belt.Option;
 open Components;
 
+module TotalRaisedEtherCountup = {
+  [@bs.module "./TotalRaisedEtherCountup.js"] [@react.component]
+  external make: (~totalRaised: string) => React.element = "default";
+};
+
 let getTotalPatronage = vitalikPatronage => {
   let totalPatronageOtherTokens = useTotalPatronageWeiNew();
 
@@ -21,7 +26,7 @@ let getTotalPatronage = vitalikPatronage => {
       2,
     );
 
-  (totalPatronageEth, totaPatronageUsd);
+  (Some(totalPatronageEth), totaPatronageUsd);
 };
 
 [@react.component]
@@ -33,7 +38,7 @@ let make = () => {
     | Some(vitalikPatronage) => getTotalPatronage(vitalikPatronage)
     | None =>
       getTotalPatronage("0");
-      ("Loading", "Loading");
+      (None, "Loading");
     };
   };
 
@@ -42,7 +47,10 @@ let make = () => {
       <small>
         {React.string("Wildcards has currently raised ")}
         <br />
-        {React.string(allTokensTotalRaisedEth)}
+        {switch (allTokensTotalRaisedEth) {
+         | Some(totalRaised) => <TotalRaisedEtherCountup totalRaised />
+         | None => React.string("Loading")
+         }}
         <strong> {React.string(" ETH ")} </strong>
         {React.string("(")}
         {React.string(allTokensTotalRaisedUsd)}
