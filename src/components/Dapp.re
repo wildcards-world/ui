@@ -20,7 +20,7 @@ module DefaultLook = {
   [@react.component]
   let make = (~areRequirementsLoaded: bool=false) => {
     let setProvider = useSetProvider();
-    let isProviderSelected = useIsProviderSelected();
+    // let isProviderSelected = useIsProviderSelected();
     React.useEffect0(() => {
       // Setup the Web3connect component
 
@@ -30,7 +30,7 @@ module DefaultLook = {
       None;
     });
 
-    let owned =
+    let (ownVitalik, ownSimon, ownAndy) =
       if (areRequirementsLoaded) {
         // NOTE/TODO: this doesn't take into account token ownership
         let currentPatronVitalik =
@@ -42,109 +42,222 @@ module DefaultLook = {
         let currentAccount =
           useCurrentUser()->mapWithDefault("no-current-account", a => a);
 
-        if (currentAccount == currentPatronVitalik) {
-          Vitalik;
-        } else if (currentAccount == currentPatronSimon) {
-          Simon;
-        } else if (currentAccount == currentPatronAndy) {
-          Andy;
-        } else {
-          None;
-        };
+        (
+          currentAccount == currentPatronVitalik,
+          currentAccount == currentPatronSimon,
+          currentAccount == currentPatronAndy,
+        );
       } else {
-        None;
+        (false, false, false);
       };
 
     <div className=Styles.rightTopHeader>
-      {switch (owned) {
-       | Simon =>
-         <React.Fragment>
-           <img className=Styles.ownedGorillaImg src=gorilla2 />
-           <h2> {React.string("Simon")} </h2>
-           <PriceDisplay tokenId={Some("0")} />
-           <UpdatePriceModal gorilla=owned />
-           <br />
-           <UpdateDeposit gorilla=owned />
-           <br />
-           <ShareSocial />
-         </React.Fragment>
-       | Vitalik =>
-         <React.Fragment>
-           <img className=Styles.ownedGorillaImg src=gorilla1 />
-           <h2> {React.string("Vitalik")} </h2>
-           <PriceDisplay tokenId=None />
-           <UpdatePriceModal gorilla=owned />
-           <br />
-           <UpdateDeposit gorilla=owned />
-           <br />
-           <ShareSocial />
-         </React.Fragment>
-       | Andy =>
-         <React.Fragment>
-           <img className=Styles.ownedGorillaImg src=gorilla3 />
-           <h2> {React.string("Andy")} </h2>
-           <PriceDisplay tokenId={Some("1")} />
-           <UpdatePriceModal gorilla=owned />
-           <br />
-           <UpdateDeposit gorilla=owned />
-           <br />
-           <ShareSocial />
-         </React.Fragment>
-       | None =>
-         <Rimble.Flex className=Styles.gorillaBox>
-           <Rimble.Box>
-             <div className=Styles.gorillaBack>
-               <img className={Styles.headerImg(140.)} src=gorilla2 />
-               <div className=Styles.gorillaText>
-                 <h2> {React.string("Simon")} </h2>
-                 <Offline requireSmartContractsLoaded=true>
-                   <PriceDisplay tokenId={Some("0")} />
-                   <BuyModal tokenId={Some("0")} />
-                 </Offline>
-                 <p>
-                   <small> <S> "Harberger Tax" </S> </small>
-                   <br />
-                   <small> <S> "20% per month" </S> </small>
-                 </p>
-               </div>
-             </div>
-           </Rimble.Box>
-           <Rimble.Box>
-             <img className={Styles.headerImg(155.)} src=gorilla1 />
-             <div>
-               <div className=Styles.gorillaText>
-                 <h2> {React.string("Vitalik")} </h2>
-                 <Offline requireSmartContractsLoaded=true>
-                   <PriceDisplay tokenId=None />
-                   <BuyModal tokenId=None />
-                 </Offline>
-                 <p>
-                   <small> <S> "Harberger Tax" </S> </small>
-                   <br />
-                   <small> <S> "2.5% per month" </S> </small>
-                 </p>
-               </div>
-             </div>
-           </Rimble.Box>
-           <Rimble.Box>
-             <div className=Styles.gorillaBack>
-               <img className={Styles.headerImg(140.)} src=gorilla3 />
-               <div className=Styles.gorillaText>
-                 <h2> {React.string("Andy")} </h2>
-                 <Offline requireSmartContractsLoaded=true>
-                   <PriceDisplay tokenId={Some("1")} />
-                   <BuyModal tokenId={Some("1")} />
-                 </Offline>
-                 <p>
-                   <small> <S> "Harberger Tax" </S> </small>
-                   <br />
-                   <small> <S> "20% per month" </S> </small>
-                 </p>
-               </div>
-             </div>
-           </Rimble.Box>
-         </Rimble.Flex>
-       }}
+      <React.Fragment>
+        <Rimble.Flex className=Styles.gorillaBox>
+          <Rimble.Box>
+            <div className=Styles.gorillaBack>
+              <img className={Styles.headerImg(140.)} src=gorilla2 />
+              <div className=Styles.gorillaText>
+                <h2> {React.string("Simon")} </h2>
+                <Offline requireSmartContractsLoaded=true>
+                  {if (ownSimon) {
+                     <React.Fragment>
+                       <UpdatePriceModal gorilla=Simon />
+                       <br />
+                       <UpdateDeposit gorilla=Simon />
+                       <br />
+                       <ShareSocial />
+                     </React.Fragment>;
+                   } else {
+                     <React.Fragment>
+                       <PriceDisplay tokenId={Some("0")} />
+                       <BuyModal tokenId={Some("0")} />
+                     </React.Fragment>;
+                   }}
+                </Offline>
+                <p>
+                  <small> <S> "Harberger Tax" </S> </small>
+                  <br />
+                  <small> <S> "20% per month" </S> </small>
+                </p>
+              </div>
+            </div>
+          </Rimble.Box>
+          <Rimble.Box>
+            <img className={Styles.headerImg(155.)} src=gorilla1 />
+            <div>
+              <div className=Styles.gorillaText>
+                <h2> {React.string("Vitalik")} </h2>
+                <Offline requireSmartContractsLoaded=true>
+                  {if (ownSimon) {
+                     <React.Fragment>
+                       <UpdatePriceModal gorilla=Vitalik />
+                       <br />
+                       <UpdateDeposit gorilla=Vitalik />
+                       <br />
+                       <ShareSocial />
+                     </React.Fragment>;
+                   } else {
+                     <React.Fragment>
+                       <PriceDisplay tokenId=None />
+                       <BuyModal tokenId=None />
+                     </React.Fragment>;
+                   }}
+                </Offline>
+                <p>
+                  <small> <S> "Harberger Tax" </S> </small>
+                  <br />
+                  <small> <S> "2.5% per month" </S> </small>
+                </p>
+              </div>
+            </div>
+          </Rimble.Box>
+          <Rimble.Box>
+            <div className=Styles.gorillaBack>
+              <img className={Styles.headerImg(140.)} src=gorilla3 />
+              <div className=Styles.gorillaText>
+                <h2> {React.string("Andy")} </h2>
+                <Offline requireSmartContractsLoaded=true>
+                  {if (ownSimon) {
+                     <React.Fragment>
+                       <UpdatePriceModal gorilla=Andy />
+                       <br />
+                       <UpdateDeposit gorilla=Andy />
+                       <br />
+                       <ShareSocial />
+                     </React.Fragment>;
+                   } else {
+                     <React.Fragment>
+                       <PriceDisplay tokenId={Some("1")} />
+                       <BuyModal tokenId={Some("1")} />
+                     </React.Fragment>;
+                   }}
+                </Offline>
+                <p>
+                  <small> <S> "Harberger Tax" </S> </small>
+                  <br />
+                  <small> <S> "20% per month" </S> </small>
+                </p>
+              </div>
+            </div>
+          </Rimble.Box>
+        </Rimble.Flex>
+      </React.Fragment>
+      // {switch (owned) {
+      //  | Simon =>
+      //    <React.Fragment>
+      //      <img className=Styles.ownedGorillaImg src=gorilla2 />
+      //      <h2> {React.string("Simon")} </h2>
+      //      <PriceDisplay tokenId={Some("0")} />
+      //      <UpdatePriceModal gorilla=owned />
+      //      <br />
+      //      <UpdateDeposit gorilla=owned />
+      //      <br />
+      //      <ShareSocial />
+      //    </React.Fragment>
+      //  | Vitalik =>
+      //    <React.Fragment>
+      //      <img className=Styles.ownedGorillaImg src=gorilla1 />
+      //      <h2> {React.string("Vitalik")} </h2>
+      //      <PriceDisplay tokenId=None />
+      //      <UpdatePriceModal gorilla=owned />
+      //      <br />
+      //      <UpdateDeposit gorilla=owned />
+      //      <br />
+      //      <ShareSocial />
+      //    </React.Fragment>
+      //  | Andy =>
+      //    <React.Fragment>
+      //      <img className=Styles.ownedGorillaImg src=gorilla3 />
+      //      <h2> {React.string("Andy")} </h2>
+      //      <PriceDisplay tokenId={Some("1")} />
+      //      <UpdatePriceModal gorilla=owned />
+      //      <br />
+      //      <UpdateDeposit gorilla=owned />
+      //      <br />
+      //      <ShareSocial />
+      //    </React.Fragment>
+      //  | None =>
+      //    <React.Fragment>
+      //        <Rimble.Flex className=Styles.gorillaBox>
+      //          <Rimble.Box>
+      //            <div className=Styles.gorillaBack>
+      //              <img className={Styles.headerImg(140.)} src=gorilla2 />
+      //              <div className=Styles.gorillaText>
+      //                <h2> {React.string("Simon")} </h2>
+      //                <Offline requireSmartContractsLoaded=true>
+      //                  <PriceDisplay tokenId={Some("0")} />
+      //                  <BuyModal tokenId={Some("0")} />
+      //                </Offline>
+      //                <p>
+      //                  <small> <S> "Harberger Tax" </S> </small>
+      //                  <br />
+      //                  <small> <S> "20% per month" </S> </small>
+      //                </p>
+      //              </div>
+      //            </div>
+      //          </Rimble.Box>
+      //          //  | _ =>
+      //          //    <Rimble.Flex className=Styles.gorillaBox>
+      //          //      <Rimble.Box>
+      //          //        <div className=Styles.gorillaBack>
+      //          //          <img className={Styles.headerImg(140.)} src=gorilla2 />
+      //          //          <div className=Styles.gorillaText>
+      //          //            <h2> {React.string("Simon")} </h2>
+      //          //            <Offline requireSmartContractsLoaded=true>
+      //          //              <PriceDisplay tokenId={Some("0")} />
+      //          //              <BuyModal tokenId={Some("0")} />
+      //          //            </Offline>
+      //          //            <p>
+      //          //              <small> <S> "Harberger Tax" </S> </small>
+      //          //              <br />
+      //          //              <small> <S> "20% per month" </S> </small>
+      //          //            </p>
+      //          //          </div>
+      //          //        </div>
+      //          //      </Rimble.Box>
+      //          //      }
+      //          // }
+      //          <Rimble.Box>
+      //            <img className={Styles.headerImg(155.)} src=gorilla1 />
+      //            <div>
+      //              <div className=Styles.gorillaText>
+      //                <h2> {React.string("Vitalik")} </h2>
+      //                <Offline requireSmartContractsLoaded=true>
+      //                  <PriceDisplay tokenId=None />
+      //                  <BuyModal tokenId=None />
+      //                </Offline>
+      //                <p>
+      //                  <small> <S> "Harberger Tax" </S> </small>
+      //                  <br />
+      //                  <small> <S> "2.5% per month" </S> </small>
+      //                </p>
+      //              </div>
+      //            </div>
+      //          </Rimble.Box>
+      //          <Rimble.Box>
+      //            <div className=Styles.gorillaBack>
+      //              <img className={Styles.headerImg(140.)} src=gorilla3 />
+      //              <div className=Styles.gorillaText>
+      //                <h2> {React.string("Andy")} </h2>
+      //                <Offline requireSmartContractsLoaded=true>
+      //                  <PriceDisplay tokenId={Some("1")} />
+      //                  <BuyModal tokenId={Some("1")} />
+      //                </Offline>
+      //                <p>
+      //                  <small> <S> "Harberger Tax" </S> </small>
+      //                  <br />
+      //                  <small> <S> "20% per month" </S> </small>
+      //                </p>
+      //              </div>
+      //            </div>
+      //          </Rimble.Box>
+      //        </Rimble.Flex>
+      //      </React.Fragment>
+      //      //  | Simon =>
+      //      //   switch (owned) {
+      //      // {
+      //  }}
       <Rimble.Box className=Styles.dappImagesCounteractOffset>
         <Offline requireSmartContractsLoaded=true> <TotalRaised /> </Offline>
       </Rimble.Box>
