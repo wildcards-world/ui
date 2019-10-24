@@ -36960,10 +36960,110 @@
       },
       "address": "0x6D47CF86F6A490c6410fC082Fd1Ad29CF61492d0",
       "updated_at": 1571235643830
+    },
+    "5": {
+      "links": {},
+      "events": {
+        "0x4f79409f494e81c38036d80aa8a6507c2cb08d90bfb2fead5519447646b3497e": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "price",
+              "type": "uint256"
+            }
+          ],
+          "name": "LogBuy",
+          "type": "event",
+          "signature": "0x4f79409f494e81c38036d80aa8a6507c2cb08d90bfb2fead5519447646b3497e"
+        },
+        "0x854d6511a28585103049c7770618450f7c9aeb580c69db2913d63869663f4751": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "newPrice",
+              "type": "uint256"
+            }
+          ],
+          "name": "LogPriceChange",
+          "type": "event",
+          "signature": "0x854d6511a28585103049c7770618450f7c9aeb580c69db2913d63869663f4751"
+        },
+        "0x6d6bbefef62d4cb6d0e3a4dd306a71d3632319b1e03659513df86b247dd657fe": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "prevOwner",
+              "type": "address"
+            }
+          ],
+          "name": "LogForeclosure",
+          "type": "event",
+          "signature": "0x6d6bbefef62d4cb6d0e3a4dd306a71d3632319b1e03659513df86b247dd657fe"
+        },
+        "0x54acb82a9e70d7c289b149758d23167c915428ae854a7aa4abe5bf2f4ef29f36": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "collected",
+              "type": "uint256"
+            }
+          ],
+          "name": "LogCollection",
+          "type": "event",
+          "signature": "0x54acb82a9e70d7c289b149758d23167c915428ae854a7aa4abe5bf2f4ef29f36"
+        },
+        "0xf577d8d6d15e285afdb38e070d8a5b4c0c72cb9f56708d148024016680b3838a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "tokenPatron",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "remainingDeposit",
+              "type": "uint256"
+            }
+          ],
+          "name": "LogRemainingDepositUpdate",
+          "type": "event",
+          "signature": "0xf577d8d6d15e285afdb38e070d8a5b4c0c72cb9f56708d148024016680b3838a"
+        },
+        "0x210ae353ce16aa90d4e1030c30c12482a2dc45bbfed71e98267e93fb7684fa07": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "tokenId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "patronageNumerator",
+              "type": "uint256"
+            }
+          ],
+          "name": "AddToken",
+          "type": "event",
+          "signature": "0x210ae353ce16aa90d4e1030c30c12482a2dc45bbfed71e98267e93fb7684fa07"
+        }
+      },
+      "address": "0x0C00CFE8EbB34fE7C31d4915a43Cde211e9F0F3B",
+      "updated_at": 1571845962470
     }
   },
   "schemaVersion": "3.0.16",
-  "updatedAt": "2019-10-16T14:22:54.479Z",
+  "updatedAt": "2019-10-23T15:54:25.968Z",
   "devdoc": {
     "methods": {}
   },
