@@ -108,7 +108,8 @@ module Box = {
       ~color: string=?,
       ~bg: string=?,
       ~className: string=?,
-      ~onClick: unit => unit=?
+      ~onClickEvent: ReactEvent.Mouse.t => unit=?,
+      ~onClick: unit => unit=?,
     ) =>
     React.element =
     "Box";

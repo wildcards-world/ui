@@ -298,6 +298,7 @@ let make = (~tokenId: option(string)) => {
   };
   let onOpenModal = event => {
     ReactEvent.Form.preventDefault(event);
+    ReactEvent.Form.stopPropagation(event);
     setModalOpen(_ => true);
   };
 

@@ -120,7 +120,7 @@ let make = (~gorilla: Gorilla.gorilla) => {
 
   let onUnlockMetamaskAndOpenModal = event => {
     ReactEvent.Form.preventDefault(event);
-
+    ReactEvent.Form.stopPropagation(event);
     setModalOpen(_ => true);
   };
 

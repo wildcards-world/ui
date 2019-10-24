@@ -101,12 +101,16 @@ module DefaultLook = {
        | _ =>
          <React.Fragment>
            <Rimble.Flex className=Styles.gorillaBox>
-             <Rimble.Box
-               onClick={() =>
-                 ReasonReactRouter.push("#details/" ++ getName(Simon))
-               }>
+             <Rimble.Box>
                <div className=Styles.gorillaBack>
-                 <img className={Styles.headerImg(140.)} src=gorilla2 />
+                 <img
+                   onClick={event => {
+                     ReactEvent.Mouse.preventDefault(event);
+                     ReasonReactRouter.push("#details/" ++ getName(Simon));
+                   }}
+                   className={Styles.headerImg(140.)}
+                   src=gorilla2
+                 />
                  <div className=Styles.gorillaText>
                    <h2> {React.string("Simon")} </h2>
                    <Offline requireSmartContractsLoaded=true>
@@ -133,11 +137,15 @@ module DefaultLook = {
                  </div>
                </div>
              </Rimble.Box>
-             <Rimble.Box
-               onClick={() =>
-                 ReasonReactRouter.push("#details/" ++ getName(Vitalik))
-               }>
-               <img className={Styles.headerImg(155.)} src=gorilla1 />
+             <Rimble.Box>
+               <img
+                 onClick={event => {
+                   ReactEvent.Mouse.preventDefault(event);
+                   ReasonReactRouter.push("#details/" ++ getName(Simon));
+                 }}
+                 className={Styles.headerImg(155.)}
+                 src=gorilla1
+               />
                <div>
                  <div className=Styles.gorillaText>
                    <h2> {React.string("Vitalik")} </h2>
@@ -165,12 +173,16 @@ module DefaultLook = {
                  </div>
                </div>
              </Rimble.Box>
-             <Rimble.Box
-               onClick={() =>
-                 ReasonReactRouter.push("#details/" ++ getName(Andy))
-               }>
+             <Rimble.Box>
                <div className=Styles.gorillaBack>
-                 <img className={Styles.headerImg(140.)} src=gorilla3 />
+                 <img
+                   onClick={event => {
+                     ReactEvent.Mouse.preventDefault(event);
+                     ReasonReactRouter.push("#details/" ++ getName(Simon));
+                   }}
+                   className={Styles.headerImg(140.)}
+                   src=gorilla3
+                 />
                  <div className=Styles.gorillaText>
                    <h2> {React.string("Andy")} </h2>
                    <Offline requireSmartContractsLoaded=true>

@@ -76,24 +76,7 @@ let make = () => {
          <Rimble.Box width=contentWidths>
            <Rimble.Flex flexWrap="wrap" className=Styles.topBody>
              <Rimble.Box p=1 width=[|1., 1., 0.5|]>
-               <h1 className=Styles.heading>
-                 <span className=Styles.colorBlue>
-                   <S> "Always for sale" </S>
-                 </span>
-                 <br />
-                 <S> "ethereum based" </S>
-                 <br />
-                 <span className=Styles.colorGreen>
-                   <S> "conservation" </S>
-                 </span>
-                 <S> " tokens" </S>
-               </h1>
-               <hr />
-               <h3 className=Styles.subHeading>
-                 <S>
-                   "Let your digital assets make a valuable contribution to the world."
-                 </S>
-               </h3>
+               <LeftPannel />
              </Rimble.Box>
              <Rimble.Box p=1 width=[|1., 1., 0.5|]> <Dapp /> </Rimble.Box>
            </Rimble.Flex>
