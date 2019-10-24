@@ -5,6 +5,10 @@ export default ({ totalRaised }) => {
   const res = totalRaised.split(".")
   const decimals = parseInt(res[1])
 
+  const num = res[1];
+  const regex = /^0*/g;
+  const leadingZeros = num.match(regex);
+
   const [styles, setStyles] = useState({})
   const ref = useRef(0);
   const { countUp, start, pauseResume, reset, update } = useCountUp({
@@ -38,7 +42,7 @@ export default ({ totalRaised }) => {
   return (
     <React.Fragment>
       <span style={styles}>
-        {res[0]}.{countUp}
+        {res[0]}.{leadingZeros}{countUp}
       </span >
     </React.Fragment>
   );
