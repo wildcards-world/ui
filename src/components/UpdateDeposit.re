@@ -63,7 +63,7 @@ module Transaction = {
     let availableDeposit =
       (
         switch (gorilla) {
-        | None => useDepositAbleToWithdrawWei()
+        | NoGorilla => useDepositAbleToWithdrawWei()
         | _ => useDepositAbleToWithdrawWeiNew(currentUser)
         }
       )

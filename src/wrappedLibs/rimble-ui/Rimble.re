@@ -107,7 +107,8 @@ module Box = {
       ~width: array(float)=?,
       ~color: string=?,
       ~bg: string=?,
-      ~className: string=?
+      ~className: string=?,
+      ~onClick: unit => unit=?
     ) =>
     React.element =
     "Box";

@@ -357,3 +357,12 @@ let betaBanner =
     top(`px(0)),
     width(`px(80)),
   ]);
+
+let forwardBackButton =
+  style([
+    // position(`absolute),
+    // left(`px(0)),
+    // top(`px(0)),
+    width(`percent(100.)),
+    height(`percent(100.)),
+  ]);

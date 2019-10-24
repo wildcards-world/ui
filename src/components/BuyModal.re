@@ -115,7 +115,7 @@ module Transaction = {
         )
       };
 
-    let gorillaName = Gorilla.getName(tokenId);
+    let gorillaName = Gorilla.getNameFromId(tokenId);
 
     let maxAvailableDeposit =
       BN.new_(userBalance)
