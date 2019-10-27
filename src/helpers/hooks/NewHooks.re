@@ -91,3 +91,10 @@ let useDepositAvailableToWithdrawNew = patron =>
   (useCacheCall())(. "WildcardSteward_v0", "depositAbleToWithdraw", patron);
 // let useAvailableDepositNew = patron =>
 //   (useCacheCall())(. "WildcardSteward_v0", "depositAbleToWithdraw", patron);
+
+let useForeclosureTimeNew = id => {
+  let date = useGetForeclosureTime(id);
+  date->map(stringTimeStamp =>
+    MomentRe.momentWithUnix(int_of_string(stringTimeStamp))
+  );
+};

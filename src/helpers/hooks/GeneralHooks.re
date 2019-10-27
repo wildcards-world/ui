@@ -57,3 +57,9 @@ let useTotalPatronageUsdGorilla = gorilla => {
   | _ => None
   };
 };
+
+let useForeclosureTimeGorilla = gorilla =>
+  switch (getId(gorilla)) {
+  | Some(gorillaId) => useForeclosureTimeNew(gorillaId)
+  | None => useForeclosureTime()
+  };

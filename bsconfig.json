@@ -24,7 +24,8 @@
     "reason-react",
     "bs-css",
     "bs-fetch",
-    "re-formality"
+    "re-formality",
+    "bs-moment"
   ],
   "ppx-flags": [],
   "refmt": 3

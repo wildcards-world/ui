@@ -31,19 +31,16 @@ let make = () => {
           <img className=Styles.headerLogo src=smallIcon />
           <ul className=Styles.navList>
             <li className=Styles.navListItem>
-              {if (detailView) {
-                 <a
-                   className=Styles.navListText
-                   onClick={event => {
-                     ReactEvent.Mouse.preventDefault(event);
-                     Js.log("Clicked the buttonnnn");
-                     ReasonReactRouter.push("#");
-                   }}>
-                   <S> ">> HOME <<" </S>
-                 </a>;
-               } else {
-                 <div />;
-               }}
+              {detailView
+                 ? <a
+                     className=Styles.navListText
+                     onClick={event => {
+                       ReactEvent.Mouse.preventDefault(event);
+                       ReasonReactRouter.push("#");
+                     }}>
+                     <S> ">> HOME <<" </S>
+                   </a>
+                 : React.null}
               <a
                 className=Styles.navListText
                 target="_blank"
@@ -58,42 +55,31 @@ let make = () => {
         </div>
       </nav>
     </header>
-    <Rimble.Flex flexWrap="wrap" className=Styles.topBody>
+    <Rimble.Flex flexWrap="wrap" alignItems="center" className=Styles.topBody>
       {<React.Fragment>
-         {if (detailView) {
-            <Rimble.Box p=1 width=[|0.05, 0.05, 0.05|]>
-              <Rimble.Button
-                className=Styles.forwardBackButton
-                onClick={InputHelp.handleEvent(() =>
-                  ReasonReactRouter.push("#details/" ++ previousGorilla)
-                )}>
-                <S> "<<" </S>
-              </Rimble.Button>
-            </Rimble.Box>;
-          } else {
-            <div />;
-          }}
-         <Rimble.Box width=contentWidths>
-           <Rimble.Flex flexWrap="wrap" className=Styles.topBody>
-             <Rimble.Box p=1 width=[|1., 1., 0.5|]>
-               <LeftPannel />
-             </Rimble.Box>
-             <Rimble.Box p=1 width=[|1., 1., 0.5|]> <Dapp /> </Rimble.Box>
-           </Rimble.Flex>
-         </Rimble.Box>
-         {if (detailView) {
-            <Rimble.Box p=1 width=[|0.05, 0.05, 0.05|]>
-              <Rimble.Button
-                className=Styles.forwardBackButton
-                onClick={InputHelp.handleEvent(() =>
-                  ReasonReactRouter.push("#details/" ++ nextGorilla)
-                )}>
-                <S> ">>" </S>
-              </Rimble.Button>
-            </Rimble.Box>;
-          } else {
-            <div />;
-          }}
+         {detailView
+            ? <Rimble.Box p=1 width=[|0.05, 0.05, 0.05|]>
+                <Rimble.Button
+                  className=Styles.forwardBackButton
+                  onClick={InputHelp.handleEvent(() =>
+                    ReasonReactRouter.push("#details/" ++ previousGorilla)
+                  )}>
+                  <S> {js|◄|js} </S>
+                </Rimble.Button>
+              </Rimble.Box>
+            : React.null}
+         <Rimble.Box width=contentWidths> <Dapp /> </Rimble.Box>
+         {detailView
+            ? <Rimble.Box p=1 width=[|0.05, 0.05, 0.05|]>
+                <Rimble.Button
+                  className=Styles.forwardBackButton
+                  onClick={InputHelp.handleEvent(() =>
+                    ReasonReactRouter.push("#details/" ++ nextGorilla)
+                  )}>
+                  <S> {js|►|js} </S>
+                </Rimble.Button>
+              </Rimble.Box>
+            : React.null}
        </React.Fragment>}
     </Rimble.Flex>
     <CustomerBenefit />

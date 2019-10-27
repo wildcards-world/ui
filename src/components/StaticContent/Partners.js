@@ -38,10 +38,10 @@ const Partners = () => <div width="100%">
         <a
           href="https://ethcapetown.com/">
           <img src={EthCapeTownLogo} style={styles.logo} />
-        </a>
-        <Text>
-          Overall winners of EthCapeTown hackathon
+          <Text>
+            Overall winners of EthCapeTown hackathon
         </Text>
+        </a>
       </Card>
     </Box>
     <Box mt={70} mb={70} width={[1, 1, 0.20]} color="black">
@@ -49,10 +49,10 @@ const Partners = () => <div width="100%">
         <a
           href="https://wildtomorrowfund.org">
           <img src={WildTomorrowFundLogo} style={styles.logo} />
-        </a>
-        <Text>
-          Wild Tomorrow Fund, our wildlife conservation partner
+          <Text>
+            Wild Tomorrow Fund, our wildlife conservation partner
         </Text>
+        </a>
       </Card>
     </Box>
   </Flex>

@@ -102,6 +102,7 @@ module Box = {
   external make:
     (
       ~p: int=?,
+      ~m: int=?,
       ~mb: int=?,
       ~children: React.element,
       ~width: array(float)=?,
@@ -109,7 +110,7 @@ module Box = {
       ~bg: string=?,
       ~className: string=?,
       ~onClickEvent: ReactEvent.Mouse.t => unit=?,
-      ~onClick: unit => unit=?,
+      ~onClick: unit => unit=?
     ) =>
     React.element =
     "Box";

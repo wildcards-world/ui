@@ -17,6 +17,10 @@ export const useGetPatronageOwed = (tokenId) => {
   const { useCacheCall } = drizzleReactHooks.useDrizzle()
   return useCacheCall("WildcardSteward_v0", 'patronageOwed', tokenId)
 }
+export const useGetForeclosureTime = (tokenId) => {
+  const { useCacheCall } = drizzleReactHooks.useDrizzle()
+  return useCacheCall("WildcardSteward_v0", 'foreclosureTime', tokenId)
+}
 
 export const useUserBalance = () => {
   return drizzleReactHooks.useDrizzleState(state =>
