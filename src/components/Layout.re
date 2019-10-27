@@ -38,7 +38,7 @@ let make = () => {
                        ReactEvent.Mouse.preventDefault(event);
                        ReasonReactRouter.push("#");
                      }}>
-                     <S> ">> HOME <<" </S>
+                     <S> "HOME" </S>
                    </a>
                  : React.null}
               <a

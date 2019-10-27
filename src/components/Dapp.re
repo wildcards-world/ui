@@ -108,50 +108,46 @@ module DefaultLook = {
          <React.Fragment>
            <Rimble.Flex className=Styles.gorillaBox>
              <Rimble.Box>
-               <div className=Styles.gorillaBack>
-                 <img
-                   onClick={event => {
-                     ReactEvent.Mouse.preventDefault(event);
-                     ReasonReactRouter.push("#details/" ++ getName(Simon));
-                   }}
-                   className={Styles.headerImg(140.)}
-                   src=gorilla2
-                 />
-                 <div className=Styles.gorillaText>
-                   <h2> {React.string("Simon")} </h2>
-                   <Offline requireSmartContractsLoaded=true>
-                     {if (ownSimon) {
-                        <React.Fragment>
-                          <UpdatePriceModal gorilla=Simon />
-                          <br />
-                          <UpdateDeposit gorilla=Simon />
-                          <br />
-                          <ShareSocial />
-                        </React.Fragment>;
-                      } else {
-                        <React.Fragment>
-                          <PriceDisplay tokenId={Some("0")} />
-                          <BuyModal tokenId={Some("0")} />
-                        </React.Fragment>;
-                      }}
-                   </Offline>
-                   <p>
-                     <small> <S> "Harberger Tax" </S> </small>
-                     <br />
-                     <small> <S> "20% per month" </S> </small>
-                   </p>
-                 </div>
-               </div>
-             </Rimble.Box>
-             <Rimble.Box>
-               <img
+               <a
                  onClick={event => {
                    ReactEvent.Mouse.preventDefault(event);
                    ReasonReactRouter.push("#details/" ++ getName(Vitalik));
-                 }}
-                 className={Styles.headerImg(155.)}
-                 src=gorilla1
-               />
+                 }}>
+                 <img className={Styles.headerImg(150.)} src=gorilla2 />
+               </a>
+               <div className=Styles.gorillaText>
+                 <h2> {React.string("Simon")} </h2>
+                 <Offline requireSmartContractsLoaded=true>
+                   {if (ownSimon) {
+                      <React.Fragment>
+                        <UpdatePriceModal gorilla=Simon />
+                        <br />
+                        <UpdateDeposit gorilla=Simon />
+                        <br />
+                        <ShareSocial />
+                      </React.Fragment>;
+                    } else {
+                      <React.Fragment>
+                        <PriceDisplay tokenId={Some("0")} />
+                        <BuyModal tokenId={Some("0")} />
+                      </React.Fragment>;
+                    }}
+                 </Offline>
+                 <p>
+                   <small> <S> "Harberger Tax" </S> </small>
+                   <br />
+                   <small> <S> "20% per month" </S> </small>
+                 </p>
+               </div>
+             </Rimble.Box>
+             <Rimble.Box>
+               <a
+                 onClick={event => {
+                   ReactEvent.Mouse.preventDefault(event);
+                   ReasonReactRouter.push("#details/" ++ getName(Vitalik));
+                 }}>
+                 <img className={Styles.headerImg(150.)} src=gorilla1 />
+               </a>
                <div>
                  <div className=Styles.gorillaText>
                    <h2> {React.string("Vitalik")} </h2>
@@ -180,39 +176,36 @@ module DefaultLook = {
                </div>
              </Rimble.Box>
              <Rimble.Box>
-               <div className=Styles.gorillaBack>
-                 <img
-                   onClick={event => {
-                     ReactEvent.Mouse.preventDefault(event);
-                     ReasonReactRouter.push("#details/" ++ getName(Andy));
-                   }}
-                   className={Styles.headerImg(140.)}
-                   src=gorilla3
-                 />
-                 <div className=Styles.gorillaText>
-                   <h2> {React.string("Andy")} </h2>
-                   <Offline requireSmartContractsLoaded=true>
-                     {if (ownAndy) {
-                        <React.Fragment>
-                          <UpdatePriceModal gorilla=Andy />
-                          <br />
-                          <UpdateDeposit gorilla=Andy />
-                          <br />
-                          <ShareSocial />
-                        </React.Fragment>;
-                      } else {
-                        <React.Fragment>
-                          <PriceDisplay tokenId={Some("1")} />
-                          <BuyModal tokenId={Some("1")} />
-                        </React.Fragment>;
-                      }}
-                   </Offline>
-                   <p>
-                     <small> <S> "Harberger Tax" </S> </small>
-                     <br />
-                     <small> <S> "20% per month" </S> </small>
-                   </p>
-                 </div>
+               <a
+                 onClick={event => {
+                   ReactEvent.Mouse.preventDefault(event);
+                   ReasonReactRouter.push("#details/" ++ getName(Vitalik));
+                 }}>
+                 <img className={Styles.headerImg(150.)} src=gorilla3 />
+               </a>
+               <div className=Styles.gorillaText>
+                 <h2> {React.string("Andy")} </h2>
+                 <Offline requireSmartContractsLoaded=true>
+                   {if (ownAndy) {
+                      <React.Fragment>
+                        <UpdatePriceModal gorilla=Andy />
+                        <br />
+                        <UpdateDeposit gorilla=Andy />
+                        <br />
+                        <ShareSocial />
+                      </React.Fragment>;
+                    } else {
+                      <React.Fragment>
+                        <PriceDisplay tokenId={Some("1")} />
+                        <BuyModal tokenId={Some("1")} />
+                      </React.Fragment>;
+                    }}
+                 </Offline>
+                 <p>
+                   <small> <S> "Harberger Tax" </S> </small>
+                   <br />
+                   <small> <S> "20% per month" </S> </small>
+                 </p>
                </div>
              </Rimble.Box>
            </Rimble.Flex>
