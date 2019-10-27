@@ -3,7 +3,7 @@ import { useCountUp } from "react-countup"
 
 export default ({ totalRaised }) => {
   const res = totalRaised.split(".")
-  const decimals = parseInt(res[1])
+  const decimals = parseInt(res[1].substring(0, 9))
 
   const num = res[1];
   const regex = /^0*/g;
@@ -32,7 +32,7 @@ export default ({ totalRaised }) => {
       } else {
         update(decimals)
         setStyles({ color: "green", fontWeight: "bold" })
-        timeout = setTimeout(() => setStyles({}), 900)
+        timeout = setTimeout(() => setStyles({}), 6000)
       }
     }
     return () => clearTimeout(timeout)
