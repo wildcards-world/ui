@@ -50,7 +50,7 @@ let calculateDepositDuration = (deposit, price, numerator, denominator) => {
 
   depositBn
   ->BN.divGet(.
-      if (pricePerSecond->BN.gtGet(. pricePerSecond)) {
+      if (pricePerSecond->BN.gtGet(. BN.new_("0"))) {
         pricePerSecond;
       } else {
         BN.new_("1");
@@ -164,7 +164,8 @@ module Transaction = {
             numerator,
             denominator,
           ),
-          maxAvailableDeposit,
+          Js.Math.max_float(0., maxAvailableDeposit->float_of_string)
+          ->string_of_float,
         );
       };
 
