@@ -1,8 +1,8 @@
 import React, { useState, useEffect, Fragment } from "react"
 import { Heading, Box, Input, Button, Text, Slider, Flex, Tooltip, Icon } from "rimble-ui"
-
+import moment from 'moment'
 import { useDebouncedCallback } from 'use-debounce';
-
+import { getCountDisplay, calculateTimeRemainingFromSeconds } from './components/CountDown'
 const inputStyle = {
   width: '100%'
 }
@@ -119,6 +119,9 @@ export default ({
         <br />
       </Box>
     </Flex>
+
+    {/* <p>{depositTimeInSeconds} , {moment.duration(depositTimeInSeconds, 'seconds').humanize(true)}</p> */}
+    <p>Your deposit will run out in {getCountDisplay(calculateTimeRemainingFromSeconds(depositTimeInSeconds))}.</p>
     <Flex>
       <Box p={2} mb={2} width={[1, 0.7]}>
         <Button onClick={onSubmitBuy}>
