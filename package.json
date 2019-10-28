@@ -34,7 +34,7 @@
     "build": "parcel build ./public/index.html --public-url ./",
     "cra:start": "react-scripts start",
     "cra:build": "react-scripts build",
-    "test": "echo 'no tests yet'",
+    "test": "react-scripts test",
     "re:build": "bsb -make-world -clean-world",
     "re:watch": "bsb -make-world -clean-world -w",
     "deploy": "npm run build && gh-pages -d dist --remote main",
@@ -42,6 +42,11 @@
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "/node_modules/(?!@glennsl/bs-|bs-platform).+\\.js$"
+    ]
   },
   "browserslist": {
     "production": [
@@ -56,9 +61,9 @@
     ]
   },
   "devDependencies": {
-    "@babel/core": "^7.6.2",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/plugin-transform-runtime": "^7.6.2",
+    "@glennsl/bs-jest": "^0.4.9",
     "@types/jest": "24.0.15",
     "@types/node": "12.0.10",
     "@types/react": "16.8.22",
