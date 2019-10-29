@@ -111,7 +111,7 @@ module DefaultLook = {
                <a
                  onClick={event => {
                    ReactEvent.Mouse.preventDefault(event);
-                   ReasonReactRouter.push("#details/" ++ getName(Vitalik));
+                   ReasonReactRouter.push("#details/" ++ getName(Simon));
                  }}>
                  <img className={Styles.headerImg(150.)} src=gorilla2 />
                </a>

@@ -28,7 +28,13 @@ let make = () => {
     <header className=Styles.header>
       <nav className=Styles.nav>
         <div className=Styles.navBox>
-          <img className=Styles.headerLogo src=smallIcon />
+          <a
+            onClick={event => {
+              ReactEvent.Mouse.preventDefault(event);
+              ReasonReactRouter.push("#");
+            }}>
+            <img className=Styles.headerLogo src=smallIcon />
+          </a>
           <ul className=Styles.navList>
             <li className=Styles.navListItem>
               {detailView
