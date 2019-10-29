@@ -60,7 +60,9 @@ let useDepositAbleToWithdrawUsd = () => {
 
 let useForeclosureTime = () =>
   useCacheCall((), "VitalikSteward", "foreclosureTime")
-  ->Belt.Option.map(Js.Date.make);
+  ->Belt.Option.map(stringTimeStamp =>
+      MomentRe.momentWithUnix(int_of_string(stringTimeStamp))
+    );
 
 let useCurrentPriceWei = () => useCacheCall((), "VitalikSteward", "price");
 let useCurrentPriceEth = () =>

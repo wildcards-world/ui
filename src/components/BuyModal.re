@@ -115,7 +115,7 @@ module Transaction = {
         )
       };
 
-    let gorillaName = Gorilla.getName(tokenId);
+    let gorillaName = Gorilla.getNameFromId(tokenId);
 
     let maxAvailableDeposit =
       BN.new_(userBalance)
@@ -298,6 +298,7 @@ let make = (~tokenId: option(string)) => {
   };
   let onOpenModal = event => {
     ReactEvent.Form.preventDefault(event);
+    ReactEvent.Form.stopPropagation(event);
     setModalOpen(_ => true);
   };
 

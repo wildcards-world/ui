@@ -63,7 +63,7 @@ module Transaction = {
     let availableDeposit =
       (
         switch (gorilla) {
-        | None => useDepositAbleToWithdrawWei()
+        | NoGorilla => useDepositAbleToWithdrawWei()
         | _ => useDepositAbleToWithdrawWeiNew(currentUser)
         }
       )
@@ -120,14 +120,14 @@ let make = (~gorilla: Gorilla.gorilla) => {
 
   let onUnlockMetamaskAndOpenModal = event => {
     ReactEvent.Form.preventDefault(event);
-
+    ReactEvent.Form.stopPropagation(event);
     setModalOpen(_ => true);
   };
 
   <React.Fragment>
     <Rimble.Box p=2>
       <Rimble.Button onClick=onUnlockMetamaskAndOpenModal>
-        {React.string("Add/Remove Deposit")}
+        {React.string("Deposit")}
       </Rimble.Button>
     </Rimble.Box>
     <Rimble.Modal isOpen=isModalOpen>

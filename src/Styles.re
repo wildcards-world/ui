@@ -115,15 +115,6 @@ let wildCardBlue = rgb(114, 199, 215);
 let colorGreen = style([color(wildCardGreen)]);
 let colorBlue = style([color(wildCardBlue)]);
 
-let gorillaBack =
-  style(
-    [] // filter([`grayscale(90.)]),
-    // hover([
-    //   filter([`grayscale(0.)]),
-    //   transition(~duration=1000, ~delay=0, ~timingFunction=ease, "all"),
-    // ]),
-  );
-
 let gorillaBox = style([marginRight(`percent(12.))]);
 
 let ownedGorillaImg =
@@ -137,13 +128,23 @@ let ownedGorillaImg =
 
 let headerImg = enlargement =>
   style([
-    position(relative),
+    // TODO: use `vertical-align: middle`; to centre the image
+    // position(relative),
+    // display(block),
+    cursor(`pointer),
     zIndex(1),
     maxHeight(px(500)),
     maxWidth(`percent(enlargement)),
     textAlign(center),
-    // transform(translateX(`percent(-25.))),
+    hover([
+      filter([`saturate(150.), `brightness(110.)]),
+      zIndex(2),
+      overflow(visible),
+      transform(scale(1.1, 1.1)),
+      transition(~duration=100, ~delay=0, ~timingFunction=ease, "all"),
+    ]),
   ]);
+
 let gorillaText = style([transform(translateX(`percent(25.)))]);
 
 let horizantalBlueTile =
@@ -357,3 +358,5 @@ let betaBanner =
     top(`px(0)),
     width(`px(80)),
   ]);
+
+let forwardBackButton = style([width(`percent(100.)), height(`em(5.))]);

@@ -21,6 +21,10 @@ module Hooks = {
   external useGetAvailableDeposit: string => option(string) =
     "useGetAvailableDeposit";
 
+  [@bs.module "./jsDrizzleReactHooks.js"]
+  external useGetForeclosureTime: string => option(string) =
+    "useGetForeclosureTime";
+
   // TODO: Need to make this return a `some` since drizzle has a bug where if the contract isn't initialised then it throws an error!
   let useCacheCall = () => useDrizzle()##useCacheCall;
 

@@ -4,12 +4,7 @@ open Providers;
 module Router = {
   [@react.component]
   let make = () => {
-    let url = ReasonReactRouter.useUrl();
-    switch (url.hash) {
-    // | "/dev-only/hidden/demo" =>
-    //   <Offline requireSmartContractsLoaded=true> <Demo /> </Offline>
-    | _ => <Layout />
-    };
+    <Layout />;
   };
 };
 ReactDOMRe.renderToElementWithId(

@@ -20,6 +20,26 @@ let useTotalPatronageWeiNew = () => {
   ->addGet(. patronageOwed1)
   ->addGet(. patronageOwed2);
 };
+let useTotalPatronageTokenWeiNew = tokenId => {
+  let totalCollected =
+    useGetTotalCollected(tokenId)->mapWithDefault("0", a => a)->BN.new_;
+  let patronageOwed =
+    useGetPatronageOwed(tokenId)->mapWithDefault("0", a => a)->BN.new_;
+
+  totalCollected->addGet(. patronageOwed);
+};
+let useTotalPatronageTokenEthNew = (tokenId: string) =>
+  useTotalPatronageTokenWeiNew(tokenId)->toStringGet(.)->fromWeiToEth;
+let useTotalPatronageTokenUsdNew = (userAddress: string) => {
+  let totalPatronageTokenEth = useTotalPatronageTokenEthNew(userAddress);
+  let currentUsdEthPrice = useUsdPrice();
+
+  switch (totalPatronageTokenEth, currentUsdEthPrice) {
+  | (totalDeposit, Some(conversion)) =>
+    Some(toFixedWithPrecision(fromString(totalDeposit) *. conversion, 2))
+  | _ => None
+  };
+};
 
 let useDepositAbleToWithdrawWeiNew = (userAddress: string) =>
   useGetAvailableDeposit(userAddress);
@@ -60,9 +80,21 @@ let useAddDepositTransactionNew = () =>
   (useCacheSend())(. "WildcardSteward_v0", "depositWei");
 let useWithdrawTransactionNew = () =>
   (useCacheSend())(. "WildcardSteward_v0", "withdrawDeposit");
+// TODO: this should use a BN not an int (int is bad :D)
 let useCurrentPatronNew: int => option(string) = {
   tokenId =>
     (useCacheCall())(. "WildcardSteward_v0", "currentPatron", tokenId);
 };
 let useBuyTransactionNew = () =>
   (useCacheSend())(. "WildcardSteward_v0", "buy");
+let useDepositAvailableToWithdrawNew = patron =>
+  (useCacheCall())(. "WildcardSteward_v0", "depositAbleToWithdraw", patron);
+// let useAvailableDepositNew = patron =>
+//   (useCacheCall())(. "WildcardSteward_v0", "depositAbleToWithdraw", patron);
+
+let useForeclosureTimeNew = id => {
+  let date = useGetForeclosureTime(id);
+  date->map(stringTimeStamp =>
+    MomentRe.momentWithUnix(int_of_string(stringTimeStamp))
+  );
+};

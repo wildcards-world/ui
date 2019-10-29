@@ -94,13 +94,13 @@ let make = (~gorilla: Gorilla.gorilla) => {
 
   let onUnlockMetamaskAndOpenModal = event => {
     ReactEvent.Form.preventDefault(event);
-
+    ReactEvent.Form.stopPropagation(event);
     setModalOpen(_ => true);
   };
 
   <React.Fragment>
     <Rimble.Button onClick=onUnlockMetamaskAndOpenModal>
-      {React.string("Update Price")}
+      {React.string("Price")}
     </Rimble.Button>
     <Rimble.Modal isOpen=isModalOpen>
       <Rimble.Card width={Rimble.AnyStr("420px")} p=0>
