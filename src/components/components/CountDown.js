@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 const nullTime = {
   years: 0,
+  months: 0,
   days: 0,
   hours: 0,
   minutes: 0,
@@ -9,7 +10,7 @@ const nullTime = {
   // millisec: 0,
 }
 
-const Countdown = ({ countDown }) => {
+export const getCountDisplay = (countDown, leadingZeros = false) => {
   const addLeadingZeros = (value) => {
     let valueS = String(value);
     while (valueS.length < 2) {
@@ -17,52 +18,54 @@ const Countdown = ({ countDown }) => {
     }
     return valueS;
   }
-  const displayTime = (unit) => countDown[unit] > 0 && `${addLeadingZeros(countDown[unit])} ${unit} `
+  const displayTime = (unit) => countDown[unit] > 0 ? leadingZeros ? `${addLeadingZeros(countDown[unit])} ${unit} ` : `${countDown[unit]} ${unit} ` : ""
 
-  return (
-    <span>
-      {displayTime("years")}{displayTime("days")}{displayTime("hours")}{displayTime("minutes")}{displayTime("seconds")}
-    </span >
-  );
+  return `${displayTime("years")}${displayTime("months")}${displayTime("days")}${displayTime("hours")}${displayTime("minutes")}${displayTime("seconds")}`;
 }
 
-const calculateCountdown = (endDateMoment) => {
-  const endDate = endDateMoment.toDate()
-  // let diff = (new Date(endDate)).
-  let diff = (Date.parse((new Date(endDate)).toUTCString()) - Date.parse((new Date()).toUTCString())) / 1000;
-
+export const calculateTimeRemainingFromSeconds = (numSeconds) => {
   // clear countdown when date is reached
-  if (diff <= 0) return nullTime;
+  if (numSeconds <= 0) return { ...nullTime };
 
   const timeLeft = { ...nullTime };
 
-  // calculate time difference between now and expected date
-  if (diff >= (365.25 * 86400)) { // 365.25 * 24 * 60 * 60
-    timeLeft.years = Math.floor(diff / (365.25 * 86400));
-    diff -= timeLeft.years * 365.25 * 86400;
+  // calculate time numSecondserence between now and expected date
+  // NOTE: this rounds off the solar year to the nearest day (ie it is off by 5 hours 48 minutes 46 seconds)
+  if (numSeconds >= 31536000) { // 365 * 24 * 60 * 60
+    timeLeft.years = Math.floor(numSeconds / (31536000));
+    numSeconds -= timeLeft.years * 31536000;
   }
-  if (diff >= 86400) { // 24 * 60 * 60
-    timeLeft.days = Math.floor(diff / 86400);
-    diff -= timeLeft.days * 86400;
+  if (numSeconds >= 2628000) { // (365 * 24 * 60 * 60) / 12
+    timeLeft.months = Math.floor(numSeconds / 2628000);
+    numSeconds -= timeLeft.months * 2628000;
   }
-  if (diff >= 3600) { // 60 * 60
-    timeLeft.hours = Math.floor(diff / 3600);
-    diff -= timeLeft.hours * 3600;
+  if (numSeconds >= 86400) { // 24 * 60 * 60
+    timeLeft.days = Math.floor(numSeconds / 86400);
+    numSeconds -= timeLeft.days * 86400;
   }
-  if (diff >= 60) {
-    timeLeft.minutes = Math.floor(diff / 60);
-    diff -= timeLeft.minutes * 60;
+  if (numSeconds >= 3600) { // 60 * 60
+    timeLeft.hours = Math.floor(numSeconds / 3600);
+    numSeconds -= timeLeft.hours * 3600;
   }
-  timeLeft.seconds = diff;
+  if (numSeconds >= 60) {
+    timeLeft.minutes = Math.floor(numSeconds / 60);
+    numSeconds -= timeLeft.minutes * 60;
+  }
+  timeLeft.seconds = numSeconds;
 
   return timeLeft;
 }
 
-// Functional component for sake of reactHooks...
+const calculateCountdown = (endDateMoment) => {
+  const endDate = endDateMoment.toDate()
+  let numSeconds = (Date.parse((new Date(endDate)).toUTCString()) - Date.parse((new Date()).toUTCString())) / 1000;
+
+  return calculateTimeRemainingFromSeconds(numSeconds)
+}
+
 export default ({ endDateMoment }) => {
 
   const [countDown, setCountdown] = useState(nullTime);
-  // const [, forceUpdate] = React.useState(0);
 
   useEffect(() => {
     const date = calculateCountdown(endDateMoment);
@@ -71,11 +74,10 @@ export default ({ endDateMoment }) => {
 
       const date = calculateCountdown(endDateMoment);
       setCountdown(date);
-      // forceUpdate(n => !n)
 
     }, 1000);
     return () => clearTimeout(interval);
   }, [endDateMoment]);
 
-  return <Countdown countDown={countDown} />
+  return <React.Fragment >{getCountDisplay(countDown)}</React.Fragment>
 }
