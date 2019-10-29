@@ -29,6 +29,7 @@ let make = () => {
       <nav className=Styles.nav>
         <div className=Styles.navBox>
           <a
+            className=Styles.clickableLink
             onClick={event => {
               ReactEvent.Mouse.preventDefault(event);
               ReasonReactRouter.push("#");

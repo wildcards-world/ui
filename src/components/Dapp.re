@@ -113,7 +113,13 @@ module DefaultLook = {
                    ReactEvent.Mouse.preventDefault(event);
                    ReasonReactRouter.push("#details/" ++ getName(Simon));
                  }}>
-                 <img className={Styles.headerImg(150.)} src=gorilla2 />
+                 <img
+                   className={Styles.mergeStyles([
+                     Styles.headerImg(150.),
+                     Styles.clickableLink,
+                   ])}
+                   src=gorilla2
+                 />
                </a>
                <div className=Styles.gorillaText>
                  <h2> {React.string("Simon")} </h2>
@@ -146,7 +152,13 @@ module DefaultLook = {
                    ReactEvent.Mouse.preventDefault(event);
                    ReasonReactRouter.push("#details/" ++ getName(Vitalik));
                  }}>
-                 <img className={Styles.headerImg(150.)} src=gorilla1 />
+                 <img
+                   className={Styles.mergeStyles([
+                     Styles.headerImg(150.),
+                     Styles.clickableLink,
+                   ])}
+                   src=gorilla1
+                 />
                </a>
                <div>
                  <div className=Styles.gorillaText>
@@ -179,9 +191,15 @@ module DefaultLook = {
                <a
                  onClick={event => {
                    ReactEvent.Mouse.preventDefault(event);
-                   ReasonReactRouter.push("#details/" ++ getName(Vitalik));
+                   ReasonReactRouter.push("#details/" ++ getName(Andy));
                  }}>
-                 <img className={Styles.headerImg(150.)} src=gorilla3 />
+                 <img
+                   className={Styles.mergeStyles([
+                     Styles.headerImg(150.),
+                     Styles.clickableLink,
+                   ])}
+                   src=gorilla3
+                 />
                </a>
                <div className=Styles.gorillaText>
                  <h2> {React.string("Andy")} </h2>
