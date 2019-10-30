@@ -69,3 +69,57 @@ let getImage = gorilla =>
     %bs.raw
     {|require('../../img/gorillas/gorilla3.png')|}
   };
+
+let useBuy = gorilla => {
+  open Hooks;
+
+  let gorillaId = getId(gorilla);
+  switch (gorillaId) {
+  | None =>
+    let buyObj = useBuyTransaction();
+    (
+      (
+        (newPrice, txObject) =>
+          buyObj##send(. newPrice->Web3Utils.toWeiFromEth, txObject)
+      ),
+      buyObj##_TXObjects,
+    );
+  | Some(tokenIdSet) =>
+    let buyObj = useBuyTransactionNew();
+    (
+      (
+        (newPrice, txObject) =>
+          buyObj##send(.
+            tokenIdSet,
+            newPrice->Web3Utils.toWeiFromEth,
+            txObject,
+          )
+      ),
+      buyObj##_TXObjects,
+    );
+  };
+};
+
+let useCurrentPrice = gorilla => {
+  open Hooks;
+  open Accounting;
+
+  let gorillaId = getId(gorilla);
+  switch (gorillaId) {
+  | None => useCurrentPriceWei()->defaultZeroS
+  | Some(tokenIdSet) => useCurrentPriceWeiNew(tokenIdSet)->defaultZeroS
+  };
+};
+
+// TODO: you could get this from the contract, but seems like a waste
+let pledgeRate = gorilla => {
+  open Hooks;
+  open Accounting;
+
+  let gorillaId = getId(gorilla);
+  ();
+  switch (gorillaId) {
+  | None => ("3", "10", 0.025, 40.)
+  | Some(tokenIdSet) => ("24", "10", 0.2, 5.)
+  };
+};

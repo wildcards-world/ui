@@ -3,6 +3,7 @@ open Hooks;
 open Providers.DrizzleProvider;
 open Belt.Option;
 open Belt;
+open Accounting;
 
 module BuyInput = {
   [@bs.module "./BuyModelInput"] [@react.component]
@@ -25,10 +26,6 @@ module BuyInput = {
     React.element =
     "default";
 };
-
-let defaultZeroF = maybeFloat => mapWithDefault(maybeFloat, 0., a => a);
-let defaultZeroI = maybeInt => mapWithDefault(maybeInt, -1, a => a);
-let defaultZeroS = maybeString => mapWithDefault(maybeString, "0", a => a);
 
 let calcPricePerSecond = (price, numerator, denominator) => {
   let priceBn = BN.new_(price);
@@ -74,48 +71,16 @@ let calcRequiredDepositForTime = (time, price, numerator, denominator) => {
 
 module Transaction = {
   [@react.component]
-  let make = (~tokenId: option(string)) => {
+  let make = (~gorilla: Gorilla.gorilla) => {
     let currentUser = useCurrentUser();
-    let (buyFunc, txObjects) =
-      switch (tokenId) {
-      | None =>
-        let buyObj = useBuyTransaction();
-        (
-          (
-            (newPrice, txObject) =>
-              buyObj##send(. newPrice->Web3Utils.toWeiFromEth, txObject)
-          ),
-          buyObj##_TXObjects,
-        );
-      | Some(tokenIdSet) =>
-        let buyObj = useBuyTransactionNew();
-        (
-          (
-            (newPrice, txObject) =>
-              buyObj##send(.
-                tokenIdSet,
-                newPrice->Web3Utils.toWeiFromEth,
-                txObject,
-              )
-          ),
-          buyObj##_TXObjects,
-        );
-      };
+    let (buyFunc, txObjects) = Gorilla.useBuy(gorilla);
     let userBalance = DrizzleReact.Hooks.useUserBalance()->defaultZeroS;
 
-    let (currentPriceWei, numerator, denominator, ratio, ratioInverse) =
-      switch (tokenId) {
-      | None => (useCurrentPriceWei()->defaultZeroS, "3", "10", 0.025, 40.)
-      | Some(tokenIdSet) => (
-          useCurrentPriceWeiNew(tokenIdSet)->defaultZeroS,
-          "24",
-          "10",
-          0.2,
-          5.,
-        )
-      };
+    let (numerator, denominator, ratio, ratioInverse) =
+      Gorilla.pledgeRate(gorilla);
+    let currentPriceWei = Gorilla.useCurrentPrice(gorilla);
 
-    let gorillaName = Gorilla.getNameFromId(tokenId);
+    let gorillaName = Gorilla.getName(gorilla);
 
     let maxAvailableDepositBN =
       BN.new_(userBalance)
@@ -283,7 +248,7 @@ module Transaction = {
            />
          : <Rimble.Box>
              <p className=Styles.textOnlyModalText>
-               {ReasonReact.string(
+               {React.string(
                   "You do not have enough ether to buy " ++ gorillaName ++ ".",
                 )}
              </p>
@@ -292,15 +257,8 @@ module Transaction = {
   };
 };
 
-module ModalContainer = {
-  [@react.component]
-  let make = (~tokenId: option(string)) => {
-    <Transaction tokenId />;
-  };
-};
-
 [@react.component]
-let make = (~tokenId: option(string)) => {
+let make = (~gorilla: Gorilla.gorilla) => {
   let (isModalOpen, setModalOpen) = React.useState(() => false);
   let isProviderSelected = useIsProviderSelected();
 
@@ -335,7 +293,7 @@ let make = (~tokenId: option(string)) => {
           m=3
           onClick={_ => setModalOpen(_ => false)}
         />
-        <ModalContainer tokenId />
+        <Transaction gorilla />
       </Rimble.Card>
     </Rimble.Modal>
   </React.Fragment>;
