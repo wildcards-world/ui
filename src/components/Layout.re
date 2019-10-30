@@ -54,7 +54,7 @@ let make = () => {
                 href="https://blog.wildcards.world/">
                 <S> "BLOG" </S>
               </a>
-              <Rimble.Button _as="a" href="/signup" target="\_blank">
+              <Rimble.Button _as="a" href="#signup" target="\_blank">
                 <S> "Subscribe" </S>
               </Rimble.Button>
             </li>

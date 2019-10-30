@@ -117,12 +117,14 @@ module Transaction = {
 
     let gorillaName = Gorilla.getNameFromId(tokenId);
 
-    let maxAvailableDeposit =
+    let maxAvailableDepositBN =
       BN.new_(userBalance)
       ->BN.subGet(. BN.new_("3000000000000000")) // 0.003 eth as gas
-      ->BN.subGet(. BN.new_(currentPriceWei))
-      ->BN.toStringGet(.)
-      ->Web3Utils.fromWeiToEth;
+      ->BN.subGet(. BN.new_(currentPriceWei));
+    let maxAvailableDeposit =
+      maxAvailableDepositBN->BN.toStringGet(.)->Web3Utils.fromWeiToEth;
+
+    let isAbleToBuy = maxAvailableDepositBN->BN.gtGet(. BN.new_("0"));
 
     let currentPriceEth = Web3Utils.fromWeiToEth(currentPriceWei);
     let currentPriceFloat = Float.fromString(currentPriceEth)->defaultZeroF;
@@ -264,20 +266,28 @@ module Transaction = {
     };
 
     <TxTemplate txObjects>
-      <BuyInput
-        onSubmitBuy
-        setNewPrice
-        newPrice
-        deposit
-        depositTimeInSeconds
-        setDeposit
-        patronage
-        updatePatronage
-        priceSliderInitialMax
-        maxAvailableDeposit
-        gorillaName
-        depositForAYear
-      />
+      {isAbleToBuy
+         ? <BuyInput
+             onSubmitBuy
+             setNewPrice
+             newPrice
+             deposit
+             depositTimeInSeconds
+             setDeposit
+             patronage
+             updatePatronage
+             priceSliderInitialMax
+             maxAvailableDeposit
+             gorillaName
+             depositForAYear
+           />
+         : <Rimble.Box>
+             <p className=Styles.textOnlyModalText>
+               {ReasonReact.string(
+                  "You do not have enough ether to buy " ++ gorillaName ++ ".",
+                )}
+             </p>
+           </Rimble.Box>}
     </TxTemplate>;
   };
 };

@@ -16,6 +16,8 @@ let app =
     fontSize(px(16)),
   ]);
 
+let textOnlyModalText = style([padding(em(2.))]);
+
 let centerText = style([textAlign(center)]);
 
 // Use flex box to center
