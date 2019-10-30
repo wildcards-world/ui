@@ -117,9 +117,32 @@ let pledgeRate = gorilla => {
   open Accounting;
 
   let gorillaId = getId(gorilla);
-  ();
+
   switch (gorillaId) {
   | None => ("3", "10", 0.025, 40.)
   | Some(tokenIdSet) => ("24", "10", 0.2, 5.)
   };
+};
+
+let useCurrentPriceEth = gorilla => {
+  open Belt.Option;
+  let gorillaId = getId(gorilla);
+  (
+    switch (gorillaId) {
+    | None => Hooks.useCurrentPriceEth()
+    | Some(tokenIdSet) => Hooks.useCurrentPriceEthNew(tokenIdSet)
+    }
+  )
+  ->mapWithDefault("loading", a => a);
+};
+let useCurrentPriceUsd = gorilla => {
+  open Belt.Option;
+  let gorillaId = getId(gorilla);
+  (
+    switch (gorillaId) {
+    | None => Hooks.useCurrentPriceUsd()
+    | Some(tokenIdSet) => Hooks.useCurrentPriceUsdNew(tokenIdSet)
+    }
+  )
+  ->mapWithDefault("loading", a => a);
 };

@@ -35,22 +35,22 @@ module GorillaOnLandingPage = {
 
     <Rimble.Box>
       <a
+        className=Styles.clickableLink
         onClick={event => {
           ReactEvent.Mouse.preventDefault(event);
           ReasonReactRouter.push("#details/" ++ name);
         }}>
         <img
-          className={Styles.mergeStyles([
-            Styles.headerImg(150.),
-            Styles.clickableLink,
-          ])}
+          className={Styles.headerImg(150.)}
           src={Gorilla.getImage(gorilla)}
         />
+        <div className=Styles.gorillaText>
+          <h2> {React.string(name)} </h2>
+        </div>
       </a>
       <div className=Styles.gorillaText>
-        <h2> {React.string(name)} </h2>
         <Offline requireSmartContractsLoaded=true>
-          <PriceDisplay tokenId={Some("0")} />
+          <PriceDisplay gorilla />
           {owned ? <EditButton gorilla /> : <BuyModal gorilla />}
         </Offline>
       </div>
@@ -136,7 +136,7 @@ module DefaultLook = {
                    </React.Fragment>;
                  } else {
                    <React.Fragment>
-                     <PriceDisplay tokenId />
+                     <PriceDisplay gorilla />
                      <BuyModal gorilla />
                    </React.Fragment>;
                  };
@@ -215,13 +215,37 @@ module GorillaInfo = {
     let totalPatronageUsd =
       GeneralHooks.useTotalPatronageUsdGorilla(gorilla)
       ->mapWithDefault("Loading", a => a);
+    // let currentPrice = GeneralHooks.use
     let foreclosureTime = GeneralHooks.useForeclosureTimeGorilla(gorilla);
     let definiteTime = foreclosureTime->mapWithDefault(Loading, a => Date(a));
-
+    let (_, _, ratio, _) = Gorilla.pledgeRate(gorilla);
+    let currentPrice = Gorilla.useCurrentPriceEth(gorilla);
+    let currentPriceUsd = Gorilla.useCurrentPriceUsd(gorilla);
+    let monthlyPledgeEth =
+      Js.Float.toString(
+        Belt.Float.fromString(currentPrice)->Accounting.defaultZeroF *. ratio,
+      );
+    let monthlyPledgeUsd =
+      Js.Float.toString(
+        Belt.Float.fromString(currentPriceUsd)->Accounting.defaultZeroF
+        *. ratio,
+      );
+    let monthlyRate = Js.Float.toString(ratio *. 100.);
     // TODO: the ethereum address is really terribly displayed. But the default in Rimble UI includes a QR code scanner (which is really ugly).
     // https://rimble.consensys.design/components/rimble-ui/EthAddress#props
     // https://github.com/ConsenSys/rimble-ui/blob/dd470f00374a05c860b558a2cb9317861e4a0d89/src/EthAddress/index.js (maybe make a PR here with some changes)
     <Rimble.Box m=5>
+      <p>
+        <small>
+          <strong>
+            <S> {"Monthly Pledge (at " ++ monthlyRate ++ "%):"} </S>
+          </strong>
+        </small>
+        <br />
+        <S> {monthlyPledgeEth ++ " ETH"} </S>
+        <br />
+        <small> <S> {"(" ++ monthlyPledgeUsd ++ " USD)"} </S> </small>
+      </p>
       <p>
         <small> <strong> <S> "Current Patron:" </S> </strong> </small>
         <br />

@@ -5,23 +5,9 @@ open Belt.Option;
 open Components;
 
 [@react.component]
-let make = (~tokenId: option(string)) => {
-  let currentPrice =
-    (
-      switch (tokenId) {
-      | None => useCurrentPriceEth()
-      | Some(tokenIdSet) => useCurrentPriceEthNew(tokenIdSet)
-      }
-    )
-    ->mapWithDefault("loading", a => a);
-  let currentPriceUsd =
-    (
-      switch (tokenId) {
-      | None => useCurrentPriceUsd()
-      | Some(tokenIdSet) => useCurrentPriceUsdNew(tokenIdSet)
-      }
-    )
-    ->mapWithDefault("loading", a => a);
+let make = (~gorilla: Gorilla.gorilla) => {
+  let currentPrice = Gorilla.useCurrentPriceEth(gorilla);
+  let currentPriceUsd = Gorilla.useCurrentPriceUsd(gorilla);
 
   <React.Fragment>
     <p className={Styles.noMarginTop ++ " " ++ Styles.noMarginBottom}>
