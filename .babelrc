@@ -4,7 +4,9 @@
   ],
   "plugins": [
     "@babel/transform-runtime",
-    "@babel/plugin-proposal-class-properties"
+    "@babel/plugin-proposal-class-properties",
+    "transform-es2015-modules-commonjs",
+    "dynamic-import-node"
   ],
   "ignore": []
 }

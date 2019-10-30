@@ -16,6 +16,8 @@ let app =
     fontSize(px(16)),
   ]);
 
+let textOnlyModalText = style([padding(em(2.))]);
+
 let centerText = style([textAlign(center)]);
 
 // Use flex box to center
@@ -126,12 +128,10 @@ let ownedGorillaImg =
     // transform(translateX(`percent(-25.))),
   ]);
 
+let clickableLink = style([cursor(`pointer)]);
+
 let headerImg = enlargement =>
   style([
-    // TODO: use `vertical-align: middle`; to centre the image
-    // position(relative),
-    // display(block),
-    cursor(`pointer),
     zIndex(1),
     maxHeight(px(500)),
     maxWidth(`percent(enlargement)),
@@ -360,3 +360,10 @@ let betaBanner =
   ]);
 
 let forwardBackButton = style([width(`percent(100.)), height(`em(5.))]);
+
+// let mapStylesFunction = [%raw (prev, next) => "`${prev} ${next}`"];
+let mergeStyles: list(string) => string =
+  styles => {
+    /* styles->Belt.List.reduce("", mapStylesFunction);*/
+    styles->Belt.List.reduce("", (prev, next) => prev ++ " " ++ next);
+  };
