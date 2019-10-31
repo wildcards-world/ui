@@ -17,6 +17,7 @@ let app =
   ]);
 
 let textOnlyModalText = style([padding(em(2.))]);
+let totalRaisedText = size => style([fontSize(em(size))]);
 
 let centerText = style([textAlign(center)]);
 

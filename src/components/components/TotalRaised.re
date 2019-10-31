@@ -23,7 +23,7 @@ let getTotalPatronage = vitalikPatronage => {
     Js.Float.toFixedWithPrecision(
       Belt.Float.fromString(totalPatronageEth)->mapWithDefault(0., a => a)
       *. currentUsdEthPrice,
-      2,
+      ~digits=2,
     );
 
   (Some(totalPatronageEth), totaPatronageUsd);
@@ -47,15 +47,20 @@ let make = () => {
       <small>
         {React.string("Wildcards has currently raised ")}
         <br />
-        {switch (allTokensTotalRaisedEth) {
-         | Some(totalRaised) => <TotalRaisedEtherCountup totalRaised />
-         | None => React.string("Loading")
-         }}
-        <strong> {React.string(" ETH ")} </strong>
-        {React.string("(")}
-        {React.string(allTokensTotalRaisedUsd)}
-        <strong> {React.string(" USD")} </strong>
-        {React.string(")")}
+        <span className={Styles.totalRaisedText(4.)}>
+          {switch (allTokensTotalRaisedEth) {
+           | Some(totalRaised) => <TotalRaisedEtherCountup totalRaised />
+           | None => React.string("Loading")
+           }}
+          <strong> {React.string(" ETH ")} </strong>
+        </span>
+        <br />
+        <span className={Styles.totalRaisedText(2.5)}>
+          {React.string("(")}
+          {React.string(allTokensTotalRaisedUsd)}
+          <strong> {React.string(" USD")} </strong>
+          {React.string(")")}
+        </span>
         <br />
         {React.string(" for conservation.")}
       </small>

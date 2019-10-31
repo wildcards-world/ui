@@ -4,10 +4,6 @@ open Belt.Option;
 open Components;
 
 // TODO: there must be a better way of importing images in reason react...
-let gorilla1 = [%bs.raw {|require('../img/gorillas/gorilla1.png')|}];
-let gorilla2 = [%bs.raw {|require('../img/gorillas/gorilla2.png')|}];
-let gorilla3 = [%bs.raw {|require('../img/gorillas/gorilla3.png')|}];
-
 module ShareSocial = {
   [@bs.module "./components/shareSocialMedia"] [@react.component]
   external make: unit => React.element = "default";
@@ -16,6 +12,50 @@ module CountDownForeclosure = {
   [@bs.module "./components/CountDown"] [@react.component]
   external make: (~endDateMoment: MomentRe.Moment.t) => React.element =
     "default";
+};
+
+module EditButton = {
+  // let make = () => {
+  [@react.component]
+  let make = (~gorilla: Gorilla.gorilla) => {
+    <Rimble.Button
+      onClick={event => {
+        ReactEvent.Form.preventDefault(event);
+        ReasonReactRouter.push("#details/" ++ Gorilla.getName(gorilla));
+      }}>
+      {React.string("Edit")}
+    </Rimble.Button>;
+  };
+};
+
+module GorillaOnLandingPage = {
+  [@react.component]
+  let make = (~gorilla: Gorilla.gorilla, ~owned: bool) => {
+    let name = Gorilla.getName(gorilla);
+
+    <Rimble.Box>
+      <a
+        className=Styles.clickableLink
+        onClick={event => {
+          ReactEvent.Mouse.preventDefault(event);
+          ReasonReactRouter.push("#details/" ++ name);
+        }}>
+        <img
+          className={Styles.headerImg(150.)}
+          src={Gorilla.getImage(gorilla)}
+        />
+        <div className=Styles.gorillaText>
+          <h2> {React.string(name)} </h2>
+        </div>
+      </a>
+      <div className=Styles.gorillaText>
+        <Offline requireSmartContractsLoaded=true>
+          <PriceDisplay gorilla />
+          {owned ? <EditButton gorilla /> : <BuyModal gorilla />}
+        </Offline>
+      </div>
+    </Rimble.Box>;
+  };
 };
 
 module DefaultLook = {
@@ -96,8 +136,8 @@ module DefaultLook = {
                    </React.Fragment>;
                  } else {
                    <React.Fragment>
-                     <PriceDisplay tokenId />
-                     <BuyModal tokenId />
+                     <PriceDisplay gorilla />
+                     <BuyModal gorilla />
                    </React.Fragment>;
                  };
                }
@@ -107,125 +147,9 @@ module DefaultLook = {
        | _ =>
          <React.Fragment>
            <Rimble.Flex className=Styles.gorillaBox>
-             <Rimble.Box>
-               <a
-                 onClick={event => {
-                   ReactEvent.Mouse.preventDefault(event);
-                   ReasonReactRouter.push("#details/" ++ getName(Simon));
-                 }}>
-                 <img
-                   className={Styles.mergeStyles([
-                     Styles.headerImg(150.),
-                     Styles.clickableLink,
-                   ])}
-                   src=gorilla2
-                 />
-               </a>
-               <div className=Styles.gorillaText>
-                 <h2> {React.string("Simon")} </h2>
-                 <Offline requireSmartContractsLoaded=true>
-                   {if (ownSimon) {
-                      <React.Fragment>
-                        <UpdatePriceModal gorilla=Simon />
-                        <br />
-                        <UpdateDeposit gorilla=Simon />
-                        <br />
-                        <ShareSocial />
-                      </React.Fragment>;
-                    } else {
-                      <React.Fragment>
-                        <PriceDisplay tokenId={Some("0")} />
-                        <BuyModal tokenId={Some("0")} />
-                      </React.Fragment>;
-                    }}
-                 </Offline>
-                 <p>
-                   <small> <S> "Harberger Tax" </S> </small>
-                   <br />
-                   <small> <S> "20% per month" </S> </small>
-                 </p>
-               </div>
-             </Rimble.Box>
-             <Rimble.Box>
-               <a
-                 onClick={event => {
-                   ReactEvent.Mouse.preventDefault(event);
-                   ReasonReactRouter.push("#details/" ++ getName(Vitalik));
-                 }}>
-                 <img
-                   className={Styles.mergeStyles([
-                     Styles.headerImg(150.),
-                     Styles.clickableLink,
-                   ])}
-                   src=gorilla1
-                 />
-               </a>
-               <div>
-                 <div className=Styles.gorillaText>
-                   <h2> {React.string("Vitalik")} </h2>
-                   <Offline requireSmartContractsLoaded=true>
-                     {if (ownVitalik) {
-                        <React.Fragment>
-                          <UpdatePriceModal gorilla=Vitalik />
-                          <br />
-                          <UpdateDeposit gorilla=Vitalik />
-                          <br />
-                          <ShareSocial />
-                        </React.Fragment>;
-                      } else {
-                        <React.Fragment>
-                          <PriceDisplay tokenId=None />
-                          <BuyModal tokenId=None />
-                        </React.Fragment>;
-                      }}
-                   </Offline>
-                   <p>
-                     <small> <S> "Harberger Tax" </S> </small>
-                     <br />
-                     <small> <S> "2.5% per month" </S> </small>
-                   </p>
-                 </div>
-               </div>
-             </Rimble.Box>
-             <Rimble.Box>
-               <a
-                 onClick={event => {
-                   ReactEvent.Mouse.preventDefault(event);
-                   ReasonReactRouter.push("#details/" ++ getName(Andy));
-                 }}>
-                 <img
-                   className={Styles.mergeStyles([
-                     Styles.headerImg(150.),
-                     Styles.clickableLink,
-                   ])}
-                   src=gorilla3
-                 />
-               </a>
-               <div className=Styles.gorillaText>
-                 <h2> {React.string("Andy")} </h2>
-                 <Offline requireSmartContractsLoaded=true>
-                   {if (ownAndy) {
-                      <React.Fragment>
-                        <UpdatePriceModal gorilla=Andy />
-                        <br />
-                        <UpdateDeposit gorilla=Andy />
-                        <br />
-                        <ShareSocial />
-                      </React.Fragment>;
-                    } else {
-                      <React.Fragment>
-                        <PriceDisplay tokenId={Some("1")} />
-                        <BuyModal tokenId={Some("1")} />
-                      </React.Fragment>;
-                    }}
-                 </Offline>
-                 <p>
-                   <small> <S> "Harberger Tax" </S> </small>
-                   <br />
-                   <small> <S> "20% per month" </S> </small>
-                 </p>
-               </div>
-             </Rimble.Box>
+             <GorillaOnLandingPage gorilla=Simon owned=ownSimon />
+             <GorillaOnLandingPage gorilla=Vitalik owned=ownVitalik />
+             <GorillaOnLandingPage gorilla=Andy owned=ownAndy />
            </Rimble.Flex>
            <Rimble.Box className=Styles.dappImagesCounteractOffset>
              <Offline requireSmartContractsLoaded=true>
@@ -291,13 +215,39 @@ module GorillaInfo = {
     let totalPatronageUsd =
       GeneralHooks.useTotalPatronageUsdGorilla(gorilla)
       ->mapWithDefault("Loading", a => a);
+    // let currentPrice = GeneralHooks.use
     let foreclosureTime = GeneralHooks.useForeclosureTimeGorilla(gorilla);
     let definiteTime = foreclosureTime->mapWithDefault(Loading, a => Date(a));
-
+    let (_, _, ratio, _) = Gorilla.pledgeRate(gorilla);
+    let currentPrice = Gorilla.useCurrentPriceEth(gorilla);
+    let currentPriceUsd = Gorilla.useCurrentPriceUsd(gorilla);
+    let monthlyPledgeEth =
+      Js.Float.toString(
+        Belt.Float.fromString(currentPrice)->Accounting.defaultZeroF *. ratio,
+      );
+    let monthlyPledgeUsd =
+      // Js.Float.toString(
+      Js.Float.toFixedWithPrecision(
+        Belt.Float.fromString(currentPriceUsd)->Accounting.defaultZeroF
+        *. ratio,
+        ~digits=2,
+      );
+    let monthlyRate = Js.Float.toString(ratio *. 100.);
     // TODO: the ethereum address is really terribly displayed. But the default in Rimble UI includes a QR code scanner (which is really ugly).
     // https://rimble.consensys.design/components/rimble-ui/EthAddress#props
     // https://github.com/ConsenSys/rimble-ui/blob/dd470f00374a05c860b558a2cb9317861e4a0d89/src/EthAddress/index.js (maybe make a PR here with some changes)
     <Rimble.Box m=5>
+      <p>
+        <small>
+          <strong>
+            <S> {"Monthly Pledge (at " ++ monthlyRate ++ "%):"} </S>
+          </strong>
+        </small>
+        <br />
+        <S> {monthlyPledgeEth ++ " ETH"} </S>
+        <br />
+        <small> <S> {"(" ++ monthlyPledgeUsd ++ " USD)"} </S> </small>
+      </p>
       <p>
         <small> <strong> <S> "Current Patron:" </S> </strong> </small>
         <br />
@@ -348,25 +298,31 @@ module GorillaInfo = {
 let make = () => {
   open Gorilla;
   let url = ReasonReactRouter.useUrl();
+  let (isDetailView, gorillaStr) = {
+    switch (Js.String.split("/", url.hash)) {
+    | [|"details", gorillaStr|] => (true, gorillaStr)
+    | _ => (false, "")
+    };
+  };
 
-  <Rimble.Flex flexWrap="wrap" alignItems="center">
+  <Rimble.Flex
+    flexWrap={isDetailView ? "wrap-reverse" : "wrap"} alignItems="center">
     <Rimble.Box p=1 width=[|1., 1., 0.5|]>
       <React.Fragment>
-        {switch (Js.String.split("/", url.hash)) {
-         // switch (url.hash) {
-         | [|"details", gorillaStr|] =>
-           let gorilla = getGorilla(gorillaStr);
-           switch (gorilla) {
-           | NoGorilla => <DefaultLeftPanel />
-           | _ =>
-             <Providers.UsdPriceProvider>
-               <Offline requireSmartContractsLoaded=true>
-                 <GorillaInfo gorilla />
-               </Offline>
-             </Providers.UsdPriceProvider>
-           };
-         | _ => <DefaultLeftPanel />
-         }}
+        {isDetailView
+           ? {
+             let gorilla = getGorilla(gorillaStr);
+             switch (gorilla) {
+             | NoGorilla => <DefaultLeftPanel />
+             | _ =>
+               <Providers.UsdPriceProvider>
+                 <Offline requireSmartContractsLoaded=true>
+                   <GorillaInfo gorilla />
+                 </Offline>
+               </Providers.UsdPriceProvider>
+             };
+           }
+           : <DefaultLeftPanel />}
       </React.Fragment>
     </Rimble.Box>
     <Rimble.Box p=1 width=[|1., 1., 0.5|]>
