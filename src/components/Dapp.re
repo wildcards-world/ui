@@ -226,9 +226,11 @@ module GorillaInfo = {
         Belt.Float.fromString(currentPrice)->Accounting.defaultZeroF *. ratio,
       );
     let monthlyPledgeUsd =
-      Js.Float.toString(
+      // Js.Float.toString(
+      Js.Float.toFixedWithPrecision(
         Belt.Float.fromString(currentPriceUsd)->Accounting.defaultZeroF
         *. ratio,
+        ~digits=2,
       );
     let monthlyRate = Js.Float.toString(ratio *. 100.);
     // TODO: the ethereum address is really terribly displayed. But the default in Rimble UI includes a QR code scanner (which is really ugly).

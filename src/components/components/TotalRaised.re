@@ -23,7 +23,7 @@ let getTotalPatronage = vitalikPatronage => {
     Js.Float.toFixedWithPrecision(
       Belt.Float.fromString(totalPatronageEth)->mapWithDefault(0., a => a)
       *. currentUsdEthPrice,
-      2,
+      ~digits=2,
     );
 
   (Some(totalPatronageEth), totaPatronageUsd);
