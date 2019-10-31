@@ -45,7 +45,9 @@ let make = () => {
   <Offline requireSmartContractsLoaded=true>
     <p>
       <small>
-        {React.string("Wildcards has currently raised ")}
+        <span className={Styles.totalRaisedText(1.5)}>
+          {React.string("Wildcards has currently raised ")}
+        </span>
         <br />
         <span className={Styles.totalRaisedText(4.)}>
           {switch (allTokensTotalRaisedEth) {
@@ -62,7 +64,9 @@ let make = () => {
           {React.string(")")}
         </span>
         <br />
-        {React.string(" for conservation.")}
+        <span className={Styles.totalRaisedText(1.5)}>
+          {React.string(" for conservation.")}
+        </span>
       </small>
     </p>
   </Offline>;
