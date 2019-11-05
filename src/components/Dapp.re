@@ -181,8 +181,6 @@ module DefaultLeftPanel = {
     let usedtranslationModeContext = useTranslationModeContext();
     let translation =
       useTranslate(. usedtranslationModeContext->translationMode);
-    Js.log(translation);
-    Js.log(translation(. "ethereum"));
     <React.Fragment>
       <h1 className=Styles.heading>
         <span className=Styles.colorBlue> <S> "Always for sale" </S> </span>
@@ -190,7 +188,7 @@ module DefaultLeftPanel = {
         <S> {translation(. "ethereum") ++ " based"} </S>
         <br />
         <span className=Styles.colorGreen> <S> "conservation" </S> </span>
-        <S> " tokens" </S>
+        <S> {" " ++ translation(. "tokens")} </S>
       </h1>
       <hr />
       <h3 className=Styles.subHeading>
