@@ -22,6 +22,8 @@ let make = () => {
       };
     | _ => (false, [|1., 1., 1.|], "vitalik", "simon")
     };
+  open ReactTranslate;
+  let usedtranslationModeContext = useTranslationModeContext();
 
   <div className=Styles.app>
     <img src=betaBanner className=Styles.betaBanner />
@@ -37,6 +39,18 @@ let make = () => {
             <img className=Styles.headerLogo src=smallIcon />
           </a>
           <ul className=Styles.navList>
+            <li className=Styles.navListItem>
+              <S> "MODE " </S>
+              <ReactTranslate.Switch
+                onChange={usedtranslationModeContext->setTranslationModeMuggle}
+                checked={usedtranslationModeContext->translationModeMuggle}
+                onColor="#86d3ff"
+                onHandleColor="#2693e6"
+                uncheckedIcon=false
+                checkedIcon=false
+                className=Styles.translationSwitch
+              />
+            </li>
             <li className=Styles.navListItem>
               {detailView
                  ? <a

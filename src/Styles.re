@@ -27,6 +27,8 @@ let centerItems =
 // Use margin to center
 let centerItemsMargin = style([display(block), margin(auto)]);
 
+let translationSwitch = style([padding(rem(0.))]);
+
 let topBody =
   style([
     // zIndex(50),

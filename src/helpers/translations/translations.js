@@ -1,7 +1,7 @@
 export default {
   locale: "en",
   crypto: {
-    ethereum: "etherereum!"
+    ethereum: "etherereum"
   },
   muggle: {
     ethereum: "crypto"
