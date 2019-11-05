@@ -40,16 +40,25 @@ let make = () => {
           </a>
           <ul className=Styles.navList>
             <li className=Styles.navListItem>
-              <S> "MODE " </S>
-              <ReactTranslate.Switch
-                onChange={usedtranslationModeContext->setTranslationModeMuggle}
-                checked={usedtranslationModeContext->translationModeMuggle}
-                onColor="#86d3ff"
-                onHandleColor="#2693e6"
-                uncheckedIcon=false
-                checkedIcon=false
-                className=Styles.translationSwitch
-              />
+              <div className=Styles.navListItemToggle>
+                <span className=Styles.someMarginRight>
+                  <S>
+                    {usedtranslationModeContext->translationModeCrypto
+                       ? "EXPERT MODE" : "SIMPLE MODE"}
+                  </S>
+                </span>
+                <ReactTranslate.Switch
+                  onChange={
+                    usedtranslationModeContext->settranslationModeCrypto
+                  }
+                  checked={usedtranslationModeContext->translationModeCrypto}
+                  onColor="#6BAD3D"
+                  onHandleColor="#346D4C"
+                  uncheckedIcon=false
+                  checkedIcon=false
+                  className=Styles.translationSwitch
+                />
+              </div>
             </li>
             <li className=Styles.navListItem>
               {detailView

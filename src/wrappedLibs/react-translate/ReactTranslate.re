@@ -20,8 +20,8 @@ module Switch = {
 [@bs.deriving {abstract: light}]
 type translationModeContext = {
   translationMode: string,
-  translationModeMuggle: bool,
-  setTranslationModeMuggle: bool => unit,
+  translationModeCrypto: bool,
+  settranslationModeCrypto: bool => unit,
 };
 [@bs.module "../../helpers/providers/TranslationProvider"]
 external useTranslationModeContext: unit => translationModeContext =
