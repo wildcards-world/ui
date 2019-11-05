@@ -177,11 +177,17 @@ module DefaultLook = {
 module DefaultLeftPanel = {
   [@react.component]
   let make = () => {
+    open ReactTranslate;
+    let usedtranslationModeContext = useTranslationModeContext();
+    let translation = useTranslate("muggle");
+    // useTranslate(usedtranslationModeContext->translationMode);
+    Js.log(translation);
+    Js.log(translation("ethereum"));
     <React.Fragment>
       <h1 className=Styles.heading>
         <span className=Styles.colorBlue> <S> "Always for sale" </S> </span>
         <br />
-        <S> "ethereum based" </S>
+        <S> {translation("ethereum") ++ "based"} </S>
         <br />
         <span className=Styles.colorGreen> <S> "conservation" </S> </span>
         <S> " tokens" </S>
