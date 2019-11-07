@@ -241,25 +241,52 @@ module GorillaInfo = {
     // https://rimble.consensys.design/components/rimble-ui/EthAddress#props
     // https://github.com/ConsenSys/rimble-ui/blob/dd470f00374a05c860b558a2cb9317861e4a0d89/src/EthAddress/index.js (maybe make a PR here with some changes)
     <Rimble.Box m=5>
-      <p>
+      <div>
         <small>
           <strong>
-            <S> {"Monthly Pledge (at " ++ monthlyRate ++ "%):"} </S>
+            <S> {"Monthly Pledge (at " ++ monthlyRate ++ "%): "} </S>
+            <Rimble.Tooltip
+              message={
+                "This is the monthly percentage contribution of "
+                ++ Gorilla.getName(gorilla)
+                ++ "'s sale price that will go towards conservation of endangered animals. This is deducted continuously from the deposit and paid by the owner of the animal"
+              }
+              placement="top">
+              <span> <S> {js|ⓘ|js} </S> </span>
+            </Rimble.Tooltip>
           </strong>
         </small>
         <br />
         <S> {monthlyPledgeEth ++ " ETH"} </S>
         <br />
         <small> <S> {"(" ++ monthlyPledgeUsd ++ " USD)"} </S> </small>
-      </p>
+      </div>
       <p>
-        <small> <strong> <S> "Current Patron:" </S> </strong> </small>
+        <small>
+          <strong>
+            <S> "Current Patron: " </S>
+            <Rimble.Tooltip
+              message="This is the address of the current owner (crypto wallet 'account' number)"
+              placement="top">
+              <span> <S> {js|ⓘ|js} </S> </span>
+            </Rimble.Tooltip>
+          </strong>
+        </small>
         <br />
         <S> currentPatron </S>
       </p>
       // <p> <S> {"Time Held: " ++ timeHeld} </S> </p>
       <p>
-        <small> <strong> <S> "Available Deposit:" </S> </strong> </small>
+        <small>
+          <strong>
+            <S> "Available Deposit: " </S>
+            <Rimble.Tooltip
+              message="This is the amount the owner has deposited to pay their monthly contribution"
+              placement="top">
+              <span> <S> {js|ⓘ|js} </S> </span>
+            </Rimble.Tooltip>
+          </strong>
+        </small>
         <br />
         <S> {depositAvailableToWithdraw ++ " ETH"} </S>
         <br />
@@ -271,6 +298,14 @@ module GorillaInfo = {
         <small>
           <strong>
             <S> {Gorilla.getName(gorilla) ++ "'s Patronage: "} </S>
+            <Rimble.Tooltip
+              message={
+                "This is the total contribution that has been raised for the gorilla, "
+                ++ Gorilla.getName(gorilla)
+              }
+              placement="top">
+              <span> <S> {js|ⓘ|js} </S> </span>
+            </Rimble.Tooltip>
           </strong>
         </small>
         <br />
@@ -281,7 +316,19 @@ module GorillaInfo = {
       {switch (definiteTime) {
        | Date(date) =>
          <p>
-           <small> <strong> <S> "Foreclosure date:" </S> </strong> </small>
+           <small>
+             <strong>
+               <S> "Foreclosure date: " </S>
+               <Rimble.Tooltip
+                 message={
+                   "This is the date the deposit will run out and the gorilla and the current owner will lose ownership of "
+                   ++ Gorilla.getName(gorilla)
+                 }
+                 placement="top">
+                 <span> <S> {js|ⓘ|js} </S> </span>
+               </Rimble.Tooltip>
+             </strong>
+           </small>
            <br />
            <S> {MomentRe.Moment.format("LLLL", date)} </S>
            <br />

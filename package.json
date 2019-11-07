@@ -24,7 +24,7 @@
     "react-switch": "^5.0.1",
     "react-translate": "^7.0.1",
     "reason-react": "^0.7.0",
-    "rimble-ui": "^0.9.8",
+    "rimble-ui": "^0.10.0",
     "squarelink": "^1.0.10",
     "styled-components": "^4.3.2",
     "use-debounce": "^3.1.0",

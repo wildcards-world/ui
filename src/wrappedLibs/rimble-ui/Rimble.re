@@ -42,6 +42,33 @@ module Button = {
   };
 };
 
+module Tooltip = {
+  [@bs.module "rimble-ui"] [@react.component]
+  external make:
+    (
+      ~message: string=?,
+      ~placement: string=?,
+      ~className: string=?,
+      ~children: React.element,
+      ~onClick: ReactEvent.Form.t => unit=?
+    ) =>
+    React.element =
+    "Tooltip";
+};
+
+module Icon = {
+  [@bs.module "rimble-ui"] [@react.component]
+  external make:
+    (
+      ~name: string=?,
+      ~color: string=?,
+      ~size: string=?,
+      ~className: string=?
+    ) =>
+    React.element =
+    "Tooltip";
+};
+
 module Input = {
   [@bs.module "rimble-ui"] [@react.component]
   external make:
