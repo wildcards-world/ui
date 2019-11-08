@@ -99,9 +99,11 @@ let make = (~gorilla: Gorilla.gorilla) => {
   };
 
   <React.Fragment>
-    <Rimble.Button onClick=onUnlockMetamaskAndOpenModal>
-      {React.string("Price")}
-    </Rimble.Button>
+    <Rimble.Box p=1>
+      <Rimble.Button onClick=onUnlockMetamaskAndOpenModal>
+        {React.string("Price")}
+      </Rimble.Button>
+    </Rimble.Box>
     <Rimble.Modal isOpen=isModalOpen>
       <Rimble.Card width={Rimble.AnyStr("420px")} p=0>
         <Rimble.Button.Text

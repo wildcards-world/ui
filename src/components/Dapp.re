@@ -72,7 +72,7 @@ module DefaultLook = {
       None;
     });
 
-    let (ownVitalik, ownSimon, ownAndy) =
+    let (ownVitalik, ownSimon, ownAndy, currentAccount) =
       if (areRequirementsLoaded) {
         // NOTE/TODO: this doesn't take into account token ownership
         let currentPatronVitalik =
@@ -82,15 +82,16 @@ module DefaultLook = {
         let currentPatronAndy =
           useCurrentPatronNew(1)->mapWithDefault("no-patron-defined", a => a);
         let currentAccount =
-          useCurrentUser()->mapWithDefault("no-current-account", a => a);
+          useCurrentUser()->mapWithDefault("loading", a => a);
 
         (
           currentAccount == currentPatronVitalik,
           currentAccount == currentPatronSimon,
           currentAccount == currentPatronAndy,
+          currentAccount,
         );
       } else {
-        (false, false, false);
+        (false, false, false, "loading");
       };
     let url = ReasonReactRouter.useUrl();
 
@@ -99,7 +100,7 @@ module DefaultLook = {
        // switch (url.hash) {
        | [|"details", gorillaStr|] =>
          let gorilla = getGorilla(gorillaStr);
-         let tokenId = getId(gorilla);
+
          switch (gorilla) {
          | NoGorilla =>
            <div>
@@ -132,7 +133,8 @@ module DefaultLook = {
                      <br />
                      <UpdateDeposit gorilla />
                      <br />
-                     <ShareSocial />
+                     {UserProvider.useIsUserValidated(currentAccount)
+                        ? <ShareSocial /> : <ValidateModal />}
                    </React.Fragment>;
                  } else {
                    <React.Fragment>
@@ -207,6 +209,13 @@ module GorillaInfo = {
     let currentPatron =
       GeneralHooks.useCurrentPatronGorilla(gorilla)
       ->mapWithDefault("Loading", a => a);
+    let userId = UserProvider.useUserNameOrTwitterHandle(currentPatron);
+    let userIdType =
+      switch (userId) {
+      | EthAddress(_) => "public address"
+      | TwitterHandle(_) => "verified twitter account"
+      };
+    let userIdComponent = UserProvider.useUserComponent(userId);
     let depositAvailableToWithdraw =
       GeneralHooks.useDepositAbleToWithdrawEthGorilla(gorilla)
       ->mapWithDefault("Loading", a => a);
@@ -264,14 +273,14 @@ module GorillaInfo = {
           <strong>
             <S> "Current Patron: " </S>
             <Rimble.Tooltip
-              message="This is the public address of the current owner"
+              message={j|This is the $userIdType of the current owner|j}
               placement="top">
               <span> <S> {js|ⓘ|js} </S> </span>
             </Rimble.Tooltip>
           </strong>
         </small>
         <br />
-        <S> currentPatron </S>
+        userIdComponent
       </p>
       // <p> <S> {"Time Held: " ++ timeHeld} </S> </p>
       <p>
