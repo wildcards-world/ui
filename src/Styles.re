@@ -27,6 +27,8 @@ let centerItems =
 // Use margin to center
 let centerItemsMargin = style([display(block), margin(auto)]);
 
+let translationSwitch = style([padding(rem(0.))]);
+
 let topBody =
   style([
     // zIndex(50),
@@ -88,6 +90,11 @@ let navList =
 //     margin2(~v=em(0.), ~h=auto),
 //   ]);
 let navListItem = style([display(inlineBlock)]);
+
+let navListItemToggle =
+  style([display(`flex), justifyContent(center), alignItems(center)]);
+
+let someMarginRight = style([marginRight(px(10))]);
 
 let navListText =
   style([color(rgb(136, 136, 136)), padding(rem(1.)), fontWeight(bold)]);

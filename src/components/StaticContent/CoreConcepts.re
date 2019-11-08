@@ -7,7 +7,12 @@ open Rimble;
 
 module CoreConcepts = {
   [@react.component]
-  let make = () =>
+  let make = () => {
+    open ReactTranslate;
+    let usedtranslationModeContext = useTranslationModeContext();
+    let translation =
+      useTranslate(. usedtranslationModeContext->translationMode);
+
     <Box className=Styles.infoBackground>
       <Flex flexWrap="wrap">
         // <Flex flexWrap="wrap" alignItems="center">
@@ -23,14 +28,12 @@ module CoreConcepts = {
               <br />
               <hr />
               <br />
-              <Heading _as="h3"> <S> "Non-Fungible Token" </S> </Heading>
+              <Heading _as="h3"> <S> {translation(. "nft")} </S> </Heading>
               <br />
               <Text>
                 <S> "A " </S>
-                <strong> <S> "non-fungible token" </S> </strong>
-                <S>
-                  " is a way to ensure digital assets are unique and easily tradable on a blockchain."
-                </S>
+                <strong> <S> {translation(. "nft")} </S> </strong>
+                <S> {translation(. "whatIsANFT")} </S>
               </Text>
               <br />
               <Heading _as="h3"> <S> "Always for Sale" </S> </Heading>
@@ -39,21 +42,24 @@ module CoreConcepts = {
                 <S>
                   "When an asset is bought a new selling price is stipulated by the buyer. Assets are "
                 </S>
-                <strong> <S> "always for sale" </S> </strong>
+                <strong> <S> "Always for Sale" </S> </strong>
                 <S> ", forever!" </S>
               </Text>
               <br />
-              <Heading _as="h3"> <S> "Harberger Tax" </S> </Heading>
+              <Heading _as="h3">
+                <S> {translation(. "harbergerTax")} </S>
+              </Heading>
               <br />
               <Text>
+                <S> "The owner of an asset pays a " </S>
+                <strong> <S> {translation(. "harbergerTax")} </S> </strong>
                 <S>
-                  "The owner of an asset pays a "
+                  "  which is a percentage of the selling price they stipulate."
                 </S>
-                <strong> <S> "harberger tax" </S> </strong>
-                <S> "  which is a percentage of the selling price they stipulate." </S>
               </Text>
             </Card>
           </Box>
         </Flex>
     </Box>;
+  };
 };

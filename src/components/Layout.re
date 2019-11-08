@@ -22,6 +22,8 @@ let make = () => {
       };
     | _ => (false, [|1., 1., 1.|], "vitalik", "simon")
     };
+  open ReactTranslate;
+  let usedtranslationModeContext = useTranslationModeContext();
 
   <div className=Styles.app>
     <img src=betaBanner className=Styles.betaBanner />
@@ -37,6 +39,27 @@ let make = () => {
             <img className=Styles.headerLogo src=smallIcon />
           </a>
           <ul className=Styles.navList>
+            <li className=Styles.navListItem>
+              <div className=Styles.navListItemToggle>
+                <span className=Styles.someMarginRight>
+                  <S>
+                    {usedtranslationModeContext->translationModeCrypto
+                       ? "EXPERT MODE" : "SIMPLE MODE"}
+                  </S>
+                </span>
+                <ReactTranslate.Switch
+                  onChange={
+                    usedtranslationModeContext->settranslationModeCrypto
+                  }
+                  checked={usedtranslationModeContext->translationModeCrypto}
+                  onColor="#6BAD3D"
+                  onHandleColor="#346D4C"
+                  uncheckedIcon=false
+                  checkedIcon=false
+                  className=Styles.translationSwitch
+                />
+              </div>
+            </li>
             <li className=Styles.navListItem>
               {detailView
                  ? <a
