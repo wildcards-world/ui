@@ -192,9 +192,7 @@ module DefaultLeftPanel = {
       </h1>
       <hr />
       <h3 className=Styles.subHeading>
-        <S>
-          "Let your digital assets make a valuable contribution to the world."
-        </S>
+        <S> {translation(. "subHeading")} </S>
       </h3>
     </React.Fragment>;
   };
@@ -266,7 +264,7 @@ module GorillaInfo = {
           <strong>
             <S> "Current Patron: " </S>
             <Rimble.Tooltip
-              message="This is the address of the current owner (crypto wallet 'account' number)"
+              message="This is the public address of the current owner"
               placement="top">
               <span> <S> {js|ⓘ|js} </S> </span>
             </Rimble.Tooltip>
@@ -300,7 +298,7 @@ module GorillaInfo = {
             <S> {Gorilla.getName(gorilla) ++ "'s Patronage: "} </S>
             <Rimble.Tooltip
               message={
-                "This is the total contribution that has been raised for the gorilla, "
+                "This is the total contribution that has been raised thanks to the wildcard, "
                 ++ Gorilla.getName(gorilla)
               }
               placement="top">

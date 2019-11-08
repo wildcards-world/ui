@@ -1,8 +1,10 @@
 export default {
   locale: "en",
   crypto: {
-    ethereum: "etherereum",
+    ethereum: "ethereum",
     tokens: "tokens",
+    subHeading:
+      "Let your digital assets make a valuable contribution to the world.",
     nft: "Non-Fungible Token",
     whatIsANFT:
       " is a way to ensure digital assets are unique and easily tradable on a blockchain.",
@@ -11,9 +13,11 @@ export default {
   muggle: {
     ethereum: "blockchain",
     tokens: "animals",
-    nft: "Crypto Collectable",
+    subHeading:
+      "Become the guardian of a wildcard and contribute to endangered animals",
+    nft: "Blockchain Animal",
     whatIsANFT:
-      " is a digital asset that is completely unique and easily tradable on a blockchain.",
+      " is a digital animal that is completely unique and easily tradable on a blockchain.",
     harbergerTax: "Monthly Pledge"
   }
 };
