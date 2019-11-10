@@ -8,6 +8,7 @@ external generateSignature:
 [@bs.module "./userVerification"]
 external submitVerification: (. string, string, string, bool => unit) => unit =
   "submitVerification";
+
 type verificationState =
   | InputTwitterHandle(string)
   | InputTweetLink(string, string, string)
@@ -16,12 +17,14 @@ type verificationState =
 
 module Input = {
   [@react.component]
-  let make = () => {
+  let make = (~setModalOpen) => {
     let (copyText, setCopyText) = React.useState(() => "Copy to Clipboard");
     let (appState, setAppState) =
       React.useState(() => InputTwitterHandle(""));
     let web3 = Hooks.useWeb3();
     let currentUser = Hooks.useCurrentUser()->mapWithDefault("0x", a => a);
+    let currentUserLower = currentUser->Js.String.toLowerCase;
+    let userContext = UserProvider.useUserInfoContext();
     let genSignature = generateSignature(. web3, currentUser);
 
     switch (appState) {
@@ -50,6 +53,7 @@ module Input = {
         />
         <br />
         <Rimble.Button
+          m=3
           onClick={_ => {
             let twitterHandleLowwerCase =
               Js.String.toLowerCase(twitterHandle);
@@ -107,16 +111,47 @@ module Input = {
         />
         <br />
         <Rimble.Button
+          m=3
           onClick={_ =>
             submitVerification(.
-               currentUser, tweetLink, twitterHandle, wasSuccesful =>
-              setAppState(_ => WasVerificationSuccessful(wasSuccesful))
+              currentUser,
+              tweetLink,
+              twitterHandle,
+              wasSuccesful => {
+                if (wasSuccesful) {
+                  userContext->UserProvider.update(currentUserLower);
+                } else {
+                  ();
+                };
+
+                setAppState(_ => WasVerificationSuccessful(wasSuccesful));
+              },
             )
           }>
           {React.string("Generate Proof")}
         </Rimble.Button>
       </Rimble.Box>;
-    | _ => <p> {React.string("test")} </p>
+    | SumbittingVerification(_, _, _) =>
+      <Rimble.Box p=1>
+        <Rimble.Heading>
+          {React.string("Sumbitting the verification")}
+          <WildcardsLoader />
+        </Rimble.Heading>
+        <Rimble.TextS>
+          "We are verifying and storing your crypographic proof of identity in our system."
+        </Rimble.TextS>
+        <Rimble.Loader className=Styles.centerItems color=`green size="80px" />
+      </Rimble.Box>
+    | WasVerificationSuccessful(success) =>
+      // TODO: handle the case when success==false. (show a message to help the user)
+      <Rimble.Box p=1>
+        <Rimble.Heading>
+          {React.string("Your identity has been verified!")}
+        </Rimble.Heading>
+        <Rimble.Button onClick={_ => setModalOpen(_ => false)}>
+          {React.string("close")}
+        </Rimble.Button>
+      </Rimble.Box>
     };
   };
 };
@@ -152,7 +187,7 @@ let make = () => {
           m=3
           onClick={_ => setModalOpen(_ => false)}
         />
-        <Input />
+        <Input setModalOpen />
       </Rimble.Card>
     </Rimble.Modal>
   </React.Fragment>;
