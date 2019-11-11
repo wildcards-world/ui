@@ -12,16 +12,7 @@ module Core = {
 
 module CustomButton = {
   [@react.component]
-  let make =
-      (
-        ~children: React.element,
-        // ~onConnect: Web3.provider => unit,
-        ~afterConnect: unit => unit=?,
-      ) => {
-    // ~onClose: 'close => unit=?,
-    // ~onError: 'error => unit=?,
-    // ~onDisconnect: 'disconnect => unit=?,
-    // ~network: string=?,
+  let make = (~children: React.element, ~afterConnect: unit => unit=?) => {
     Core.(
       <Rimble.Button
         onClick={event => {

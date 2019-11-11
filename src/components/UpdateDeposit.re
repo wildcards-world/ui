@@ -125,7 +125,7 @@ let make = (~gorilla: Gorilla.gorilla) => {
   };
 
   <React.Fragment>
-    <Rimble.Box p=2>
+    <Rimble.Box p=1>
       <Rimble.Button onClick=onUnlockMetamaskAndOpenModal>
         {React.string("Deposit")}
       </Rimble.Button>

@@ -4,6 +4,8 @@ type width =
   | Float(float)
   | FloatArray(array(float));
 
+type wcColourString = [ | `green];
+
 module Button = {
   [@bs.module "rimble-ui"] [@react.component]
   external make:
@@ -13,6 +15,7 @@ module Button = {
       ~href: string=?,
       ~target: string=?,
       ~children: React.element,
+      ~m: int=?,
       ~onClick: ReactEvent.Form.t => unit=?,
       ~width: float=?
     ) =>
@@ -86,7 +89,14 @@ module Input = {
 
 module Loader = {
   [@bs.module "rimble-ui"] [@react.component]
-  external make: (~className: string=?) => React.element = "Loader";
+  external make:
+    (
+      ~className: string=?,
+      ~color: [@bs.string] [ | `green]=?,
+      ~size: string=?
+    ) =>
+    React.element =
+    "Loader";
 };
 
 module Modal = {

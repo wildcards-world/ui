@@ -22,7 +22,6 @@ let useDepositAbleToWithdrawEthGorilla = gorilla => {
 let useDepositAbleToWithdrawUsdGorilla = gorilla => {
   let depositeAbleToWithdrawEth = useDepositAbleToWithdrawEthGorilla(gorilla);
   let currentUsdEthPrice = useUsdPrice();
-  Js.log(currentUsdEthPrice);
   switch (depositeAbleToWithdrawEth, currentUsdEthPrice) {
   | (Some(deposit), Some(conversion)) =>
     Some(

@@ -9,6 +9,7 @@ import WildcardSteward_v0 from "../../contracts/WildcardSteward_v0.json";
 import ERC721Patronage_v0 from "../../contracts/ERC721Patronage_v0.json";
 import web3ProvideSwitcher from "../web3/web3ProvideSwitcher";
 import TranslationProvider from "./TranslationProvider";
+import UserProvider from "./UserProvider";
 
 // todo: read env var for fallback
 const fallbackUrl =
@@ -82,7 +83,9 @@ export default ({ children }) => {
     <drizzleReactHooks.DrizzleProvider drizzle={drizzle}>
       <ProviderContext.Provider value={providedValues}>
         <ThemeProvider theme={theme}>
-          <TranslationProvider>{children}</TranslationProvider>
+          <UserProvider>
+            <TranslationProvider>{children}</TranslationProvider>
+          </UserProvider>
         </ThemeProvider>
       </ProviderContext.Provider>
     </drizzleReactHooks.DrizzleProvider>
