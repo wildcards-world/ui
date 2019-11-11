@@ -4,7 +4,7 @@ import sigUtil from 'eth-sig-util'
 export const generateSignature = (web3, from) => (message, signatureCallback) => {
   const messageHex = ethUtil.bufferToHex(new Buffer(message, 'utf8'))
 
-  if (!from) return
+  if (!from) return // TODO: handle this case in the UI.
 
   /*  web3.personal.sign not yet implemented!!!
    *  We're going to have to assemble the tx manually!
@@ -23,6 +23,8 @@ export const generateSignature = (web3, from) => (message, signatureCallback) =>
     params,
     from,
   }, function (err, { result, error }) {
+    // NOTE: I noticed an error with metamask where this callback didn't execute after signing. 
+    //       I restarted firefox and it started working again. Can't reproduce.
     if (err) return console.error(err)
     if (error) return console.error(error)
 

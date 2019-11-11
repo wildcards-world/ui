@@ -19,6 +19,8 @@ let app =
 let textOnlyModalText = style([padding(em(2.))]);
 let totalRaisedText = size => style([fontSize(em(size))]);
 
+let copyButton = style([float(`right), zIndex(50)]);
+
 let centerText = style([textAlign(center)]);
 
 // Use flex box to center

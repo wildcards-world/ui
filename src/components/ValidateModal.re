@@ -83,6 +83,7 @@ module Input = {
           </small>
         </Rimble.Text>
         <Rimble.Button
+          className=Styles.copyButton
           onClick={_ => {
             setCopyText(_ => "Copied");
             CopyToClipboard.copy(tweetMessage);
@@ -128,7 +129,7 @@ module Input = {
               },
             )
           }>
-          {React.string("Generate Proof")}
+          {React.string("Submit Verification")}
         </Rimble.Button>
       </Rimble.Box>;
     | SumbittingVerification(_, _, _) =>
