@@ -1,5 +1,3 @@
-open StaticContent;
-
 open Components;
 
 // TODO: there must be a better way of importing images in reason react...
@@ -36,7 +34,7 @@ let make = () => {
               ReactEvent.Mouse.preventDefault(event);
               ReasonReactRouter.push("#");
             }}>
-            <img className=Styles.headerLogo src=smallIcon />
+            <div className=Styles.headerLogo> <img src=smallIcon /> </div>
           </a>
           <ul className=Styles.navList>
             <li className=Styles.navListItem>
@@ -77,7 +75,11 @@ let make = () => {
                 href="https://blog.wildcards.world/">
                 <S> "BLOG" </S>
               </a>
-              <Rimble.Button _as="a" href="#signup" target="\_blank">
+              <Rimble.Button
+                className=Styles.whiteText
+                _as="a"
+                href="#signup"
+                target="\_blank">
                 <S> "Subscribe" </S>
               </Rimble.Button>
             </li>
@@ -112,12 +114,12 @@ let make = () => {
             : React.null}
        </React.Fragment>}
     </Rimble.Flex>
-    <CustomerBenefit />
-    <HowItWorks />
-    <About />
-    <CoreConcepts />
-    <EmailSignup />
-    <Partners />
-    <Footer />
+    <StaticContent.CustomerBenefit />
+    <StaticContent.HowItWorks />
+    <StaticContent.About />
+    <StaticContent.CoreConcepts />
+    <StaticContent.EmailSignup />
+    <StaticContent.Partners />
+    <StaticContent.Footer />
   </div>;
 };

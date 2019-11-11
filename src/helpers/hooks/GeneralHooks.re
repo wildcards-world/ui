@@ -14,7 +14,7 @@ let useDepositAbleToWithdrawEthGorilla = gorilla => {
     useCurrentPatronGorilla(gorilla)
     ->Belt.Option.mapWithDefault("0x0", a => a);
   switch (getId(gorilla)) {
-  | Some(gorillaId) => useDepositAbleToWithdrawEthNew(patron)
+  | Some(_gorillaId) => useDepositAbleToWithdrawEthNew(patron)
   | None => useDepositAbleToWithdrawEth()
   };
 };
@@ -27,7 +27,7 @@ let useDepositAbleToWithdrawUsdGorilla = gorilla => {
     Some(
       Js.Float.toFixedWithPrecision(
         Js.Float.fromString(deposit) *. conversion,
-        2,
+        ~digits=2,
       ),
     )
   | _ => None
@@ -50,7 +50,7 @@ let useTotalPatronageUsdGorilla = gorilla => {
     Some(
       Js.Float.toFixedWithPrecision(
         Js.Float.fromString(totalPatronange) *. conversion,
-        2,
+        ~digits=2,
       ),
     )
   | _ => None

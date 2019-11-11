@@ -6,8 +6,16 @@ let backgroundImageGorilla = [%bs.raw
   {|require("../src/img/wildcardsimages/wild-jungle-background.png")|}
 ];
 
-Css.(global("body", [fontFamily("Lato, Helvetica, sans-serif")]));
-Css.(global("a", [textDecoration(none)]));
+Css.(
+  global(
+    "body",
+    [margin(`px(0)), fontFamily("Lato, Helvetica, sans-serif")],
+  )
+);
+Css.(global("a", [color(hex("#303030")), textDecoration(none)]));
+Css.(global("a:hover", [textDecoration(underline)]));
+Css.(global("a:active", [color(hex("#303030"))]));
+Css.(global("a:visited", [color(hex("#303030"))]));
 
 let app =
   style([
@@ -52,7 +60,10 @@ let header = style([position(relative)]);
 let noMarginBottom = style([marginBottom(px(0))]);
 let noMarginTop = style([marginTop(px(0))]);
 
-let headerLogo = style([media("(max-width: 630px)", [margin(`auto)])]);
+let headerLogo =
+  style([
+    media("(max-width: 630px)", [textAlign(center), display(`block)]),
+  ]);
 
 let nav =
   style([
@@ -138,7 +149,11 @@ let ownedGorillaImg =
     // transform(translateX(`percent(-25.))),
   ]);
 
-let clickableLink = style([cursor(`pointer)]);
+let clickableLink =
+  style([
+    media("(max-width: 630px)", [width(`percent(100.))]),
+    cursor(`pointer),
+  ]);
 
 let headerImg = enlargement =>
   style([

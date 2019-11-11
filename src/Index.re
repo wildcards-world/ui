@@ -1,5 +1,4 @@
 open Providers;
-[%bs.raw {|require("./styles.css")|}];
 
 module Router = {
   [@react.component]

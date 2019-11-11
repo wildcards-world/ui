@@ -1,6 +1,4 @@
 open Hooks;
-open Providers.UsdPriceProvider;
-open Providers.DrizzleProvider;
 open Belt.Option;
 
 let getToDisplay = (label, value) =>
@@ -63,11 +61,12 @@ module Transaction = {
           onChange={event => {
             let value =
               ReactEvent.Form.target(event)##value->getWithDefault("");
-            InputHelp.onlyUpdateValueIfPositiveFloat(
-              currentPrice,
-              setNewBuyPrice,
-              value,
-            );
+            let _ =
+              InputHelp.onlyUpdateValueIfPositiveFloat(
+                currentPrice,
+                setNewBuyPrice,
+                value,
+              );
             ();
           }}
           value=newBuyPrice

@@ -143,7 +143,7 @@ module Input = {
         </Rimble.TextS>
         <Rimble.Loader className=Styles.centerItems color=`green size="80px" />
       </Rimble.Box>
-    | WasVerificationSuccessful(success) =>
+    | WasVerificationSuccessful(_success) =>
       // TODO: handle the case when success==false. (show a message to help the user)
       <Rimble.Box p=1>
         <Rimble.Heading>

@@ -38,7 +38,6 @@ export default ({ totalRaised }) => {
     return () => clearTimeout(timeout)
   }, [totalRaised])
 
-
   return (
     <React.Fragment>
       <span style={styles}>

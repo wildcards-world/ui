@@ -1,6 +1,4 @@
 open Hooks;
-open Providers.UsdPriceProvider;
-open Providers.DrizzleProvider;
 open Belt.Option;
 
 module UpdateDepositInput = {
@@ -35,12 +33,13 @@ module Transaction = {
         let withdrawObj = useWithdrawTransaction();
         (
           (
-            (depositChange, txObject) =>
-              withdrawObj##send(. depositChange, txObject)
+            (depositChange, txObject) => {
+              withdrawObj##send(. depositChange, txObject);
+            }
           ),
           withdrawObj##_TXObjects,
         );
-      | Some(tokenIdSet) =>
+      | Some(_tokenIdSet) =>
         let withdrawObj = useWithdrawTransactionNew();
         (
           (
@@ -55,12 +54,12 @@ module Transaction = {
       | None =>
         let depositObj = useAddDepositTransaction();
         ((txObject => depositObj##send(. txObject)), depositObj##_TXObjects);
-      | Some(tokenIdSet) =>
+      | Some(_tokenIdSet) =>
         let depositObj = useAddDepositTransactionNew();
         ((txObject => depositObj##send(. txObject)), depositObj##_TXObjects);
       };
 
-    let availableDeposit =
+    let _availableDeposit =
       (
         switch (gorilla) {
         | NoGorilla => useDepositAbleToWithdrawWei()

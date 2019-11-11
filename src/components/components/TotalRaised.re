@@ -1,73 +1,71 @@
 open Hooks;
 open Providers.UsdPriceProvider;
-open Providers.DrizzleProvider;
 open Belt.Option;
-open Components;
 
 module TotalRaisedEtherCountup = {
   [@bs.module "./TotalRaisedEtherCountup.js"] [@react.component]
   external make: (~totalRaised: string) => React.element = "default";
 };
 
+type patronageRaised =
+  | Loaded(string, string)
+  | Loading;
+
 let getTotalPatronage = vitalikPatronage => {
   let totalPatronageOtherTokens = useTotalPatronageWeiNew();
-
-  let totalPatronageEth =
-    BN.new_(vitalikPatronage)
-    ->BN.addGet(. totalPatronageOtherTokens)
-    ->BN.toStringGet(.)
-    ->Web3Utils.fromWeiToEth;
-
   let currentUsdEthPrice = useUsdPrice()->mapWithDefault(0., a => a);
-  let totaPatronageUsd =
-    Js.Float.toFixedWithPrecision(
-      Belt.Float.fromString(totalPatronageEth)->mapWithDefault(0., a => a)
-      *. currentUsdEthPrice,
-      ~digits=2,
-    );
 
-  (Some(totalPatronageEth), totaPatronageUsd);
+  switch (vitalikPatronage) {
+  | Some(patronageVitalikWei) =>
+    let totalPatronageEth =
+      BN.new_(patronageVitalikWei)
+      ->BN.addGet(. totalPatronageOtherTokens)
+      ->BN.toStringGet(.)
+      ->Web3Utils.fromWeiToEth;
+
+    let totaPatronageUsd =
+      Js.Float.toFixedWithPrecision(
+        Belt.Float.fromString(totalPatronageEth)->mapWithDefault(0., a => a)
+        *. currentUsdEthPrice,
+        ~digits=2,
+      );
+
+    Loaded(totalPatronageEth, totaPatronageUsd);
+  | _ => Loading
+  };
 };
 
 [@react.component]
 let make = () => {
-  let totalPatronageVitalik = useTotalPatronageWei();
+  let totalPatronageRaised = useTotalPatronageWei()->getTotalPatronage;
 
-  let (allTokensTotalRaisedEth, allTokensTotalRaisedUsd) = {
-    switch (totalPatronageVitalik) {
-    | Some(vitalikPatronage) => getTotalPatronage(vitalikPatronage)
-    | None =>
-      getTotalPatronage("0");
-      (None, "Loading");
-    };
+  switch (totalPatronageRaised) {
+  | Loaded(totalRaised, totalRaisedUsd) =>
+    <Offline requireSmartContractsLoaded=true>
+      <p>
+        <small>
+          <span className={Styles.totalRaisedText(1.5)}>
+            {React.string("Wildcards has currently raised ")}
+          </span>
+          <br />
+          <span className={Styles.totalRaisedText(4.)}>
+            <TotalRaisedEtherCountup totalRaised />
+            <strong> {React.string(" ETH ")} </strong>
+          </span>
+          <br />
+          <span className={Styles.totalRaisedText(2.5)}>
+            {React.string("(")}
+            {React.string(totalRaisedUsd)}
+            <strong> {React.string(" USD")} </strong>
+            {React.string(")")}
+          </span>
+          <br />
+          <span className={Styles.totalRaisedText(1.5)}>
+            {React.string(" for conservation.")}
+          </span>
+        </small>
+      </p>
+    </Offline>
+  | Loading => <Rimble.Loader />
   };
-
-  <Offline requireSmartContractsLoaded=true>
-    <p>
-      <small>
-        <span className={Styles.totalRaisedText(1.5)}>
-          {React.string("Wildcards has currently raised ")}
-        </span>
-        <br />
-        <span className={Styles.totalRaisedText(4.)}>
-          {switch (allTokensTotalRaisedEth) {
-           | Some(totalRaised) => <TotalRaisedEtherCountup totalRaised />
-           | None => React.string("Loading")
-           }}
-          <strong> {React.string(" ETH ")} </strong>
-        </span>
-        <br />
-        <span className={Styles.totalRaisedText(2.5)}>
-          {React.string("(")}
-          {React.string(allTokensTotalRaisedUsd)}
-          <strong> {React.string(" USD")} </strong>
-          {React.string(")")}
-        </span>
-        <br />
-        <span className={Styles.totalRaisedText(1.5)}>
-          {React.string(" for conservation.")}
-        </span>
-      </small>
-    </p>
-  </Offline>;
 };

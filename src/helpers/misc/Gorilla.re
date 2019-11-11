@@ -113,14 +113,11 @@ let useCurrentPrice = gorilla => {
 
 // TODO: you could get this from the contract, but seems like a waste
 let pledgeRate = gorilla => {
-  open Hooks;
-  open Accounting;
-
   let gorillaId = getId(gorilla);
 
   switch (gorillaId) {
   | None => ("3", "10", 0.025, 40.)
-  | Some(tokenIdSet) => ("24", "10", 0.2, 5.)
+  | Some(_tokenIdSet) => ("24", "10", 0.2, 5.)
   };
 };
 

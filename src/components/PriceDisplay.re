@@ -1,7 +1,3 @@
-open Hooks;
-open Providers.UsdPriceProvider;
-open Providers.DrizzleProvider;
-open Belt.Option;
 open Components;
 
 [@react.component]
