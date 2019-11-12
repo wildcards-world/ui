@@ -12,10 +12,10 @@ Css.(
     [margin(`px(0)), fontFamily("Lato, Helvetica, sans-serif")],
   )
 );
-Css.(global("a", [color(hex("#303030")), textDecoration(none)]));
+Css.(global("a", [color(hex("303030")), textDecoration(none)]));
 Css.(global("a:hover", [textDecoration(underline)]));
-Css.(global("a:active", [color(hex("#303030"))]));
-Css.(global("a:visited", [color(hex("#303030"))]));
+Css.(global("a:active", [color(hex("303030"))]));
+Css.(global("a:visited", [color(hex("303030"))]));
 
 let app =
   style([
@@ -297,7 +297,7 @@ let emojiStyles =
 
 let finalNoteContent = style([padding(rem(1.5)), margin(ex(4.))]);
 
-let whiteText = style([color(white)]);
+let whiteText = style([important(color(white))]);
 
 let linkPillBox =
   style([
