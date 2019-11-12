@@ -91,17 +91,29 @@ module Input = {
           {React.string(copyText)}
         </Rimble.Button>
         <Rimble.Card>
-          <Rimble.Text> {React.string(tweetMessage)} </Rimble.Text>
+          <Rimble.Text className=Styles.wrapText>
+            {React.string(tweetMessage)}
+          </Rimble.Text>
         </Rimble.Card>
-        // </textarea>
-        // <textarea>
+        // <textarea
+        //   onChange={event => {
+        //     let value =
+        //       ReactEvent.Form.target(event)##value->getWithDefault("");
+        //     Js.log(value);
+        //   }}>
+        //   {React.string(tweetMessage)}
+        // </textarea> // TODO: maybe it will be better to use a textarea here
+        // //                   - the user can then edit the text, and we can validate that they didn't
+        // //                     mess up the hash or that it isn't too long for a tweet.
+        // //                     Added bonus, all the word wrap settings in textarea just work!
+        <br />
+        <Rimble.Text>
+          {React.string("Once the tweet is posted paste the link:")}
+        </Rimble.Text>
         <Rimble.Input
+          className=Styles.fiftyPercentWidth
           _type="string"
-          placeholder={
-            "https://twitter.com/"
-            ++ twitterHandle
-            ++ "/status/1234567890123456789"
-          }
+          placeholder={j|https://twitter.com/$twitterHandle/status/1234567890123456789|j}
           onChange={event => {
             let value =
               ReactEvent.Form.target(event)##value->getWithDefault("");

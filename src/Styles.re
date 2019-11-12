@@ -392,3 +392,7 @@ let mergeStyles: list(string) => string =
     /* styles->Belt.List.reduce("", mapStylesFunction);*/
     styles->Belt.List.reduce("", (prev, next) => prev ++ " " ++ next);
   };
+
+let wrapText = style([overflowWrap(`breakWord), wordWrap(`breakWord)]);
+
+let fiftyPercentWidth = style([width(`percent(50.))]);
