@@ -33,7 +33,7 @@
   },
   "scripts": {
     "start": "npm run re:build && react-scripts start",
-    "build": "react-scripts build",
+    "build": "npm run re:build && npm run test && react-scripts build",
     "test": "react-scripts test",
     "re:build": "bsb -make-world -clean-world",
     "re:watch": "bsb -make-world -clean-world -w",
