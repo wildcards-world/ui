@@ -1,7 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React, { createContext, useContext, useState, useEffect } from 'react'
 
-export const UsdPriceContext = createContext<any>('');
+export const UsdPriceContext = createContext('');
 export const getEtherUsdPrice = async () => {
   // fetch exchange rate.
   // https://api.kraken.com/0/public/Ticker?pair=ETHUSD).result.XETHZUSD.c.0
@@ -13,12 +12,8 @@ export const getEtherUsdPrice = async () => {
   }
 }
 
-interface ProviderProps {
-  children: any//React.Component
-}
-
 // NOTE: not sure what is wrong with the bellow code, it definitely is more elegant, but there are errors sadly...
-export const UsdPriceProvider: React.FunctionComponent<ProviderProps> = ({ children }) => {
+export const UsdPriceProvider = ({ children }) => {
   const [etherUsdPrice, setEtherUsdPrice] = useState(-1);
 
   useEffect(() => {
@@ -37,9 +32,6 @@ export const UsdPriceProvider: React.FunctionComponent<ProviderProps> = ({ child
   return <UsdPriceContext.Provider value={etherUsdPrice}>
     {children}
   </UsdPriceContext.Provider>
-};
-UsdPriceProvider.propTypes = {
-  children: PropTypes.node.isRequired,
 };
 
 export const useUsdPrice = () => useContext(UsdPriceContext);

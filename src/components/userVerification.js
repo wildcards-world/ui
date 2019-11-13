@@ -1,7 +1,10 @@
-import ethUtil from 'ethereumjs-util'
 import sigUtil from 'eth-sig-util'
+// import ethUtil from 'ethereumjs-util' // No idea why this doesn't work properly
+const ethUtil = require('ethereumjs-util')
 
 export const generateSignature = (web3, from) => (message, signatureCallback) => {
+  console.log({ ethUtil })
+  console.log({ bufferToHex: ethUtil.bufferToHex })
   const messageHex = ethUtil.bufferToHex(new Buffer(message, 'utf8'))
 
   if (!from) return // TODO: handle this case in the UI.

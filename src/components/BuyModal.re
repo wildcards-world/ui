@@ -1,7 +1,6 @@
 open Hooks;
 // open Providers.UsdPriceProvider;
 open Providers.DrizzleProvider;
-open Belt.Option;
 open Belt;
 open Accounting;
 
@@ -98,17 +97,17 @@ module Transaction = {
     let defaultPriceValue =
       Js.Float.toPrecisionWithPrecision(
         currentPriceFloatWithMinimum *. 1.5,
-        2,
+        ~digits=2,
       );
     let defaultMonthlyPatronage =
       Js.Float.toPrecisionWithPrecision(
         currentPriceFloatWithMinimum *. 1.5 *. ratio,
-        3,
+        ~digits=3,
       );
     let priceSliderInitialMax =
       Js.Float.toPrecisionWithPrecision(
         currentPriceFloatWithMinimum *. 3.,
-        3,
+        ~digits=3,
       );
     let defaultPriceWei = defaultPriceValue->Web3Utils.toWeiFromEth;
     let depositForAYear =
@@ -132,7 +131,7 @@ module Transaction = {
             denominator,
           ),
           Js.Math.max_float(0., maxAvailableDeposit->float_of_string)
-          ->string_of_float,
+          ->Js.Float.toString,
         );
       };
 

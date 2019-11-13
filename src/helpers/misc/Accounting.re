@@ -1,5 +1,4 @@
 open Belt.Option;
-open Belt;
 
 let defaultZeroF = maybeFloat => mapWithDefault(maybeFloat, 0., a => a);
 let defaultZeroI = maybeInt => mapWithDefault(maybeInt, -1, a => a);

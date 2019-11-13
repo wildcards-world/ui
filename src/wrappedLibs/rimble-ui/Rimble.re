@@ -157,6 +157,7 @@ module Text = {
   external make:
     (
       ~children: React.element,
+      ~className: string=?,
       ~color: string=?,
       ~fontFamily: string=?,
       ~fontSize: string=?,
