@@ -1,16 +1,14 @@
 {
   "files": {
-    "main.css": "./static/css/main.f64f12a9.chunk.css",
-    "main.js": "./static/js/main.5d3f59f5.chunk.js",
-    "main.js.map": "./static/js/main.5d3f59f5.chunk.js.map",
-    "runtime-main.js": "./static/js/runtime-main.12036349.js",
-    "runtime-main.js.map": "./static/js/runtime-main.12036349.js.map",
-    "static/js/2.00bbf04e.chunk.js": "./static/js/2.00bbf04e.chunk.js",
-    "static/js/2.00bbf04e.chunk.js.map": "./static/js/2.00bbf04e.chunk.js.map",
+    "main.js": "./static/js/main.67f3a258.chunk.js",
+    "main.js.map": "./static/js/main.67f3a258.chunk.js.map",
+    "runtime-main.js": "./static/js/runtime-main.838e578a.js",
+    "runtime-main.js.map": "./static/js/runtime-main.838e578a.js.map",
+    "static/js/2.dc090383.chunk.js": "./static/js/2.dc090383.chunk.js",
+    "static/js/2.dc090383.chunk.js.map": "./static/js/2.dc090383.chunk.js.map",
     "index.html": "./index.html",
-    "precache-manifest.f2071dcec8c28a3656866f85173cca8a.js": "./precache-manifest.f2071dcec8c28a3656866f85173cca8a.js",
+    "precache-manifest.f6ed719d1445e19d8709eaa83d30c4ef.js": "./precache-manifest.f6ed719d1445e19d8709eaa83d30c4ef.js",
     "service-worker.js": "./service-worker.js",
-    "static/css/main.f64f12a9.chunk.css.map": "./static/css/main.f64f12a9.chunk.css.map",
     "static/media/EthCapeTown.png": "./static/media/EthCapeTown.6402bc0d.png",
     "static/media/Ubisoft.png": "./static/media/Ubisoft.87cf189c.png",
     "static/media/WildTomorrowFund.png": "./static/media/WildTomorrowFund.7b8ce24e.png",
@@ -22,13 +20,13 @@
     "static/media/hanging-gorilla-from-vine.png": "./static/media/hanging-gorilla-from-vine.28738cf6.png",
     "static/media/loading.gif": "./static/media/loading.fd7fde4b.gif",
     "static/media/raising_hands.png": "./static/media/raising_hands.9d92bf94.png",
+    "static/media/streak-flame.png": "./static/media/streak-flame.68902c8f.png",
     "static/media/wild-cards-small.png": "./static/media/wild-cards-small.a59c97f6.png",
     "static/media/wild-jungle-background.png": "./static/media/wild-jungle-background.ae5d91e2.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.12036349.js",
-    "static/js/2.00bbf04e.chunk.js",
-    "static/css/main.f64f12a9.chunk.css",
-    "static/js/main.5d3f59f5.chunk.js"
+    "static/js/runtime-main.838e578a.js",
+    "static/js/2.dc090383.chunk.js",
+    "static/js/main.67f3a258.chunk.js"
   ]
 }
