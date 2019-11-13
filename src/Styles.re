@@ -90,18 +90,28 @@ let navList =
     listStyle(`none, `inside, `none),
   ]);
 
-// let center =
-//   style([
-//     justifyContent(`spaceBetween),
-//     media("(max-width: 831px)", [textAlign(center)]),
-//     // flexWrap(`wrap),
-//     paddingTop(px(120)),
-//     paddingLeft(px(15)),
-//     paddingRight(px(15)),
-//     // paddingBottom(px(120)),
-//     maxWidth(px(1200)),
-//     margin2(~v=em(0.), ~h=auto),
-//   ]);
+let positionRelative = style([position(relative)]);
+let overlayFlameImg =
+  style([
+    position(absolute),
+    zIndex(99),
+    bottom(`percent(10.)),
+    right(`percent(50.)),
+    width(`percent(20.)),
+    height(`percent(20.)),
+    minWidth(px(50)),
+    minHeight(px(50)),
+  ]);
+let streakText =
+  style([
+    position(absolute),
+    zIndex(100),
+    bottom(`percent(-20.)),
+    right(`percent(50.)),
+    transform(translateX(`percent(50.))),
+  ]);
+let flameImg = style([width(`percent(100.))]);
+
 let navListItem = style([display(inlineBlock)]);
 
 let navListItemToggle =

@@ -14,6 +14,15 @@ let getId: gorilla => option(string) =
     | _ => None
     };
 
+let getTokenId: gorilla => option(TokenId.t) =
+  aGorilla =>
+    switch (aGorilla) {
+    | Simon => Some(TokenId.makeFromInt(0))
+    | Andy => Some(TokenId.makeFromInt(1))
+    // | Vitalik => "42",
+    | _ => None
+    };
+
 let getNameFromId: option(string) => string =
   gorillaId =>
     switch (gorillaId) {

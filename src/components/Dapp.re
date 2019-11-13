@@ -3,6 +3,8 @@ open Providers.DrizzleProvider;
 open Belt.Option;
 open Components;
 
+let flameImg = [%bs.raw {|require('../img/streak-flame.png')|}];
+
 // TODO: there must be a better way of importing images in reason react...
 module ShareSocial = {
   [@bs.module "./components/shareSocialMedia"] [@react.component]
@@ -15,7 +17,6 @@ module CountDownForeclosure = {
 };
 
 module EditButton = {
-  // let make = () => {
   [@react.component]
   let make = (~gorilla: Gorilla.gorilla) => {
     <Rimble.Button
@@ -28,6 +29,35 @@ module EditButton = {
   };
 };
 
+module Streak = {
+  [@react.component]
+  let make = (~gorilla: Gorilla.gorilla) => {
+    let gorillaName = Gorilla.getName(gorilla);
+
+    let daysHeld =
+      PureHooks.useTimeAcquiredGorilla(gorilla)
+      ->Belt.Option.map(dateAquired =>
+          MomentRe.diff(MomentRe.momentNow(), dateAquired, `days)
+        );
+
+    switch (daysHeld) {
+    | Some(daysHeldFloat) =>
+      let numDaysStr = daysHeldFloat->Js.Float.toFixed;
+
+      <Rimble.Tooltip
+        message={j|$gorillaName has been held for $numDaysStr days by the same owner.|j}
+        placement="top">
+        <div className=Styles.positionRelative>
+          <img className=Styles.flameImg src=flameImg />
+          <p className=Styles.streakText>
+            <strong> {React.string(numDaysStr)} </strong>
+          </p>
+        </div>
+      </Rimble.Tooltip>;
+    | None => React.null
+    };
+  };
+};
 module GorillaOnLandingPage = {
   [@react.component]
   let make = (~gorilla: Gorilla.gorilla, ~owned: bool) => {
@@ -40,10 +70,17 @@ module GorillaOnLandingPage = {
           ReactEvent.Mouse.preventDefault(event);
           ReasonReactRouter.push("#details/" ++ name);
         }}>
-        <img
-          className={Styles.headerImg(150.)}
-          src={Gorilla.getImage(gorilla)}
-        />
+        <div className=Styles.positionRelative>
+          <img
+            className={Styles.headerImg(150.)}
+            src={Gorilla.getImage(gorilla)}
+          />
+          <div className=Styles.overlayFlameImg>
+            <Offline requireSmartContractsLoaded=true>
+              <Streak gorilla />
+            </Offline>
+          </div>
+        </div>
         <div className=Styles.gorillaText>
           <h2> {React.string(name)} </h2>
         </div>
@@ -97,7 +134,6 @@ module DefaultLook = {
 
     <div className=Styles.rightTopHeader>
       {switch (Js.String.split("/", url.hash)) {
-       // switch (url.hash) {
        | [|"details", gorillaStr|] =>
          let gorilla = getGorilla(gorillaStr);
 
@@ -206,6 +242,17 @@ type maybeDate =
 module GorillaInfo = {
   [@react.component]
   let make = (~gorilla: Gorilla.gorilla) => {
+    let gorillaName = Gorilla.getName(gorilla);
+
+    let daysHeld =
+      PureHooks.useTimeAcquiredGorilla(gorilla)
+      ->Belt.Option.map(dateAquired =>
+          (
+            MomentRe.diff(MomentRe.momentNow(), dateAquired, `days),
+            dateAquired,
+          )
+        );
+
     let currentPatron =
       GeneralHooks.useCurrentPatronGorilla(gorilla)
       ->mapWithDefault("Loading", a => a);
@@ -226,7 +273,6 @@ module GorillaInfo = {
     let totalPatronageUsd =
       GeneralHooks.useTotalPatronageUsdGorilla(gorilla)
       ->mapWithDefault("Loading", a => a);
-    // let currentPrice = GeneralHooks.use
     let foreclosureTime = GeneralHooks.useForeclosureTimeGorilla(gorilla);
     let definiteTime = foreclosureTime->mapWithDefault(Loading, a => Date(a));
     let (_, _, ratio, _) = Gorilla.pledgeRate(gorilla);
@@ -244,6 +290,7 @@ module GorillaInfo = {
         ~digits=2,
       );
     let monthlyRate = Js.Float.toString(ratio *. 100.);
+
     // TODO: the ethereum address is really terribly displayed. But the default in Rimble UI includes a QR code scanner (which is really ugly).
     // https://rimble.consensys.design/components/rimble-ui/EthAddress#props
     // https://github.com/ConsenSys/rimble-ui/blob/dd470f00374a05c860b558a2cb9317861e4a0d89/src/EthAddress/index.js (maybe make a PR here with some changes)
@@ -255,7 +302,7 @@ module GorillaInfo = {
             <Rimble.Tooltip
               message={
                 "This is the monthly percentage contribution of "
-                ++ Gorilla.getName(gorilla)
+                ++ gorillaName
                 ++ "'s sale price that will go towards conservation of endangered animals. This is deducted continuously from the deposit and paid by the owner of the animal"
               }
               placement="top">
@@ -282,7 +329,6 @@ module GorillaInfo = {
         <br />
         userIdComponent
       </p>
-      // <p> <S> {"Time Held: " ++ timeHeld} </S> </p>
       <p>
         <small>
           <strong>
@@ -304,11 +350,11 @@ module GorillaInfo = {
       <p>
         <small>
           <strong>
-            <S> {Gorilla.getName(gorilla) ++ "'s Patronage: "} </S>
+            <S> {gorillaName ++ "'s Patronage: "} </S>
             <Rimble.Tooltip
               message={
                 "This is the total contribution that has been raised thanks to the wildcard, "
-                ++ Gorilla.getName(gorilla)
+                ++ gorillaName
               }
               placement="top">
               <span> <S> {js|ⓘ|js} </S> </span>
@@ -329,7 +375,7 @@ module GorillaInfo = {
                <Rimble.Tooltip
                  message={
                    "This is the date the deposit will run out and the gorilla and the current owner will lose ownership of "
-                   ++ Gorilla.getName(gorilla)
+                   ++ gorillaName
                  }
                  placement="top">
                  <span> <S> {js|ⓘ|js} </S> </span>
@@ -346,6 +392,26 @@ module GorillaInfo = {
            </small>
          </p>
        | Loading => React.null
+       }}
+      {switch (daysHeld) {
+       | Some((daysHeldFloat, timeAquired)) =>
+         let timeAquiredString = timeAquired->MomentRe.Moment.toISOString;
+         <p>
+           <small>
+             <strong>
+               <S> "Days Held: " </S>
+               <Rimble.Tooltip
+                 message={j|This is the amount of time $gorillaName has been held. It was aquired on the $timeAquiredString.|j}
+                 placement="top">
+                 <span> <S> {js|ⓘ|js} </S> </span>
+               </Rimble.Tooltip>
+             </strong>
+           </small>
+           <br />
+           <S> daysHeldFloat->Js.Float.toFixed </S>
+           <br />
+         </p>;
+       | None => React.null
        }}
     </Rimble.Box>;
   };
