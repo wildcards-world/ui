@@ -40,9 +40,6 @@
     "deploy": "npm run build && gh-pages -d dist --remote JasoonS",
     "cra:deploy": "npm run re:build && npm run cra:build && gh-pages -d build --remote JasoonS"
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
   "jest": {
     "transformIgnorePatterns": [
       "/node_modules/(?!@glennsl/bs-|bs-platform).+\\.js$"
@@ -71,5 +68,18 @@
     "webpack": "4.41.0",
     "webpack-dev-server": "3.2.1"
   },
-  "homepage": "."
+  "homepage": ".",
+  "eslintConfig": {
+    "extends": "react-app",
+    "overrides": [
+      {
+        "files": [
+          "**/*.js?(x)"
+        ],
+        "rules": {
+          "react-hooks/rules-of-hooks": "warn"
+        }
+      }
+    ]
+  }
 }
