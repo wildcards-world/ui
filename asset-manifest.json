@@ -1,13 +1,10 @@
 {
   "files": {
-    "main.js": "./static/js/main.ab014060.chunk.js",
-    "main.js.map": "./static/js/main.ab014060.chunk.js.map",
+    "main.js": "./static/js/main.1d01d51d.chunk.js",
     "runtime-main.js": "./static/js/runtime-main.838e578a.js",
-    "runtime-main.js.map": "./static/js/runtime-main.838e578a.js.map",
-    "static/js/2.61d532fb.chunk.js": "./static/js/2.61d532fb.chunk.js",
-    "static/js/2.61d532fb.chunk.js.map": "./static/js/2.61d532fb.chunk.js.map",
+    "static/js/2.85c0562b.chunk.js": "./static/js/2.85c0562b.chunk.js",
     "index.html": "./index.html",
-    "precache-manifest.27fb16fbfe5a22f9b964903e29d98af3.js": "./precache-manifest.27fb16fbfe5a22f9b964903e29d98af3.js",
+    "precache-manifest.b246690a952bf91cd2d0b5d0e5ba2227.js": "./precache-manifest.b246690a952bf91cd2d0b5d0e5ba2227.js",
     "service-worker.js": "./service-worker.js",
     "static/media/EthCapeTown.png": "./static/media/EthCapeTown.6402bc0d.png",
     "static/media/Ubisoft.png": "./static/media/Ubisoft.87cf189c.png",
@@ -20,12 +17,13 @@
     "static/media/hanging-gorilla-from-vine.png": "./static/media/hanging-gorilla-from-vine.28738cf6.png",
     "static/media/loading.gif": "./static/media/loading.fd7fde4b.gif",
     "static/media/raising_hands.png": "./static/media/raising_hands.9d92bf94.png",
+    "static/media/streak-flame.png": "./static/media/streak-flame.68902c8f.png",
     "static/media/wild-cards-small.png": "./static/media/wild-cards-small.a59c97f6.png",
     "static/media/wild-jungle-background.png": "./static/media/wild-jungle-background.ae5d91e2.png"
   },
   "entrypoints": [
     "static/js/runtime-main.838e578a.js",
-    "static/js/2.61d532fb.chunk.js",
-    "static/js/main.ab014060.chunk.js"
+    "static/js/2.85c0562b.chunk.js",
+    "static/js/main.1d01d51d.chunk.js"
   ]
 }
