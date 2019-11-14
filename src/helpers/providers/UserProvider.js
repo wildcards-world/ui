@@ -22,7 +22,7 @@ export const UserInfoProvider = ({ children }) => {
     }
 
     // TODO: should try to catch any errors here with this request.
-    fetch(`http://34.65.206.129:5000/verification/${currentUserEthAddress}`).then(async result => {
+    fetch(`https://wildcards.xyz/verification/${currentUserEthAddress}`).then(async result => {
       let resultJson = await result.json()
 
       setUserProvider({
