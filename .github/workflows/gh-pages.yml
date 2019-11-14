@@ -22,7 +22,7 @@ jobs:
       run: npm install --dev
 
     - name: Build
-      run: npm run build
+      run: GENERATE_SOURCEMAP=false npm run build # TODO: reenable source maps as soon as it is possible - useful for debugging.
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v2.5.0
