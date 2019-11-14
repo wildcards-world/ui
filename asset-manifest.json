@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.js": "./static/js/main.67f3a258.chunk.js",
-    "main.js.map": "./static/js/main.67f3a258.chunk.js.map",
+    "main.js": "./static/js/main.5981c7c8.chunk.js",
+    "main.js.map": "./static/js/main.5981c7c8.chunk.js.map",
     "runtime-main.js": "./static/js/runtime-main.838e578a.js",
     "runtime-main.js.map": "./static/js/runtime-main.838e578a.js.map",
     "static/js/2.dc090383.chunk.js": "./static/js/2.dc090383.chunk.js",
     "static/js/2.dc090383.chunk.js.map": "./static/js/2.dc090383.chunk.js.map",
     "index.html": "./index.html",
-    "precache-manifest.f6ed719d1445e19d8709eaa83d30c4ef.js": "./precache-manifest.f6ed719d1445e19d8709eaa83d30c4ef.js",
+    "precache-manifest.dec195815a7719479970316cfba6bdcb.js": "./precache-manifest.dec195815a7719479970316cfba6bdcb.js",
     "service-worker.js": "./service-worker.js",
     "static/media/EthCapeTown.png": "./static/media/EthCapeTown.6402bc0d.png",
     "static/media/Ubisoft.png": "./static/media/Ubisoft.87cf189c.png",
@@ -27,6 +27,6 @@
   "entrypoints": [
     "static/js/runtime-main.838e578a.js",
     "static/js/2.dc090383.chunk.js",
-    "static/js/main.67f3a258.chunk.js"
+    "static/js/main.5981c7c8.chunk.js"
   ]
 }
