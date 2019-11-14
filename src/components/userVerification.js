@@ -71,7 +71,7 @@ export const submitVerification = async (ethAddress, link, twitterHandle, result
   // TODO: you could check if the tweet comes from the correct twitter user. This is some basic clientside validation (can quickly notify the user about this).
   const tweetId = link.match(tweetIdRegex)[0]
 
-  let result = await fetch('http://34.65.206.129:5000/verification', {
+  let result = await fetch('https://wildcards.xyz/verification', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

@@ -12,7 +12,7 @@
     "@wildcards/web3connect": "^1.0.0-beta.23.1",
     "bs-css": "^10.0.1",
     "bs-fetch": "^0.5.0",
-    "bs-moment": "^0.4.4",
+    "bs-moment": "https://github.com/reasonml-community/bs-moment.git#0d476e5",
     "copy-to-clipboard": "^3.2.0",
     "fortmatic": "^0.8.2",
     "moment": "^2.24.0",
@@ -39,9 +39,6 @@
     "re:watch": "bsb -make-world -clean-world -w",
     "deploy": "npm run build && gh-pages -d dist --remote JasoonS",
     "cra:deploy": "npm run re:build && npm run cra:build && gh-pages -d build --remote JasoonS"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "jest": {
     "transformIgnorePatterns": [
@@ -71,5 +68,18 @@
     "webpack": "4.41.0",
     "webpack-dev-server": "3.2.1"
   },
-  "homepage": "."
+  "homepage": ".",
+  "eslintConfig": {
+    "extends": "react-app",
+    "overrides": [
+      {
+        "files": [
+          "**/*.js?(x)"
+        ],
+        "rules": {
+          "react-hooks/rules-of-hooks": "warn"
+        }
+      }
+    ]
+  }
 }
