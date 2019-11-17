@@ -1,22 +1,22 @@
-// TODO: remove the "NoGorilla" option, it makes the code messy for no reason. Rather use an `option` if there might not be a gorilla.
-type gorilla =
+// TODO: remove the "NoAnimal" option, it makes the code messy for no reason. Rather use an `option` if there might not be a animal.
+type t =
   | Andy
   | Vitalik
   | Simon
-  | NoGorilla;
+  | NoAnimal;
 
-let getId: gorilla => option(string) =
-  aGorilla =>
-    switch (aGorilla) {
+let getId: t => option(string) =
+  anAnimal =>
+    switch (anAnimal) {
     | Simon => Some("0")
     | Andy => Some("1")
     // | Vitalik => "42",
     | _ => None
     };
 
-let getTokenId: gorilla => option(TokenId.t) =
-  aGorilla =>
-    switch (aGorilla) {
+let getTokenId: t => option(TokenId.t) =
+  anAnimal =>
+    switch (anAnimal) {
     | Simon => Some(TokenId.makeFromInt(0))
     | Andy => Some(TokenId.makeFromInt(1))
     // | Vitalik => "42",
@@ -24,8 +24,8 @@ let getTokenId: gorilla => option(TokenId.t) =
     };
 
 let getNameFromId: option(string) => string =
-  gorillaId =>
-    switch (gorillaId) {
+  animalId =>
+    switch (animalId) {
     | None => "Vitalik"
     | Some(tokenIdSet) =>
       switch (tokenIdSet) {
@@ -35,55 +35,55 @@ let getNameFromId: option(string) => string =
       }
     };
 
-let getName: gorilla => string =
-  gorillaId =>
-    switch (gorillaId) {
+let getName: t => string =
+  animalId =>
+    switch (animalId) {
     | Vitalik => "Vitalik"
     | Simon => "Simon"
     | Andy => "Andy"
     | _ => "Unknown"
     };
 
-let getGorilla: string => gorilla =
-  gorillaName => {
-    let gorillaNameLower = Js.String.toLowerCase(gorillaName);
-    switch (gorillaNameLower) {
+let getAnimal: string => t =
+  animalName => {
+    let animalNameLower = Js.String.toLowerCase(animalName);
+    switch (animalNameLower) {
     | "vitalik" => Vitalik
     | "simon" => Simon
     | "andy" => Andy
-    | _ => NoGorilla
+    | _ => NoAnimal
     };
   };
 
-let getNextPrevStr = gorilla =>
-  switch (gorilla) {
+let getNextPrevStr = animal =>
+  switch (animal) {
   | Vitalik => ("andy", "simon")
   | Simon => ("vitalik", "andy")
   | Andy => ("simon", "vitalik")
   | _ => ("vitalik", "simon")
   };
 
-let getImage = gorilla =>
-  switch (gorilla) {
+let getImage = animal =>
+  switch (animal) {
   | Vitalik =>
     %bs.raw
-    {|require('../../img/gorillas/gorilla1.png')|}
+    {|require('../../img/animals/gorilla1.png')|}
   | Simon =>
     %bs.raw
-    {|require('../../img/gorillas/gorilla2.png')|}
+    {|require('../../img/animals/gorilla2.png')|}
   | Andy =>
     %bs.raw
-    {|require('../../img/gorillas/gorilla3.png')|}
+    {|require('../../img/animals/gorilla3.png')|}
   | _ =>
     %bs.raw
-    {|require('../../img/gorillas/gorilla3.png')|}
+    {|require('../../img/animals/gorilla3.png')|}
   };
 
-let useBuy = gorilla => {
+let useBuy = animal => {
   open Hooks;
 
-  let gorillaId = getId(gorilla);
-  switch (gorillaId) {
+  let animalId = getId(animal);
+  switch (animalId) {
   | None =>
     let buyObj = useBuyTransaction();
     (
@@ -109,43 +109,43 @@ let useBuy = gorilla => {
   };
 };
 
-let useCurrentPrice = gorilla => {
+let useCurrentPrice = animal => {
   open Hooks;
   open Accounting;
 
-  let gorillaId = getId(gorilla);
-  switch (gorillaId) {
+  let animalId = getId(animal);
+  switch (animalId) {
   | None => useCurrentPriceWei()->defaultZeroS
   | Some(tokenIdSet) => useCurrentPriceWeiNew(tokenIdSet)->defaultZeroS
   };
 };
 
 // TODO: you could get this from the contract, but seems like a waste
-let pledgeRate = gorilla => {
-  let gorillaId = getId(gorilla);
+let pledgeRate = animal => {
+  let animalId = getId(animal);
 
-  switch (gorillaId) {
+  switch (animalId) {
   | None => ("3", "10", 0.025, 40.)
   | Some(_tokenIdSet) => ("24", "10", 0.2, 5.)
   };
 };
 
-let useCurrentPriceEth = gorilla => {
+let useCurrentPriceEth = animal => {
   open Belt.Option;
-  let gorillaId = getId(gorilla);
+  let animalId = getId(animal);
   (
-    switch (gorillaId) {
+    switch (animalId) {
     | None => Hooks.useCurrentPriceEth()
     | Some(tokenIdSet) => Hooks.useCurrentPriceEthNew(tokenIdSet)
     }
   )
   ->mapWithDefault("loading", a => a);
 };
-let useCurrentPriceUsd = gorilla => {
+let useCurrentPriceUsd = animal => {
   open Belt.Option;
-  let gorillaId = getId(gorilla);
+  let animalId = getId(animal);
   (
-    switch (gorillaId) {
+    switch (animalId) {
     | None => Hooks.useCurrentPriceUsd()
     | Some(tokenIdSet) => Hooks.useCurrentPriceUsdNew(tokenIdSet)
     }

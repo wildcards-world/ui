@@ -64,9 +64,9 @@ let useTimeAcquiredVitalik = () => {
   );
 };
 
-let useTimeAcquiredGorilla: Gorilla.gorilla => option(MomentRe.Moment.t) =
+let useTimeAcquiredAnimal: Animal.t => option(MomentRe.Moment.t) =
   gorilla => {
-    switch (Gorilla.getTokenId(gorilla)) {
+    switch (Animal.getTokenId(gorilla)) {
     | Some(gorillaId) => gorillaId->useTimeAcquired
     | None => useTimeAcquiredVitalik()
     };

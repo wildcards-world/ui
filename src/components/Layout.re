@@ -8,14 +8,14 @@ let betaBanner = [%bs.raw {|require('../img/beta-banner.png')|}];
 let make = () => {
   let url = ReasonReactRouter.useUrl();
 
-  let (detailView, contentWidths, nextGorilla, previousGorilla) =
+  let (detailView, contentWidths, nextAnimal, previousAnimal) =
     switch (Js.String.split("/", url.hash)) {
     | [|"details", gorillaStr|] =>
-      let gorilla = Gorilla.getGorilla(gorillaStr);
-      // let tokenId = Gorilla.getId(gorilla);
-      let (next, previous) = Gorilla.getNextPrevStr(gorilla);
+      let gorilla = Animal.getAnimal(gorillaStr);
+      // let tokenId = Animal.getId(gorilla);
+      let (next, previous) = Animal.getNextPrevStr(gorilla);
       switch (gorilla) {
-      | NoGorilla => (false, [|1., 1., 1.|], next, previous)
+      | NoAnimal => (false, [|1., 1., 1.|], next, previous)
       | _ => (true, [|0.9, 0.9, 0.9|], next, previous)
       };
     | _ => (false, [|1., 1., 1.|], "vitalik", "simon")
@@ -94,7 +94,7 @@ let make = () => {
                 <Rimble.Button
                   className=Styles.forwardBackButton
                   onClick={InputHelp.handleEvent(() =>
-                    ReasonReactRouter.push("#details/" ++ previousGorilla)
+                    ReasonReactRouter.push("#details/" ++ previousAnimal)
                   )}>
                   <S> {js|◄|js} </S>
                 </Rimble.Button>
@@ -106,7 +106,7 @@ let make = () => {
                 <Rimble.Button
                   className=Styles.forwardBackButton
                   onClick={InputHelp.handleEvent(() =>
-                    ReasonReactRouter.push("#details/" ++ nextGorilla)
+                    ReasonReactRouter.push("#details/" ++ nextAnimal)
                   )}>
                   <S> {js|►|js} </S>
                 </Rimble.Button>

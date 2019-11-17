@@ -17,7 +17,7 @@ module CoreConcepts = {
       <Flex flexWrap="wrap">
         // <Flex flexWrap="wrap" alignItems="center">
 
-          <Box width=[|0.28|] className=Styles.gorillaImage>
+          <Box width=[|0.28|] className=Styles.animalImage>
             <img src=gorillaOnVine width="100%" />
           </Box>
           <Box width=[|1., 1., 0.59|] className=Styles.infoCardContainer>

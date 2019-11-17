@@ -53,7 +53,7 @@ module HowItWorks = {
                   <hr />
                   <Text>
                     <S>
-                      "You can become the patron of Vitalik the gorilla by purchasing him for his current sale price. Vitalik the gorilla is "
+                      "You can become the patron of Vitalik the animal by purchasing him for his current sale price. Vitalik the animal is "
                     </S>
                     <strong> <S> "always for sale" </S> </strong>
                     <S>
@@ -90,7 +90,7 @@ module HowItWorks = {
               </Rimble.Modal>
             </Rimble.Card>
           </Rimble.Box>
-          <Rimble.Box width=[|0.41|] className=Styles.gorillaImage>
+          <Rimble.Box width=[|0.41|] className=Styles.animalImage>
             <img src=gorillaOnVine width="100%" />
           </Rimble.Box>
         </Rimble.Flex>

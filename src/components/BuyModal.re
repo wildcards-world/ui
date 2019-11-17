@@ -18,7 +18,7 @@ module BuyInput = {
       ~deposit: string=?,
       ~patronage: string=?,
       ~updatePatronage: string => unit=?,
-      ~gorillaName: string,
+      ~animalName: string,
       ~depositForAYear: string
     ) =>
     // ~depositError: option(string)=?
@@ -70,16 +70,16 @@ let calcRequiredDepositForTime = (time, price, numerator, denominator) => {
 
 module Transaction = {
   [@react.component]
-  let make = (~gorilla: Gorilla.gorilla) => {
+  let make = (~animal: Animal.t) => {
     let currentUser = useCurrentUser();
-    let (buyFunc, txObjects) = Gorilla.useBuy(gorilla);
+    let (buyFunc, txObjects) = Animal.useBuy(animal);
     let userBalance = DrizzleReact.Hooks.useUserBalance()->defaultZeroS;
 
     let (numerator, denominator, ratio, ratioInverse) =
-      Gorilla.pledgeRate(gorilla);
-    let currentPriceWei = Gorilla.useCurrentPrice(gorilla);
+      Animal.pledgeRate(animal);
+    let currentPriceWei = Animal.useCurrentPrice(animal);
 
-    let gorillaName = Gorilla.getName(gorilla);
+    let animalName = Animal.getName(animal);
 
     let maxAvailableDepositBN =
       BN.new_(userBalance)
@@ -242,13 +242,13 @@ module Transaction = {
              updatePatronage
              priceSliderInitialMax
              maxAvailableDeposit
-             gorillaName
+             animalName
              depositForAYear
            />
          : <Rimble.Box>
              <p className=Styles.textOnlyModalText>
                {React.string(
-                  "You do not have enough ether to buy " ++ gorillaName ++ ".",
+                  "You do not have enough ether to buy " ++ animalName ++ ".",
                 )}
              </p>
            </Rimble.Box>}
@@ -257,7 +257,7 @@ module Transaction = {
 };
 
 [@react.component]
-let make = (~gorilla: Gorilla.gorilla) => {
+let make = (~animal: Animal.t) => {
   let (isModalOpen, setModalOpen) = React.useState(() => false);
   let isProviderSelected = useIsProviderSelected();
 
@@ -292,7 +292,7 @@ let make = (~gorilla: Gorilla.gorilla) => {
           m=3
           onClick={_ => setModalOpen(_ => false)}
         />
-        <Transaction gorilla />
+        <Transaction animal />
       </Rimble.Card>
     </Rimble.Modal>
   </React.Fragment>;

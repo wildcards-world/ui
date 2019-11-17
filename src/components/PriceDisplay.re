@@ -1,9 +1,9 @@
 open Components;
 
 [@react.component]
-let make = (~gorilla: Gorilla.gorilla) => {
-  let currentPrice = Gorilla.useCurrentPriceEth(gorilla);
-  let currentPriceUsd = Gorilla.useCurrentPriceUsd(gorilla);
+let make = (~animal: Animal.t) => {
+  let currentPrice = Animal.useCurrentPriceEth(animal);
+  let currentPriceUsd = Animal.useCurrentPriceUsd(animal);
 
   <React.Fragment>
     <p className={Styles.noMarginTop ++ " " ++ Styles.noMarginBottom}>
