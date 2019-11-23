@@ -4,21 +4,20 @@ open Components;
 let smallIcon = [%bs.raw {|require('../img/logos/wild-cards-small.png')|}];
 let betaBanner = [%bs.raw {|require('../img/beta-banner.png')|}];
 
+// type DetailView = | Details(contentWidth, nextAnimal, previousAnimal)
+// | NoDetails(contentWidth)
+
 [@react.component]
 let make = () => {
   let url = ReasonReactRouter.useUrl();
 
-  let (detailView, contentWidths, nextAnimal, previousAnimal) =
+  let animalCarousel =
     switch (Js.String.split("/", url.hash)) {
     | [|"details", gorillaStr|] =>
-      let gorilla = Animal.getAnimal(gorillaStr);
-      // let tokenId = Animal.getId(gorilla);
-      let (next, previous) = Animal.getNextPrevStr(gorilla);
-      switch (gorilla) {
-      | NoAnimal => (false, [|1., 1., 1.|], next, previous)
-      | _ => (true, [|0.9, 0.9, 0.9|], next, previous)
-      };
-    | _ => (false, [|1., 1., 1.|], "vitalik", "simon")
+      let optionAnimal = Animal.getAnimal(gorillaStr);
+
+      optionAnimal->Belt.Option.map(animal => Animal.getNextPrev(animal));
+    | _ => None
     };
   open ReactTranslate;
   let usedtranslationModeContext = useTranslationModeContext();
@@ -59,16 +58,18 @@ let make = () => {
               </div>
             </li>
             <li className=Styles.navListItem>
-              {detailView
-                 ? <a
-                     className=Styles.navListText
-                     onClick={event => {
-                       ReactEvent.Mouse.preventDefault(event);
-                       ReasonReactRouter.push("#");
-                     }}>
-                     <S> "HOME" </S>
-                   </a>
-                 : React.null}
+              {switch (animalCarousel) {
+               | None => React.null
+               | Some(_) =>
+                 <a
+                   className=Styles.navListText
+                   onClick={event => {
+                     ReactEvent.Mouse.preventDefault(event);
+                     ReasonReactRouter.push("#");
+                   }}>
+                   <S> "HOME" </S>
+                 </a>
+               }}
               <a
                 className=Styles.navListText
                 target="_blank"
@@ -88,31 +89,42 @@ let make = () => {
       </nav>
     </header>
     <Rimble.Flex flexWrap="wrap" alignItems="center" className=Styles.topBody>
-      {<React.Fragment>
-         {detailView
-            ? <Rimble.Box p=1 width=[|0.05, 0.05, 0.05|]>
-                <Rimble.Button
-                  className=Styles.forwardBackButton
-                  onClick={InputHelp.handleEvent(() =>
-                    ReasonReactRouter.push("#details/" ++ previousAnimal)
-                  )}>
-                  <S> {js|◄|js} </S>
-                </Rimble.Button>
-              </Rimble.Box>
-            : React.null}
-         <Rimble.Box width=contentWidths> <Dapp /> </Rimble.Box>
-         {detailView
-            ? <Rimble.Box p=1 width=[|0.05, 0.05, 0.05|]>
-                <Rimble.Button
-                  className=Styles.forwardBackButton
-                  onClick={InputHelp.handleEvent(() =>
-                    ReasonReactRouter.push("#details/" ++ nextAnimal)
-                  )}>
-                  <S> {js|►|js} </S>
-                </Rimble.Button>
-              </Rimble.Box>
-            : React.null}
-       </React.Fragment>}
+      {switch (animalCarousel) {
+       | None => React.null
+       | Some((_, previousAnimal)) =>
+         <Rimble.Box p=1 width=[|0.05, 0.05, 0.05|]>
+           <Rimble.Button
+             className=Styles.forwardBackButton
+             onClick={InputHelp.handleEvent(() =>
+               ReasonReactRouter.push(
+                 "#details/" ++ Animal.getName(previousAnimal),
+               )
+             )}>
+             <S> {js|◄|js} </S>
+           </Rimble.Button>
+         </Rimble.Box>
+       }}
+      <Rimble.Box
+        width={
+          animalCarousel->Belt.Option.mapWithDefault([|1.|], _ => [|0.9|])
+        }>
+        <Dapp />
+      </Rimble.Box>
+      {switch (animalCarousel) {
+       | None => React.null
+       | Some((nextAnimal, _)) =>
+         <Rimble.Box p=1 width=[|0.05, 0.05, 0.05|]>
+           <Rimble.Button
+             className=Styles.forwardBackButton
+             onClick={InputHelp.handleEvent(() =>
+               ReasonReactRouter.push(
+                 "#details/" ++ Animal.getName(nextAnimal),
+               )
+             )}>
+             <S> {js|►|js} </S>
+           </Rimble.Button>
+         </Rimble.Box>
+       }}
     </Rimble.Flex>
     <StaticContent.CustomerBenefit />
     <StaticContent.HowItWorks />

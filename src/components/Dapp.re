@@ -177,10 +177,10 @@ module DefaultLook = {
     <div className=Styles.rightTopHeader>
       {switch (Js.String.split("/", url.hash)) {
        | [|"details", animalStr|] =>
-         let animal = Animal.getAnimal(animalStr);
+         let optionAnimal = Animal.getAnimal(animalStr);
 
-         switch (animal) {
-         | NoAnimal =>
+         switch (optionAnimal) {
+         | None =>
            <div>
              <h1>
                {React.string(
@@ -191,7 +191,7 @@ module DefaultLook = {
              </h1>
              <p> <S> "Please check the spelling and try again." </S> </p>
            </div>
-         | _ =>
+         | Some(animal) =>
            <React.Fragment>
              <img
                className=Styles.ownedAnimalImg
@@ -479,10 +479,10 @@ let make = () => {
       <React.Fragment>
         {isDetailView
            ? {
-             let animal = Animal.getAnimal(animalStr);
-             switch (animal) {
-             | NoAnimal => <DefaultLeftPanel />
-             | _ =>
+             let optionAnimal = Animal.getAnimal(animalStr);
+             switch (optionAnimal) {
+             | None => <DefaultLeftPanel />
+             | Some(animal) =>
                <Providers.UsdPriceProvider>
                  <Offline requireSmartContractsLoaded=true>
                    <AnimalInfo animal />

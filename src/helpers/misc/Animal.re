@@ -2,8 +2,7 @@
 type t =
   | Andy
   | Vitalik
-  | Simon
-  | NoAnimal;
+  | Simon;
 
 let getId: t => option(string) =
   anAnimal =>
@@ -41,26 +40,24 @@ let getName: t => string =
     | Vitalik => "Vitalik"
     | Simon => "Simon"
     | Andy => "Andy"
-    | _ => "Unknown"
     };
 
-let getAnimal: string => t =
+let getAnimal: string => option(t) =
   animalName => {
     let animalNameLower = Js.String.toLowerCase(animalName);
     switch (animalNameLower) {
-    | "vitalik" => Vitalik
-    | "simon" => Simon
-    | "andy" => Andy
-    | _ => NoAnimal
+    | "vitalik" => Some(Vitalik)
+    | "simon" => Some(Simon)
+    | "andy" => Some(Andy)
+    | _ => None
     };
   };
 
-let getNextPrevStr = animal =>
+let getNextPrev = animal =>
   switch (animal) {
-  | Vitalik => ("andy", "simon")
-  | Simon => ("vitalik", "andy")
-  | Andy => ("simon", "vitalik")
-  | _ => ("vitalik", "simon")
+  | Vitalik => (Andy, Simon)
+  | Simon => (Vitalik, Andy)
+  | Andy => (Simon, Vitalik)
   };
 
 let getImage = animal =>
@@ -72,9 +69,6 @@ let getImage = animal =>
     %bs.raw
     {|require('../../img/animals/gorilla2.png')|}
   | Andy =>
-    %bs.raw
-    {|require('../../img/animals/gorilla3.png')|}
-  | _ =>
     %bs.raw
     {|require('../../img/animals/gorilla3.png')|}
   };

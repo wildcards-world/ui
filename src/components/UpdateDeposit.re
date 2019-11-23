@@ -60,12 +60,7 @@ module Transaction = {
       };
 
     let _availableDeposit =
-      (
-        switch (animal) {
-        | NoAnimal => useDepositAbleToWithdrawWei()
-        | _ => useDepositAbleToWithdrawWeiNew(currentUser)
-        }
-      )
+      useDepositAbleToWithdrawWeiNew(currentUser)
       ->mapWithDefault("0", price => price);
 
     let onSubmitDepositChange = event => {
