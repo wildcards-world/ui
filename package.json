@@ -6,10 +6,9 @@
     "@babel/runtime": "^7.6.2",
     "@drizzle/react-plugin": "1.5.0",
     "@drizzle/store": "1.5.0",
-    "@portis/web3": "^2.0.0-beta.43",
-    "@toruslabs/torus-embed": "^0.1.2",
-    "@walletconnect/web3-provider": "^1.0.0-beta.36",
-    "@wildcards/web3connect": "^1.0.0-beta.23.1",
+    "@portis/web3": "^2.0.0-beta.54",
+    "@toruslabs/torus-embed": "^0.2.6",
+    "@walletconnect/web3-provider": "^1.0.0-beta.39",
     "bs-css": "^10.0.1",
     "bs-fetch": "^0.5.0",
     "bs-moment": "https://github.com/reasonml-community/bs-moment.git#0d476e5",
@@ -26,10 +25,11 @@
     "react-translate": "^7.0.1",
     "reason-react": "^0.7.0",
     "rimble-ui": "^0.10.0",
-    "squarelink": "^1.0.10",
+    "squarelink": "^1.1.4",
     "styled-components": "^4.3.2",
     "use-debounce": "^3.1.0",
-    "web3connect": "^1.0.0-beta.22"
+    "web3": "^1.2.4",
+    "web3connect": "^1.0.0-beta.24"
   },
   "scripts": {
     "start": "npm run re:build && react-scripts start",

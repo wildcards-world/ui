@@ -1,4 +1,4 @@
-import web3connect from '@wildcards/web3connect'
+import web3connect from 'web3connect'
 
 class Web3ConnectControl {
 
@@ -61,7 +61,7 @@ const web3connectSettings = {
   walletconnect: {
     package: require("@walletconnect/web3-provider").default, // required
     options: {
-      infuraId: "a5d64a2052ab4d1da240cdfe3a6c519b" // required
+      infuraId: "e8fe0574d5124106b82126c48b689bd9" // required
     }
   },
   portis: {
