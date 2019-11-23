@@ -7,7 +7,7 @@ module Transaction = {
   [@react.component]
   let make = (~gorilla: Gorilla.gorilla) => {
     let (newBuyPrice, setNewBuyPrice) = React.useState(() => "");
-    let currentPrice = useCurrentPriceWei();
+    let currentPrice = useCurrentPriceWei()->mapWithDefault("loading", a => a);
     let currentUser = useCurrentUser();
     // let changePriceObj = useChangePriceTransaction();
     // let changePriceObjNew = useChangePriceTransactionNew();
