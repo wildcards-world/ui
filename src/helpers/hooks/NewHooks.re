@@ -83,12 +83,14 @@ let useWithdrawTransactionNew = () =>
 // TODO: this should use a BN not an int (int is bad :D)
 let useCurrentPatronNew: int => option(string) = {
   tokenId =>
-    (useCacheCall())(. "WildcardSteward_v0", "currentPatron", tokenId);
+    (useCacheCall())(. "WildcardSteward_v0", "currentPatron", tokenId)
+    ->Js.Nullable.toOption;
 };
 let useBuyTransactionNew = () =>
   (useCacheSend())(. "WildcardSteward_v0", "buy");
 let useDepositAvailableToWithdrawNew = patron =>
-  (useCacheCall())(. "WildcardSteward_v0", "depositAbleToWithdraw", patron);
+  (useCacheCall())(. "WildcardSteward_v0", "depositAbleToWithdraw", patron)
+  ->Js.Nullable.toOption;
 // let useAvailableDepositNew = patron =>
 //   (useCacheCall())(. "WildcardSteward_v0", "depositAbleToWithdraw", patron);
 

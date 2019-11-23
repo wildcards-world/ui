@@ -19,8 +19,10 @@ let useWeb3: unit => Web3.t =
 
 let useTotalPatronageWei = () => {
   let totalCollectedOpt =
-    useCacheCall((), "VitalikSteward", "totalCollected");
-  let patronageOwedOpt = useCacheCall((), "VitalikSteward", "patronageOwed");
+    useCacheCall((), "VitalikSteward", "totalCollected")
+    ->Js.Nullable.toOption;
+  let patronageOwedOpt =
+    useCacheCall((), "VitalikSteward", "patronageOwed")->Js.Nullable.toOption;
   switch (totalCollectedOpt, patronageOwedOpt) {
   | (Some(totalCollected), Some(patronageOwed)) =>
     let totalCollectedBN: BN.bn = BN.new_(totalCollected);
@@ -47,7 +49,8 @@ let useTotalPatronageUsd = () => {
 };
 
 let useDepositAbleToWithdrawWei = () =>
-  useCacheCall((), "VitalikSteward", "depositAbleToWithdraw");
+  useCacheCall((), "VitalikSteward", "depositAbleToWithdraw")
+  ->Js.Nullable.toOption;
 
 let useDepositAbleToWithdrawEth = () =>
   useDepositAbleToWithdrawWei()->flatMap(price => Some(fromWeiToEth(price)));
@@ -64,11 +67,13 @@ let useDepositAbleToWithdrawUsd = () => {
 
 let useForeclosureTime = () =>
   useCacheCall((), "VitalikSteward", "foreclosureTime")
+  ->Js.Nullable.toOption
   ->Belt.Option.map(stringTimeStamp =>
       MomentRe.momentWithUnix(int_of_string(stringTimeStamp))
     );
 
-let useCurrentPriceWei = () => useCacheCall((), "VitalikSteward", "price");
+let useCurrentPriceWei = () =>
+  useCacheCall((), "VitalikSteward", "price")->Js.Nullable.toOption;
 let useCurrentPriceEth = () =>
   useCurrentPriceWei()->flatMap(price => Some(fromWeiToEth(price)));
 let useCurrentPriceUsd = () => {
@@ -83,12 +88,13 @@ let useCurrentPriceUsd = () => {
 };
 
 let useCurrentPatron: unit => option(string) =
-  () => (useCacheCall())(. "ERC721Full", "ownerOf", 42);
+  () => (useCacheCall())(. "ERC721Full", "ownerOf", 42)->Js.Nullable.toOption;
 // let useTotalTimeHeld = (addressOfUser) =>
 //       let currentTimeHeld = parseInt(this.getTimeHeld(props, timeHeldKey)) + (parseInt(date.getTime()/1000) - parseInt(this.getTimeAcquired(props))
 
 let useAvailableDeposit = () =>
-  useCacheCall((), "VitalikSteward", "availableDeposit");
+  useCacheCall((), "VitalikSteward", "availableDeposit")
+  ->Js.Nullable.toOption;
 let useBuyTransaction = () => (useCacheSend())(. "VitalikSteward", "buy");
 let useChangePriceTransaction = () =>
   (useCacheSend())(. "VitalikSteward", "changePrice");
