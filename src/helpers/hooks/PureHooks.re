@@ -5,9 +5,9 @@ type drizzle = {web3: Web3.t};
 type drizzleContext = {
   drizzle,
   [@bs.as "useCacheCall"]
-  useCacheCallStr: (. string, string, TokenId.t) => option(string),
+  useCacheCallStr: (. string, string, TokenId.t) => Js.Nullable.t(string),
   [@bs.as "useCacheCall"]
-  useCacheCallVitalikStr: (. string, string) => option(string),
+  useCacheCallVitalikStr: (. string, string) => Js.Nullable.t(string),
 };
 
 [@bs.deriving {abstract: light}]
@@ -37,8 +37,10 @@ let useCacheCallVitalikStr = method =>
   useDrizzle()->useCacheCallVitalikStr(. "VitalikSteward", method);
 
 let useTotalPatronageWei = id => {
-  let totalCollectedOpt = "totalCollected"->useCacheCallStr(id);
-  let patronageOwedOpt = "patronageOwed"->useCacheCallStr(id);
+  let totalCollectedOpt =
+    "totalCollected"->useCacheCallStr(id)->Js.Nullable.toOption;
+  let patronageOwedOpt =
+    "patronageOwed"->useCacheCallStr(id)->Js.Nullable.toOption;
 
   switch (totalCollectedOpt, patronageOwedOpt) {
   | (Some(totalCollected), Some(patronageOwed)) =>
@@ -50,14 +52,16 @@ let useTotalPatronageWei = id => {
 };
 
 let useTimeAcquired = id => {
-  let timeAquiredRaw = "timeAcquired"->useCacheCallStr(id);
+  let timeAquiredRaw =
+    "timeAcquired"->useCacheCallStr(id)->Js.Nullable.toOption;
 
   timeAquiredRaw->Belt.Option.flatMap(timeStamp =>
     Some(MomentRe.momentWithUnix(int_of_string(timeStamp)))
   );
 };
 let useTimeAcquiredVitalik = () => {
-  let timeAcquiredRaw = "timeAcquired"->useCacheCallVitalikStr;
+  let timeAcquiredRaw =
+    "timeAcquired"->useCacheCallVitalikStr->Js.Nullable.toOption;
 
   timeAcquiredRaw->Belt.Option.flatMap(timeStamp =>
     Some(MomentRe.momentWithUnix(int_of_string(timeStamp)))
