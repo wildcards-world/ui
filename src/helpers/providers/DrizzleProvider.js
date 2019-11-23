@@ -13,7 +13,7 @@ import UserProvider from "./UserProvider";
 
 // todo: read env var for fallback
 const fallbackUrl =
-  "wss://mainnet.infura.io/ws/v3/a5d64a2052ab4d1da240cdfe3a6c519b";
+  "wss://mainnet.infura.io/ws/v3/e8fe0574d5124106b82126c48b689bd9";
 // const fallbackUrl = "wss://goerli.infura.io/ws/v3/a5d64a2052ab4d1da240cdfe3a6c519b";
 const switchableWeb3 = web3ProvideSwitcher.createSwitchableWeb3();
 
