@@ -18,11 +18,11 @@ module CountDownForeclosure = {
 
 module EditButton = {
   [@react.component]
-  let make = (~gorilla: Gorilla.gorilla) => {
+  let make = (~animal: Animal.t) => {
     <Rimble.Button
       onClick={event => {
         ReactEvent.Form.preventDefault(event);
-        ReasonReactRouter.push("#details/" ++ Gorilla.getName(gorilla));
+        ReasonReactRouter.push("#details/" ++ Animal.getName(animal));
       }}>
       {React.string("Edit")}
     </Rimble.Button>;
@@ -31,11 +31,11 @@ module EditButton = {
 
 module Streak = {
   [@react.component]
-  let make = (~gorilla: Gorilla.gorilla) => {
-    let gorillaName = Gorilla.getName(gorilla);
+  let make = (~animal: Animal.t) => {
+    let animalName = Animal.getName(animal);
 
     let daysHeld =
-      PureHooks.useTimeAcquiredGorilla(gorilla)
+      PureHooks.useTimeAcquiredAnimal(animal)
       ->Belt.Option.map(dateAquired =>
           MomentRe.diff(MomentRe.momentNow(), dateAquired, `days)
         );
@@ -45,7 +45,7 @@ module Streak = {
       let numDaysStr = daysHeldFloat->Js.Float.toFixed;
 
       <Rimble.Tooltip
-        message={j|$gorillaName has been held for $numDaysStr days by the same owner.|j}
+        message={j|$animalName has been held for $numDaysStr days by the same owner.|j}
         placement="top">
         <div className=Styles.positionRelative>
           <img className=Styles.flameImg src=flameImg />
@@ -58,10 +58,54 @@ module Streak = {
     };
   };
 };
-module GorillaOnLandingPage = {
+
+//  <Rimble.Flex className=Styles.animalBox>
+//            <Rimble.Box>
+//              <div className=Styles.animalBack>
+//                <img className=Styles.headerImg src=animal2 />
+//                <div className=Styles.animalText>
+//                  <h2> {React.string("Simon")} </h2>
+//                  <h3 className=Styles.colorGreen>
+//                    {React.string("COMING IN")}
+//                  </h3>
+//                  <Countdown />
+//                </div>
+//              </div>
+//            </Rimble.Box>
+//            //  <Offline requireSmartContractsLoaded=true>
+//            //   //  <PriceDisplay tokenId={Some("0")} />
+//            //   //  <BuyModal tokenId={Some("0")} />
+//            //  </Offline>
+//            <Rimble.Box>
+//              <img className=Styles.headerImg src=animal1 />
+//              <div>
+//                <div className=Styles.animalText>
+//                  <h2> {React.string("Vitalik")} </h2>
+//                  <Offline requireSmartContractsLoaded=true>
+//                    <PriceDisplay tokenId=None />
+//                    <BuyModal tokenId=None />
+//                  </Offline>
+//                </div>
+//              </div>
+//            </Rimble.Box>
+//            <Rimble.Box>
+//              <div className=Styles.animalBack>
+//                <img className=Styles.headerImg src=animal3 />
+//                <div className=Styles.animalText>
+//                  <h2> {React.string("Andy")} </h2>
+//                  <h3 className=Styles.colorGreen>
+//                    {React.string("COMING IN")}
+//                  </h3>
+//                  <Countdown />
+//                </div>
+//              </div>
+//            </Rimble.Box>
+//          </Rimble.Flex>
+
+module AnimalOnLandingPage = {
   [@react.component]
-  let make = (~gorilla: Gorilla.gorilla, ~owned: bool) => {
-    let name = Gorilla.getName(gorilla);
+  let make = (~animal: Animal.t, ~owned: bool) => {
+    let name = Animal.getName(animal);
 
     <Rimble.Box>
       <a
@@ -73,22 +117,22 @@ module GorillaOnLandingPage = {
         <div className=Styles.positionRelative>
           <img
             className={Styles.headerImg(150.)}
-            src={Gorilla.getImage(gorilla)}
+            src={Animal.getImage(animal)}
           />
           <div className=Styles.overlayFlameImg>
             <Offline requireSmartContractsLoaded=true>
-              <Streak gorilla />
+              <Streak animal />
             </Offline>
           </div>
         </div>
-        <div className=Styles.gorillaText>
+        <div className=Styles.animalText>
           <h2> {React.string(name)} </h2>
         </div>
       </a>
-      <div className=Styles.gorillaText>
+      <div className=Styles.animalText>
         <Offline requireSmartContractsLoaded=true>
-          <PriceDisplay gorilla />
-          {owned ? <EditButton gorilla /> : <BuyModal gorilla />}
+          <PriceDisplay animal />
+          {owned ? <EditButton animal /> : <BuyModal animal />}
         </Offline>
       </div>
     </Rimble.Box>;
@@ -96,8 +140,6 @@ module GorillaOnLandingPage = {
 };
 
 module DefaultLook = {
-  open Gorilla;
-
   [@react.component]
   let make = (~areRequirementsLoaded: bool=false) => {
     open Components;
@@ -134,29 +176,32 @@ module DefaultLook = {
 
     <div className=Styles.rightTopHeader>
       {switch (Js.String.split("/", url.hash)) {
-       | [|"details", gorillaStr|] =>
-         let gorilla = getGorilla(gorillaStr);
+       | [|"details", animalStr|] =>
+         let optionAnimal = Animal.getAnimal(animalStr);
 
-         switch (gorilla) {
-         | NoGorilla =>
+         switch (optionAnimal) {
+         | None =>
            <div>
              <h1>
                {React.string(
-                  "We are unable to find a gorilla by the name of "
-                  ++ gorillaStr
+                  "We are unable to find a animal by the name of "
+                  ++ animalStr
                   ++ " in our system.",
                 )}
              </h1>
              <p> <S> "Please check the spelling and try again." </S> </p>
            </div>
-         | _ =>
+         | Some(animal) =>
            <React.Fragment>
-             <img className=Styles.ownedGorillaImg src={getImage(gorilla)} />
-             <h2> <S> {getName(gorilla)} </S> </h2>
+             <img
+               className=Styles.ownedAnimalImg
+               src={Animal.getImage(animal)}
+             />
+             <h2> <S> {Animal.getName(animal)} </S> </h2>
              <Offline requireSmartContractsLoaded=true>
                {
                  let isYours =
-                   switch (gorilla) {
+                   switch (animal) {
                    | Vitalik => ownVitalik
                    | Simon => ownSimon
                    | Andy => ownAndy
@@ -165,17 +210,17 @@ module DefaultLook = {
 
                  if (isYours) {
                    <React.Fragment>
-                     <UpdatePriceModal gorilla />
+                     <UpdatePriceModal animal />
                      <br />
-                     <UpdateDeposit gorilla />
+                     <UpdateDeposit animal />
                      <br />
                      {UserProvider.useIsUserValidated(currentAccount)
                         ? <ShareSocial /> : <ValidateModal />}
                    </React.Fragment>;
                  } else {
                    <React.Fragment>
-                     <PriceDisplay gorilla />
-                     <BuyModal gorilla />
+                     <PriceDisplay animal />
+                     <BuyModal animal />
                    </React.Fragment>;
                  };
                }
@@ -184,10 +229,10 @@ module DefaultLook = {
          };
        | _ =>
          <React.Fragment>
-           <Rimble.Flex className=Styles.gorillaBox>
-             <GorillaOnLandingPage gorilla=Simon owned=ownSimon />
-             <GorillaOnLandingPage gorilla=Vitalik owned=ownVitalik />
-             <GorillaOnLandingPage gorilla=Andy owned=ownAndy />
+           <Rimble.Flex className=Styles.animalBox>
+             <AnimalOnLandingPage animal=Simon owned=ownSimon />
+             <AnimalOnLandingPage animal=Vitalik owned=ownVitalik />
+             <AnimalOnLandingPage animal=Andy owned=ownAndy />
            </Rimble.Flex>
            <Rimble.Box className=Styles.dappImagesCounteractOffset>
              <Offline requireSmartContractsLoaded=true>
@@ -239,13 +284,13 @@ type maybeDate =
   | Loading
   | Date(MomentRe.Moment.t);
 
-module GorillaInfo = {
+module AnimalInfo = {
   [@react.component]
-  let make = (~gorilla: Gorilla.gorilla) => {
-    let gorillaName = Gorilla.getName(gorilla);
+  let make = (~animal: Animal.t) => {
+    let animalName = Animal.getName(animal);
 
     let daysHeld =
-      PureHooks.useTimeAcquiredGorilla(gorilla)
+      PureHooks.useTimeAcquiredAnimal(animal)
       ->Belt.Option.map(dateAquired =>
           (
             MomentRe.diff(MomentRe.momentNow(), dateAquired, `days),
@@ -254,7 +299,7 @@ module GorillaInfo = {
         );
 
     let currentPatron =
-      GeneralHooks.useCurrentPatronGorilla(gorilla)
+      GeneralHooks.useCurrentPatronAnimal(animal)
       ->mapWithDefault("Loading", a => a);
     let userId = UserProvider.useUserNameOrTwitterHandle(currentPatron);
     let userIdType =
@@ -264,20 +309,20 @@ module GorillaInfo = {
       };
     let userIdComponent = UserProvider.useUserComponent(userId);
     let depositAvailableToWithdraw =
-      GeneralHooks.useDepositAbleToWithdrawEthGorilla(gorilla)
+      GeneralHooks.useDepositAbleToWithdrawEthAnimal(animal)
       ->mapWithDefault("Loading", a => a);
     let depositAvailableToWithdrawUsd =
-      GeneralHooks.useDepositAbleToWithdrawUsdGorilla(gorilla)
+      GeneralHooks.useDepositAbleToWithdrawUsdAnimal(animal)
       ->mapWithDefault("Loading", a => a);
-    let totalPatronage = GeneralHooks.useTotalPatronageEthGorilla(gorilla);
+    let totalPatronage = GeneralHooks.useTotalPatronageEthAnimal(animal);
     let totalPatronageUsd =
-      GeneralHooks.useTotalPatronageUsdGorilla(gorilla)
+      GeneralHooks.useTotalPatronageUsdAnimal(animal)
       ->mapWithDefault("Loading", a => a);
-    let foreclosureTime = GeneralHooks.useForeclosureTimeGorilla(gorilla);
+    let foreclosureTime = GeneralHooks.useForeclosureTimeAnimal(animal);
     let definiteTime = foreclosureTime->mapWithDefault(Loading, a => Date(a));
-    let (_, _, ratio, _) = Gorilla.pledgeRate(gorilla);
-    let currentPrice = Gorilla.useCurrentPriceEth(gorilla);
-    let currentPriceUsd = Gorilla.useCurrentPriceUsd(gorilla);
+    let (_, _, ratio, _) = Animal.pledgeRate(animal);
+    let currentPrice = Animal.useCurrentPriceEth(animal);
+    let currentPriceUsd = Animal.useCurrentPriceUsd(animal);
     let monthlyPledgeEth =
       Js.Float.toString(
         Belt.Float.fromString(currentPrice)->Accounting.defaultZeroF *. ratio,
@@ -302,7 +347,7 @@ module GorillaInfo = {
             <Rimble.Tooltip
               message={
                 "This is the monthly percentage contribution of "
-                ++ gorillaName
+                ++ animalName
                 ++ "'s sale price that will go towards conservation of endangered animals. This is deducted continuously from the deposit and paid by the owner of the animal"
               }
               placement="top">
@@ -350,11 +395,11 @@ module GorillaInfo = {
       <p>
         <small>
           <strong>
-            <S> {gorillaName ++ "'s Patronage: "} </S>
+            <S> {animalName ++ "'s Patronage: "} </S>
             <Rimble.Tooltip
               message={
                 "This is the total contribution that has been raised thanks to the wildcard, "
-                ++ gorillaName
+                ++ animalName
               }
               placement="top">
               <span> <S> {js|ⓘ|js} </S> </span>
@@ -374,8 +419,8 @@ module GorillaInfo = {
                <S> "Foreclosure date: " </S>
                <Rimble.Tooltip
                  message={
-                   "This is the date the deposit will run out and the gorilla and the current owner will lose ownership of "
-                   ++ gorillaName
+                   "This is the date the deposit will run out and the animal and the current owner will lose ownership of "
+                   ++ animalName
                  }
                  placement="top">
                  <span> <S> {js|ⓘ|js} </S> </span>
@@ -401,7 +446,7 @@ module GorillaInfo = {
              <strong>
                <S> "Days Held: " </S>
                <Rimble.Tooltip
-                 message={j|This is the amount of time $gorillaName has been held. It was aquired on the $timeAquiredString.|j}
+                 message={j|This is the amount of time $animalName has been held. It was aquired on the $timeAquiredString.|j}
                  placement="top">
                  <span> <S> {js|ⓘ|js} </S> </span>
                </Rimble.Tooltip>
@@ -420,11 +465,10 @@ module GorillaInfo = {
 [@react.component]
 // The Offline container here shows the website, but without loading the requirements
 let make = () => {
-  open Gorilla;
   let url = ReasonReactRouter.useUrl();
-  let (isDetailView, gorillaStr) = {
+  let (isDetailView, animalStr) = {
     switch (Js.String.split("/", url.hash)) {
-    | [|"details", gorillaStr|] => (true, gorillaStr)
+    | [|"details", animalStr|] => (true, animalStr)
     | _ => (false, "")
     };
   };
@@ -435,13 +479,13 @@ let make = () => {
       <React.Fragment>
         {isDetailView
            ? {
-             let gorilla = getGorilla(gorillaStr);
-             switch (gorilla) {
-             | NoGorilla => <DefaultLeftPanel />
-             | _ =>
+             let optionAnimal = Animal.getAnimal(animalStr);
+             switch (optionAnimal) {
+             | None => <DefaultLeftPanel />
+             | Some(animal) =>
                <Providers.UsdPriceProvider>
                  <Offline requireSmartContractsLoaded=true>
-                   <GorillaInfo gorilla />
+                   <AnimalInfo animal />
                  </Offline>
                </Providers.UsdPriceProvider>
              };
