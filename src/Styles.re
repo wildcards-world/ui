@@ -136,7 +136,7 @@ let leftTopHeader =
 
 let rightTopHeader = style([textAlign(center)]);
 
-/// NOTE: the padding of 4% is calculated as 12/3 since there is a right padding of 12% and 3 gorilla images shown.
+/// NOTE: the padding of 4% is calculated as 12/3 since there is a right padding of 12% and 3 animal images shown.
 let dappImagesCounteractOffset = style([marginLeft(`percent(4.))]);
 
 let heading = style([fontSize(em(3.))]);
@@ -148,9 +148,9 @@ let wildCardBlue = rgb(114, 199, 215);
 let colorGreen = style([color(wildCardGreen)]);
 let colorBlue = style([color(wildCardBlue)]);
 
-let gorillaBox = style([marginRight(`percent(12.))]);
+let animalBox = style([marginRight(`percent(12.))]);
 
-let ownedGorillaImg =
+let ownedAnimalImg =
   style([
     position(relative),
     zIndex(1),
@@ -180,7 +180,7 @@ let headerImg = enlargement =>
     ]),
   ]);
 
-let gorillaText = style([transform(translateX(`percent(25.)))]);
+let animalText = style([transform(translateX(`percent(25.)))]);
 
 let horizantalBlueTile =
   style([
@@ -244,7 +244,7 @@ let infoCardStyles =
     media("(max-width: 831px)", [margin(`rem(0.)), textAlign(center)]),
   ]);
 
-let gorillaImage = style([media("(max-width: 831px)", [display(none)])]);
+let animalImage = style([media("(max-width: 831px)", [display(none)])]);
 
 let redDisclaimer = style([fontSize(`rem(0.9)), color(`hex("e85723"))]);
 

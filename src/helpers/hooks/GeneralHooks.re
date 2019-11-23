@@ -1,26 +1,24 @@
 open Hooks;
-open Gorilla;
 open Providers.UsdPriceProvider;
 
-let useCurrentPatronGorilla = gorilla => {
-  switch (getId(gorilla)) {
-  | Some(gorillaId) => useCurrentPatronNew(int_of_string(gorillaId))
+let useCurrentPatronAnimal = animal => {
+  switch (Animal.getId(animal)) {
+  | Some(animalId) => useCurrentPatronNew(int_of_string(animalId))
   | None => useCurrentPatron()
   };
 };
 
-let useDepositAbleToWithdrawEthGorilla = gorilla => {
+let useDepositAbleToWithdrawEthAnimal = animal => {
   let patron =
-    useCurrentPatronGorilla(gorilla)
-    ->Belt.Option.mapWithDefault("0x0", a => a);
-  switch (getId(gorilla)) {
-  | Some(_gorillaId) => useDepositAbleToWithdrawEthNew(patron)
+    useCurrentPatronAnimal(animal)->Belt.Option.mapWithDefault("0x0", a => a);
+  switch (Animal.getId(animal)) {
+  | Some(_animalId) => useDepositAbleToWithdrawEthNew(patron)
   | None => useDepositAbleToWithdrawEth()
   };
 };
 
-let useDepositAbleToWithdrawUsdGorilla = gorilla => {
-  let depositeAbleToWithdrawEth = useDepositAbleToWithdrawEthGorilla(gorilla);
+let useDepositAbleToWithdrawUsdAnimal = animal => {
+  let depositeAbleToWithdrawEth = useDepositAbleToWithdrawEthAnimal(animal);
   let currentUsdEthPrice = useUsdPrice();
   switch (depositeAbleToWithdrawEth, currentUsdEthPrice) {
   | (Some(deposit), Some(conversion)) =>
@@ -34,15 +32,15 @@ let useDepositAbleToWithdrawUsdGorilla = gorilla => {
   };
 };
 
-let useTotalPatronageEthGorilla = gorilla => {
-  switch (getId(gorilla)) {
-  | Some(gorillaId) => useTotalPatronageTokenEthNew(gorillaId)
+let useTotalPatronageEthAnimal = animal => {
+  switch (Animal.getId(animal)) {
+  | Some(animalId) => useTotalPatronageTokenEthNew(animalId)
   | None => useTotalPatronageEth()->Belt.Option.mapWithDefault("0", a => a)
   };
 };
 
-let useTotalPatronageUsdGorilla = gorilla => {
-  let totalPatronange = useTotalPatronageEthGorilla(gorilla);
+let useTotalPatronageUsdAnimal = animal => {
+  let totalPatronange = useTotalPatronageEthAnimal(animal);
   let currentUsdEthPrice = useUsdPrice();
 
   switch (currentUsdEthPrice) {
@@ -57,8 +55,8 @@ let useTotalPatronageUsdGorilla = gorilla => {
   };
 };
 
-let useForeclosureTimeGorilla = gorilla =>
-  switch (getId(gorilla)) {
-  | Some(gorillaId) => useForeclosureTimeNew(gorillaId)
+let useForeclosureTimeAnimal = animal =>
+  switch (Animal.getId(animal)) {
+  | Some(animalId) => useForeclosureTimeNew(animalId)
   | None => useForeclosureTime()
   };

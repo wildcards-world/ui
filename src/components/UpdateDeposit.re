@@ -19,11 +19,11 @@ let getToDisplay = (label, value) =>
   React.string(label ++ ": " ++ value->mapWithDefault("loading", a => a));
 module Transaction = {
   [@react.component]
-  let make = (~gorilla: Gorilla.gorilla) => {
+  let make = (~animal: Animal.t) => {
     let (depositChange, setDepositChange) = React.useState(() => "");
     let (isAddDeposit, setIsAddDeposit) = React.useState(() => true);
     let currentUser = useCurrentUser()->mapWithDefault("", a => a);
-    let tokenId = Gorilla.getId(gorilla);
+    let tokenId = Animal.getId(animal);
     // let userBalance =
     //   DrizzleReact.Hooks.useUserBalance()->mapWithDefault("", a => a);
 
@@ -60,12 +60,7 @@ module Transaction = {
       };
 
     let _availableDeposit =
-      (
-        switch (gorilla) {
-        | NoGorilla => useDepositAbleToWithdrawWei()
-        | _ => useDepositAbleToWithdrawWeiNew(currentUser)
-        }
-      )
+      useDepositAbleToWithdrawWeiNew(currentUser)
       ->mapWithDefault("0", price => price);
 
     let onSubmitDepositChange = event => {
@@ -108,13 +103,13 @@ module Transaction = {
 
 module ModalContainer = {
   [@react.component]
-  let make = (~gorilla: Gorilla.gorilla) => {
-    <Transaction gorilla />;
+  let make = (~animal: Animal.t) => {
+    <Transaction animal />;
   };
 };
 
 [@react.component]
-let make = (~gorilla: Gorilla.gorilla) => {
+let make = (~animal: Animal.t) => {
   let (isModalOpen, setModalOpen) = React.useState(() => false);
 
   let onUnlockMetamaskAndOpenModal = event => {
@@ -141,7 +136,7 @@ let make = (~gorilla: Gorilla.gorilla) => {
           m=3
           onClick={_ => setModalOpen(_ => false)}
         />
-        <ModalContainer gorilla />
+        <ModalContainer animal />
       </Rimble.Card>
     </Rimble.Modal>
   </React.Fragment>;
