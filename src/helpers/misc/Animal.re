@@ -53,6 +53,23 @@ let getAnimal: string => option(t) =
     };
   };
 
+let getAnimalFromId: string => option(t) =
+  animalId => {
+    Js.log("Getting animal from Id: " ++ animalId);
+    switch (animalId) {
+    | "41" =>
+      Js.log("vitalik");
+      Some(Vitalik);
+    | "0" =>
+      Js.log("simon");
+      Some(Simon);
+    | "1" =>
+      Js.log("andy");
+      Some(Andy);
+    | _ => None
+    };
+  };
+
 let getNextPrev = animal =>
   switch (animal) {
   | Vitalik => (Andy, Simon)

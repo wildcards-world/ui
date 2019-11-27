@@ -3,11 +3,18 @@ open Providers;
 module Router = {
   [@react.component]
   let make = () => {
-    <Layout />;
+    let url = ReasonReactRouter.useUrl();
+    switch (url.path) {
+    | ["new-data"] => <TestQlUi />
+    | [_] => <p> {React.string("Unknown page")} </p>
+    | [] => <Layout />
+    };
   };
 };
 ReactDOMRe.renderToElementWithId(
-  <DrizzleProvider> <Router /> </DrizzleProvider>,
+  <ReasonApollo.Provider client=Client.instance>
+    <DrizzleProvider> <Router /> </DrizzleProvider>
+  </ReasonApollo.Provider>,
   "root",
 );
 

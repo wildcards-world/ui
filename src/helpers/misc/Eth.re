@@ -25,7 +25,14 @@ external get:
 let getEth: t => string = value => get(value, `ether);
 
 let make: string => option(t) =
-  wei => Helper.isStringInteger(wei) ? Some(BN.new_(wei)) : None;
+  wei => {
+    let result = Helper.isStringInteger(wei) ? Some(BN.new_(wei)) : None;
+    Js.log("In the make of ETH!!");
+    Js.log(result);
+    Js.log(wei);
+    Js.log(Helper.isStringInteger(wei));
+    result;
+  };
 let makeWithDefault: (string, int) => t =
   (tokenId, default) =>
     switch (make(tokenId)) {

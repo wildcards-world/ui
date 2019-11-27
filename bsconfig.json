@@ -26,9 +26,12 @@
     "bs-fetch",
     "re-formality",
     "bs-moment",
+    "@wildcards/reason-apollo",
     "@glennsl/bs-jest"
   ],
   "bs-dev-dependencies": [],
-  "ppx-flags": [],
+  "ppx-flags": [
+    "@baransu/graphql_ppx_re/ppx6"
+  ],
   "refmt": 3
 }

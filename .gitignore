@@ -34,3 +34,5 @@ lib
 
 # build
 dist
+
+.graphql_ppx_cache
