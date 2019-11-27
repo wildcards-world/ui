@@ -3,6 +3,10 @@ open Providers.DrizzleProvider;
 open Belt.Option;
 open Components;
 
+// Load styles for the carousel and react-tabs
+[%bs.raw {|require('@brainhubeu/react-carousel/lib/style.css')|}];
+[%bs.raw {|require('react-tabs/style/react-tabs.css')|}];
+
 let flameImg = [%bs.raw {|require('../img/streak-flame.png')|}];
 
 // TODO: there must be a better way of importing images in reason react...
@@ -14,6 +18,10 @@ module CountDownForeclosure = {
   [@bs.module "./components/CountDown"] [@react.component]
   external make: (~endDateMoment: MomentRe.Moment.t) => React.element =
     "default";
+};
+module Countdown = {
+  [@bs.module "./components/ComingSoonCountdown.js"] [@react.component]
+  external make: unit => React.element = "default";
 };
 
 module EditButton = {
@@ -59,49 +67,33 @@ module Streak = {
   };
 };
 
-//  <Rimble.Flex className=Styles.animalBox>
-//            <Rimble.Box>
-//              <div className=Styles.animalBack>
-//                <img className=Styles.headerImg src=animal2 />
-//                <div className=Styles.animalText>
-//                  <h2> {React.string("Simon")} </h2>
-//                  <h3 className=Styles.colorGreen>
-//                    {React.string("COMING IN")}
-//                  </h3>
-//                  <Countdown />
-//                </div>
-//              </div>
-//            </Rimble.Box>
-//            //  <Offline requireSmartContractsLoaded=true>
-//            //   //  <PriceDisplay tokenId={Some("0")} />
-//            //   //  <BuyModal tokenId={Some("0")} />
-//            //  </Offline>
-//            <Rimble.Box>
-//              <img className=Styles.headerImg src=animal1 />
-//              <div>
-//                <div className=Styles.animalText>
-//                  <h2> {React.string("Vitalik")} </h2>
-//                  <Offline requireSmartContractsLoaded=true>
-//                    <PriceDisplay tokenId=None />
-//                    <BuyModal tokenId=None />
-//                  </Offline>
-//                </div>
-//              </div>
-//            </Rimble.Box>
-//            <Rimble.Box>
-//              <div className=Styles.animalBack>
-//                <img className=Styles.headerImg src=animal3 />
-//                <div className=Styles.animalText>
-//                  <h2> {React.string("Andy")} </h2>
-//                  <h3 className=Styles.colorGreen>
-//                    {React.string("COMING IN")}
-//                  </h3>
-//                  <Countdown />
-//                </div>
-//              </div>
-//            </Rimble.Box>
-//          </Rimble.Flex>
+module AnimalComingSoonOnLandingPage = {
+  [@react.component]
+  let make = (~animal: Animal.t) => {
+    let name = Animal.getName(animal);
 
+    <Rimble.Box>
+      <a
+        className=Styles.clickableLink
+        onClick={event => {
+          ReactEvent.Mouse.preventDefault(event);
+          ReasonReactRouter.push("#details/" ++ name);
+        }}>
+        <img
+          className={Styles.headerImg(150.)}
+          src={Animal.getImage(animal)}
+        />
+        <div className=Styles.animalText>
+          <h2> {React.string(name)} </h2>
+        </div>
+      </a>
+      <div className=Styles.animalText>
+        <h3 className=Styles.colorGreen> {React.string("COMING IN")} </h3>
+        <Countdown />
+      </div>
+    </Rimble.Box>;
+  };
+};
 module AnimalOnLandingPage = {
   [@react.component]
   let make = (~animal: Animal.t, ~owned: bool) => {
@@ -135,6 +127,57 @@ module AnimalOnLandingPage = {
           {owned ? <EditButton animal /> : <BuyModal animal />}
         </Offline>
       </div>
+    </Rimble.Box>;
+  };
+};
+
+module GorillaCarousel = {
+  // let make = (~ownedAnimal: array(Animal)) => {
+  [@react.component]
+  let make = (~ownSimon, ~ownVitalik, ~ownAndy) => {
+    let (carouselIndex, setCarouselIndex) = React.useState(() => 4);
+    <Rimble.Box>
+      <Carousel
+        slidesPerPage=3
+        centered=false
+        value=carouselIndex
+        animationSpeed=1000
+        onChange={test =>
+          setCarouselIndex(_
+            // this switch teleports the carousel back to the beginning so that it appears to be circular.
+            =>
+              switch (test) {
+              | x when x <= 1 => 18
+              | x when x >= 18 => 1
+              | x => x
+              }
+            )
+        }>
+        <AnimalComingSoonOnLandingPage animal=CatStevens />
+        <AnimalComingSoonOnLandingPage animal=Aruma />
+        <AnimalComingSoonOnLandingPage animal=Apthapi />
+        <AnimalComingSoonOnLandingPage animal=Ajayu />
+        <AnimalOnLandingPage animal=Simon owned=ownSimon />
+        <AnimalOnLandingPage animal=Vitalik owned=ownVitalik />
+        <AnimalOnLandingPage animal=Andy owned=ownAndy />
+        <AnimalComingSoonOnLandingPage animal=Verano />
+        <AnimalComingSoonOnLandingPage animal=Tarkus />
+        <AnimalComingSoonOnLandingPage animal=Pancho />
+        <AnimalComingSoonOnLandingPage animal=Mijungla />
+        <AnimalComingSoonOnLandingPage animal=Llajuita />
+        <AnimalComingSoonOnLandingPage animal=Espumita />
+        <AnimalComingSoonOnLandingPage animal=Cubai />
+        <AnimalComingSoonOnLandingPage animal=CatStevens />
+        <AnimalComingSoonOnLandingPage animal=Aruma />
+        <AnimalComingSoonOnLandingPage animal=Apthapi />
+        <AnimalComingSoonOnLandingPage animal=Ajayu />
+        <AnimalOnLandingPage animal=Simon owned=ownSimon />
+      </Carousel>
+      <Carousel.Dots
+        number=14
+        value={carouselIndex - 3}
+        onChange={index => setCarouselIndex(_ => index + 3)}
+      />
     </Rimble.Box>;
   };
 };
@@ -184,9 +227,9 @@ module DefaultLook = {
            <div>
              <h1>
                {React.string(
-                  "We are unable to find a animal by the name of "
-                  ++ animalStr
-                  ++ " in our system.",
+                  "We are unable to find a animal by the name of \""
+                  ++ {animalStr->Js.Global.decodeURI}
+                  ++ "\" in our system.",
                 )}
              </h1>
              <p> <S> "Please check the spelling and try again." </S> </p>
@@ -229,11 +272,7 @@ module DefaultLook = {
          };
        | _ =>
          <React.Fragment>
-           <Rimble.Flex className=Styles.animalBox>
-             <AnimalOnLandingPage animal=Simon owned=ownSimon />
-             <AnimalOnLandingPage animal=Vitalik owned=ownVitalik />
-             <AnimalOnLandingPage animal=Andy owned=ownAndy />
-           </Rimble.Flex>
+           <GorillaCarousel ownVitalik ownSimon ownAndy />
            <Rimble.Box className=Styles.dappImagesCounteractOffset>
              <Offline requireSmartContractsLoaded=true>
                <TotalRaised />
@@ -340,124 +379,135 @@ module AnimalInfo = {
     // https://rimble.consensys.design/components/rimble-ui/EthAddress#props
     // https://github.com/ConsenSys/rimble-ui/blob/dd470f00374a05c860b558a2cb9317861e4a0d89/src/EthAddress/index.js (maybe make a PR here with some changes)
     <Rimble.Box m=5>
-      <div>
-        <small>
-          <strong>
-            <S> {"Monthly Pledge (at " ++ monthlyRate ++ "%): "} </S>
-            <Rimble.Tooltip
-              message={
-                "This is the monthly percentage contribution of "
-                ++ animalName
-                ++ "'s sale price that will go towards conservation of endangered animals. This is deducted continuously from the deposit and paid by the owner of the animal"
-              }
-              placement="top">
-              <span> <S> {js|ⓘ|js} </S> </span>
-            </Rimble.Tooltip>
-          </strong>
-        </small>
-        <br />
-        <S> {monthlyPledgeEth ++ " ETH"} </S>
-        <br />
-        <small> <S> {"(" ++ monthlyPledgeUsd ++ " USD)"} </S> </small>
-      </div>
-      <p>
-        <small>
-          <strong>
-            <S> "Current Patron: " </S>
-            <Rimble.Tooltip
-              message={j|This is the $userIdType of the current owner|j}
-              placement="top">
-              <span> <S> {js|ⓘ|js} </S> </span>
-            </Rimble.Tooltip>
-          </strong>
-        </small>
-        <br />
-        userIdComponent
-      </p>
-      <p>
-        <small>
-          <strong>
-            <S> "Available Deposit: " </S>
-            <Rimble.Tooltip
-              message="This is the amount the owner has deposited to pay their monthly contribution"
-              placement="top">
-              <span> <S> {js|ⓘ|js} </S> </span>
-            </Rimble.Tooltip>
-          </strong>
-        </small>
-        <br />
-        <S> {depositAvailableToWithdraw ++ " ETH"} </S>
-        <br />
-        <small>
-          <S> {"(" ++ depositAvailableToWithdrawUsd ++ " USD)"} </S>
-        </small>
-      </p>
-      <p>
-        <small>
-          <strong>
-            <S> {animalName ++ "'s Patronage: "} </S>
-            <Rimble.Tooltip
-              message={
-                "This is the total contribution that has been raised thanks to the wildcard, "
-                ++ animalName
-              }
-              placement="top">
-              <span> <S> {js|ⓘ|js} </S> </span>
-            </Rimble.Tooltip>
-          </strong>
-        </small>
-        <br />
-        <S> {totalPatronage ++ " ETH"} </S>
-        <br />
-        <small> <S> {"(" ++ totalPatronageUsd ++ " USD)"} </S> </small>
-      </p>
-      {switch (definiteTime) {
-       | Date(date) =>
-         <p>
-           <small>
-             <strong>
-               <S> "Foreclosure date: " </S>
-               <Rimble.Tooltip
-                 message={
-                   "This is the date the deposit will run out and the animal and the current owner will lose ownership of "
-                   ++ animalName
-                 }
-                 placement="top">
-                 <span> <S> {js|ⓘ|js} </S> </span>
-               </Rimble.Tooltip>
-             </strong>
-           </small>
-           <br />
-           <S> {MomentRe.Moment.format("LLLL", date)} </S>
-           <br />
-           <small>
-             <S> "( " </S>
-             <CountDownForeclosure endDateMoment=date />
-             <S> ")" </S>
-           </small>
-         </p>
-       | Loading => React.null
-       }}
-      {switch (daysHeld) {
-       | Some((daysHeldFloat, timeAquired)) =>
-         let timeAquiredString = timeAquired->MomentRe.Moment.toISOString;
-         <p>
-           <small>
-             <strong>
-               <S> "Days Held: " </S>
-               <Rimble.Tooltip
-                 message={j|This is the amount of time $animalName has been held. It was aquired on the $timeAquiredString.|j}
-                 placement="top">
-                 <span> <S> {js|ⓘ|js} </S> </span>
-               </Rimble.Tooltip>
-             </strong>
-           </small>
-           <br />
-           <S> daysHeldFloat->Js.Float.toFixed </S>
-           <br />
-         </p>;
-       | None => React.null
-       }}
+      <ReactTabs>
+        <ReactTabs.TabList>
+          <ReactTabs.Tab> "Story"->React.string </ReactTabs.Tab>
+          <ReactTabs.Tab> "Details"->React.string </ReactTabs.Tab>
+        </ReactTabs.TabList>
+        <ReactTabs.TabPanel>
+          <h2> "Story Content"->React.string </h2>
+        </ReactTabs.TabPanel>
+        <ReactTabs.TabPanel>
+          <div>
+            <small>
+              <strong>
+                <S> {"Monthly Pledge (at " ++ monthlyRate ++ "%): "} </S>
+                <Rimble.Tooltip
+                  message={
+                    "This is the monthly percentage contribution of "
+                    ++ animalName
+                    ++ "'s sale price that will go towards conservation of endangered animals. This is deducted continuously from the deposit and paid by the owner of the animal"
+                  }
+                  placement="top">
+                  <span> <S> {js|ⓘ|js} </S> </span>
+                </Rimble.Tooltip>
+              </strong>
+            </small>
+            <br />
+            <S> {monthlyPledgeEth ++ " ETH"} </S>
+            <br />
+            <small> <S> {"(" ++ monthlyPledgeUsd ++ " USD)"} </S> </small>
+          </div>
+          <p>
+            <small>
+              <strong>
+                <S> "Current Patron: " </S>
+                <Rimble.Tooltip
+                  message={j|This is the $userIdType of the current owner|j}
+                  placement="top">
+                  <span> <S> {js|ⓘ|js} </S> </span>
+                </Rimble.Tooltip>
+              </strong>
+            </small>
+            <br />
+            userIdComponent
+          </p>
+          <p>
+            <small>
+              <strong>
+                <S> "Available Deposit: " </S>
+                <Rimble.Tooltip
+                  message="This is the amount the owner has deposited to pay their monthly contribution"
+                  placement="top">
+                  <span> <S> {js|ⓘ|js} </S> </span>
+                </Rimble.Tooltip>
+              </strong>
+            </small>
+            <br />
+            <S> {depositAvailableToWithdraw ++ " ETH"} </S>
+            <br />
+            <small>
+              <S> {"(" ++ depositAvailableToWithdrawUsd ++ " USD)"} </S>
+            </small>
+          </p>
+          <p>
+            <small>
+              <strong>
+                <S> {animalName ++ "'s Patronage: "} </S>
+                <Rimble.Tooltip
+                  message={
+                    "This is the total contribution that has been raised thanks to the wildcard, "
+                    ++ animalName
+                  }
+                  placement="top">
+                  <span> <S> {js|ⓘ|js} </S> </span>
+                </Rimble.Tooltip>
+              </strong>
+            </small>
+            <br />
+            <S> {totalPatronage ++ " ETH"} </S>
+            <br />
+            <small> <S> {"(" ++ totalPatronageUsd ++ " USD)"} </S> </small>
+          </p>
+          {switch (definiteTime) {
+           | Date(date) =>
+             <p>
+               <small>
+                 <strong>
+                   <S> "Foreclosure date: " </S>
+                   <Rimble.Tooltip
+                     message={
+                       "This is the date the deposit will run out and the animal and the current owner will lose ownership of "
+                       ++ animalName
+                     }
+                     placement="top">
+                     <span> <S> {js|ⓘ|js} </S> </span>
+                   </Rimble.Tooltip>
+                 </strong>
+               </small>
+               <br />
+               <S> {MomentRe.Moment.format("LLLL", date)} </S>
+               <br />
+               <small>
+                 <S> "( " </S>
+                 <CountDownForeclosure endDateMoment=date />
+                 <S> ")" </S>
+               </small>
+             </p>
+           | Loading => React.null
+           }}
+          {switch (daysHeld) {
+           | Some((daysHeldFloat, timeAquired)) =>
+             let timeAquiredString = timeAquired->MomentRe.Moment.toISOString;
+             <p>
+               <small>
+                 <strong>
+                   <S> "Days Held: " </S>
+                   <Rimble.Tooltip
+                     message={j|This is the amount of time $animalName has been held. It was aquired on the $timeAquiredString.|j}
+                     placement="top">
+                     <span> <S> {js|ⓘ|js} </S> </span>
+                   </Rimble.Tooltip>
+                 </strong>
+               </small>
+               <br />
+               <S> daysHeldFloat->Js.Float.toFixed </S>
+               <br />
+             </p>;
+           | None => React.null
+           }}
+        </ReactTabs.TabPanel>
+      </ReactTabs>
     </Rimble.Box>;
   };
 };
