@@ -2,6 +2,17 @@
 type t =
   | Andy
   | Vitalik
+  | Verano
+  | Tarkus
+  | Pancho
+  | Mijungla
+  | Llajuita
+  | Espumita
+  | Cubai
+  | CatStevens
+  | Aruma
+  | Apthapi
+  | Ajayu
   | Simon;
 
 let getId: t => option(string) =
@@ -9,7 +20,18 @@ let getId: t => option(string) =
     switch (anAnimal) {
     | Simon => Some("0")
     | Andy => Some("1")
-    // | Vitalik => "42",
+    | Verano => Some("2")
+    | Tarkus => Some("3")
+    | Pancho => Some("4")
+    | Mijungla => Some("5")
+    | Llajuita => Some("6")
+    | Espumita => Some("7")
+    | Cubai => Some("8")
+    | CatStevens => Some("9")
+    | Aruma => Some("10")
+    | Apthapi => Some("11")
+    | Ajayu => Some("12")
+    // | Vitalik => Some("42") // We don't show an ID for vitalik since using legacy contract still.
     | _ => None
     };
 
@@ -18,6 +40,17 @@ let getTokenId: t => option(TokenId.t) =
     switch (anAnimal) {
     | Simon => Some(TokenId.makeFromInt(0))
     | Andy => Some(TokenId.makeFromInt(1))
+    | Verano => Some(TokenId.makeFromInt(2))
+    | Tarkus => Some(TokenId.makeFromInt(3))
+    | Pancho => Some(TokenId.makeFromInt(4))
+    | Mijungla => Some(TokenId.makeFromInt(5))
+    | Llajuita => Some(TokenId.makeFromInt(6))
+    | Espumita => Some(TokenId.makeFromInt(7))
+    | Cubai => Some(TokenId.makeFromInt(8))
+    | CatStevens => Some(TokenId.makeFromInt(9))
+    | Aruma => Some(TokenId.makeFromInt(10))
+    | Apthapi => Some(TokenId.makeFromInt(11))
+    | Ajayu => Some(TokenId.makeFromInt(12))
     // | Vitalik => "42",
     | _ => None
     };
@@ -40,6 +73,8 @@ let getName: t => string =
     | Vitalik => "Vitalik"
     | Simon => "Simon"
     | Andy => "Andy"
+    | Verano => "Verano"
+    | _ => "add name"
     };
 
 let getAnimal: string => option(t) =
@@ -75,6 +110,7 @@ let getNextPrev = animal =>
   | Vitalik => (Andy, Simon)
   | Simon => (Vitalik, Andy)
   | Andy => (Simon, Vitalik)
+  | _ => (Simon, Vitalik)
   };
 
 let getImage = animal =>
@@ -86,6 +122,9 @@ let getImage = animal =>
     %bs.raw
     {|require('../../img/animals/gorilla2.png')|}
   | Andy =>
+    %bs.raw
+    {|require('../../img/animals/gorilla3.png')|}
+  | _ =>
     %bs.raw
     {|require('../../img/animals/gorilla3.png')|}
   };

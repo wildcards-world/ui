@@ -5,6 +5,7 @@
   "dependencies": {
     "@babel/runtime": "^7.6.2",
     "@baransu/graphql_ppx_re": "^0.3.5",
+    "@brainhubeu/react-carousel": "^1.10.27",
     "@drizzle/react-plugin": "1.5.0",
     "@drizzle/store": "1.5.0",
     "@portis/web3": "^2.0.0-beta.54",
@@ -24,6 +25,7 @@
     "react-scripts": "^3.2.0",
     "react-social-icons": "^4.1.0",
     "react-switch": "^5.0.1",
+    "react-tabs": "^3.0.0",
     "react-translate": "^7.0.1",
     "reason-react": "^0.7.0",
     "rimble-ui": "^0.10.0",
