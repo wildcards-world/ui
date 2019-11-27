@@ -74,6 +74,7 @@ let getName: t => string =
     | Simon => "Simon"
     | Andy => "Andy"
     | Verano => "Verano"
+    | Tarkus => "Tarkus"
     | _ => "add name"
     };
 
@@ -184,4 +185,30 @@ let useCurrentPriceUsd = animal => {
     }
   )
   ->mapWithDefault("loading", a => a);
+};
+
+let isLaunched: t => bool =
+  anAnimal =>
+    switch (anAnimal) {
+    | Simon => true
+    | Andy => true
+    | Vitalik => true
+    | _ => false
+    };
+
+let useIsAnimalOwened = animal => {
+  let animalId = animal->getId;
+  let currentAccount =
+    Hooks.useCurrentUser()->Belt.Option.mapWithDefault("loading", a => a);
+  let currentPatron =
+    switch (animalId) {
+    | Some(id) =>
+      Hooks.useCurrentPatronNew(id->int_of_string)
+      ->Belt.Option.mapWithDefault("no-patron-defined", a => a)
+
+    | None =>
+      Hooks.useCurrentPatron()
+      ->Belt.Option.mapWithDefault("no-patron-defined", a => a)
+    };
+  currentAccount == currentPatron;
 };

@@ -94,9 +94,22 @@ module AnimalComingSoonOnLandingPage = {
     </Rimble.Box>;
   };
 };
+
+module BasicAnimalDisplay = {
+  [@react.component]
+  let make = (~animal: Animal.t) => {
+    let owned = animal->Animal.useIsAnimalOwened;
+
+    <React.Fragment>
+      <PriceDisplay animal />
+      {owned ? <EditButton animal /> : <BuyModal animal />}
+    </React.Fragment>;
+  };
+};
+
 module AnimalOnLandingPage = {
   [@react.component]
-  let make = (~animal: Animal.t, ~owned: bool) => {
+  let make = (~animal: Animal.t) => {
     let name = Animal.getName(animal);
 
     <Rimble.Box>
@@ -123,22 +136,60 @@ module AnimalOnLandingPage = {
       </a>
       <div className=Styles.animalText>
         <Offline requireSmartContractsLoaded=true>
-          <PriceDisplay animal />
-          {owned ? <EditButton animal /> : <BuyModal animal />}
+          <BasicAnimalDisplay animal />
         </Offline>
       </div>
     </Rimble.Box>;
   };
 };
 
-module GorillaCarousel = {
+module CarouselAnimal = {
+  [@react.component]
+  let make = (~animal: Animal.t) => {
+    let isLaunched = animal->Animal.isLaunched;
+    if (isLaunched) {
+      <AnimalOnLandingPage animal />;
+    } else {
+      <AnimalComingSoonOnLandingPage animal />;
+    };
+  };
+};
+
+// NOTE: first and last three wrap-over items are for simulating 'circular scrolling'
+let animalCarouselArray = [|
+  Animal.Aruma,
+  Animal.Apthapi,
+  Animal.Ajayu,
+  //First item
+  Animal.Andy,
+  Animal.Vitalik,
+  Animal.Simon,
+  Animal.Verano,
+  Animal.Tarkus,
+  Animal.Pancho,
+  Animal.Mijungla,
+  Animal.Llajuita,
+  Animal.Espumita,
+  Animal.Cubai,
+  Animal.CatStevens,
+  Animal.Aruma,
+  Animal.Apthapi,
+  Animal.Ajayu,
+  //End of list
+  Animal.Andy,
+  Animal.Vitalik,
+  Animal.Simon,
+|];
+
+module AnimalCarousel = {
   // let make = (~ownedAnimal: array(Animal)) => {
   [@react.component]
-  let make = (~ownSimon, ~ownVitalik, ~ownAndy) => {
-    let (carouselIndex, setCarouselIndex) = React.useState(() => 4);
-    <Rimble.Box>
+  let make = () => {
+    let (carouselIndex, setCarouselIndex) = React.useState(() => 5);
+    <Rimble.Box className=Styles.positionRelative>
       <Carousel
-        slidesPerPage=3
+        className=Styles.carousel
+        slidesPerPage=5
         centered=false
         value=carouselIndex
         animationSpeed=1000
@@ -153,25 +204,12 @@ module GorillaCarousel = {
               }
             )
         }>
-        <AnimalComingSoonOnLandingPage animal=CatStevens />
-        <AnimalComingSoonOnLandingPage animal=Aruma />
-        <AnimalComingSoonOnLandingPage animal=Apthapi />
-        <AnimalComingSoonOnLandingPage animal=Ajayu />
-        <AnimalOnLandingPage animal=Simon owned=ownSimon />
-        <AnimalOnLandingPage animal=Vitalik owned=ownVitalik />
-        <AnimalOnLandingPage animal=Andy owned=ownAndy />
-        <AnimalComingSoonOnLandingPage animal=Verano />
-        <AnimalComingSoonOnLandingPage animal=Tarkus />
-        <AnimalComingSoonOnLandingPage animal=Pancho />
-        <AnimalComingSoonOnLandingPage animal=Mijungla />
-        <AnimalComingSoonOnLandingPage animal=Llajuita />
-        <AnimalComingSoonOnLandingPage animal=Espumita />
-        <AnimalComingSoonOnLandingPage animal=Cubai />
-        <AnimalComingSoonOnLandingPage animal=CatStevens />
-        <AnimalComingSoonOnLandingPage animal=Aruma />
-        <AnimalComingSoonOnLandingPage animal=Apthapi />
-        <AnimalComingSoonOnLandingPage animal=Ajayu />
-        <AnimalOnLandingPage animal=Simon owned=ownSimon />
+        {ReasonReact.array(
+           Array.map(
+             animal => <CarouselAnimal animal />,
+             animalCarouselArray,
+           ),
+         )}
       </Carousel>
       <Carousel.Dots
         number=14
@@ -181,10 +219,33 @@ module GorillaCarousel = {
     </Rimble.Box>;
   };
 };
+module AnimalActionsOnDetailsPage = {
+  [@react.component]
+  let make = (~animal) => {
+    let owned = animal->Animal.useIsAnimalOwened;
+    let currentAccount = useCurrentUser()->mapWithDefault("loading", a => a);
+
+    if (owned) {
+      <React.Fragment>
+        <UpdatePriceModal animal />
+        <br />
+        <UpdateDeposit animal />
+        <br />
+        {UserProvider.useIsUserValidated(currentAccount)
+           ? <ShareSocial /> : <ValidateModal />}
+      </React.Fragment>;
+    } else {
+      <React.Fragment>
+        <PriceDisplay animal />
+        <BuyModal animal />
+      </React.Fragment>;
+    };
+  };
+};
 
 module DefaultLook = {
   [@react.component]
-  let make = (~areRequirementsLoaded: bool=false) => {
+  let make = () => {
     open Components;
     let setProvider = useSetProvider();
     React.useEffect0(() => {
@@ -194,27 +255,6 @@ module DefaultLook = {
       None;
     });
 
-    let (ownVitalik, ownSimon, ownAndy, currentAccount) =
-      if (areRequirementsLoaded) {
-        // NOTE/TODO: this doesn't take into account token ownership
-        let currentPatronVitalik =
-          useCurrentPatron()->mapWithDefault("no-patron-defined", a => a);
-        let currentPatronSimon =
-          useCurrentPatronNew(0)->mapWithDefault("no-patron-defined", a => a);
-        let currentPatronAndy =
-          useCurrentPatronNew(1)->mapWithDefault("no-patron-defined", a => a);
-        let currentAccount =
-          useCurrentUser()->mapWithDefault("loading", a => a);
-
-        (
-          currentAccount == currentPatronVitalik,
-          currentAccount == currentPatronSimon,
-          currentAccount == currentPatronAndy,
-          currentAccount,
-        );
-      } else {
-        (false, false, false, "loading");
-      };
     let url = ReasonReactRouter.useUrl();
 
     <div className=Styles.rightTopHeader>
@@ -242,37 +282,13 @@ module DefaultLook = {
              />
              <h2> <S> {Animal.getName(animal)} </S> </h2>
              <Offline requireSmartContractsLoaded=true>
-               {
-                 let isYours =
-                   switch (animal) {
-                   | Vitalik => ownVitalik
-                   | Simon => ownSimon
-                   | Andy => ownAndy
-                   | _ => false
-                   };
-
-                 if (isYours) {
-                   <React.Fragment>
-                     <UpdatePriceModal animal />
-                     <br />
-                     <UpdateDeposit animal />
-                     <br />
-                     {UserProvider.useIsUserValidated(currentAccount)
-                        ? <ShareSocial /> : <ValidateModal />}
-                   </React.Fragment>;
-                 } else {
-                   <React.Fragment>
-                     <PriceDisplay animal />
-                     <BuyModal animal />
-                   </React.Fragment>;
-                 };
-               }
+               <AnimalActionsOnDetailsPage animal />
              </Offline>
            </React.Fragment>
          };
        | _ =>
          <React.Fragment>
-           <GorillaCarousel ownVitalik ownSimon ownAndy />
+           <AnimalCarousel />
            <Rimble.Box className=Styles.dappImagesCounteractOffset>
              <Offline requireSmartContractsLoaded=true>
                <TotalRaised />
@@ -545,13 +561,8 @@ let make = () => {
     </Rimble.Box>
     <Rimble.Box p=1 width=[|1., 1., 0.5|]>
       <Providers.UsdPriceProvider>
-        <Offline
-          requireSmartContractsLoaded=true
-          alturnateLoaderWeb3={<DefaultLook key="a" />}
-          alturnateLoaderSmartContracts={<DefaultLook key="b" />}>
-          <DefaultLook areRequirementsLoaded=true key="c" />
-        </Offline>
+        <DefaultLook />
       </Providers.UsdPriceProvider>
     </Rimble.Box>
-  </Rimble.Flex>; //alturnativeNoWeb3=DefaultLook
+  </Rimble.Flex>;
 };

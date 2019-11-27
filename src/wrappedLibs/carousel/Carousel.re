@@ -6,6 +6,7 @@ external make:
     ~centered: bool=?,
     ~value: int=?,
     ~animationSpeed: int=?,
+    ~className: string=?,
     ~onChange: int => unit=?
   ) =>
   React.element =

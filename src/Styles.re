@@ -406,3 +406,12 @@ let mergeStyles: list(string) => string =
 let wrapText = style([overflowWrap(`breakWord), wordWrap(`breakWord)]);
 
 let fiftyPercentWidth = style([width(`percent(50.))]);
+
+let carousel =
+  style([
+    position(`relative),
+    width(`percent(130.)),
+    left(`percent(-15.)),
+  ]);
+
+let invisibleGorilla = style([display(`none)]);
