@@ -343,7 +343,7 @@ type maybeDate =
   | Loading
   | Date(MomentRe.Moment.t);
 
-module AnimalInfo = {
+module AnimalInfoStats = {
   [@react.component]
   let make = (~animal: Animal.t) => {
     let animalName = Animal.getName(animal);
@@ -395,6 +395,132 @@ module AnimalInfo = {
       );
     let monthlyRate = Js.Float.toString(ratio *. 100.);
 
+    <React.Fragment>
+      <div>
+        <small>
+          <strong>
+            <S> {"Monthly Pledge (at " ++ monthlyRate ++ "%): "} </S>
+            <Rimble.Tooltip
+              message={
+                "This is the monthly percentage contribution of "
+                ++ animalName
+                ++ "'s sale price that will go towards conservation of endangered animals. This is deducted continuously from the deposit and paid by the owner of the animal"
+              }
+              placement="top">
+              <span> <S> {js|ⓘ|js} </S> </span>
+            </Rimble.Tooltip>
+          </strong>
+        </small>
+        <br />
+        <S> {monthlyPledgeEth ++ " ETH"} </S>
+        <br />
+        <small> <S> {"(" ++ monthlyPledgeUsd ++ " USD)"} </S> </small>
+      </div>
+      <p>
+        <small>
+          <strong>
+            <S> "Current Patron: " </S>
+            <Rimble.Tooltip
+              message={j|This is the $userIdType of the current owner|j}
+              placement="top">
+              <span> <S> {js|ⓘ|js} </S> </span>
+            </Rimble.Tooltip>
+          </strong>
+        </small>
+        <br />
+        userIdComponent
+      </p>
+      <p>
+        <small>
+          <strong>
+            <S> "Available Deposit: " </S>
+            <Rimble.Tooltip
+              message="This is the amount the owner has deposited to pay their monthly contribution"
+              placement="top">
+              <span> <S> {js|ⓘ|js} </S> </span>
+            </Rimble.Tooltip>
+          </strong>
+        </small>
+        <br />
+        <S> {depositAvailableToWithdraw ++ " ETH"} </S>
+        <br />
+        <small>
+          <S> {"(" ++ depositAvailableToWithdrawUsd ++ " USD)"} </S>
+        </small>
+      </p>
+      <p>
+        <small>
+          <strong>
+            <S> {animalName ++ "'s Patronage: "} </S>
+            <Rimble.Tooltip
+              message={
+                "This is the total contribution that has been raised thanks to the wildcard, "
+                ++ animalName
+              }
+              placement="top">
+              <span> <S> {js|ⓘ|js} </S> </span>
+            </Rimble.Tooltip>
+          </strong>
+        </small>
+        <br />
+        <S> {totalPatronage ++ " ETH"} </S>
+        <br />
+        <small> <S> {"(" ++ totalPatronageUsd ++ " USD)"} </S> </small>
+      </p>
+      {switch (definiteTime) {
+       | Date(date) =>
+         <p>
+           <small>
+             <strong>
+               <S> "Foreclosure date: " </S>
+               <Rimble.Tooltip
+                 message={
+                   "This is the date the deposit will run out and the animal and the current owner will lose ownership of "
+                   ++ animalName
+                 }
+                 placement="top">
+                 <span> <S> {js|ⓘ|js} </S> </span>
+               </Rimble.Tooltip>
+             </strong>
+           </small>
+           <br />
+           <S> {MomentRe.Moment.format("LLLL", date)} </S>
+           <br />
+           <small>
+             <S> "( " </S>
+             <CountDownForeclosure endDateMoment=date />
+             <S> ")" </S>
+           </small>
+         </p>
+       | Loading => React.null
+       }}
+      {switch (daysHeld) {
+       | Some((daysHeldFloat, timeAquired)) =>
+         let timeAquiredString = timeAquired->MomentRe.Moment.toISOString;
+         <p>
+           <small>
+             <strong>
+               <S> "Days Held: " </S>
+               <Rimble.Tooltip
+                 message={j|This is the amount of time $animalName has been held. It was aquired on the $timeAquiredString.|j}
+                 placement="top">
+                 <span> <S> {js|ⓘ|js} </S> </span>
+               </Rimble.Tooltip>
+             </strong>
+           </small>
+           <br />
+           <S> daysHeldFloat->Js.Float.toFixed </S>
+           <br />
+         </p>;
+       | None => React.null
+       }}
+    </React.Fragment>;
+  };
+};
+
+module AnimalInfo = {
+  [@react.component]
+  let make = (~animal: Animal.t) => {
     // TODO: the ethereum address is really terribly displayed. But the default in Rimble UI includes a QR code scanner (which is really ugly).
     // https://rimble.consensys.design/components/rimble-ui/EthAddress#props
     // https://github.com/ConsenSys/rimble-ui/blob/dd470f00374a05c860b558a2cb9317861e4a0d89/src/EthAddress/index.js (maybe make a PR here with some changes)
@@ -405,126 +531,23 @@ module AnimalInfo = {
           <ReactTabs.Tab> "Details"->React.string </ReactTabs.Tab>
         </ReactTabs.TabList>
         <ReactTabs.TabPanel>
-          <h2> "Story Content"->React.string </h2>
+          <h2> "Story"->React.string </h2>
+          {ReasonReact.array(
+             Array.map(
+               paragraphText => <p> paragraphText->React.string </p>,
+               Animal.getStoryParagraphs(animal),
+             ),
+           )}
         </ReactTabs.TabPanel>
         <ReactTabs.TabPanel>
-          <div>
-            <small>
-              <strong>
-                <S> {"Monthly Pledge (at " ++ monthlyRate ++ "%): "} </S>
-                <Rimble.Tooltip
-                  message={
-                    "This is the monthly percentage contribution of "
-                    ++ animalName
-                    ++ "'s sale price that will go towards conservation of endangered animals. This is deducted continuously from the deposit and paid by the owner of the animal"
-                  }
-                  placement="top">
-                  <span> <S> {js|ⓘ|js} </S> </span>
-                </Rimble.Tooltip>
-              </strong>
-            </small>
-            <br />
-            <S> {monthlyPledgeEth ++ " ETH"} </S>
-            <br />
-            <small> <S> {"(" ++ monthlyPledgeUsd ++ " USD)"} </S> </small>
-          </div>
-          <p>
-            <small>
-              <strong>
-                <S> "Current Patron: " </S>
-                <Rimble.Tooltip
-                  message={j|This is the $userIdType of the current owner|j}
-                  placement="top">
-                  <span> <S> {js|ⓘ|js} </S> </span>
-                </Rimble.Tooltip>
-              </strong>
-            </small>
-            <br />
-            userIdComponent
-          </p>
-          <p>
-            <small>
-              <strong>
-                <S> "Available Deposit: " </S>
-                <Rimble.Tooltip
-                  message="This is the amount the owner has deposited to pay their monthly contribution"
-                  placement="top">
-                  <span> <S> {js|ⓘ|js} </S> </span>
-                </Rimble.Tooltip>
-              </strong>
-            </small>
-            <br />
-            <S> {depositAvailableToWithdraw ++ " ETH"} </S>
-            <br />
-            <small>
-              <S> {"(" ++ depositAvailableToWithdrawUsd ++ " USD)"} </S>
-            </small>
-          </p>
-          <p>
-            <small>
-              <strong>
-                <S> {animalName ++ "'s Patronage: "} </S>
-                <Rimble.Tooltip
-                  message={
-                    "This is the total contribution that has been raised thanks to the wildcard, "
-                    ++ animalName
-                  }
-                  placement="top">
-                  <span> <S> {js|ⓘ|js} </S> </span>
-                </Rimble.Tooltip>
-              </strong>
-            </small>
-            <br />
-            <S> {totalPatronage ++ " ETH"} </S>
-            <br />
-            <small> <S> {"(" ++ totalPatronageUsd ++ " USD)"} </S> </small>
-          </p>
-          {switch (definiteTime) {
-           | Date(date) =>
-             <p>
-               <small>
-                 <strong>
-                   <S> "Foreclosure date: " </S>
-                   <Rimble.Tooltip
-                     message={
-                       "This is the date the deposit will run out and the animal and the current owner will lose ownership of "
-                       ++ animalName
-                     }
-                     placement="top">
-                     <span> <S> {js|ⓘ|js} </S> </span>
-                   </Rimble.Tooltip>
-                 </strong>
-               </small>
-               <br />
-               <S> {MomentRe.Moment.format("LLLL", date)} </S>
-               <br />
-               <small>
-                 <S> "( " </S>
-                 <CountDownForeclosure endDateMoment=date />
-                 <S> ")" </S>
-               </small>
-             </p>
-           | Loading => React.null
-           }}
-          {switch (daysHeld) {
-           | Some((daysHeldFloat, timeAquired)) =>
-             let timeAquiredString = timeAquired->MomentRe.Moment.toISOString;
-             <p>
-               <small>
-                 <strong>
-                   <S> "Days Held: " </S>
-                   <Rimble.Tooltip
-                     message={j|This is the amount of time $animalName has been held. It was aquired on the $timeAquiredString.|j}
-                     placement="top">
-                     <span> <S> {js|ⓘ|js} </S> </span>
-                   </Rimble.Tooltip>
-                 </strong>
-               </small>
-               <br />
-               <S> daysHeldFloat->Js.Float.toFixed </S>
-               <br />
-             </p>;
-           | None => React.null
+          {if (animal->Animal.isLaunched) {
+             <AnimalInfoStats animal />;
+           } else {
+             <React.Fragment>
+
+                 <h2> "This animal will launch in:"->React.string </h2>
+                 <Countdown />
+               </React.Fragment>; /* TODO: add details when it will launch*/
            }}
         </ReactTabs.TabPanel>
       </ReactTabs>
@@ -544,7 +567,7 @@ let make = () => {
   };
 
   <Rimble.Flex
-    flexWrap={isDetailView ? "wrap-reverse" : "wrap"} alignItems="center">
+    flexWrap={isDetailView ? "wrap-reverse" : "wrap"} alignItems="start">
     <Rimble.Box p=1 width=[|1., 1., 0.5|]>
       <React.Fragment>
         {isDetailView
