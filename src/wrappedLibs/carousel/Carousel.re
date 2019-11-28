@@ -7,7 +7,9 @@ external make:
     ~value: int=?,
     ~animationSpeed: int=?,
     ~className: string=?,
-    ~onChange: int => unit=?
+    ~onChange: int => unit=?,
+    ~infinite: bool=?,
+    ~autoPlay: int=?
   ) =>
   React.element =
   "default";

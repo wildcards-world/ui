@@ -9,7 +9,11 @@ let backgroundImageGorilla = [%bs.raw
 Css.(
   global(
     "body",
-    [margin(`px(0)), fontFamily("Lato, Helvetica, sans-serif")],
+    [
+      margin(`px(0)),
+      fontFamily("Lato, Helvetica, sans-serif"),
+      overflowX(hidden),
+    ],
   )
 );
 Css.(global("a", [color(hex("303030")), textDecoration(none)]));
@@ -95,8 +99,8 @@ let overlayFlameImg =
   style([
     position(absolute),
     zIndex(99),
-    bottom(`percent(10.)),
-    right(`percent(50.)),
+    top(`percent(30.)),
+    left(`percent(0.)),
     width(`percent(20.)),
     height(`percent(20.)),
     minWidth(px(50)),
@@ -165,22 +169,24 @@ let clickableLink =
     cursor(`pointer),
   ]);
 
-let headerImg = enlargement =>
+let headerImg = (enlargement, scalar) =>
   style([
+    position(`relative),
     zIndex(1),
     maxHeight(px(500)),
-    maxWidth(`percent(enlargement)),
+    maxWidth(`percent(100. *. enlargement)),
+    left(`percent((-50.) *. (enlargement -. 1.))),
+    transform(scale(scalar, scalar)),
     textAlign(center),
+    transition(~duration=1000, ~delay=0, ~timingFunction=ease, "all"),
     hover([
       filter([`saturate(150.), `brightness(110.)]),
       zIndex(2),
       overflow(visible),
-      transform(scale(1.1, 1.1)),
+      transform(scale(1.1 *. scalar, 1.1 *. scalar)),
       transition(~duration=100, ~delay=0, ~timingFunction=ease, "all"),
     ]),
   ]);
-
-let animalText = style([transform(translateX(`percent(25.)))]);
 
 let horizantalBlueTile =
   style([
@@ -415,3 +421,9 @@ let carousel =
   ]);
 
 let invisibleGorilla = style([display(`none)]);
+
+let fadeOut = targetOpacity =>
+  style(
+    [transition(~duration=2000, ~delay=0, ~timingFunction=ease, "opacity")]
+    ->List.append([opacity(targetOpacity)]),
+  );

@@ -32,7 +32,7 @@ let getId: t => option(string) =
     | Apthapi => Some("11")
     | Ajayu => Some("12")
     // | Vitalik => Some("42") // We don't show an ID for vitalik since using legacy contract still.
-    | _ => None
+    | Vitalik => None
     };
 
 let getTokenId: t => option(TokenId.t) =

@@ -69,7 +69,7 @@ module Streak = {
 
 module AnimalComingSoonOnLandingPage = {
   [@react.component]
-  let make = (~animal: Animal.t) => {
+  let make = (~animal, ~scalar: float=1.) => {
     let name = Animal.getName(animal);
 
     <Rimble.Box>
@@ -80,14 +80,12 @@ module AnimalComingSoonOnLandingPage = {
           ReasonReactRouter.push("#details/" ++ name);
         }}>
         <img
-          className={Styles.headerImg(150.)}
+          className={Styles.headerImg(1.5, scalar)}
           src={Animal.getImage(animal)}
         />
-        <div className=Styles.animalText>
-          <h2> {React.string(name)} </h2>
-        </div>
+        <div> <h2> {React.string(name)} </h2> </div>
       </a>
-      <div className=Styles.animalText>
+      <div>
         <h3 className=Styles.colorGreen> {React.string("COMING IN")} </h3>
         <Countdown />
       </div>
@@ -109,7 +107,7 @@ module BasicAnimalDisplay = {
 
 module AnimalOnLandingPage = {
   [@react.component]
-  let make = (~animal: Animal.t) => {
+  let make = (~animal, ~scalar: float=1.) => {
     let name = Animal.getName(animal);
 
     <Rimble.Box>
@@ -121,7 +119,7 @@ module AnimalOnLandingPage = {
         }}>
         <div className=Styles.positionRelative>
           <img
-            className={Styles.headerImg(150.)}
+            className={Styles.headerImg(1.5, scalar)}
             src={Animal.getImage(animal)}
           />
           <div className=Styles.overlayFlameImg>
@@ -129,12 +127,10 @@ module AnimalOnLandingPage = {
               <Streak animal />
             </Offline>
           </div>
-        </div>
-        <div className=Styles.animalText>
-          <h2> {React.string(name)} </h2>
+          <div> <h2> {React.string(name)} </h2> </div>
         </div>
       </a>
-      <div className=Styles.animalText>
+      <div>
         <Offline requireSmartContractsLoaded=true>
           <BasicAnimalDisplay animal />
         </Offline>
@@ -145,22 +141,20 @@ module AnimalOnLandingPage = {
 
 module CarouselAnimal = {
   [@react.component]
-  let make = (~animal: Animal.t) => {
+  let make = (~animal, ~scalar) => {
     let isLaunched = animal->Animal.isLaunched;
     if (isLaunched) {
-      <AnimalOnLandingPage animal />;
+      <AnimalOnLandingPage animal scalar />;
     } else {
-      <AnimalComingSoonOnLandingPage animal />;
+      <AnimalComingSoonOnLandingPage animal scalar />;
     };
   };
 };
 
 // NOTE: first and last three wrap-over items are for simulating 'circular scrolling'
 let animalCarouselArray = [|
-  Animal.Aruma,
   Animal.Apthapi,
   Animal.Ajayu,
-  //First item
   Animal.Andy,
   Animal.Vitalik,
   Animal.Simon,
@@ -173,52 +167,62 @@ let animalCarouselArray = [|
   Animal.Cubai,
   Animal.CatStevens,
   Animal.Aruma,
-  Animal.Apthapi,
-  Animal.Ajayu,
-  //End of list
-  Animal.Andy,
-  Animal.Vitalik,
-  Animal.Simon,
 |];
 
 module AnimalCarousel = {
   // let make = (~ownedAnimal: array(Animal)) => {
   [@react.component]
   let make = () => {
-    let (carouselIndex, setCarouselIndex) = React.useState(() => 5);
+    let (carouselIndex, setCarouselIndex) = React.useState(() => 17);
+    let numItems = animalCarouselArray->Array.length;
     <Rimble.Box className=Styles.positionRelative>
       <Carousel
         className=Styles.carousel
         slidesPerPage=5
-        centered=false
+        centered=true
         value=carouselIndex
-        animationSpeed=1000
-        onChange={test =>
-          setCarouselIndex(_
-            // this switch teleports the carousel back to the beginning so that it appears to be circular.
-            =>
-              switch (test) {
-              | x when x <= 1 => 18
-              | x when x >= 18 => 1
-              | x => x
-              }
-            )
-        }>
+        animationSpeed=3000
+        infinite=true
+        // autoPlay=5000
+        onChange={test => setCarouselIndex(_ => test)}>
         {ReasonReact.array(
-           Array.map(
-             animal => <CarouselAnimal animal />,
+           Array.mapi(
+             (index, animal) => {
+               let (opacity, scalar) =
+                 switch (index) {
+                 | x when x == carouselIndex mod numItems => (1., 1.0)
+                 | x
+                     when
+                       x == (carouselIndex - 1)
+                       mod numItems
+                       || x == (carouselIndex + 1)
+                       mod numItems => (
+                     0.8,
+                     0.8,
+                   )
+                 | x
+                     when
+                       x == (carouselIndex - 2)
+                       mod numItems
+                       || x == (carouselIndex + 2)
+                       mod numItems => (
+                     0.1,
+                     0.7,
+                   )
+                 | _ => (0., 0.6)
+                 };
+               <div className={Styles.fadeOut(opacity)}>
+                 <CarouselAnimal animal scalar />
+               </div>;
+             },
              animalCarouselArray,
            ),
          )}
       </Carousel>
-      <Carousel.Dots
-        number=14
-        value={carouselIndex - 3}
-        onChange={index => setCarouselIndex(_ => index + 3)}
-      />
     </Rimble.Box>;
   };
 };
+
 module AnimalActionsOnDetailsPage = {
   [@react.component]
   let make = (~animal) => {
