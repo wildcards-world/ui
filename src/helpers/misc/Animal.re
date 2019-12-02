@@ -33,9 +33,10 @@ let getId: t => option(string) =
     | CatStevens => Some("9")
     | Aruma => Some("10")
     | Apthapi => Some("11")
-    | Nonhlanhla => Some("12")
-    | Dlala => Some("12")
-    | Isisa => Some("12")
+    | Ajayu => Some("12")
+    | Nonhlanhla => Some("13")
+    | Dlala => Some("14")
+    | Isisa => Some("15")
     // | Vitalik => Some("42") // We don't show an ID for vitalik since using legacy contract still.
     | Vitalik => None
     };
@@ -124,7 +125,7 @@ let getAnimal: string => option(t) =
 
 let getNextPrev = animal =>
   switch (animal) {
-  | Simon => (Vitalik, Ajayu)
+  | Simon => (Vitalik, Dlala)
   | Vitalik => (Andy, Simon)
   | Andy => (Verano, Vitalik)
   | Verano => (Tarkus, Andy)
@@ -137,7 +138,10 @@ let getNextPrev = animal =>
   | CatStevens => (Aruma, Cubai)
   | Aruma => (Apthapi, CatStevens)
   | Apthapi => (Ajayu, Aruma)
-  | Ajayu => (Simon, Apthapi)
+  | Ajayu => (Nonhlanhla, Apthapi)
+  | Nonhlanhla => (Isisa, Ajayu)
+  | Isisa => (Simon, Nonhlanhla)
+  | Dlala => (Simon, Isisa)
   | _ => (Simon, Vitalik)
   };
 
