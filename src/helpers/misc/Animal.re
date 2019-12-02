@@ -86,14 +86,6 @@ let getName: t => string =
     | Ajayu => "Ajayu"
     };
 
-// let getAlturnateImage: t => array(string) = // TODO: I want to turn this into an array in the future, show a carousel of images instead.
-let getAlturnateImage: t => option(string) =
-  animal =>
-    switch (animal) {
-    | Simon => None
-    | _ => Some([%bs.raw {|require('../../img/animals/gorilla2.png')|}])
-    };
-
 let getAnimal: string => option(t) =
   animalName => {
     let animalNameLower = Js.String.toLowerCase(animalName);
@@ -150,6 +142,20 @@ let getImage = animal =>
     %bs.raw
     {|require('../../img/animals/gorilla3.png')|}
   };
+
+// let getAlternateImage: t => array(string) = // TODO: I want to turn this into an array in the future, show a carousel of images instead.
+let getAlternateImage: t => option(string) =
+  animal =>
+    switch (animal) {
+    | Simon => None
+    | _ => Some([%bs.raw {|require('../../img/animals/gorilla2.png')|}])
+    };
+let getOrgBadgeImage: t => option(string) =
+  animal =>
+    switch (animal) {
+    | Simon => None
+    | _ => Some([%bs.raw {|require('../../img/streak-flame.png')|}])
+    };
 
 let getStoryParagraphs = animal =>
   switch (animal) {

@@ -97,48 +97,6 @@ module DisplayAfterDate = {
   };
 };
 
-module AnimalComingSoonOnLandingPage = {
-  [@react.component]
-  let make = (~animal, ~scalar: float=1., ~endDateMoment) => {
-    let name = Animal.getName(animal);
-    let alternateImage = Animal.getAlturnateImage(animal);
-
-    let normalImage = () =>
-      <img
-        className={Styles.headerImg(1.5, scalar)}
-        src={Animal.getImage(animal)}
-      />;
-
-    <Rimble.Box>
-      <a
-        className=Styles.clickableLink
-        onClick={event => {
-          ReactEvent.Mouse.preventDefault(event);
-          ReasonReactRouter.push("#details/" ++ name->Js.Global.encodeURI);
-        }}>
-        {switch (alternateImage) {
-         | None => normalImage()
-         | Some(imgToToggle) =>
-           <Components.HoverToggle
-             _ComponentHover={normalImage()}
-             _ComponentNoHover={
-               <img
-                 className={Styles.headerImg(1.5, scalar)}
-                 src=imgToToggle
-               />
-             }
-           />
-         }}
-        <div> <h2> {React.string(name)} </h2> </div>
-      </a>
-      <div>
-        <h3 className=Styles.colorGreen> {React.string("COMING IN")} </h3>
-        <CountDown endDateMoment leadingZeros=true includeWords=false />
-      </div>
-    </Rimble.Box>;
-  };
-};
-
 module BasicAnimalDisplay = {
   [@react.component]
   let make = (~animal: Animal.t) => {
@@ -153,8 +111,51 @@ module BasicAnimalDisplay = {
 
 module AnimalOnLandingPage = {
   [@react.component]
-  let make = (~animal, ~scalar: float=1.) => {
+  let make =
+      (
+        ~animal,
+        ~scalar: float=1.,
+        ~optionEndDateMoment: option(MomentRe.Moment.t),
+      ) => {
     let name = Animal.getName(animal);
+
+    let optAlternateImage = Animal.getAlternateImage(animal);
+    let optOrgBadge = Animal.getOrgBadgeImage(animal);
+
+    let normalImage = () =>
+      <img
+        className={Styles.headerImg(1.5, scalar)}
+        src={Animal.getImage(animal)}
+      />;
+
+    let componentWithoutImg = (img, ~hideBadges: bool) => {
+      <React.Fragment>
+        {img()}
+        {if (hideBadges) {
+           React.null;
+         } else {
+           <React.Fragment>
+             {switch (optionEndDateMoment) {
+              | Some(_endDateMoment) => React.null
+              | None =>
+                <div className=Styles.overlayFlameImg>
+                  <Offline requireSmartContractsLoaded=true>
+                    <Streak animal />
+                  </Offline>
+                </div>
+              }}
+             {switch (optOrgBadge) {
+              | None => React.null
+              | Some(orgBadge) =>
+                <div className=Styles.overlayBadgeImg>
+                  <img className=Styles.flameImg src=orgBadge />
+                </div>
+              }}
+           </React.Fragment>;
+         }}
+        <div> <h2> {React.string(name)} </h2> </div>
+      </React.Fragment>;
+    };
 
     <Rimble.Box>
       <a
@@ -164,23 +165,39 @@ module AnimalOnLandingPage = {
           ReasonReactRouter.push("#details/" ++ name->Js.Global.encodeURI);
         }}>
         <div className=Styles.positionRelative>
-          <img
-            className={Styles.headerImg(1.5, scalar)}
-            src={Animal.getImage(animal)}
-          />
-          <div className=Styles.overlayFlameImg>
-            <Offline requireSmartContractsLoaded=true>
-              <Streak animal />
-            </Offline>
-          </div>
-          <div> <h2> {React.string(name)} </h2> </div>
+          {switch (optAlternateImage) {
+           | None => componentWithoutImg(normalImage, ~hideBadges=false)
+           | Some(alternateImage) =>
+             <Components.HoverToggle
+               _ComponentNoHover={componentWithoutImg(
+                 normalImage,
+                 ~hideBadges=false,
+               )}
+               _ComponentHover={componentWithoutImg(
+                 () =>
+                   <img
+                     className={Styles.headerImg(1.5, scalar)}
+                     src=alternateImage
+                   />,
+                 ~hideBadges=true,
+               )}
+             />
+           }}
         </div>
       </a>
-      <div>
-        <Offline requireSmartContractsLoaded=true>
-          <BasicAnimalDisplay animal />
-        </Offline>
-      </div>
+      {switch (optionEndDateMoment) {
+       | Some(endDateMoment) =>
+         <div>
+           <h3 className=Styles.colorGreen> {React.string("COMING IN")} </h3>
+           <CountDown endDateMoment leadingZeros=true includeWords=false />
+         </div>
+       | None =>
+         <div>
+           <Offline requireSmartContractsLoaded=true>
+             <BasicAnimalDisplay animal />
+           </Offline>
+         </div>
+       }}
     </Rimble.Box>;
   };
 };
@@ -190,13 +207,20 @@ module CarouselAnimal = {
   let make = (~animal, ~scalar) => {
     let isLaunched = animal->Animal.isLaunched;
     switch (isLaunched) {
-    | Animal.Launched => <AnimalOnLandingPage animal scalar />
+    | Animal.Launched =>
+      <AnimalOnLandingPage animal scalar optionEndDateMoment=None />
     | Animal.LaunchDate(endDateMoment) =>
       <DisplayAfterDate
         endDateMoment
-        afterComponent={<AnimalOnLandingPage animal scalar />}
+        afterComponent={
+          <AnimalOnLandingPage animal scalar optionEndDateMoment=None />
+        }
         beforeComponent={
-          <AnimalComingSoonOnLandingPage animal scalar endDateMoment />
+          <AnimalOnLandingPage
+            animal
+            scalar
+            optionEndDateMoment={Some(endDateMoment)}
+          />
         }
       />
     };
@@ -347,21 +371,58 @@ module DefaultLook = {
              <p> <S> "Please check the spelling and try again." </S> </p>
            </div>
          | Some(animal) =>
-           let alternateImage = Animal.getAlturnateImage(animal);
            let normalImage = animal =>
              <img
                className=Styles.ownedAnimalImg
                src={Animal.getImage(animal)}
              />;
+           let optAlternateImage = Animal.getAlternateImage(animal);
+           let optOrgBadge = Animal.getOrgBadgeImage(animal);
+
+           let isLaunched = animal->Animal.isLaunched;
+
+           let displayAnimal = animalImage =>
+             <div className=Styles.positionRelative>
+               <p> "testing"->React.string </p>
+               {animalImage()}
+               {switch (isLaunched) {
+                | Animal.Launched =>
+                  <div className=Styles.overlayFlameImg>
+                    <Offline requireSmartContractsLoaded=true>
+                      <Streak animal />
+                    </Offline>
+                  </div>
+                | Animal.LaunchDate(endDateMoment) =>
+                  <DisplayAfterDate
+                    endDateMoment
+                    afterComponent={
+                      <div className=Styles.overlayFlameImg>
+                        <Offline requireSmartContractsLoaded=true>
+                          <Streak animal />
+                        </Offline>
+                      </div>
+                    }
+                    beforeComponent=React.null
+                  />
+                }}
+               {switch (optOrgBadge) {
+                | None => React.null
+                | Some(orgBadge) =>
+                  <div className=Styles.overlayBadgeImg>
+                    <img className=Styles.flameImg src=orgBadge />
+                  </div>
+                }}
+             </div>;
+
            <React.Fragment>
-             {switch (alternateImage) {
-              | None => normalImage(animal)
-              | Some(imgToToggle) =>
+             {switch (optAlternateImage) {
+              | None => displayAnimal(() => normalImage(animal))
+              | Some(alternateImage) =>
                 <Components.HoverToggle
                   _ComponentHover={normalImage(animal)}
-                  _ComponentNoHover={
-                    <img className=Styles.ownedAnimalImg src=imgToToggle />
-                  }
+                  _ComponentNoHover={displayAnimal(() =>
+                    <img className=Styles.ownedAnimalImg src=alternateImage />
+                  )}
                 />
               }}
              <h2> <S> {Animal.getName(animal)} </S> </h2>
@@ -369,10 +430,6 @@ module DefaultLook = {
                <AnimalActionsOnDetailsPage animal />
              </Offline>
            </React.Fragment>;
-         //  />
-         //    src={Animal.getImage(animal)}
-         //    className=Styles.ownedAnimalImg
-         //  <img
          };
        | _ =>
          <React.Fragment>

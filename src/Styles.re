@@ -95,22 +95,25 @@ let navList =
   ]);
 
 let positionRelative = style([position(relative)]);
-let overlayFlameImg =
+let overlayImg = (topPosition, leftPosition) =>
   style([
     position(absolute),
     zIndex(3),
-    top(`percent(30.)),
-    left(`percent(0.)),
+    top(`percent(topPosition)),
+    left(`percent(leftPosition)),
     width(`percent(20.)),
     height(`percent(20.)),
     minWidth(px(50)),
     minHeight(px(50)),
   ]);
+let overlayFlameImg = overlayImg(30., 0.);
+let overlayBadgeImg = overlayImg(60., 70.);
+
 let streakText =
   style([
     position(absolute),
     zIndex(100),
-    bottom(`percent(-20.)),
+    bottom(`percent(-10.)),
     right(`percent(50.)),
     transform(translateX(`percent(50.))),
   ]);
