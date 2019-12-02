@@ -178,13 +178,13 @@ let getImage = animal =>
     {|require('../../img/animals/VeranoTheMackawCropped.png')|}
   | Nonhlanhla =>
     %bs.raw
-    {|require('../../img/animals/VeranoTheMackawCropped.png')|}
+    {|require('../../img/animals/EditedHyena.png')|}
   | Isisa =>
     %bs.raw
-    {|require('../../img/animals/VeranoTheMackawCropped.png')|}
+    {|require('../../img/animals/EditedHyena1.png')|}
   | Dlala =>
     %bs.raw
-    {|require('../../img/animals/VeranoTheMackawCropped.png')|}
+    {|require('../../img/animals/EditedHyena2.png')|}
   | Ajayu =>
     %bs.raw
     {|require('../../img/animals/comingsoon.png')|}
@@ -224,6 +224,15 @@ let getAlternateImage: t => option(string) =
     | Apthapi =>
       %bs.raw
       {|require('../../img/animals/Apthapi.jpg')|}
+    | Nonhlanhla =>
+      %bs.raw
+      {|require('../../img/animals/Nonhlanhla.jpg')|}
+    | Isisa =>
+      %bs.raw
+      {|require('../../img/animals/Isisa.jpg')|}
+    | Dlala =>
+      %bs.raw
+      {|require('../../img/animals/Dlala.jpg')|}
     | Ajayu =>
       %bs.raw
       {|require('../../img/animals/comingsoon.png')|}
