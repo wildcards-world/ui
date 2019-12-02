@@ -138,9 +138,42 @@ let getImage = animal =>
   | Andy =>
     %bs.raw
     {|require('../../img/animals/gorilla3.png')|}
+  | Pancho =>
+    %bs.raw
+    {|require('../../img/animals/PanchoTheTortoiseCropped.png')|}
+  | Llajuita =>
+    %bs.raw
+    {|require('../../img/animals/LlajuitaTheDeerCropped.png')|}
+  | Espumita =>
+    %bs.raw
+    {|require('../../img/animals/EspumitaThePuma2Cropped.png')|}
+  | Cubai =>
+    %bs.raw
+    {|require('../../img/animals/CubaiTheJaguarCropped.png')|}
+  | CatStevens =>
+    %bs.raw
+    {|require('../../img/animals/catstevenstheocelotCropped.png')|}
+  | Aruma =>
+    %bs.raw
+    {|require('../../img/animals/ArumaTheAndeanBearCropped.png')|}
+  | Apthapi =>
+    %bs.raw
+    {|require('../../img/animals/ApthapiTheTapirCropped.png')|}
+  | Verano =>
+    %bs.raw
+    {|require('../../img/animals/VeranoTheMackawCropped.png')|}
+  | Ajayu =>
+    %bs.raw
+    {|require('../../img/animals/comingsoon.png')|}
+  | Mijungla =>
+    %bs.raw
+    {|require('../../img/animals/comingsoon.png')|}
+  | Tarkus =>
+    %bs.raw
+    {|require('../../img/animals/comingsoon.png')|}
   | _ =>
     %bs.raw
-    {|require('../../img/animals/gorilla3.png')|}
+    {|require('../../img/animals/comingsoon.png')|}
   };
 
 // let getAlternateImage: t => array(string) = // TODO: I want to turn this into an array in the future, show a carousel of images instead.
@@ -148,6 +181,35 @@ let getAlternateImage: t => option(string) =
   animal =>
     switch (animal) {
     | Simon => None
+    | Andy => None
+    | Vitalik => None
+    | Verano => Some([%bs.raw {|require('../../img/animals/Verano.jpg')|}])
+    | Pancho => Some([%bs.raw {|require('../../img/animals/Pancho.jpg')|}])
+    | Llajuita =>
+      Some([%bs.raw {|require('../../img/animals/Llajuita.jpg')|}])
+    | Espumita =>
+      Some([%bs.raw {|require('../../img/animals/Espumita.jpg')|}])
+    | Cubai =>
+      %bs.raw
+      {|require('../../img/animals/Cubai.jpg')|}
+    | CatStevens =>
+      %bs.raw
+      {|require('../../img/animals/CatStevens.jpg')|}
+    | Aruma =>
+      %bs.raw
+      {|require('../../img/animals/Aruma.jpg')|}
+    | Apthapi =>
+      %bs.raw
+      {|require('../../img/animals/Apthapi.jpg')|}
+    | Ajayu =>
+      %bs.raw
+      {|require('../../img/animals/comingsoon.png')|}
+    | Mijungla =>
+      %bs.raw
+      {|require('../../img/animals/comingsoon.png')|}
+    | Tarkus =>
+      %bs.raw
+      {|require('../../img/animals/comingsoon.png')|}
     | _ => Some([%bs.raw {|require('../../img/animals/gorilla2.png')|}])
     };
 let getOrgBadgeImage: t => option(string) =
