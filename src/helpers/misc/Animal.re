@@ -181,7 +181,7 @@ let getImage = animal =>
     {|require('../../img/animals/EditedHyena.png')|}
   | Isisa =>
     %bs.raw
-    {|require('../../img/animals/EditedHyena3.png')|}
+    {|require('../../img/animals/editedHyena3.png')|}
   | Dlala =>
     %bs.raw
     {|require('../../img/animals/EditedHyena2.png')|}
