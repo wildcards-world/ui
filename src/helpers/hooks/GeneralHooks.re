@@ -3,7 +3,10 @@ open Providers.UsdPriceProvider;
 
 let useCurrentPatronAnimal = animal => {
   switch (Animal.getId(animal)) {
-  | Some(animalId) => useCurrentPatronNew(int_of_string(animalId))
+  | Some(animalId) =>
+    useCurrentPatronNew(
+      Belt.Int.fromString(animalId)->Belt.Option.mapWithDefault(1, a => a),
+    )
   | None => useCurrentPatron()
   };
 };

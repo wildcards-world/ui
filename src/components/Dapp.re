@@ -14,14 +14,16 @@ module ShareSocial = {
   [@bs.module "./components/shareSocialMedia"] [@react.component]
   external make: unit => React.element = "default";
 };
-module CountDownForeclosure = {
+module CountDown = {
   [@bs.module "./components/CountDown"] [@react.component]
-  external make: (~endDateMoment: MomentRe.Moment.t) => React.element =
+  external make:
+    (
+      ~endDateMoment: MomentRe.Moment.t,
+      ~includeWords: bool=? /*default true*/,
+      ~leadingZeros: bool=?
+    ) /*default false*/ =>
+    React.element =
     "default";
-};
-module Countdown = {
-  [@bs.module "./components/ComingSoonCountdown.js"] [@react.component]
-  external make: unit => React.element = "default";
 };
 
 module EditButton = {
@@ -30,7 +32,9 @@ module EditButton = {
     <Rimble.Button
       onClick={event => {
         ReactEvent.Form.preventDefault(event);
-        ReasonReactRouter.push("#details/" ++ Animal.getName(animal));
+        ReasonReactRouter.push(
+          "#details/" ++ animal->Animal.getName->Js.Global.encodeURI,
+        );
       }}>
       {React.string("Edit")}
     </Rimble.Button>;
@@ -67,9 +71,36 @@ module Streak = {
   };
 };
 
+module DisplayAfterDate = {
+  [@react.component]
+  let make = (~endDateMoment, ~beforeComponent, ~afterComponent) => {
+    let isBeforeDate = () =>
+      MomentRe.diff(endDateMoment, MomentRe.momentNow(), `seconds) > 0.;
+
+    Js.log(MomentRe.diff(MomentRe.momentNow(), endDateMoment, `seconds));
+    let (beforeDate, setIsBeforeDate) = React.useState(() => isBeforeDate());
+    React.useEffect0(() => {
+      let _timout =
+        Js.Global.setTimeout(
+          () => setIsBeforeDate(_ => isBeforeDate()),
+          1500,
+        );
+      None;
+    });
+
+    beforeDate
+      ? {
+        beforeComponent;
+      }
+      : {
+        afterComponent;
+      };
+  };
+};
+
 module AnimalComingSoonOnLandingPage = {
   [@react.component]
-  let make = (~animal, ~scalar: float=1.) => {
+  let make = (~animal, ~scalar: float=1., ~endDateMoment) => {
     let name = Animal.getName(animal);
 
     <Rimble.Box>
@@ -77,7 +108,7 @@ module AnimalComingSoonOnLandingPage = {
         className=Styles.clickableLink
         onClick={event => {
           ReactEvent.Mouse.preventDefault(event);
-          ReasonReactRouter.push("#details/" ++ name);
+          ReasonReactRouter.push("#details/" ++ name->Js.Global.encodeURI);
         }}>
         <img
           className={Styles.headerImg(1.5, scalar)}
@@ -87,7 +118,7 @@ module AnimalComingSoonOnLandingPage = {
       </a>
       <div>
         <h3 className=Styles.colorGreen> {React.string("COMING IN")} </h3>
-        <Countdown />
+        <CountDown endDateMoment leadingZeros=true includeWords=false />
       </div>
     </Rimble.Box>;
   };
@@ -115,7 +146,7 @@ module AnimalOnLandingPage = {
         className=Styles.clickableLink
         onClick={event => {
           ReactEvent.Mouse.preventDefault(event);
-          ReasonReactRouter.push("#details/" ++ name);
+          ReasonReactRouter.push("#details/" ++ name->Js.Global.encodeURI);
         }}>
         <div className=Styles.positionRelative>
           <img
@@ -143,10 +174,16 @@ module CarouselAnimal = {
   [@react.component]
   let make = (~animal, ~scalar) => {
     let isLaunched = animal->Animal.isLaunched;
-    if (isLaunched) {
-      <AnimalOnLandingPage animal scalar />;
-    } else {
-      <AnimalComingSoonOnLandingPage animal scalar />;
+    switch (isLaunched) {
+    | Animal.Launched => <AnimalOnLandingPage animal scalar />
+    | Animal.LaunchDate(endDateMoment) =>
+      <DisplayAfterDate
+        endDateMoment
+        afterComponent={<AnimalOnLandingPage animal scalar />}
+        beforeComponent={
+          <AnimalComingSoonOnLandingPage animal scalar endDateMoment />
+        }
+      />
     };
   };
 };
@@ -181,9 +218,9 @@ module AnimalCarousel = {
         slidesPerPage=5
         centered=true
         value=carouselIndex
-        animationSpeed=3000
+        animationSpeed=1000
         infinite=true
-        // autoPlay=5000
+        autoPlay=5000
         onChange={test => setCarouselIndex(_ => test)}>
         {ReasonReact.array(
            Array.mapi(
@@ -488,7 +525,7 @@ module AnimalInfoStats = {
            <br />
            <small>
              <S> "( " </S>
-             <CountDownForeclosure endDateMoment=date />
+             <CountDown endDateMoment=date />
              <S> ")" </S>
            </small>
          </p>
@@ -540,14 +577,19 @@ module AnimalInfo = {
            )}
         </ReactTabs.TabPanel>
         <ReactTabs.TabPanel>
-          {if (animal->Animal.isLaunched) {
-             <AnimalInfoStats animal />;
-           } else {
-             <React.Fragment>
-
-                 <h2> "This animal will launch in:"->React.string </h2>
-                 <Countdown />
-               </React.Fragment>; /* TODO: add details when it will launch*/
+          {switch (animal->Animal.isLaunched) {
+           | Launched => <AnimalInfoStats animal />
+           | LaunchDate(endDateMoment) =>
+             <DisplayAfterDate
+               endDateMoment
+               afterComponent={<AnimalInfoStats animal />}
+               beforeComponent={
+                 <React.Fragment>
+                   <h2> "This animal will launch in:"->React.string </h2>
+                   <CountDown endDateMoment />
+                 </React.Fragment>
+               }
+             />
            }}
         </ReactTabs.TabPanel>
       </ReactTabs>

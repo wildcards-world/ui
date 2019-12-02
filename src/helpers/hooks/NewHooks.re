@@ -97,6 +97,9 @@ let useDepositAvailableToWithdrawNew = patron =>
 let useForeclosureTimeNew = id => {
   let date = useGetForeclosureTime(id);
   date->map(stringTimeStamp =>
-    MomentRe.momentWithUnix(int_of_string(stringTimeStamp))
+    MomentRe.momentWithUnix(
+      Belt.Int.fromString(stringTimeStamp)
+      ->Belt.Option.mapWithDefault(0, a => a),
+    )
   );
 };

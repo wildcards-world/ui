@@ -63,7 +63,7 @@
     "@glennsl/bs-jest": "^0.4.9",
     "babel-jest": "^24.9.0",
     "babel-loader": "^8.0.6",
-    "bs-platform": "6.2.1",
+    "bs-platform": "^6.2.1",
     "gh-pages": "^2.0.1",
     "jest": "^24.9.0",
     "typescript": "^3.5.3",

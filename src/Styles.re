@@ -98,7 +98,7 @@ let positionRelative = style([position(relative)]);
 let overlayFlameImg =
   style([
     position(absolute),
-    zIndex(99),
+    zIndex(3),
     top(`percent(30.)),
     left(`percent(0.)),
     width(`percent(20.)),

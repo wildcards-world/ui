@@ -80,7 +80,7 @@ let getName: t => string =
     | Llajuita => "Llajuita"
     | Espumita => "Espumita"
     | Cubai => "Cubai"
-    | CatStevens => "Cat Stevens"
+    | CatStevens => "CatStevens" // removing the space since no time to fix bug
     | Aruma => "Aruma"
     | Apthapi => "Apthapi"
     | Ajayu => "Ajayu"
@@ -100,7 +100,7 @@ let getAnimal: string => option(t) =
     | "llajuita" => Some(Llajuita)
     | "espumita" => Some(Espumita)
     | "cubai" => Some(Cubai)
-    | "cat stevens" => Some(CatStevens)
+    | "catstevens" => Some(CatStevens)
     | "aruma" => Some(Aruma)
     | "apthapi" => Some(Apthapi)
     | "ajayu" => Some(Ajayu)
@@ -273,13 +273,17 @@ let useCurrentPriceUsd = animal => {
   ->mapWithDefault("loading", a => a);
 };
 
-let isLaunched: t => bool =
+type launchStatus =
+  | Launched
+  | LaunchDate(MomentRe.Moment.t);
+
+let isLaunched: t => launchStatus =
   anAnimal =>
     switch (anAnimal) {
-    | Simon => true
-    | Andy => true
-    | Vitalik => true
-    | _ => false
+    | Simon => Launched
+    | Andy => Launched
+    | Vitalik => Launched
+    | _ => LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-02T19:00:00"))
     };
 
 let useIsAnimalOwened = animal => {

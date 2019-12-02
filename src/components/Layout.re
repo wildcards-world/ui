@@ -95,11 +95,16 @@ let make = () => {
          <Rimble.Box p=1 width=[|0.05, 0.05, 0.05|]>
            <Rimble.Button
              className=Styles.forwardBackButton
-             onClick={InputHelp.handleEvent(() =>
+             onClick={InputHelp.handleEvent(() => {
+               Js.log(
+                 "previous animal"
+                 ++ previousAnimal->Animal.getName->Js.Global.encodeURI,
+               );
                ReasonReactRouter.push(
-                 "#details/" ++ Animal.getName(previousAnimal),
-               )
-             )}>
+                 "#details/"
+                 ++ previousAnimal->Animal.getName->Js.Global.encodeURI,
+               );
+             })}>
              <S> {js|◄|js} </S>
            </Rimble.Button>
          </Rimble.Box>
@@ -118,7 +123,7 @@ let make = () => {
              className=Styles.forwardBackButton
              onClick={InputHelp.handleEvent(() =>
                ReasonReactRouter.push(
-                 "#details/" ++ Animal.getName(nextAnimal),
+                 "#details/" ++ nextAnimal->Animal.getName->Js.Global.encodeURI,
                )
              )}>
              <S> {js|►|js} </S>
