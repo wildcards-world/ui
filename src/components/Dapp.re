@@ -101,9 +101,16 @@ module BasicAnimalDisplay = {
   [@react.component]
   let make = (~animal: Animal.t) => {
     let owned = animal->Animal.useIsAnimalOwened;
+    let currentPatron =
+      GeneralHooks.useCurrentPatronAnimal(animal)
+      ->mapWithDefault("Loading", a => a);
+    let userId = UserProvider.useUserNameOrTwitterHandle(currentPatron);
+
+    let userIdComponent = UserProvider.useUserComponent(userId);
 
     <React.Fragment>
       <PriceDisplay animal />
+      userIdComponent
       {owned ? <EditButton animal /> : <BuyModal animal />}
     </React.Fragment>;
   };
@@ -227,7 +234,6 @@ module CarouselAnimal = {
   };
 };
 
-// NOTE: first and last three wrap-over items are for simulating 'circular scrolling'
 let animalCarouselArray = [|
   Animal.Apthapi,
   Animal.Ajayu,
