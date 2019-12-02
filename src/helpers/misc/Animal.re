@@ -13,7 +13,10 @@ type t =
   | CatStevens
   | Aruma
   | Apthapi
-  | Ajayu;
+  | Ajayu
+  | Isisa
+  | Dlala
+  | Nonhlanhla;
 
 let getId: t => option(string) =
   anAnimal =>
@@ -30,7 +33,9 @@ let getId: t => option(string) =
     | CatStevens => Some("9")
     | Aruma => Some("10")
     | Apthapi => Some("11")
-    | Ajayu => Some("12")
+    | Nonhlanhla => Some("12")
+    | Dlala => Some("12")
+    | Isisa => Some("12")
     // | Vitalik => Some("42") // We don't show an ID for vitalik since using legacy contract still.
     | Vitalik => None
     };
@@ -51,6 +56,9 @@ let getTokenId: t => option(TokenId.t) =
     | Aruma => Some(TokenId.makeFromInt(10))
     | Apthapi => Some(TokenId.makeFromInt(11))
     | Ajayu => Some(TokenId.makeFromInt(12))
+    | Nonhlanhla => Some(TokenId.makeFromInt(13))
+    | Isisa => Some(TokenId.makeFromInt(14))
+    | Dlala => Some(TokenId.makeFromInt(15))
     // | Vitalik => "42",
     | Vitalik => None
     };
@@ -84,6 +92,9 @@ let getName: t => string =
     | Aruma => "Aruma"
     | Apthapi => "Apthapi"
     | Ajayu => "Ajayu"
+    | Nonhlanhla => "Nonhlanhla"
+    | Isisa => "Isisa"
+    | Dlala => "Dlala"
     };
 
 let getAnimal: string => option(t) =
@@ -104,6 +115,9 @@ let getAnimal: string => option(t) =
     | "aruma" => Some(Aruma)
     | "apthapi" => Some(Apthapi)
     | "ajayu" => Some(Ajayu)
+    | "dlala" => Some(Dlala)
+    | "isisa" => Some(Isisa)
+    | "nonhlanhla" => Some(Nonhlanhla)
     | _ => None
     };
   };
@@ -160,6 +174,15 @@ let getImage = animal =>
     %bs.raw
     {|require('../../img/animals/ApthapiTheTapirCropped.png')|}
   | Verano =>
+    %bs.raw
+    {|require('../../img/animals/VeranoTheMackawCropped.png')|}
+  | Nonhlanhla =>
+    %bs.raw
+    {|require('../../img/animals/VeranoTheMackawCropped.png')|}
+  | Isisa =>
+    %bs.raw
+    {|require('../../img/animals/VeranoTheMackawCropped.png')|}
+  | Dlala =>
     %bs.raw
     {|require('../../img/animals/VeranoTheMackawCropped.png')|}
   | Ajayu =>
@@ -233,6 +256,11 @@ let getOrgBadgeImage: t => option(string) =
     | Tarkus =>
       %bs.raw
       {|require('../../img/badges/SendaVerdeBadge.png')|}
+    | Nonhlanhla
+    | Isisa
+    | Dlala =>
+      %bs.raw
+      {|require('../../img/badges/WildTomorrowBadge.png')|}
     | _ => Some([%bs.raw {|require('../../img/streak-flame.png')|}])
     };
 
@@ -289,6 +317,15 @@ let getStoryParagraphs = animal =>
   | Ajayu => [|
       "Ajayu was saved by the police in Cochabamba from being brutally beaten to death by a local nearby community in 2016. He arrived to La Paz and La Senda Verde took care of his treatments. He received several surgeries, one to save his left eye and one to save his jaw from a severe infection. He stopped eating for days and had to be force fed. It was quite a struggle to save him, but with time he got better and is now weighing 100 kilograms.",
       "As a result from this brutal story is that LSV has become more involved in trying to change legislation in Bolivia to protect this species and avoid stories like this one from happening again. We are now working alongside biologist Ximena Vélez-Liendo to present a law project that will be called the Ajayu law, named after this bear. Ajayu means spirit in Aymara language.",
+    |]
+  | Nonhlanhla => [|
+      "Nonhlanhla is an 11 year old female spotted hyena who lives in the forests and grasslands of central Zululand, South Africa. Though spotted hyenas can be difficult to see in this area, Nonhlanhla is a particularly great breeder in her clan having cubs regularly, meaning she is seen often at the den site nursing her young. In an area where spotted hyenas are persecuted and there is evidence for their decline, her name in Zulu, appropriately means \"luck\".",
+    |]
+  | Isisa => [|
+      "Isisa is a 10 year old female spotted hyena in a small clan who inhabit the rocky outcrops and low-lying mountains of Zululand. Isisa is the mother of the young male hyena Dlala and is often seen in the Tamboti tree lined drainage canyons in the area. She is an incredibly successful hunter and is often found to have brought down large nyala antelope by herself. ",
+    |]
+  | Dlala => [|
+      "Dlala is a young male spotted hyena, currently about 13 months old. At this age he has recently grown large enough to leave the safety of his clan's den and is out exploring the world within their territory. Too young to breed, his current existence is more about learning and interacting with his new environment; in Zulu his name means \"play\".",
     |]
   };
 

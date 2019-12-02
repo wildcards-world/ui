@@ -54,7 +54,9 @@ const Partners = () => (
         <Card style={styles.card}>
           <a href="https://cvvc.com/index.php">
             <img src={CVLabsLogo} style={styles.logo} />
-            <Text style={styles.center}>CV Labs</Text>
+            <Text style={styles.center}>
+              CV Labs Incubator Program, Batch 2
+            </Text>
           </a>
         </Card>
       </Box>
