@@ -48,9 +48,10 @@ module Streak = {
 
     let daysHeld =
       PureHooks.useTimeAcquiredAnimal(animal)
-      ->Belt.Option.map(dateAquired =>
-          MomentRe.diff(MomentRe.momentNow(), dateAquired, `days)
-        );
+      ->Belt.Option.map(dateAquired => {
+          let days = MomentRe.diff(MomentRe.momentNow(), dateAquired, `days);
+          days > 18000. ? 0. : days;
+        });
 
     switch (daysHeld) {
     | Some(daysHeldFloat) =>
@@ -389,7 +390,6 @@ module DefaultLook = {
 
            let displayAnimal = animalImage =>
              <div className=Styles.positionRelative>
-               <p> "testing"->React.string </p>
                {animalImage()}
                {switch (isLaunched) {
                 | Animal.Launched =>
