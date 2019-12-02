@@ -77,7 +77,6 @@ module DisplayAfterDate = {
     let isBeforeDate = () =>
       MomentRe.diff(endDateMoment, MomentRe.momentNow(), `seconds) > 0.;
 
-    Js.log(MomentRe.diff(MomentRe.momentNow(), endDateMoment, `seconds));
     let (beforeDate, setIsBeforeDate) = React.useState(() => isBeforeDate());
     React.useEffect0(() => {
       let _timout =
@@ -102,6 +101,13 @@ module AnimalComingSoonOnLandingPage = {
   [@react.component]
   let make = (~animal, ~scalar: float=1., ~endDateMoment) => {
     let name = Animal.getName(animal);
+    let alternateImage = Animal.getAlturnateImage(animal);
+
+    let normalImage = () =>
+      <img
+        className={Styles.headerImg(1.5, scalar)}
+        src={Animal.getImage(animal)}
+      />;
 
     <Rimble.Box>
       <a
@@ -110,10 +116,19 @@ module AnimalComingSoonOnLandingPage = {
           ReactEvent.Mouse.preventDefault(event);
           ReasonReactRouter.push("#details/" ++ name->Js.Global.encodeURI);
         }}>
-        <img
-          className={Styles.headerImg(1.5, scalar)}
-          src={Animal.getImage(animal)}
-        />
+        {switch (alternateImage) {
+         | None => normalImage()
+         | Some(imgToToggle) =>
+           <Components.HoverToggle
+             _ComponentHover={normalImage()}
+             _ComponentNoHover={
+               <img
+                 className={Styles.headerImg(1.5, scalar)}
+                 src=imgToToggle
+               />
+             }
+           />
+         }}
         <div> <h2> {React.string(name)} </h2> </div>
       </a>
       <div>
@@ -266,6 +281,12 @@ module AnimalActionsOnDetailsPage = {
     let owned = animal->Animal.useIsAnimalOwened;
     let currentAccount = useCurrentUser()->mapWithDefault("loading", a => a);
 
+    let price = () =>
+      <React.Fragment>
+        <PriceDisplay animal />
+        <BuyModal animal />
+      </React.Fragment>;
+
     if (owned) {
       <React.Fragment>
         <UpdatePriceModal animal />
@@ -277,8 +298,18 @@ module AnimalActionsOnDetailsPage = {
       </React.Fragment>;
     } else {
       <React.Fragment>
-        <PriceDisplay animal />
-        <BuyModal animal />
+        {switch (animal->Animal.isLaunched) {
+         | Launched => price()
+
+         | LaunchDate(endDateMoment) =>
+           <DisplayAfterDate
+             endDateMoment
+             afterComponent={price()}
+             beforeComponent={
+               <React.Fragment> <CountDown endDateMoment /> </React.Fragment>
+             }
+           />
+         }}
       </React.Fragment>;
     };
   };
@@ -316,16 +347,32 @@ module DefaultLook = {
              <p> <S> "Please check the spelling and try again." </S> </p>
            </div>
          | Some(animal) =>
-           <React.Fragment>
+           let alternateImage = Animal.getAlturnateImage(animal);
+           let normalImage = animal =>
              <img
                className=Styles.ownedAnimalImg
                src={Animal.getImage(animal)}
-             />
+             />;
+           <React.Fragment>
+             {switch (alternateImage) {
+              | None => normalImage(animal)
+              | Some(imgToToggle) =>
+                <Components.HoverToggle
+                  _ComponentHover={normalImage(animal)}
+                  _ComponentNoHover={
+                    <img className=Styles.ownedAnimalImg src=imgToToggle />
+                  }
+                />
+              }}
              <h2> <S> {Animal.getName(animal)} </S> </h2>
              <Offline requireSmartContractsLoaded=true>
                <AnimalActionsOnDetailsPage animal />
              </Offline>
-           </React.Fragment>
+           </React.Fragment>;
+         //  />
+         //    src={Animal.getImage(animal)}
+         //    className=Styles.ownedAnimalImg
+         //  <img
          };
        | _ =>
          <React.Fragment>

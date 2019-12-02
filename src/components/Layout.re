@@ -95,16 +95,12 @@ let make = () => {
          <Rimble.Box p=1 width=[|0.05, 0.05, 0.05|]>
            <Rimble.Button
              className=Styles.forwardBackButton
-             onClick={InputHelp.handleEvent(() => {
-               Js.log(
-                 "previous animal"
-                 ++ previousAnimal->Animal.getName->Js.Global.encodeURI,
-               );
+             onClick={InputHelp.handleEvent(() =>
                ReasonReactRouter.push(
                  "#details/"
                  ++ previousAnimal->Animal.getName->Js.Global.encodeURI,
-               );
-             })}>
+               )
+             )}>
              <S> {js|◄|js} </S>
            </Rimble.Button>
          </Rimble.Box>
