@@ -215,7 +215,24 @@ let getAlternateImage: t => option(string) =
 let getOrgBadgeImage: t => option(string) =
   animal =>
     switch (animal) {
-    | Simon => None
+    | Simon
+    | Andy
+    | Vitalik =>
+      %bs.raw
+      {|require('../../img/badges/OGBadge.png')|}
+    | Pancho
+    | Llajuita
+    | Espumita
+    | Cubai
+    | CatStevens
+    | Aruma
+    | Apthapi
+    | Verano
+    | Ajayu
+    | Mijungla
+    | Tarkus =>
+      %bs.raw
+      {|require('../../img/badges/SendaVerdeBadge.png')|}
     | _ => Some([%bs.raw {|require('../../img/streak-flame.png')|}])
     };
 
