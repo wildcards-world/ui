@@ -4,16 +4,16 @@ type t =
   | Vitalik
   | Simon
   | Verano
-  | Tarkus
+  // | Tarkus
   | Pancho
-  | Mijungla
+  // | Mijungla
   | Llajuita
   // | Espumita
   | Cubai
   | CatStevens
   | Aruma
   | Apthapi
-  | Ajayu
+  // | Ajayu
   | Isisa
   | Dlala
   | Nonhlanhla;
@@ -35,9 +35,9 @@ let getId: t => option(string) =
     | Dlala => Some("11")
     | Isisa => Some("12")
     // | Vitalik => Some("42") // We don't show an ID for vitalik since using legacy contract still.
-    | Tarkus
-    | Mijungla
-    | Ajayu
+    // | Tarkus
+    // | Mijungla
+    // | Ajayu
     | Vitalik => None
     };
 
@@ -60,9 +60,9 @@ let getTokenId: t => option(TokenId.t) =
     // | Tarkus => Some(TokenId.makeFromInt(13))
     // | Mijungla => Some(TokenId.makeFromInt(14))
     // | Ajayu => Some(TokenId.makeFromInt(15))
-    | Tarkus
-    | Mijungla
-    | Ajayu
+    // | Tarkus
+    // | Mijungla
+    // | Ajayu
     // | Vitalik => "42",
     | Vitalik => None
     };
@@ -97,16 +97,16 @@ let getName: t => string =
     | Simon => "Simon"
     | Andy => "Andy"
     | Verano => "Verano"
-    | Tarkus => "Tarkus"
+    // | Tarkus => "Tarkus"
     | Pancho => "Pancho"
-    | Mijungla => "Mijungla"
+    // | Mijungla => "Mijungla"
     | Llajuita => "Llajuita"
     // | Espumita => "Espumita"
     | Cubai => "Cubai"
     | CatStevens => "CatStevens" // removing the space since no time to fix bug
     | Aruma => "Aruma"
     | Apthapi => "Apthapi"
-    | Ajayu => "Ajayu"
+    // | Ajayu => "Ajayu"
     | Nonhlanhla => "Nonhlanhla"
     | Isisa => "Isisa"
     | Dlala => "Dlala"
@@ -120,16 +120,16 @@ let getAnimal: string => option(t) =
     | "simon" => Some(Simon)
     | "andy" => Some(Andy)
     | "verano" => Some(Verano)
-    | "tarkus" => Some(Tarkus)
+    // | "tarkus" => Some(Tarkus)
     | "pancho" => Some(Pancho)
-    | "mijungla" => Some(Mijungla)
+    // | "mijungla" => Some(Mijungla)
     | "llajuita" => Some(Llajuita)
     // | "espumita" => Some(Espumita)
     | "cubai" => Some(Cubai)
     | "catstevens" => Some(CatStevens)
     | "aruma" => Some(Aruma)
     | "apthapi" => Some(Apthapi)
-    | "ajayu" => Some(Ajayu)
+    // | "ajayu" => Some(Ajayu)
     | "dlala" => Some(Dlala)
     | "isisa" => Some(Isisa)
     | "nonhlanhla" => Some(Nonhlanhla)
@@ -142,18 +142,18 @@ let getNextPrev = animal =>
   | Simon => (Vitalik, Dlala)
   | Vitalik => (Andy, Simon)
   | Andy => (Verano, Vitalik)
-  | Verano => (Tarkus, Andy)
-  | Tarkus => (Pancho, Verano)
-  | Pancho => (Mijungla, Tarkus)
-  | Mijungla => (Llajuita, Pancho)
-  | Llajuita => (Cubai, Mijungla)
+  | Verano => (Pancho, Andy)
+  // | Tarkus => (Pancho, Verano)
+  | Pancho => (Llajuita, Verano)
+  // | Mijungla => (Llajuita, Pancho)
+  | Llajuita => (Cubai, Pancho)
   // | Espumita => (Cubai, Llajuita)
   | Cubai => (CatStevens, Llajuita)
   | CatStevens => (Aruma, Cubai)
   | Aruma => (Apthapi, CatStevens)
-  | Apthapi => (Ajayu, Aruma)
-  | Ajayu => (Nonhlanhla, Apthapi)
-  | Nonhlanhla => (Isisa, Ajayu)
+  | Apthapi => (Nonhlanhla, Aruma)
+  // | Ajayu => (Nonhlanhla, Apthapi)
+  | Nonhlanhla => (Isisa, Apthapi)
   | Isisa => (Simon, Nonhlanhla)
   | Dlala => (Simon, Isisa)
   | _ => (Simon, Vitalik)
@@ -203,9 +203,9 @@ let getImage = animal =>
   | Dlala =>
     %bs.raw
     {|require('../../img/animals/EditedHyena2.png')|}
-  | Ajayu
-  | Mijungla
-  | Tarkus
+  // | Ajayu
+  // | Mijungla
+  // | Tarkus
   | _ =>
     %bs.raw
     {|require('../../img/animals/comingsoon.png')|}
@@ -270,10 +270,10 @@ let getOrgBadgeImage: t => option(string) =
     | CatStevens
     | Aruma
     | Apthapi
-    | Verano
-    | Ajayu
-    | Mijungla
-    | Tarkus =>
+    // | Ajayu
+    // | Mijungla
+    // | Tarkus
+    | Verano =>
       Some([%bs.raw {|require('../../img/badges/SendaVerdeBadge.png')|}])
     | Nonhlanhla
     | Isisa
@@ -304,21 +304,21 @@ let getStoryParagraphs = animal =>
       "In countries like the United States, Blue-and-Yellow Macaws are raised as pets and a legal pet market exists for them. This is not the case in Bolivia however. There are absolutely no regulations on the matter and all pet parrots and macaws come from the illegal market. This means that they were stolen when chicks from their nests and went through a lot of suffering being transported illegally in hide-outs where they can barely breathe. Once with their final owners, their life is not always the best. Most parrot and macaw owners in Bolivia have no knowledge on the dietary and life requirements for these animals and they normally survive in very precarious conditions. Many of them are kept in La Paz, where low temperatures and high altitude are far from the suitable environment they need.",
       "When macaws like Verano arrive to La Senda Verde, they normally do so with their plumage deteriorated and with signs of psychological trauma. They go through a long recovery phase until they can be finally released into our new large aviaries, where they receive all the attention they need.",
     |]
-  | Tarkus => [|
-      "Tarkus was found on the roadside by a trucker in a section between Sucre and Tarija where Andean bears are known to exist. A female bear got scared by the truck and run with the two cubs. The smallest one got a bit behind. The trucker decided to stop, capture the cub and take him to his house, where he kept the him for more than two weeks. Later he called the environmental authorities in the City of Tarija to turn him in. Capturing the cub is never a good idea, it is virtually condemning him to a life in captivity for he will never be able to learn the abilities to survive in the wild his mother would have taught him. If he would have been left alone, the mother would have come back for him later.",
-      "Tarkus stayed in Tarija for three weeks while the formal requirements were fulfilled. National authorities advised he should be sent to La Senda Verde, where there is a place for the cub, but also the experience of raising bear cubs with appropriate diet and management. He has been placed in a 6x5x6 enclosure just for him, and he has been getting well habituated to the refuge and the caretakers.",
-      "Tarkus has adapted well to the refuge and loves to play with the ball and in the water.",
-    |]
+  // | Tarkus => [|
+  //     "Tarkus was found on the roadside by a trucker in a section between Sucre and Tarija where Andean bears are known to exist. A female bear got scared by the truck and run with the two cubs. The smallest one got a bit behind. The trucker decided to stop, capture the cub and take him to his house, where he kept the him for more than two weeks. Later he called the environmental authorities in the City of Tarija to turn him in. Capturing the cub is never a good idea, it is virtually condemning him to a life in captivity for he will never be able to learn the abilities to survive in the wild his mother would have taught him. If he would have been left alone, the mother would have come back for him later.",
+  //     "Tarkus stayed in Tarija for three weeks while the formal requirements were fulfilled. National authorities advised he should be sent to La Senda Verde, where there is a place for the cub, but also the experience of raising bear cubs with appropriate diet and management. He has been placed in a 6x5x6 enclosure just for him, and he has been getting well habituated to the refuge and the caretakers.",
+  //     "Tarkus has adapted well to the refuge and loves to play with the ball and in the water.",
+  //   |]
   | Pancho => [|
       "Pancho is a large tortoise that was rescued before he was going to be cooked. He had spent by then a long time as a pet and that can be seen by the deformations on his shell, which show mistreatment and poor feeding habits.",
       "Pancho is one of the many tortoises that have similar stories and that arrive in large numbers to La Senda Verde. Tortoises are easy to catch in the rainforest and for that reason many of them are often taken to be sold as pets.",
     |]
-  | Mijungla => [|
-      "Mijungla arrived December 13th to La Senda Verde to be the second jaguar to live in the animal refuge. She was picked up from a family in the town of Palos Blancos, located in a low tropical rainforest area where the Amazon meets the Andes.",
-      "The family has a cattle ranch, and one of the cowboys in the ranch had found her in a very bad state of health laying in the forest, with a wound in her head, full of skin parasites and parts of her body without skin. They picked her up and started rehabilitating her. First they fed her the wrong food, then they realised they needed to feed her meat. It was until she arrived with us that she was able to drink cat milk, for she was so small she really needed it.",
-      "The cub was partially rehabilitated by the family but still had some difficulties when she arrived at Senda Verde. She couldn't walk very well and her stomach was swollen. Just like the Andean Bear cub Tarkus that arrived around the same time Mijungla did, this Jaguar cub spent very little time with her mother, which affects them greatly both psychologically and physiologically. Senda Verde monitors very closely both cub's digestion since they could get sick because of the fact that they did not get enough milk from their mothers.",
-      "When arrived, Mijungla was three months old and weighted 3.2 kilograms.",
-    |]
+  // | Mijungla => [|
+  //     "Mijungla arrived December 13th to La Senda Verde to be the second jaguar to live in the animal refuge. She was picked up from a family in the town of Palos Blancos, located in a low tropical rainforest area where the Amazon meets the Andes.",
+  //     "The family has a cattle ranch, and one of the cowboys in the ranch had found her in a very bad state of health laying in the forest, with a wound in her head, full of skin parasites and parts of her body without skin. They picked her up and started rehabilitating her. First they fed her the wrong food, then they realised they needed to feed her meat. It was until she arrived with us that she was able to drink cat milk, for she was so small she really needed it.",
+  //     "The cub was partially rehabilitated by the family but still had some difficulties when she arrived at Senda Verde. She couldn't walk very well and her stomach was swollen. Just like the Andean Bear cub Tarkus that arrived around the same time Mijungla did, this Jaguar cub spent very little time with her mother, which affects them greatly both psychologically and physiologically. Senda Verde monitors very closely both cub's digestion since they could get sick because of the fact that they did not get enough milk from their mothers.",
+  //     "When arrived, Mijungla was three months old and weighted 3.2 kilograms.",
+  //   |]
   | Llajuita => [|
       "Llajuita arrived at La Senda Verde with 8-10 months of age along with Apthapi the Tapir, which has the same age. They come from a confiscation performed by the Forestry and Environment Police (POFOMA) in Palos Blancos, North of La Paz. Both mammals are large and require a lot of space. They are also both foragers and get along well.",
       "They lived in a small enclosure until Senda Verde was able to build a larger one for them. The new enclosure has a pool since Tapirs need to swim. For both foraging mammals Senda Verde has alfalfa growing in the enclosure. Sadly in the dry season this alfalfa dries out and runs scarce and Senda Verde has trouble staying to date with these forager's diets.",
@@ -345,10 +345,10 @@ let getStoryParagraphs = animal =>
   | Apthapi => [|
       "Apthapi arrived at La Senda Verde with 8-10 months of age along with a female deer of the same age. They came from a confiscation performed by the Forestry and Environment Police (POFOMA) in Palos Blancos, North of La Paz. The tapir is the largest mammal in South America. They are known to be the \'gardeners of the forest\' because they are nutrient recyclers. They are also excellent swimmers.",
     |]
-  | Ajayu => [|
-      "Ajayu was saved by the police in Cochabamba from being brutally beaten to death by a local nearby community in 2016. He arrived in La Paz and La Senda Verde took care of his treatments. He received several surgeries, one to save his left eye and one to save his jaw from a severe infection. He stopped eating for days and had to be force fed. It was a struggle to save him, but with time he got better and is now weighing 100 kilograms.",
-      "As a result from this brutal story was that la Senda Verde has become more involved in trying to change legislation in Bolivia to protect this species and avoid stories like this one from happening again. They are now working alongside biologist Ximena Velez-Liendo to present a law project that will be called the Ajayu law, named after this bear. Ajayu means spirit in Aymara language.",
-    |]
+  // | Ajayu => [|
+  //     "Ajayu was saved by the police in Cochabamba from being brutally beaten to death by a local nearby community in 2016. He arrived in La Paz and La Senda Verde took care of his treatments. He received several surgeries, one to save his left eye and one to save his jaw from a severe infection. He stopped eating for days and had to be force fed. It was a struggle to save him, but with time he got better and is now weighing 100 kilograms.",
+  //     "As a result from this brutal story was that la Senda Verde has become more involved in trying to change legislation in Bolivia to protect this species and avoid stories like this one from happening again. They are now working alongside biologist Ximena Velez-Liendo to present a law project that will be called the Ajayu law, named after this bear. Ajayu means spirit in Aymara language.",
+  //   |]
   | Nonhlanhla => [|
       "Nonhlanhla is an 11 year old female spotted hyena who lives in the forests and grasslands of central Zululand, South Africa. Though spotted hyenas can be difficult to see in this area, Nonhlanhla is a particularly great breeder in her clan having cubs regularly, meaning she is seen often at the den site nursing her young. In an area where spotted hyenas are persecuted and there is evidence for their decline, her name in Zulu, appropriately means \"luck\".",
     |]
