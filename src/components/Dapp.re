@@ -3,6 +3,10 @@ open Providers.DrizzleProvider;
 open Belt.Option;
 open Components;
 
+// Load styles for the carousel and react-tabs
+[%bs.raw {|require('@brainhubeu/react-carousel/lib/style.css')|}];
+[%bs.raw {|require('react-tabs/style/react-tabs.css')|}];
+
 let flameImg = [%bs.raw {|require('../img/streak-flame.png')|}];
 
 // TODO: there must be a better way of importing images in reason react...
@@ -10,9 +14,15 @@ module ShareSocial = {
   [@bs.module "./components/shareSocialMedia"] [@react.component]
   external make: unit => React.element = "default";
 };
-module CountDownForeclosure = {
+module CountDown = {
   [@bs.module "./components/CountDown"] [@react.component]
-  external make: (~endDateMoment: MomentRe.Moment.t) => React.element =
+  external make:
+    (
+      ~endDateMoment: MomentRe.Moment.t,
+      ~includeWords: bool=? /*default true*/,
+      ~leadingZeros: bool=?
+    ) /*default false*/ =>
+    React.element =
     "default";
 };
 
@@ -22,7 +32,9 @@ module EditButton = {
     <Rimble.Button
       onClick={event => {
         ReactEvent.Form.preventDefault(event);
-        ReasonReactRouter.push("#details/" ++ Animal.getName(animal));
+        ReasonReactRouter.push(
+          "#details/" ++ animal->Animal.getName->Js.Global.encodeURI,
+        );
       }}>
       {React.string("Edit")}
     </Rimble.Button>;
@@ -36,9 +48,10 @@ module Streak = {
 
     let daysHeld =
       PureHooks.useTimeAcquiredAnimal(animal)
-      ->Belt.Option.map(dateAquired =>
-          MomentRe.diff(MomentRe.momentNow(), dateAquired, `days)
-        );
+      ->Belt.Option.map(dateAquired => {
+          let days = MomentRe.diff(MomentRe.momentNow(), dateAquired, `days);
+          days > 18000. ? 0. : days;
+        });
 
     switch (daysHeld) {
     | Some(daysHeldFloat) =>
@@ -59,89 +72,286 @@ module Streak = {
   };
 };
 
-//  <Rimble.Flex className=Styles.animalBox>
-//            <Rimble.Box>
-//              <div className=Styles.animalBack>
-//                <img className=Styles.headerImg src=animal2 />
-//                <div className=Styles.animalText>
-//                  <h2> {React.string("Simon")} </h2>
-//                  <h3 className=Styles.colorGreen>
-//                    {React.string("COMING IN")}
-//                  </h3>
-//                  <Countdown />
-//                </div>
-//              </div>
-//            </Rimble.Box>
-//            //  <Offline requireSmartContractsLoaded=true>
-//            //   //  <PriceDisplay tokenId={Some("0")} />
-//            //   //  <BuyModal tokenId={Some("0")} />
-//            //  </Offline>
-//            <Rimble.Box>
-//              <img className=Styles.headerImg src=animal1 />
-//              <div>
-//                <div className=Styles.animalText>
-//                  <h2> {React.string("Vitalik")} </h2>
-//                  <Offline requireSmartContractsLoaded=true>
-//                    <PriceDisplay tokenId=None />
-//                    <BuyModal tokenId=None />
-//                  </Offline>
-//                </div>
-//              </div>
-//            </Rimble.Box>
-//            <Rimble.Box>
-//              <div className=Styles.animalBack>
-//                <img className=Styles.headerImg src=animal3 />
-//                <div className=Styles.animalText>
-//                  <h2> {React.string("Andy")} </h2>
-//                  <h3 className=Styles.colorGreen>
-//                    {React.string("COMING IN")}
-//                  </h3>
-//                  <Countdown />
-//                </div>
-//              </div>
-//            </Rimble.Box>
-//          </Rimble.Flex>
+module DisplayAfterDate = {
+  [@react.component]
+  let make = (~endDateMoment, ~beforeComponent, ~afterComponent) => {
+    let isBeforeDate = () =>
+      MomentRe.diff(endDateMoment, MomentRe.momentNow(), `seconds) > 0.;
+
+    let (beforeDate, setIsBeforeDate) = React.useState(() => isBeforeDate());
+    React.useEffect0(() => {
+      let _timout =
+        Js.Global.setTimeout(
+          () => setIsBeforeDate(_ => isBeforeDate()),
+          1500,
+        );
+      None;
+    });
+
+    beforeDate
+      ? {
+        beforeComponent;
+      }
+      : {
+        afterComponent;
+      };
+  };
+};
+
+module BasicAnimalDisplay = {
+  [@react.component]
+  let make = (~animal: Animal.t) => {
+    let owned = animal->Animal.useIsAnimalOwened;
+    let currentPatron =
+      GeneralHooks.useCurrentPatronAnimal(animal)
+      ->mapWithDefault("Loading", a => a);
+    let userId = UserProvider.useUserNameOrTwitterHandle(currentPatron);
+
+    let userIdComponent = UserProvider.useUserComponent(userId);
+
+    <React.Fragment>
+      <PriceDisplay animal />
+      userIdComponent
+      {owned ? <EditButton animal /> : <BuyModal animal />}
+    </React.Fragment>;
+  };
+};
 
 module AnimalOnLandingPage = {
   [@react.component]
-  let make = (~animal: Animal.t, ~owned: bool) => {
+  let make =
+      (
+        ~animal,
+        ~scalar: float=1.,
+        ~optionEndDateMoment: option(MomentRe.Moment.t),
+      ) => {
     let name = Animal.getName(animal);
+
+    let optAlternateImage = Animal.getAlternateImage(animal);
+    let optOrgBadge = Animal.getOrgBadgeImage(animal);
+
+    let normalImage = () =>
+      <img
+        className={Styles.headerImg(1.5, scalar)}
+        src={Animal.getImage(animal)}
+      />;
+
+    let componentWithoutImg = (img, ~hideBadges: bool) => {
+      <React.Fragment>
+        {img()}
+        {if (hideBadges) {
+           React.null;
+         } else {
+           <React.Fragment>
+             {switch (optionEndDateMoment) {
+              | Some(_endDateMoment) => React.null
+              | None =>
+                <div className=Styles.overlayFlameImg>
+                  <Offline requireSmartContractsLoaded=true>
+                    <Streak animal />
+                  </Offline>
+                </div>
+              }}
+             {switch (optOrgBadge) {
+              | None => React.null
+              | Some(orgBadge) =>
+                <div className=Styles.overlayBadgeImg>
+                  <img className=Styles.flameImg src=orgBadge />
+                </div>
+              }}
+           </React.Fragment>;
+         }}
+        <div> <h2> {React.string(name)} </h2> </div>
+      </React.Fragment>;
+    };
 
     <Rimble.Box>
       <a
         className=Styles.clickableLink
         onClick={event => {
           ReactEvent.Mouse.preventDefault(event);
-          ReasonReactRouter.push("#details/" ++ name);
+          ReasonReactRouter.push("#details/" ++ name->Js.Global.encodeURI);
         }}>
         <div className=Styles.positionRelative>
-          <img
-            className={Styles.headerImg(150.)}
-            src={Animal.getImage(animal)}
-          />
-          <div className=Styles.overlayFlameImg>
-            <Offline requireSmartContractsLoaded=true>
-              <Streak animal />
-            </Offline>
-          </div>
-        </div>
-        <div className=Styles.animalText>
-          <h2> {React.string(name)} </h2>
+          {switch (optAlternateImage) {
+           | None => componentWithoutImg(normalImage, ~hideBadges=false)
+           | Some(alternateImage) =>
+             <Components.HoverToggle
+               _ComponentNoHover={componentWithoutImg(
+                 normalImage,
+                 ~hideBadges=false,
+               )}
+               _ComponentHover={componentWithoutImg(
+                 () =>
+                   <img
+                     className={Styles.headerImg(1.5, scalar)}
+                     src=alternateImage
+                   />,
+                 ~hideBadges=true,
+               )}
+             />
+           }}
         </div>
       </a>
-      <div className=Styles.animalText>
-        <Offline requireSmartContractsLoaded=true>
-          <PriceDisplay animal />
-          {owned ? <EditButton animal /> : <BuyModal animal />}
-        </Offline>
-      </div>
+      {switch (optionEndDateMoment) {
+       | Some(endDateMoment) =>
+         <div>
+           <h3 className=Styles.colorGreen> {React.string("COMING IN")} </h3>
+           <CountDown endDateMoment leadingZeros=true includeWords=false />
+         </div>
+       | None =>
+         <div>
+           <Offline requireSmartContractsLoaded=true>
+             <BasicAnimalDisplay animal />
+           </Offline>
+         </div>
+       }}
     </Rimble.Box>;
+  };
+};
+
+module CarouselAnimal = {
+  [@react.component]
+  let make = (~animal, ~scalar) => {
+    let isLaunched = animal->Animal.isLaunched;
+    switch (isLaunched) {
+    | Animal.Launched =>
+      <AnimalOnLandingPage animal scalar optionEndDateMoment=None />
+    | Animal.LaunchDate(endDateMoment) =>
+      <DisplayAfterDate
+        endDateMoment
+        afterComponent={
+          <AnimalOnLandingPage animal scalar optionEndDateMoment=None />
+        }
+        beforeComponent={
+          <AnimalOnLandingPage
+            animal
+            scalar
+            optionEndDateMoment={Some(endDateMoment)}
+          />
+        }
+      />
+    };
+  };
+};
+
+let animalCarouselArray = [|
+  Animal.Apthapi,
+  Animal.Ajayu,
+  Animal.Andy,
+  Animal.Vitalik,
+  Animal.Simon,
+  Animal.Verano,
+  Animal.Tarkus,
+  Animal.Pancho,
+  Animal.Mijungla,
+  Animal.Llajuita,
+  Animal.Espumita,
+  Animal.Cubai,
+  Animal.CatStevens,
+  Animal.Aruma,
+  Animal.Nonhlanhla,
+  Animal.Isisa,
+  Animal.Dlala,
+|];
+
+module AnimalCarousel = {
+  // let make = (~ownedAnimal: array(Animal)) => {
+  [@react.component]
+  let make = () => {
+    let (carouselIndex, setCarouselIndex) = React.useState(() => 17);
+    let numItems = animalCarouselArray->Array.length;
+    <Rimble.Box className=Styles.positionRelative>
+      <Carousel
+        className=Styles.carousel
+        slidesPerPage=5
+        centered=true
+        value=carouselIndex
+        animationSpeed=1000
+        infinite=true
+        autoPlay=5000
+        onChange={test => setCarouselIndex(_ => test)}>
+        {ReasonReact.array(
+           Array.mapi(
+             (index, animal) => {
+               let (opacity, scalar) =
+                 switch (index) {
+                 | x when x == carouselIndex mod numItems => (1., 1.0)
+                 | x
+                     when
+                       x == (carouselIndex - 1)
+                       mod numItems
+                       || x == (carouselIndex + 1)
+                       mod numItems => (
+                     0.8,
+                     0.8,
+                   )
+                 | x
+                     when
+                       x == (carouselIndex - 2)
+                       mod numItems
+                       || x == (carouselIndex + 2)
+                       mod numItems => (
+                     0.1,
+                     0.7,
+                   )
+                 | _ => (0., 0.6)
+                 };
+               <div className={Styles.fadeOut(opacity)}>
+                 <CarouselAnimal animal scalar />
+               </div>;
+             },
+             animalCarouselArray,
+           ),
+         )}
+      </Carousel>
+    </Rimble.Box>;
+  };
+};
+
+module AnimalActionsOnDetailsPage = {
+  [@react.component]
+  let make = (~animal) => {
+    let owned = animal->Animal.useIsAnimalOwened;
+    let currentAccount = useCurrentUser()->mapWithDefault("loading", a => a);
+
+    let price = () =>
+      <React.Fragment>
+        <PriceDisplay animal />
+        <BuyModal animal />
+      </React.Fragment>;
+
+    if (owned) {
+      <React.Fragment>
+        <UpdatePriceModal animal />
+        <br />
+        <UpdateDeposit animal />
+        <br />
+        {UserProvider.useIsUserValidated(currentAccount)
+           ? <ShareSocial /> : <ValidateModal />}
+      </React.Fragment>;
+    } else {
+      <React.Fragment>
+        {switch (animal->Animal.isLaunched) {
+         | Launched => price()
+
+         | LaunchDate(endDateMoment) =>
+           <DisplayAfterDate
+             endDateMoment
+             afterComponent={price()}
+             beforeComponent={
+               <React.Fragment> <CountDown endDateMoment /> </React.Fragment>
+             }
+           />
+         }}
+      </React.Fragment>;
+    };
   };
 };
 
 module DefaultLook = {
   [@react.component]
-  let make = (~areRequirementsLoaded: bool=false) => {
+  let make = () => {
     open Components;
     let setProvider = useSetProvider();
     React.useEffect0(() => {
@@ -151,27 +361,6 @@ module DefaultLook = {
       None;
     });
 
-    let (ownVitalik, ownSimon, ownAndy, currentAccount) =
-      if (areRequirementsLoaded) {
-        // NOTE/TODO: this doesn't take into account token ownership
-        let currentPatronVitalik =
-          useCurrentPatron()->mapWithDefault("no-patron-defined", a => a);
-        let currentPatronSimon =
-          useCurrentPatronNew(0)->mapWithDefault("no-patron-defined", a => a);
-        let currentPatronAndy =
-          useCurrentPatronNew(1)->mapWithDefault("no-patron-defined", a => a);
-        let currentAccount =
-          useCurrentUser()->mapWithDefault("loading", a => a);
-
-        (
-          currentAccount == currentPatronVitalik,
-          currentAccount == currentPatronSimon,
-          currentAccount == currentPatronAndy,
-          currentAccount,
-        );
-      } else {
-        (false, false, false, "loading");
-      };
     let url = ReasonReactRouter.useUrl();
 
     <div className=Styles.rightTopHeader>
@@ -184,56 +373,76 @@ module DefaultLook = {
            <div>
              <h1>
                {React.string(
-                  "We are unable to find a animal by the name of "
-                  ++ animalStr
-                  ++ " in our system.",
+                  "We are unable to find a animal by the name of \""
+                  ++ {animalStr->Js.Global.decodeURI}
+                  ++ "\" in our system.",
                 )}
              </h1>
              <p> <S> "Please check the spelling and try again." </S> </p>
            </div>
          | Some(animal) =>
-           <React.Fragment>
+           let normalImage = animal =>
              <img
                className=Styles.ownedAnimalImg
                src={Animal.getImage(animal)}
-             />
+             />;
+           let optAlternateImage = Animal.getAlternateImage(animal);
+           let optOrgBadge = Animal.getOrgBadgeImage(animal);
+
+           let isLaunched = animal->Animal.isLaunched;
+
+           let displayAnimal = animalImage =>
+             <div className=Styles.positionRelative>
+               {animalImage()}
+               {switch (isLaunched) {
+                | Animal.Launched =>
+                  <div className=Styles.overlayFlameImg>
+                    <Offline requireSmartContractsLoaded=true>
+                      <Streak animal />
+                    </Offline>
+                  </div>
+                | Animal.LaunchDate(endDateMoment) =>
+                  <DisplayAfterDate
+                    endDateMoment
+                    afterComponent={
+                      <div className=Styles.overlayFlameImg>
+                        <Offline requireSmartContractsLoaded=true>
+                          <Streak animal />
+                        </Offline>
+                      </div>
+                    }
+                    beforeComponent=React.null
+                  />
+                }}
+               {switch (optOrgBadge) {
+                | None => React.null
+                | Some(orgBadge) =>
+                  <div className=Styles.overlayBadgeImg>
+                    <img className=Styles.flameImg src=orgBadge />
+                  </div>
+                }}
+             </div>;
+
+           <React.Fragment>
+             {switch (optAlternateImage) {
+              | None => displayAnimal(() => normalImage(animal))
+              | Some(alternateImage) =>
+                <Components.HoverToggle
+                  _ComponentHover={
+                    <img className=Styles.ownedAnimalImg src=alternateImage />
+                  }
+                  _ComponentNoHover={displayAnimal(() => normalImage(animal))}
+                />
+              }}
              <h2> <S> {Animal.getName(animal)} </S> </h2>
              <Offline requireSmartContractsLoaded=true>
-               {
-                 let isYours =
-                   switch (animal) {
-                   | Vitalik => ownVitalik
-                   | Simon => ownSimon
-                   | Andy => ownAndy
-                   | _ => false
-                   };
-
-                 if (isYours) {
-                   <React.Fragment>
-                     <UpdatePriceModal animal />
-                     <br />
-                     <UpdateDeposit animal />
-                     <br />
-                     {UserProvider.useIsUserValidated(currentAccount)
-                        ? <ShareSocial /> : <ValidateModal />}
-                   </React.Fragment>;
-                 } else {
-                   <React.Fragment>
-                     <PriceDisplay animal />
-                     <BuyModal animal />
-                   </React.Fragment>;
-                 };
-               }
+               <AnimalActionsOnDetailsPage animal />
              </Offline>
-           </React.Fragment>
+           </React.Fragment>;
          };
        | _ =>
          <React.Fragment>
-           <Rimble.Flex className=Styles.animalBox>
-             <AnimalOnLandingPage animal=Simon owned=ownSimon />
-             <AnimalOnLandingPage animal=Vitalik owned=ownVitalik />
-             <AnimalOnLandingPage animal=Andy owned=ownAndy />
-           </Rimble.Flex>
+           <AnimalCarousel />
            <Rimble.Box className=Styles.dappImagesCounteractOffset>
              <Offline requireSmartContractsLoaded=true>
                <TotalRaised />
@@ -284,7 +493,7 @@ type maybeDate =
   | Loading
   | Date(MomentRe.Moment.t);
 
-module AnimalInfo = {
+module AnimalInfoStats = {
   [@react.component]
   let make = (~animal: Animal.t) => {
     let animalName = Animal.getName(animal);
@@ -336,10 +545,7 @@ module AnimalInfo = {
       );
     let monthlyRate = Js.Float.toString(ratio *. 100.);
 
-    // TODO: the ethereum address is really terribly displayed. But the default in Rimble UI includes a QR code scanner (which is really ugly).
-    // https://rimble.consensys.design/components/rimble-ui/EthAddress#props
-    // https://github.com/ConsenSys/rimble-ui/blob/dd470f00374a05c860b558a2cb9317861e4a0d89/src/EthAddress/index.js (maybe make a PR here with some changes)
-    <Rimble.Box m=5>
+    <React.Fragment>
       <div>
         <small>
           <strong>
@@ -432,7 +638,7 @@ module AnimalInfo = {
            <br />
            <small>
              <S> "( " </S>
-             <CountDownForeclosure endDateMoment=date />
+             <CountDown endDateMoment=date />
              <S> ")" </S>
            </small>
          </p>
@@ -458,6 +664,48 @@ module AnimalInfo = {
          </p>;
        | None => React.null
        }}
+    </React.Fragment>;
+  };
+};
+
+module AnimalInfo = {
+  [@react.component]
+  let make = (~animal: Animal.t) => {
+    // TODO: the ethereum address is really terribly displayed. But the default in Rimble UI includes a QR code scanner (which is really ugly).
+    // https://rimble.consensys.design/components/rimble-ui/EthAddress#props
+    // https://github.com/ConsenSys/rimble-ui/blob/dd470f00374a05c860b558a2cb9317861e4a0d89/src/EthAddress/index.js (maybe make a PR here with some changes)
+    <Rimble.Box m=5>
+      <ReactTabs>
+        <ReactTabs.TabList>
+          <ReactTabs.Tab> "Story"->React.string </ReactTabs.Tab>
+          <ReactTabs.Tab> "Details"->React.string </ReactTabs.Tab>
+        </ReactTabs.TabList>
+        <ReactTabs.TabPanel>
+          <h2> "Story"->React.string </h2>
+          {ReasonReact.array(
+             Array.map(
+               paragraphText => <p> paragraphText->React.string </p>,
+               Animal.getStoryParagraphs(animal),
+             ),
+           )}
+        </ReactTabs.TabPanel>
+        <ReactTabs.TabPanel>
+          {switch (animal->Animal.isLaunched) {
+           | Launched => <AnimalInfoStats animal />
+           | LaunchDate(endDateMoment) =>
+             <DisplayAfterDate
+               endDateMoment
+               afterComponent={<AnimalInfoStats animal />}
+               beforeComponent={
+                 <React.Fragment>
+                   <h2> "This animal will launch in:"->React.string </h2>
+                   <CountDown endDateMoment />
+                 </React.Fragment>
+               }
+             />
+           }}
+        </ReactTabs.TabPanel>
+      </ReactTabs>
     </Rimble.Box>;
   };
 };
@@ -474,7 +722,7 @@ let make = () => {
   };
 
   <Rimble.Flex
-    flexWrap={isDetailView ? "wrap-reverse" : "wrap"} alignItems="center">
+    flexWrap={isDetailView ? "wrap-reverse" : "wrap"} alignItems="start">
     <Rimble.Box p=1 width=[|1., 1., 0.5|]>
       <React.Fragment>
         {isDetailView
@@ -495,13 +743,8 @@ let make = () => {
     </Rimble.Box>
     <Rimble.Box p=1 width=[|1., 1., 0.5|]>
       <Providers.UsdPriceProvider>
-        <Offline
-          requireSmartContractsLoaded=true
-          alturnateLoaderWeb3={<DefaultLook key="a" />}
-          alturnateLoaderSmartContracts={<DefaultLook key="b" />}>
-          <DefaultLook areRequirementsLoaded=true key="c" />
-        </Offline>
+        <DefaultLook />
       </Providers.UsdPriceProvider>
     </Rimble.Box>
-  </Rimble.Flex>; //alturnativeNoWeb3=DefaultLook
+  </Rimble.Flex>;
 };

@@ -10,7 +10,7 @@ const nullTime = {
   // millisec: 0,
 }
 
-export const getCountDisplay = (countDown, leadingZeros = false) => {
+export const getCountDisplay = (countDown, includeWords = true, leadingZeros = false) => {
   const addLeadingZeros = (value) => {
     let valueS = String(value);
     while (valueS.length < 2) {
@@ -18,9 +18,9 @@ export const getCountDisplay = (countDown, leadingZeros = false) => {
     }
     return valueS;
   }
-  const displayTime = (unit) => countDown[unit] > 0 ? leadingZeros ? `${addLeadingZeros(countDown[unit])} ${unit} ` : `${countDown[unit]} ${unit} ` : ""
+  const displayTime = (unit, appendage = true) => countDown[unit] > 0 ? leadingZeros ? `${addLeadingZeros(countDown[unit])} ${includeWords ? unit : appendage ? ":" : ""} ` : `${countDown[unit]} ${includeWords ? unit : appendage ? ":" : ""} ` : ""
 
-  return `${displayTime("years")}${displayTime("months")}${displayTime("days")}${displayTime("hours")}${displayTime("minutes")}${displayTime("seconds")}`;
+  return `${displayTime("years")}${displayTime("months")}${displayTime("days")}${displayTime("hours")}${displayTime("minutes")}${displayTime("seconds", false)}`;
 }
 
 export const calculateTimeRemainingFromSeconds = (numSeconds) => {
@@ -63,7 +63,7 @@ const calculateCountdown = (endDateMoment) => {
   return calculateTimeRemainingFromSeconds(numSeconds)
 }
 
-export default ({ endDateMoment }) => {
+export default ({ endDateMoment, includeWords, leadingZeros }) => {
 
   const [countDown, setCountdown] = useState(nullTime);
 
@@ -79,5 +79,5 @@ export default ({ endDateMoment }) => {
     return () => clearTimeout(interval);
   }, [endDateMoment]);
 
-  return <React.Fragment >{getCountDisplay(countDown)}</React.Fragment>
+  return <React.Fragment >{getCountDisplay(countDown, includeWords, leadingZeros)}</React.Fragment>
 }

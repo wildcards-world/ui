@@ -69,7 +69,10 @@ let useForeclosureTime = () =>
   useCacheCall((), "VitalikSteward", "foreclosureTime")
   ->Js.Nullable.toOption
   ->Belt.Option.map(stringTimeStamp =>
-      MomentRe.momentWithUnix(int_of_string(stringTimeStamp))
+      MomentRe.momentWithUnix(
+        Belt.Int.fromString(stringTimeStamp)
+        ->Belt.Option.mapWithDefault(0, a => a),
+      )
     );
 
 let useCurrentPriceWei = () =>

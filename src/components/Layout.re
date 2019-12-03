@@ -97,7 +97,8 @@ let make = () => {
              className=Styles.forwardBackButton
              onClick={InputHelp.handleEvent(() =>
                ReasonReactRouter.push(
-                 "#details/" ++ Animal.getName(previousAnimal),
+                 "#details/"
+                 ++ previousAnimal->Animal.getName->Js.Global.encodeURI,
                )
              )}>
              <S> {js|◄|js} </S>
@@ -118,7 +119,7 @@ let make = () => {
              className=Styles.forwardBackButton
              onClick={InputHelp.handleEvent(() =>
                ReasonReactRouter.push(
-                 "#details/" ++ Animal.getName(nextAnimal),
+                 "#details/" ++ nextAnimal->Animal.getName->Js.Global.encodeURI,
                )
              )}>
              <S> {js|►|js} </S>

@@ -68,7 +68,6 @@ module Input = {
         </Rimble.Button>
       </Rimble.Box>
     | InputTweetLink(twitterHandle, signature, tweetLink) =>
-      Js.log(signature);
       let tweetMessage = {j|I am validating my identity on https://wildcard.world and contributing to wildlife conservation. @wildcards_world $signature|j};
       <Rimble.Box p=4 mb=3>
         <Rimble.HeadingS> "Finalize verification" </Rimble.HeadingS>

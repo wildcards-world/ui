@@ -34,3 +34,6 @@ lib
 
 # build
 dist
+
+# used for testing the library "@brainhubeu/react-carousel"
+react-carousel

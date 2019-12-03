@@ -1,5 +1,7 @@
 open Providers;
 
+[%bs.raw {|require("./custom.css")|}];
+
 module Router = {
   [@react.component]
   let make = () => {
