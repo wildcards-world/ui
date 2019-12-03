@@ -461,11 +461,13 @@ let isLaunched: t => launchStatus =
     | Simon => Launched
     | Andy => Launched
     | Vitalik => Launched
-    | Cubai
-    | Dlala
+    | Cubai =>
+      LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-03T11:00:00"))
+    | Dlala =>
+      LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-03T11:00:00"))
     | Verano =>
       LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-03T11:00:00"))
-    | Apthapi =>
+    | CatStevens =>
       LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-03T13:00:00"))
     | Pancho =>
       LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-03T15:00:00"))
@@ -473,13 +475,13 @@ let isLaunched: t => launchStatus =
       LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-03T17:00:00"))
     | Llajuita =>
       LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-04T17:00:00"))
-    | CatStevens =>
+    | Apthapi =>
       LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-05T17:00:00"))
     | Aruma =>
       LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-06T17:00:00"))
     | Nonhlanhla =>
       LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-07T21:00:00"))
-    | _ => LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-08T11:00:00"))
+    | _ => LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-10T11:00:00"))
     };
 
 let useIsAnimalOwened = animal => {
