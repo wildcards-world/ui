@@ -1,12 +1,12 @@
 {
   "files": {
     "main.css": "./static/css/main.d50ba177.chunk.css",
-    "main.js": "./static/js/main.92bd1ca9.chunk.js",
+    "main.js": "./static/js/main.d76e7d3d.chunk.js",
     "runtime-main.js": "./static/js/runtime-main.838e578a.js",
     "static/css/2.d2940985.chunk.css": "./static/css/2.d2940985.chunk.css",
-    "static/js/2.ccdd6d3c.chunk.js": "./static/js/2.ccdd6d3c.chunk.js",
+    "static/js/2.5f6fa147.chunk.js": "./static/js/2.5f6fa147.chunk.js",
     "index.html": "./index.html",
-    "precache-manifest.ef4ffebc74957677665ea8aeca11e115.js": "./precache-manifest.ef4ffebc74957677665ea8aeca11e115.js",
+    "precache-manifest.0e18ece28bd0913684d3091e6b456122.js": "./precache-manifest.0e18ece28bd0913684d3091e6b456122.js",
     "service-worker.js": "./service-worker.js",
     "static/media/Apthapi.jpg": "./static/media/Apthapi.8d8c017f.jpg",
     "static/media/ApthapiTheTapirCropped.png": "./static/media/ApthapiTheTapirCropped.67251bbf.png",
@@ -36,7 +36,6 @@
     "static/media/YourConservation.png": "./static/media/YourConservation.d3a6b5a2.png",
     "static/media/beta-banner.png": "./static/media/beta-banner.7297632c.png",
     "static/media/catstevenstheocelotCropped.png": "./static/media/catstevenstheocelotCropped.ed12747f.png",
-    "static/media/comingsoon.png": "./static/media/comingsoon.f400c45a.png",
     "static/media/cvlabszug.jpg": "./static/media/cvlabszug.a007f30c.jpg",
     "static/media/editedHyena3.png": "./static/media/editedHyena3.6809bf38.png",
     "static/media/gorilla-on-vine.png": "./static/media/gorilla-on-vine.c448e535.png",
@@ -53,8 +52,8 @@
   "entrypoints": [
     "static/js/runtime-main.838e578a.js",
     "static/css/2.d2940985.chunk.css",
-    "static/js/2.ccdd6d3c.chunk.js",
+    "static/js/2.5f6fa147.chunk.js",
     "static/css/main.d50ba177.chunk.css",
-    "static/js/main.92bd1ca9.chunk.js"
+    "static/js/main.d76e7d3d.chunk.js"
   ]
 }
