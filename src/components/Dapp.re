@@ -241,18 +241,18 @@ let animalCarouselArray = [|
   Animal.Andy,
   Animal.Vitalik,
   Animal.Simon,
+  Animal.Dlala,
+  Animal.Cubai,
   Animal.Verano,
   // Animal.Tarkus,
   Animal.Pancho,
   // Animal.Mijungla,
   Animal.Llajuita,
   // Animal.Espumita,
-  Animal.Cubai,
   Animal.CatStevens,
   Animal.Aruma,
   Animal.Nonhlanhla,
   Animal.Isisa,
-  Animal.Dlala,
 |];
 
 module AnimalCarousel = {
