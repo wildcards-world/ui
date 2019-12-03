@@ -161,38 +161,38 @@ module AnimalOnLandingPage = {
               }}
            </React.Fragment>;
          }}
-        <div> <h2> {React.string(name)} </h2> </div>
       </React.Fragment>;
     };
 
     <Rimble.Box>
-      <a
-        className=Styles.clickableLink
-        onClick={event => {
-          ReactEvent.Mouse.preventDefault(event);
-          ReasonReactRouter.push("#details/" ++ name->Js.Global.encodeURI);
-        }}>
-        <div className=Styles.positionRelative>
-          {switch (optAlternateImage) {
-           | None => componentWithoutImg(normalImage, ~hideBadges=false)
-           | Some(alternateImage) =>
-             <Components.HoverToggle
-               _ComponentNoHover={componentWithoutImg(
-                 normalImage,
-                 ~hideBadges=false,
-               )}
-               _ComponentHover={componentWithoutImg(
-                 () =>
-                   <img
-                     className={Styles.headerImg(1.5, scalar)}
-                     src=alternateImage
-                   />,
-                 ~hideBadges=true,
-               )}
-             />
-           }}
-        </div>
-      </a>
+      <div className=Styles.positionRelative>
+        {switch (optAlternateImage) {
+         | None => componentWithoutImg(normalImage, ~hideBadges=false)
+         | Some(alternateImage) =>
+           <Components.HoverToggle
+             _ComponentNoHover={componentWithoutImg(
+               normalImage,
+               ~hideBadges=false,
+             )}
+             _ComponentHover={componentWithoutImg(
+               () =>
+                 <img
+                   className={Styles.headerImg(1.5, scalar)}
+                   src=alternateImage
+                 />,
+               ~hideBadges=true,
+             )}
+           />
+         }}
+        <a
+          className=Styles.clickableLink
+          onClick={event => {
+            ReactEvent.Mouse.preventDefault(event);
+            ReasonReactRouter.push("#details/" ++ name->Js.Global.encodeURI);
+          }}>
+          <div> <h2> {React.string(name)} </h2> </div>
+        </a>
+      </div>
       {switch (optionEndDateMoment) {
        | Some(endDateMoment) =>
          <div>
