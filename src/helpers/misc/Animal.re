@@ -455,7 +455,7 @@ let isLaunched: t => launchStatus =
     | Simon => Launched
     | Andy => Launched
     | Vitalik => Launched
-    | _ => LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-02T19:00:00"))
+    | _ => LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-03T11:00:00"))
     };
 
 let useIsAnimalOwened = animal => {
