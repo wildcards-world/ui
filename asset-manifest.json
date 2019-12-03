@@ -1,12 +1,12 @@
 {
   "files": {
     "main.css": "./static/css/main.d50ba177.chunk.css",
-    "main.js": "./static/js/main.f914f393.chunk.js",
+    "main.js": "./static/js/main.92bd1ca9.chunk.js",
     "runtime-main.js": "./static/js/runtime-main.838e578a.js",
     "static/css/2.d2940985.chunk.css": "./static/css/2.d2940985.chunk.css",
-    "static/js/2.d42b8656.chunk.js": "./static/js/2.d42b8656.chunk.js",
+    "static/js/2.ccdd6d3c.chunk.js": "./static/js/2.ccdd6d3c.chunk.js",
     "index.html": "./index.html",
-    "precache-manifest.9d64fc3b5c0f9c7caa407b2e3b76c73d.js": "./precache-manifest.9d64fc3b5c0f9c7caa407b2e3b76c73d.js",
+    "precache-manifest.ef4ffebc74957677665ea8aeca11e115.js": "./precache-manifest.ef4ffebc74957677665ea8aeca11e115.js",
     "service-worker.js": "./service-worker.js",
     "static/media/Apthapi.jpg": "./static/media/Apthapi.8d8c017f.jpg",
     "static/media/ApthapiTheTapirCropped.png": "./static/media/ApthapiTheTapirCropped.67251bbf.png",
@@ -18,8 +18,6 @@
     "static/media/Dlala.jpg": "./static/media/Dlala.382cdaa1.jpg",
     "static/media/EditedHyena.png": "./static/media/EditedHyena.038c8081.png",
     "static/media/EditedHyena2.png": "./static/media/EditedHyena2.4fa60d58.png",
-    "static/media/Espumita.jpg": "./static/media/Espumita.525d0c23.jpg",
-    "static/media/EspumitaThePuma2Cropped.png": "./static/media/EspumitaThePuma2Cropped.d88ffab4.png",
     "static/media/EthCapeTown.png": "./static/media/EthCapeTown.009ca13c.png",
     "static/media/Isisa.jpg": "./static/media/Isisa.03da6020.jpg",
     "static/media/Llajuita.jpg": "./static/media/Llajuita.5a059aeb.jpg",
@@ -55,8 +53,8 @@
   "entrypoints": [
     "static/js/runtime-main.838e578a.js",
     "static/css/2.d2940985.chunk.css",
-    "static/js/2.d42b8656.chunk.js",
+    "static/js/2.ccdd6d3c.chunk.js",
     "static/css/main.d50ba177.chunk.css",
-    "static/js/main.f914f393.chunk.js"
+    "static/js/main.92bd1ca9.chunk.js"
   ]
 }
