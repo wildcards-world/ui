@@ -314,9 +314,15 @@ module AnimalActionsOnDetailsPage = {
   let make = (~animal) => {
     let owned = animal->Animal.useIsAnimalOwened;
     let currentAccount = useCurrentUser()->mapWithDefault("loading", a => a);
+    let currentPatron =
+      GeneralHooks.useCurrentPatronAnimal(animal)
+      ->mapWithDefault("Loading", a => a);
+    let userId = UserProvider.useUserNameOrTwitterHandle(currentPatron);
+    let userIdComponent = UserProvider.useUserComponent(userId);
 
     let price = () =>
       <React.Fragment>
+        userIdComponent
         <PriceDisplay animal />
         <BuyModal animal />
       </React.Fragment>;
