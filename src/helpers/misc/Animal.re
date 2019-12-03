@@ -458,22 +458,16 @@ type launchStatus =
 let isLaunched: t => launchStatus =
   anAnimal =>
     switch (anAnimal) {
-    | Simon => Launched
-    | Andy => Launched
-    | Vitalik => Launched
-    | Cubai =>
-      LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-03T11:00:00"))
-    | Dlala =>
-      LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-03T11:00:00"))
-    | Verano =>
-      LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-03T11:00:00"))
-    | CatStevens =>
-      LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-03T13:00:00"))
-    | Pancho =>
-      LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-03T15:00:00"))
+    | Simon
+    | Andy
+    | Vitalik
+    | Cubai
+    | Dlala
+    | CatStevens
+    | Verano
+    | Pancho
+    | Llajuita => Launched
     | Isisa =>
-      LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-03T17:00:00"))
-    | Llajuita =>
       LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-04T17:00:00"))
     | Apthapi =>
       LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-05T17:00:00"))
