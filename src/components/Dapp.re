@@ -428,10 +428,10 @@ module DefaultLook = {
               | None => displayAnimal(() => normalImage(animal))
               | Some(alternateImage) =>
                 <Components.HoverToggle
-                  _ComponentHover={normalImage(animal)}
-                  _ComponentNoHover={displayAnimal(() =>
+                  _ComponentHover={
                     <img className=Styles.ownedAnimalImg src=alternateImage />
-                  )}
+                  }
+                  _ComponentNoHover={displayAnimal(() => normalImage(animal))}
                 />
               }}
              <h2> <S> {Animal.getName(animal)} </S> </h2>

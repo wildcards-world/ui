@@ -237,25 +237,24 @@ let getAlternateImage: t => option(string) =
     | Dlala =>
       %bs.raw
       {|require('../../img/animals/Dlala.jpg')|}
-    | Ajayu =>
-      %bs.raw
-      {|require('../../img/animals/comingsoon.png')|}
-    | Mijungla =>
-      %bs.raw
-      {|require('../../img/animals/comingsoon.png')|}
-    | Tarkus =>
-      %bs.raw
-      {|require('../../img/animals/comingsoon.png')|}
-    | _ => Some([%bs.raw {|require('../../img/animals/gorilla2.png')|}])
+    // | Ajayu =>
+    //   %bs.raw
+    //   {|require('../../img/animals/comingsoon.png')|}
+    // | Mijungla =>
+    //   %bs.raw
+    //   {|require('../../img/animals/comingsoon.png')|}
+    // | Tarkus =>
+    //   %bs.raw
+    //   {|require('../../img/animals/comingsoon.png')|}
+    | _ => None
     };
+
 let getOrgBadgeImage: t => option(string) =
   animal =>
     switch (animal) {
     | Simon
     | Andy
-    | Vitalik =>
-      %bs.raw
-      {|require('../../img/badges/OGBadge.png')|}
+    | Vitalik => Some([%bs.raw {|require('../../img/badges/OGBadge.png')|}])
     | Pancho
     | Llajuita
     | Espumita
@@ -267,21 +266,27 @@ let getOrgBadgeImage: t => option(string) =
     | Ajayu
     | Mijungla
     | Tarkus =>
-      %bs.raw
-      {|require('../../img/badges/SendaVerdeBadge.png')|}
+      Some([%bs.raw {|require('../../img/badges/SendaVerdeBadge.png')|}])
     | Nonhlanhla
     | Isisa
     | Dlala =>
       %bs.raw
       {|require('../../img/badges/WildTomorrowBadge.png')|}
-    | _ => Some([%bs.raw {|require('../../img/streak-flame.png')|}])
+    // | _ => None
     };
 
 let getStoryParagraphs = animal =>
   switch (animal) {
-  | Vitalik => [|"Founder", "of", "Ethereum"|]
-  | Simon => [|"master", "of", "always ON sale"|]
-  | Andy => [|"Poet", "supreme"|]
+  | Vitalik => [|
+      "Original Gorilla",
+      "Vitalik is the first ever animal launched on wildcards and therefore often termed an OG (Original Gorilla). The wildcards project was born at the #ETHCapeTown hackathon in May 2019 where Vitalik Buterin was one of the judges. We named Vitalik the Gorilla after Vitalik as a testament to the impact and innovation Vitalik Buterin has had on the blockchain ecosystem. Vitalik, if you are reading this, start saving some animals and buy me!",
+      "Funds raised by Vitalik, the first wildcards, flow toward the Wild Tomorrow Fund, our first conservation partner.",
+    |]
+  | Simon => [|
+      "Original Gorilla",
+      "Simon originated from the deep dark github jungle, and his code inspired this project.",
+    |]
+  | Andy => [|"Original Gorilla"|]
   | Verano => [|
       "Verano is a victim of illegal wildlife trafficking. It was confiscated when it was being transported to the black market in the city of La Paz. Macaws and especially Blue-and-Yellow macaws have been an all time favourite for the pet trade market. They are very smart birds and in comparison to other wildlife, are easily domesticated. They are beloved because of their intelligence, their ability to imitate sounds, their beauty and their companionship.",
       "In countries like the United States, Blue-and-Yellow Macaws are raised as pets and a legal pet market exists for them. This is not the case in Bolivia however. There are absolutely no regulations on the matter and all pet parrots and macaws come from the illegal market. This means that they were stolen when chicks from their nests and went through a lot of suffering being transported illegally in hide-outs where they can barely breathe. Once with their final owners, their life is not always the best. Most parrot and macaw owners in Bolivia have no knowledge on the dietary and life requirements for these animals and they normally survive in very precarious conditions. Many of them are kept in La Paz, where low temperatures and high altitude are far from the suitable environment they need.",
