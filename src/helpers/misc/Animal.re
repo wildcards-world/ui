@@ -8,7 +8,7 @@ type t =
   | Pancho
   | Mijungla
   | Llajuita
-  | Espumita
+  // | Espumita
   | Cubai
   | CatStevens
   | Aruma
@@ -29,7 +29,7 @@ let getId: t => option(string) =
     | Cubai => Some("5")
     | Llajuita => Some("6")
     | Pancho => Some("7")
-    | Espumita => Some("8")
+    // | Espumita => Some("8")
     | Verano => Some("9")
     | Nonhlanhla => Some("10")
     | Dlala => Some("11")
@@ -52,7 +52,7 @@ let getTokenId: t => option(TokenId.t) =
     | Cubai => Some(TokenId.makeFromInt(5))
     | Llajuita => Some(TokenId.makeFromInt(6))
     | Pancho => Some(TokenId.makeFromInt(7))
-    | Espumita => Some(TokenId.makeFromInt(8))
+    // | Espumita => Some(TokenId.makeFromInt(8))
     | Verano => Some(TokenId.makeFromInt(9))
     | Nonhlanhla => Some(TokenId.makeFromInt(10))
     | Dlala => Some(TokenId.makeFromInt(11))
@@ -101,7 +101,7 @@ let getName: t => string =
     | Pancho => "Pancho"
     | Mijungla => "Mijungla"
     | Llajuita => "Llajuita"
-    | Espumita => "Espumita"
+    // | Espumita => "Espumita"
     | Cubai => "Cubai"
     | CatStevens => "CatStevens" // removing the space since no time to fix bug
     | Aruma => "Aruma"
@@ -124,7 +124,7 @@ let getAnimal: string => option(t) =
     | "pancho" => Some(Pancho)
     | "mijungla" => Some(Mijungla)
     | "llajuita" => Some(Llajuita)
-    | "espumita" => Some(Espumita)
+    // | "espumita" => Some(Espumita)
     | "cubai" => Some(Cubai)
     | "catstevens" => Some(CatStevens)
     | "aruma" => Some(Aruma)
@@ -146,9 +146,9 @@ let getNextPrev = animal =>
   | Tarkus => (Pancho, Verano)
   | Pancho => (Mijungla, Tarkus)
   | Mijungla => (Llajuita, Pancho)
-  | Llajuita => (Espumita, Mijungla)
-  | Espumita => (Cubai, Llajuita)
-  | Cubai => (CatStevens, Espumita)
+  | Llajuita => (Cubai, Mijungla)
+  // | Espumita => (Cubai, Llajuita)
+  | Cubai => (CatStevens, Llajuita)
   | CatStevens => (Aruma, Cubai)
   | Aruma => (Apthapi, CatStevens)
   | Apthapi => (Ajayu, Aruma)
@@ -176,9 +176,9 @@ let getImage = animal =>
   | Llajuita =>
     %bs.raw
     {|require('../../img/animals/LlajuitaTheDeerCropped.png')|}
-  | Espumita =>
-    %bs.raw
-    {|require('../../img/animals/EspumitaThePuma2Cropped.png')|}
+  // | Espumita =>
+  //   %bs.raw
+  //   {|require('../../img/animals/EspumitaThePuma2Cropped.png')|}
   | Cubai =>
     %bs.raw
     {|require('../../img/animals/CubaiTheJaguarCropped.png')|}
@@ -222,8 +222,8 @@ let getAlternateImage: t => option(string) =
     | Pancho => Some([%bs.raw {|require('../../img/animals/Pancho.jpg')|}])
     | Llajuita =>
       Some([%bs.raw {|require('../../img/animals/Llajuita.jpg')|}])
-    | Espumita =>
-      Some([%bs.raw {|require('../../img/animals/Espumita.jpg')|}])
+    // | Espumita =>
+    //   Some([%bs.raw {|require('../../img/animals/Espumita.jpg')|}])
     | Cubai =>
       %bs.raw
       {|require('../../img/animals/Cubai.jpg')|}
@@ -265,7 +265,7 @@ let getOrgBadgeImage: t => option(string) =
     | Vitalik => Some([%bs.raw {|require('../../img/badges/OGBadge.png')|}])
     | Pancho
     | Llajuita
-    | Espumita
+    // | Espumita
     | Cubai
     | CatStevens
     | Aruma
@@ -323,12 +323,12 @@ let getStoryParagraphs = animal =>
       "Llajuita arrived at La Senda Verde with 8-10 months of age along with Apthapi the Tapir, which has the same age. They come from a confiscation performed by the Forestry and Environment Police (POFOMA) in Palos Blancos, North of La Paz. Both mammals are large and require a lot of space. They are also both foragers and get along well.",
       "They lived in a small enclosure until Senda Verde was able to build a larger one for them. The new enclosure has a pool since Tapirs need to swim. For both foraging mammals Senda Verde has alfalfa growing in the enclosure. Sadly in the dry season this alfalfa dries out and runs scarce and Senda Verde has trouble staying to date with these forager's diets.",
     |]
-  | Espumita => [|
-      "Espumita has been with La Senda Verde for just over two years. She came as a small kitten from the authorities in La Paz who had confiscated her from a poacher. At the time La Senda Verde didn't have anywhere suitable to accommodate her and as a small kitten she spent her first few months in the clinic. La Senda Verde raised funds and built her a management cage whilst she was still growing. Then, at the beginning of 2017 they completed her full sized enclosure with high platforms, on a hill so she can get to higher ground and with a den at the top that she loves to sit in and watch out from.",
-      "Espumita has always been quite a shy and easily stressed cat but loves her new home. In December Espumita had unfortunately been under stress and was pacing a lot due to recent construction works going on close to her enclosure. Unfortunately, Espumita also wasn’t eating very well and had lost condition. Eight weeks ago, la Senda Verde sedated her and a visiting group of vets studying ultrasonography came and performed an ultrasound on her and we were able to give her a thorough check. It was found that she likely had some mild hepatic lipidosis (a form of liver disease) which was also contributing to her loss of appetite.",
-      "Along with one of the sanctuary staff members, Vicky from Senda Verde started to add in extra enrichment every day for Espumita and slightly change the time and way in which she was fed. Luckily, at this time the construction was also finished. Over the next eight weeks there was an amazing transformation! Espumita started to eat normally, gain weight and is noticeably more relaxed and confident. She comes down to greet the staff from la Senda Verde every time they go for enrichment or cleaning and feeding (which she never did before) and Senda Verde hasn't seen her do any pacing that she was doing before.",
-      "She absolutely loves cardboard boxes of any shape or size! La Senda Verde started off with relaxing smells such as chamomile flowers and lavender in cardboard boxes. They have also been using feathers which she loves. She is still a huge fan of lavender and will roll in it and will then often have a mad ten minutes running all over her enclosure with the box and up on her platforms having so much fun.",
-    |]
+  // | Espumita => [|
+  //     "Espumita has been with La Senda Verde for just over two years. She came as a small kitten from the authorities in La Paz who had confiscated her from a poacher. At the time La Senda Verde didn't have anywhere suitable to accommodate her and as a small kitten she spent her first few months in the clinic. La Senda Verde raised funds and built her a management cage whilst she was still growing. Then, at the beginning of 2017 they completed her full sized enclosure with high platforms, on a hill so she can get to higher ground and with a den at the top that she loves to sit in and watch out from.",
+  //     "Espumita has always been quite a shy and easily stressed cat but loves her new home. In December Espumita had unfortunately been under stress and was pacing a lot due to recent construction works going on close to her enclosure. Unfortunately, Espumita also wasn’t eating very well and had lost condition. Eight weeks ago, la Senda Verde sedated her and a visiting group of vets studying ultrasonography came and performed an ultrasound on her and we were able to give her a thorough check. It was found that she likely had some mild hepatic lipidosis (a form of liver disease) which was also contributing to her loss of appetite.",
+  //     "Along with one of the sanctuary staff members, Vicky from Senda Verde started to add in extra enrichment every day for Espumita and slightly change the time and way in which she was fed. Luckily, at this time the construction was also finished. Over the next eight weeks there was an amazing transformation! Espumita started to eat normally, gain weight and is noticeably more relaxed and confident. She comes down to greet the staff from la Senda Verde every time they go for enrichment or cleaning and feeding (which she never did before) and Senda Verde hasn't seen her do any pacing that she was doing before.",
+  //     "She absolutely loves cardboard boxes of any shape or size! La Senda Verde started off with relaxing smells such as chamomile flowers and lavender in cardboard boxes. They have also been using feathers which she loves. She is still a huge fan of lavender and will roll in it and will then often have a mad ten minutes running all over her enclosure with the box and up on her platforms having so much fun.",
+  //   |]
   | Cubai => [|
       "Cubai is a 15 year old Jaguar that in 2017 was relocated from a private property in the Yungas region to the La Paz Zoo. The animal was in good hands, but his advanced age mixed with the cold weather and the high altitude of La Paz, were beginning to affect his health, he needed a lower place to live in.",
       "It was then that the authorities asked Senda Verde if they could receive him. In face of the urgency they decided to do so and make him part of their family. Cubai arrived on the 20th of November and at the beginning was being kept in a small, temporary enclosure, while la senda verde gathered funds to build him a proper enclosure.",
