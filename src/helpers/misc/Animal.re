@@ -466,15 +466,12 @@ let isLaunched: t => launchStatus =
     | CatStevens
     | Verano
     | Pancho
+    | Isisa
+    | Apthapi
+    | Nonhlanhla
     | Llajuita => Launched
-    | Isisa =>
-      LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-04T17:00:00"))
-    | Apthapi =>
-      LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-05T17:00:00"))
     | Aruma =>
-      LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-06T17:00:00"))
-    | Nonhlanhla =>
-      LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-07T21:00:00"))
+      LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-04T17:00:00"))
     | _ => LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-10T11:00:00"))
     };
 
