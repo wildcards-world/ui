@@ -250,6 +250,9 @@ let animalCarouselArray = [|
   Animal.Cubai,
   Animal.CatStevens,
   Animal.Aruma,
+  Animal.Nonhlanhla,
+  Animal.Isisa,
+  Animal.Dlala,
 |];
 
 module AnimalCarousel = {
