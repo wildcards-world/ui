@@ -1,12 +1,12 @@
 {
   "files": {
     "main.css": "./static/css/main.d50ba177.chunk.css",
-    "main.js": "./static/js/main.100c17d1.chunk.js",
+    "main.js": "./static/js/main.d0b34256.chunk.js",
     "runtime-main.js": "./static/js/runtime-main.838e578a.js",
     "static/css/2.d2940985.chunk.css": "./static/css/2.d2940985.chunk.css",
-    "static/js/2.38852f86.chunk.js": "./static/js/2.38852f86.chunk.js",
+    "static/js/2.d42b8656.chunk.js": "./static/js/2.d42b8656.chunk.js",
     "index.html": "./index.html",
-    "precache-manifest.aaedf2145eff137f21f87361961223fe.js": "./precache-manifest.aaedf2145eff137f21f87361961223fe.js",
+    "precache-manifest.0c74de7a10e4c037ee8939e21f908321.js": "./precache-manifest.0c74de7a10e4c037ee8939e21f908321.js",
     "service-worker.js": "./service-worker.js",
     "static/media/Apthapi.jpg": "./static/media/Apthapi.8d8c017f.jpg",
     "static/media/ApthapiTheTapirCropped.png": "./static/media/ApthapiTheTapirCropped.67251bbf.png",
@@ -55,8 +55,8 @@
   "entrypoints": [
     "static/js/runtime-main.838e578a.js",
     "static/css/2.d2940985.chunk.css",
-    "static/js/2.38852f86.chunk.js",
+    "static/js/2.d42b8656.chunk.js",
     "static/css/main.d50ba177.chunk.css",
-    "static/js/main.100c17d1.chunk.js"
+    "static/js/main.d0b34256.chunk.js"
   ]
 }
