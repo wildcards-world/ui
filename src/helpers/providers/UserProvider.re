@@ -56,7 +56,7 @@ let useUserComponent = user =>
               }
             |}
           ];
-          React.string({j|@$ethAddress|j}->stringReplace);
+          React.string({j|$ethAddress|j}->stringReplace);
         }
       </a>
   | TwitterHandle(twitterHandle) =>

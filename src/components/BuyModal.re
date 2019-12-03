@@ -270,14 +270,18 @@ let make = (~animal: Animal.t) => {
     setModalOpen(_ => true);
   };
 
+  let currentPriceWei = Animal.useCurrentPrice(animal);
+
+  let buttonText = currentPriceWei == "0" ? "Claim" : "Buy";
+
   <React.Fragment>
     {if (isProviderSelected) {
        <Rimble.Button onClick=onOpenModal>
-         {React.string("Buy")}
+         {React.string(buttonText)}
        </Rimble.Button>;
      } else {
        <Web3connect.CustomButton afterConnect=onUnlockMetamaskAndOpenModal>
-         {React.string("Buy")}
+         {React.string(buttonText)}
        </Web3connect.CustomButton>;
      }}
     <Rimble.Modal isOpen=isModalOpen>

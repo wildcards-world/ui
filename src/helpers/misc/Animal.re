@@ -23,21 +23,21 @@ let getId: t => option(string) =
     switch (anAnimal) {
     | Simon => Some("0")
     | Andy => Some("1")
-    | Verano => Some("2")
-    | Tarkus => Some("3")
-    | Pancho => Some("4")
-    | Mijungla => Some("5")
+    | Apthapi => Some("2")
+    | Aruma => Some("3")
+    | CatStevens => Some("4")
+    | Cubai => Some("5")
     | Llajuita => Some("6")
-    | Espumita => Some("7")
-    | Cubai => Some("8")
-    | CatStevens => Some("9")
-    | Aruma => Some("10")
-    | Apthapi => Some("11")
-    | Ajayu => Some("12")
-    | Nonhlanhla => Some("13")
-    | Dlala => Some("14")
-    | Isisa => Some("15")
+    | Pancho => Some("7")
+    | Espumita => Some("8")
+    | Verano => Some("9")
+    | Nonhlanhla => Some("10")
+    | Dlala => Some("11")
+    | Isisa => Some("12")
     // | Vitalik => Some("42") // We don't show an ID for vitalik since using legacy contract still.
+    | Tarkus
+    | Mijungla
+    | Ajayu
     | Vitalik => None
     };
 
@@ -46,20 +46,23 @@ let getTokenId: t => option(TokenId.t) =
     switch (anAnimal) {
     | Simon => Some(TokenId.makeFromInt(0))
     | Andy => Some(TokenId.makeFromInt(1))
-    | Verano => Some(TokenId.makeFromInt(2))
-    | Tarkus => Some(TokenId.makeFromInt(3))
-    | Pancho => Some(TokenId.makeFromInt(4))
-    | Mijungla => Some(TokenId.makeFromInt(5))
+    | Apthapi => Some(TokenId.makeFromInt(2))
+    | Aruma => Some(TokenId.makeFromInt(3))
+    | CatStevens => Some(TokenId.makeFromInt(4))
+    | Cubai => Some(TokenId.makeFromInt(5))
     | Llajuita => Some(TokenId.makeFromInt(6))
-    | Espumita => Some(TokenId.makeFromInt(7))
-    | Cubai => Some(TokenId.makeFromInt(8))
-    | CatStevens => Some(TokenId.makeFromInt(9))
-    | Aruma => Some(TokenId.makeFromInt(10))
-    | Apthapi => Some(TokenId.makeFromInt(11))
-    | Ajayu => Some(TokenId.makeFromInt(12))
-    | Nonhlanhla => Some(TokenId.makeFromInt(13))
-    | Isisa => Some(TokenId.makeFromInt(14))
-    | Dlala => Some(TokenId.makeFromInt(15))
+    | Pancho => Some(TokenId.makeFromInt(7))
+    | Espumita => Some(TokenId.makeFromInt(8))
+    | Verano => Some(TokenId.makeFromInt(9))
+    | Nonhlanhla => Some(TokenId.makeFromInt(10))
+    | Dlala => Some(TokenId.makeFromInt(11))
+    | Isisa => Some(TokenId.makeFromInt(12))
+    // | Tarkus => Some(TokenId.makeFromInt(13))
+    // | Mijungla => Some(TokenId.makeFromInt(14))
+    // | Ajayu => Some(TokenId.makeFromInt(15))
+    | Tarkus
+    | Mijungla
+    | Ajayu
     // | Vitalik => "42",
     | Vitalik => None
     };
@@ -70,8 +73,19 @@ let getNameFromId: option(string) => string =
     | None => "Vitalik"
     | Some(tokenIdSet) =>
       switch (tokenIdSet) {
-      | "0" => "Simon"
-      | "1" => "Andy"
+      | "0" => "Nonhlanhla"
+      | "1" => "Dlala"
+      | "2" => "Isisa"
+      | "3" => "Verano"
+      | "4" => "Espumita"
+      | "5" => "Pancho"
+      | "6" => "Llajuita"
+      | "7" => "Cubai"
+      | "8" => "CatStevens"
+      | "9" => "Aruma"
+      | "10" => "Apthapi"
+      | "11" => "Andy"
+      | "12" => "Simon"
       | _ => "Unknown"
       }
     };
@@ -189,15 +203,9 @@ let getImage = animal =>
   | Dlala =>
     %bs.raw
     {|require('../../img/animals/EditedHyena2.png')|}
-  | Ajayu =>
-    %bs.raw
-    {|require('../../img/animals/comingsoon.png')|}
-  | Mijungla =>
-    %bs.raw
-    {|require('../../img/animals/comingsoon.png')|}
-  | Tarkus =>
-    %bs.raw
-    {|require('../../img/animals/comingsoon.png')|}
+  | Ajayu
+  | Mijungla
+  | Tarkus
   | _ =>
     %bs.raw
     {|require('../../img/animals/comingsoon.png')|}
@@ -270,8 +278,7 @@ let getOrgBadgeImage: t => option(string) =
     | Nonhlanhla
     | Isisa
     | Dlala =>
-      %bs.raw
-      {|require('../../img/badges/WildTomorrowBadge.png')|}
+      Some([%bs.raw {|require('../../img/badges/WildTomorrowBadge.png')|}])
     // | _ => None
     };
 
@@ -392,9 +399,26 @@ let useCurrentPrice = animal => {
 let pledgeRate = animal => {
   let animalId = getId(animal);
 
+  // TODO: get this from the blockchain / graph - bad hardcoding it here!
   switch (animalId) {
   | None => ("3", "10", 0.025, 40.)
-  | Some(_tokenIdSet) => ("24", "10", 0.2, 5.)
+  | Some(tokenIdSet) =>
+    switch (tokenIdSet) {
+    | "2"
+    | "7" => ("12", "10", 0.1, 10.)
+    | "0"
+    | "1"
+    | "3"
+    | "4"
+    | "6"
+    | "10"
+    | "11" => ("24", "10", 0.2, 5.)
+    | "5"
+    | "8"
+    | "12" => ("60", "10", 0.5, 2.)
+    | "9" => ("120", "10", 1., 1.)
+    | _ => ("24", "10", 0.2, 5.)
+    }
   };
 };
 
