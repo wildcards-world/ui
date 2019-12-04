@@ -329,6 +329,7 @@ module AnimalActionsOnDetailsPage = {
 
     if (owned) {
       <React.Fragment>
+        <PriceDisplay animal />
         <UpdatePriceModal animal />
         <br />
         <UpdateDeposit animal />
