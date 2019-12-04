@@ -1,12 +1,12 @@
 {
   "files": {
     "main.css": "./static/css/main.d50ba177.chunk.css",
-    "main.js": "./static/js/main.8e299b60.chunk.js",
+    "main.js": "./static/js/main.2a13111e.chunk.js",
     "runtime-main.js": "./static/js/runtime-main.838e578a.js",
     "static/css/2.d2940985.chunk.css": "./static/css/2.d2940985.chunk.css",
     "static/js/2.aa6d2a95.chunk.js": "./static/js/2.aa6d2a95.chunk.js",
     "index.html": "./index.html",
-    "precache-manifest.8fe6b4c44b8474b794333006b13fd169.js": "./precache-manifest.8fe6b4c44b8474b794333006b13fd169.js",
+    "precache-manifest.e33fbcb6f8448d0d62446ef1063fc4a5.js": "./precache-manifest.e33fbcb6f8448d0d62446ef1063fc4a5.js",
     "service-worker.js": "./service-worker.js",
     "static/media/Apthapi.jpg": "./static/media/Apthapi.8d8c017f.jpg",
     "static/media/ApthapiTheTapirCropped.png": "./static/media/ApthapiTheTapirCropped.67251bbf.png",
@@ -54,6 +54,6 @@
     "static/css/2.d2940985.chunk.css",
     "static/js/2.aa6d2a95.chunk.js",
     "static/css/main.d50ba177.chunk.css",
-    "static/js/main.8e299b60.chunk.js"
+    "static/js/main.2a13111e.chunk.js"
   ]
 }
