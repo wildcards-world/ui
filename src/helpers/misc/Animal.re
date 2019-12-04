@@ -18,6 +18,26 @@ type t =
   | Dlala
   | Nonhlanhla;
 
+let orderedArray = [|
+  Apthapi,
+  // Ajayu,
+  Vitalik,
+  Nonhlanhla,
+  Cubai,
+  Simon,
+  Dlala,
+  Aruma,
+  Verano,
+  // Tarkus,
+  Pancho,
+  Andy,
+  // Mijungla,
+  Llajuita,
+  // Espumita,
+  CatStevens,
+  Isisa,
+|];
+
 let getId: t => option(string) =
   anAnimal =>
     switch (anAnimal) {

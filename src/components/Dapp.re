@@ -28,12 +28,15 @@ module CountDown = {
 
 module EditButton = {
   [@react.component]
-  let make = (~animal: Animal.t) => {
+  let make = (~animal: Animal.t, ~isExplorer) => {
     <Rimble.Button
       onClick={event => {
         ReactEvent.Form.preventDefault(event);
         ReasonReactRouter.push(
-          "#details/" ++ animal->Animal.getName->Js.Global.encodeURI,
+          "#"
+          ++ InputHelp.getPagePrefix(isExplorer)
+          ++ "details/"
+          ++ animal->Animal.getName->Js.Global.encodeURI,
         );
       }}>
       {React.string("Edit")}
@@ -100,7 +103,7 @@ module DisplayAfterDate = {
 
 module BasicAnimalDisplay = {
   [@react.component]
-  let make = (~animal: Animal.t) => {
+  let make = (~animal: Animal.t, ~isExplorer) => {
     let owned = animal->Animal.useIsAnimalOwened;
     let currentPatron =
       GeneralHooks.useCurrentPatronAnimal(animal)
@@ -112,7 +115,7 @@ module BasicAnimalDisplay = {
     <React.Fragment>
       <PriceDisplay animal />
       userIdComponent
-      {owned ? <EditButton animal /> : <BuyModal animal />}
+      {owned ? <EditButton animal isExplorer /> : <BuyModal animal />}
     </React.Fragment>;
   };
 };
@@ -124,6 +127,7 @@ module AnimalOnLandingPage = {
         ~animal,
         ~scalar: float=1.,
         ~optionEndDateMoment: option(MomentRe.Moment.t),
+        ~isExplorer,
       ) => {
     let name = Animal.getName(animal);
 
@@ -188,7 +192,12 @@ module AnimalOnLandingPage = {
           className=Styles.clickableLink
           onClick={event => {
             ReactEvent.Mouse.preventDefault(event);
-            ReasonReactRouter.push("#details/" ++ name->Js.Global.encodeURI);
+            ReasonReactRouter.push(
+              "#"
+              ++ InputHelp.getPagePrefix(isExplorer)
+              ++ "details/"
+              ++ name->Js.Global.encodeURI,
+            );
           }}>
           <div> <h2> {React.string(name)} </h2> </div>
         </a>
@@ -202,7 +211,7 @@ module AnimalOnLandingPage = {
        | None =>
          <div>
            <Offline requireSmartContractsLoaded=true>
-             <BasicAnimalDisplay animal />
+             <BasicAnimalDisplay animal isExplorer />
            </Offline>
          </div>
        }}
@@ -212,21 +221,27 @@ module AnimalOnLandingPage = {
 
 module CarouselAnimal = {
   [@react.component]
-  let make = (~animal, ~scalar) => {
+  let make = (~animal, ~scalar, ~isExplorer) => {
     let isLaunched = animal->Animal.isLaunched;
     switch (isLaunched) {
     | Animal.Launched =>
-      <AnimalOnLandingPage animal scalar optionEndDateMoment=None />
+      <AnimalOnLandingPage animal scalar optionEndDateMoment=None isExplorer />
     | Animal.LaunchDate(endDateMoment) =>
       <DisplayAfterDate
         endDateMoment
         afterComponent={
-          <AnimalOnLandingPage animal scalar optionEndDateMoment=None />
+          <AnimalOnLandingPage
+            animal
+            isExplorer
+            scalar
+            optionEndDateMoment=None
+          />
         }
         beforeComponent={
           <AnimalOnLandingPage
             animal
             scalar
+            isExplorer
             optionEndDateMoment={Some(endDateMoment)}
           />
         }
@@ -235,32 +250,12 @@ module CarouselAnimal = {
   };
 };
 
-let animalCarouselArray = [|
-  Animal.Apthapi,
-  // Animal.Ajayu,
-  Animal.Vitalik,
-  Animal.Nonhlanhla,
-  Animal.Cubai,
-  Animal.Simon,
-  Animal.Dlala,
-  Animal.Aruma,
-  Animal.Verano,
-  // Animal.Tarkus,
-  Animal.Pancho,
-  Animal.Andy,
-  // Animal.Mijungla,
-  Animal.Llajuita,
-  // Animal.Espumita,
-  Animal.CatStevens,
-  Animal.Isisa,
-|];
-
 module AnimalCarousel = {
   // let make = (~ownedAnimal: array(Animal)) => {
   [@react.component]
-  let make = () => {
+  let make = (~isExplorer) => {
     let (carouselIndex, setCarouselIndex) = React.useState(() => 17);
-    let numItems = animalCarouselArray->Array.length;
+    let numItems = Animal.orderedArray->Array.length;
     <Rimble.Box className=Styles.positionRelative>
       <Carousel
         className=Styles.carousel
@@ -297,11 +292,12 @@ module AnimalCarousel = {
                    )
                  | _ => (0., 0.6)
                  };
+
                <div className={Styles.fadeOut(opacity)}>
-                 <CarouselAnimal animal scalar />
+                 <CarouselAnimal animal isExplorer scalar />
                </div>;
              },
-             animalCarouselArray,
+             Animal.orderedArray,
            ),
          )}
       </Carousel>
@@ -356,9 +352,86 @@ module AnimalActionsOnDetailsPage = {
   };
 };
 
+module DetailsView = {
+  [@react.component]
+  let make = (~animalStr) => {
+    let optionAnimal = Animal.getAnimal(animalStr);
+
+    switch (optionAnimal) {
+    | None =>
+      <div>
+        <h1>
+          {React.string(
+             "We are unable to find a animal by the name of \""
+             ++ {animalStr->Js.Global.decodeURI}
+             ++ "\" in our system.",
+           )}
+        </h1>
+        <p> <S> "Please check the spelling and try again." </S> </p>
+      </div>
+    | Some(animal) =>
+      let normalImage = animal =>
+        <img className=Styles.ownedAnimalImg src={Animal.getImage(animal)} />;
+      let optAlternateImage = Animal.getAlternateImage(animal);
+      let optOrgBadge = Animal.getOrgBadgeImage(animal);
+
+      let isLaunched = animal->Animal.isLaunched;
+
+      let displayAnimal = animalImage =>
+        <div className=Styles.positionRelative>
+          {animalImage()}
+          {switch (isLaunched) {
+           | Animal.Launched =>
+             <div className=Styles.overlayFlameImg>
+               <Offline requireSmartContractsLoaded=true>
+                 <Streak animal />
+               </Offline>
+             </div>
+           | Animal.LaunchDate(endDateMoment) =>
+             <DisplayAfterDate
+               endDateMoment
+               afterComponent={
+                 <div className=Styles.overlayFlameImg>
+                   <Offline requireSmartContractsLoaded=true>
+                     <Streak animal />
+                   </Offline>
+                 </div>
+               }
+               beforeComponent=React.null
+             />
+           }}
+          {switch (optOrgBadge) {
+           | None => React.null
+           | Some(orgBadge) =>
+             <div className=Styles.overlayBadgeImg>
+               <img className=Styles.flameImg src=orgBadge />
+             </div>
+           }}
+        </div>;
+
+      <React.Fragment>
+        {switch (optAlternateImage) {
+         | None => displayAnimal(() => normalImage(animal))
+         | Some(alternateImage) =>
+           <Components.HoverToggle
+             _ComponentHover={
+               <img className=Styles.ownedAnimalImg src=alternateImage />
+             }
+             _ComponentNoHover={displayAnimal(() => normalImage(animal))}
+           />
+         }}
+        <h2> <S> {Animal.getName(animal)} </S> </h2>
+        <Offline requireSmartContractsLoaded=true>
+          <AnimalActionsOnDetailsPage animal />
+        </Offline>
+      </React.Fragment>;
+    };
+  };
+};
+
 module DefaultLook = {
   [@react.component]
-  let make = () => {
+  let make = (~isExplorer) => {
     open Components;
     let setProvider = useSetProvider();
     React.useEffect0(() => {
@@ -372,84 +445,12 @@ module DefaultLook = {
 
     <div className=Styles.rightTopHeader>
       {switch (Js.String.split("/", url.hash)) {
-       | [|"details", animalStr|] =>
-         let optionAnimal = Animal.getAnimal(animalStr);
-
-         switch (optionAnimal) {
-         | None =>
-           <div>
-             <h1>
-               {React.string(
-                  "We are unable to find a animal by the name of \""
-                  ++ {animalStr->Js.Global.decodeURI}
-                  ++ "\" in our system.",
-                )}
-             </h1>
-             <p> <S> "Please check the spelling and try again." </S> </p>
-           </div>
-         | Some(animal) =>
-           let normalImage = animal =>
-             <img
-               className=Styles.ownedAnimalImg
-               src={Animal.getImage(animal)}
-             />;
-           let optAlternateImage = Animal.getAlternateImage(animal);
-           let optOrgBadge = Animal.getOrgBadgeImage(animal);
-
-           let isLaunched = animal->Animal.isLaunched;
-
-           let displayAnimal = animalImage =>
-             <div className=Styles.positionRelative>
-               {animalImage()}
-               {switch (isLaunched) {
-                | Animal.Launched =>
-                  <div className=Styles.overlayFlameImg>
-                    <Offline requireSmartContractsLoaded=true>
-                      <Streak animal />
-                    </Offline>
-                  </div>
-                | Animal.LaunchDate(endDateMoment) =>
-                  <DisplayAfterDate
-                    endDateMoment
-                    afterComponent={
-                      <div className=Styles.overlayFlameImg>
-                        <Offline requireSmartContractsLoaded=true>
-                          <Streak animal />
-                        </Offline>
-                      </div>
-                    }
-                    beforeComponent=React.null
-                  />
-                }}
-               {switch (optOrgBadge) {
-                | None => React.null
-                | Some(orgBadge) =>
-                  <div className=Styles.overlayBadgeImg>
-                    <img className=Styles.flameImg src=orgBadge />
-                  </div>
-                }}
-             </div>;
-
-           <React.Fragment>
-             {switch (optAlternateImage) {
-              | None => displayAnimal(() => normalImage(animal))
-              | Some(alternateImage) =>
-                <Components.HoverToggle
-                  _ComponentHover={
-                    <img className=Styles.ownedAnimalImg src=alternateImage />
-                  }
-                  _ComponentNoHover={displayAnimal(() => normalImage(animal))}
-                />
-              }}
-             <h2> <S> {Animal.getName(animal)} </S> </h2>
-             <Offline requireSmartContractsLoaded=true>
-               <AnimalActionsOnDetailsPage animal />
-             </Offline>
-           </React.Fragment>;
-         };
+       | [|"details", animalStr|]
+       | [|"explorer", "details", animalStr|]
+       | [|"explorer", "details", animalStr, ""|] => <DetailsView animalStr />
        | _ =>
          <React.Fragment>
-           <AnimalCarousel />
+           <AnimalCarousel isExplorer />
            <Rimble.Box className=Styles.dappImagesCounteractOffset>
              <Offline requireSmartContractsLoaded=true>
                <TotalRaised />
@@ -721,10 +722,20 @@ module AnimalInfo = {
 // The Offline container here shows the website, but without loading the requirements
 let make = () => {
   let url = ReasonReactRouter.useUrl();
-  let (isDetailView, animalStr) = {
+  let (isDetailView, animalStr, isExplorer) = {
     switch (Js.String.split("/", url.hash)) {
-    | [|"details", animalStr|] => (true, animalStr)
-    | _ => (false, "")
+    | [|"explorer", "details", animalStr|]
+    | [|"explorer", "details", animalStr, ""|] => (true, animalStr, true)
+    | [|"details", animalStr|] => (true, animalStr, false)
+    | urlArray
+        when
+          Belt.Array.get(urlArray, 0)
+          ->Belt.Option.mapWithDefault(false, a => a == "explorer") => (
+        false,
+        "",
+        true,
+      )
+    | _ => (false, "", false)
     };
   };
 
@@ -750,7 +761,7 @@ let make = () => {
     </Rimble.Box>
     <Rimble.Box p=1 width=[|1., 1., 0.5|]>
       <Providers.UsdPriceProvider>
-        <DefaultLook />
+        <DefaultLook isExplorer />
       </Providers.UsdPriceProvider>
     </Rimble.Box>
   </Rimble.Flex>;

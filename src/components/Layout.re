@@ -7,23 +7,17 @@ let betaBanner = [%bs.raw {|require('../img/beta-banner.png')|}];
 // type DetailView = | Details(contentWidth, nextAnimal, previousAnimal)
 // | NoDetails(contentWidth)
 
-[@react.component]
-let make = () => {
-  let url = ReasonReactRouter.useUrl();
+module BuyGrid = {
+  [@bs.module "./BuyGrid.js"] [@react.component]
+  external make: (~animalArray: array(unit => React.element)) => React.element =
+    "default";
+};
 
-  let animalCarousel =
-    switch (Js.String.split("/", url.hash)) {
-    | [|"details", gorillaStr|] =>
-      let optionAnimal = Animal.getAnimal(gorillaStr);
-
-      optionAnimal->Belt.Option.map(animal => Animal.getNextPrev(animal));
-    | _ => None
-    };
-  open ReactTranslate;
-  let usedtranslationModeContext = useTranslationModeContext();
-
-  <div className=Styles.app>
-    <img src=betaBanner className=Styles.betaBanner />
+module Header = {
+  [@react.component]
+  let make = (~animalCarousel, ~isExplorer, ~isDetails) => {
+    open ReactTranslate;
+    let usedtranslationModeContext = useTranslationModeContext();
     <header className=Styles.header>
       <nav className=Styles.nav>
         <div className=Styles.navBox>
@@ -76,57 +70,121 @@ let make = () => {
                 href="https://blog.wildcards.world/">
                 <S> "BLOG" </S>
               </a>
-              <Rimble.Button
-                className=Styles.whiteText
-                _as="a"
-                href="#signup"
-                target="\_blank">
-                <S> "Subscribe" </S>
-              </Rimble.Button>
+              {isExplorer && !isDetails
+                 ? <Rimble.Button
+                     onClick={event => {
+                       ReactEvent.Form.preventDefault(event);
+                       ReasonReactRouter.push("#");
+                     }}
+                     className=Styles.whiteText>
+                     <S> "home" </S>
+                   </Rimble.Button>
+                 : <Rimble.Button
+                     onClick={event => {
+                       ReactEvent.Form.preventDefault(event);
+                       ReasonReactRouter.push("#explorer");
+                     }}
+                     className=Styles.whiteText>
+                     <S> "explorer" </S>
+                   </Rimble.Button>}
             </li>
           </ul>
         </div>
       </nav>
-    </header>
-    <Rimble.Flex flexWrap="wrap" alignItems="center" className=Styles.topBody>
-      {switch (animalCarousel) {
-       | None => React.null
-       | Some((_, previousAnimal)) =>
-         <Rimble.Box p=1 width=[|0.05, 0.05, 0.05|]>
-           <Rimble.Button
-             className=Styles.forwardBackButton
-             onClick={InputHelp.handleEvent(() =>
-               ReasonReactRouter.push(
-                 "#details/"
-                 ++ previousAnimal->Animal.getName->Js.Global.encodeURI,
+    </header>;
+  };
+};
+
+[@react.component]
+let make = () => {
+  let url = ReasonReactRouter.useUrl();
+
+  let (animalCarousel, isExplorer, isDetails) =
+    switch (Js.String.split("/", url.hash)) {
+    | [|"explorer", "details", animalStr|]
+    | [|"explorer", "details", animalStr, ""|] =>
+      let optionAnimal = Animal.getAnimal(animalStr);
+      (
+        optionAnimal->Belt.Option.map(animal => Animal.getNextPrev(animal)),
+        true,
+        true,
+      );
+    | [|"details", animalStr|] =>
+      let optionAnimal = Animal.getAnimal(animalStr);
+      (
+        optionAnimal->Belt.Option.map(animal => Animal.getNextPrev(animal)),
+        false,
+        true,
+      );
+    | urlArray
+        when
+          Belt.Array.get(urlArray, 0)
+          ->Belt.Option.mapWithDefault(false, a => a == "explorer") => (
+        None,
+        true,
+        false,
+      )
+    | _ => (None, false, false)
+    };
+
+  <div className=Styles.app>
+    <img src=betaBanner className=Styles.betaBanner />
+    <Header animalCarousel isExplorer isDetails />
+    {isExplorer && !isDetails
+       ? <BuyGrid
+           animalArray={
+             Animal.orderedArray->Belt.Array.map((animal, ()) =>
+               <Dapp.CarouselAnimal animal isExplorer scalar=1. />
+             )
+           }
+         />
+       : <Rimble.Flex
+           flexWrap="wrap" alignItems="center" className=Styles.topBody>
+           {switch (animalCarousel) {
+            | None => React.null
+            | Some((_, previousAnimal)) =>
+              <Rimble.Box p=1 width=[|0.05, 0.05, 0.05|]>
+                <Rimble.Button
+                  className=Styles.forwardBackButton
+                  onClick={InputHelp.handleEvent(() =>
+                    ReasonReactRouter.push(
+                      "#"
+                      ++ InputHelp.getPagePrefix(isExplorer)
+                      ++ "details/"
+                      ++ previousAnimal->Animal.getName->Js.Global.encodeURI,
+                    )
+                  )}>
+                  <S> {js|◄|js} </S>
+                </Rimble.Button>
+              </Rimble.Box>
+            }}
+           <Rimble.Box
+             width={
+               animalCarousel->Belt.Option.mapWithDefault([|1.|], _ =>
+                 [|0.9|]
                )
-             )}>
-             <S> {js|◄|js} </S>
-           </Rimble.Button>
-         </Rimble.Box>
-       }}
-      <Rimble.Box
-        width={
-          animalCarousel->Belt.Option.mapWithDefault([|1.|], _ => [|0.9|])
-        }>
-        <Dapp />
-      </Rimble.Box>
-      {switch (animalCarousel) {
-       | None => React.null
-       | Some((nextAnimal, _)) =>
-         <Rimble.Box p=1 width=[|0.05, 0.05, 0.05|]>
-           <Rimble.Button
-             className=Styles.forwardBackButton
-             onClick={InputHelp.handleEvent(() =>
-               ReasonReactRouter.push(
-                 "#details/" ++ nextAnimal->Animal.getName->Js.Global.encodeURI,
-               )
-             )}>
-             <S> {js|►|js} </S>
-           </Rimble.Button>
-         </Rimble.Box>
-       }}
-    </Rimble.Flex>
+             }>
+             <Dapp />
+           </Rimble.Box>
+           {switch (animalCarousel) {
+            | None => React.null
+            | Some((nextAnimal, _)) =>
+              <Rimble.Box p=1 width=[|0.05, 0.05, 0.05|]>
+                <Rimble.Button
+                  className=Styles.forwardBackButton
+                  onClick={InputHelp.handleEvent(() =>
+                    ReasonReactRouter.push(
+                      "#"
+                      ++ InputHelp.getPagePrefix(isExplorer)
+                      ++ "details/"
+                      ++ nextAnimal->Animal.getName->Js.Global.encodeURI,
+                    )
+                  )}>
+                  <S> {js|►|js} </S>
+                </Rimble.Button>
+              </Rimble.Box>
+            }}
+         </Rimble.Flex>}
     <StaticContent.CustomerBenefit />
     <StaticContent.HowItWorks />
     <StaticContent.About />

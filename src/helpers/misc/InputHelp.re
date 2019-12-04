@@ -1,5 +1,8 @@
 open Belt.Option;
 
+// This function returns a prefix based on the page state. Now it is a boolean, in the future it may be more complicated.
+let getPagePrefix = isExplorer => isExplorer ? "explorer/" : "";
+
 let handleEvent = (action, event) => {
   ReactEvent.Form.preventDefault(event);
   action();
