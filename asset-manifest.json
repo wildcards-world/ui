@@ -1,12 +1,12 @@
 {
   "files": {
-    "main.css": "./static/css/main.5470ae8b.chunk.css",
-    "main.js": "./static/js/main.068e38b5.chunk.js",
+    "main.css": "./static/css/main.c4212292.chunk.css",
+    "main.js": "./static/js/main.06da0842.chunk.js",
     "runtime-main.js": "./static/js/runtime-main.838e578a.js",
-    "static/css/2.eff43a0a.chunk.css": "./static/css/2.eff43a0a.chunk.css",
-    "static/js/2.172695c7.chunk.js": "./static/js/2.172695c7.chunk.js",
+    "static/css/2.90ed8ad9.chunk.css": "./static/css/2.90ed8ad9.chunk.css",
+    "static/js/2.57a60f15.chunk.js": "./static/js/2.57a60f15.chunk.js",
     "index.html": "./index.html",
-    "precache-manifest.8ce4586263298fdc322f0b87c19e59ea.js": "./precache-manifest.8ce4586263298fdc322f0b87c19e59ea.js",
+    "precache-manifest.735476835876eb498077e244148d5635.js": "./precache-manifest.735476835876eb498077e244148d5635.js",
     "service-worker.js": "./service-worker.js",
     "static/media/Apthapi.jpg": "./static/media/Apthapi.8d8c017f.jpg",
     "static/media/ApthapiTheTapirCropped.png": "./static/media/ApthapiTheTapirCropped.67251bbf.png",
@@ -51,9 +51,9 @@
   },
   "entrypoints": [
     "static/js/runtime-main.838e578a.js",
-    "static/css/2.eff43a0a.chunk.css",
-    "static/js/2.172695c7.chunk.js",
-    "static/css/main.5470ae8b.chunk.css",
-    "static/js/main.068e38b5.chunk.js"
+    "static/css/2.90ed8ad9.chunk.css",
+    "static/js/2.57a60f15.chunk.js",
+    "static/css/main.c4212292.chunk.css",
+    "static/js/main.06da0842.chunk.js"
   ]
 }
