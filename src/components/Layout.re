@@ -80,25 +80,29 @@ module Header = {
           </a>
           <ul className=Styles.navList>
             <li className=Styles.navListItem>
-              <div className=Styles.navListItemToggle>
-                <span className=Styles.someMarginRight>
-                  <S>
-                    {usedtranslationModeContext->translationModeCrypto
-                       ? "EXPERT MODE" : "SIMPLE MODE"}
-                  </S>
-                </span>
-                <ReactTranslate.Switch
-                  onChange={
-                    usedtranslationModeContext->settranslationModeCrypto
-                  }
-                  checked={usedtranslationModeContext->translationModeCrypto}
-                  onColor="#6BAD3D"
-                  onHandleColor="#346D4C"
-                  uncheckedIcon=false
-                  checkedIcon=false
-                  className=Styles.translationSwitch
-                />
-              </div>
+              {isExplorer || isDetails
+                 ? React.null
+                 : <div className=Styles.navListItemToggle>
+                     <span className=Styles.someMarginRight>
+                       <S>
+                         {usedtranslationModeContext->translationModeCrypto
+                            ? "EXPERT MODE" : "SIMPLE MODE"}
+                       </S>
+                     </span>
+                     <ReactTranslate.Switch
+                       onChange={
+                         usedtranslationModeContext->settranslationModeCrypto
+                       }
+                       checked={
+                         usedtranslationModeContext->translationModeCrypto
+                       }
+                       onColor="#6BAD3D"
+                       onHandleColor="#346D4C"
+                       uncheckedIcon=false
+                       checkedIcon=false
+                       className=Styles.translationSwitch
+                     />
+                   </div>}
             </li>
             <li className=Styles.navListItem>
               {switch (animalCarousel) {

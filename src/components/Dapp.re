@@ -130,7 +130,6 @@ module AnimalOnLandingPage = {
         ~enlargement: float=1.,
         ~optionEndDateMoment: option(MomentRe.Moment.t),
         ~isExplorer,
-        ~noLinkOverImage: bool=false,
       ) => {
     let name = Animal.getName(animal);
 
@@ -194,7 +193,6 @@ module AnimalOnLandingPage = {
 
     <Rimble.Box className=Styles.centerText>
       <div className=Styles.positionRelative>
-        {noLinkOverImage ? imageHoverSwitcher : React.null}
         <a
           className=Styles.clickableLink
           onClick={event => {
@@ -206,7 +204,7 @@ module AnimalOnLandingPage = {
               ++ name->Js.Global.encodeURI,
             );
           }}>
-          {noLinkOverImage ? React.null : imageHoverSwitcher}
+          imageHoverSwitcher
           <div> <h2> {React.string(name)} </h2> </div>
         </a>
       </div>
@@ -229,14 +227,7 @@ module AnimalOnLandingPage = {
 
 module CarouselAnimal = {
   [@react.component]
-  let make =
-      (
-        ~animal,
-        ~scalar,
-        ~isExplorer,
-        ~enlargement: float=1.,
-        ~noLinkOverImage: bool=false,
-      ) => {
+  let make = (~animal, ~scalar, ~isExplorer, ~enlargement: float=1.) => {
     let isLaunched = animal->Animal.isLaunched;
     switch (isLaunched) {
     | Animal.Launched =>
@@ -246,7 +237,6 @@ module CarouselAnimal = {
         optionEndDateMoment=None
         isExplorer
         enlargement
-        noLinkOverImage
       />
     | Animal.LaunchDate(endDateMoment) =>
       <DisplayAfterDate
@@ -258,7 +248,6 @@ module CarouselAnimal = {
             scalar
             optionEndDateMoment=None
             enlargement
-            noLinkOverImage
           />
         }
         beforeComponent={
@@ -268,7 +257,6 @@ module CarouselAnimal = {
             isExplorer
             optionEndDateMoment={Some(endDateMoment)}
             enlargement
-            noLinkOverImage
           />
         }
       />
@@ -326,13 +314,7 @@ module AnimalCarousel = {
                    };
 
                  <div className={Styles.fadeOut(opacity)}>
-                   <CarouselAnimal
-                     animal
-                     isExplorer
-                     scalar
-                     enlargement=1.5
-                     noLinkOverImage=true
-                   />
+                   <CarouselAnimal animal isExplorer scalar enlargement=1.5 />
                  </div>;
                },
                Animal.orderedArray,
