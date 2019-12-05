@@ -141,7 +141,7 @@ let leftTopHeader =
     // padding(px(0)),
   ]);
 
-let rightTopHeader = style([textAlign(center)]);
+let centerText = style([textAlign(center)]);
 
 /// NOTE: the padding of 4% is calculated as 12/3 since there is a right padding of 12% and 3 animal images shown.
 let dappImagesCounteractOffset = style([marginLeft(`percent(4.))]);

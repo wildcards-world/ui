@@ -115,6 +115,7 @@ module BasicAnimalDisplay = {
     <React.Fragment>
       <PriceDisplay animal />
       userIdComponent
+      <br />
       {owned ? <EditButton animal isExplorer /> : <BuyModal animal />}
     </React.Fragment>;
   };
@@ -126,8 +127,10 @@ module AnimalOnLandingPage = {
       (
         ~animal,
         ~scalar: float=1.,
+        ~enlargement: float=1.,
         ~optionEndDateMoment: option(MomentRe.Moment.t),
         ~isExplorer,
+        ~noLinkOverImage: bool=false,
       ) => {
     let name = Animal.getName(animal);
 
@@ -136,7 +139,7 @@ module AnimalOnLandingPage = {
 
     let normalImage = () =>
       <img
-        className={Styles.headerImg(1.5, scalar)}
+        className={Styles.headerImg(enlargement, scalar)}
         src={Animal.getImage(animal)}
       />;
 
@@ -168,26 +171,30 @@ module AnimalOnLandingPage = {
       </React.Fragment>;
     };
 
-    <Rimble.Box>
+    let imageHoverSwitcher = {
+      switch (optAlternateImage) {
+      | None => componentWithoutImg(normalImage, ~hideBadges=false)
+      | Some(alternateImage) =>
+        <Components.HoverToggle
+          _ComponentNoHover={componentWithoutImg(
+            normalImage,
+            ~hideBadges=false,
+          )}
+          _ComponentHover={componentWithoutImg(
+            () =>
+              <img
+                className={Styles.headerImg(enlargement, scalar)}
+                src=alternateImage
+              />,
+            ~hideBadges=true,
+          )}
+        />
+      };
+    };
+
+    <Rimble.Box className=Styles.centerText>
       <div className=Styles.positionRelative>
-        {switch (optAlternateImage) {
-         | None => componentWithoutImg(normalImage, ~hideBadges=false)
-         | Some(alternateImage) =>
-           <Components.HoverToggle
-             _ComponentNoHover={componentWithoutImg(
-               normalImage,
-               ~hideBadges=false,
-             )}
-             _ComponentHover={componentWithoutImg(
-               () =>
-                 <img
-                   className={Styles.headerImg(1.5, scalar)}
-                   src=alternateImage
-                 />,
-               ~hideBadges=true,
-             )}
-           />
-         }}
+        {noLinkOverImage ? imageHoverSwitcher : React.null}
         <a
           className=Styles.clickableLink
           onClick={event => {
@@ -199,6 +206,7 @@ module AnimalOnLandingPage = {
               ++ name->Js.Global.encodeURI,
             );
           }}>
+          {noLinkOverImage ? React.null : imageHoverSwitcher}
           <div> <h2> {React.string(name)} </h2> </div>
         </a>
       </div>
@@ -221,11 +229,25 @@ module AnimalOnLandingPage = {
 
 module CarouselAnimal = {
   [@react.component]
-  let make = (~animal, ~scalar, ~isExplorer) => {
+  let make =
+      (
+        ~animal,
+        ~scalar,
+        ~isExplorer,
+        ~enlargement: float=1.,
+        ~noLinkOverImage: bool=false,
+      ) => {
     let isLaunched = animal->Animal.isLaunched;
     switch (isLaunched) {
     | Animal.Launched =>
-      <AnimalOnLandingPage animal scalar optionEndDateMoment=None isExplorer />
+      <AnimalOnLandingPage
+        animal
+        scalar
+        optionEndDateMoment=None
+        isExplorer
+        enlargement
+        noLinkOverImage
+      />
     | Animal.LaunchDate(endDateMoment) =>
       <DisplayAfterDate
         endDateMoment
@@ -235,6 +257,8 @@ module CarouselAnimal = {
             isExplorer
             scalar
             optionEndDateMoment=None
+            enlargement
+            noLinkOverImage
           />
         }
         beforeComponent={
@@ -243,6 +267,8 @@ module CarouselAnimal = {
             scalar
             isExplorer
             optionEndDateMoment={Some(endDateMoment)}
+            enlargement
+            noLinkOverImage
           />
         }
       />
@@ -294,7 +320,13 @@ module AnimalCarousel = {
                  };
 
                <div className={Styles.fadeOut(opacity)}>
-                 <CarouselAnimal animal isExplorer scalar />
+                 <CarouselAnimal
+                   animal
+                   isExplorer
+                   scalar
+                   enlargement=1.5
+                   noLinkOverImage=true
+                 />
                </div>;
              },
              Animal.orderedArray,
@@ -443,7 +475,7 @@ module DefaultLook = {
 
     let url = ReasonReactRouter.useUrl();
 
-    <div className=Styles.rightTopHeader>
+    <div className=Styles.centerText>
       {switch (Js.String.split("/", url.hash)) {
        | [|"details", animalStr|]
        | [|"explorer", "details", animalStr|]
