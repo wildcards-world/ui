@@ -27,6 +27,7 @@
     "re-formality",
     "bs-moment",
     "@wildcards/reason-apollo",
+    "@wildcards/reason-apollo-hooks",
     "@glennsl/bs-jest"
   ],
   "bs-dev-dependencies": [],
