@@ -4,7 +4,7 @@ open Belt.Option;
 open Components;
 
 // Load styles for the carousel and react-tabs
-[%bs.raw {|require('@brainhubeu/react-carousel/lib/style.css')|}];
+[%bs.raw {|require('@wildcards/react-carousel/lib/style.css')|}];
 [%bs.raw {|require('react-tabs/style/react-tabs.css')|}];
 
 let flameImg = [%bs.raw {|require('../img/streak-flame.png')|}];
@@ -680,7 +680,7 @@ module AnimalInfoStats = {
              <strong>
                <S> "Days Held: " </S>
                <Rimble.Tooltip
-                 message={j|This is the amount of time $animalName has been held. It was aquired on the $timeAquiredString.|j}
+                 message={j|This is the amount of time $animalName has been held. It was acquired on the $timeAquiredString.|j}
                  placement="top">
                  <span> <S> {js|ⓘ|js} </S> </span>
                </Rimble.Tooltip>
@@ -769,20 +769,16 @@ let make = () => {
              switch (optionAnimal) {
              | None => <DefaultLeftPanel />
              | Some(animal) =>
-               <Providers.UsdPriceProvider>
-                 <Offline requireSmartContractsLoaded=true>
-                   <AnimalInfo animal />
-                 </Offline>
-               </Providers.UsdPriceProvider>
+               <Offline requireSmartContractsLoaded=true>
+                 <AnimalInfo animal />
+               </Offline>
              };
            }
            : <DefaultLeftPanel />}
       </React.Fragment>
     </Rimble.Box>
     <Rimble.Box p=1 width=[|1., 1., 0.5|]>
-      <Providers.UsdPriceProvider>
-        <DefaultLook isExplorer />
-      </Providers.UsdPriceProvider>
+      <DefaultLook isExplorer />
     </Rimble.Box>
   </Rimble.Flex>;
 };

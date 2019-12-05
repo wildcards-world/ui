@@ -1,4 +1,4 @@
-[@bs.module "@brainhubeu/react-carousel"] [@react.component]
+[@bs.module "@wildcards/react-carousel"] [@react.component]
 external make:
   (
     ~children: React.element,
@@ -19,7 +19,7 @@ external make:
 // ~arrowRight: React.element=?,
 
 module Dots = {
-  [@bs.module "@brainhubeu/react-carousel"] [@react.component]
+  [@bs.module "@wildcards/react-carousel"] [@react.component]
   external make:
     (~onChange: int => unit, ~value: int, ~number: int) => React.element =
     "Dots";

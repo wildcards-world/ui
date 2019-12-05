@@ -185,25 +185,27 @@ let make = () => {
   <div className=Styles.app>
     <img src=betaBanner className=Styles.betaBanner />
     <Header animalCarousel isExplorer isDetails />
-    {isDetails
-       ? <AnimalFocusDetails animalCarousel isExplorer />
-       : isExplorer
-           ? <BuyGrid
-               animalArray={
-                 Animal.orderedArray->Belt.Array.map((animal, ()) =>
-                   <Dapp.CarouselAnimal animal isExplorer scalar=1. />
-                 )
-               }
-             />
-           : <React.Fragment>
-               <AnimalFocusDetails animalCarousel isExplorer />
-               <StaticContent.CustomerBenefit />
-               <StaticContent.HowItWorks />
-               <StaticContent.About />
-               <StaticContent.CoreConcepts />
-               <StaticContent.EmailSignup />
-               <StaticContent.Partners />
-             </React.Fragment>}
+    <Providers.UsdPriceProvider>
+      {isDetails
+         ? <AnimalFocusDetails animalCarousel isExplorer />
+         : isExplorer
+             ? <BuyGrid
+                 animalArray={
+                   Animal.orderedArray->Belt.Array.map((animal, ()) =>
+                     <Dapp.CarouselAnimal animal isExplorer scalar=1. />
+                   )
+                 }
+               />
+             : <React.Fragment>
+                 <AnimalFocusDetails animalCarousel isExplorer />
+                 <StaticContent.CustomerBenefit />
+                 <StaticContent.HowItWorks />
+                 <StaticContent.About />
+                 <StaticContent.CoreConcepts />
+                 <StaticContent.EmailSignup />
+                 <StaticContent.Partners />
+               </React.Fragment>}
+    </Providers.UsdPriceProvider>
     <StaticContent.Footer />
   </div>;
 };
