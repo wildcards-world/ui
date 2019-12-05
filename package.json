@@ -9,7 +9,7 @@
     "@portis/web3": "^2.0.0-beta.54",
     "@toruslabs/torus-embed": "^0.2.6",
     "@walletconnect/web3-provider": "^1.0.0-beta.39",
-    "@wildcards/react-carousel": "^1.10.28-working",
+    "@wildcards/react-carousel": "^1.10.28-working1",
     "bs-css": "^10.0.1",
     "bs-fetch": "^0.5.0",
     "bs-moment": "https://github.com/reasonml-community/bs-moment.git#0d476e5",

@@ -98,7 +98,7 @@ let positionRelative = style([position(relative)]);
 let overlayImg = (topPosition, leftPosition) =>
   style([
     position(absolute),
-    zIndex(3),
+    zIndex(2),
     top(`percent(topPosition)),
     left(`percent(leftPosition)),
     width(`percent(20.)),
@@ -419,7 +419,7 @@ let fiftyPercentWidth = style([width(`percent(50.))]);
 let carousel =
   style([
     position(`relative),
-    width(`percent(130.)),
+    width(`percent(150.)),
     left(`percent(-15.)),
   ]);
 
@@ -431,4 +431,25 @@ let fadeOut = targetOpacity =>
     ->List.append([opacity(targetOpacity)]),
   );
 
-let carouselArrow = style([cursor(`pointer), padding(`px(20))]);
+let carouselArrow = onLeft =>
+  style([
+    cursor(`pointer),
+    padding(`px(20)),
+    color(white),
+    backgroundColor(hex("72c7d7")),
+    hover(
+      [backgroundColor(hex("40b2c9"))]
+      @ {
+        onLeft
+          ? [paddingLeft(`px(15)), paddingRight(`px(25))]
+          : [paddingRight(`px(15)), paddingLeft(`px(25))];
+      },
+    ),
+    borderRadius(px(4)),
+    position(absolute),
+    zIndex(3),
+    transform(translateX(`percent(-50.))),
+    {
+      onLeft ? left(`percent(20.)) : left(`percent(80.));
+    },
+  ]);

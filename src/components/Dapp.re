@@ -265,63 +265,79 @@ module CarouselAnimal = {
 };
 
 module AnimalCarousel = {
-  // let make = (~ownedAnimal: array(Animal)) => {
   [@react.component]
   let make = (~isExplorer) => {
     let (carouselIndex, setCarouselIndex) = React.useState(() => 17);
     let numItems = Animal.orderedArray->Array.length;
     <Rimble.Box className=Styles.positionRelative>
-      // arrowLeft={
-      //       <span className=Styles.carouselArrow> <S> {js|◀|js} </S> </span>
-      //     }
-      //     arrowRight={<span> <S> {js|▶|js} </S> </span>}
+      <Carousel
+        className=Styles.carousel
+        slidesPerPage=5
+        centered=true
+        value=carouselIndex
+        animationSpeed=1000
+        infinite=true
+        autoPlay=5000
+        arrowLeft={
+          <span
+            className={Styles.carouselArrow(true)}
+            onClick={event => {
+              ReactEvent.Mouse.preventDefault(event);
+              setCarouselIndex(_ => carouselIndex - 1);
+              ReactEvent.Mouse.stopPropagation(event);
+            }}>
+            {js|◄|js}->React.string
+          </span>
+        }
+        arrowRight={
+          <span
+            className={Styles.carouselArrow(false)}
+            onClick={event => {
+              ReactEvent.Mouse.preventDefault(event);
+              setCarouselIndex(_ => carouselIndex + 1);
+              ReactEvent.Mouse.stopPropagation(event);
+            }}>
+            {js|►|js}->React.string
+          </span>
+        }
+        arrows=true
+        onChange={test => setCarouselIndex(_ => test)}>
+        {ReasonReact.array(
+           Array.mapi(
+             (index, animal) => {
+               let (opacity, scalar) =
+                 switch (index) {
+                 | x when x == carouselIndex mod numItems => (1., 1.0)
+                 | x
+                     when
+                       x == (carouselIndex - 1)
+                       mod numItems
+                       || x == (carouselIndex + 1)
+                       mod numItems => (
+                     0.8,
+                     0.8,
+                   )
+                 | x
+                     when
+                       x == (carouselIndex - 2)
+                       mod numItems
+                       || x == (carouselIndex + 2)
+                       mod numItems => (
+                     0.1,
+                     0.7,
+                   )
+                 | _ => (0., 0.6)
+                 };
 
-        <Carousel
-          className=Styles.carousel
-          slidesPerPage=5
-          centered=true
-          value=carouselIndex
-          animationSpeed=1000
-          infinite=true
-          autoPlay=5000
-          arrows=true
-          onChange={test => setCarouselIndex(_ => test)}>
-          {ReasonReact.array(
-             Array.mapi(
-               (index, animal) => {
-                 let (opacity, scalar) =
-                   switch (index) {
-                   | x when x == carouselIndex mod numItems => (1., 1.0)
-                   | x
-                       when
-                         x == (carouselIndex - 1)
-                         mod numItems
-                         || x == (carouselIndex + 1)
-                         mod numItems => (
-                       0.8,
-                       0.8,
-                     )
-                   | x
-                       when
-                         x == (carouselIndex - 2)
-                         mod numItems
-                         || x == (carouselIndex + 2)
-                         mod numItems => (
-                       0.1,
-                       0.7,
-                     )
-                   | _ => (0., 0.6)
-                   };
-
-                 <div className={Styles.fadeOut(opacity)}>
-                   <CarouselAnimal animal isExplorer scalar enlargement=1.5 />
-                 </div>;
-               },
-               Animal.orderedArray,
-             ),
-           )}
-        </Carousel>
-      </Rimble.Box>;
+               <div className={Styles.fadeOut(opacity)}>
+                 <CarouselAnimal animal isExplorer scalar enlargement=1.5 />
+               </div>;
+             },
+             Animal.orderedArray,
+           ),
+         )}
+      </Carousel>
+    </Rimble.Box>;
   };
 };
 

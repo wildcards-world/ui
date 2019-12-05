@@ -10,6 +10,9 @@ external make:
     ~onChange: int => unit=?,
     ~infinite: bool=?,
     ~autoPlay: int=?,
+    ~arrowLeft: React.element=?,
+    ~arrowRight: React.element=?,
+    ~addArrowClickHandler: bool=?,
     ~arrows: bool=?
   ) =>
   React.element =
