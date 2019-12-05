@@ -430,3 +430,5 @@ let fadeOut = targetOpacity =>
     [transition(~duration=2000, ~delay=0, ~timingFunction=ease, "opacity")]
     ->List.append([opacity(targetOpacity)]),
   );
+
+let carouselArrow = style([cursor(`pointer), padding(`px(20))]);

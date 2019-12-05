@@ -9,10 +9,14 @@ external make:
     ~className: string=?,
     ~onChange: int => unit=?,
     ~infinite: bool=?,
-    ~autoPlay: int=?
+    ~autoPlay: int=?,
+    ~arrows: bool=?
   ) =>
   React.element =
   "default";
+
+// ~arrowLeft: React.element=?,
+// ~arrowRight: React.element=?,
 
 module Dots = {
   [@bs.module "@brainhubeu/react-carousel"] [@react.component]

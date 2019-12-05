@@ -26,14 +26,7 @@ export default ({ animalArray }) => {
         px={50}
       >
         {animalArray.map((Animal, key) => (
-          <Box
-            key={key}
-            // bg="salmon"
-            color="white"
-            fontSize={4}
-            p={3}
-            width={[1, 1, 0.3]}
-          >
+          <Box key={key} fontSize={4} p={3} width={[1, 1, 0.3]}>
             <Card>
               <Animal />
             </Card>

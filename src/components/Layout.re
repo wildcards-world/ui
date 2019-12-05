@@ -13,6 +13,55 @@ module BuyGrid = {
     "default";
 };
 
+module AnimalFocusDetails = {
+  [@react.component]
+  let make = (~animalCarousel, ~isExplorer) =>
+    <Rimble.Flex flexWrap="wrap" alignItems="center" className=Styles.topBody>
+      {switch (animalCarousel) {
+       | None => React.null
+       | Some((_, previousAnimal)) =>
+         <Rimble.Box p=1 width=[|0.05, 0.05, 0.05|]>
+           <Rimble.Button
+             className=Styles.forwardBackButton
+             onClick={InputHelp.handleEvent(() =>
+               ReasonReactRouter.push(
+                 "#"
+                 ++ InputHelp.getPagePrefix(isExplorer)
+                 ++ "details/"
+                 ++ previousAnimal->Animal.getName->Js.Global.encodeURI,
+               )
+             )}>
+             <S> {js|◄|js} </S>
+           </Rimble.Button>
+         </Rimble.Box>
+       }}
+      <Rimble.Box
+        width={
+          animalCarousel->Belt.Option.mapWithDefault([|1.|], _ => [|0.9|])
+        }>
+        <Dapp />
+      </Rimble.Box>
+      {switch (animalCarousel) {
+       | None => React.null
+       | Some((nextAnimal, _)) =>
+         <Rimble.Box p=1 width=[|0.05, 0.05, 0.05|]>
+           <Rimble.Button
+             className=Styles.forwardBackButton
+             onClick={InputHelp.handleEvent(() =>
+               ReasonReactRouter.push(
+                 "#"
+                 ++ InputHelp.getPagePrefix(isExplorer)
+                 ++ "details/"
+                 ++ nextAnimal->Animal.getName->Js.Global.encodeURI,
+               )
+             )}>
+             <S> {js|►|js} </S>
+           </Rimble.Button>
+         </Rimble.Box>
+       }}
+    </Rimble.Flex>;
+};
+
 module Header = {
   [@react.component]
   let make = (~animalCarousel, ~isExplorer, ~isDetails) => {
@@ -71,21 +120,23 @@ module Header = {
                 <S> "BLOG" </S>
               </a>
               {isExplorer && !isDetails
-                 ? <Rimble.Button
+                 ? <a
+                     className=Styles.navListText
+                     target="_blank"
+                     href=""
                      onClick={event => {
-                       ReactEvent.Form.preventDefault(event);
+                       ReactEvent.Mouse.preventDefault(event);
                        ReasonReactRouter.push("#");
-                     }}
-                     className=Styles.whiteText>
-                     <S> "home" </S>
-                   </Rimble.Button>
+                     }}>
+                     <S> "HOME" </S>
+                   </a>
                  : <Rimble.Button
                      onClick={event => {
                        ReactEvent.Form.preventDefault(event);
                        ReasonReactRouter.push("#explorer");
                      }}
                      className=Styles.whiteText>
-                     <S> "explorer" </S>
+                     <S> "ANIMAL KINGDOM" </S>
                    </Rimble.Button>}
             </li>
           </ul>
@@ -130,67 +181,25 @@ let make = () => {
   <div className=Styles.app>
     <img src=betaBanner className=Styles.betaBanner />
     <Header animalCarousel isExplorer isDetails />
-    {isExplorer && !isDetails
-       ? <BuyGrid
-           animalArray={
-             Animal.orderedArray->Belt.Array.map((animal, ()) =>
-               <Dapp.CarouselAnimal animal isExplorer scalar=1. />
-             )
-           }
-         />
-       : <Rimble.Flex
-           flexWrap="wrap" alignItems="center" className=Styles.topBody>
-           {switch (animalCarousel) {
-            | None => React.null
-            | Some((_, previousAnimal)) =>
-              <Rimble.Box p=1 width=[|0.05, 0.05, 0.05|]>
-                <Rimble.Button
-                  className=Styles.forwardBackButton
-                  onClick={InputHelp.handleEvent(() =>
-                    ReasonReactRouter.push(
-                      "#"
-                      ++ InputHelp.getPagePrefix(isExplorer)
-                      ++ "details/"
-                      ++ previousAnimal->Animal.getName->Js.Global.encodeURI,
-                    )
-                  )}>
-                  <S> {js|◄|js} </S>
-                </Rimble.Button>
-              </Rimble.Box>
-            }}
-           <Rimble.Box
-             width={
-               animalCarousel->Belt.Option.mapWithDefault([|1.|], _ =>
-                 [|0.9|]
-               )
-             }>
-             <Dapp />
-           </Rimble.Box>
-           {switch (animalCarousel) {
-            | None => React.null
-            | Some((nextAnimal, _)) =>
-              <Rimble.Box p=1 width=[|0.05, 0.05, 0.05|]>
-                <Rimble.Button
-                  className=Styles.forwardBackButton
-                  onClick={InputHelp.handleEvent(() =>
-                    ReasonReactRouter.push(
-                      "#"
-                      ++ InputHelp.getPagePrefix(isExplorer)
-                      ++ "details/"
-                      ++ nextAnimal->Animal.getName->Js.Global.encodeURI,
-                    )
-                  )}>
-                  <S> {js|►|js} </S>
-                </Rimble.Button>
-              </Rimble.Box>
-            }}
-         </Rimble.Flex>}
-    <StaticContent.CustomerBenefit />
-    <StaticContent.HowItWorks />
-    <StaticContent.About />
-    <StaticContent.CoreConcepts />
-    <StaticContent.EmailSignup />
-    <StaticContent.Partners />
+    {isDetails
+       ? <AnimalFocusDetails animalCarousel isExplorer />
+       : isExplorer
+           ? <BuyGrid
+               animalArray={
+                 Animal.orderedArray->Belt.Array.map((animal, ()) =>
+                   <Dapp.CarouselAnimal animal isExplorer scalar=1. />
+                 )
+               }
+             />
+           : <React.Fragment>
+               <AnimalFocusDetails animalCarousel isExplorer />
+               <StaticContent.CustomerBenefit />
+               <StaticContent.HowItWorks />
+               <StaticContent.About />
+               <StaticContent.CoreConcepts />
+               <StaticContent.EmailSignup />
+               <StaticContent.Partners />
+             </React.Fragment>}
     <StaticContent.Footer />
   </div>;
 };
