@@ -36,3 +36,6 @@ lib
 dist
 
 .graphql_ppx_cache
+
+# used for testing the library "@brainhubeu/react-carousel"
+react-carousel

@@ -12,6 +12,7 @@
     "@toruslabs/torus-embed": "^0.2.6",
     "@walletconnect/web3-provider": "^1.0.0-beta.39",
     "@wildcards/reason-apollo": "^0.17.1",
+    "@wildcards/react-carousel": "^1.10.28-working1",
     "bs-css": "^10.0.1",
     "bs-fetch": "^0.5.0",
     "bs-moment": "https://github.com/reasonml-community/bs-moment.git#0d476e5",
@@ -53,9 +54,9 @@
   },
   "browserslist": {
     "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
+      "> 1%",
+      "last 2 versions",
+      "not ie <= 8"
     ],
     "development": [
       "last 1 chrome version",

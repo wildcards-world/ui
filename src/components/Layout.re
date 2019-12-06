@@ -7,87 +7,15 @@ let betaBanner = [%bs.raw {|require('../img/beta-banner.png')|}];
 // type DetailView = | Details(contentWidth, nextAnimal, previousAnimal)
 // | NoDetails(contentWidth)
 
-[@react.component]
-let make = () => {
-  let url = ReasonReactRouter.useUrl();
+module BuyGrid = {
+  [@bs.module "./BuyGrid.js"] [@react.component]
+  external make: (~animalArray: array(unit => React.element)) => React.element =
+    "default";
+};
 
-  let animalCarousel =
-    switch (Js.String.split("/", url.hash)) {
-    | [|"details", gorillaStr|] =>
-      let optionAnimal = Animal.getAnimal(gorillaStr);
-
-      optionAnimal->Belt.Option.map(animal => Animal.getNextPrev(animal));
-    | _ => None
-    };
-  open ReactTranslate;
-  let usedtranslationModeContext = useTranslationModeContext();
-
-  <div className=Styles.app>
-    <img src=betaBanner className=Styles.betaBanner />
-    <header className=Styles.header>
-      <nav className=Styles.nav>
-        <div className=Styles.navBox>
-          <a
-            className=Styles.clickableLink
-            onClick={event => {
-              ReactEvent.Mouse.preventDefault(event);
-              ReasonReactRouter.push("#");
-            }}>
-            <div className=Styles.headerLogo> <img src=smallIcon /> </div>
-          </a>
-          <ul className=Styles.navList>
-            <li className=Styles.navListItem>
-              <div className=Styles.navListItemToggle>
-                <span className=Styles.someMarginRight>
-                  <S>
-                    {usedtranslationModeContext->translationModeCrypto
-                       ? "EXPERT MODE" : "SIMPLE MODE"}
-                  </S>
-                </span>
-                <ReactTranslate.Switch
-                  onChange={
-                    usedtranslationModeContext->settranslationModeCrypto
-                  }
-                  checked={usedtranslationModeContext->translationModeCrypto}
-                  onColor="#6BAD3D"
-                  onHandleColor="#346D4C"
-                  uncheckedIcon=false
-                  checkedIcon=false
-                  className=Styles.translationSwitch
-                />
-              </div>
-            </li>
-            <li className=Styles.navListItem>
-              {switch (animalCarousel) {
-               | None => React.null
-               | Some(_) =>
-                 <a
-                   className=Styles.navListText
-                   onClick={event => {
-                     ReactEvent.Mouse.preventDefault(event);
-                     ReasonReactRouter.push("#");
-                   }}>
-                   <S> "HOME" </S>
-                 </a>
-               }}
-              <a
-                className=Styles.navListText
-                target="_blank"
-                href="https://blog.wildcards.world/">
-                <S> "BLOG" </S>
-              </a>
-              <Rimble.Button
-                className=Styles.whiteText
-                _as="a"
-                href="#signup"
-                target="\_blank">
-                <S> "Subscribe" </S>
-              </Rimble.Button>
-            </li>
-          </ul>
-        </div>
-      </nav>
-    </header>
+module AnimalFocusDetails = {
+  [@react.component]
+  let make = (~animalCarousel, ~isExplorer) =>
     <Rimble.Flex flexWrap="wrap" alignItems="center" className=Styles.topBody>
       {switch (animalCarousel) {
        | None => React.null
@@ -97,7 +25,10 @@ let make = () => {
              className=Styles.forwardBackButton
              onClick={InputHelp.handleEvent(() =>
                ReasonReactRouter.push(
-                 "#details/" ++ Animal.getName(previousAnimal),
+                 "#"
+                 ++ InputHelp.getPagePrefix(isExplorer)
+                 ++ "details/"
+                 ++ previousAnimal->Animal.getName->Js.Global.encodeURI,
                )
              )}>
              <S> {js|◄|js} </S>
@@ -118,20 +49,163 @@ let make = () => {
              className=Styles.forwardBackButton
              onClick={InputHelp.handleEvent(() =>
                ReasonReactRouter.push(
-                 "#details/" ++ Animal.getName(nextAnimal),
+                 "#"
+                 ++ InputHelp.getPagePrefix(isExplorer)
+                 ++ "details/"
+                 ++ nextAnimal->Animal.getName->Js.Global.encodeURI,
                )
              )}>
              <S> {js|►|js} </S>
            </Rimble.Button>
          </Rimble.Box>
        }}
-    </Rimble.Flex>
-    <StaticContent.CustomerBenefit />
-    <StaticContent.HowItWorks />
-    <StaticContent.About />
-    <StaticContent.CoreConcepts />
-    <StaticContent.EmailSignup />
-    <StaticContent.Partners />
+    </Rimble.Flex>;
+};
+
+module Header = {
+  [@react.component]
+  let make = (~animalCarousel, ~isExplorer, ~isDetails) => {
+    open ReactTranslate;
+    let usedtranslationModeContext = useTranslationModeContext();
+    <header className=Styles.header>
+      <nav className=Styles.nav>
+        <div className=Styles.navBox>
+          <a
+            className=Styles.clickableLink
+            onClick={event => {
+              ReactEvent.Mouse.preventDefault(event);
+              ReasonReactRouter.push("#");
+            }}>
+            <div className=Styles.headerLogo> <img src=smallIcon /> </div>
+          </a>
+          <ul className=Styles.navList>
+            <li className=Styles.navListItem>
+              {isExplorer || isDetails
+                 ? React.null
+                 : <div className=Styles.navListItemToggle>
+                     <span className=Styles.someMarginRight>
+                       <S>
+                         {usedtranslationModeContext->translationModeCrypto
+                            ? "EXPERT MODE" : "SIMPLE MODE"}
+                       </S>
+                     </span>
+                     <ReactTranslate.Switch
+                       onChange={
+                         usedtranslationModeContext->settranslationModeCrypto
+                       }
+                       checked={
+                         usedtranslationModeContext->translationModeCrypto
+                       }
+                       onColor="#6BAD3D"
+                       onHandleColor="#346D4C"
+                       uncheckedIcon=false
+                       checkedIcon=false
+                       className=Styles.translationSwitch
+                     />
+                   </div>}
+            </li>
+            <li className=Styles.navListItem>
+              {switch (animalCarousel) {
+               | None => React.null
+               | Some(_) =>
+                 <a
+                   className=Styles.navListText
+                   onClick={event => {
+                     ReactEvent.Mouse.preventDefault(event);
+                     ReasonReactRouter.push("#");
+                   }}>
+                   <S> "HOME" </S>
+                 </a>
+               }}
+              <a
+                className=Styles.navListText
+                target="_blank"
+                href="https://blog.wildcards.world/">
+                <S> "BLOG" </S>
+              </a>
+              {isExplorer && !isDetails
+                 ? <a
+                     className=Styles.navListText
+                     target="_blank"
+                     href=""
+                     onClick={event => {
+                       ReactEvent.Mouse.preventDefault(event);
+                       ReasonReactRouter.push("#");
+                     }}>
+                     <S> "HOME" </S>
+                   </a>
+                 : <Rimble.Button
+                     onClick={event => {
+                       ReactEvent.Form.preventDefault(event);
+                       ReasonReactRouter.push("#explorer");
+                     }}
+                     className=Styles.whiteText>
+                     <S> "ANIMAL KINGDOM" </S>
+                   </Rimble.Button>}
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </header>;
+  };
+};
+
+[@react.component]
+let make = () => {
+  let url = ReasonReactRouter.useUrl();
+
+  let (animalCarousel, isExplorer, isDetails) =
+    switch (Js.String.split("/", url.hash)) {
+    | [|"explorer", "details", animalStr|]
+    | [|"explorer", "details", animalStr, ""|] =>
+      let optionAnimal = Animal.getAnimal(animalStr);
+      (
+        optionAnimal->Belt.Option.map(animal => Animal.getNextPrev(animal)),
+        true,
+        true,
+      );
+    | [|"details", animalStr|] =>
+      let optionAnimal = Animal.getAnimal(animalStr);
+      (
+        optionAnimal->Belt.Option.map(animal => Animal.getNextPrev(animal)),
+        false,
+        true,
+      );
+    | urlArray
+        when
+          Belt.Array.get(urlArray, 0)
+          ->Belt.Option.mapWithDefault(false, a => a == "explorer") => (
+        None,
+        true,
+        false,
+      )
+    | _ => (None, false, false)
+    };
+
+  <div className=Styles.app>
+    <img src=betaBanner className=Styles.betaBanner />
+    <Header animalCarousel isExplorer isDetails />
+    <Providers.UsdPriceProvider>
+      {isDetails
+         ? <AnimalFocusDetails animalCarousel isExplorer />
+         : isExplorer
+             ? <BuyGrid
+                 animalArray={
+                   Animal.orderedArray->Belt.Array.map((animal, ()) =>
+                     <Dapp.CarouselAnimal animal isExplorer scalar=1. />
+                   )
+                 }
+               />
+             : <React.Fragment>
+                 <AnimalFocusDetails animalCarousel isExplorer />
+                 <StaticContent.CustomerBenefit />
+                 <StaticContent.HowItWorks />
+                 <StaticContent.About />
+                 <StaticContent.CoreConcepts />
+                 <StaticContent.EmailSignup />
+                 <StaticContent.Partners />
+               </React.Fragment>}
+    </Providers.UsdPriceProvider>
     <StaticContent.Footer />
   </div>;
 };

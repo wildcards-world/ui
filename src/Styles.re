@@ -9,7 +9,11 @@ let backgroundImageGorilla = [%bs.raw
 Css.(
   global(
     "body",
-    [margin(`px(0)), fontFamily("Lato, Helvetica, sans-serif")],
+    [
+      margin(`px(0)),
+      fontFamily("Lato, Helvetica, sans-serif"),
+      overflowX(hidden),
+    ],
   )
 );
 Css.(global("a", [color(hex("303030")), textDecoration(none)]));
@@ -91,22 +95,25 @@ let navList =
   ]);
 
 let positionRelative = style([position(relative)]);
-let overlayFlameImg =
+let overlayImg = (topPosition, leftPosition) =>
   style([
     position(absolute),
-    zIndex(99),
-    bottom(`percent(10.)),
-    right(`percent(50.)),
+    zIndex(2),
+    top(`percent(topPosition)),
+    left(`percent(leftPosition)),
     width(`percent(20.)),
     height(`percent(20.)),
     minWidth(px(50)),
     minHeight(px(50)),
   ]);
+let overlayFlameImg = overlayImg(30., 0.);
+let overlayBadgeImg = overlayImg(60., 70.);
+
 let streakText =
   style([
     position(absolute),
     zIndex(100),
-    bottom(`percent(-20.)),
+    bottom(`percent(-10.)),
     right(`percent(50.)),
     transform(translateX(`percent(50.))),
   ]);
@@ -134,7 +141,7 @@ let leftTopHeader =
     // padding(px(0)),
   ]);
 
-let rightTopHeader = style([textAlign(center)]);
+let centerText = style([textAlign(center)]);
 
 /// NOTE: the padding of 4% is calculated as 12/3 since there is a right padding of 12% and 3 animal images shown.
 let dappImagesCounteractOffset = style([marginLeft(`percent(4.))]);
@@ -165,22 +172,24 @@ let clickableLink =
     cursor(`pointer),
   ]);
 
-let headerImg = enlargement =>
+let headerImg = (enlargement, scalar) =>
   style([
+    position(`relative),
     zIndex(1),
     maxHeight(px(500)),
-    maxWidth(`percent(enlargement)),
+    maxWidth(`percent(100. *. enlargement)),
+    left(`percent((-50.) *. (enlargement -. 1.))),
+    transform(scale(scalar, scalar)),
     textAlign(center),
+    transition(~duration=1000, ~delay=0, ~timingFunction=ease, "all"),
     hover([
       filter([`saturate(150.), `brightness(110.)]),
       zIndex(2),
       overflow(visible),
-      transform(scale(1.1, 1.1)),
+      transform(scale(1.1 *. scalar, 1.1 *. scalar)),
       transition(~duration=100, ~delay=0, ~timingFunction=ease, "all"),
     ]),
   ]);
-
-let animalText = style([transform(translateX(`percent(25.)))]);
 
 let horizantalBlueTile =
   style([
@@ -406,3 +415,41 @@ let mergeStyles: list(string) => string =
 let wrapText = style([overflowWrap(`breakWord), wordWrap(`breakWord)]);
 
 let fiftyPercentWidth = style([width(`percent(50.))]);
+
+let carousel =
+  style([
+    position(`relative),
+    width(`percent(150.)),
+    left(`percent(-15.)),
+  ]);
+
+let invisibleGorilla = style([display(`none)]);
+
+let fadeOut = targetOpacity =>
+  style(
+    [transition(~duration=2000, ~delay=0, ~timingFunction=ease, "opacity")]
+    ->List.append([opacity(targetOpacity)]),
+  );
+
+let carouselArrow = onLeft =>
+  style([
+    cursor(`pointer),
+    padding(`px(20)),
+    color(white),
+    backgroundColor(hex("72c7d7")),
+    hover(
+      [backgroundColor(hex("40b2c9"))]
+      @ {
+        onLeft
+          ? [paddingLeft(`px(15)), paddingRight(`px(25))]
+          : [paddingRight(`px(15)), paddingLeft(`px(25))];
+      },
+    ),
+    borderRadius(px(4)),
+    position(absolute),
+    zIndex(3),
+    transform(translateX(`percent(-50.))),
+    {
+      onLeft ? left(`percent(20.)) : left(`percent(80.));
+    },
+  ]);

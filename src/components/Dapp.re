@@ -4,7 +4,7 @@ open Belt.Option;
 open Components;
 
 // Load styles for the carousel and react-tabs
-[%bs.raw {|require('@brainhubeu/react-carousel/lib/style.css')|}];
+[%bs.raw {|require('@wildcards/react-carousel/lib/style.css')|}];
 [%bs.raw {|require('react-tabs/style/react-tabs.css')|}];
 
 let flameImg = [%bs.raw {|require('../img/streak-flame.png')|}];
@@ -14,9 +14,15 @@ module ShareSocial = {
   [@bs.module "./components/shareSocialMedia"] [@react.component]
   external make: unit => React.element = "default";
 };
-module CountDownForeclosure = {
+module CountDown = {
   [@bs.module "./components/CountDown"] [@react.component]
-  external make: (~endDateMoment: MomentRe.Moment.t) => React.element =
+  external make:
+    (
+      ~endDateMoment: MomentRe.Moment.t,
+      ~includeWords: bool=? /*default true*/,
+      ~leadingZeros: bool=?
+    ) /*default false*/ =>
+    React.element =
     "default";
 };
 module Countdown = {
@@ -26,11 +32,16 @@ module Countdown = {
 
 module EditButton = {
   [@react.component]
-  let make = (~animal: Animal.t) => {
+  let make = (~animal: Animal.t, ~isExplorer) => {
     <Rimble.Button
       onClick={event => {
         ReactEvent.Form.preventDefault(event);
-        ReasonReactRouter.push("#details/" ++ Animal.getName(animal));
+        ReasonReactRouter.push(
+          "#"
+          ++ InputHelp.getPagePrefix(isExplorer)
+          ++ "details/"
+          ++ animal->Animal.getName->Js.Global.encodeURI,
+        );
       }}>
       {React.string("Edit")}
     </Rimble.Button>;
@@ -44,9 +55,10 @@ module Streak = {
 
     let daysHeld =
       PureHooks.useTimeAcquiredAnimal(animal)
-      ->Belt.Option.map(dateAquired =>
-          MomentRe.diff(MomentRe.momentNow(), dateAquired, `days)
-        );
+      ->Belt.Option.map(dateAquired => {
+          let days = MomentRe.diff(MomentRe.momentNow(), dateAquired, `days);
+          days > 18000. ? 0. : days;
+        });
 
     switch (daysHeld) {
     | Some(daysHeldFloat) =>
@@ -67,67 +79,430 @@ module Streak = {
   };
 };
 
-module AnimalComingSoonOnLandingPage = {
+//  <Rimble.Flex className=Styles.animalBox>
+//            <Rimble.Box>
+//              <div className=Styles.animalBack>
+//                <img className=Styles.headerImg src=animal2 />
+//                <div className=Styles.animalText>
+//                  <h2> {React.string("Simon")} </h2>
+//                  <h3 className=Styles.colorGreen>
+//                    {React.string("COMING IN")}
+//                  </h3>
+//                  <Countdown />
+//                </div>
+//              </div>
+//            </Rimble.Box>
+//            //  <Offline requireSmartContractsLoaded=true>
+//            //   //  <PriceDisplay tokenId={Some("0")} />
+//            //   //  <BuyModal tokenId={Some("0")} />
+//            //  </Offline>
+//            <Rimble.Box>
+//              <img className=Styles.headerImg src=animal1 />
+//              <div>
+//                <div className=Styles.animalText>
+//                  <h2> {React.string("Vitalik")} </h2>
+//                  <Offline requireSmartContractsLoaded=true>
+//                    <PriceDisplay tokenId=None />
+//                    <BuyModal tokenId=None />
+//                  </Offline>
+//                </div>
+//              </div>
+//            </Rimble.Box>
+//            <Rimble.Box>
+//              <div className=Styles.animalBack>
+//                <img className=Styles.headerImg src=animal3 />
+//                <div className=Styles.animalText>
+//                  <h2> {React.string("Andy")} </h2>
+//                  <h3 className=Styles.colorGreen>
+//                    {React.string("COMING IN")}
+//                  </h3>
+//                  <Countdown />
+//                </div>
+//              </div>
+//            </Rimble.Box>
+//          </Rimble.Flex>
+
+    let (beforeDate, setIsBeforeDate) = React.useState(() => isBeforeDate());
+    React.useEffect0(() => {
+      let _timout =
+        Js.Global.setTimeout(
+          () => setIsBeforeDate(_ => isBeforeDate()),
+          1500,
+        );
+      None;
+    });
+
+    beforeDate
+      ? {
+        beforeComponent;
+      }
+      : {
+        afterComponent;
+      };
+  };
+};
+
+module BasicAnimalDisplay = {
   [@react.component]
-  let make = (~animal: Animal.t) => {
+  let make = (~animal: Animal.t, ~isExplorer) => {
+    let owned = animal->Animal.useIsAnimalOwened;
+    let currentPatron =
+      GeneralHooks.useCurrentPatronAnimal(animal)
+      ->mapWithDefault("Loading", a => a);
+    let userId = UserProvider.useUserNameOrTwitterHandle(currentPatron);
+
+    let userIdComponent = UserProvider.useUserComponent(userId);
+
+    <React.Fragment>
+      <PriceDisplay animal />
+      userIdComponent
+      <br />
+      {owned ? <EditButton animal isExplorer /> : <BuyModal animal />}
+    </React.Fragment>;
+  };
+};
+
+module AnimalOnLandingPage = {
+  [@react.component]
+  let make =
+      (
+        ~animal,
+        ~scalar: float=1.,
+        ~enlargement: float=1.,
+        ~optionEndDateMoment: option(MomentRe.Moment.t),
+        ~isExplorer,
+      ) => {
     let name = Animal.getName(animal);
 
-    <Rimble.Box>
-      <a
-        className=Styles.clickableLink
-        onClick={event => {
-          ReactEvent.Mouse.preventDefault(event);
-          ReasonReactRouter.push("#details/" ++ name);
-        }}>
-        <img
-          className={Styles.headerImg(150.)}
-          src={Animal.getImage(animal)}
+    let optAlternateImage = Animal.getAlternateImage(animal);
+    let optOrgBadge = Animal.getOrgBadgeImage(animal);
+
+    let normalImage = () =>
+      <img
+        className={Styles.headerImg(enlargement, scalar)}
+        src={Animal.getImage(animal)}
+      />;
+
+    let componentWithoutImg = (img, ~hideBadges: bool) => {
+      <React.Fragment>
+        {img()}
+        {if (hideBadges) {
+           React.null;
+         } else {
+           <React.Fragment>
+             {switch (optionEndDateMoment) {
+              | Some(_endDateMoment) => React.null
+              | None =>
+                <div className=Styles.overlayFlameImg>
+                  <Offline requireSmartContractsLoaded=true>
+                    <Streak animal />
+                  </Offline>
+                </div>
+              }}
+             {switch (optOrgBadge) {
+              | None => React.null
+              | Some(orgBadge) =>
+                <div className=Styles.overlayBadgeImg>
+                  <img className=Styles.flameImg src=orgBadge />
+                </div>
+              }}
+           </React.Fragment>;
+         }}
+      </React.Fragment>;
+    };
+
+    let imageHoverSwitcher = {
+      switch (optAlternateImage) {
+      | None => componentWithoutImg(normalImage, ~hideBadges=false)
+      | Some(alternateImage) =>
+        <Components.HoverToggle
+          _ComponentNoHover={componentWithoutImg(
+            normalImage,
+            ~hideBadges=false,
+          )}
+          _ComponentHover={componentWithoutImg(
+            () =>
+              <img
+                className={Styles.headerImg(enlargement, scalar)}
+                src=alternateImage
+              />,
+            ~hideBadges=true,
+          )}
         />
-        <div className=Styles.animalText>
-          <h2> {React.string(name)} </h2>
-        </div>
-      </a>
-      <div className=Styles.animalText>
-        <h3 className=Styles.colorGreen> {React.string("COMING IN")} </h3>
-        <Countdown />
+      };
+    };
+
+    <Rimble.Box className=Styles.centerText>
+      <div className=Styles.positionRelative>
+        <a
+          className=Styles.clickableLink
+          onClick={event => {
+            ReactEvent.Mouse.preventDefault(event);
+            ReasonReactRouter.push(
+              "#"
+              ++ InputHelp.getPagePrefix(isExplorer)
+              ++ "details/"
+              ++ name->Js.Global.encodeURI,
+            );
+          }}>
+          imageHoverSwitcher
+          <div> <h2> {React.string(name)} </h2> </div>
+        </a>
       </div>
+      {switch (optionEndDateMoment) {
+       | Some(endDateMoment) =>
+         <div>
+           <h3 className=Styles.colorGreen> {React.string("COMING IN")} </h3>
+           <CountDown endDateMoment leadingZeros=true includeWords=false />
+         </div>
+       | None =>
+         <div>
+           <Offline requireSmartContractsLoaded=true>
+             <BasicAnimalDisplay animal isExplorer />
+           </Offline>
+         </div>
+       }}
     </Rimble.Box>;
   };
 };
-module AnimalOnLandingPage = {
-  [@react.component]
-  let make = (~animal: Animal.t, ~owned: bool) => {
-    let name = Animal.getName(animal);
 
-    <Rimble.Box>
-      <a
-        className=Styles.clickableLink
-        onClick={event => {
-          ReactEvent.Mouse.preventDefault(event);
-          ReasonReactRouter.push("#details/" ++ name);
-        }}>
-        <div className=Styles.positionRelative>
-          <img
-            className={Styles.headerImg(150.)}
-            src={Animal.getImage(animal)}
+module CarouselAnimal = {
+  [@react.component]
+  let make = (~animal, ~scalar, ~isExplorer, ~enlargement: float=1.) => {
+    let isLaunched = animal->Animal.isLaunched;
+    switch (isLaunched) {
+    | Animal.Launched =>
+      <AnimalOnLandingPage
+        animal
+        scalar
+        optionEndDateMoment=None
+        isExplorer
+        enlargement
+      />
+    | Animal.LaunchDate(endDateMoment) =>
+      <DisplayAfterDate
+        endDateMoment
+        afterComponent={
+          <AnimalOnLandingPage
+            animal
+            isExplorer
+            scalar
+            optionEndDateMoment=None
+            enlargement
           />
-          <div className=Styles.overlayFlameImg>
-            <Offline requireSmartContractsLoaded=true>
-              <Streak animal />
-            </Offline>
-          </div>
-        </div>
-        <div className=Styles.animalText>
-          <h2> {React.string(name)} </h2>
-        </div>
-      </a>
-      <div className=Styles.animalText>
-        <Offline requireSmartContractsLoaded=true>
-          <PriceDisplay animal />
-          {owned ? <EditButton animal /> : <BuyModal animal />}
-        </Offline>
-      </div>
+        }
+        beforeComponent={
+          <AnimalOnLandingPage
+            animal
+            scalar
+            isExplorer
+            optionEndDateMoment={Some(endDateMoment)}
+            enlargement
+          />
+        }
+      />
+    };
+  };
+};
+
+module AnimalCarousel = {
+  [@react.component]
+  let make = (~isExplorer) => {
+    let (carouselIndex, setCarouselIndex) = React.useState(() => 17);
+    let numItems = Animal.orderedArray->Array.length;
+    <Rimble.Box className=Styles.positionRelative>
+      <Carousel
+        className=Styles.carousel
+        slidesPerPage=5
+        centered=true
+        value=carouselIndex
+        animationSpeed=1000
+        infinite=true
+        autoPlay=5000
+        arrowLeft={
+          <span
+            className={Styles.carouselArrow(true)}
+            onClick={event => {
+              ReactEvent.Mouse.preventDefault(event);
+              setCarouselIndex(_ => carouselIndex - 1);
+              ReactEvent.Mouse.stopPropagation(event);
+            }}>
+            {js|◄|js}->React.string
+          </span>
+        }
+        arrowRight={
+          <span
+            className={Styles.carouselArrow(false)}
+            onClick={event => {
+              ReactEvent.Mouse.preventDefault(event);
+              setCarouselIndex(_ => carouselIndex + 1);
+              ReactEvent.Mouse.stopPropagation(event);
+            }}>
+            {js|►|js}->React.string
+          </span>
+        }
+        arrows=true
+        onChange={test => setCarouselIndex(_ => test)}>
+        {ReasonReact.array(
+           Array.mapi(
+             (index, animal) => {
+               let (opacity, scalar) =
+                 switch (index) {
+                 | x when x == carouselIndex mod numItems => (1., 1.0)
+                 | x
+                     when
+                       x == (carouselIndex - 1)
+                       mod numItems
+                       || x == (carouselIndex + 1)
+                       mod numItems => (
+                     0.8,
+                     0.8,
+                   )
+                 | x
+                     when
+                       x == (carouselIndex - 2)
+                       mod numItems
+                       || x == (carouselIndex + 2)
+                       mod numItems => (
+                     0.1,
+                     0.7,
+                   )
+                 | _ => (0., 0.6)
+                 };
+
+               <div className={Styles.fadeOut(opacity)}>
+                 <CarouselAnimal animal isExplorer scalar enlargement=1.5 />
+               </div>;
+             },
+             Animal.orderedArray,
+           ),
+         )}
+      </Carousel>
     </Rimble.Box>;
+  };
+};
+
+module AnimalActionsOnDetailsPage = {
+  [@react.component]
+  let make = (~animal) => {
+    let owned = animal->Animal.useIsAnimalOwened;
+    let currentAccount = useCurrentUser()->mapWithDefault("loading", a => a);
+    let currentPatron =
+      GeneralHooks.useCurrentPatronAnimal(animal)
+      ->mapWithDefault("Loading", a => a);
+    let userId = UserProvider.useUserNameOrTwitterHandle(currentPatron);
+    let userIdComponent = UserProvider.useUserComponent(userId);
+
+    let price = () =>
+      <React.Fragment>
+        userIdComponent
+        <PriceDisplay animal />
+        <BuyModal animal />
+      </React.Fragment>;
+
+    if (owned) {
+      <React.Fragment>
+        <PriceDisplay animal />
+        <UpdatePriceModal animal />
+        <br />
+        <UpdateDeposit animal />
+        <br />
+        {UserProvider.useIsUserValidated(currentAccount)
+           ? <ShareSocial /> : <ValidateModal />}
+      </React.Fragment>;
+    } else {
+      <React.Fragment>
+        {switch (animal->Animal.isLaunched) {
+         | Launched => price()
+
+         | LaunchDate(endDateMoment) =>
+           <DisplayAfterDate
+             endDateMoment
+             afterComponent={price()}
+             beforeComponent={
+               <React.Fragment> <CountDown endDateMoment /> </React.Fragment>
+             }
+           />
+         }}
+      </React.Fragment>;
+    };
+  };
+};
+
+module DetailsView = {
+  [@react.component]
+  let make = (~animalStr) => {
+    let optionAnimal = Animal.getAnimal(animalStr);
+
+    switch (optionAnimal) {
+    | None =>
+      <div>
+        <h1>
+          {React.string(
+             "We are unable to find a animal by the name of \""
+             ++ {animalStr->Js.Global.decodeURI}
+             ++ "\" in our system.",
+           )}
+        </h1>
+        <p> <S> "Please check the spelling and try again." </S> </p>
+      </div>
+    | Some(animal) =>
+      let normalImage = animal =>
+        <img className=Styles.ownedAnimalImg src={Animal.getImage(animal)} />;
+      let optAlternateImage = Animal.getAlternateImage(animal);
+      let optOrgBadge = Animal.getOrgBadgeImage(animal);
+
+      let isLaunched = animal->Animal.isLaunched;
+
+      let displayAnimal = animalImage =>
+        <div className=Styles.positionRelative>
+          {animalImage()}
+          {switch (isLaunched) {
+           | Animal.Launched =>
+             <div className=Styles.overlayFlameImg>
+               <Offline requireSmartContractsLoaded=true>
+                 <Streak animal />
+               </Offline>
+             </div>
+           | Animal.LaunchDate(endDateMoment) =>
+             <DisplayAfterDate
+               endDateMoment
+               afterComponent={
+                 <div className=Styles.overlayFlameImg>
+                   <Offline requireSmartContractsLoaded=true>
+                     <Streak animal />
+                   </Offline>
+                 </div>
+               }
+               beforeComponent=React.null
+             />
+           }}
+          {switch (optOrgBadge) {
+           | None => React.null
+           | Some(orgBadge) =>
+             <div className=Styles.overlayBadgeImg>
+               <img className=Styles.flameImg src=orgBadge />
+             </div>
+           }}
+        </div>;
+
+      <React.Fragment>
+        {switch (optAlternateImage) {
+         | None => displayAnimal(() => normalImage(animal))
+         | Some(alternateImage) =>
+           <Components.HoverToggle
+             _ComponentHover={
+               <img className=Styles.ownedAnimalImg src=alternateImage />
+             }
+             _ComponentNoHover={displayAnimal(() => normalImage(animal))}
+           />
+         }}
+        <h2> <S> {Animal.getName(animal)} </S> </h2>
+        <Offline requireSmartContractsLoaded=true>
+          <AnimalActionsOnDetailsPage animal />
+        </Offline>
+      </React.Fragment>;
+    };
   };
 };
 
@@ -184,7 +559,7 @@ module GorillaCarousel = {
 
 module DefaultLook = {
   [@react.component]
-  let make = (~areRequirementsLoaded: bool=false) => {
+  let make = (~isExplorer) => {
     open Components;
     let setProvider = useSetProvider();
     React.useEffect0(() => {
@@ -194,85 +569,16 @@ module DefaultLook = {
       None;
     });
 
-    let (ownVitalik, ownSimon, ownAndy, currentAccount) =
-      if (areRequirementsLoaded) {
-        // NOTE/TODO: this doesn't take into account token ownership
-        let currentPatronVitalik =
-          useCurrentPatron()->mapWithDefault("no-patron-defined", a => a);
-        let currentPatronSimon =
-          useCurrentPatronNew(0)->mapWithDefault("no-patron-defined", a => a);
-        let currentPatronAndy =
-          useCurrentPatronNew(1)->mapWithDefault("no-patron-defined", a => a);
-        let currentAccount =
-          useCurrentUser()->mapWithDefault("loading", a => a);
-
-        (
-          currentAccount == currentPatronVitalik,
-          currentAccount == currentPatronSimon,
-          currentAccount == currentPatronAndy,
-          currentAccount,
-        );
-      } else {
-        (false, false, false, "loading");
-      };
     let url = ReasonReactRouter.useUrl();
 
-    <div className=Styles.rightTopHeader>
+    <div className=Styles.centerText>
       {switch (Js.String.split("/", url.hash)) {
-       | [|"details", animalStr|] =>
-         let optionAnimal = Animal.getAnimal(animalStr);
-
-         switch (optionAnimal) {
-         | None =>
-           <div>
-             <h1>
-               {React.string(
-                  "We are unable to find a animal by the name of \""
-                  ++ {animalStr->Js.Global.decodeURI}
-                  ++ "\" in our system.",
-                )}
-             </h1>
-             <p> <S> "Please check the spelling and try again." </S> </p>
-           </div>
-         | Some(animal) =>
-           <React.Fragment>
-             <img
-               className=Styles.ownedAnimalImg
-               src={Animal.getImage(animal)}
-             />
-             <h2> <S> {Animal.getName(animal)} </S> </h2>
-             <Offline requireSmartContractsLoaded=true>
-               {
-                 let isYours =
-                   switch (animal) {
-                   | Vitalik => ownVitalik
-                   | Simon => ownSimon
-                   | Andy => ownAndy
-                   | _ => false
-                   };
-
-                 if (isYours) {
-                   <React.Fragment>
-                     <UpdatePriceModal animal />
-                     <br />
-                     <UpdateDeposit animal />
-                     <br />
-                     {UserProvider.useIsUserValidated(currentAccount)
-                        ? <ShareSocial /> : <ValidateModal />}
-                   </React.Fragment>;
-                 } else {
-                   <React.Fragment>
-                     <PriceDisplay animal />
-                     <BuyModal animal />
-                   </React.Fragment>;
-                 };
-               }
-             </Offline>
-           </React.Fragment>
-         };
+       | [|"details", animalStr|]
+       | [|"explorer", "details", animalStr|]
+       | [|"explorer", "details", animalStr, ""|] => <DetailsView animalStr />
        | _ =>
          <React.Fragment>
-           <GorillaCarousel ownVitalik ownSimon ownAndy />
+           <AnimalCarousel isExplorer />
            <Rimble.Box className=Styles.dappImagesCounteractOffset>
              <Offline requireSmartContractsLoaded=true>
                <TotalRaised />
@@ -323,7 +629,7 @@ type maybeDate =
   | Loading
   | Date(MomentRe.Moment.t);
 
-module AnimalInfo = {
+module AnimalInfoStats = {
   [@react.component]
   let make = (~animal: Animal.t) => {
     let animalName = Animal.getName(animal);
@@ -375,6 +681,132 @@ module AnimalInfo = {
       );
     let monthlyRate = Js.Float.toString(ratio *. 100.);
 
+    <React.Fragment>
+      <div>
+        <small>
+          <strong>
+            <S> {"Monthly Pledge (at " ++ monthlyRate ++ "%): "} </S>
+            <Rimble.Tooltip
+              message={
+                "This is the monthly percentage contribution of "
+                ++ animalName
+                ++ "'s sale price that will go towards conservation of endangered animals. This is deducted continuously from the deposit and paid by the owner of the animal"
+              }
+              placement="top">
+              <span> <S> {js|ⓘ|js} </S> </span>
+            </Rimble.Tooltip>
+          </strong>
+        </small>
+        <br />
+        <S> {monthlyPledgeEth ++ " ETH"} </S>
+        <br />
+        <small> <S> {"(" ++ monthlyPledgeUsd ++ " USD)"} </S> </small>
+      </div>
+      <p>
+        <small>
+          <strong>
+            <S> "Current Patron: " </S>
+            <Rimble.Tooltip
+              message={j|This is the $userIdType of the current owner|j}
+              placement="top">
+              <span> <S> {js|ⓘ|js} </S> </span>
+            </Rimble.Tooltip>
+          </strong>
+        </small>
+        <br />
+        userIdComponent
+      </p>
+      <p>
+        <small>
+          <strong>
+            <S> "Available Deposit: " </S>
+            <Rimble.Tooltip
+              message="This is the amount the owner has deposited to pay their monthly contribution"
+              placement="top">
+              <span> <S> {js|ⓘ|js} </S> </span>
+            </Rimble.Tooltip>
+          </strong>
+        </small>
+        <br />
+        <S> {depositAvailableToWithdraw ++ " ETH"} </S>
+        <br />
+        <small>
+          <S> {"(" ++ depositAvailableToWithdrawUsd ++ " USD)"} </S>
+        </small>
+      </p>
+      <p>
+        <small>
+          <strong>
+            <S> {animalName ++ "'s Patronage: "} </S>
+            <Rimble.Tooltip
+              message={
+                "This is the total contribution that has been raised thanks to the wildcard, "
+                ++ animalName
+              }
+              placement="top">
+              <span> <S> {js|ⓘ|js} </S> </span>
+            </Rimble.Tooltip>
+          </strong>
+        </small>
+        <br />
+        <S> {totalPatronage ++ " ETH"} </S>
+        <br />
+        <small> <S> {"(" ++ totalPatronageUsd ++ " USD)"} </S> </small>
+      </p>
+      {switch (definiteTime) {
+       | Date(date) =>
+         <p>
+           <small>
+             <strong>
+               <S> "Foreclosure date: " </S>
+               <Rimble.Tooltip
+                 message={
+                   "This is the date the deposit will run out and the animal and the current owner will lose ownership of "
+                   ++ animalName
+                 }
+                 placement="top">
+                 <span> <S> {js|ⓘ|js} </S> </span>
+               </Rimble.Tooltip>
+             </strong>
+           </small>
+           <br />
+           <S> {MomentRe.Moment.format("LLLL", date)} </S>
+           <br />
+           <small>
+             <S> "( " </S>
+             <CountDown endDateMoment=date />
+             <S> ")" </S>
+           </small>
+         </p>
+       | Loading => React.null
+       }}
+      {switch (daysHeld) {
+       | Some((daysHeldFloat, timeAquired)) =>
+         let timeAquiredString = timeAquired->MomentRe.Moment.toISOString;
+         <p>
+           <small>
+             <strong>
+               <S> "Days Held: " </S>
+               <Rimble.Tooltip
+                 message={j|This is the amount of time $animalName has been held. It was acquired on the $timeAquiredString.|j}
+                 placement="top">
+                 <span> <S> {js|ⓘ|js} </S> </span>
+               </Rimble.Tooltip>
+             </strong>
+           </small>
+           <br />
+           <S> daysHeldFloat->Js.Float.toFixed </S>
+           <br />
+         </p>;
+       | None => React.null
+       }}
+    </React.Fragment>;
+  };
+};
+
+module AnimalInfo = {
+  [@react.component]
+  let make = (~animal: Animal.t) => {
     // TODO: the ethereum address is really terribly displayed. But the default in Rimble UI includes a QR code scanner (which is really ugly).
     // https://rimble.consensys.design/components/rimble-ui/EthAddress#props
     // https://github.com/ConsenSys/rimble-ui/blob/dd470f00374a05c860b558a2cb9317861e4a0d89/src/EthAddress/index.js (maybe make a PR here with some changes)
@@ -385,126 +817,28 @@ module AnimalInfo = {
           <ReactTabs.Tab> "Details"->React.string </ReactTabs.Tab>
         </ReactTabs.TabList>
         <ReactTabs.TabPanel>
-          <h2> "Story Content"->React.string </h2>
+          <h2> "Story"->React.string </h2>
+          {ReasonReact.array(
+             Array.map(
+               paragraphText => <p> paragraphText->React.string </p>,
+               Animal.getStoryParagraphs(animal),
+             ),
+           )}
         </ReactTabs.TabPanel>
         <ReactTabs.TabPanel>
-          <div>
-            <small>
-              <strong>
-                <S> {"Monthly Pledge (at " ++ monthlyRate ++ "%): "} </S>
-                <Rimble.Tooltip
-                  message={
-                    "This is the monthly percentage contribution of "
-                    ++ animalName
-                    ++ "'s sale price that will go towards conservation of endangered animals. This is deducted continuously from the deposit and paid by the owner of the animal"
-                  }
-                  placement="top">
-                  <span> <S> {js|ⓘ|js} </S> </span>
-                </Rimble.Tooltip>
-              </strong>
-            </small>
-            <br />
-            <S> {monthlyPledgeEth ++ " ETH"} </S>
-            <br />
-            <small> <S> {"(" ++ monthlyPledgeUsd ++ " USD)"} </S> </small>
-          </div>
-          <p>
-            <small>
-              <strong>
-                <S> "Current Patron: " </S>
-                <Rimble.Tooltip
-                  message={j|This is the $userIdType of the current owner|j}
-                  placement="top">
-                  <span> <S> {js|ⓘ|js} </S> </span>
-                </Rimble.Tooltip>
-              </strong>
-            </small>
-            <br />
-            userIdComponent
-          </p>
-          <p>
-            <small>
-              <strong>
-                <S> "Available Deposit: " </S>
-                <Rimble.Tooltip
-                  message="This is the amount the owner has deposited to pay their monthly contribution"
-                  placement="top">
-                  <span> <S> {js|ⓘ|js} </S> </span>
-                </Rimble.Tooltip>
-              </strong>
-            </small>
-            <br />
-            <S> {depositAvailableToWithdraw ++ " ETH"} </S>
-            <br />
-            <small>
-              <S> {"(" ++ depositAvailableToWithdrawUsd ++ " USD)"} </S>
-            </small>
-          </p>
-          <p>
-            <small>
-              <strong>
-                <S> {animalName ++ "'s Patronage: "} </S>
-                <Rimble.Tooltip
-                  message={
-                    "This is the total contribution that has been raised thanks to the wildcard, "
-                    ++ animalName
-                  }
-                  placement="top">
-                  <span> <S> {js|ⓘ|js} </S> </span>
-                </Rimble.Tooltip>
-              </strong>
-            </small>
-            <br />
-            <S> {totalPatronage ++ " ETH"} </S>
-            <br />
-            <small> <S> {"(" ++ totalPatronageUsd ++ " USD)"} </S> </small>
-          </p>
-          {switch (definiteTime) {
-           | Date(date) =>
-             <p>
-               <small>
-                 <strong>
-                   <S> "Foreclosure date: " </S>
-                   <Rimble.Tooltip
-                     message={
-                       "This is the date the deposit will run out and the animal and the current owner will lose ownership of "
-                       ++ animalName
-                     }
-                     placement="top">
-                     <span> <S> {js|ⓘ|js} </S> </span>
-                   </Rimble.Tooltip>
-                 </strong>
-               </small>
-               <br />
-               <S> {MomentRe.Moment.format("LLLL", date)} </S>
-               <br />
-               <small>
-                 <S> "( " </S>
-                 <CountDownForeclosure endDateMoment=date />
-                 <S> ")" </S>
-               </small>
-             </p>
-           | Loading => React.null
-           }}
-          {switch (daysHeld) {
-           | Some((daysHeldFloat, timeAquired)) =>
-             let timeAquiredString = timeAquired->MomentRe.Moment.toISOString;
-             <p>
-               <small>
-                 <strong>
-                   <S> "Days Held: " </S>
-                   <Rimble.Tooltip
-                     message={j|This is the amount of time $animalName has been held. It was aquired on the $timeAquiredString.|j}
-                     placement="top">
-                     <span> <S> {js|ⓘ|js} </S> </span>
-                   </Rimble.Tooltip>
-                 </strong>
-               </small>
-               <br />
-               <S> daysHeldFloat->Js.Float.toFixed </S>
-               <br />
-             </p>;
-           | None => React.null
+          {switch (animal->Animal.isLaunched) {
+           | Launched => <AnimalInfoStats animal />
+           | LaunchDate(endDateMoment) =>
+             <DisplayAfterDate
+               endDateMoment
+               afterComponent={<AnimalInfoStats animal />}
+               beforeComponent={
+                 <React.Fragment>
+                   <h2> "This animal will launch in:"->React.string </h2>
+                   <CountDown endDateMoment />
+                 </React.Fragment>
+               }
+             />
            }}
         </ReactTabs.TabPanel>
       </ReactTabs>
@@ -516,15 +850,25 @@ module AnimalInfo = {
 // The Offline container here shows the website, but without loading the requirements
 let make = () => {
   let url = ReasonReactRouter.useUrl();
-  let (isDetailView, animalStr) = {
+  let (isDetailView, animalStr, isExplorer) = {
     switch (Js.String.split("/", url.hash)) {
-    | [|"details", animalStr|] => (true, animalStr)
-    | _ => (false, "")
+    | [|"explorer", "details", animalStr|]
+    | [|"explorer", "details", animalStr, ""|] => (true, animalStr, true)
+    | [|"details", animalStr|] => (true, animalStr, false)
+    | urlArray
+        when
+          Belt.Array.get(urlArray, 0)
+          ->Belt.Option.mapWithDefault(false, a => a == "explorer") => (
+        false,
+        "",
+        true,
+      )
+    | _ => (false, "", false)
     };
   };
 
   <Rimble.Flex
-    flexWrap={isDetailView ? "wrap-reverse" : "wrap"} alignItems="center">
+    flexWrap={isDetailView ? "wrap-reverse" : "wrap"} alignItems="start">
     <Rimble.Box p=1 width=[|1., 1., 0.5|]>
       <React.Fragment>
         {isDetailView
@@ -533,25 +877,16 @@ let make = () => {
              switch (optionAnimal) {
              | None => <DefaultLeftPanel />
              | Some(animal) =>
-               <Providers.UsdPriceProvider>
-                 <Offline requireSmartContractsLoaded=true>
-                   <AnimalInfo animal />
-                 </Offline>
-               </Providers.UsdPriceProvider>
+               <Offline requireSmartContractsLoaded=true>
+                 <AnimalInfo animal />
+               </Offline>
              };
            }
            : <DefaultLeftPanel />}
       </React.Fragment>
     </Rimble.Box>
     <Rimble.Box p=1 width=[|1., 1., 0.5|]>
-      <Providers.UsdPriceProvider>
-        <Offline
-          requireSmartContractsLoaded=true
-          alturnateLoaderWeb3={<DefaultLook key="a" />}
-          alturnateLoaderSmartContracts={<DefaultLook key="b" />}>
-          <DefaultLook areRequirementsLoaded=true key="c" />
-        </Offline>
-      </Providers.UsdPriceProvider>
+      <DefaultLook isExplorer />
     </Rimble.Box>
-  </Rimble.Flex>; //alturnativeNoWeb3=DefaultLook
+  </Rimble.Flex>;
 };
