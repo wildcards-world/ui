@@ -49,15 +49,10 @@ module Streak = {
   let make = (~animal: Animal.t) => {
     let animalName = Animal.getName(animal);
 
-    let daysHeld =
-      PureHooks.useTimeAcquiredAnimal(animal)
-      ->Belt.Option.map(dateAquired => {
-          let days = MomentRe.diff(MomentRe.momentNow(), dateAquired, `days);
-          days > 18000. ? 0. : days;
-        });
+    let daysHeld = QlHooks.useDaysHeld(animal);
 
     switch (daysHeld) {
-    | Some(daysHeldFloat) =>
+    | Some((daysHeldFloat, _timeAquired)) =>
       let numDaysStr = daysHeldFloat->Js.Float.toFixed;
 
       <Rimble.Tooltip
@@ -152,11 +147,7 @@ module AnimalOnLandingPage = {
              {switch (optionEndDateMoment) {
               | Some(_endDateMoment) => React.null
               | None =>
-                <div className=Styles.overlayFlameImg>
-                  <Offline requireSmartContractsLoaded=true>
-                    <Streak animal />
-                  </Offline>
-                </div>
+                <div className=Styles.overlayFlameImg> <Streak animal /> </div>
               }}
              {switch (optOrgBadge) {
               | None => React.null
@@ -399,7 +390,9 @@ module DetailsView = {
         <h1>
           {React.string(
              "We are unable to find a animal by the name of \""
-             ++ {animalStr->Js.Global.decodeURI}
+             ++ {
+               animalStr->Js.Global.decodeURI;
+             }
              ++ "\" in our system.",
            )}
         </h1>
@@ -418,19 +411,13 @@ module DetailsView = {
           {animalImage()}
           {switch (isLaunched) {
            | Animal.Launched =>
-             <div className=Styles.overlayFlameImg>
-               <Offline requireSmartContractsLoaded=true>
-                 <Streak animal />
-               </Offline>
-             </div>
+             <div className=Styles.overlayFlameImg> <Streak animal /> </div>
            | Animal.LaunchDate(endDateMoment) =>
              <DisplayAfterDate
                endDateMoment
                afterComponent={
                  <div className=Styles.overlayFlameImg>
-                   <Offline requireSmartContractsLoaded=true>
-                     <Streak animal />
-                   </Offline>
+                   <Streak animal />
                  </div>
                }
                beforeComponent=React.null
@@ -542,14 +529,7 @@ module AnimalInfoStats = {
   let make = (~animal: Animal.t) => {
     let animalName = Animal.getName(animal);
 
-    let daysHeld =
-      PureHooks.useTimeAcquiredAnimal(animal)
-      ->Belt.Option.map(dateAquired =>
-          (
-            MomentRe.diff(MomentRe.momentNow(), dateAquired, `days),
-            dateAquired,
-          )
-        );
+    let daysHeld = QlHooks.useDaysHeld(animal);
 
     let currentPatron =
       GeneralHooks.useCurrentPatronAnimal(animal)
@@ -798,4 +778,3 @@ let make = () => {
     </Rimble.Box>
   </Rimble.Flex>;
 };
-

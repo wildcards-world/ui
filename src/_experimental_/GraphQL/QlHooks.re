@@ -24,6 +24,12 @@ let decodePrice: Js.Json.t => Eth.t =
     ->Js.Json.decodeString
     ->Belt.Option.mapWithDefault("0", a => a)
     ->Eth.makeWithDefault(0);
+let decodeMoment: Js.Json.t => MomentRe.Moment.t =
+  price =>
+    price
+    ->Js.Json.decodeString
+    ->Belt.Option.mapWithDefault(0, a => a->int_of_string) /*trusting that gql will be reliable here*/
+    ->MomentRe.momentWithUnix;
 
 module SubUserName = [%graphql
   {|
@@ -43,6 +49,15 @@ module SubUserName = [%graphql
   |}
 ];
 
+module SubTimeAcquiredQuery = [%graphql
+  {|
+    subscription ($tokenId: String!) {
+      wildcard(id: $tokenId) {
+        timeAcquired @bsDecoder(fn: "decodeMoment")
+      }
+    }
+  |}
+];
 module SubPriceQuery = [%graphql
   {|
     subscription ($tokenId: String!) {
@@ -56,6 +71,8 @@ module SubPriceQuery = [%graphql
 ];
 
 module SubPrice = ReasonApolloHooks.Subscription.Make(SubPriceQuery);
+module SubTimeAcquired =
+  ReasonApolloHooks.Subscription.Make(SubTimeAcquiredQuery);
 
 module UserQuery = ReasonApolloHooks.Subscription.Make(SubUserName);
 
@@ -103,12 +120,12 @@ let usePriceStringWithDefault = (animal, default: string, units) => {
   | _ => default
   };
 };
-let useTimeAquired: Animal.t => graphqlDataLoad(Eth.t) =
+let useTimeAcquired: Animal.t => graphqlDataLoad(MomentRe.Moment.t) =
   animal => {
     let (simple, _) =
-      SubPrice.use(
+      SubTimeAcquired.use(
         ~variables=
-          SubPriceQuery.make(
+          SubTimeAcquiredQuery.make(
             ~tokenId=
               Animal.getId(animal)->Belt.Option.mapWithDefault("42", a => a),
             (),
@@ -123,21 +140,26 @@ let useTimeAquired: Animal.t => graphqlDataLoad(Eth.t) =
     | Data(response) =>
       Data(
         response##wildcard
-        ->Belt.Option.mapWithDefault(Eth.makeFromInt(0), wildcard =>
-            wildcard##price##price
-          ),
+        ->Belt.Option.mapWithDefault(MomentRe.momentNow(), wildcard
+            // wildcard
+            => wildcard##timeAcquired),
       )
     };
   };
 
-let usePriceStringWithDefault = (animal, default: string, units) => {
-  switch (usePrice(animal)) {
-  | Data(price) =>
-    Js.log(price);
-    "default"; //price->Eth.get(units);
+let useTimeAcquiredWithDefault = (animal, default: MomentRe.Moment.t) => {
+  switch (useTimeAcquired(animal)) {
+  | Data(moment) => moment
   | _ => default
   };
 };
+
+let useDaysHeld = animal =>
+  switch (useTimeAcquired(animal)) {
+  | Data(moment) =>
+    Some((MomentRe.diff(MomentRe.momentNow(), moment, `days), moment))
+  | _ => None
+  };
 
 [@react.component]
 let make = () => {
@@ -148,10 +170,10 @@ let make = () => {
          (_index, animal) => {
            let animalId =
              Animal.getId(animal)->Belt.Option.mapWithDefault("42", a => a);
-           let price0 =
+           let price =
              usePriceStringWithDefault(animal, "loading", Eth.Eth(`gwei));
            <p>
-             {("price token #" ++ animalId ++ ": " ++ price0)->React.string}
+             {("price token #" ++ animalId ++ ": " ++ price)->React.string}
            </p>;
          },
          Animal.orderedArray,
@@ -163,9 +185,14 @@ let make = () => {
          (_index, animal) => {
            let animalId =
              Animal.getId(animal)->Belt.Option.mapWithDefault("42", a => a);
-           let price0 = usePriceStringWithDefault(animal, "loading", `gwei);
+           let timeAcquired =
+             MomentRe.Moment.format(
+               "LLLL",
+               useTimeAcquiredWithDefault(animal, MomentRe.momentNow()),
+             );
            <p>
-             {("price token #" ++ animalId ++ ": " ++ price0)->React.string}
+             {("price token #" ++ animalId ++ ": " ++ timeAcquired)
+              ->React.string}
            </p>;
          },
          Animal.orderedArray,
