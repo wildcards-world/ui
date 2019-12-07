@@ -23,9 +23,9 @@ module EmailSignup = {
             <br />
           </Box>
           <Box width=[|1., 1., 0.55|]>
-            <Form
+            <Rimble.Form
               action="https://world.us20.list-manage.com/subscribe/post?u=11056167825e6c3d276b0a362&id=66d23199dd"
-              method="post">
+              _method="post">
               <Flex flexWrap="wrap">
                 <Box width=[|1., 0.6|] className=Styles.inputElements>
                   <Form.Input
@@ -43,7 +43,7 @@ module EmailSignup = {
                   <Button width=1.> <S> "Submit" </S> </Button>
                 </Box>
               </Flex>
-            </Form>
+            </Rimble.Form>
           </Box>
         </Flex>
       </Box>

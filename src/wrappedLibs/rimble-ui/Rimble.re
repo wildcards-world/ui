@@ -193,7 +193,7 @@ module Form = {
       ~onSubmit: ReactEvent.Form.t => unit=?,
       ~children: React.element,
       ~action: string=?,
-      ~method: string=?
+      ~_method: string=?
     ) =>
     React.element =
     "Form";

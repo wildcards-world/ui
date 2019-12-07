@@ -25,10 +25,6 @@ module CountDown = {
     React.element =
     "default";
 };
-module Countdown = {
-  [@bs.module "./components/ComingSoonCountdown.js"] [@react.component]
-  external make: unit => React.element = "default";
-};
 
 module EditButton = {
   [@react.component]
@@ -79,48 +75,11 @@ module Streak = {
   };
 };
 
-//  <Rimble.Flex className=Styles.animalBox>
-//            <Rimble.Box>
-//              <div className=Styles.animalBack>
-//                <img className=Styles.headerImg src=animal2 />
-//                <div className=Styles.animalText>
-//                  <h2> {React.string("Simon")} </h2>
-//                  <h3 className=Styles.colorGreen>
-//                    {React.string("COMING IN")}
-//                  </h3>
-//                  <Countdown />
-//                </div>
-//              </div>
-//            </Rimble.Box>
-//            //  <Offline requireSmartContractsLoaded=true>
-//            //   //  <PriceDisplay tokenId={Some("0")} />
-//            //   //  <BuyModal tokenId={Some("0")} />
-//            //  </Offline>
-//            <Rimble.Box>
-//              <img className=Styles.headerImg src=animal1 />
-//              <div>
-//                <div className=Styles.animalText>
-//                  <h2> {React.string("Vitalik")} </h2>
-//                  <Offline requireSmartContractsLoaded=true>
-//                    <PriceDisplay tokenId=None />
-//                    <BuyModal tokenId=None />
-//                  </Offline>
-//                </div>
-//              </div>
-//            </Rimble.Box>
-//            <Rimble.Box>
-//              <div className=Styles.animalBack>
-//                <img className=Styles.headerImg src=animal3 />
-//                <div className=Styles.animalText>
-//                  <h2> {React.string("Andy")} </h2>
-//                  <h3 className=Styles.colorGreen>
-//                    {React.string("COMING IN")}
-//                  </h3>
-//                  <Countdown />
-//                </div>
-//              </div>
-//            </Rimble.Box>
-//          </Rimble.Flex>
+module DisplayAfterDate = {
+  [@react.component]
+  let make = (~endDateMoment, ~beforeComponent, ~afterComponent) => {
+    let isBeforeDate = () =>
+      MomentRe.diff(endDateMoment, MomentRe.momentNow(), `seconds) > 0.;
 
     let (beforeDate, setIsBeforeDate) = React.useState(() => isBeforeDate());
     React.useEffect0(() => {
@@ -506,57 +465,6 @@ module DetailsView = {
   };
 };
 
-module GorillaCarousel = {
-  // let make = (~ownedAnimal: array(Animal)) => {
-  [@react.component]
-  let make = (~ownSimon, ~ownVitalik, ~ownAndy) => {
-    let (carouselIndex, setCarouselIndex) = React.useState(() => 4);
-    <Rimble.Box>
-      <Carousel
-        slidesPerPage=3
-        centered=false
-        value=carouselIndex
-        animationSpeed=1000
-        onChange={test =>
-          setCarouselIndex(_
-            // this switch teleports the carousel back to the beginning so that it appears to be circular.
-            =>
-              switch (test) {
-              | x when x <= 1 => 18
-              | x when x >= 18 => 1
-              | x => x
-              }
-            )
-        }>
-        <AnimalComingSoonOnLandingPage animal=CatStevens />
-        <AnimalComingSoonOnLandingPage animal=Aruma />
-        <AnimalComingSoonOnLandingPage animal=Apthapi />
-        <AnimalComingSoonOnLandingPage animal=Ajayu />
-        <AnimalOnLandingPage animal=Simon owned=ownSimon />
-        <AnimalOnLandingPage animal=Vitalik owned=ownVitalik />
-        <AnimalOnLandingPage animal=Andy owned=ownAndy />
-        <AnimalComingSoonOnLandingPage animal=Verano />
-        <AnimalComingSoonOnLandingPage animal=Tarkus />
-        <AnimalComingSoonOnLandingPage animal=Pancho />
-        <AnimalComingSoonOnLandingPage animal=Mijungla />
-        <AnimalComingSoonOnLandingPage animal=Llajuita />
-        <AnimalComingSoonOnLandingPage animal=Espumita />
-        <AnimalComingSoonOnLandingPage animal=Cubai />
-        <AnimalComingSoonOnLandingPage animal=CatStevens />
-        <AnimalComingSoonOnLandingPage animal=Aruma />
-        <AnimalComingSoonOnLandingPage animal=Apthapi />
-        <AnimalComingSoonOnLandingPage animal=Ajayu />
-        <AnimalOnLandingPage animal=Simon owned=ownSimon />
-      </Carousel>
-      <Carousel.Dots
-        number=14
-        value={carouselIndex - 3}
-        onChange={index => setCarouselIndex(_ => index + 3)}
-      />
-    </Rimble.Box>;
-  };
-};
-
 module DefaultLook = {
   [@react.component]
   let make = (~isExplorer) => {
@@ -890,3 +798,4 @@ let make = () => {
     </Rimble.Box>
   </Rimble.Flex>;
 };
+
