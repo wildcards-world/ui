@@ -1,0 +1,32 @@
+name: github pages
+
+on:
+  push:
+    branches:
+    - deploy
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@master
+      # with:
+      #   submodules: true
+
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '10.x'
+        registry-url: 'https://registry.npmjs.org'
+
+    - name: Install
+      run: npm install --dev
+
+    - name: Build
+      run: GENERATE_SOURCEMAP=false npm run build # TODO: reenable source maps as soon as it is possible - useful for debugging.
+
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v2.5.0
+      env:
+        ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+        PUBLISH_BRANCH: gh-pages
+        PUBLISH_DIR: ./build

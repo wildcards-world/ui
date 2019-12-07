@@ -10,7 +10,6 @@ export const UserInfoProvider = ({ children }) => {
     let currentUserEthAddressLower = currentUserEthAddress.toLowerCase()
 
     if (userProvider.verifications[currentUserEthAddressLower] === undefined) {
-      console.log(userProvider)
       setUserProvider({
         ...userProvider,
         verifications:
@@ -42,7 +41,6 @@ export const UserInfoProvider = ({ children }) => {
     if (!!currentUserEthAddress && currentUserEthAddress !== "") {
       updateUserProvider(currentUserEthAddress)
     }
-    console.log('always print', currentUserEthAddress)
   }, [currentUserEthAddress])
 
   return (

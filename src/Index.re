@@ -1,19 +1,36 @@
 open Providers;
 
+[%bs.raw {|require("./custom.css")|}];
+
+// module Test = {
+//   [@react.component]
+//   let make = () => {
+//     let gContext = React.useContext(GlobalContext.context);
+//     switch (gContext) {
+//     | Loading => <p> "loading - from internet"->React.string </p>
+//     | Error(_error) => <p> "error"->React.string </p>
+//     | Loaded(isLoaded) => <p> isLoaded->React.string </p>
+//     };
+//   };
+// };
+
 module Router = {
   [@react.component]
   let make = () => {
     let url = ReasonReactRouter.useUrl();
     switch (url.path) {
-    | ["new-data"] => <TestQlUi />
+    | ["new-data"] => <QlHooks />
     | [_] => <p> {React.string("Unknown page")} </p>
-    | [] => <Layout />
+    | _ => <Layout />
     };
   };
 };
+
 ReactDOMRe.renderToElementWithId(
   <ReasonApollo.Provider client=Client.instance>
-    <DrizzleProvider> <Router /> </DrizzleProvider>
+    <ReasonApolloHooks.ApolloProvider client=Client.instance>
+      <DrizzleProvider> <Router /> </DrizzleProvider>
+    </ReasonApolloHooks.ApolloProvider>
   </ReasonApollo.Provider>,
   "root",
 );

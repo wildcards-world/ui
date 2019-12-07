@@ -104,7 +104,7 @@ export default ({
       </Box>
       <Box p={2} mb={2} width={[1, 0.7]}>
         <Text style={rightAlignedText}>
-          Use can also use this slider to adjust your deposit:
+          You can also use this slider to adjust your deposit:
           </Text>
         <Slider value={depositSlider}
           style={inputStyle}

@@ -27,10 +27,13 @@
     "re-formality",
     "bs-moment",
     "@wildcards/reason-apollo",
+    "@wildcards/reason-apollo-hooks",
     "@glennsl/bs-jest"
   ],
   "bs-dev-dependencies": [],
   "ppx-flags": [
+    "bs-let/ppx",
+    "@jsiebern/get_in_ppx/ppx6",
     "@baransu/graphql_ppx_re/ppx6"
   ],
   "refmt": 3
