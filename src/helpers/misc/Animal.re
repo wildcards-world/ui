@@ -2,6 +2,7 @@
 type t =
   | Andy
   | Vitalik
+  | VitalikNew
   | Simon
   | Verano
   // | Tarkus
@@ -17,6 +18,26 @@ type t =
   | Isisa
   | Dlala
   | Nonhlanhla;
+
+let orderedArrayNew = [|
+  Apthapi,
+  // Ajayu,
+  VitalikNew,
+  Nonhlanhla,
+  Cubai,
+  Simon,
+  Dlala,
+  Aruma,
+  Verano,
+  // Tarkus,
+  Pancho,
+  Andy,
+  // Mijungla,
+  Llajuita,
+  // Espumita,
+  CatStevens,
+  Isisa,
+|];
 
 let orderedArray = [|
   Apthapi,
@@ -49,7 +70,7 @@ let getId: t => option(string) =
     | Cubai => Some("5")
     | Llajuita => Some("6")
     | Pancho => Some("7")
-    // | Espumita => Some("8")
+    // | espumita => Some("8")
     | Verano => Some("9")
     | Nonhlanhla => Some("10")
     | Dlala => Some("11")
@@ -58,6 +79,7 @@ let getId: t => option(string) =
     // | Tarkus
     // | Mijungla
     // | Ajayu
+    | VitalikNew => Some("42")
     | Vitalik => None
     };
 
@@ -83,7 +105,7 @@ let getTokenId: t => option(TokenId.t) =
     // | Tarkus
     // | Mijungla
     // | Ajayu
-    // | Vitalik => "42",
+    | VitalikNew => Some(TokenId.makeFromInt(42))
     | Vitalik => None
     };
 
@@ -93,19 +115,20 @@ let getNameFromId: option(string) => string =
     | None => "Vitalik"
     | Some(tokenIdSet) =>
       switch (tokenIdSet) {
-      | "0" => "Nonhlanhla"
-      | "1" => "Dlala"
-      | "2" => "Isisa"
-      | "3" => "Verano"
-      | "4" => "Espumita"
-      | "5" => "Pancho"
+      | "0" => "Andy"
+      | "1" => "Simon"
+      | "2" => "Apthapi"
+      | "3" => "Aruma"
+      | "4" => "CatStevens"
+      | "5" => "Cubai"
       | "6" => "Llajuita"
-      | "7" => "Cubai"
-      | "8" => "CatStevens"
-      | "9" => "Aruma"
-      | "10" => "Apthapi"
-      | "11" => "Andy"
-      | "12" => "Simon"
+      | "7" => "Pancho"
+      | "8" => "Espumita"
+      | "9" => "Verano"
+      | "10" => "Nonhlanhla"
+      | "11" => "Dlala"
+      | "12" => "Isisa"
+      | "42" => "Vitalik"
       | _ => "Unknown"
       }
     };
@@ -113,7 +136,8 @@ let getNameFromId: option(string) => string =
 let getName: t => string =
   animalId =>
     switch (animalId) {
-    | Vitalik => "Vitalik"
+    | Vitalik
+    | VitalikNew => "Vitalik"
     | Simon => "Simon"
     | Andy => "Andy"
     | Verano => "Verano"
@@ -137,6 +161,7 @@ let getAnimal: string => option(t) =
     let animalNameLower = Js.String.toLowerCase(animalName);
     switch (animalNameLower) {
     | "vitalik" => Some(Vitalik)
+    | "vitaliknew" => Some(VitalikNew)
     | "simon" => Some(Simon)
     | "andy" => Some(Andy)
     | "verano" => Some(Verano)
@@ -161,15 +186,20 @@ let getAnimalFromId: string => option(t) =
   animalId => {
     Js.log("Getting animal from Id: " ++ animalId);
     switch (animalId) {
-    | "41" =>
-      Js.log("vitalik");
-      Some(Vitalik);
-    | "0" =>
-      Js.log("simon");
-      Some(Simon);
-    | "1" =>
-      Js.log("andy");
-      Some(Andy);
+    | "42" => Some(VitalikNew)
+    | "0" => Some(Simon)
+    | "1" => Some(Andy)
+    | "2" => Some(Apthapi)
+    | "3" => Some(Aruma)
+    | "4" => Some(CatStevens)
+    | "5" => Some(Cubai)
+    | "6" => Some(Llajuita)
+    | "7" => Some(Pancho)
+    // | "8" => Some(Espumita)
+    | "9" => Some(Verano)
+    | "10" => Some(Nonhlanhla)
+    | "11" => Some(Dlala)
+    | "12" => Some(Isisa)
     | _ => None
     };
   };
@@ -177,6 +207,7 @@ let getAnimalFromId: string => option(t) =
 let getNextPrev = animal =>
   switch (animal) {
   | Simon => (Vitalik, Dlala)
+  | VitalikNew => (Andy, Simon)
   | Vitalik => (Andy, Simon)
   | Andy => (Verano, Vitalik)
   | Verano => (Pancho, Andy)
@@ -198,6 +229,9 @@ let getNextPrev = animal =>
 
 let getImage = animal =>
   switch (animal) {
+  | VitalikNew =>
+    %bs.raw
+    {|require('../../img/animals/gorilla1.png')|}
   | Vitalik =>
     %bs.raw
     {|require('../../img/animals/gorilla1.png')|}
@@ -252,8 +286,9 @@ let getImage = animal =>
 let getAlternateImage: t => option(string) =
   animal =>
     switch (animal) {
-    | Simon => None
-    | Andy => None
+    | Simon
+    | Andy
+    | VitalikNew
     | Vitalik => None
     | Verano => Some([%bs.raw {|require('../../img/animals/Verano.jpg')|}])
     | Pancho => Some([%bs.raw {|require('../../img/animals/Pancho.jpg')|}])
@@ -299,6 +334,7 @@ let getOrgBadgeImage: t => option(string) =
     switch (animal) {
     | Simon
     | Andy
+    | VitalikNew
     | Vitalik => Some([%bs.raw {|require('../../img/badges/OGBadge.png')|}])
     | Pancho
     | Llajuita
@@ -321,6 +357,7 @@ let getOrgBadgeImage: t => option(string) =
 
 let getStoryParagraphs = animal =>
   switch (animal) {
+  | VitalikNew
   | Vitalik => [|
       "Original Gorilla",
       "Vitalik is the first ever animal launched on wildcards and therefore often termed an OG (Original Gorilla). The wildcards project was born at the #ETHCapeTown hackathon in May 2019 where Vitalik Buterin was one of the judges. We named Vitalik the Gorilla after Vitalik as a testament to the impact and innovation Vitalik Buterin has had on the blockchain ecosystem. Vitalik, if you are reading this, start saving some animals and buy me!",
@@ -447,6 +484,7 @@ let pledgeRate = animal => {
   | None => ("3", "10", 0.025, 40.)
   | Some(tokenIdSet) =>
     switch (tokenIdSet) {
+    | "42" => ("3", "10", 0.025, 40.)
     | "2"
     | "7" => ("12", "10", 0.1, 10.)
     | "0"
@@ -498,6 +536,7 @@ let isLaunched: t => launchStatus =
     | Simon
     | Andy
     | Vitalik
+    | VitalikNew
     | Cubai
     | Dlala
     | CatStevens

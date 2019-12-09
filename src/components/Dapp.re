@@ -44,6 +44,23 @@ module EditButton = {
   };
 };
 
+let replaceVitalik = animal => {
+  let availableDeposit =
+    Hooks.useDepositAbleToWithdrawWei()
+    ->Belt.Option.mapWithDefault("111", a => a);
+  Js.log("availableDeposit");
+  Js.log(availableDeposit);
+  switch (animal) {
+  | Animal.Vitalik =>
+    if (availableDeposit == "0") {
+      Animal.VitalikNew;
+    } else {
+      animal;
+    }
+  | _ => animal
+  };
+};
+
 module Streak = {
   [@react.component]
   let make = (~animal: Animal.t) => {
@@ -99,19 +116,22 @@ module DisplayAfterDate = {
 module BasicAnimalDisplay = {
   [@react.component]
   let make = (~animal: Animal.t, ~isExplorer) => {
-    let owned = animal->Animal.useIsAnimalOwened;
+    let replacedAnimal = replaceVitalik(animal);
+    let owned = replacedAnimal->Animal.useIsAnimalOwened;
     let currentPatron =
-      GeneralHooks.useCurrentPatronAnimal(animal)
+      GeneralHooks.useCurrentPatronAnimal(replacedAnimal)
       ->mapWithDefault("Loading", a => a);
     let userId = UserProvider.useUserNameOrTwitterHandle(currentPatron);
 
     let userIdComponent = UserProvider.useUserComponent(userId);
 
     <React.Fragment>
-      <PriceDisplay animal />
+      <PriceDisplay animal=replacedAnimal />
       userIdComponent
       <br />
-      {owned ? <EditButton animal isExplorer /> : <BuyModal animal />}
+      {owned
+         ? <EditButton animal=replacedAnimal isExplorer />
+         : <BuyModal animal=replacedAnimal />}
     </React.Fragment>;
   };
 };
@@ -335,10 +355,12 @@ module AnimalCarousel = {
 module AnimalActionsOnDetailsPage = {
   [@react.component]
   let make = (~animal) => {
-    let owned = animal->Animal.useIsAnimalOwened;
+    let replacedAnimal = replaceVitalik(animal);
+
+    let owned = replacedAnimal->Animal.useIsAnimalOwened;
     let currentAccount = useCurrentUser()->mapWithDefault("loading", a => a);
     let currentPatron =
-      GeneralHooks.useCurrentPatronAnimal(animal)
+      GeneralHooks.useCurrentPatronAnimal(replacedAnimal)
       ->mapWithDefault("Loading", a => a);
     let userId = UserProvider.useUserNameOrTwitterHandle(currentPatron);
     let userIdComponent = UserProvider.useUserComponent(userId);
@@ -346,23 +368,23 @@ module AnimalActionsOnDetailsPage = {
     let price = () =>
       <React.Fragment>
         userIdComponent
-        <PriceDisplay animal />
-        <BuyModal animal />
+        <PriceDisplay animal=replacedAnimal />
+        <BuyModal animal=replacedAnimal />
       </React.Fragment>;
 
     if (owned) {
       <React.Fragment>
-        <PriceDisplay animal />
-        <UpdatePriceModal animal />
+        <PriceDisplay animal=replacedAnimal />
+        <UpdatePriceModal animal=replacedAnimal />
         <br />
-        <UpdateDeposit animal />
+        <UpdateDeposit animal=replacedAnimal />
         <br />
         {UserProvider.useIsUserValidated(currentAccount)
            ? <ShareSocial /> : <ValidateModal />}
       </React.Fragment>;
     } else {
       <React.Fragment>
-        {switch (animal->Animal.isLaunched) {
+        {switch (replacedAnimal->Animal.isLaunched) {
          | Launched => price()
 
          | LaunchDate(endDateMoment) =>
@@ -695,6 +717,7 @@ module AnimalInfoStats = {
 module AnimalInfo = {
   [@react.component]
   let make = (~animal: Animal.t) => {
+    let replacedAnimal = replaceVitalik(animal);
     // TODO: the ethereum address is really terribly displayed. But the default in Rimble UI includes a QR code scanner (which is really ugly).
     // https://rimble.consensys.design/components/rimble-ui/EthAddress#props
     // https://github.com/ConsenSys/rimble-ui/blob/dd470f00374a05c860b558a2cb9317861e4a0d89/src/EthAddress/index.js (maybe make a PR here with some changes)
@@ -709,17 +732,17 @@ module AnimalInfo = {
           {ReasonReact.array(
              Array.map(
                paragraphText => <p> paragraphText->React.string </p>,
-               Animal.getStoryParagraphs(animal),
+               Animal.getStoryParagraphs(replacedAnimal),
              ),
            )}
         </ReactTabs.TabPanel>
         <ReactTabs.TabPanel>
           {switch (animal->Animal.isLaunched) {
-           | Launched => <AnimalInfoStats animal />
+           | Launched => <AnimalInfoStats animal=replacedAnimal />
            | LaunchDate(endDateMoment) =>
              <DisplayAfterDate
                endDateMoment
-               afterComponent={<AnimalInfoStats animal />}
+               afterComponent={<AnimalInfoStats animal=replacedAnimal />}
                beforeComponent={
                  <React.Fragment>
                    <h2> "This animal will launch in:"->React.string </h2>

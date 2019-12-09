@@ -9,7 +9,7 @@ let inMemoryCache = ApolloInMemoryCache.createInMemoryCache();
 /* Create an WS Link */
 let wsLink =
   ApolloLinks.webSocketLink(
-    ~uri="wss://api.thegraph.com/subgraphs/name/jasoons/wildcards-goerli",
+    ~uri="wss://api.thegraph.com/subgraphs/name/jasoons/wildcards",
     (),
   );
 let instance =
