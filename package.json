@@ -40,7 +40,7 @@
   },
   "scripts": {
     "start": "npm run re:build && react-scripts start",
-    "build": "npm run re:build && CI=true npm run test && EXTEND_ESLINT=true react-scripts build",
+    "build": "npm run re:build && EXTEND_ESLINT=true react-scripts build",
     "test": "react-scripts test",
     "re:build": "bsb -make-world -clean-world",
     "re:watch": "bsb -make-world -clean-world -w",
