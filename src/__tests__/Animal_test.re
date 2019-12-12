@@ -11,7 +11,7 @@ describe("Expect", () =>
       |> toEqual((
            Some(Animal.Simon),
            Some(Animal.Andy),
-           Some(Animal.VitalikNew),
+           Some(Animal.Vitalik),
          ))
     )
   )

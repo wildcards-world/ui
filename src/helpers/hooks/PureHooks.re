@@ -30,25 +30,6 @@ let useWeb3: unit => Web3.t =
 let useCacheCall = (method, id) =>
   useDrizzle()->useCacheCall(. "WildcardSteward_v0", method, id);
 
-// let useCacheCallVitalikStr = method =>
-//   Js.Nullable.fromOption(Some("result"));
-// useDrizzle()->useCacheCallVitalikStr(. "VitalikSteward", method);
-
-// let useTotalPatronageWei = id => {
-//   let totalCollectedOpt =
-//     "totalCollected"->useCacheCall(id)->Js.Nullable.toOption;
-//   let patronageOwedOpt =
-//     "patronageOwed"->useCacheCall(id)->Js.Nullable.toOption;
-
-//   switch (totalCollectedOpt, patronageOwedOpt) {
-//   | (Some(totalCollected), Some(patronageOwed)) =>
-//     let totalCollectedBN: BN.bn = BN.new_(totalCollected);
-//     let patronageOwedBN: BN.bn = BN.new_(patronageOwed);
-//     Some(totalCollectedBN->BN.addGet(. patronageOwedBN)->BN.toStringGet(.));
-//   | _ => None
-//   };
-// };
-
 let useTimeAcquired = id => {
   let timeAquiredRaw = "timeAcquired"->useCacheCall(id)->Js.Nullable.toOption;
 
@@ -58,9 +39,4 @@ let useTimeAcquired = id => {
 };
 
 let useTimeAcquiredAnimal: Animal.t => option(MomentRe.Moment.t) =
-  gorilla => {
-    switch (Animal.getTokenId(gorilla)) {
-    | Some(gorillaId) => gorillaId->useTimeAcquired
-    | None => "1"->useTimeAcquired
-    };
-  };
+  gorilla => gorilla->Animal.getTokenId->useTimeAcquired;

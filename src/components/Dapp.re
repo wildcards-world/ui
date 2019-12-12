@@ -44,21 +44,6 @@ module EditButton = {
   };
 };
 
-let replaceVitalik = animal => {
-  let availableDeposit =
-    Hooks.useDepositAbleToWithdrawWei()
-    ->Belt.Option.mapWithDefault("111", a => a);
-  switch (animal) {
-  | Animal.Vitalik =>
-    if (availableDeposit == "0") {
-      Animal.VitalikNew;
-    } else {
-      animal;
-    }
-  | _ => animal
-  };
-};
-
 module Streak = {
   [@react.component]
   let make = (~animal: Animal.t) => {
@@ -114,22 +99,19 @@ module DisplayAfterDate = {
 module BasicAnimalDisplay = {
   [@react.component]
   let make = (~animal: Animal.t, ~isExplorer) => {
-    let replacedAnimal = replaceVitalik(animal);
-    let owned = replacedAnimal->Animal.useIsAnimalOwened;
+    let owned = animal->Animal.useIsAnimalOwened;
     let currentPatron =
-      GeneralHooks.useCurrentPatronAnimal(replacedAnimal)
+      GeneralHooks.useCurrentPatronAnimal(animal)
       ->mapWithDefault("Loading", a => a);
     let userId = UserProvider.useUserNameOrTwitterHandle(currentPatron);
 
     let userIdComponent = UserProvider.useUserComponent(userId);
 
     <React.Fragment>
-      <PriceDisplay animal=replacedAnimal />
+      <PriceDisplay animal />
       userIdComponent
       <br />
-      {owned
-         ? <EditButton animal=replacedAnimal isExplorer />
-         : <BuyModal animal=replacedAnimal />}
+      {owned ? <EditButton animal isExplorer /> : <BuyModal animal />}
     </React.Fragment>;
   };
 };
@@ -147,7 +129,7 @@ module AnimalOnLandingPage = {
     let name = Animal.getName(animal);
 
     let optAlternateImage = Animal.getAlternateImage(animal);
-    let optOrgBadge = Animal.getOrgBadgeImage(animal);
+    let orgBadge = Animal.getOrgBadgeImage(animal);
 
     let normalImage = () =>
       <img
@@ -167,13 +149,9 @@ module AnimalOnLandingPage = {
               | None =>
                 <div className=Styles.overlayFlameImg> <Streak animal /> </div>
               }}
-             {switch (optOrgBadge) {
-              | None => React.null
-              | Some(orgBadge) =>
-                <div className=Styles.overlayBadgeImg>
-                  <img className=Styles.flameImg src=orgBadge />
-                </div>
-              }}
+             {<div className=Styles.overlayBadgeImg>
+                <img className=Styles.flameImg src=orgBadge />
+              </div>}
            </React.Fragment>;
          }}
       </React.Fragment>;
@@ -353,12 +331,10 @@ module AnimalCarousel = {
 module AnimalActionsOnDetailsPage = {
   [@react.component]
   let make = (~animal) => {
-    let replacedAnimal = replaceVitalik(animal);
-
-    let owned = replacedAnimal->Animal.useIsAnimalOwened;
+    let owned = animal->Animal.useIsAnimalOwened;
     let currentAccount = useCurrentUser()->mapWithDefault("loading", a => a);
     let currentPatron =
-      GeneralHooks.useCurrentPatronAnimal(replacedAnimal)
+      GeneralHooks.useCurrentPatronAnimal(animal)
       ->mapWithDefault("Loading", a => a);
     let userId = UserProvider.useUserNameOrTwitterHandle(currentPatron);
     let userIdComponent = UserProvider.useUserComponent(userId);
@@ -366,23 +342,23 @@ module AnimalActionsOnDetailsPage = {
     let price = () =>
       <React.Fragment>
         userIdComponent
-        <PriceDisplay animal=replacedAnimal />
-        <BuyModal animal=replacedAnimal />
+        <PriceDisplay animal />
+        <BuyModal animal />
       </React.Fragment>;
 
     if (owned) {
       <React.Fragment>
-        <PriceDisplay animal=replacedAnimal />
-        <UpdatePriceModal animal=replacedAnimal />
+        <PriceDisplay animal />
+        <UpdatePriceModal animal />
         <br />
-        <UpdateDeposit animal=replacedAnimal />
+        <UpdateDeposit animal />
         <br />
         {UserProvider.useIsUserValidated(currentAccount)
            ? <ShareSocial /> : <ValidateModal />}
       </React.Fragment>;
     } else {
       <React.Fragment>
-        {switch (replacedAnimal->Animal.isLaunched) {
+        {switch (animal->Animal.isLaunched) {
          | Launched => price()
 
          | LaunchDate(endDateMoment) =>
@@ -422,7 +398,7 @@ module DetailsView = {
       let normalImage = animal =>
         <img className=Styles.ownedAnimalImg src={Animal.getImage(animal)} />;
       let optAlternateImage = Animal.getAlternateImage(animal);
-      let optOrgBadge = Animal.getOrgBadgeImage(animal);
+      let orgBadge = Animal.getOrgBadgeImage(animal);
 
       let isLaunched = animal->Animal.isLaunched;
 
@@ -443,13 +419,9 @@ module DetailsView = {
                beforeComponent=React.null
              />
            }}
-          {switch (optOrgBadge) {
-           | None => React.null
-           | Some(orgBadge) =>
-             <div className=Styles.overlayBadgeImg>
-               <img className=Styles.flameImg src=orgBadge />
-             </div>
-           }}
+          {<div className=Styles.overlayBadgeImg>
+             <img className=Styles.flameImg src=orgBadge />
+           </div>}
         </div>;
 
       <React.Fragment>
@@ -715,7 +687,6 @@ module AnimalInfoStats = {
 module AnimalInfo = {
   [@react.component]
   let make = (~animal: Animal.t) => {
-    let replacedAnimal = replaceVitalik(animal);
     // TODO: the ethereum address is really terribly displayed. But the default in Rimble UI includes a QR code scanner (which is really ugly).
     // https://rimble.consensys.design/components/rimble-ui/EthAddress#props
     // https://github.com/ConsenSys/rimble-ui/blob/dd470f00374a05c860b558a2cb9317861e4a0d89/src/EthAddress/index.js (maybe make a PR here with some changes)
@@ -728,19 +699,19 @@ module AnimalInfo = {
         <ReactTabs.TabPanel>
           <h2> "Story"->React.string </h2>
           {ReasonReact.array(
-             Array.map(
-               paragraphText => <p> paragraphText->React.string </p>,
-               Animal.getStoryParagraphs(replacedAnimal),
+             Array.mapi(
+               (i, paragraphText) => <p key=i->string_of_int> paragraphText->React.string </p>,
+               Animal.getStoryParagraphs(animal),
              ),
            )}
         </ReactTabs.TabPanel>
         <ReactTabs.TabPanel>
           {switch (animal->Animal.isLaunched) {
-           | Launched => <AnimalInfoStats animal=replacedAnimal />
+           | Launched => <AnimalInfoStats animal />
            | LaunchDate(endDateMoment) =>
              <DisplayAfterDate
                endDateMoment
-               afterComponent={<AnimalInfoStats animal=replacedAnimal />}
+               afterComponent={<AnimalInfoStats animal />}
                beforeComponent={
                  <React.Fragment>
                    <h2> "This animal will launch in:"->React.string </h2>

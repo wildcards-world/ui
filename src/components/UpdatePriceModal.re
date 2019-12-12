@@ -7,7 +7,7 @@ module Transaction = {
   [@react.component]
   let make = (~animal: Animal.t) => {
     let (newBuyPrice, setNewBuyPrice) = React.useState(() => "");
-    let currentPrice = useCurrentPriceWei()->mapWithDefault("loading", a => a);
+    // let currentPrice = useCurrentPriceWei()->mapWithDefault("loading", a => a);
     let currentUser = useCurrentUser();
     // let changePriceObj = useChangePriceTransaction();
     // let changePriceObjNew = useChangePriceTransactionNew();
@@ -15,27 +15,14 @@ module Transaction = {
     // let userBalance =
     //   DrizzleReact.Hooks.useUserBalance()->mapWithDefault("", a => a);
 
-    let (updatePriceFunc, txObjects) =
-      switch (tokenId) {
-      | None =>
-        let priceChangeObj = useChangePriceTransaction();
-        (
-          (
-            (priceChange, txObject) =>
-              priceChangeObj##send(. priceChange, txObject)
-          ),
-          priceChangeObj##_TXObjects,
-        );
-      | Some(tokenIdSet) =>
-        let priceChangeObj = useChangePriceTransactionNew();
-        (
-          (
-            (priceChange, txObject) =>
-              priceChangeObj##send(. tokenIdSet, priceChange, txObject)
-          ),
-          priceChangeObj##_TXObjects,
-        );
-      };
+    let (updatePriceFunc, txObjects) = {
+      let priceChangeObj = useChangePriceTransactionNew();
+      (
+        (priceChange, txObject) =>
+          priceChangeObj##send(. tokenId, priceChange, txObject),
+        priceChangeObj##_TXObjects,
+      );
+    };
 
     let onSubmitBuy = event => {
       ReactEvent.Form.preventDefault(event);
@@ -63,7 +50,7 @@ module Transaction = {
               ReactEvent.Form.target(event)##value->getWithDefault("");
             let _ =
               InputHelp.onlyUpdateValueIfPositiveFloat(
-                currentPrice,
+                newBuyPrice,
                 setNewBuyPrice,
                 value,
               );

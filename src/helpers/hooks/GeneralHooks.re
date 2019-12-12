@@ -2,22 +2,17 @@ open Hooks;
 open Providers.UsdPriceProvider;
 
 let useCurrentPatronAnimal = animal => {
-  switch (Animal.getId(animal)) {
-  | Some(animalId) =>
-    useCurrentPatronNew(
-      Belt.Int.fromString(animalId)->Belt.Option.mapWithDefault(1, a => a),
-    )
-  | None => useCurrentPatron()
-  };
+  useCurrentPatronNew(
+    Belt.Int.fromString(Animal.getId(animal))
+    ->Belt.Option.mapWithDefault(1, a => a),
+  );
 };
 
 let useDepositAbleToWithdrawEthAnimal = animal => {
   let patron =
     useCurrentPatronAnimal(animal)->Belt.Option.mapWithDefault("0x0", a => a);
-  switch (Animal.getId(animal)) {
-  | Some(_animalId) => useDepositAbleToWithdrawEthNew(patron)
-  | None => useDepositAbleToWithdrawEth()
-  };
+
+  useDepositAbleToWithdrawEthNew(patron);
 };
 
 let useDepositAbleToWithdrawUsdAnimal = animal => {
@@ -35,12 +30,8 @@ let useDepositAbleToWithdrawUsdAnimal = animal => {
   };
 };
 
-let useTotalPatronageEthAnimal = animal => {
-  switch (Animal.getId(animal)) {
-  | Some(animalId) => useTotalPatronageTokenEthNew(animalId)
-  | None => useTotalPatronageEth()->Belt.Option.mapWithDefault("0", a => a)
-  };
-};
+let useTotalPatronageEthAnimal = animal =>
+  animal->Animal.getId->useTotalPatronageTokenEthNew;
 
 let useTotalPatronageUsdAnimal = animal => {
   let totalPatronange = useTotalPatronageEthAnimal(animal);
@@ -59,7 +50,4 @@ let useTotalPatronageUsdAnimal = animal => {
 };
 
 let useForeclosureTimeAnimal = animal =>
-  switch (Animal.getId(animal)) {
-  | Some(animalId) => useForeclosureTimeNew(animalId)
-  | None => useForeclosureTime()
-  };
+  animal->Animal.getId->useForeclosureTimeNew;

@@ -6,96 +6,131 @@ open Providers.UsdPriceProvider;
 open BN;
 
 let useTotalPatronageWeiNew = () => {
-  let totalCollected0 =
-    useGetTotalCollected("0")->mapWithDefault("0", a => a)->BN.new_;
-  let patronageOwed0 =
-    useGetPatronageOwed("0")->mapWithDefault("0", a => a)->BN.new_;
-  let totalCollected1 =
-    useGetTotalCollected("1")->mapWithDefault("0", a => a)->BN.new_;
-  let patronageOwed1 =
-    useGetPatronageOwed("1")->mapWithDefault("0", a => a)->BN.new_;
+  let totalCollected0 = useGetTotalCollected("0");
+  let patronageOwed0 = useGetPatronageOwed("0");
+  let totalCollected1 = useGetTotalCollected("1");
+  let patronageOwed1 = useGetPatronageOwed("1");
 
-  let totalCollected3 =
-    useGetTotalCollected("3")->mapWithDefault("0", a => a)->BN.new_;
-  let patronageOwed3 =
-    useGetPatronageOwed("3")->mapWithDefault("0", a => a)->BN.new_;
+  let totalCollected3 = useGetTotalCollected("3");
+  let patronageOwed3 = useGetPatronageOwed("3");
 
-  let totalCollected2 =
-    useGetTotalCollected("2")->mapWithDefault("0", a => a)->BN.new_;
-  let patronageOwed2 =
-    useGetPatronageOwed("2")->mapWithDefault("0", a => a)->BN.new_;
+  let totalCollected2 = useGetTotalCollected("2");
+  let patronageOwed2 = useGetPatronageOwed("2");
 
-  let totalCollected4 =
-    useGetTotalCollected("4")->mapWithDefault("0", a => a)->BN.new_;
-  let patronageOwed4 =
-    useGetPatronageOwed("4")->mapWithDefault("0", a => a)->BN.new_;
+  let totalCollected4 = useGetTotalCollected("4");
+  let patronageOwed4 = useGetPatronageOwed("4");
 
-  let totalCollected5 =
-    useGetTotalCollected("5")->mapWithDefault("0", a => a)->BN.new_;
-  let patronageOwed5 =
-    useGetPatronageOwed("5")->mapWithDefault("0", a => a)->BN.new_;
+  let totalCollected5 = useGetTotalCollected("5");
+  let patronageOwed5 = useGetPatronageOwed("5");
 
-  let totalCollected6 =
-    useGetTotalCollected("6")->mapWithDefault("0", a => a)->BN.new_;
-  let patronageOwed6 =
-    useGetPatronageOwed("6")->mapWithDefault("0", a => a)->BN.new_;
+  let totalCollected6 = useGetTotalCollected("6");
+  let patronageOwed6 = useGetPatronageOwed("6");
 
-  let totalCollected7 =
-    useGetTotalCollected("7")->mapWithDefault("0", a => a)->BN.new_;
-  let patronageOwed7 =
-    useGetPatronageOwed("7")->mapWithDefault("0", a => a)->BN.new_;
+  let totalCollected7 = useGetTotalCollected("7");
+  let patronageOwed7 = useGetPatronageOwed("7");
 
-  let totalCollected9 =
-    useGetTotalCollected("9")->mapWithDefault("0", a => a)->BN.new_;
-  let patronageOwed9 =
-    useGetPatronageOwed("9")->mapWithDefault("0", a => a)->BN.new_;
+  let totalCollected9 = useGetTotalCollected("9");
+  let patronageOwed9 = useGetPatronageOwed("9");
 
-  let totalCollected10 =
-    useGetTotalCollected("10")->mapWithDefault("0", a => a)->BN.new_;
-  let patronageOwed10 =
-    useGetPatronageOwed("10")->mapWithDefault("0", a => a)->BN.new_;
+  let totalCollected10 = useGetTotalCollected("10");
+  let patronageOwed10 = useGetPatronageOwed("10");
 
-  let totalCollected11 =
-    useGetTotalCollected("11")->mapWithDefault("0", a => a)->BN.new_;
-  let patronageOwed11 =
-    useGetPatronageOwed("11")->mapWithDefault("0", a => a)->BN.new_;
+  let totalCollected11 = useGetTotalCollected("11");
+  let patronageOwed11 = useGetPatronageOwed("11");
 
-  let totalCollected12 =
-    useGetTotalCollected("12")->mapWithDefault("0", a => a)->BN.new_;
-  let patronageOwed12 =
-    useGetPatronageOwed("12")->mapWithDefault("0", a => a)->BN.new_;
+  let totalCollected12 = useGetTotalCollected("12");
+  let patronageOwed12 = useGetPatronageOwed("12");
 
-  let totalCollected42 =
-    useGetTotalCollected("42")->mapWithDefault("0", a => a)->BN.new_;
-  let patronageOwed42 =
-    useGetPatronageOwed("42")->mapWithDefault("0", a => a)->BN.new_;
+  let totalCollected42 = useGetTotalCollected("42");
+  let patronageOwed42 = useGetPatronageOwed("42");
 
-  totalCollected0
-  ->addGet(. totalCollected1)
-  ->addGet(. totalCollected2)
-  ->addGet(. totalCollected3)
-  ->addGet(. totalCollected4)
-  ->addGet(. totalCollected5)
-  ->addGet(. totalCollected6)
-  ->addGet(. totalCollected7)
-  ->addGet(. totalCollected9)
-  ->addGet(. totalCollected10)
-  ->addGet(. totalCollected11)
-  ->addGet(. totalCollected12)
-  ->addGet(. totalCollected42)
-  ->addGet(. patronageOwed0)
-  ->addGet(. patronageOwed1)
-  ->addGet(. patronageOwed2)
-  ->addGet(. patronageOwed3)
-  ->addGet(. patronageOwed4)
-  ->addGet(. patronageOwed5)
-  ->addGet(. patronageOwed6)
-  ->addGet(. patronageOwed7)
-  ->addGet(. patronageOwed9)
-  ->addGet(. patronageOwed10)
-  ->addGet(. patronageOwed11)
-  ->addGet(. patronageOwed12)
-  ->addGet(. patronageOwed42);
+  switch (
+    totalCollected0,
+    totalCollected1,
+    totalCollected2,
+    totalCollected3,
+    totalCollected4,
+    totalCollected5,
+    totalCollected6,
+    totalCollected7,
+    totalCollected9,
+    totalCollected10,
+    totalCollected11,
+    totalCollected12,
+    totalCollected42,
+    patronageOwed0,
+    patronageOwed1,
+    patronageOwed2,
+    patronageOwed3,
+    patronageOwed4,
+    patronageOwed5,
+    patronageOwed6,
+    patronageOwed7,
+    patronageOwed9,
+    patronageOwed10,
+    patronageOwed11,
+    patronageOwed12,
+    patronageOwed42,
+  ) {
+  | (
+      Some(totalCollected0),
+      Some(totalCollected1),
+      Some(totalCollected2),
+      Some(totalCollected3),
+      Some(totalCollected4),
+      Some(totalCollected5),
+      Some(totalCollected6),
+      Some(totalCollected7),
+      Some(totalCollected9),
+      Some(totalCollected10),
+      Some(totalCollected11),
+      Some(totalCollected12),
+      Some(totalCollected42),
+      Some(patronageOwed0),
+      Some(patronageOwed1),
+      Some(patronageOwed2),
+      Some(patronageOwed3),
+      Some(patronageOwed4),
+      Some(patronageOwed5),
+      Some(patronageOwed6),
+      Some(patronageOwed7),
+      Some(patronageOwed9),
+      Some(patronageOwed10),
+      Some(patronageOwed11),
+      Some(patronageOwed12),
+      Some(patronageOwed42),
+    ) =>
+    Some(
+      BN.new_("2697680747781582948")
+      ->addGet(. BN.new_(totalCollected0))
+      ->addGet(. BN.new_(totalCollected1))
+      ->addGet(. BN.new_(totalCollected2))
+      ->addGet(. BN.new_(totalCollected3))
+      ->addGet(. BN.new_(totalCollected4))
+      ->addGet(. BN.new_(totalCollected5))
+      ->addGet(. BN.new_(totalCollected6))
+      ->addGet(. BN.new_(totalCollected7))
+      ->addGet(. BN.new_(totalCollected9))
+      ->addGet(. BN.new_(totalCollected10))
+      ->addGet(. BN.new_(totalCollected11))
+      ->addGet(. BN.new_(totalCollected12))
+      ->addGet(. BN.new_(totalCollected42))
+      ->addGet(. BN.new_(patronageOwed0))
+      ->addGet(. BN.new_(patronageOwed1))
+      ->addGet(. BN.new_(patronageOwed2))
+      ->addGet(. BN.new_(patronageOwed3))
+      ->addGet(. BN.new_(patronageOwed4))
+      ->addGet(. BN.new_(patronageOwed5))
+      ->addGet(. BN.new_(patronageOwed6))
+      ->addGet(. BN.new_(patronageOwed7))
+      ->addGet(. BN.new_(patronageOwed9))
+      ->addGet(. BN.new_(patronageOwed10))
+      ->addGet(. BN.new_(patronageOwed11))
+      ->addGet(. BN.new_(patronageOwed12))
+      ->addGet(. BN.new_(patronageOwed42)),
+    )
+  | _ => None
+  };
 };
 let useTotalPatronageTokenWeiNew = tokenId => {
   let totalCollected =

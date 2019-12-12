@@ -27,37 +27,18 @@ module Transaction = {
     // let userBalance =
     //   DrizzleReact.Hooks.useUserBalance()->mapWithDefault("", a => a);
 
-    let (withdrawFunc, txWithdrawObjects) =
-      switch (tokenId) {
-      | None =>
-        let withdrawObj = useWithdrawTransaction();
-        (
-          (
-            (depositChange, txObject) => {
-              withdrawObj##send(. depositChange, txObject);
-            }
-          ),
-          withdrawObj##_TXObjects,
-        );
-      | Some(_tokenIdSet) =>
-        let withdrawObj = useWithdrawTransactionNew();
-        (
-          (
-            (depositChange, txObject) =>
-              withdrawObj##send(. depositChange, txObject)
-          ),
-          withdrawObj##_TXObjects,
-        );
-      };
-    let (depositFunc, txDepositObjects) =
-      switch (tokenId) {
-      | None =>
-        let depositObj = useAddDepositTransaction();
-        ((txObject => depositObj##send(. txObject)), depositObj##_TXObjects);
-      | Some(_tokenIdSet) =>
-        let depositObj = useAddDepositTransactionNew();
-        ((txObject => depositObj##send(. txObject)), depositObj##_TXObjects);
-      };
+    let (withdrawFunc, txWithdrawObjects) = {
+      let withdrawObj = useWithdrawTransactionNew();
+      (
+        (depositChange, txObject) =>
+          withdrawObj##send(. depositChange, txObject),
+        withdrawObj##_TXObjects,
+      );
+    };
+    let (depositFunc, txDepositObjects) = {
+      let depositObj = useAddDepositTransactionNew();
+      (txObject => depositObj##send(. txObject), depositObj##_TXObjects);
+    };
 
     let _availableDeposit =
       useDepositAbleToWithdrawWeiNew(currentUser)

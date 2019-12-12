@@ -3,8 +3,6 @@ import { drizzleReactHooks } from "@drizzle/react-plugin";
 import { Drizzle, generateStore } from "@drizzle/store";
 import { theme as rimbleTheme } from "rimble-ui";
 import { ThemeProvider } from "styled-components";
-import VitalikSteward from "../../contracts/VitalikSteward.json";
-import ERC721Full from "../../contracts/ERC721Full.json";
 import WildcardSteward_v0 from "../../contracts/WildcardSteward_v0.json";
 import ERC721Patronage_v0 from "../../contracts/ERC721Patronage_v0.json";
 import web3ProvideSwitcher from "../web3/web3ProvideSwitcher";
@@ -36,8 +34,6 @@ const options = {
     }
   },
   contracts: [
-    VitalikSteward,
-    ERC721Full,
     WildcardSteward_v0,
     ERC721Patronage_v0
   ],

@@ -2,7 +2,6 @@
 type t =
   | Andy
   | Vitalik
-  | VitalikNew
   | Simon
   | Verano
   // | Tarkus
@@ -18,26 +17,6 @@ type t =
   | Isisa
   | Dlala
   | Nonhlanhla;
-
-let orderedArrayNew = [|
-  Apthapi,
-  // Ajayu,
-  VitalikNew,
-  Nonhlanhla,
-  Cubai,
-  Simon,
-  Dlala,
-  Aruma,
-  Verano,
-  // Tarkus,
-  Pancho,
-  Andy,
-  // Mijungla,
-  Llajuita,
-  // Espumita,
-  CatStevens,
-  Isisa,
-|];
 
 let orderedArray = [|
   Apthapi,
@@ -59,85 +38,78 @@ let orderedArray = [|
   Isisa,
 |];
 
-let getId: t => option(string) =
+let getId: t => string =
   anAnimal =>
     switch (anAnimal) {
-    | Simon => Some("0")
-    | Andy => Some("1")
-    | Apthapi => Some("2")
-    | Aruma => Some("3")
-    | CatStevens => Some("4")
-    | Cubai => Some("5")
-    | Llajuita => Some("6")
-    | Pancho => Some("7")
+    | Simon => "0"
+    | Andy => "1"
+    | Apthapi => "2"
+    | Aruma => "3"
+    | CatStevens => "4"
+    | Cubai => "5"
+    | Llajuita => "6"
+    | Pancho => "7"
     // | espumita => Some("8")
-    | Verano => Some("9")
-    | Nonhlanhla => Some("10")
-    | Dlala => Some("11")
-    | Isisa => Some("12")
+    | Verano => "9"
+    | Nonhlanhla => "10"
+    | Dlala => "11"
+    | Isisa => "12"
     // | Vitalik => Some("42") // We don't show an ID for vitalik since using legacy contract still.
     // | Tarkus
     // | Mijungla
     // | Ajayu
-    | VitalikNew => Some("42")
-    | Vitalik => None
+    | Vitalik => "42"
     };
 
-let getTokenId: t => option(TokenId.t) =
+let getTokenId: t => TokenId.t =
   anAnimal =>
     switch (anAnimal) {
-    | Simon => Some(TokenId.makeFromInt(0))
-    | Andy => Some(TokenId.makeFromInt(1))
-    | Apthapi => Some(TokenId.makeFromInt(2))
-    | Aruma => Some(TokenId.makeFromInt(3))
-    | CatStevens => Some(TokenId.makeFromInt(4))
-    | Cubai => Some(TokenId.makeFromInt(5))
-    | Llajuita => Some(TokenId.makeFromInt(6))
-    | Pancho => Some(TokenId.makeFromInt(7))
+    | Simon => TokenId.makeFromInt(0)
+    | Andy => TokenId.makeFromInt(1)
+    | Apthapi => TokenId.makeFromInt(2)
+    | Aruma => TokenId.makeFromInt(3)
+    | CatStevens => TokenId.makeFromInt(4)
+    | Cubai => TokenId.makeFromInt(5)
+    | Llajuita => TokenId.makeFromInt(6)
+    | Pancho => TokenId.makeFromInt(7)
+    | Verano => TokenId.makeFromInt(9)
+    | Nonhlanhla => TokenId.makeFromInt(10)
+    | Dlala => TokenId.makeFromInt(11)
+    | Isisa => TokenId.makeFromInt(12)
+    | Vitalik => TokenId.makeFromInt(42)
     // | Espumita => Some(TokenId.makeFromInt(8))
-    | Verano => Some(TokenId.makeFromInt(9))
-    | Nonhlanhla => Some(TokenId.makeFromInt(10))
-    | Dlala => Some(TokenId.makeFromInt(11))
-    | Isisa => Some(TokenId.makeFromInt(12))
     // | Tarkus => Some(TokenId.makeFromInt(13))
     // | Mijungla => Some(TokenId.makeFromInt(14))
     // | Ajayu => Some(TokenId.makeFromInt(15))
     // | Tarkus
     // | Mijungla
     // | Ajayu
-    | VitalikNew => Some(TokenId.makeFromInt(42))
-    | Vitalik => None
     };
 
-let getNameFromId: option(string) => string =
+let getNameFromId: string => string =
   animalId =>
     switch (animalId) {
-    | None => "Vitalik"
-    | Some(tokenIdSet) =>
-      switch (tokenIdSet) {
-      | "0" => "Andy"
-      | "1" => "Simon"
-      | "2" => "Apthapi"
-      | "3" => "Aruma"
-      | "4" => "CatStevens"
-      | "5" => "Cubai"
-      | "6" => "Llajuita"
-      | "7" => "Pancho"
-      | "8" => "Espumita"
-      | "9" => "Verano"
-      | "10" => "Nonhlanhla"
-      | "11" => "Dlala"
-      | "12" => "Isisa"
-      | "42" => "Vitalik"
-      | _ => "Unknown"
-      }
+    | "0" => "Andy"
+    | "1" => "Simon"
+    | "2" => "Apthapi"
+    | "3" => "Aruma"
+    | "4" => "CatStevens"
+    | "5" => "Cubai"
+    | "6" => "Llajuita"
+    | "7" => "Pancho"
+    | "8" => "Espumita"
+    | "9" => "Verano"
+    | "10" => "Nonhlanhla"
+    | "11" => "Dlala"
+    | "12" => "Isisa"
+    | "42" => "Vitalik"
+    | _ => "Unknown"
     };
 
 let getName: t => string =
   animalId =>
     switch (animalId) {
-    | Vitalik
-    | VitalikNew => "Vitalik"
+    | Vitalik => "Vitalik"
     | Simon => "Simon"
     | Andy => "Andy"
     | Verano => "Verano"
@@ -161,7 +133,6 @@ let getAnimal: string => option(t) =
     let animalNameLower = Js.String.toLowerCase(animalName);
     switch (animalNameLower) {
     | "vitalik" => Some(Vitalik)
-    | "vitaliknew" => Some(VitalikNew)
     | "simon" => Some(Simon)
     | "andy" => Some(Andy)
     | "verano" => Some(Verano)
@@ -182,11 +153,12 @@ let getAnimal: string => option(t) =
     };
   };
 
+// TODO: deprecate this method, we should use TokenId.t everywhere instead.
 let getAnimalFromId: string => option(t) =
   animalId => {
     Js.log("Getting animal from Id: " ++ animalId);
     switch (animalId) {
-    | "42" => Some(VitalikNew)
+    | "42" => Some(Vitalik)
     | "0" => Some(Simon)
     | "1" => Some(Andy)
     | "2" => Some(Apthapi)
@@ -207,7 +179,6 @@ let getAnimalFromId: string => option(t) =
 let getNextPrev = animal =>
   switch (animal) {
   | Simon => (Vitalik, Dlala)
-  | VitalikNew => (Andy, Simon)
   | Vitalik => (Andy, Simon)
   | Andy => (Verano, Vitalik)
   | Verano => (Pancho, Andy)
@@ -229,9 +200,6 @@ let getNextPrev = animal =>
 
 let getImage = animal =>
   switch (animal) {
-  | VitalikNew =>
-    %bs.raw
-    {|require('../../img/animals/gorilla1.png')|}
   | Vitalik =>
     %bs.raw
     {|require('../../img/animals/gorilla1.png')|}
@@ -288,7 +256,6 @@ let getAlternateImage: t => option(string) =
     switch (animal) {
     | Simon
     | Andy
-    | VitalikNew
     | Vitalik => None
     | Verano => Some([%bs.raw {|require('../../img/animals/Verano.jpg')|}])
     | Pancho => Some([%bs.raw {|require('../../img/animals/Pancho.jpg')|}])
@@ -329,35 +296,37 @@ let getAlternateImage: t => option(string) =
     | _ => None
     };
 
-let getOrgBadgeImage: t => option(string) =
+let getOrgBadgeImage: t => string =
   animal =>
     switch (animal) {
     | Simon
     | Andy
-    | VitalikNew
-    | Vitalik => Some([%bs.raw {|require('../../img/badges/OGBadge.png')|}])
+    | Vitalik =>
+      %bs.raw
+      {|require('../../img/badges/OGBadge.png')|}
     | Pancho
     | Llajuita
-    // | Espumita
     | Cubai
     | CatStevens
     | Aruma
     | Apthapi
-    // | Ajayu
-    // | Mijungla
-    // | Tarkus
     | Verano =>
-      Some([%bs.raw {|require('../../img/badges/SendaVerdeBadge.png')|}])
+      %bs.raw
+      {|require('../../img/badges/SendaVerdeBadge.png')|}
     | Nonhlanhla
     | Isisa
     | Dlala =>
-      Some([%bs.raw {|require('../../img/badges/WildTomorrowBadge.png')|}])
+      %bs.raw
+      {|require('../../img/badges/WildTomorrowBadge.png')|}
+    // | Espumita
+    // | Ajayu
+    // | Mijungla
+    // | Tarkus
     // | _ => None
     };
 
 let getStoryParagraphs = animal =>
   switch (animal) {
-  | VitalikNew
   | Vitalik => [|
       "Original Gorilla",
       "Vitalik is the first ever animal launched on wildcards and therefore often termed an OG (Original Gorilla). The wildcards project was born at the #ETHCapeTown hackathon in May 2019 where Vitalik Buterin was one of the judges. We named Vitalik the Gorilla after Vitalik as a testament to the impact and innovation Vitalik Buterin has had on the blockchain ecosystem. Vitalik, if you are reading this, start saving some animals and buy me!",
@@ -438,30 +407,13 @@ let useBuy = animal => {
   open Hooks;
 
   let animalId = getId(animal);
-  switch (animalId) {
-  | None =>
-    let buyObj = useBuyTransaction();
-    (
-      (
-        (newPrice, txObject) =>
-          buyObj##send(. newPrice->Web3Utils.toWeiFromEth, txObject)
-      ),
-      buyObj##_TXObjects,
-    );
-  | Some(tokenIdSet) =>
-    let buyObj = useBuyTransactionNew();
-    (
-      (
-        (newPrice, txObject) =>
-          buyObj##send(.
-            tokenIdSet,
-            newPrice->Web3Utils.toWeiFromEth,
-            txObject,
-          )
-      ),
-      buyObj##_TXObjects,
-    );
-  };
+
+  let buyObj = useBuyTransactionNew();
+  (
+    (newPrice, txObject) =>
+      buyObj##send(. animalId, newPrice->Web3Utils.toWeiFromEth, txObject),
+    buyObj##_TXObjects,
+  );
 };
 
 let useCurrentPrice = animal => {
@@ -469,61 +421,41 @@ let useCurrentPrice = animal => {
   open Accounting;
 
   let animalId = getId(animal);
-  switch (animalId) {
-  | None => useCurrentPriceWei()->defaultZeroS
-  | Some(tokenIdSet) => useCurrentPriceWeiNew(tokenIdSet)->defaultZeroS
-  };
+  useCurrentPriceWeiNew(animalId)->defaultZeroS;
 };
 
 // TODO: you could get this from the contract, but seems like a waste
 let pledgeRate = animal => {
-  let animalId = getId(animal);
-
   // TODO: get this from the blockchain / graph - bad hardcoding it here!
-  switch (animalId) {
-  | None => ("3", "10", 0.025, 40.)
-  | Some(tokenIdSet) =>
-    switch (tokenIdSet) {
-    | "42" => ("3", "10", 0.025, 40.)
-    | "2"
-    | "7" => ("12", "10", 0.1, 10.)
-    | "0"
-    | "1"
-    | "3"
-    | "4"
-    | "6"
-    | "10"
-    | "11" => ("24", "10", 0.2, 5.)
-    | "5"
-    | "8"
-    | "12" => ("60", "10", 0.5, 2.)
-    | "9" => ("120", "10", 1., 1.)
-    | _ => ("24", "10", 0.2, 5.)
-    }
+  switch (animal) {
+  | Vitalik => ("3", "10", 0.025, 40.)
+  | Apthapi
+  | Pancho => ("12", "10", 0.1, 10.)
+  | Simon
+  | Andy
+  | Aruma
+  | CatStevens
+  | Cubai
+  | Nonhlanhla
+  | Llajuita
+  | Dlala => ("24", "10", 0.2, 5.)
+  | Cubai
+  // | Espumita
+  | Isisa => ("60", "10", 0.5, 2.)
+  | Verano => ("120", "10", 1., 1.)
   };
 };
 
 let useCurrentPriceEth = animal => {
   open Belt.Option;
   let animalId = getId(animal);
-  (
-    switch (animalId) {
-    | None => Hooks.useCurrentPriceEth()
-    | Some(tokenIdSet) => Hooks.useCurrentPriceEthNew(tokenIdSet)
-    }
-  )
-  ->mapWithDefault("loading", a => a);
+
+  Hooks.useCurrentPriceEthNew(animalId)->mapWithDefault("loading", a => a);
 };
 let useCurrentPriceUsd = animal => {
   open Belt.Option;
   let animalId = getId(animal);
-  (
-    switch (animalId) {
-    | None => Hooks.useCurrentPriceUsd()
-    | Some(tokenIdSet) => Hooks.useCurrentPriceUsdNew(tokenIdSet)
-    }
-  )
-  ->mapWithDefault("loading", a => a);
+  Hooks.useCurrentPriceUsdNew(animalId)->mapWithDefault("loading", a => a);
 };
 
 type launchStatus =
@@ -536,7 +468,6 @@ let isLaunched: t => launchStatus =
     | Simon
     | Andy
     | Vitalik
-    | VitalikNew
     | Cubai
     | Dlala
     | CatStevens
@@ -555,15 +486,10 @@ let useIsAnimalOwened = animal => {
   let animalId = animal->getId;
   let currentAccount =
     Hooks.useCurrentUser()->Belt.Option.mapWithDefault("loading", a => a);
-  let currentPatron =
-    switch (animalId) {
-    | Some(id) =>
-      Hooks.useCurrentPatronNew(id->int_of_string)
-      ->Belt.Option.mapWithDefault("no-patron-defined", a => a)
 
-    | None =>
-      Hooks.useCurrentPatron()
-      ->Belt.Option.mapWithDefault("no-patron-defined", a => a)
-    };
+  let currentPatron =
+    Hooks.useCurrentPatronNew(animalId->int_of_string)
+    ->Belt.Option.mapWithDefault("no-patron-defined", a => a);
+
   currentAccount == currentPatron;
 };
