@@ -48,8 +48,6 @@ let replaceVitalik = animal => {
   let availableDeposit =
     Hooks.useDepositAbleToWithdrawWei()
     ->Belt.Option.mapWithDefault("111", a => a);
-  Js.log("availableDeposit");
-  Js.log(availableDeposit);
   switch (animal) {
   | Animal.Vitalik =>
     if (availableDeposit == "0") {

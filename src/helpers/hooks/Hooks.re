@@ -18,24 +18,19 @@ let useWeb3: unit => Web3.t =
   };
 
 let useTotalPatronageWei = () => {
-  let totalCollectedOpt =
-    useCacheCall((), "VitalikSteward", "totalCollected")
-    ->Js.Nullable.toOption;
-  let patronageOwedOpt =
-    useCacheCall((), "VitalikSteward", "patronageOwed")->Js.Nullable.toOption;
-  switch (totalCollectedOpt, patronageOwedOpt) {
-  | (Some(totalCollected), Some(patronageOwed)) =>
-    let totalCollectedBN: BN.bn = BN.new_(totalCollected);
-    let patronageOwedBN: BN.bn = BN.new_(patronageOwed);
-    Some(totalCollectedBN->addGet(. patronageOwedBN)->toStringGet(.));
-  | _ => None
-  };
+  Some
+    ("2697680747781582948"); // This value will never change, since from "vintage vitalik"
 };
 
 let useTotalPatronageEth = (~decimals=18, ()) =>
   useTotalPatronageWei()
   ->flatMap(price =>
-      Some(toFixedWithPrecision(fromString(fromWeiToEth(price)), decimals))
+      Some(
+        toFixedWithPrecision(
+          fromString(fromWeiToEth(price)),
+          ~digits=decimals,
+        ),
+      )
     );
 let useTotalPatronageUsd = () => {
   let totalPatronageEth = useTotalPatronageEth();

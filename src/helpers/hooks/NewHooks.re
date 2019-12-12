@@ -6,19 +6,96 @@ open Providers.UsdPriceProvider;
 open BN;
 
 let useTotalPatronageWeiNew = () => {
-  let totalCollected1 =
+  let totalCollected0 =
     useGetTotalCollected("0")->mapWithDefault("0", a => a)->BN.new_;
-  let totalCollected2 =
+  let patronageOwed0 =
+    useGetPatronageOwed("0")->mapWithDefault("0", a => a)->BN.new_;
+  let totalCollected1 =
     useGetTotalCollected("1")->mapWithDefault("0", a => a)->BN.new_;
   let patronageOwed1 =
-    useGetPatronageOwed("0")->mapWithDefault("0", a => a)->BN.new_;
-  let patronageOwed2 =
     useGetPatronageOwed("1")->mapWithDefault("0", a => a)->BN.new_;
 
-  totalCollected1
+  let totalCollected3 =
+    useGetTotalCollected("3")->mapWithDefault("0", a => a)->BN.new_;
+  let patronageOwed3 =
+    useGetPatronageOwed("3")->mapWithDefault("0", a => a)->BN.new_;
+
+  let totalCollected2 =
+    useGetTotalCollected("2")->mapWithDefault("0", a => a)->BN.new_;
+  let patronageOwed2 =
+    useGetPatronageOwed("2")->mapWithDefault("0", a => a)->BN.new_;
+
+  let totalCollected4 =
+    useGetTotalCollected("4")->mapWithDefault("0", a => a)->BN.new_;
+  let patronageOwed4 =
+    useGetPatronageOwed("4")->mapWithDefault("0", a => a)->BN.new_;
+
+  let totalCollected5 =
+    useGetTotalCollected("5")->mapWithDefault("0", a => a)->BN.new_;
+  let patronageOwed5 =
+    useGetPatronageOwed("5")->mapWithDefault("0", a => a)->BN.new_;
+
+  let totalCollected6 =
+    useGetTotalCollected("6")->mapWithDefault("0", a => a)->BN.new_;
+  let patronageOwed6 =
+    useGetPatronageOwed("6")->mapWithDefault("0", a => a)->BN.new_;
+
+  let totalCollected7 =
+    useGetTotalCollected("7")->mapWithDefault("0", a => a)->BN.new_;
+  let patronageOwed7 =
+    useGetPatronageOwed("7")->mapWithDefault("0", a => a)->BN.new_;
+
+  let totalCollected9 =
+    useGetTotalCollected("9")->mapWithDefault("0", a => a)->BN.new_;
+  let patronageOwed9 =
+    useGetPatronageOwed("9")->mapWithDefault("0", a => a)->BN.new_;
+
+  let totalCollected10 =
+    useGetTotalCollected("10")->mapWithDefault("0", a => a)->BN.new_;
+  let patronageOwed10 =
+    useGetPatronageOwed("10")->mapWithDefault("0", a => a)->BN.new_;
+
+  let totalCollected11 =
+    useGetTotalCollected("11")->mapWithDefault("0", a => a)->BN.new_;
+  let patronageOwed11 =
+    useGetPatronageOwed("11")->mapWithDefault("0", a => a)->BN.new_;
+
+  let totalCollected12 =
+    useGetTotalCollected("12")->mapWithDefault("0", a => a)->BN.new_;
+  let patronageOwed12 =
+    useGetPatronageOwed("12")->mapWithDefault("0", a => a)->BN.new_;
+
+  let totalCollected42 =
+    useGetTotalCollected("42")->mapWithDefault("0", a => a)->BN.new_;
+  let patronageOwed42 =
+    useGetPatronageOwed("42")->mapWithDefault("0", a => a)->BN.new_;
+
+  totalCollected0
+  ->addGet(. totalCollected1)
   ->addGet(. totalCollected2)
+  ->addGet(. totalCollected3)
+  ->addGet(. totalCollected4)
+  ->addGet(. totalCollected5)
+  ->addGet(. totalCollected6)
+  ->addGet(. totalCollected7)
+  ->addGet(. totalCollected9)
+  ->addGet(. totalCollected10)
+  ->addGet(. totalCollected11)
+  ->addGet(. totalCollected12)
+  ->addGet(. totalCollected42)
+  ->addGet(. patronageOwed0)
   ->addGet(. patronageOwed1)
-  ->addGet(. patronageOwed2);
+  ->addGet(. patronageOwed2)
+  ->addGet(. patronageOwed3)
+  ->addGet(. patronageOwed4)
+  ->addGet(. patronageOwed5)
+  ->addGet(. patronageOwed6)
+  ->addGet(. patronageOwed7)
+  ->addGet(. patronageOwed9)
+  ->addGet(. patronageOwed10)
+  ->addGet(. patronageOwed11)
+  ->addGet(. patronageOwed12)
+  ->addGet(. patronageOwed42);
 };
 let useTotalPatronageTokenWeiNew = tokenId => {
   let totalCollected =
