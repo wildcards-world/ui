@@ -182,34 +182,30 @@ let make = () => {
     | _ => (None, false, false)
     };
 
-  if (url.hash == "vitalik-migrate") {
-    <MigrateVitalik />;
-  } else {
-    <div className=Styles.app>
-      <img src=betaBanner className=Styles.betaBanner />
-      <Header animalCarousel isExplorer isDetails />
-      <Providers.UsdPriceProvider>
-        {isDetails
-           ? <AnimalFocusDetails animalCarousel isExplorer />
-           : isExplorer
-               ? <BuyGrid
-                   animalArray={
-                     Animal.orderedArray->Belt.Array.map((animal, ()) =>
-                       <Dapp.CarouselAnimal animal isExplorer scalar=1. />
-                     )
-                   }
-                 />
-               : <React.Fragment>
-                   <AnimalFocusDetails animalCarousel isExplorer />
-                   <StaticContent.CustomerBenefit />
-                   <StaticContent.HowItWorks />
-                   <StaticContent.About />
-                   <StaticContent.CoreConcepts />
-                   <StaticContent.EmailSignup />
-                   <StaticContent.Partners />
-                 </React.Fragment>}
-      </Providers.UsdPriceProvider>
-      <StaticContent.Footer />
-    </div>;
-  };
+  <div className=Styles.app>
+    <img src=betaBanner className=Styles.betaBanner />
+    <Header animalCarousel isExplorer isDetails />
+    <Providers.UsdPriceProvider>
+      {isDetails
+         ? <AnimalFocusDetails animalCarousel isExplorer />
+         : isExplorer
+             ? <BuyGrid
+                 animalArray={
+                   Animal.orderedArray->Belt.Array.map((animal, ()) =>
+                     <Dapp.CarouselAnimal animal isExplorer scalar=1. />
+                   )
+                 }
+               />
+             : <React.Fragment>
+                 <AnimalFocusDetails animalCarousel isExplorer />
+                 <StaticContent.CustomerBenefit />
+                 <StaticContent.HowItWorks />
+                 <StaticContent.About />
+                 <StaticContent.CoreConcepts />
+                 <StaticContent.EmailSignup />
+                 <StaticContent.Partners />
+               </React.Fragment>}
+    </Providers.UsdPriceProvider>
+    <StaticContent.Footer />
+  </div>;
 };
