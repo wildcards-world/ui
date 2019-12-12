@@ -17,7 +17,8 @@ let uesTotalPatronage = () => {
 
   switch (totalPatronageOtherTokens) {
   | Some(patronageVitalik) =>
-    let totalPatronageEth = patronageVitalik->Web3Utils.fromWeiBNToEth;
+    let totalPatronageEth =
+      patronageVitalik->BN.toStringGet(.)->Web3Utils.fromWeiToEth;
 
     let totaPatronageUsd =
       Js.Float.toFixedWithPrecision(
