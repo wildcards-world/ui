@@ -23,7 +23,7 @@ export default ({
   updatePatronage,
   setDeposit,
   onSubmitBuy,
-  gorillaName,
+  animalName,
   depositForAYear
 }) => {
   const [debouncedSetDeposit] = useDebouncedCallback(
@@ -44,7 +44,7 @@ export default ({
   return <Fragment>
     <Flex>
       <Box p={2} mb={2} >
-        <Heading>Purchase {gorillaName}</Heading>
+        <Heading>Purchase {animalName}</Heading>
       </Box>
     </Flex >
     <Flex >
@@ -66,9 +66,9 @@ export default ({
         />
       </Box>
       <Box p={2} mb={2} width={[1, 0.5]}>
-        <Tooltip message={`This is the amount of money you will receive if someone purchases ${gorillaName} from you.`} placement="top">
+        <Tooltip message={`This is the amount of money you will receive if someone purchases ${animalName} from you.`} placement="top">
           <Text style={rightAlignedText}>
-            This will be {gorillaName}'s new for sale price:
+            This will be {animalName}'s new for sale price:
           <div style={infoTooltipStyle}>
               <Icon color="green" name="Info" size="16" />
             </div>

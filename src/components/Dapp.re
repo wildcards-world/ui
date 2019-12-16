@@ -129,7 +129,7 @@ module AnimalOnLandingPage = {
     let name = Animal.getName(animal);
 
     let optAlternateImage = Animal.getAlternateImage(animal);
-    let optOrgBadge = Animal.getOrgBadgeImage(animal);
+    let orgBadge = Animal.getOrgBadgeImage(animal);
 
     let normalImage = () =>
       <img
@@ -149,13 +149,9 @@ module AnimalOnLandingPage = {
               | None =>
                 <div className=Styles.overlayFlameImg> <Streak animal /> </div>
               }}
-             {switch (optOrgBadge) {
-              | None => React.null
-              | Some(orgBadge) =>
-                <div className=Styles.overlayBadgeImg>
-                  <img className=Styles.flameImg src=orgBadge />
-                </div>
-              }}
+             {<div className=Styles.overlayBadgeImg>
+                <img className=Styles.flameImg src=orgBadge />
+              </div>}
            </React.Fragment>;
          }}
       </React.Fragment>;
@@ -402,7 +398,7 @@ module DetailsView = {
       let normalImage = animal =>
         <img className=Styles.ownedAnimalImg src={Animal.getImage(animal)} />;
       let optAlternateImage = Animal.getAlternateImage(animal);
-      let optOrgBadge = Animal.getOrgBadgeImage(animal);
+      let orgBadge = Animal.getOrgBadgeImage(animal);
 
       let isLaunched = animal->Animal.isLaunched;
 
@@ -423,13 +419,9 @@ module DetailsView = {
                beforeComponent=React.null
              />
            }}
-          {switch (optOrgBadge) {
-           | None => React.null
-           | Some(orgBadge) =>
-             <div className=Styles.overlayBadgeImg>
-               <img className=Styles.flameImg src=orgBadge />
-             </div>
-           }}
+          {<div className=Styles.overlayBadgeImg>
+             <img className=Styles.flameImg src=orgBadge />
+           </div>}
         </div>;
 
       <React.Fragment>
@@ -707,8 +699,8 @@ module AnimalInfo = {
         <ReactTabs.TabPanel>
           <h2> "Story"->React.string </h2>
           {ReasonReact.array(
-             Array.map(
-               paragraphText => <p> paragraphText->React.string </p>,
+             Array.mapi(
+               (i, paragraphText) => <p key=i->string_of_int> paragraphText->React.string </p>,
                Animal.getStoryParagraphs(animal),
              ),
            )}

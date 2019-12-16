@@ -11,17 +11,14 @@ type patronageRaised =
   | Loaded(string, string)
   | Loading;
 
-let getTotalPatronage = vitalikPatronage => {
+let uesTotalPatronage = () => {
   let totalPatronageOtherTokens = useTotalPatronageWeiNew();
   let currentUsdEthPrice = useUsdPrice()->mapWithDefault(0., a => a);
 
-  switch (vitalikPatronage) {
-  | Some(patronageVitalikWei) =>
+  switch (totalPatronageOtherTokens) {
+  | Some(patronageVitalik) =>
     let totalPatronageEth =
-      BN.new_(patronageVitalikWei)
-      ->BN.addGet(. totalPatronageOtherTokens)
-      ->BN.toStringGet(.)
-      ->Web3Utils.fromWeiToEth;
+      patronageVitalik->BN.toStringGet(.)->Web3Utils.fromWeiToEth;
 
     let totaPatronageUsd =
       Js.Float.toFixedWithPrecision(
@@ -37,7 +34,7 @@ let getTotalPatronage = vitalikPatronage => {
 
 [@react.component]
 let make = () => {
-  let totalPatronageRaised = useTotalPatronageWei()->getTotalPatronage;
+  let totalPatronageRaised = uesTotalPatronage();
 
   switch (totalPatronageRaised) {
   | Loaded(totalRaised, totalRaisedUsd) =>

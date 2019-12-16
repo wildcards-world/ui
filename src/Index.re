@@ -2,18 +2,6 @@ open Providers;
 
 [%bs.raw {|require("./custom.css")|}];
 
-// module Test = {
-//   [@react.component]
-//   let make = () => {
-//     let gContext = React.useContext(GlobalContext.context);
-//     switch (gContext) {
-//     | Loading => <p> "loading - from internet"->React.string </p>
-//     | Error(_error) => <p> "error"->React.string </p>
-//     | Loaded(isLoaded) => <p> isLoaded->React.string </p>
-//     };
-//   };
-// };
-
 module Router = {
   [@react.component]
   let make = () => {

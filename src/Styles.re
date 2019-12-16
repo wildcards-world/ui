@@ -117,7 +117,7 @@ let streakText =
     right(`percent(50.)),
     transform(translateX(`percent(50.))),
   ]);
-let flameImg = style([width(`percent(100.))]);
+let flameImg = style([width(`percent(100.)), maxWidth(px(70))]);
 
 let navListItem = style([display(inlineBlock)]);
 

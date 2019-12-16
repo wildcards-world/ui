@@ -90,11 +90,7 @@ let usePrice: Animal.t => graphqlDataLoad(Eth.t) =
     let (simple, _) =
       SubPrice.use(
         ~variables=
-          SubPriceQuery.make(
-            ~tokenId=
-              Animal.getId(animal)->Belt.Option.mapWithDefault("42", a => a),
-            (),
-          )##variables,
+          SubPriceQuery.make(~tokenId=Animal.getId(animal), ())##variables,
         (),
       );
 
@@ -125,11 +121,7 @@ let useTimeAcquired: Animal.t => graphqlDataLoad(MomentRe.Moment.t) =
     let (simple, _) =
       SubTimeAcquired.use(
         ~variables=
-          SubTimeAcquiredQuery.make(
-            ~tokenId=
-              Animal.getId(animal)->Belt.Option.mapWithDefault("42", a => a),
-            (),
-          )##variables,
+          SubTimeAcquiredQuery.make(~tokenId=Animal.getId(animal), ())##variables,
         (),
       );
 
@@ -168,8 +160,7 @@ let make = () => {
     {ReasonReact.array(
        Array.mapi(
          (_index, animal) => {
-           let animalId =
-             Animal.getId(animal)->Belt.Option.mapWithDefault("42", a => a);
+           let animalId = Animal.getId(animal);
            let price =
              usePriceStringWithDefault(animal, "loading", Eth.Eth(`gwei));
            <p>
@@ -183,8 +174,7 @@ let make = () => {
     {ReasonReact.array(
        Array.mapi(
          (_index, animal) => {
-           let animalId =
-             Animal.getId(animal)->Belt.Option.mapWithDefault("42", a => a);
+           let animalId = Animal.getId(animal);
            let timeAcquired =
              MomentRe.Moment.format(
                "LLLL",
