@@ -76,20 +76,22 @@ module Transaction = {
 
     let (numerator, denominator, ratio, ratioInverse) =
       Animal.pledgeRate(animal);
-    let currentPriceWei = Animal.useCurrentPrice(animal);
+    let currentPriceWei =
+      QlHooks.usePrice(animal)
+      ->Belt.Option.mapWithDefault(BN.new_("0"), a => a);
 
     let animalName = Animal.getName(animal);
 
     let maxAvailableDepositBN =
       BN.new_(userBalance)
       ->BN.subGet(. BN.new_("3000000000000000")) // 0.003 eth as gas
-      ->BN.subGet(. BN.new_(currentPriceWei));
+      ->BN.subGet(. currentPriceWei);
     let maxAvailableDeposit =
       maxAvailableDepositBN->BN.toStringGet(.)->Web3Utils.fromWeiToEth;
 
     let isAbleToBuy = maxAvailableDepositBN->BN.gtGet(. BN.new_("0"));
 
-    let currentPriceEth = Web3Utils.fromWeiToEth(currentPriceWei);
+    let currentPriceEth = Web3Utils.fromWeiBNToEth(currentPriceWei);
     let currentPriceFloat = Float.fromString(currentPriceEth)->defaultZeroF;
     let getMax = [%bs.raw {| (first, second) => Math.max(first,second) |}];
     let currentPriceFloatWithMinimum = getMax(. currentPriceFloat, 0.005);
@@ -146,7 +148,7 @@ module Transaction = {
       let setFunctionObj = [%bs.raw {| (value, from) => ({ value, from }) |}];
       let amountToSend =
         BN.new_(newPrice)
-        ->BN.addGet(. BN.new_(currentPriceWei))
+        ->BN.addGet(. currentPriceWei)
         ->BN.addGet(. BN.new_(Web3Utils.toWei(deposit, "ether")))
         ->BN.toStringGet(.);
       buyFunc(newPrice, setFunctionObj(. amountToSend, currentUser));
@@ -269,9 +271,14 @@ let make = (~animal: Animal.t) => {
     setModalOpen(_ => true);
   };
 
-  let currentPriceWei = Animal.useCurrentPrice(animal);
+  let currentPriceWei = QlHooks.usePrice(animal);
 
-  let buttonText = currentPriceWei == "0" ? "Claim" : "Buy";
+  // TODO:: check if foreclosed!!
+  let buttonText =
+    switch (currentPriceWei) {
+    | Some(price) => price->BN.gtGet(. BN.new_("0")) ? "Buy" : "Claim"
+    | None => "loading"
+    };
 
   <React.Fragment>
     {if (isProviderSelected) {

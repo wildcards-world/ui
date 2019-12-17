@@ -156,7 +156,6 @@ let getAnimal: string => option(t) =
 // TODO: deprecate this method, we should use TokenId.t everywhere instead.
 let getAnimalFromId: string => option(t) =
   animalId => {
-    Js.log("Getting animal from Id: " ++ animalId);
     switch (animalId) {
     | "42" => Some(Vitalik)
     | "0" => Some(Simon)
@@ -416,13 +415,13 @@ let useBuy = animal => {
   );
 };
 
-let useCurrentPrice = animal => {
-  open Hooks;
-  open Accounting;
+// let useCurrentPrice = animal => {
+//   open Hooks;
+//   open Accounting;
 
-  let animalId = getId(animal);
-  useCurrentPriceWeiNew(animalId)->defaultZeroS;
-};
+//   let animalId = getId(animal);
+//   useCurrentPriceWeiNew(animalId)->defaultZeroS;
+// };
 
 // TODO: you could get this from the contract, but seems like a waste
 let pledgeRate = animal => {
@@ -446,17 +445,17 @@ let pledgeRate = animal => {
   };
 };
 
-let useCurrentPriceEth = animal => {
-  open Belt.Option;
-  let animalId = getId(animal);
+// let useCurrentPriceEth = animal => {
+//   open Belt.Option;
+//   let animalId = getId(animal);
 
-  Hooks.useCurrentPriceEthNew(animalId)->mapWithDefault("loading", a => a);
-};
-let useCurrentPriceUsd = animal => {
-  open Belt.Option;
-  let animalId = getId(animal);
-  Hooks.useCurrentPriceUsdNew(animalId)->mapWithDefault("loading", a => a);
-};
+//   Hooks.useCurrentPriceEthNew(animalId)->mapWithDefault("loading", a => a);
+// };
+// let useCurrentPriceUsd = animal => {
+//   open Belt.Option;
+//   let animalId = getId(animal);
+//   Hooks.useCurrentPriceUsdNew(animalId)->mapWithDefault("loading", a => a);
+// };
 
 type launchStatus =
   | Launched
@@ -481,15 +480,3 @@ let isLaunched: t => launchStatus =
       LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-04T17:00:00"))
     | _ => LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-10T11:00:00"))
     };
-
-let useIsAnimalOwened = animal => {
-  let animalId = animal->getId;
-  let currentAccount =
-    Hooks.useCurrentUser()->Belt.Option.mapWithDefault("loading", a => a);
-
-  let currentPatron =
-    Hooks.useCurrentPatronNew(animalId->int_of_string)
-    ->Belt.Option.mapWithDefault("no-patron-defined", a => a);
-
-  currentAccount == currentPatron;
-};

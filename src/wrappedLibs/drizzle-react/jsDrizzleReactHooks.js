@@ -5,10 +5,10 @@ export const useGetAvailableDeposit = (userAddress) => {
   return useCacheCall("WildcardSteward_v0", 'depositAbleToWithdraw', userAddress) || undefined
 }
 
-export const useGetPrice = (tokenId) => {
-  const { useCacheCall } = drizzleReactHooks.useDrizzle()
-  return useCacheCall("WildcardSteward_v0", 'price', tokenId) || undefined
-}
+// export const useGetPrice = (tokenId) => {
+//   const { useCacheCall } = drizzleReactHooks.useDrizzle()
+//   return useCacheCall("WildcardSteward_v0", 'price', tokenId) || undefined
+// }
 export const useGetTotalCollected = (tokenId) => {
   const { useCacheCall } = drizzleReactHooks.useDrizzle()
   return useCacheCall("WildcardSteward_v0", 'totalCollected', tokenId) || undefined

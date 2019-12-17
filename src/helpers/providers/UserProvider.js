@@ -8,6 +8,9 @@ export const UserInfoProvider = ({ children }) => {
 
   const updateUserProvider = currentUserEthAddress => {
     let currentUserEthAddressLower = currentUserEthAddress.toLowerCase()
+    if (!!userProvider.verifications[currentUserEthAddressLower]) { // Don't allow this function to run twice
+      return
+    }
 
     if (userProvider.verifications[currentUserEthAddressLower] === undefined) {
       setUserProvider({

@@ -30,8 +30,7 @@ let useDepositAbleToWithdrawUsdAnimal = animal => {
   };
 };
 
-let useTotalPatronageEthAnimal = animal =>
-  animal->Animal.getId->useTotalPatronageTokenEthNew;
+let useTotalPatronageEthAnimal = animal => "100";
 
 let useTotalPatronageUsdAnimal = animal => {
   let totalPatronange = useTotalPatronageEthAnimal(animal);

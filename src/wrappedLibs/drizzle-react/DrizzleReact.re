@@ -5,8 +5,8 @@ module Hooks = {
   [@bs.module "@drizzle/react-plugin"] [@bs.scope "drizzleReactHooks"]
   external useDrizzle: unit => 'drizzle = "";
 
-  [@bs.module "./jsDrizzleReactHooks.js"]
-  external useGetPriceNew: string => option(string) = "useGetPrice";
+  // [@bs.module "./jsDrizzleReactHooks.js"]
+  // external useGetPriceNew: string => option(string) = "useGetPrice";
 
   [@bs.module "./jsDrizzleReactHooks.js"]
   external useUserBalance: unit => option(string) = "useUserBalance";

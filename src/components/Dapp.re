@@ -99,10 +99,9 @@ module DisplayAfterDate = {
 module BasicAnimalDisplay = {
   [@react.component]
   let make = (~animal: Animal.t, ~isExplorer) => {
-    let owned = animal->Animal.useIsAnimalOwened;
+    let owned = animal->QlHooks.useIsAnimalOwened;
     let currentPatron =
-      GeneralHooks.useCurrentPatronAnimal(animal)
-      ->mapWithDefault("Loading", a => a);
+      QlHooks.usePatron(animal)->mapWithDefault("Loading", a => a);
     let userId = UserProvider.useUserNameOrTwitterHandle(currentPatron);
 
     let userIdComponent = UserProvider.useUserComponent(userId);
@@ -201,12 +200,7 @@ module AnimalOnLandingPage = {
            <h3 className=Styles.colorGreen> {React.string("COMING IN")} </h3>
            <CountDown endDateMoment leadingZeros=true includeWords=false />
          </div>
-       | None =>
-         <div>
-           <Offline requireSmartContractsLoaded=true>
-             <BasicAnimalDisplay animal isExplorer />
-           </Offline>
-         </div>
+       | None => <div> <BasicAnimalDisplay animal isExplorer /> </div>
        }}
     </Rimble.Box>;
   };
@@ -331,7 +325,7 @@ module AnimalCarousel = {
 module AnimalActionsOnDetailsPage = {
   [@react.component]
   let make = (~animal) => {
-    let owned = animal->Animal.useIsAnimalOwened;
+    let owned = animal->QlHooks.useIsAnimalOwened;
     let currentAccount = useCurrentUser()->mapWithDefault("loading", a => a);
     let currentPatron =
       GeneralHooks.useCurrentPatronAnimal(animal)
@@ -467,9 +461,7 @@ module DefaultLook = {
          <React.Fragment>
            <AnimalCarousel isExplorer />
            <Rimble.Box className=Styles.dappImagesCounteractOffset>
-             <Offline requireSmartContractsLoaded=true>
-               <TotalRaised />
-             </Offline>
+             <TotalRaised />
            </Rimble.Box>
            <Rimble.Box className=Styles.dappImagesCounteractOffset>
              <p>
@@ -546,19 +538,39 @@ module AnimalInfoStats = {
     let foreclosureTime = GeneralHooks.useForeclosureTimeAnimal(animal);
     let definiteTime = foreclosureTime->mapWithDefault(Loading, a => Date(a));
     let (_, _, ratio, _) = Animal.pledgeRate(animal);
-    let currentPrice = Animal.useCurrentPriceEth(animal);
-    let currentPriceUsd = Animal.useCurrentPriceUsd(animal);
-    let monthlyPledgeEth =
-      Js.Float.toString(
-        Belt.Float.fromString(currentPrice)->Accounting.defaultZeroF *. ratio,
-      );
-    let monthlyPledgeUsd =
-      // Js.Float.toString(
-      Js.Float.toFixedWithPrecision(
-        Belt.Float.fromString(currentPriceUsd)->Accounting.defaultZeroF
-        *. ratio,
-        ~digits=2,
-      );
+    // let currentPrice = QlHooks.usePrice(animal)->Option.Map;
+    // let currentPriceUsd = Animal.useCurrentPriceUsd(animal);
+    let optCurrentPrice = PriceDisplay.uesTotalPatronage(animal);
+
+    let (optMonthlyPledgeEth, optMonthlyPledgeUsd) =
+      switch (optCurrentPrice) {
+      | Some((priceEth, optPriceUsd)) => (
+          Some(
+            Js.Float.toString(
+              Belt.Float.fromString(priceEth)->Accounting.defaultZeroF
+              *. ratio,
+            ),
+          ),
+          switch (optPriceUsd) {
+          | Some(priceUsd) => None
+
+          | None => None
+          },
+        )
+      | None => (None, None)
+      };
+
+    // let monthlyPledgeEth =
+    //   Js.Float.toString(
+    //     Belt.Float.fromString(currentPrice)->Accounting.defaultZeroF *. ratio,
+    //   );
+    // let monthlyPledgeUsd =
+    //   // Js.Float.toString(
+    //   Js.Float.toFixedWithPrecision(
+    //     Belt.Float.fromString(currentPriceUsd)->Accounting.defaultZeroF
+    //     *. ratio,
+    //     ~digits=2,
+    //   );
     let monthlyRate = Js.Float.toString(ratio *. 100.);
 
     <React.Fragment>
@@ -578,9 +590,18 @@ module AnimalInfoStats = {
           </strong>
         </small>
         <br />
-        <S> {monthlyPledgeEth ++ " ETH"} </S>
+        {switch (optMonthlyPledgeEth) {
+         | Some(monthlyPledgeEth) => <S> {monthlyPledgeEth ++ " ETH"} </S>
+         | None => <Rimble.Loader />
+         }}
         <br />
-        <small> <S> {"(" ++ monthlyPledgeUsd ++ " USD)"} </S> </small>
+        <small>
+          {switch (optMonthlyPledgeUsd) {
+           | Some(monthlyPledgeUsd) =>
+             <S> {"(" ++ monthlyPledgeUsd ++ " USD)"} </S>
+           | None => React.null
+           }}
+        </small>
       </div>
       <p>
         <small>
@@ -700,7 +721,8 @@ module AnimalInfo = {
           <h2> "Story"->React.string </h2>
           {ReasonReact.array(
              Array.mapi(
-               (i, paragraphText) => <p key=i->string_of_int> paragraphText->React.string </p>,
+               (i, paragraphText) =>
+                 <p key={i->string_of_int}> paragraphText->React.string </p>,
                Animal.getStoryParagraphs(animal),
              ),
            )}

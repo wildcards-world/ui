@@ -15,7 +15,7 @@ export default ({ totalRaised }) => {
     start: decimals,
     end: decimals,
     delay: 1000,
-    duration: 6,
+    duration: 1,
     redraw: false,
     preserveValue: true, // This line is extremely important, otherwise it always starts from zero!!
   });
@@ -32,7 +32,7 @@ export default ({ totalRaised }) => {
       } else {
         update(decimals)
         setStyles({ color: "green", fontWeight: "bold" })
-        timeout = setTimeout(() => setStyles({}), 6000)
+        timeout = setTimeout(() => setStyles({}), 1000)
       }
     }
     return () => clearTimeout(timeout)
