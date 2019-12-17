@@ -36,14 +36,14 @@ let make = (~animal: Animal.t) => {
     <React.Fragment>
       <p className={Styles.noMarginTop ++ " " ++ Styles.noMarginBottom}>
         <S> {priceEth ++ " ETH"} </S>
-        {switch (optPriceUsd) {
-         | Some(priceUsd) =>
-           <p className=Styles.noMarginTop>
-             <small> <S> {"(" ++ priceUsd ++ " USD)"} </S> </small>
-           </p>
-         | None => React.null
-         }}
       </p>
+      {switch (optPriceUsd) {
+       | Some(priceUsd) =>
+         <p className=Styles.noMarginTop>
+           <small> <S> {"(" ++ priceUsd ++ " USD)"} </S> </small>
+         </p>
+       | None => React.null
+       }}
     </React.Fragment>
   | None => <Rimble.Loader />
   };

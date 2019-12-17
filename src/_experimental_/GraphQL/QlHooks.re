@@ -1,3 +1,4 @@
+open ReasonApolloHooks;
 type owner = {. "address": Js.Json.t};
 
 type price = {. "price": Eth.t};
@@ -41,50 +42,55 @@ let decodeAddress: Js.Json.t => string =
   address =>
     address->Js.Json.decodeString->Belt.Option.mapWithDefault("0x0", a => a);
 
-// module InitialLoad = [%graphql
-//   {|
-//     query {
-//       wildcards(first: 13) {
-//         id
-//         animal: tokenId @bsDecoder(fn: "tokenIdToAnimal")
-//         owner {
-//           address
-//           id
-//         }
-//         price {
-//           price @bsDecoder(fn: "decodePrice")
-//           id
-//         }
-//         timeAcquired @bsDecoder(fn: "decodeMoment")
-//       }
-//       global(id: 1) {
-//         id
-//         totalCollectedOrDueAccurate @bsDecoder(fn: "decodeBN")
-//         timeLastCollected @bsDecoder(fn: "decodeBN")
-//         totalTokenCostScaledNumeratorAccurate @bsDecoder(fn: "decodeBN")
-//       }
-//     }
-//   |}
-// ];
+module InitialLoad = [%graphql
+  {|
+    query {
+      wildcards(first: 13) {
+        id
+        animal: tokenId @bsDecoder(fn: "tokenIdToAnimal")
+        owner {
+          address
+          id
+        }
+        price {
+          price @bsDecoder(fn: "decodePrice")
+          id
+        }
+        timeAcquired @bsDecoder(fn: "decodeMoment")
+      }
+      global(id: 1) {
+        id
+        totalCollectedOrDueAccurate @bsDecoder(fn: "decodeBN")
+        timeLastCollected @bsDecoder(fn: "decodeBN")
+        totalTokenCostScaledNumeratorAccurate @bsDecoder(fn: "decodeBN")
+      }
+    }
+  |}
+];
 
-// module InitialLoadQuery = ReasonApolloHooks.Query.Make(InitialLoad);
-// let isInitialized = () => {
-//   let (simple, _full) = InitialLoadQuery.use();
+// module InitialLoadQuery = ReasonApolloHooks.ApolloHooksQuery(InitialLoad);
+let isInitialized = () => {
+  // let (simple, _full) = InitialLoadQuery.use();
+  let (simple, _full) =
+    ApolloHooks.useQuery(
+      ~notifyOnNetworkStatusChange=true,
+      InitialLoad.definition,
+    );
+  // InitialLoadQuery.use();
 
-//   switch (simple) {
-//   | Data(data) =>
-//     // Js.log(data);
-//     // data##
-//     true
-//   | Loading
-//   | NoData
-//   | Error(_) => false
-//   };
-// };
+  switch (simple) {
+  | Data(_data) =>
+    // Js.log(data);
+    true
+  | Loading
+  | NoData
+  | Error(_) => false
+  };
+};
 
 module SubWildcardQuery = [%graphql
   {|
-    subscription ($tokenId: String!) {
+    query ($tokenId: String!) {
       wildcard(id: $tokenId) {
         id
         timeAcquired @bsDecoder(fn: "decodeMoment")
@@ -100,21 +106,6 @@ module SubWildcardQuery = [%graphql
     }
   |}
 ];
-module SubWildcard = ReasonApolloHooks.Subscription.Make(SubWildcardQuery);
-// module SubPriceQuery = [%graphql
-//   {|
-//     query ($tokenId: String!) {
-//       wildcard(id: $tokenId) {
-//         id
-//         price {
-//           id
-//           price @bsDecoder(fn: "decodePrice")
-//         }
-//       }
-//     }
-//   |}
-// ];
-// module SubPrice = ReasonApolloHooks.Query.Make(SubPriceQuery);
 
 module SubTotalRaisedOrDueQuery = [%graphql
   {|
@@ -129,63 +120,24 @@ module SubTotalRaisedOrDueQuery = [%graphql
   |}
 ];
 
-module SubTotalRaisedOrDue =
-  ReasonApolloHooks.Query.Make(SubTotalRaisedOrDueQuery);
-
-// module SubTokenPriceQuery = [%graphql
-//   {|
-//     query ($tokenId: String!) {
-//       wildcard(id: $tokenId) {
-//         id
-//         price {
-//           price @bsDecoder(fn: "decodePrice")
-//           id
-//         }
-//       }
-//     }
-//   |}
-// ];
-// module SubTokenPrice = ReasonApolloHooks.Query.Make(SubTokenPriceQuery);
-// module SubTokenOwnerQuery = [%graphql
-//   {|
-//     query ($tokenId: String!) {
-//       wildcard(id: $tokenId) {
-//         id
-//         price {
-//           price @bsDecoder(fn: "decodePrice")
-//           id
-//         }
-//       }
-//     }
-//   |}
-// ];
-// module SubTokenOwner = ReasonApolloHooks.Query.Make(SubTokenOwnerQuery);
-
 type graphqlDataLoad('a) =
   | Loading
-  | Error(ReasonApolloHooks.Query.error)
+  | Error(ReasonApolloHooks.ApolloHooksQuery.queryError)
   | NoData
   | Data('a);
 
 [@bs.deriving abstract]
 type data = {tokenId: string};
 
-// let usePriceStringWithDefault = (animal, default: string, units) => {
-//   switch (usePrice(animal)) {
-//   | Data(price) =>
-//     // Js.log(price);
-//     "default" //price->Eth.get(units);
-//   | _ => default
-//   };
-// };
+let useWildcardQuery = animal =>
+  ApolloHooks.useQuery(
+    ~variables=
+      SubWildcardQuery.make(~tokenId=Animal.getId(animal), ())##variables,
+    SubWildcardQuery.definition,
+  );
 let usePrice: Animal.t => option(Eth.t) =
   animal => {
-    let (simple, _) =
-      SubWildcard.use(
-        ~variables=
-          SubWildcardQuery.make(~tokenId=Animal.getId(animal), ())##variables,
-        (),
-      );
+    let (simple, _) = useWildcardQuery(animal);
 
     switch (simple) {
     | Data(response) =>
@@ -201,13 +153,7 @@ let usePrice: Animal.t => option(Eth.t) =
 
 let usePatron: Animal.t => option(string) =
   animal => {
-    let (simple, _) =
-      SubWildcard.use(
-        ~variables=
-          SubWildcardQuery.make(~tokenId=Animal.getId(animal), ())##variables,
-        (),
-      );
-
+    let (simple, _) = useWildcardQuery(animal);
     switch (simple) {
     | Data(response) =>
       Some(
@@ -231,22 +177,9 @@ let useIsAnimalOwened = ownedAnimal => {
   currentAccount == currentPatron;
 };
 
-// let usePriceStringWithDefault = (animal, default: string, units) => {
-//   switch (usePrice(animal)) {
-//   | Data(price) => "default" //price->Eth.get(units);
-//   | _ => default
-//   };
-// };
-
 let useTimeAcquired: Animal.t => graphqlDataLoad(MomentRe.Moment.t) =
   animal => {
-    let (simple, _) =
-      SubWildcard.use(
-        ~variables=
-          SubWildcardQuery.make(~tokenId=Animal.getId(animal), ())##variables,
-        (),
-      );
-
+    let (simple, _) = useWildcardQuery(animal);
     switch (simple) {
     | Loading => Loading
     | Error(error) => Error(error)
@@ -276,7 +209,8 @@ let useDaysHeld = animal =>
   };
 let useTotalCollectedOrDue: unit => graphqlDataLoad((BN.bn, BN.bn, BN.bn)) =
   () => {
-    let (simple, _) = SubTotalRaisedOrDue.use();
+    let (simple, _) =
+      ApolloHooks.useQuery(SubTotalRaisedOrDueQuery.definition);
 
     switch (simple) {
     | Loading => Loading

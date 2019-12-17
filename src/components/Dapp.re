@@ -748,6 +748,8 @@ module AnimalInfo = {
   };
 };
 
+external cast: Js.Json.t => QlHooks.SubWildcardQuery.t = "%identity";
+
 [@react.component]
 // The Offline container here shows the website, but without loading the requirements
 let make = () => {
@@ -790,5 +792,49 @@ let make = () => {
     <Rimble.Box p=1 width=[|1., 1., 0.5|]>
       <DefaultLook isExplorer />
     </Rimble.Box>
+    <ApolloConsumer>
+      ...{client => {
+        Js.log(client);
+        open ReasonApolloHooks.ApolloHooks;
+
+        let filterByNameQuery =
+          QlHooks.SubWildcardQuery.make(~tokenId="0", ());
+        let readQueryOptions = toReadQueryOptions(filterByNameQuery);
+
+        module PersonsNameFilterReadQuery =
+          ApolloClient.ReadQuery(QlHooks.SubWildcardQuery);
+
+        // By default, apollo adds field __typename to the query and will use it
+        // to normalize data. Parsing the result with Config.parse will remove the field,
+        // which won't allow to save the data back to cache. This means we can't use ReadQuery.make,
+        // which parses cache result, and have to use the readQuery which returns Json.t.
+        switch (
+          PersonsNameFilterReadQuery.readQuery(client, readQueryOptions)
+        ) {
+        | exception _ => ()
+        | cachedResponse =>
+          switch (cachedResponse |> Js.Nullable.toOption) {
+          | None => ()
+          | Some(cachedPersons) =>
+            // readQuery returns unparsed data as Json.t, but since PersonsNameFilterQuery
+            // is not using any graphql_ppx directive, the data will have the same format,
+            // (with the addition of __typename field) and can be cast to PersonsNameFilterConfig.t.
+            let persons = cast(cachedPersons);
+            let updatedPersons = {
+              "allPersons": updateFiltered(person, name, persons##allPersons),
+            };
+
+            PersonsNameFilterWriteQuery.make(
+              ~client,
+              ~variables=filterByNameQuery##variables,
+              ~data=updatedPersons,
+              (),
+            );
+          }
+        };
+
+        <p> "test"->React.string </p>;
+      }}
+    </ApolloConsumer>
   </Rimble.Flex>;
 };

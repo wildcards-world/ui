@@ -23,21 +23,20 @@ export const UserInfoProvider = ({ children }) => {
       })
     }
 
-    // TODO: should try to catch any errors here with this request.
-    fetch(`https://wildcards.xyz/verification/${currentUserEthAddress}`).then(async result => {
-      let resultJson = await result.json()
-
-      setUserProvider({
-        ...userProvider,
-        verifications:
-        {
-          ...userProvider.verifications,
-          [currentUserEthAddress.toLowerCase()]: {
-            twitter: resultJson.success ? resultJson.verification.twitterVerification.handle : undefined
-          }
-        }
-      })
-    })
+    // // TODO: should try to catch any errors here with this request.
+    // fetch(`https://wildcards.xyz/verification/${currentUserEthAddress}`).then(async result => {
+    //   let resultJson = await result.json()
+    //   setUserProvider({
+    //     ...userProvider,
+    //     verifications:
+    //     {
+    //       ...userProvider.verifications,
+    //       [currentUserEthAddress.toLowerCase()]: {
+    //         twitter: resultJson.success ? resultJson.verification.twitterVerification.handle : undefined
+    //       }
+    //     }
+    //   })
+    // })
   }
 
   useEffect(() => {

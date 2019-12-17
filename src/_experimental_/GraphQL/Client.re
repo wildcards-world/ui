@@ -10,9 +10,6 @@ let inMemoryCache =
   ApolloInMemoryCache.createInMemoryCache(
     // ~dataIdFromObject=
     //   (obj: dataObject) => {
-    //     Js.log("obj");
-    //     Js.log(obj);
-    //     Js.log(obj##id ++ obj##__typename);
     //     obj##id ++ obj##__typename;
     //   },
     ~cacheRedirects=[%raw
@@ -20,7 +17,7 @@ let inMemoryCache =
     Query: {
       global: (_, args, { getCacheKey }) => {
         let result = getCacheKey({ __typename: 'Global', id: args.id })
-        console.log(\"the result within\", result)
+        // console.log(\"the result within\", result)
         return result
       },
       wildcard: (_, args, { getCacheKey }) => {
@@ -36,24 +33,6 @@ let inMemoryCache =
     //   wildcard: (_, args, { getCacheKey }) => {
     //     return getCacheKey({ __typename: 'Wildcard', id: args.id })
     //   },
-    // },
-    // Query: {
-    //   global: (_, args, { getCacheKey }) => {
-    //     let result = getCacheKey({ __typename: 'Global', id: args.id })
-    //     console.log(\"the result within\", result)
-    //     return result
-    //   },
-    //   //     books: (_, args, { getCacheKey }) =>
-    //   // args.ids.map(id =>
-    //   //   getCacheKey({ __typename: 'Book', id: id }))
-    //   wildcards: (_, args, { getCacheKey }) => {
-    //     let result = args.ids.map(id=>getCacheKey({ __typename: 'Global', id: args.id }))
-    //     console.log(\"the result within\", result)
-    //     return result
-    //   }
-    //   // global: (_, args, { getCacheKey }) => {
-    //   //   getCacheKey({ __typename: 'Global', id: args.id })
-    //   // }
     // },
   }"
     ],
