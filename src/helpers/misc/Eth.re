@@ -22,14 +22,17 @@ let fromWeiEth: t => string = value => fromWei(value, ethUnitToJs(`ether));
 
 type getUnit =
   | Eth(ethUnit)
-  | Usd(float);
+  | Usd(float, int);
 
-let get = (value, unit, ~digits: option(int)) => {
+let get = (value, unit) => {
   switch (unit) {
   | Eth(unit) => fromWei(value, unit->ethUnitToJs)
-  | Usd(conversion) =>
+  | Usd(conversion, digits) =>
+    Js.log("conversion");
+    Js.log(6. *. conversion);
+    Js.log(digits);
     (fromWei(value, `ether->ethUnitToJs)->Js.Float.fromString *. conversion)
-    ->Js.Float.toPrecisionWithPrecision(~digits=2)
+    ->Js.Float.toFixedWithPrecision(~digits);
   };
 };
 

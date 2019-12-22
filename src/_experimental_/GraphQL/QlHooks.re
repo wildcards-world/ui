@@ -69,7 +69,7 @@ module InitialLoad = [%graphql
 ];
 
 // module InitialLoadQuery = ReasonApolloHooks.ApolloHooksQuery(InitialLoad);
-let isInitialized = () => {
+let useIsInitialized = () => {
   // let (simple, _full) = InitialLoadQuery.use();
   let (simple, _full) =
     ApolloHooks.useQuery(
@@ -102,6 +102,27 @@ module SubWildcardQuery = [%graphql
           address @bsDecoder(fn: "decodeAddress")
           id
         }
+      }
+    }
+  |}
+];
+
+module LoadPatron = [%graphql
+  {|
+    query ($patronId: String!) {
+      patron(id: $patronId) {
+        id
+        address @bsDecoder(fn: "decodeAddress")
+        lastUpdated @bsDecoder(fn: "decodeMoment")
+        previouslyOwnedTokens {
+          id
+        }
+        tokens {
+          id
+        }
+        availableDeposit  @bsDecoder(fn: "decodePrice")
+        patronTokenCostScaledNumerator  @bsDecoder(fn: "decodeBN")
+        foreclosureTime  @bsDecoder(fn: "decodeMoment")
       }
     }
   |}
@@ -191,6 +212,23 @@ let useTimeAcquired: Animal.t => graphqlDataLoad(MomentRe.Moment.t) =
             // wildcard
             => wildcard##timeAcquired),
       )
+    };
+  };
+
+let useRemainingDeposit: string => option(Eth.t) =
+  patron => {
+    let (simple, _) =
+      ApolloHooks.useQuery(
+        ~variables=LoadPatron.make(~patronId=patron, ())##variables,
+        LoadPatron.definition,
+      );
+    switch (simple) {
+    | Loading => None
+    | Error(_error) => None
+    | NoData => None
+    | Data(response) =>
+      response##patron
+      ->Belt.Option.flatMap(patron => Some(patron##availableDeposit))
     };
   };
 

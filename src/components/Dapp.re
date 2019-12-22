@@ -51,6 +51,9 @@ module Streak = {
 
     let daysHeld = QlHooks.useDaysHeld(animal);
 
+    // Js.log("Streak");
+    // Js.log(daysHeld);
+
     switch (daysHeld) {
     | Some((daysHeldFloat, _timeAquired)) =>
       let numDaysStr = daysHeldFloat->Js.Float.toFixed;
@@ -210,6 +213,14 @@ module CarouselAnimal = {
   [@react.component]
   let make = (~animal, ~scalar, ~isExplorer, ~enlargement: float=1.) => {
     let isLaunched = animal->Animal.isLaunched;
+
+    switch (animal) {
+    | Animal.Andy =>
+      Js.log("render AnimalCarousel root again: " ++ animal->Animal.getName)
+    //  | Animal.Simon => Js.log("render AnimalCarousel root again: " ++ animal->Animal.getName);
+    | _ => ()
+    };
+
     switch (isLaunched) {
     | Animal.Launched =>
       <AnimalOnLandingPage
@@ -250,6 +261,9 @@ module AnimalCarousel = {
   let make = (~isExplorer) => {
     let (carouselIndex, setCarouselIndex) = React.useState(() => 17);
     let numItems = Animal.orderedArray->Array.length;
+
+    Js.log("render AnimalCarousel root again");
+
     <Rimble.Box className=Styles.positionRelative>
       <Carousel
         className=Styles.carousel
@@ -440,7 +454,7 @@ module DetailsView = {
 
 module DefaultLook = {
   [@react.component]
-  let make = (~isExplorer) => {
+  let make = (~isExplorer, ~isGqlLoaded) => {
     open Components;
     let setProvider = useSetProvider();
     React.useEffect0(() => {
@@ -459,9 +473,9 @@ module DefaultLook = {
        | [|"explorer", "details", animalStr, ""|] => <DetailsView animalStr />
        | _ =>
          <React.Fragment>
-           <AnimalCarousel isExplorer />
+           {isGqlLoaded ? <AnimalCarousel isExplorer /> : React.null}
            <Rimble.Box className=Styles.dappImagesCounteractOffset>
-             <TotalRaised />
+             {isGqlLoaded ? <TotalRaised /> : React.null}
            </Rimble.Box>
            <Rimble.Box className=Styles.dappImagesCounteractOffset>
              <p>
@@ -516,8 +530,7 @@ module AnimalInfoStats = {
     let daysHeld = QlHooks.useDaysHeld(animal);
 
     let currentPatron =
-      GeneralHooks.useCurrentPatronAnimal(animal)
-      ->mapWithDefault("Loading", a => a);
+      QlHooks.usePatron(animal)->mapWithDefault("Loading", a => a);
     let userId = UserProvider.useUserNameOrTwitterHandle(currentPatron);
     let userIdType =
       switch (userId) {
@@ -525,12 +538,22 @@ module AnimalInfoStats = {
       | TwitterHandle(_) => "verified twitter account"
       };
     let userIdComponent = UserProvider.useUserComponent(userId);
-    let depositAvailableToWithdraw =
-      GeneralHooks.useDepositAbleToWithdrawEthAnimal(animal)
-      ->mapWithDefault("Loading", a => a);
-    let depositAvailableToWithdrawUsd =
-      GeneralHooks.useDepositAbleToWithdrawUsdAnimal(animal)
-      ->mapWithDefault("Loading", a => a);
+    let currentUsdEthPrice = Providers.UsdPriceProvider.useUsdPrice();
+    let (depositAvailableToWithdrawEth, depositAvailableToWithdrawUsd) =
+      // GeneralHooks.useDepositAbleToWithdrawEthAnimal(animal)
+      QlHooks.useRemainingDeposit(currentPatron)
+      ->mapWithDefault(("Loading", "Loading"), a =>
+          (
+            a->Eth.get(Eth.Eth(`ether)),
+            currentUsdEthPrice->Belt.Option.mapWithDefault(
+              "Loading", usdEthRate =>
+              a->Eth.get(Eth.Usd(usdEthRate, 2))
+            ),
+          )
+        );
+    // let depositAvailableToWithdrawUsd =
+    //   GeneralHooks.useDepositAbleToWithdrawUsdAnimal(animal)
+    //   ->mapWithDefault("Loading", a => a);
     let totalPatronage = GeneralHooks.useTotalPatronageEthAnimal(animal);
     let totalPatronageUsd =
       GeneralHooks.useTotalPatronageUsdAnimal(animal)
@@ -629,7 +652,7 @@ module AnimalInfoStats = {
           </strong>
         </small>
         <br />
-        <S> {depositAvailableToWithdraw ++ " ETH"} </S>
+        <S> {depositAvailableToWithdrawEth ++ " ETH"} </S>
         <br />
         <small>
           <S> {"(" ++ depositAvailableToWithdrawUsd ++ " USD)"} </S>
@@ -748,12 +771,11 @@ module AnimalInfo = {
   };
 };
 
-external cast: Js.Json.t => QlHooks.SubWildcardQuery.t = "%identity";
-
 [@react.component]
 // The Offline container here shows the website, but without loading the requirements
 let make = () => {
   let url = ReasonReactRouter.useUrl();
+  let isGqlLoaded = QlHooks.useIsInitialized();
   let (isDetailView, animalStr, isExplorer) = {
     switch (Js.String.split("/", url.hash)) {
     | [|"explorer", "details", animalStr|]
@@ -790,51 +812,8 @@ let make = () => {
       </React.Fragment>
     </Rimble.Box>
     <Rimble.Box p=1 width=[|1., 1., 0.5|]>
-      <DefaultLook isExplorer />
+      <DefaultLook isExplorer isGqlLoaded />
     </Rimble.Box>
-    <ApolloConsumer>
-      ...{client => {
-        Js.log(client);
-        open ReasonApolloHooks.ApolloHooks;
-
-        let filterByNameQuery =
-          QlHooks.SubWildcardQuery.make(~tokenId="0", ());
-        let readQueryOptions = toReadQueryOptions(filterByNameQuery);
-
-        module PersonsNameFilterReadQuery =
-          ApolloClient.ReadQuery(QlHooks.SubWildcardQuery);
-
-        // By default, apollo adds field __typename to the query and will use it
-        // to normalize data. Parsing the result with Config.parse will remove the field,
-        // which won't allow to save the data back to cache. This means we can't use ReadQuery.make,
-        // which parses cache result, and have to use the readQuery which returns Json.t.
-        switch (
-          PersonsNameFilterReadQuery.readQuery(client, readQueryOptions)
-        ) {
-        | exception _ => ()
-        | cachedResponse =>
-          switch (cachedResponse |> Js.Nullable.toOption) {
-          | None => ()
-          | Some(cachedPersons) =>
-            // readQuery returns unparsed data as Json.t, but since PersonsNameFilterQuery
-            // is not using any graphql_ppx directive, the data will have the same format,
-            // (with the addition of __typename field) and can be cast to PersonsNameFilterConfig.t.
-            let persons = cast(cachedPersons);
-            let updatedPersons = {
-              "allPersons": updateFiltered(person, name, persons##allPersons),
-            };
-
-            PersonsNameFilterWriteQuery.make(
-              ~client,
-              ~variables=filterByNameQuery##variables,
-              ~data=updatedPersons,
-              (),
-            );
-          }
-        };
-
-        <p> "test"->React.string </p>;
-      }}
-    </ApolloConsumer>
   </Rimble.Flex>;
+  // <CarouselTestApp />
 };
