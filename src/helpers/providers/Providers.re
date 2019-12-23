@@ -12,9 +12,10 @@ module DrizzleProvider = {
   external make: (~children: React.element) => React.element = "default";
 
   [@bs.module "./DrizzleProvider"]
-  external useWeb3Setup: unit => 'a = "useWeb3Setup";
+  external useAppStatus: unit => 'a = "useAppStatus";
   let useIsProviderSelected: unit => bool =
-    () => useWeb3Setup()##isProviderSelected;
+    () => useAppStatus()##isProviderSelected;
   let useSetProvider: (unit, Web3.provider) => unit =
-    () => useWeb3Setup()##setProvider;
+    () => useAppStatus()##setProvider;
+  let useCurrentUser: unit => option(string) = () => useAppStatus()##account;
 };

@@ -1,5 +1,4 @@
 open Hooks;
-open Providers.DrizzleProvider;
 open Belt.Option;
 open Components;
 
@@ -340,7 +339,9 @@ module AnimalActionsOnDetailsPage = {
   [@react.component]
   let make = (~animal) => {
     let owned = animal->QlHooks.useIsAnimalOwened;
-    let currentAccount = useCurrentUser()->mapWithDefault("loading", a => a);
+    let currentAccount =
+      Providers.DrizzleProvider.useCurrentUser()
+      ->mapWithDefault("loading", a => a);
     let currentPatron =
       QlHooks.usePatron(animal)->mapWithDefault("Loading", a => a);
     let userId = UserProvider.useUserNameOrTwitterHandle(currentPatron);
@@ -572,7 +573,7 @@ module AnimalInfoStats = {
             ),
           ),
           switch (optPriceUsd) {
-          | Some(priceUsd) => None
+          | Some(_priceUsd) => None
 
           | None => None
           },

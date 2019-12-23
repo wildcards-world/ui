@@ -262,9 +262,9 @@ let make = (~animal: Animal.t) => {
   let (isModalOpen, setModalOpen) = React.useState(() => false);
   let isProviderSelected = useIsProviderSelected();
 
-  let onUnlockMetamaskAndOpenModal = () => {
-    setModalOpen(_ => true);
-  };
+  // let onUnlockMetamaskAndOpenModal = () => {
+  //   setModalOpen(_ => true);
+  // };
   let onOpenModal = event => {
     ReactEvent.Form.preventDefault(event);
     ReactEvent.Form.stopPropagation(event);
@@ -286,9 +286,12 @@ let make = (~animal: Animal.t) => {
          {React.string(buttonText)}
        </Rimble.Button>;
      } else {
-       <Web3connect.CustomButton afterConnect=onUnlockMetamaskAndOpenModal>
+       <Rimble.Button
+         onClick={_e =>
+           Js.log("unimplemented - will log into web3 wallet here!")
+         }>
          {React.string(buttonText)}
-       </Web3connect.CustomButton>;
+       </Rimble.Button>;
      }}
     <Rimble.Modal isOpen=isModalOpen>
       <Rimble.Card width={Rimble.AnyStr("70%")} p=0>

@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { useCurrentUser } from "../hooks/Hooks.bs";
+import { useAppStatus } from "./DrizzleProvider";
 export const UserInfoContext = createContext("");
 
 export const UserInfoProvider = ({ children }) => {
-  const currentUserEthAddress = useCurrentUser();
+  const currentUserEthAddress = useAppStatus().account;
   const [userProvider, setUserProvider] = useState({ verifications: {} });
 
   const updateUserProvider = currentUserEthAddress => {

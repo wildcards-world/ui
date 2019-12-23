@@ -23,7 +23,8 @@ module Input = {
     let (appState, setAppState) =
       React.useState(() => InputTwitterHandle(""));
     // let web3 = Hooks.useWeb3();
-    let currentUser = Hooks.useCurrentUser()->mapWithDefault("0x", a => a);
+    let currentUser =
+      Providers.DrizzleProvider.useCurrentUser()->mapWithDefault("0x", a => a);
     let currentUserLower = currentUser->Js.String.toLowerCase;
     let userContext = UserProvider.useUserInfoContext();
     // let genSignature = generateSignature(. web3, currentUser);
@@ -172,9 +173,9 @@ module Input = {
 let make = () => {
   let (isModalOpen, setModalOpen) = React.useState(() => false);
 
-  let onUnlockMetamaskAndOpenModal = () => {
-    setModalOpen(_ => true);
-  };
+  // let onUnlockMetamaskAndOpenModal = () => {
+  //   setModalOpen(_ => true);
+  // };
   let onOpenModal = event => {
     ReactEvent.Form.preventDefault(event);
     ReactEvent.Form.stopPropagation(event);

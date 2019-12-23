@@ -190,7 +190,8 @@ let usePatron: Animal.t => option(string) =
 
 let useIsAnimalOwened = ownedAnimal => {
   let currentAccount =
-    Hooks.useCurrentUser()->Belt.Option.mapWithDefault("loading", a => a);
+    Providers.DrizzleProvider.useCurrentUser()
+    ->Belt.Option.mapWithDefault("loading", a => a);
 
   let currentPatron =
     usePatron(ownedAnimal)
