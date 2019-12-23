@@ -56,6 +56,10 @@ module InitialLoad = [%graphql
           price @bsDecoder(fn: "decodePrice")
           id
         }
+        totalCollected @bsDecoder(fn: "decodePrice")
+        timeCollected @bsDecoder(fn: "decodeBN")
+        patronageNumeratorPriceScaled @bsDecoder(fn: "decodeBN")
+        # timeCollected @bsDecoder(fn: "decodeMoment")
         timeAcquired @bsDecoder(fn: "decodeMoment")
       }
       global(id: 1) {
@@ -93,7 +97,12 @@ module SubWildcardQuery = [%graphql
     query ($tokenId: String!) {
       wildcard(id: $tokenId) {
         id
+        animal: tokenId @bsDecoder(fn: "tokenIdToAnimal")
         timeAcquired @bsDecoder(fn: "decodeMoment")
+        totalCollected @bsDecoder(fn: "decodePrice")
+        patronageNumeratorPriceScaled @bsDecoder(fn: "decodeBN")
+        timeCollected @bsDecoder(fn: "decodeBN")
+        # timeCollected @bsDecoder(fn: "decodeMoment")
         price {
           id
           price @bsDecoder(fn: "decodePrice")
@@ -113,7 +122,8 @@ module LoadPatron = [%graphql
       patron(id: $patronId) {
         id
         address @bsDecoder(fn: "decodeAddress")
-        lastUpdated @bsDecoder(fn: "decodeMoment")
+        lastUpdated @bsDecoder(fn: "decodeBN")
+        # lastUpdated @bsDecoder(fn: "decodeMoment")
         previouslyOwnedTokens {
           id
         }
@@ -177,12 +187,8 @@ let usePatron: Animal.t => option(string) =
     let (simple, _) = useWildcardQuery(animal);
     switch (simple) {
     | Data(response) =>
-      Some(
-        response##wildcard
-        ->Belt.Option.mapWithDefault("Loading", wildcard =>
-            wildcard##owner##address
-          ),
-      )
+      response##wildcard
+      ->Belt.Option.flatMap(wildcard => Some(wildcard##owner##address))
     | _ => None
     };
   };
@@ -215,20 +221,20 @@ let useTimeAcquired: Animal.t => graphqlDataLoad(MomentRe.Moment.t) =
     };
   };
 
-let useRemainingDeposit: string => option(Eth.t) =
+let useQueryPatron = patron =>
+  ApolloHooks.useQuery(
+    ~variables=LoadPatron.make(~patronId=patron, ())##variables,
+    LoadPatron.definition,
+  );
+
+let useForeclosureTime: string => option(MomentRe.Moment.t) =
   patron => {
-    let (simple, _) =
-      ApolloHooks.useQuery(
-        ~variables=LoadPatron.make(~patronId=patron, ())##variables,
-        LoadPatron.definition,
-      );
+    let (simple, _) = useQueryPatron(patron);
     switch (simple) {
-    | Loading => None
-    | Error(_error) => None
-    | NoData => None
     | Data(response) =>
       response##patron
-      ->Belt.Option.flatMap(patron => Some(patron##availableDeposit))
+      ->Belt.Option.flatMap(patron => Some(patron##foreclosureTime))
+    | _ => None
     };
   };
 
@@ -276,7 +282,12 @@ let useCurrentTime = () => {
   React.useEffect0(() => {
     let interval =
       Js.Global.setInterval(
-        () => {setTimeLeft(_ => getCurrentTimestamp())},
+        () => {
+          setTimeLeft(_ => {
+            Js.log("getting current time");
+            getCurrentTimestamp();
+          })
+        },
         2000,
       );
     Some(() => Js.Global.clearInterval(interval));
@@ -284,7 +295,6 @@ let useCurrentTime = () => {
   currentTime;
 };
 
-// (a1_price*a1numerator)+(a2_price*a2numerator)+ ....
 let useAmountRaised = () => {
   let currentTimestamp = useCurrentTime();
 
@@ -300,9 +310,104 @@ let useAmountRaised = () => {
       totalTokenCostScaledNumeratorAccurate
       ->BN.mulGet(. timeElapsed)
       ->BN.divGet(.
-          BN.new_("1000000000000")->BN.mulGet(. BN.new_("31536000")),
+          // BN.new_("1000000000000")->BN.mulGet(. BN.new_("31536000")),
+          BN.new_("31536000000000000000"),
         );
     Some(amountCollectedOrDue->BN.addGet(. amountRaisedSinceLastCollection));
   | _ => None
   };
 };
+
+let useTotalCollectedToken: Animal.t => option((Eth.t, BN.bn, BN.bn)) =
+  animal => {
+    let (simple, _) = useWildcardQuery(animal);
+
+    switch (simple) {
+    | Data(response) =>
+      response##wildcard
+      ->Belt.Option.flatMap(wc =>
+          Some((
+            wc##totalCollected,
+            wc##timeCollected,
+            wc##patronageNumeratorPriceScaled,
+          ))
+        )
+    // | Loading
+    // | Error(_error)
+    // | NoData => None
+    | _ => None
+    };
+  };
+
+// TODO:: Take min of total deposit and amount raised
+let useAmountRaisedToken: Animal.t => option(Eth.t) =
+  animal => {
+    let currentTimestamp = useCurrentTime();
+
+    switch (useTotalCollectedToken(animal)) {
+    | Some((
+        amountCollectedOrDue,
+        timeCalculated,
+        patronageNumeratorPriceScaled,
+      )) =>
+      let timeElapsed =
+        BN.new_(currentTimestamp)->BN.subGet(. timeCalculated);
+
+      let amountRaisedSinceLastCollection =
+        patronageNumeratorPriceScaled
+        ->BN.mulGet(. timeElapsed)
+        ->BN.divGet(.
+            // BN.new_("1000000000000")->BN.mulGet(. BN.new_("31536000")),
+            BN.new_("31536000000000000000"),
+          );
+      Some(
+        amountCollectedOrDue->BN.addGet(. amountRaisedSinceLastCollection),
+      );
+    | None => None
+    };
+  };
+
+let useRemainingDeposit: string => option((Eth.t, BN.bn, BN.bn)) =
+  patron => {
+    let (simple, _) = useQueryPatron(patron);
+
+    switch (simple) {
+    | Data(response) =>
+      response##patron
+      ->Belt.Option.flatMap(wc =>
+          Some((
+            wc##availableDeposit,
+            wc##lastUpdated,
+            wc##patronTokenCostScaledNumerator,
+          ))
+        )
+    | _ => None
+    };
+  };
+
+// TODO:: Take min of total deposit and amount raised
+let useRemainingDepositEth: string => option(Eth.t) =
+  patron => {
+    let currentTimestamp = useCurrentTime();
+
+    switch (useRemainingDeposit(patron)) {
+    | Some((
+        amountCollectedOrDue,
+        lastUpdated,
+        patronTokenCostScaledNumerator,
+      )) =>
+      let timeElapsed = BN.new_(currentTimestamp)->BN.subGet(. lastUpdated);
+
+      let amountRaisedSinceLastCollection =
+        patronTokenCostScaledNumerator
+        ->BN.mulGet(. timeElapsed)
+        ->BN.divGet(.
+            // BN.new_("1000000000000")->BN.mulGet(. BN.new_("31536000")),
+            BN.new_("31536000000000000000"),
+          );
+      Some(
+        amountCollectedOrDue->BN.subGet(. amountRaisedSinceLastCollection),
+      );
+    | None => None
+    };
+  };

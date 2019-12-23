@@ -42,13 +42,13 @@ let inMemoryCache =
 /* Create an HTTP Link */
 let httpLink =
   ApolloLinks.createHttpLink(
-    ~uri="https://api.thegraph.com/subgraphs/name/jasoons/wildcards",
+    ~uri="https://api.thegraph.com/subgraphs/name/wild-cards/wildcards",
     (),
   );
 /* Create an WS Link */
 let wsLink =
   ApolloLinks.webSocketLink(
-    ~uri="wss://api.thegraph.com/subgraphs/name/jasoons/wildcards",
+    ~uri="wss://api.thegraph.com/subgraphs/name/wild-cards/wildcards",
     (),
   );
 

@@ -20,10 +20,11 @@ let getToDisplay = (label, value) =>
 module Transaction = {
   [@react.component]
   let make = (~animal: Animal.t) => {
+    Js.log(animal);
     let (depositChange, setDepositChange) = React.useState(() => "");
     let (isAddDeposit, setIsAddDeposit) = React.useState(() => true);
     let currentUser = useCurrentUser()->mapWithDefault("", a => a);
-    let tokenId = Animal.getId(animal);
+    // let tokenId = Animal.getId(animal);
     // let userBalance =
     //   DrizzleReact.Hooks.useUserBalance()->mapWithDefault("", a => a);
 
@@ -40,9 +41,9 @@ module Transaction = {
       (txObject => depositObj##send(. txObject), depositObj##_TXObjects);
     };
 
-    let _availableDeposit =
-      useDepositAbleToWithdrawWeiNew(currentUser)
-      ->mapWithDefault("0", price => price);
+    // let _availableDeposit =
+    //   useDepositAbleToWithdrawWeiNew(currentUser)
+    //   ->mapWithDefault("0", price => price);
 
     let onSubmitDepositChange = event => {
       ReactEvent.Form.preventDefault(event);

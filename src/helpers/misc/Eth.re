@@ -28,11 +28,8 @@ let get = (value, unit) => {
   switch (unit) {
   | Eth(unit) => fromWei(value, unit->ethUnitToJs)
   | Usd(conversion, digits) =>
-    Js.log("conversion");
-    Js.log(6. *. conversion);
-    Js.log(digits);
     (fromWei(value, `ether->ethUnitToJs)->Js.Float.fromString *. conversion)
-    ->Js.Float.toFixedWithPrecision(~digits);
+    ->Js.Float.toFixedWithPrecision(~digits)
   };
 };
 

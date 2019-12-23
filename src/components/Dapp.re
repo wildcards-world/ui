@@ -342,8 +342,7 @@ module AnimalActionsOnDetailsPage = {
     let owned = animal->QlHooks.useIsAnimalOwened;
     let currentAccount = useCurrentUser()->mapWithDefault("loading", a => a);
     let currentPatron =
-      GeneralHooks.useCurrentPatronAnimal(animal)
-      ->mapWithDefault("Loading", a => a);
+      QlHooks.usePatron(animal)->mapWithDefault("Loading", a => a);
     let userId = UserProvider.useUserNameOrTwitterHandle(currentPatron);
     let userIdComponent = UserProvider.useUserComponent(userId);
 
@@ -518,6 +517,7 @@ module DefaultLeftPanel = {
     </React.Fragment>;
   };
 };
+
 type maybeDate =
   | Loading
   | Date(MomentRe.Moment.t);
@@ -541,7 +541,7 @@ module AnimalInfoStats = {
     let currentUsdEthPrice = Providers.UsdPriceProvider.useUsdPrice();
     let (depositAvailableToWithdrawEth, depositAvailableToWithdrawUsd) =
       // GeneralHooks.useDepositAbleToWithdrawEthAnimal(animal)
-      QlHooks.useRemainingDeposit(currentPatron)
+      QlHooks.useRemainingDepositEth(currentPatron)
       ->mapWithDefault(("Loading", "Loading"), a =>
           (
             a->Eth.get(Eth.Eth(`ether)),
@@ -551,18 +551,22 @@ module AnimalInfoStats = {
             ),
           )
         );
-    // let depositAvailableToWithdrawUsd =
-    //   GeneralHooks.useDepositAbleToWithdrawUsdAnimal(animal)
-    //   ->mapWithDefault("Loading", a => a);
-    let totalPatronage = GeneralHooks.useTotalPatronageEthAnimal(animal);
-    let totalPatronageUsd =
-      GeneralHooks.useTotalPatronageUsdAnimal(animal)
-      ->mapWithDefault("Loading", a => a);
-    let foreclosureTime = GeneralHooks.useForeclosureTimeAnimal(animal);
+
+    let (totalPatronage, totalPatronageUsd) =
+      QlHooks.useAmountRaisedToken(animal)
+      ->mapWithDefault(("Loading", "Loading"), a =>
+          (
+            a->Eth.get(Eth.Eth(`ether)),
+            currentUsdEthPrice->Belt.Option.mapWithDefault(
+              "Loading", usdEthRate =>
+              a->Eth.get(Eth.Usd(usdEthRate, 2))
+            ),
+          )
+        );
+    let foreclosureTime = QlHooks.useForeclosureTime(currentPatron);
     let definiteTime = foreclosureTime->mapWithDefault(Loading, a => Date(a));
     let (_, _, ratio, _) = Animal.pledgeRate(animal);
-    // let currentPrice = QlHooks.usePrice(animal)->Option.Map;
-    // let currentPriceUsd = Animal.useCurrentPriceUsd(animal);
+
     let optCurrentPrice = PriceDisplay.uesTotalPatronage(animal);
 
     let (optMonthlyPledgeEth, optMonthlyPledgeUsd) =
@@ -583,17 +587,6 @@ module AnimalInfoStats = {
       | None => (None, None)
       };
 
-    // let monthlyPledgeEth =
-    //   Js.Float.toString(
-    //     Belt.Float.fromString(currentPrice)->Accounting.defaultZeroF *. ratio,
-    //   );
-    // let monthlyPledgeUsd =
-    //   // Js.Float.toString(
-    //   Js.Float.toFixedWithPrecision(
-    //     Belt.Float.fromString(currentPriceUsd)->Accounting.defaultZeroF
-    //     *. ratio,
-    //     ~digits=2,
-    //   );
     let monthlyRate = Js.Float.toString(ratio *. 100.);
 
     <React.Fragment>

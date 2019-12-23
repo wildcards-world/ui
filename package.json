@@ -47,8 +47,8 @@
     "re:watch": "bsb -make-world -clean-world -w",
     "deploy": "npm run build && gh-pages -d dist --remote JasoonS",
     "cra:deploy": "npm run re:build && npm run cra:build && gh-pages -d build --remote JasoonS",
-    "generate-ppx-schema": "gqlschema https://api.thegraph.com/subgraphs/name/jasoons/wildcards -i -o graphql_schema.json",
-    "generate-ppx-schema-goerli": "gqlschema https://api.thegraph.com/subgraphs/name/jasoons/wildcards-goerli -i -o graphql_schema.json"
+    "generate-ppx-schema": "gqlschema https://api.thegraph.com/subgraphs/name/wild-cards/wildcards -i -o graphql_schema.json",
+    "generate-ppx-schema-goerli": "gqlschema https://api.thegraph.com/subgraphs/name/wild-cards/wildcards-goerli -i -o graphql_schema.json"
   },
   "jest": {
     "transformIgnorePatterns": [
