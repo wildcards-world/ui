@@ -127,6 +127,7 @@ module AnimalOnLandingPage = {
         ~enlargement: float=1.,
         ~optionEndDateMoment: option(MomentRe.Moment.t),
         ~isExplorer,
+        ~isGqlLoaded,
       ) => {
     let name = Animal.getName(animal);
 
@@ -146,11 +147,15 @@ module AnimalOnLandingPage = {
            React.null;
          } else {
            <React.Fragment>
-             {switch (optionEndDateMoment) {
-              | Some(_endDateMoment) => React.null
-              | None =>
-                <div className=Styles.overlayFlameImg> <Streak animal /> </div>
-              }}
+             {isGqlLoaded
+                ? switch (optionEndDateMoment) {
+                  | Some(_endDateMoment) => React.null
+                  | None =>
+                    <div className=Styles.overlayFlameImg>
+                      <Streak animal />
+                    </div>
+                  }
+                : React.null}
              {<div className=Styles.overlayBadgeImg>
                 <img className=Styles.flameImg src=orgBadge />
               </div>}
@@ -203,7 +208,9 @@ module AnimalOnLandingPage = {
            <h3 className=Styles.colorGreen> {React.string("COMING IN")} </h3>
            <CountDown endDateMoment leadingZeros=true includeWords=false />
          </div>
-       | None => <div> <BasicAnimalDisplay animal isExplorer /> </div>
+       | None =>
+         isGqlLoaded
+           ? <div> <BasicAnimalDisplay animal isExplorer /> </div> : React.null
        }}
     </Rimble.Box>;
   };
@@ -211,7 +218,8 @@ module AnimalOnLandingPage = {
 
 module CarouselAnimal = {
   [@react.component]
-  let make = (~animal, ~scalar, ~isExplorer, ~enlargement: float=1.) => {
+  let make =
+      (~animal, ~scalar, ~isExplorer, ~enlargement: float=1., ~isGqlLoaded) => {
     let isLaunched = animal->Animal.isLaunched;
 
     switch (animal) {
@@ -221,36 +229,22 @@ module CarouselAnimal = {
     | _ => ()
     };
 
-    switch (isLaunched) {
-    | Animal.Launched =>
+    let makeAnimalOnLandingPage = optionEndDateMoment =>
       <AnimalOnLandingPage
         animal
         scalar
-        optionEndDateMoment=None
+        optionEndDateMoment
         isExplorer
         enlargement
-      />
+        isGqlLoaded
+      />;
+    switch (isLaunched) {
+    | Animal.Launched => makeAnimalOnLandingPage(None)
     | Animal.LaunchDate(endDateMoment) =>
       <DisplayAfterDate
         endDateMoment
-        afterComponent={
-          <AnimalOnLandingPage
-            animal
-            isExplorer
-            scalar
-            optionEndDateMoment=None
-            enlargement
-          />
-        }
-        beforeComponent={
-          <AnimalOnLandingPage
-            animal
-            scalar
-            isExplorer
-            optionEndDateMoment={Some(endDateMoment)}
-            enlargement
-          />
-        }
+        afterComponent={makeAnimalOnLandingPage(None)}
+        beforeComponent={makeAnimalOnLandingPage(Some(endDateMoment))}
       />
     };
   };
@@ -258,7 +252,7 @@ module CarouselAnimal = {
 
 module AnimalCarousel = {
   [@react.component]
-  let make = (~isExplorer) => {
+  let make = (~isExplorer, ~isGqlLoaded) => {
     let (carouselIndex, setCarouselIndex) = React.useState(() => 17);
     let numItems = Animal.orderedArray->Array.length;
 
@@ -325,7 +319,13 @@ module AnimalCarousel = {
                  };
 
                <div className={Styles.fadeOut(opacity)}>
-                 <CarouselAnimal animal isExplorer scalar enlargement=1.5 />
+                 <CarouselAnimal
+                   animal
+                   isGqlLoaded
+                   isExplorer
+                   scalar
+                   enlargement=1.5
+                 />
                </div>;
              },
              Animal.orderedArray,
@@ -455,13 +455,6 @@ module DefaultLook = {
   [@react.component]
   let make = (~isExplorer, ~isGqlLoaded) => {
     open Components;
-    let setProvider = useSetProvider();
-    React.useEffect0(() => {
-      open Web3connect.Core;
-      let core = getCore(None); // TOGGLE THE ABOVE LINE OUT BEFORE PRODUCTION!!
-      core->setOnConnect(setProvider);
-      None;
-    });
 
     let url = ReasonReactRouter.useUrl();
 
@@ -472,7 +465,7 @@ module DefaultLook = {
        | [|"explorer", "details", animalStr, ""|] => <DetailsView animalStr />
        | _ =>
          <React.Fragment>
-           {isGqlLoaded ? <AnimalCarousel isExplorer /> : React.null}
+           <AnimalCarousel isExplorer isGqlLoaded />
            <Rimble.Box className=Styles.dappImagesCounteractOffset>
              {isGqlLoaded ? <TotalRaised /> : React.null}
            </Rimble.Box>

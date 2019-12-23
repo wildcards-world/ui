@@ -403,15 +403,21 @@ let getStoryParagraphs = animal =>
   };
 
 let useBuy = animal => {
-  open Hooks;
+  let _animalId = getId(animal);
 
-  let animalId = getId(animal);
-
-  let buyObj = useBuyTransactionNew();
+  // let buyObj = useBuyTransactionNew();
+  // (
+  //   (newPrice, txObject) =>
+  //     buyObj##send(. animalId, newPrice->Web3Utils.toWeiFromEth, txObject),
+  //   buyObj##_TXObjects,
+  // );
   (
-    (newPrice, txObject) =>
-      buyObj##send(. animalId, newPrice->Web3Utils.toWeiFromEth, txObject),
-    buyObj##_TXObjects,
+    (newPrice, txObject) => {
+      Js.log("TODO: implement sending price change!!");
+      Js.log(newPrice);
+      Js.log(txObject);
+    },
+    [],
   );
 };
 

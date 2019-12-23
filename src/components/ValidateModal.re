@@ -1,13 +1,13 @@
 open Belt.Option;
 
-[@bs.module "./userVerification"]
-external generateSignature:
-  (. Web3.t, string) => (. string, string => string) => unit =
-  "generateSignature";
+// [@bs.module "./userVerification"]
+// external generateSignature:
+//   (. Web3.t, string) => (. string, string => string) => unit =
+//   "generateSignature";
 
-[@bs.module "./userVerification"]
-external submitVerification: (. string, string, string, bool => unit) => unit =
-  "submitVerification";
+// [@bs.module "./userVerification"]
+// external submitVerification: (. string, string, string, bool => unit) => unit =
+//   "submitVerification";
 
 type verificationState =
   | InputTwitterHandle(string)
@@ -15,17 +15,18 @@ type verificationState =
   | SumbittingVerification(string, string, string)
   | WasVerificationSuccessful(bool);
 
+// TODO: use 3box and deprecate this functionality.
 module Input = {
   [@react.component]
   let make = (~setModalOpen) => {
     let (copyText, setCopyText) = React.useState(() => "Copy to Clipboard");
     let (appState, setAppState) =
       React.useState(() => InputTwitterHandle(""));
-    let web3 = Hooks.useWeb3();
+    // let web3 = Hooks.useWeb3();
     let currentUser = Hooks.useCurrentUser()->mapWithDefault("0x", a => a);
     let currentUserLower = currentUser->Js.String.toLowerCase;
     let userContext = UserProvider.useUserInfoContext();
-    let genSignature = generateSignature(. web3, currentUser);
+    // let genSignature = generateSignature(. web3, currentUser);
 
     switch (appState) {
     | InputTwitterHandle(twitterHandle) =>
@@ -57,15 +58,15 @@ module Input = {
           onClick={_ => {
             let twitterHandleLowwerCase =
               Js.String.toLowerCase(twitterHandle);
-            genSignature(.
-              {j|@$twitterHandleLowwerCase is my twitter handle on @wildcards_world.|j},
-              result => {
-              setAppState(_ => InputTweetLink(twitterHandle, result, ""));
-              result;
-            });
+            ();
           }}>
-          {React.string("Generate Proof")}
-        </Rimble.Button>
+          // genSignature(.
+          //   {j|@$twitterHandleLowwerCase is my twitter handle on @wildcards_world.|j},
+          //   result => {
+          //   setAppState(_ => InputTweetLink(twitterHandle, result, ""));
+          //   result;
+          // });
+           {React.string("Generate Proof")} </Rimble.Button>
       </Rimble.Box>
     | InputTweetLink(twitterHandle, signature, tweetLink) =>
       let tweetMessage = {j|I am validating my identity on https://wildcards.world and contributing to wildlife conservation. @wildcards_world $signature|j};
@@ -125,21 +126,20 @@ module Input = {
         <Rimble.Button
           m=3
           onClick={_ =>
-            submitVerification(.
-              currentUser,
-              tweetLink,
-              twitterHandle,
-              wasSuccesful => {
-                if (wasSuccesful) {
-                  userContext->UserProvider.update(currentUserLower);
-                } else {
-                  ();
-                };
-
-                setAppState(_ => WasVerificationSuccessful(wasSuccesful));
-              },
-            )
-          }>
+            // submitVerification(.
+            //   currentUser,
+            //   tweetLink,
+            //   twitterHandle,
+            //   wasSuccesful => {
+            //     if (wasSuccesful) {
+            //       userContext->UserProvider.update(currentUserLower);
+            //     } else {
+            //       ();
+            //     };
+            //     setAppState(_ => WasVerificationSuccessful(wasSuccesful));
+            //   },
+            // )
+            ()}>
           {React.string("Submit Verification")}
         </Rimble.Button>
       </Rimble.Box>;

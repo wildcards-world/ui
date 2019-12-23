@@ -29,17 +29,16 @@ let make =
       ~alternateLoaderSmartContracts=<Loader.SmartContracts />,
       ~alternateLoaderWeb3=<Loader.Web3 />,
     ) => {
-  let state = useDrizzleState(a => a);
-  let web3Status = state##web3##status;
-  let erc721PatronageInitialized =
-    state##contracts##_ERC721Patronage_v0##initialized;
-  let wildcardStewardInitialized =
-    state##contracts##_WildcardSteward_v0##initialized;
+  // let state = useDrizzleState(a => a);
+  // let web3Status = state##web3##status;
+  // let erc721PatronageInitialized =
+  //   state##contracts##_ERC721Patronage_v0##initialized;
+  // let wildcardStewardInitialized =
+  //   state##contracts##_WildcardSteward_v0##initialized;
 
-  let smartContractsLoaded =
-    erc721PatronageInitialized && wildcardStewardInitialized;
+  let smartContractsLoaded = true; // erc721PatronageInitialized && wildcardStewardInitialized;
 
-  if (web3Status == "initialized") {
+  if (true) {
     if (!requireSmartContractsLoaded || smartContractsLoaded) {
       // TODO: it may be needed to check for more than just a web3 providor
       //        eg. what if the provider has no ethereum accounts?

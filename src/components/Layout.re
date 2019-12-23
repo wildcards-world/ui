@@ -192,7 +192,12 @@ let make = () => {
              ? <BuyGrid
                  animalArray={
                    Animal.orderedArray->Belt.Array.map((animal, ()) =>
-                     <Dapp.CarouselAnimal animal isExplorer scalar=1. />
+                     <Dapp.CarouselAnimal
+                       animal
+                       isGqlLoaded=true
+                       isExplorer
+                       scalar=1.
+                     />
                    )
                  }
                />

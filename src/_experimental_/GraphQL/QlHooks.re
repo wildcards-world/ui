@@ -45,7 +45,7 @@ let decodeAddress: Js.Json.t => string =
 module InitialLoad = [%graphql
   {|
     query {
-      wildcards(first: 13) {
+      wildcards(first: 14) {
         id
         animal: tokenId @bsDecoder(fn: "tokenIdToAnimal")
         owner {
@@ -72,20 +72,15 @@ module InitialLoad = [%graphql
   |}
 ];
 
-// module InitialLoadQuery = ReasonApolloHooks.ApolloHooksQuery(InitialLoad);
 let useIsInitialized = () => {
-  // let (simple, _full) = InitialLoadQuery.use();
   let (simple, _full) =
     ApolloHooks.useQuery(
       ~notifyOnNetworkStatusChange=true,
       InitialLoad.definition,
     );
-  // InitialLoadQuery.use();
 
   switch (simple) {
-  | Data(_data) =>
-    // Js.log(data);
-    true
+  | Data(_data) => true
   | Loading
   | NoData
   | Error(_) => false
@@ -282,12 +277,7 @@ let useCurrentTime = () => {
   React.useEffect0(() => {
     let interval =
       Js.Global.setInterval(
-        () => {
-          setTimeLeft(_ => {
-            Js.log("getting current time");
-            getCurrentTimestamp();
-          })
-        },
+        () => {setTimeLeft(_ => {getCurrentTimestamp()})},
         2000,
       );
     Some(() => Js.Global.clearInterval(interval));

@@ -16,11 +16,19 @@ module Transaction = {
     //   DrizzleReact.Hooks.useUserBalance()->mapWithDefault("", a => a);
 
     let (updatePriceFunc, txObjects) = {
-      let priceChangeObj = useChangePriceTransactionNew();
       (
-        (priceChange, txObject) =>
-          priceChangeObj##send(. tokenId, priceChange, txObject),
-        priceChangeObj##_TXObjects,
+        // let priceChangeObj = useChangePriceTransactionNew();
+        // (
+        //   (priceChange, txObject) =>
+        //     priceChangeObj##send(. tokenId, priceChange, txObject),
+        //   priceChangeObj##_TXObjects,
+        // );
+        (priceChange, txObject) => {
+          Js.log("TODO: implement sending price change!!");
+          Js.log(priceChange);
+          Js.log(txObject);
+        },
+        [],
       );
     };
 

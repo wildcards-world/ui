@@ -29,16 +29,29 @@ module Transaction = {
     //   DrizzleReact.Hooks.useUserBalance()->mapWithDefault("", a => a);
 
     let (withdrawFunc, txWithdrawObjects) = {
-      let withdrawObj = useWithdrawTransactionNew();
       (
-        (depositChange, txObject) =>
-          withdrawObj##send(. depositChange, txObject),
-        withdrawObj##_TXObjects,
+        // let withdrawObj = useWithdrawTransactionNew();
+        // (depositChange, txObject) =>
+        //   withdrawObj##send(. depositChange, txObject),
+        // withdrawObj##_TXObjects,
+        (depositChange, txObject) => {
+          Js.log("TODO: implement withdraw deposit change!!");
+          Js.log(depositChange);
+          Js.log(txObject);
+        },
+        [],
       );
     };
     let (depositFunc, txDepositObjects) = {
-      let depositObj = useAddDepositTransactionNew();
-      (txObject => depositObj##send(. txObject), depositObj##_TXObjects);
+      (
+        // let depositObj = useAddDepositTransactionNew();
+        // (txObject => depositObj##send(. txObject), depositObj##_TXObjects);
+        txObject => {
+          Js.log("TODO: implement depositFunction!!");
+          Js.log(txObject);
+        },
+        [],
+      );
     };
 
     // let _availableDeposit =
@@ -55,6 +68,7 @@ module Transaction = {
       } else {
         withdrawFunc(depositChangeWei, setFunctionObj(. "0", currentUser));
       };
+      ("implement", true);
     };
 
     let updateDepositChange = event => {
