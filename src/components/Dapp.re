@@ -1,4 +1,3 @@
-open Hooks;
 open Belt.Option;
 open Components;
 
@@ -340,7 +339,7 @@ module AnimalActionsOnDetailsPage = {
   let make = (~animal) => {
     let owned = animal->QlHooks.useIsAnimalOwened;
     let currentAccount =
-      Providers.DrizzleProvider.useCurrentUser()
+      Providers.RootProvider.useCurrentUser()
       ->mapWithDefault("loading", a => a);
     let currentPatron =
       QlHooks.usePatron(animal)->mapWithDefault("Loading", a => a);
@@ -763,6 +762,8 @@ module AnimalInfo = {
 let make = () => {
   let url = ReasonReactRouter.useUrl();
   let isGqlLoaded = QlHooks.useIsInitialized();
+  let login = Providers.RootProvider.useLogin();
+  let isBuyView = Providers.RootProvider.useBuyView();
   let (isDetailView, animalStr, isExplorer) = {
     switch (Js.String.split("/", url.hash)) {
     | [|"explorer", "details", animalStr|]
@@ -784,18 +785,26 @@ let make = () => {
     flexWrap={isDetailView ? "wrap-reverse" : "wrap"} alignItems="start">
     <Rimble.Box p=1 width=[|1., 1., 0.5|]>
       <React.Fragment>
-        {isDetailView
-           ? {
-             let optionAnimal = Animal.getAnimal(animalStr);
-             switch (optionAnimal) {
-             | None => <DefaultLeftPanel />
-             | Some(animal) =>
-               <Offline requireSmartContractsLoaded=true>
-                 <AnimalInfo animal />
-               </Offline>
-             };
-           }
-           : <DefaultLeftPanel />}
+        {login
+           ? <Login />
+           : {
+             isBuyView
+               ? <BuyModal.Transaction animal=Animal.Simon />
+               : {
+                 isDetailView
+                   ? {
+                     let optionAnimal = Animal.getAnimal(animalStr);
+                     switch (optionAnimal) {
+                     | None => <DefaultLeftPanel />
+                     | Some(animal) =>
+                       <Offline requireSmartContractsLoaded=true>
+                         <AnimalInfo animal />
+                       </Offline>
+                     };
+                   }
+                   : <DefaultLeftPanel />;
+               };
+           }}
       </React.Fragment>
     </Rimble.Box>
     <Rimble.Box p=1 width=[|1., 1., 0.5|]>

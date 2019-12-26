@@ -1,5 +1,4 @@
-open Hooks;
-open Providers.DrizzleProvider;
+open Providers.RootProvider;
 open Belt;
 open Accounting;
 
@@ -72,7 +71,11 @@ module Transaction = {
   let make = (~animal: Animal.t) => {
     let currentUser = useCurrentUser();
     let (buyFunc, txObjects) = Animal.useBuy(animal);
-    let userBalance = DrizzleReact.Hooks.useUserBalance()->defaultZeroS;
+    let userBalance =
+      Belt.Option.mapWithDefault(
+        Providers.RootProvider.useEthBalance(), BN.new_("0"), a =>
+        a
+      );
 
     let (numerator, denominator, ratio, ratioInverse) =
       Animal.pledgeRate(animal);
@@ -83,7 +86,7 @@ module Transaction = {
     let animalName = Animal.getName(animal);
 
     let maxAvailableDepositBN =
-      BN.new_(userBalance)
+      userBalance
       ->BN.subGet(. BN.new_("3000000000000000")) // 0.003 eth as gas
       ->BN.subGet(. currentPriceWei);
     let maxAvailableDeposit =
@@ -272,6 +275,8 @@ let make = (~animal: Animal.t) => {
   };
 
   let currentPriceWei = QlHooks.usePrice(animal);
+  let setLogin = Providers.RootProvider.useSetLogin();
+  let setBuyView = Providers.RootProvider.useSetBuyView();
 
   // TODO:: check if foreclosed!!
   let buttonText =
@@ -282,14 +287,15 @@ let make = (~animal: Animal.t) => {
 
   <React.Fragment>
     {if (isProviderSelected) {
-       <Rimble.Button onClick=onOpenModal>
+       <Rimble.Button onClick={_e => {setBuyView(true)}}>
          {React.string(buttonText)}
        </Rimble.Button>;
      } else {
        <Rimble.Button
-         onClick={_e =>
-           Js.log("unimplemented - will log into web3 wallet here!")
-         }>
+         onClick={_e => {
+           setLogin(true);
+           setBuyView(true);
+         }}>
          {React.string(buttonText)}
        </Rimble.Button>;
      }}

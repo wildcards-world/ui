@@ -73,3 +73,73 @@ export const squarelink = new SquarelinkConnector({
 export const torus = new TorusConnector({ chainId: 1 });
 
 export const authereum = new AuthereumConnector({ chainId: 42 });
+
+export default [
+  {
+    name: "MetaMask",
+    connector: injected,
+    img: require("./icons/metamask.svg"),
+    connectionPhrase: "Connect to your MetaMask Wallet"
+  },
+  {
+    name: "injected",
+    connector: injected,
+    connectionPhrase: "Sean connector",
+    img: require("./icons/metamask.svg")
+  },
+  {
+    name: "injected",
+    connector: injected,
+    connectionPhrase: "Connect to your MetaMask Wallet",
+    img: require("./icons/metamask.svg")
+  },
+  {
+    name: "injected",
+    connector: injected,
+    connectionPhrase: "Connect to your MetaMask Wallet",
+    img: require("./icons/metamask.svg")
+  },
+  {
+    name: "injected",
+    connectionPhrase: "Connect to your MetaMask Wallet",
+    connector: injected,
+    img: require("./icons/metamask.svg")
+  },
+  {
+    name: "injected",
+    connectionPhrase: "Connect to your MetaMask Wallet",
+    connector: injected,
+    img: require("./icons/metamask.svg")
+  },
+  {
+    name: "injected",
+    connectionPhrase: "Connect to your MetaMask Wallet",
+    connector: injected,
+    img: require("./icons/metamask.svg")
+  }
+  // Network: network,
+  // WalletConnect: walletconnect,
+  // WalletLink: walletlink,
+  // Ledger: ledger,
+  // Trezor: trezor,
+  // Frame: frame,
+  // Fortmatic: fortmatic,
+  // Portis: portis,
+  // Squarelink: squarelink,
+  // Torus: torus,
+  // Authereum: authereum
+];
+// export default {
+//   Injected: injected,
+//   Network: network,
+//   WalletConnect: walletconnect,
+//   WalletLink: walletlink,
+//   Ledger: ledger,
+//   Trezor: trezor,
+//   Frame: frame,
+//   Fortmatic: fortmatic,
+//   Portis: portis,
+//   Squarelink: squarelink,
+//   Torus: torus,
+//   Authereum: authereum
+// };

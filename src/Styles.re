@@ -6,20 +6,18 @@ let backgroundImageGorilla = [%bs.raw
   {|require("../src/img/wildcardsimages/wild-jungle-background.png")|}
 ];
 
-Css.(
-  global(
-    "body",
-    [
-      margin(`px(0)),
-      fontFamily("Lato, Helvetica, sans-serif"),
-      overflowX(hidden),
-    ],
-  )
+global(
+  "body",
+  [
+    margin(`px(0)),
+    fontFamily("Lato, Helvetica, sans-serif"),
+    overflowX(hidden),
+  ],
 );
-Css.(global("a", [color(hex("303030")), textDecoration(none)]));
-Css.(global("a:hover", [textDecoration(underline)]));
-Css.(global("a:active", [color(hex("303030"))]));
-Css.(global("a:visited", [color(hex("303030"))]));
+global("a", [color(hex("303030")), textDecoration(none)]);
+global("a:hover", [textDecoration(underline)]);
+global("a:active", [color(hex("303030"))]);
+global("a:visited", [color(hex("303030"))]);
 
 let app =
   style([

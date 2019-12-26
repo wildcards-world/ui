@@ -1,4 +1,3 @@
-open DrizzleReact.Hooks;
 open Rimble;
 
 module NoInjectedWeb3 = {

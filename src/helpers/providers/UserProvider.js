@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { useAppStatus } from "./DrizzleProvider";
+import { useAppStatus } from "./RootProvider";
 export const UserInfoContext = createContext("");
 
 export const UserInfoProvider = ({ children }) => {

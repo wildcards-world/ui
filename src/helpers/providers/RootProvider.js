@@ -3,7 +3,6 @@ import { theme as rimbleTheme } from "rimble-ui";
 import { ThemeProvider } from "styled-components";
 import TranslationProvider from "./TranslationProvider";
 import UserProvider from "./UserProvider";
-
 import {
   Web3ReactProvider,
   useWeb3React,
@@ -20,38 +19,37 @@ import {
 import { UserRejectedRequestError as UserRejectedRequestErrorFrame } from "@web3-react/frame-connector";
 import { Web3Provider } from "@ethersproject/providers";
 import { formatEther } from "@ethersproject/units";
-// import Box from "3box";
-import {
-  injected,
-  network,
-  walletconnect,
-  walletlink,
-  ledger,
-  trezor,
-  frame,
-  fortmatic,
-  portis,
-  squarelink,
-  torus,
-  authereum
-} from "./web3-react/connectors";
+// import {
+//   injected,
+//   network,
+//   walletconnect,
+//   walletlink,
+//   ledger,
+//   trezor,
+//   frame,
+//   fortmatic,
+//   portis,
+//   squarelink,
+//   torus,
+//   authereum
+// } from "./web3-react/connectors";
 import { useEagerConnect, useInactiveListener } from "./web3-react/hooks";
-import { Spinner } from "./web3-react/Spinner";
+console.log(require("./web3-react/connectors"));
 
-const connectorsByName = {
-  Injected: injected,
-  Network: network,
-  WalletConnect: walletconnect,
-  WalletLink: walletlink,
-  Ledger: ledger,
-  Trezor: trezor,
-  Frame: frame,
-  Fortmatic: fortmatic,
-  Portis: portis,
-  Squarelink: squarelink,
-  Torus: torus,
-  Authereum: authereum
-};
+// const connectorsByName = {
+//   Injected: injected,
+//   Network: network,
+//   WalletConnect: walletconnect,
+//   WalletLink: walletlink,
+//   Ledger: ledger,
+//   Trezor: trezor,
+//   Frame: frame,
+//   Fortmatic: fortmatic,
+//   Portis: portis,
+//   Squarelink: squarelink,
+//   Torus: torus,
+//   Authereum: authereum
+// };
 
 function getErrorMessage(error) {
   if (error instanceof NoEthereumProviderError) {
@@ -91,17 +89,17 @@ const theme = {
 };
 
 export const Web3Parent = ({ children }) => {
-  const [isProviderSelected, setIsProviderSelected] = useState(false);
-  const setProvider = provider => {
-    console.log("This is not implemented!!");
-    // web3ProvideSwitcher.setExternalProvider(provider);
-    // setIsProviderSelected(true);
-  };
+  // const [isProviderSelected, setIsProviderSelected] = useState(false);
+  // const setProvider = provider => {
+  //   console.log("This is not implemented!!");
+  //   // web3ProvideSwitcher.setExternalProvider(provider);
+  //   // setIsProviderSelected(true);
+  // };
 
-  const resetApp = () => {
-    // TODO
-    console.log("reset the app");
-  };
+  // const resetApp = () => {
+  //   // TODO
+  //   console.log("reset the app");
+  // };
 
   const context = useWeb3React();
   const {
@@ -128,38 +126,6 @@ export const Web3Parent = ({ children }) => {
 
   // handle logic to connect in reaction to certain events on the injected ethereum provider, if it exists
   useInactiveListener(!triedEager || !!activatingConnector);
-
-  // set up block listener
-  // const [blockNumber, setBlockNumber] = React.useState();
-  // React.useEffect(() => {
-  //   if (library) {
-  //     let stale = false;
-
-  //     library
-  //       .getBlockNumber()
-  //       .then(blockNumber => {
-  //         if (!stale) {
-  //           setBlockNumber(blockNumber);
-  //         }
-  //       })
-  //       .catch(() => {
-  //         if (!stale) {
-  //           setBlockNumber(null);
-  //         }
-  //       });
-
-  //     const updateBlockNumber = blockNumber => {
-  //       setBlockNumber(blockNumber);
-  //     };
-  //     library.on("block", updateBlockNumber);
-
-  //     return () => {
-  //       library.removeListener("block", updateBlockNumber);
-  //       stale = true;
-  //       setBlockNumber(undefined);
-  //     };
-  //   }
-  // }, [library, chainId]);
 
   // fetch eth balance of the connected account
   const [ethBalance, setEthBalance] = React.useState();
@@ -188,26 +154,37 @@ export const Web3Parent = ({ children }) => {
   }, [library, account, chainId]);
 
   // log the walletconnect URI
-  React.useEffect(() => {
-    const logURI = uri => {
-      console.log("WalletConnect URI", uri);
-    };
-    walletconnect.on(URI_AVAILABLE, logURI);
+  // React.useEffect(() => {
+  //   const logURI = uri => {
+  //     console.log("WalletConnect URI", uri);
+  //   };
+  //   walletconnect.on(URI_AVAILABLE, logURI);
 
-    return () => {
-      walletconnect.off(URI_AVAILABLE, logURI);
-    };
-  }, []);
-  console.log("the current account is", account);
+  //   return () => {
+  //     walletconnect.off(URI_AVAILABLE, logURI);
+  //   };
+  // }, []);
+
+  const [login, setLogin] = useState(false);
+  const [buyView, setBuyView] = useState(false);
+
   const providedValues = {
-    isProviderSelected,
-    setProvider,
+    // isProviderSelected,
+    // setProvider,
     account,
-    ethBalance
+    ethBalance,
+    chainId,
+    active,
+    login,
+    setLogin,
+    activate,
+    buyView,
+    setBuyView
   };
+  console.log({ ethBalance: !!ethBalance ? ethBalance.toString() : "loading" });
 
   return (
-    // <drizzleReactHooks.DrizzleProvider drizzle={drizzle}>
+    // <drizzleReactHooks.RootProvider drizzle={drizzle}>
     <ProviderContext.Provider value={providedValues}>
       <ThemeProvider theme={theme}>
         <UserProvider>
@@ -215,7 +192,7 @@ export const Web3Parent = ({ children }) => {
         </UserProvider>
       </ThemeProvider>
     </ProviderContext.Provider>
-    // </drizzleReactHooks.DrizzleProvider>
+    // </drizzleReactHooks.RootProvider>
   );
 };
 export default ({ children }) => {
