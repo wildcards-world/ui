@@ -15,7 +15,7 @@ module Router = {
 ReactDOMRe.renderToElementWithId(
   <ReasonApollo.Provider client=Client.instance>
     <ReasonApolloHooks.ApolloHooks.Provider client=Client.instance>
-      <RootProviderNew> <Router /> </RootProviderNew>
+      <RootProvider> <Router /> </RootProvider>
     </ReasonApolloHooks.ApolloHooks.Provider>
   </ReasonApollo.Provider>,
   "root",

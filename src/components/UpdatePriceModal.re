@@ -8,7 +8,7 @@ module Transaction = {
   let make = (~animal: Animal.t) => {
     let (newBuyPrice, setNewBuyPrice) = React.useState(() => "");
     // let currentPrice = useCurrentPriceWei()->mapWithDefault("loading", a => a);
-    let currentUser = RootProviderNew.useCurrentUser();
+    let currentUser = RootProvider.useCurrentUser();
     // let changePriceObj = useChangePriceTransaction();
     // let changePriceObjNew = useChangePriceTransactionNew();
     let tokenId = Animal.getId(animal);

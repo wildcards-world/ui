@@ -14,7 +14,6 @@ type web3reactContext = {
   library: option(web3Library),
   chainId: option(int),
 };
-// [@bs.module "./web3-react/hooks"]
 [@bs.module "@web3-react/core"]
 external useWeb3React: unit => web3reactContext = "useWeb3React";
 
@@ -40,10 +39,16 @@ let getLibrary = provider => {
   ];
   setPollingInterval(library);
 };
-type nonUrlState =
-  | Landing;
-type nonUrlStateAction =
+type rootActions =
+  | GoToBuy(Animal.t)
+  | ClearNonUrlState
   | LoadAddress(Web3.ethAddress, option(Eth.t));
+type nonUrlState =
+  | LoginScreen(rootActions)
+  | UpdareDepositScreen(Animal.t)
+  | UpdarePriceScreen(Animal.t)
+  | BuyScreen(Animal.t)
+  | NoExtraState;
 type ethState =
   | Disconnected
   | Connected(Web3.ethAddress, option(Eth.t));
@@ -53,7 +58,7 @@ type state = {
   ethState,
 };
 
-let initialState = {nonUrlState: Landing, ethState: Disconnected};
+let initialState = {nonUrlState: NoExtraState, ethState: Disconnected};
 
 let reducer = (prevState, action) =>
   switch (action) {
@@ -61,7 +66,16 @@ let reducer = (prevState, action) =>
       ...prevState,
       ethState: Connected(address, optBalance),
     }
-  | _ => {...prevState, nonUrlState: Landing}
+  | GoToBuy(animal) =>
+    switch (prevState.ethState) {
+    | Connected(_, _) => {...prevState, nonUrlState: BuyScreen(animal)}
+    | Disconnected => {
+        ...prevState,
+        nonUrlState: LoginScreen(GoToBuy(animal)),
+      }
+    }
+  | ClearNonUrlState => {...prevState, nonUrlState: NoExtraState}
+  | _ => prevState
   };
 
 module TestComp = {
@@ -172,10 +186,33 @@ let useEthBalance: unit => option(Eth.t) =
     | Disconnected => None
     };
   };
-let useLogin: unit => bool = () => true;
-let useSetLogin: (unit, bool) => unit = ((), _bool) => ();
-let useBuyView: unit => bool = () => true;
-let useSetBuyView: (unit, bool) => unit = ((), _discard) => ();
+let useNonUrlState: unit => nonUrlState =
+  () => {
+    let (state, _) = React.useContext(RootContext.context);
+    state.nonUrlState;
+  };
+let useGoToBuy: (unit, Animal.t) => unit =
+  () => {
+    let (_, dispatch) = React.useContext(RootContext.context);
+    animal => {
+      dispatch(GoToBuy(animal));
+    };
+  };
+let useClearNonUrlState: (unit, unit) => unit =
+  () => {
+    let (_, dispatch) = React.useContext(RootContext.context);
+    () => {
+      dispatch(ClearNonUrlState);
+    };
+  };
+let useClearNonUrlStateAndPushRoute: (unit, string) => unit =
+  () => {
+    let clearNonUrlState = useClearNonUrlState();
+    url => {
+      clearNonUrlState();
+      ReasonReactRouter.push(url);
+    };
+  };
 type connector;
 let useActivateConnector: (unit, connector) => unit = ((), _connection) => ();
 

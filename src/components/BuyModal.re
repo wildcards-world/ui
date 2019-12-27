@@ -69,11 +69,11 @@ let calcRequiredDepositForTime = (time, price, numerator, denominator) => {
 module Transaction = {
   [@react.component]
   let make = (~animal: Animal.t) => {
-    let currentUser = RootProviderNew.useCurrentUser();
+    let currentUser = RootProvider.useCurrentUser();
     let (buyFunc, txObjects) = Animal.useBuy(animal);
     let userBalance =
       Belt.Option.mapWithDefault(
-        RootProviderNew.useEthBalance(), BN.new_("0"), a =>
+        RootProvider.useEthBalance(), BN.new_("0"), a =>
         a
       );
 
@@ -263,20 +263,20 @@ module Transaction = {
 [@react.component]
 let make = (~animal: Animal.t) => {
   let (isModalOpen, setModalOpen) = React.useState(() => false);
-  let isProviderSelected = RootProviderNew.useIsProviderSelected();
+  // let isProviderSelected = RootProvider.useIsProviderSelected();
 
-  // let onUnlockMetamaskAndOpenModal = () => {
+  // // let onUnlockMetamaskAndOpenModal = () => {
+  // //   setModalOpen(_ => true);
+  // // };
+  // let onOpenModal = event => {
+  //   ReactEvent.Form.preventDefault(event);
+  //   ReactEvent.Form.stopPropagation(event);
   //   setModalOpen(_ => true);
   // };
-  let onOpenModal = event => {
-    ReactEvent.Form.preventDefault(event);
-    ReactEvent.Form.stopPropagation(event);
-    setModalOpen(_ => true);
-  };
 
   let currentPriceWei = QlHooks.usePrice(animal);
-  let setLogin = RootProviderNew.useSetLogin();
-  let setBuyView = RootProviderNew.useSetBuyView();
+
+  let goToBuy = RootProvider.useGoToBuy();
 
   // TODO:: check if foreclosed!!
   let buttonText =
@@ -286,19 +286,9 @@ let make = (~animal: Animal.t) => {
     };
 
   <React.Fragment>
-    {if (isProviderSelected) {
-       <Rimble.Button onClick={_e => {setBuyView(true)}}>
-         {React.string(buttonText)}
-       </Rimble.Button>;
-     } else {
-       <Rimble.Button
-         onClick={_e => {
-           setLogin(true);
-           setBuyView(true);
-         }}>
-         {React.string(buttonText)}
-       </Rimble.Button>;
-     }}
+    <Rimble.Button onClick={_e => {goToBuy(animal)}}>
+      {React.string(buttonText)}
+    </Rimble.Button>
     <Rimble.Modal isOpen=isModalOpen>
       <Rimble.Card width={Rimble.AnyStr("70%")} p=0>
         <Rimble.Button.Text

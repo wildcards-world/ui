@@ -15,7 +15,9 @@ module BuyGrid = {
 
 module AnimalFocusDetails = {
   [@react.component]
-  let make = (~animalCarousel, ~isExplorer) =>
+  let make = (~animalCarousel, ~isExplorer) => {
+    let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+
     <Rimble.Flex flexWrap="wrap" alignItems="center" className=Styles.topBody>
       {switch (animalCarousel) {
        | None => React.null
@@ -24,7 +26,7 @@ module AnimalFocusDetails = {
            <Rimble.Button
              className=Styles.forwardBackButton
              onClick={InputHelp.handleEvent(() =>
-               ReasonReactRouter.push(
+               clearAndPush(
                  "#"
                  ++ InputHelp.getPagePrefix(isExplorer)
                  ++ "details/"
@@ -48,7 +50,7 @@ module AnimalFocusDetails = {
            <Rimble.Button
              className=Styles.forwardBackButton
              onClick={InputHelp.handleEvent(() =>
-               ReasonReactRouter.push(
+               clearAndPush(
                  "#"
                  ++ InputHelp.getPagePrefix(isExplorer)
                  ++ "details/"
@@ -60,11 +62,13 @@ module AnimalFocusDetails = {
          </Rimble.Box>
        }}
     </Rimble.Flex>;
+  };
 };
 
 module Header = {
   [@react.component]
   let make = (~animalCarousel, ~isExplorer, ~isDetails) => {
+    let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
     open ReactTranslate;
     let usedtranslationModeContext = useTranslationModeContext();
     <header className=Styles.header>
@@ -74,7 +78,7 @@ module Header = {
             className=Styles.clickableLink
             onClick={event => {
               ReactEvent.Mouse.preventDefault(event);
-              ReasonReactRouter.push("#");
+              clearAndPush("#");
             }}>
             <div className=Styles.headerLogo> <img src=smallIcon /> </div>
           </a>
@@ -112,7 +116,7 @@ module Header = {
                    className=Styles.navListText
                    onClick={event => {
                      ReactEvent.Mouse.preventDefault(event);
-                     ReasonReactRouter.push("#");
+                     clearAndPush("#");
                    }}>
                    <S> "HOME" </S>
                  </a>
@@ -130,14 +134,14 @@ module Header = {
                      href=""
                      onClick={event => {
                        ReactEvent.Mouse.preventDefault(event);
-                       ReasonReactRouter.push("#");
+                       clearAndPush("#");
                      }}>
                      <S> "HOME" </S>
                    </a>
                  : <Rimble.Button
                      onClick={event => {
                        ReactEvent.Form.preventDefault(event);
-                       ReasonReactRouter.push("#explorer");
+                       clearAndPush("#explorer");
                      }}
                      className=Styles.whiteText>
                      <S> "ANIMAL KINGDOM" </S>

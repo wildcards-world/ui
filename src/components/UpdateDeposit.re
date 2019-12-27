@@ -24,7 +24,7 @@ module Transaction = {
     let (depositChange, setDepositChange) = React.useState(() => "");
     let (isAddDeposit, setIsAddDeposit) = React.useState(() => true);
     let currentUser =
-      RootProviderNew.useCurrentUser()->mapWithDefault("", a => a);
+      RootProvider.useCurrentUser()->mapWithDefault("", a => a);
     // let tokenId = Animal.getId(animal);
     // let userBalance =
     //   DrizzleReact.Hooks.useUserBalance()->mapWithDefault("", a => a);

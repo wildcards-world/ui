@@ -1,6 +1,6 @@
 type connectorObj = {
   name: string,
-  connector: RootProviderNew.connector,
+  connector: RootProvider.connector,
   img: string,
   connectionPhrase: string,
 };
@@ -10,7 +10,7 @@ external connectors: Js.Array.t(connectorObj) = "default";
 
 [@react.component]
 let make = () => {
-  let activateConnector = RootProviderNew.useActivateConnector();
+  let activateConnector = RootProvider.useActivateConnector();
 
   <div>
     <p> "login component"->React.string </p>

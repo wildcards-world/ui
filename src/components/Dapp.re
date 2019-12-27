@@ -27,10 +27,11 @@ module CountDown = {
 module EditButton = {
   [@react.component]
   let make = (~animal: Animal.t, ~isExplorer) => {
+    let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
     <Rimble.Button
       onClick={event => {
         ReactEvent.Form.preventDefault(event);
-        ReasonReactRouter.push(
+        clearAndPush(
           "#"
           ++ InputHelp.getPagePrefix(isExplorer)
           ++ "details/"
@@ -132,6 +133,8 @@ module AnimalOnLandingPage = {
     let optAlternateImage = Animal.getAlternateImage(animal);
     let orgBadge = Animal.getOrgBadgeImage(animal);
 
+    let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+
     let normalImage = () =>
       <img
         className={Styles.headerImg(enlargement, scalar)}
@@ -189,7 +192,7 @@ module AnimalOnLandingPage = {
           className=Styles.clickableLink
           onClick={event => {
             ReactEvent.Mouse.preventDefault(event);
-            ReasonReactRouter.push(
+            clearAndPush(
               "#"
               ++ InputHelp.getPagePrefix(isExplorer)
               ++ "details/"
@@ -339,7 +342,7 @@ module AnimalActionsOnDetailsPage = {
   let make = (~animal) => {
     let owned = animal->QlHooks.useIsAnimalOwened;
     let currentAccount =
-      RootProviderNew.useCurrentUser()->mapWithDefault("loading", a => a);
+      RootProvider.useCurrentUser()->mapWithDefault("loading", a => a);
     let currentPatron =
       QlHooks.usePatron(animal)->mapWithDefault("Loading", a => a);
     let userId = UserProvider.useUserNameOrTwitterHandle(currentPatron);
@@ -761,8 +764,8 @@ module AnimalInfo = {
 let make = () => {
   let url = ReasonReactRouter.useUrl();
   let isGqlLoaded = QlHooks.useIsInitialized();
-  let login = RootProviderNew.useLogin();
-  let isBuyView = RootProviderNew.useBuyView();
+  let nonUrlRouting = RootProvider.useNonUrlState();
+  let clearNonUrlState = RootProvider.useClearNonUrlState();
   let (isDetailView, animalStr, isExplorer) = {
     switch (Js.String.split("/", url.hash)) {
     | [|"explorer", "details", animalStr|]
@@ -784,26 +787,36 @@ let make = () => {
     flexWrap={isDetailView ? "wrap-reverse" : "wrap"} alignItems="start">
     <Rimble.Box p=1 width=[|1., 1., 0.5|]>
       <React.Fragment>
-        {login
-           ? <Login />
-           : {
-             isBuyView
-               ? <BuyModal.Transaction animal=Animal.Simon />
-               : {
-                 isDetailView
-                   ? {
-                     let optionAnimal = Animal.getAnimal(animalStr);
-                     switch (optionAnimal) {
-                     | None => <DefaultLeftPanel />
-                     | Some(animal) =>
-                       <Offline requireSmartContractsLoaded=true>
-                         <AnimalInfo animal />
-                       </Offline>
-                     };
-                   }
-                   : <DefaultLeftPanel />;
+        {switch (nonUrlRouting) {
+         | LoginScreen(_followOnAction) => <Login />
+         | BuyScreen(animal) =>
+           <div className=Css.(style([position(`relative)]))>
+             <Rimble.Button.Text
+               icononly=true
+               icon="Close"
+               color="moon-gray"
+               position="absolute"
+               top=0
+               right=0
+               m=1
+               onClick={_ => clearNonUrlState()}
+             />
+             <BuyModal.Transaction animal />
+           </div>
+         | _ =>
+           isDetailView
+             ? {
+               let optionAnimal = Animal.getAnimal(animalStr);
+               switch (optionAnimal) {
+               | None => <DefaultLeftPanel />
+               | Some(animal) =>
+                 <Offline requireSmartContractsLoaded=true>
+                   <AnimalInfo animal />
+                 </Offline>
                };
-           }}
+             }
+             : <DefaultLeftPanel />
+         }}
       </React.Fragment>
     </Rimble.Box>
     <Rimble.Box p=1 width=[|1., 1., 0.5|]>
