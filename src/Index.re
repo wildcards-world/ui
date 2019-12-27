@@ -12,12 +12,29 @@ module Router = {
   };
 };
 
+module ReasonApolloProvderNetworkSwitcher = {
+  [@react.component]
+  let make = (~children) => {
+    let networkId =
+      RootProvider.useNetworkId()->Belt.Option.mapWithDefault(0, a => a);
+    let client = Client.instance(networkId);
+
+    <ReasonApollo.Provider key={networkId->string_of_int} client>
+      <ReasonApolloHooks.ApolloHooks.Provider
+        key={networkId->string_of_int} client>
+        children
+      </ReasonApolloHooks.ApolloHooks.Provider>
+    </ReasonApollo.Provider>;
+    // };
+  };
+};
+
 ReactDOMRe.renderToElementWithId(
-  <ReasonApollo.Provider client=Client.instance>
-    <ReasonApolloHooks.ApolloHooks.Provider client=Client.instance>
-      <RootProvider> <Router /> </RootProvider>
-    </ReasonApolloHooks.ApolloHooks.Provider>
-  </ReasonApollo.Provider>,
+  <RootProvider>
+    <ReasonApolloProvderNetworkSwitcher>
+      <Router />
+    </ReasonApolloProvderNetworkSwitcher>
+  </RootProvider>,
   "root",
 );
 

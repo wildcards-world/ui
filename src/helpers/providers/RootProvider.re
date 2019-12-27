@@ -191,6 +191,12 @@ let useNonUrlState: unit => nonUrlState =
     let (state, _) = React.useContext(RootContext.context);
     state.nonUrlState;
   };
+let useNetworkId: unit => option(int) =
+  () => {
+    let context = useWeb3React();
+
+    context.chainId;
+  };
 let useGoToBuy: (unit, Animal.t) => unit =
   () => {
     let (_, dispatch) = React.useContext(RootContext.context);

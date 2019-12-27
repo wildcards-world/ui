@@ -6,7 +6,7 @@ type dataObject = {
 // createInMemoryCache(~dataIdFromObject=(obj: dataObject) => obj##id, ());
 
 /* Create an InMemoryCache */
-let inMemoryCache =
+let inMemoryCache = () =>
   ApolloInMemoryCache.createInMemoryCache(
     // ~dataIdFromObject=
     //   (obj: dataObject) => {
@@ -40,20 +40,28 @@ let inMemoryCache =
   );
 
 /* Create an HTTP Link */
-let httpLink =
+let httpLink = networkId =>
   ApolloLinks.createHttpLink(
-    ~uri="https://api.thegraph.com/subgraphs/name/wild-cards/wildcards",
+    ~uri=
+      switch (networkId) {
+      | 5 => "https://api.thegraph.com/subgraphs/name/wild-cards/wildcards-goerli"
+      | _ => "https://api.thegraph.com/subgraphs/name/wild-cards/wildcards"
+      },
     (),
   );
 /* Create an WS Link */
-let wsLink =
+let wsLink = networkId =>
   ApolloLinks.webSocketLink(
-    ~uri="wss://api.thegraph.com/subgraphs/name/wild-cards/wildcards",
+    ~uri=
+      switch (networkId) {
+      | 5 => "wss://api.thegraph.com/subgraphs/name/wild-cards/wildcards-goerli"
+      | _ => "wss://api.thegraph.com/subgraphs/name/wild-cards/wildcards"
+      },
     (),
   );
 
 /* based on test, execute left or right */
-let webSocketHttpLink =
+let webSocketHttpLink = networkId =>
   ApolloLinks.split(
     operation => {
       let operationDefition =
@@ -62,13 +70,13 @@ let webSocketHttpLink =
       &&
       operationDefition##operation == "subscription";
     },
-    wsLink,
-    httpLink,
+    wsLink(networkId),
+    httpLink(networkId),
   );
 
-let instance =
+let instance = networkId =>
   ReasonApollo.createApolloClient(
-    ~link=webSocketHttpLink,
-    ~cache=inMemoryCache,
+    ~link=webSocketHttpLink(networkId),
+    ~cache=inMemoryCache(),
     (),
   );
