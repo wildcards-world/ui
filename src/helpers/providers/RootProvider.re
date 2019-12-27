@@ -42,6 +42,7 @@ let getLibrary = provider => {
 type rootActions =
   | GoToBuy(Animal.t)
   | ClearNonUrlState
+  | Logout
   | LoadAddress(Web3.ethAddress, option(Eth.t));
 type nonUrlState =
   | LoginScreen(rootActions)
@@ -60,12 +61,15 @@ type state = {
 
 let initialState = {nonUrlState: NoExtraState, ethState: Disconnected};
 
-let reducer = (prevState, action) =>
+let rec reducer = (prevState, action) =>
   switch (action) {
-  | LoadAddress(address, optBalance) => {
-      ...prevState,
-      ethState: Connected(address, optBalance),
-    }
+  | ClearNonUrlState => {...prevState, nonUrlState: NoExtraState}
+  | LoadAddress(address, optBalance) =>
+    let newState = {...prevState, ethState: Connected(address, optBalance)};
+    switch (prevState.nonUrlState) {
+    | LoginScreen(followOnAction) => reducer(newState, followOnAction)
+    | _ => newState
+    };
   | GoToBuy(animal) =>
     switch (prevState.ethState) {
     | Connected(_, _) => {...prevState, nonUrlState: BuyScreen(animal)}
@@ -74,7 +78,7 @@ let reducer = (prevState, action) =>
         nonUrlState: LoginScreen(GoToBuy(animal)),
       }
     }
-  | ClearNonUrlState => {...prevState, nonUrlState: NoExtraState}
+  | Logout => {ethState: Disconnected, nonUrlState: NoExtraState}
   | _ => prevState
   };
 
@@ -128,12 +132,25 @@ module RootWithWeb3 = {
       [|context.activate|],
     );
 
+    //// This will never fire when metamask logs out unfortunately https://stackoverflow.com/a/59215775/3103033
+    // React.useEffect1(
+    //   () => {
+    //     if (context.active) {
+    //       ();
+    //     } else {
+    //       dispatch(Logout);
+    //     };
+    //     None;
+    //   },
+    //   // run this if the status of "active" ever changes
+    //   [|rootState.ethState|],
+    // );
+
     // if the connection worked, wait until we get confirmation of that to flip the flag
     React.useEffect2(
       () => {
         !tried && context.active ? setTried(_ => true) : ();
 
-        // context.active ? dispatch()
         None;
       },
       (tried, context.active),
@@ -211,6 +228,7 @@ let useClearNonUrlState: (unit, unit) => unit =
       dispatch(ClearNonUrlState);
     };
   };
+
 let useClearNonUrlStateAndPushRoute: (unit, string) => unit =
   () => {
     let clearNonUrlState = useClearNonUrlState();
@@ -219,8 +237,31 @@ let useClearNonUrlStateAndPushRoute: (unit, string) => unit =
       ReasonReactRouter.push(url);
     };
   };
-type connector;
-let useActivateConnector: (unit, connector) => unit = ((), _connection) => ();
+
+type connection =
+  | Standby
+  | Connected
+  | Connecting
+  | ErrorConnecting;
+
+let useActivateConnector: unit => (connection, injectedType => unit) =
+  () => {
+    let context = useWeb3React();
+    let (connectionStatus, setConnectionStatus) =
+      React.useState(() => Standby);
+    (
+      connectionStatus,
+      provider => {
+        ignore(context.activate(provider, () => (), true));
+        // ->Promise.Js.catch(_error => {
+        //     setConnectionStatus(_ => ErrorConnecting);
+        //     Promise.resolved();
+        //   })
+        // ->Promise.get(() => {setConnectionStatus(_ => Connected)});
+        setConnectionStatus(_ => Connecting);
+      },
+    );
+  };
 
 [@react.component]
 let make = (~children) => {
