@@ -1,4 +1,4 @@
-open Providers.RootProvider;
+// open Providers.RootProvider;
 open Belt;
 open Accounting;
 
@@ -69,11 +69,11 @@ let calcRequiredDepositForTime = (time, price, numerator, denominator) => {
 module Transaction = {
   [@react.component]
   let make = (~animal: Animal.t) => {
-    let currentUser = useCurrentUser();
+    let currentUser = RootProviderNew.useCurrentUser();
     let (buyFunc, txObjects) = Animal.useBuy(animal);
     let userBalance =
       Belt.Option.mapWithDefault(
-        Providers.RootProvider.useEthBalance(), BN.new_("0"), a =>
+        RootProviderNew.useEthBalance(), BN.new_("0"), a =>
         a
       );
 
@@ -263,7 +263,7 @@ module Transaction = {
 [@react.component]
 let make = (~animal: Animal.t) => {
   let (isModalOpen, setModalOpen) = React.useState(() => false);
-  let isProviderSelected = useIsProviderSelected();
+  let isProviderSelected = RootProviderNew.useIsProviderSelected();
 
   // let onUnlockMetamaskAndOpenModal = () => {
   //   setModalOpen(_ => true);
@@ -275,8 +275,8 @@ let make = (~animal: Animal.t) => {
   };
 
   let currentPriceWei = QlHooks.usePrice(animal);
-  let setLogin = Providers.RootProvider.useSetLogin();
-  let setBuyView = Providers.RootProvider.useSetBuyView();
+  let setLogin = RootProviderNew.useSetLogin();
+  let setBuyView = RootProviderNew.useSetBuyView();
 
   // TODO:: check if foreclosed!!
   let buttonText =

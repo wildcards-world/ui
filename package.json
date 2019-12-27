@@ -40,6 +40,7 @@
     "react-switch": "^5.0.1",
     "react-tabs": "^3.0.0",
     "react-translate": "^7.0.1",
+    "reason-promise": "^1.0.0",
     "reason-react": "^0.7.0",
     "rimble-ui": "^0.10.0",
     "styled-components": "^4.3.2",

@@ -339,8 +339,7 @@ module AnimalActionsOnDetailsPage = {
   let make = (~animal) => {
     let owned = animal->QlHooks.useIsAnimalOwened;
     let currentAccount =
-      Providers.RootProvider.useCurrentUser()
-      ->mapWithDefault("loading", a => a);
+      RootProviderNew.useCurrentUser()->mapWithDefault("loading", a => a);
     let currentPatron =
       QlHooks.usePatron(animal)->mapWithDefault("Loading", a => a);
     let userId = UserProvider.useUserNameOrTwitterHandle(currentPatron);
@@ -762,8 +761,8 @@ module AnimalInfo = {
 let make = () => {
   let url = ReasonReactRouter.useUrl();
   let isGqlLoaded = QlHooks.useIsInitialized();
-  let login = Providers.RootProvider.useLogin();
-  let isBuyView = Providers.RootProvider.useBuyView();
+  let login = RootProviderNew.useLogin();
+  let isBuyView = RootProviderNew.useBuyView();
   let (isDetailView, animalStr, isExplorer) = {
     switch (Js.String.split("/", url.hash)) {
     | [|"explorer", "details", animalStr|]

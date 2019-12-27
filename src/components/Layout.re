@@ -203,6 +203,7 @@ let make = () => {
                />
              : <React.Fragment>
                  <AnimalFocusDetails animalCarousel isExplorer />
+                 //  <CarouselTestApp />
                  <StaticContent.CustomerBenefit />
                  <StaticContent.HowItWorks />
                  <StaticContent.About />

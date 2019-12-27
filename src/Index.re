@@ -1,5 +1,3 @@
-open Providers;
-
 [%bs.raw {|require("./custom.css")|}];
 
 module Router = {
@@ -17,7 +15,7 @@ module Router = {
 ReactDOMRe.renderToElementWithId(
   <ReasonApollo.Provider client=Client.instance>
     <ReasonApolloHooks.ApolloHooks.Provider client=Client.instance>
-      <RootProvider> <Router /> </RootProvider>
+      <RootProviderNew> <Router /> </RootProviderNew>
     </ReasonApolloHooks.ApolloHooks.Provider>
   </ReasonApollo.Provider>,
   "root",

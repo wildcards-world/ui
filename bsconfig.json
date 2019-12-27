@@ -3,9 +3,7 @@
   "reason": {
     "react-jsx": 3
   },
-  "bsc-flags": [
-    "-bs-super-errors"
-  ],
+  "bsc-flags": ["-bs-super-errors"],
   "sources": [
     {
       "dir": "src",
@@ -26,6 +24,7 @@
     "bs-fetch",
     "re-formality",
     "bs-moment",
+    "reason-promise",
     "@wildcards/reason-apollo",
     "@wildcards/reason-apollo-hooks",
     "@glennsl/bs-jest"

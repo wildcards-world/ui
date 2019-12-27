@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { useAppStatus } from "./RootProvider";
+// import { useAppStatus } from "./RootProvider";
 export const UserInfoContext = createContext("");
 
 export const UserInfoProvider = ({ children }) => {
-  const currentUserEthAddress = useAppStatus().account;
+  const currentUserEthAddress = "0x"; //useAppStatus().account;
   const [userProvider, setUserProvider] = useState({ verifications: {} });
 
   const updateUserProvider = currentUserEthAddress => {
