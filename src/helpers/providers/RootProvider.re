@@ -1,9 +1,5 @@
-type rawProvider;
-type web3Library = {
-  getBalance: (. Web3.ethAddress) => Promise.promise(option(Eth.t)),
-  // pollingInterval: ref(int),
-};
-type injectedType = {isAuthorized: unit => Promise.promise(bool)};
+open RootProviderTypes;
+
 [@bs.module "./web3-react/connectors"]
 external injected: injectedType = "injected";
 
@@ -28,7 +24,7 @@ module DrizzleUserAndTranslationProvider = {
   [@bs.module "./DrizzleUserAndTranslationProvider"] [@react.component]
   external make: (~children: React.element) => React.element = "default";
 };
-[@bs.module "@ethersproject/providers"] [@bs.new]
+[@bs.module "ethers"] [@bs.scope "providers"] [@bs.new]
 external createWeb3Provider: rawProvider => web3Library = "Web3Provider";
 
 let getLibrary = provider => {
@@ -39,25 +35,6 @@ let getLibrary = provider => {
   ];
   setPollingInterval(library);
 };
-type rootActions =
-  | GoToBuy(Animal.t)
-  | ClearNonUrlState
-  | Logout
-  | LoadAddress(Web3.ethAddress, option(Eth.t));
-type nonUrlState =
-  | LoginScreen(rootActions)
-  | UpdareDepositScreen(Animal.t)
-  | UpdarePriceScreen(Animal.t)
-  | BuyScreen(Animal.t)
-  | NoExtraState;
-type ethState =
-  | Disconnected
-  | Connected(Web3.ethAddress, option(Eth.t));
-
-type state = {
-  nonUrlState,
-  ethState,
-};
 
 let initialState = {nonUrlState: NoExtraState, ethState: Disconnected};
 
@@ -65,6 +42,7 @@ let rec reducer = (prevState, action) =>
   switch (action) {
   | ClearNonUrlState => {...prevState, nonUrlState: NoExtraState}
   | LoadAddress(address, optBalance) =>
+    Js.log("loading the new address");
     let newState = {...prevState, ethState: Connected(address, optBalance)};
     switch (prevState.nonUrlState) {
     | LoginScreen(followOnAction) => reducer(newState, followOnAction)
@@ -163,7 +141,14 @@ module RootWithWeb3 = {
           library.getBalance(. account)
           ->Promise.Js.catch(_ => {Promise.resolved(None)})
           ->Promise.get(newBalance => {
-              dispatch(LoadAddress(account, newBalance))
+              dispatch(
+                LoadAddress(
+                  account,
+                  newBalance->Belt.Option.flatMap(balance =>
+                    Eth.make(balance.toString(.))
+                  ),
+                ),
+              )
             });
 
           None;

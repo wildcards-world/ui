@@ -402,24 +402,8 @@ let getStoryParagraphs = animal =>
     |]
   };
 
-let useBuy = animal => {
-  let _animalId = getId(animal);
-
-  // let buyObj = useBuyTransactionNew();
-  // (
-  //   (newPrice, txObject) =>
-  //     buyObj##send(. animalId, newPrice->Web3Utils.toWeiFromEth, txObject),
-  //   buyObj##_TXObjects,
-  // );
-  (
-    (newPrice, txObject) => {
-      Js.log("TODO: implement sending price change!!");
-      Js.log(newPrice);
-      Js.log(txObject);
-    },
-    [],
-  );
-};
+// [@bs.module "./animaltx.js"]
+// external buyTx: (string, string, 'a, 'b) => unit = "default";
 
 // let useCurrentPrice = animal => {
 //   open Hooks;

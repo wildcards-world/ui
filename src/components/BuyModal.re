@@ -70,7 +70,7 @@ module Transaction = {
   [@react.component]
   let make = (~animal: Animal.t) => {
     let currentUser = RootProvider.useCurrentUser();
-    let (buyFunc, txObjects) = Animal.useBuy(animal);
+    let (buyFunc, txObjects) = AnimalActions.useBuy(animal);
     let userBalance =
       Belt.Option.mapWithDefault(
         RootProvider.useEthBalance(), BN.new_("0"), a =>
@@ -99,17 +99,17 @@ module Transaction = {
     let getMax = [%bs.raw {| (first, second) => Math.max(first,second) |}];
     let currentPriceFloatWithMinimum = getMax(. currentPriceFloat, 0.005);
     let defaultPriceValue =
-      Js.Float.toPrecisionWithPrecision(
+      Js.Float.toFixedWithPrecision(
         currentPriceFloatWithMinimum *. 1.5,
         ~digits=2,
       );
     let defaultMonthlyPatronage =
-      Js.Float.toPrecisionWithPrecision(
+      Js.Float.toFixedWithPrecision(
         currentPriceFloatWithMinimum *. 1.5 *. ratio,
         ~digits=3,
       );
     let priceSliderInitialMax =
-      Js.Float.toPrecisionWithPrecision(
+      Js.Float.toFixedWithPrecision(
         currentPriceFloatWithMinimum *. 3.,
         ~digits=3,
       );

@@ -1,6 +1,6 @@
 type connectorObj = {
   name: string,
-  connector: RootProvider.injectedType,
+  connector: RootProviderTypes.injectedType,
   img: string,
   connectionPhrase: string,
 };
