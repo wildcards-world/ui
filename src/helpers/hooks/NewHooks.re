@@ -101,7 +101,7 @@ let useTotalPatronageWeiNew = () => {
       Some(patronageOwed42),
     ) =>
     Some(
-      BN.new_("2697680747781582948")
+      BN.new_("2454416478375190254")
       ->addGet(. BN.new_(totalCollected0))
       ->addGet(. BN.new_(totalCollected1))
       ->addGet(. BN.new_(totalCollected2))
