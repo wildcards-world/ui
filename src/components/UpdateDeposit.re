@@ -40,7 +40,7 @@ module Transaction = {
           Js.log(depositChange);
           Js.log(txObject);
         },
-        [],
+        AnimalActions.UnInitialised,
       );
     };
     let (depositFunc, txDepositObjects) = {
@@ -51,7 +51,7 @@ module Transaction = {
           Js.log("TODO: implement depositFunction!!");
           Js.log(txObject);
         },
-        [],
+        AnimalActions.UnInitialised,
       );
     };
 
@@ -84,8 +84,8 @@ module Transaction = {
       setIsAddDeposit(_ => isDeposit);
     };
     // <TxTemplate>
-    <TxTemplate txObjects=txDepositObjects>
-      <TxTemplate txObjects=txWithdrawObjects>
+    <TxTemplate txState=txDepositObjects>
+      <TxTemplate txState=txWithdrawObjects>
         <UpdateDepositInput
           depositChange
           updateDepositChange

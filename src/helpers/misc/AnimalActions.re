@@ -5,42 +5,43 @@ let getProviderOrSigner =
       account: option(Web3.ethAddress),
     ) => {
   switch (account) {
-  // | Some(_account) => library
-  | Some(account) =>
-    // Js.log("library");
-    // Js.log(library);
-    // Js.log(account);
-    library.getSigner(. account)
+  | Some(account) => library.getSigner(. account)
   | None => library
   };
 };
 
-// let isAddress = (value) => {
-//   try {
-//     getAddress(value.toLowerCase());
-//   } catch {
-//     return false;
-//   }
-// }
-
-// let getContract = (address, abi, library, account) => {
-//   if (!isAddress(address) || address === AddressZero) {
-//     throw Error(`Invalid 'address' parameter '${address}'.`);
-//   }
-
-//   return new Contract(address, ABI, getProviderOrSigner(library, account));
-// }
 type abi;
-type txResult;
-type tx = {wait: (. unit) => Promise.promise(txResult)};
+type txResult = {
+  blockHash: string,
+  blockNumber: int,
+  byzantium: bool,
+  confirmations: int,
+  // contractAddress: null,
+  // cumulativeGasUsed: Object { _hex: "0x26063", … },
+  // events: Array(4) [ {…}, {…}, {…}, … ],
+  from: Web3.ethAddress,
+  // gasUsed: Object { _hex: "0x26063", … },
+  // logs: Array(4) [ {…}, {…}, {…}, … ],
+  // logsBloom: "0x00200000000000008000000000000000000020000001000000000000400020000000000000002000000000000000000000000002800010000000008000000000000000000000000000000008000000000040000000000000000000000000000000000000020000014000000000000800024000000000000000000010000000000000000000000000000000000000000000008000000000000000000000000200000008000000000000000000000000000000000800000000000000000000000000001002000000000000000000000000000000000000000020000000040020000000000000000080000000000000000000000000000000080000000000200000"
+  status: int,
+  _to: Web3.ethAddress,
+  transactionHash: string,
+  transactionIndex: int,
+};
+type txError = {
+  code: int, // -32000 = always failing tx ;  4001 = Rejected by signer.
+  message: string,
+  stack: option(string),
+};
+type tx = {wait: (. unit) => Promise.Js.t(txResult, txError)};
 type parsedUnits;
 type txOptions = {value: parsedUnits};
 type estimateBuy = {
-  buy: (. string, parsedUnits, txOptions) => Promise.promise(string),
+  buy: (. string, parsedUnits, txOptions) => Promise.Js.t(string, string),
 };
 type stewardContract = {
   estimate: estimateBuy,
-  buy: (. string, parsedUnits, txOptions) => Promise.promise(tx),
+  buy: (. string, parsedUnits, txOptions) => Promise.Js.t(tx, txError),
 };
 
 [@bs.new] [@bs.module "ethers"]
@@ -77,36 +78,30 @@ let useStewardContract = stewardAddress => {
   );
 };
 
+type transactionState =
+  | UnInitialised
+  | Created
+  | SignedAndSubmitted
+  | Declined
+  | Complete(txResult)
+  | Failed;
+
 let useBuy = animal => {
   let animalId = Animal.getId(animal);
-  // let [txResult, ]
+  let (txState, setTxState) = React.useState(() => UnInitialised);
 
   let optSteward =
     useStewardContract("0x0C00CFE8EbB34fE7C31d4915a43Cde211e9F0F3B");
 
   (
-    (newPrice, _txObject) => {
+    (newPrice, value: string) => {
       let newPriceEncoded = parseUnits(. newPrice, 18);
-      let value = parseUnits(. "0.1", 18);
+      let value = parseUnits(. value, 0);
 
-      // switch (optSteward) {
-      // | Some(steward) =>
-      //   let _ =
-      //     steward.estimate.buy(.
-      //       animalId,
-      //       newPriceEncoded,
-      //       {
-      //         // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
-      //         value: value,
-      //       },
-      //     )
-      //     ->Promise.get(estimatedGas => {Js.log(estimatedGas)});
-      //   ();
-      // | None => ()
-      // };
+      setTxState(_ => Created);
       switch (optSteward) {
       | Some(steward) =>
-        let _ =
+        let buyPromise =
           steward.buy(.
             animalId,
             newPriceEncoded,
@@ -115,11 +110,25 @@ let useBuy = animal => {
               value: value,
             },
           )
-          ->Promise.get(tx => {tx.wait(.)->Promise.get(Js.log)});
+          ->Promise.Js.toResult;
+        buyPromise->Promise.getOk(tx => {
+          setTxState(_ => SignedAndSubmitted);
+          let txMinedPromise = tx.wait(.)->Promise.Js.toResult;
+          txMinedPromise->Promise.getOk(txOutcome => {
+            Js.log(txOutcome);
+            setTxState(_ => Complete(txOutcome));
+          });
+          txMinedPromise->Promise.getError(error => {
+            setTxState(_ => Failed);
+            Js.log(error);
+          });
+          ();
+        });
+        buyPromise->Promise.getError(error => {Js.log(error.message)});
         ();
       | None => ()
       };
     },
-    [],
+    txState,
   );
 };

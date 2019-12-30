@@ -70,7 +70,7 @@ module Transaction = {
   [@react.component]
   let make = (~animal: Animal.t) => {
     let currentUser = RootProvider.useCurrentUser();
-    let (buyFunc, txObjects) = AnimalActions.useBuy(animal);
+    let (buyFunc, txState) = AnimalActions.useBuy(animal);
     let userBalance =
       Belt.Option.mapWithDefault(
         RootProvider.useEthBalance(), BN.new_("0"), a =>
@@ -148,13 +148,13 @@ module Transaction = {
 
     let onSubmitBuy = () => {
       // TODO: Abstract this better into a utility library of sorts.
-      let setFunctionObj = [%bs.raw {| (value, from) => ({ value, from }) |}];
+      // let setFunctionObj = [%bs.raw {| (value, from) => ({ value, from }) |}];
       let amountToSend =
         BN.new_(newPrice)
         ->BN.addGet(. currentPriceWei)
         ->BN.addGet(. BN.new_(Web3Utils.toWei(deposit, "ether")))
         ->BN.toStringGet(.);
-      buyFunc(newPrice, setFunctionObj(. amountToSend, currentUser));
+      buyFunc(newPrice, amountToSend);
     };
 
     let setNewPrice = value => {
@@ -233,7 +233,7 @@ module Transaction = {
       };
     };
 
-    <TxTemplate txObjects>
+    <TxTemplate txState>
       {isAbleToBuy
          ? <BuyInput
              onSubmitBuy
@@ -263,16 +263,6 @@ module Transaction = {
 [@react.component]
 let make = (~animal: Animal.t) => {
   let (isModalOpen, setModalOpen) = React.useState(() => false);
-  // let isProviderSelected = RootProvider.useIsProviderSelected();
-
-  // // let onUnlockMetamaskAndOpenModal = () => {
-  // //   setModalOpen(_ => true);
-  // // };
-  // let onOpenModal = event => {
-  //   ReactEvent.Form.preventDefault(event);
-  //   ReactEvent.Form.stopPropagation(event);
-  //   setModalOpen(_ => true);
-  // };
 
   let currentPriceWei = QlHooks.usePrice(animal);
 

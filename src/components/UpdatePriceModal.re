@@ -15,7 +15,7 @@ module Transaction = {
     // let userBalance =
     //   DrizzleReact.Hooks.useUserBalance()->mapWithDefault("", a => a);
 
-    let (updatePriceFunc, txObjects) = {
+    let (updatePriceFunc, txState) = {
       (
         // let priceChangeObj = useChangePriceTransactionNew();
         // (
@@ -28,7 +28,7 @@ module Transaction = {
           Js.log(priceChange);
           Js.log(txObject);
         },
-        [],
+        AnimalActions.UnInitialised,
       );
     };
 
@@ -44,7 +44,7 @@ module Transaction = {
       );
     };
 
-    <TxTemplate txObjects>
+    <TxTemplate txState>
       <Rimble.Box p=4 mb=3>
         <Rimble.HeadingS> "Update Price" </Rimble.HeadingS>
         <Rimble.TextS>
