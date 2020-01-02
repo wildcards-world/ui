@@ -382,11 +382,7 @@ let useRemainingDepositEth: string => option(Eth.t) =
     let currentTimestamp = useCurrentTime();
 
     switch (useRemainingDeposit(patron)) {
-    | Some((
-        amountCollectedOrDue,
-        lastUpdated,
-        patronTokenCostScaledNumerator,
-      )) =>
+    | Some((availableDeposit, lastUpdated, patronTokenCostScaledNumerator)) =>
       let timeElapsed = BN.new_(currentTimestamp)->BN.subGet(. lastUpdated);
 
       let amountRaisedSinceLastCollection =
@@ -396,9 +392,7 @@ let useRemainingDepositEth: string => option(Eth.t) =
             // BN.new_("1000000000000")->BN.mulGet(. BN.new_("31536000")),
             BN.new_("31536000000000000000"),
           );
-      Some(
-        amountCollectedOrDue->BN.subGet(. amountRaisedSinceLastCollection),
-      );
+      Some(availableDeposit->BN.subGet(. amountRaisedSinceLastCollection));
     | None => None
     };
   };
