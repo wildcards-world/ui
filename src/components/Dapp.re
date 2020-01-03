@@ -763,7 +763,7 @@ module AnimalInfo = {
 // The Offline container here shows the website, but without loading the requirements
 let make = () => {
   let url = ReasonReactRouter.useUrl();
-  let isGqlLoaded = QlHooks.useIsInitialized();
+  let isGqlLoaded = QlStateManager.useIsInitialized();
   let nonUrlRouting = RootProvider.useNonUrlState();
   let clearNonUrlState = RootProvider.useClearNonUrlState();
   let (isDetailView, animalStr, isExplorer) = {

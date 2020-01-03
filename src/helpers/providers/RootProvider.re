@@ -59,16 +59,8 @@ let rec reducer = (prevState, action) =>
   | Logout => {ethState: Disconnected, nonUrlState: NoExtraState}
   | _ => prevState
   };
-
-module TestComp = {
-  [@react.component]
-  let make = () => {
-    <div> "hello"->React.string </div>;
-  };
-};
-
 module RootContext = {
-  let context = React.createContext((initialState, a' => ()));
+  let context = React.createContext((initialState, a => ()));
   // Create a provider component
   let make = React.Context.provider(context);
 
@@ -158,10 +150,7 @@ module RootWithWeb3 = {
       (context.library, context.account, context.chainId),
     );
 
-    <RootContext value=(rootState, dispatch)>
-      <TestComp />
-      children
-    </RootContext>;
+    <RootContext value=(rootState, dispatch)> children </RootContext>;
   };
 };
 let useCurrentUser: unit => option(Web3.ethAddress) =

@@ -32,7 +32,7 @@ module ReasonApolloProvderNetworkSwitcher = {
 ReactDOMRe.renderToElementWithId(
   <RootProvider>
     <ReasonApolloProvderNetworkSwitcher>
-      <Router />
+      <QlStateManager> <Router /> </QlStateManager>
     </ReasonApolloProvderNetworkSwitcher>
   </RootProvider>,
   "root",

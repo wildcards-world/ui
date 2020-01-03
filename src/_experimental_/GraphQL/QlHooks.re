@@ -72,7 +72,7 @@ module InitialLoad = [%graphql
   |}
 ];
 
-let useIsInitialized = () => {
+let useInitialDataLoad = () => {
   let (simple, _full) =
     ApolloHooks.useQuery(
       ~notifyOnNetworkStatusChange=true,
@@ -80,10 +80,10 @@ let useIsInitialized = () => {
     );
 
   switch (simple) {
-  | Data(_data) => true
+  | Data(data) => Some(data)
   | Loading
   | NoData
-  | Error(_) => false
+  | Error(_) => None
   };
 };
 
@@ -105,6 +105,37 @@ module SubWildcardQuery = [%graphql
         owner {
           address @bsDecoder(fn: "decodeAddress")
           id
+        }
+      }
+    }
+  |}
+];
+module SubBuyEvents = [%graphql
+  {|
+    subscription {
+      eventCounter(id: 1) {
+        id
+        buyEventCount
+          buyEvents(first: 5, orderBy: timestamp, orderDirection: desc) {
+          id
+          token {
+            id
+            # NOTE: no need to decode these values, this is only for updating the cache.
+            animal: tokenId #@bsDecoder(fn: "tokenIdToAnimal")
+            timeAcquired #@bsDecoder(fn: "decodeMoment")
+            totalCollected #@bsDecoder(fn: "decodePrice")
+            patronageNumeratorPriceScaled #@bsDecoder(fn: "decodeBN")
+            timeCollected #@bsDecoder(fn: "decodeBN")
+            # timeCollected @bsDecoder(fn: "decodeMoment")
+            price {
+              id
+              price #@bsDecoder(fn: "decodePrice")
+            }
+            owner {
+              address #@bsDecoder(fn: "decodeAddress")
+              id
+            }
+          }
         }
       }
     }
@@ -161,6 +192,23 @@ let useWildcardQuery = animal =>
       SubWildcardQuery.make(~tokenId=Animal.getId(animal), ())##variables,
     SubWildcardQuery.definition,
   );
+let useBuySubscription = () =>
+  ApolloHooks.useSubscription(
+    ~variables=SubBuyEvents.make()##variables,
+    SubBuyEvents.definition,
+  );
+let useBuySubscriptionData = () => {
+  let (simple, _) = useBuySubscription();
+  Js.log(simple);
+  switch (simple) {
+  | Data(response) =>
+    Js.log("got data");
+    Some(response);
+  | _ =>
+    Js.log("NOO data");
+    None;
+  };
+};
 let usePrice: Animal.t => option(Eth.t) =
   animal => {
     let (simple, _) = useWildcardQuery(animal);
