@@ -234,6 +234,7 @@ let make = () => {
                  <StaticContent.About />
                  <StaticContent.CoreConcepts />
                  <StaticContent.EmailSignup />
+                 <StaticContent.FAQs />
                  <StaticContent.Partners />
                </React.Fragment>}
     </Providers.UsdPriceProvider>
