@@ -8,6 +8,8 @@ include CoreConcepts;
 
 include EmailSignup;
 
+include FAQs;
+
 include FinalNote;
 
 include Footer;
