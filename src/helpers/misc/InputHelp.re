@@ -7,6 +7,10 @@ let handleEvent = (action, event) => {
   ReactEvent.Form.preventDefault(event);
   action();
 };
+let handleMouseEvent = (action, event) => {
+  ReactEvent.Mouse.preventDefault(event);
+  action();
+};
 
 let onlyUpdateValueIfPositiveFloat = (currentValue, updateFunction, value) => {
   let (newValue, didUpdate: bool) =

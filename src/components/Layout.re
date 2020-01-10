@@ -23,19 +23,32 @@ module AnimalFocusDetails = {
        | None => React.null
        | Some((_, previousAnimal)) =>
          <Rimble.Box p=1 width=[|0.05, 0.05, 0.05|]>
-           <Rimble.Button
-             className=Styles.forwardBackButton
-             onClick={InputHelp.handleEvent(() =>
-               clearAndPush(
-                 "#"
-                 ++ InputHelp.getPagePrefix(isExplorer)
-                 ++ "details/"
-                 ++ previousAnimal->Animal.getName->Js.Global.encodeURI,
-               )
-             )}>
-             <S> {js|◄|js} </S>
-           </Rimble.Button>
-         </Rimble.Box>
+           //  <Rimble.Button
+           //    className=Styles.forwardBackButton
+           //    onClick={InputHelp.handleEvent(() =>
+           //      clearAndPush(
+           //        "#"
+           //        ++ InputHelp.getPagePrefix(isExplorer)
+           //        ++ "details/"
+           //        ++ previousAnimal->Animal.getName->Js.Global.encodeURI,
+           //      )
+           //    )}>
+           //    <S> {js|◄|js} </S>
+           //  </Rimble.Button>
+
+             <span
+               className={Styles.carouselArrow(true, ~absolutePosition=false)}
+               onClick={InputHelp.handleMouseEvent(() =>
+                 clearAndPush(
+                   "#"
+                   ++ InputHelp.getPagePrefix(isExplorer)
+                   ++ "details/"
+                   ++ previousAnimal->Animal.getName->Js.Global.encodeURI,
+                 )
+               )}>
+               {js|◄|js}->React.string
+             </span>
+           </Rimble.Box>
        }}
       <Rimble.Box
         width={
@@ -47,9 +60,9 @@ module AnimalFocusDetails = {
        | None => React.null
        | Some((nextAnimal, _)) =>
          <Rimble.Box p=1 width=[|0.05, 0.05, 0.05|]>
-           <Rimble.Button
-             className=Styles.forwardBackButton
-             onClick={InputHelp.handleEvent(() =>
+           <span
+             className={Styles.carouselArrow(false, ~absolutePosition=false)}
+             onClick={InputHelp.handleMouseEvent(() =>
                clearAndPush(
                  "#"
                  ++ InputHelp.getPagePrefix(isExplorer)
@@ -57,8 +70,8 @@ module AnimalFocusDetails = {
                  ++ nextAnimal->Animal.getName->Js.Global.encodeURI,
                )
              )}>
-             <S> {js|►|js} </S>
-           </Rimble.Button>
+             {js|►|js}->React.string
+           </span>
          </Rimble.Box>
        }}
     </Rimble.Flex>;
@@ -186,7 +199,11 @@ let make = () => {
     | _ => (None, false, false)
     };
 
-  <div className=Styles.app>
+  let ref = React.useRef(Js.Nullable.null);
+  // ref.current.scrollHeight;
+  ReactDOMRe.Ref.domRef(ref);
+
+  <div ref={ReactDOMRe.Ref.domRef(ref)} className=Styles.app>
     <img src=betaBanner className=Styles.betaBanner />
     <Header animalCarousel isExplorer isDetails />
     <Providers.UsdPriceProvider>
