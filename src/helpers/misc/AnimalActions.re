@@ -65,18 +65,42 @@ let getExchangeContract = (stewardAddress, library, account) => {
   );
 };
 
-let useStewardContract = stewardAddress => {
+let useStewardContract = () => {
   let context = RootProvider.useWeb3React();
+
+  let optNetworkId = context.chainId;
 
   React.useMemo3(
     () => {
       switch (context.library) {
       | Some(library) =>
-        Some(getExchangeContract(stewardAddress, library, context.account))
-      | _ => None
+        switch (optNetworkId) {
+        | Some(networkId) =>
+          switch (networkId) {
+          | 1 =>
+            Some(
+              getExchangeContract(
+                "0x6D47CF86F6A490c6410fC082Fd1Ad29CF61492d0",
+                library,
+                context.account,
+              ),
+            )
+          | 5 =>
+            Some(
+              getExchangeContract(
+                "0x0C00CFE8EbB34fE7C31d4915a43Cde211e9F0F3B",
+                library,
+                context.account,
+              ),
+            )
+          | _ => None
+          }
+        | None => None
+        }
+      | None => None
       }
     },
-    (stewardAddress, context.library, context.account),
+    (context.library, context.account, optNetworkId),
   );
 };
 
@@ -92,8 +116,7 @@ let useBuy = animal => {
   let animalId = Animal.getId(animal);
   let (txState, setTxState) = React.useState(() => UnInitialised);
 
-  let optSteward =
-    useStewardContract("0x0C00CFE8EbB34fE7C31d4915a43Cde211e9F0F3B");
+  let optSteward = useStewardContract();
 
   (
     (newPrice, value: string) => {
@@ -138,8 +161,7 @@ let useBuy = animal => {
 let useUpdateDeposit = () => {
   let (txState, setTxState) = React.useState(() => UnInitialised);
 
-  let optSteward =
-    useStewardContract("0x0C00CFE8EbB34fE7C31d4915a43Cde211e9F0F3B");
+  let optSteward = useStewardContract();
 
   (
     (value: string) => {
@@ -179,13 +201,12 @@ let useUpdateDeposit = () => {
 let useWithdrawDeposit = () => {
   let (txState, setTxState) = React.useState(() => UnInitialised);
 
-  let optSteward =
-    useStewardContract("0x0C00CFE8EbB34fE7C31d4915a43Cde211e9F0F3B");
+  let optSteward = useStewardContract();
 
   (
     amountToWithdraw => {
       let value = parseUnits(. "0", 0);
-      Js.log(amountToWithdraw ++ " is the amount I'm trying to withdrw");
+      Js.log(amountToWithdraw ++ " is the amount I'm trying to withdraw");
       let amountToWithdrawEncoded = parseUnits(. amountToWithdraw, 0);
 
       setTxState(_ => Created);

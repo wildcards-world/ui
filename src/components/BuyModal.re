@@ -80,8 +80,10 @@ module Transaction = {
     let (numerator, denominator, ratio, ratioInverse) =
       Animal.pledgeRate(animal);
     let currentPriceWei =
-      QlHooks.usePrice(animal)
-      ->Belt.Option.mapWithDefault(BN.new_("0"), a => a);
+      switch (QlHooks.usePrice(animal)) {
+      | Price(price) => price
+      | _ => BN.new_("0")
+      };
 
     let animalName = Animal.getName(animal);
 
@@ -269,8 +271,9 @@ let make = (~animal: Animal.t) => {
   // TODO:: check if foreclosed!!
   let buttonText =
     switch (currentPriceWei) {
-    | Some(price) => price->BN.gtGet(. BN.new_("0")) ? "Buy" : "Claim"
-    | None => "loading"
+    | Price(_price) => "Buy"
+    | Foreclosed => "Claim"
+    | Loading => "loading"
     };
 
   <React.Fragment>

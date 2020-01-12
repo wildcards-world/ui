@@ -82,39 +82,9 @@ export default [
     connectionPhrase: "Connect to your MetaMask Wallet"
   },
   {
-    name: "injected",
-    connector: injected,
-    connectionPhrase: "Sean connector",
-    img: require("./icons/metamask.svg")
-  },
-  {
-    name: "injected",
-    connector: injected,
-    connectionPhrase: "Connect to your MetaMask Wallet",
-    img: require("./icons/metamask.svg")
-  },
-  {
-    name: "injected",
-    connector: injected,
-    connectionPhrase: "Connect to your MetaMask Wallet",
-    img: require("./icons/metamask.svg")
-  },
-  {
-    name: "injected",
-    connectionPhrase: "Connect to your MetaMask Wallet",
-    connector: injected,
-    img: require("./icons/metamask.svg")
-  },
-  {
-    name: "injected",
-    connectionPhrase: "Connect to your MetaMask Wallet",
-    connector: injected,
-    img: require("./icons/metamask.svg")
-  },
-  {
-    name: "injected",
-    connectionPhrase: "Connect to your MetaMask Wallet",
-    connector: injected,
-    img: require("./icons/metamask.svg")
+    name: "WalletConnect",
+    connector: walletconnect,
+    connectionPhrase: "Connect via a WalletConnect enabled wallet",
+    img: require("./icons/walletConnect.svg")
   }
 ];

@@ -562,7 +562,7 @@ module AnimalInfoStats = {
     let definiteTime = foreclosureTime->mapWithDefault(Loading, a => Date(a));
     let (_, _, ratio, _) = Animal.pledgeRate(animal);
 
-    let optCurrentPrice = PriceDisplay.uesTotalPatronage(animal);
+    let optCurrentPrice = PriceDisplay.uesPrice(animal);
 
     let (optMonthlyPledgeEth, optMonthlyPledgeUsd) =
       switch (optCurrentPrice) {

@@ -210,21 +210,6 @@ let useBuySubscriptionData = () => {
     None;
   };
 };
-let usePrice: Animal.t => option(Eth.t) =
-  animal => {
-    let (simple, _) = useWildcardQuery(animal);
-
-    switch (simple) {
-    | Data(response) =>
-      Some(
-        response##wildcard
-        ->Belt.Option.mapWithDefault(Eth.makeFromInt(0), wildcard =>
-            wildcard##price##price
-          ),
-      )
-    | _ => None
-    };
-  };
 
 let usePatron: Animal.t => option(string) =
   animal => {
@@ -444,5 +429,38 @@ let useRemainingDepositEth: string => option(Eth.t) =
           );
       Some(availableDeposit->BN.subGet(. amountRaisedSinceLastCollection));
     | None => None
+    };
+  };
+
+type animalPrice =
+  | Foreclosed
+  | Price(Eth.t)
+  | Loading;
+let usePrice: Animal.t => animalPrice =
+  animal => {
+    let (simple, _) = useWildcardQuery(animal);
+    let currentPatron =
+      usePatron(animal)
+      ->Belt.Option.mapWithDefault("no-patron-defined", a => a);
+    let availableDeposit = useRemainingDepositEth(currentPatron);
+
+    switch (simple) {
+    | Data(response) =>
+      let priceValue =
+        response##wildcard
+        ->Belt.Option.mapWithDefault(Eth.makeFromInt(0), wildcard =>
+            wildcard##price##price
+          );
+
+      switch (availableDeposit) {
+      | Some(deposit) =>
+        if (deposit->BN.gtGet(. BN.new_("0"))) {
+          Price(priceValue);
+        } else {
+          Foreclosed;
+        }
+      | None => Foreclosed // I'm not sure if this is the correct thing to put here... If the availableDeposit is undefined, it could mean the token belongs to the steward and is foreclosed, or it could mean it
+      };
+    | _ => Loading
     };
   };

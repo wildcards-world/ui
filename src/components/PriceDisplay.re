@@ -1,12 +1,12 @@
 open Components;
 
-let uesTotalPatronage = animal => {
-  let optTotalPatronageWei = QlHooks.usePrice(animal); //->Web3Utils.fromWeiBNToEth;
+let uesPrice = animal => {
+  let optPriceWei = QlHooks.usePrice(animal); //->Web3Utils.fromWeiBNToEth;
   let optCurrentUsdEthPrice = Providers.UsdPriceProvider.useUsdPrice(); //->mapWithDefault(0., a => a);
   // let optCurrentUsdEthPrice = Some(0.5); //->mapWithDefault(0., a => a);
 
-  switch (optTotalPatronageWei) {
-  | Some(totalPatronageWei) =>
+  switch (optPriceWei) {
+  | Price(totalPatronageWei) =>
     let totalPatronageEth =
       totalPatronageWei->BN.toStringGet(.)->Web3Utils.fromWeiToEth;
 
@@ -23,13 +23,14 @@ let uesTotalPatronage = animal => {
       );
 
     Some((totalPatronageEth, optTotaPatronageUsd));
-  | _ => None
+  | Foreclosed => Some(("0", Some("0")))
+  | Loading => None
   };
 };
 
 [@react.component]
 let make = (~animal: Animal.t) => {
-  let optCurrentPrice = uesTotalPatronage(animal);
+  let optCurrentPrice = uesPrice(animal);
 
   switch (optCurrentPrice) {
   | Some((priceEth, optPriceUsd)) =>
