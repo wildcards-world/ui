@@ -25,6 +25,7 @@ let decodePrice: Js.Json.t => Eth.t =
     ->Js.Json.decodeString
     ->Belt.Option.mapWithDefault("0", a => a)
     ->Eth.makeWithDefault(0);
+
 let decodeMoment: Js.Json.t => MomentRe.Moment.t =
   price =>
     price
@@ -245,7 +246,8 @@ let useIsAnimalOwened = ownedAnimal => {
     usePatron(ownedAnimal)
     ->Belt.Option.mapWithDefault("no-patron-defined", a => a);
 
-  currentAccount == currentPatron;
+  currentAccount->Js.String.toLowerCase
+  == currentPatron->Js.String.toLocaleLowerCase;
 };
 
 let useTimeAcquired: Animal.t => graphqlDataLoad(MomentRe.Moment.t) =

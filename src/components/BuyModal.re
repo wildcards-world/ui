@@ -262,8 +262,6 @@ module Transaction = {
 
 [@react.component]
 let make = (~animal: Animal.t) => {
-  let (isModalOpen, setModalOpen) = React.useState(() => false);
-
   let currentPriceWei = QlHooks.usePrice(animal);
 
   let goToBuy = RootProvider.useGoToBuy();
@@ -279,20 +277,5 @@ let make = (~animal: Animal.t) => {
     <Rimble.Button onClick={_e => {goToBuy(animal)}}>
       {React.string(buttonText)}
     </Rimble.Button>
-    <Rimble.Modal isOpen=isModalOpen>
-      <Rimble.Card width={Rimble.AnyStr("70%")} p=0>
-        <Rimble.Button.Text
-          icononly=true
-          icon="Close"
-          color="moon-gray"
-          position="absolute"
-          top=0
-          right=0
-          m=3
-          onClick={_ => setModalOpen(_ => false)}
-        />
-        <Transaction animal />
-      </Rimble.Card>
-    </Rimble.Modal>
   </React.Fragment>;
 };

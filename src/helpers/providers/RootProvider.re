@@ -51,10 +51,28 @@ let rec reducer = (prevState, action) =>
   | GoToBuy(animal) =>
     switch (prevState.ethState) {
     | Connected(_, _) => {...prevState, nonUrlState: BuyScreen(animal)}
-    | Disconnected => {
+    | Disconnected => {...prevState, nonUrlState: LoginScreen(action)}
+    }
+  | GoToDepositUpdate(animal) =>
+    switch (prevState.ethState) {
+    | Connected(_, _) => {
         ...prevState,
-        nonUrlState: LoginScreen(GoToBuy(animal)),
+        nonUrlState: UpdateDepositScreen(animal),
       }
+    | Disconnected => {...prevState, nonUrlState: LoginScreen(action)}
+    }
+  | GoToPriceUpdate(animal) =>
+    switch (prevState.ethState) {
+    | Connected(_, _) => {
+        ...prevState,
+        nonUrlState: UpdatePriceScreen(animal),
+      }
+    | Disconnected => {...prevState, nonUrlState: LoginScreen(action)}
+    }
+  | GoToUserVerification =>
+    switch (prevState.ethState) {
+    | Connected(_, _) => {...prevState, nonUrlState: UserVerificationScreen}
+    | Disconnected => {...prevState, nonUrlState: LoginScreen(action)}
     }
   | Logout => {ethState: Disconnected, nonUrlState: NoExtraState}
   | _ => prevState
@@ -188,11 +206,40 @@ let useNetworkId: unit => option(int) =
 
     context.chainId;
   };
+let useWeb3: unit => option(RootProviderTypes.web3Library) =
+  () => {
+    let context = useWeb3React();
+
+    context.library;
+  };
+
+// TODO:: refactor `useGoToBuy`, `useGoToDepositUpdate`, `useGoToDepositUpdate` to come from a single function (basically do the same thing)
 let useGoToBuy: (unit, Animal.t) => unit =
   () => {
     let (_, dispatch) = React.useContext(RootContext.context);
     animal => {
       dispatch(GoToBuy(animal));
+    };
+  };
+let useGoToDepositUpdate: (unit, Animal.t) => unit =
+  () => {
+    let (_, dispatch) = React.useContext(RootContext.context);
+    animal => {
+      dispatch(GoToDepositUpdate(animal));
+    };
+  };
+let useGoToPriceUpdate: (unit, Animal.t) => unit =
+  () => {
+    let (_, dispatch) = React.useContext(RootContext.context);
+    animal => {
+      dispatch(GoToPriceUpdate(animal));
+    };
+  };
+let useVerifyUser: (unit, unit) => unit =
+  () => {
+    let (_, dispatch) = React.useContext(RootContext.context);
+    () => {
+      dispatch(GoToUserVerification);
     };
   };
 let useClearNonUrlState: (unit, unit) => unit =

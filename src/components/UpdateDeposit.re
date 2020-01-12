@@ -23,37 +23,9 @@ module Transaction = {
     Js.log(animal);
     let (depositChange, setDepositChange) = React.useState(() => "");
     let (isAddDeposit, setIsAddDeposit) = React.useState(() => true);
-    let currentUser =
-      RootProvider.useCurrentUser()->mapWithDefault("", a => a);
-    // let tokenId = Animal.getId(animal);
-    // let userBalance =
-    //   DrizzleReact.Hooks.useUserBalance()->mapWithDefault("", a => a);
 
-    let (withdrawFunc, txWithdrawObjects) = {
-      (
-        // let withdrawObj = useWithdrawTransactionNew();
-        // (depositChange, txObject) =>
-        //   withdrawObj##send(. depositChange, txObject),
-        // withdrawObj##_TXObjects,
-        (depositChange, txObject) => {
-          Js.log("TODO: implement withdraw deposit change!!");
-          Js.log(depositChange);
-          Js.log(txObject);
-        },
-        AnimalActions.UnInitialised,
-      );
-    };
-    let (depositFunc, txDepositObjects) = {
-      (
-        // let depositObj = useAddDepositTransactionNew();
-        // (txObject => depositObj##send(. txObject), depositObj##_TXObjects);
-        txObject => {
-          Js.log("TODO: implement depositFunction!!");
-          Js.log(txObject);
-        },
-        AnimalActions.UnInitialised,
-      );
-    };
+    let (depositFunc, txWithdrawObject) = AnimalActions.useUpdateDeposit();
+    let (withdrawFunc, txDepositObject) = AnimalActions.useWithdrawDeposit();
 
     // let _availableDeposit =
     //   useDepositAbleToWithdrawWeiNew(currentUser)
@@ -62,12 +34,11 @@ module Transaction = {
     let onSubmitDepositChange = event => {
       ReactEvent.Form.preventDefault(event);
       let depositChangeWei = Web3Utils.toWei(depositChange, "ether");
-      let setFunctionObj = [%bs.raw {| (value, from) => ({ value, from }) |}];
 
       if (isAddDeposit) {
-        depositFunc(setFunctionObj(. depositChangeWei, currentUser));
+        depositFunc(depositChangeWei);
       } else {
-        withdrawFunc(depositChangeWei, setFunctionObj(. "0", currentUser));
+        withdrawFunc(depositChangeWei);
       };
       ("implement", true);
     };
@@ -84,8 +55,8 @@ module Transaction = {
       setIsAddDeposit(_ => isDeposit);
     };
     // <TxTemplate>
-    <TxTemplate txState=txDepositObjects>
-      <TxTemplate txState=txWithdrawObjects>
+    <TxTemplate txState=txDepositObject>
+      <TxTemplate txState=txWithdrawObject>
         <UpdateDepositInput
           depositChange
           updateDepositChange
@@ -107,34 +78,12 @@ module ModalContainer = {
 
 [@react.component]
 let make = (~animal: Animal.t) => {
-  let (isModalOpen, setModalOpen) = React.useState(() => false);
-
-  let onUnlockMetamaskAndOpenModal = event => {
-    ReactEvent.Form.preventDefault(event);
-    ReactEvent.Form.stopPropagation(event);
-    setModalOpen(_ => true);
-  };
+  // TODO: if the token is foreclosed handle that logic... (say something like -- "add deposit quick! to keep your token")
+  let goToDepositUpdate = RootProvider.useGoToDepositUpdate();
 
   <React.Fragment>
-    <Rimble.Box p=1>
-      <Rimble.Button onClick=onUnlockMetamaskAndOpenModal>
-        {React.string("Deposit")}
-      </Rimble.Button>
-    </Rimble.Box>
-    <Rimble.Modal isOpen=isModalOpen>
-      <Rimble.Card width={Rimble.AnyStr("420px")} p=0>
-        <Rimble.Button.Text
-          icononly=true
-          icon="Close"
-          color="moon-gray"
-          position="absolute"
-          top=0
-          right=0
-          m=3
-          onClick={_ => setModalOpen(_ => false)}
-        />
-        <ModalContainer animal />
-      </Rimble.Card>
-    </Rimble.Modal>
+    <Rimble.Button onClick={_e => {goToDepositUpdate(animal)}}>
+      "Deposit"->React.string
+    </Rimble.Button>
   </React.Fragment>;
 };

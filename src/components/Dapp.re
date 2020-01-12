@@ -358,12 +358,12 @@ module AnimalActionsOnDetailsPage = {
     if (owned) {
       <React.Fragment>
         <PriceDisplay animal />
-        <UpdatePriceModal animal />
+        <UpdatePrice animal />
         <br />
         <UpdateDeposit animal />
         <br />
         {UserProvider.useIsUserValidated(currentAccount)
-           ? <ShareSocial /> : <ValidateModal />}
+           ? <ShareSocial /> : <Validate />}
       </React.Fragment>;
     } else {
       <React.Fragment>
@@ -802,6 +802,48 @@ let make = () => {
                onClick={_ => clearNonUrlState()}
              />
              <BuyModal.Transaction animal />
+           </div>
+         | UserVerificationScreen =>
+           <div className=Css.(style([position(`relative)]))>
+             <Rimble.Button.Text
+               icononly=true
+               icon="Close"
+               color="moon-gray"
+               position="absolute"
+               top=0
+               right=0
+               m=1
+               onClick={_ => clearNonUrlState()}
+             />
+             <Validate.Input />
+           </div>
+         | UpdateDepositScreen(animal) =>
+           <div className=Css.(style([position(`relative)]))>
+             <Rimble.Button.Text
+               icononly=true
+               icon="Close"
+               color="moon-gray"
+               position="absolute"
+               top=0
+               right=0
+               m=1
+               onClick={_ => clearNonUrlState()}
+             />
+             <UpdateDeposit.Transaction animal />
+           </div>
+         | UpdatePriceScreen(animal) =>
+           <div className=Css.(style([position(`relative)]))>
+             <Rimble.Button.Text
+               icononly=true
+               icon="Close"
+               color="moon-gray"
+               position="absolute"
+               top=0
+               right=0
+               m=1
+               onClick={_ => clearNonUrlState()}
+             />
+             <UpdatePrice.Transaction animal />
            </div>
          | _ =>
            isDetailView

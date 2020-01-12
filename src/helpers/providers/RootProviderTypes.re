@@ -17,13 +17,17 @@ type web3reactContext = {
 
 type rootActions =
   | GoToBuy(Animal.t)
+  | GoToDepositUpdate(Animal.t)
+  | GoToPriceUpdate(Animal.t)
+  | GoToUserVerification
   | ClearNonUrlState
   | Logout
   | LoadAddress(Web3.ethAddress, option(Eth.t));
 type nonUrlState =
   | LoginScreen(rootActions)
-  | UpdareDepositScreen(Animal.t)
-  | UpdarePriceScreen(Animal.t)
+  | UserVerificationScreen
+  | UpdateDepositScreen(Animal.t)
+  | UpdatePriceScreen(Animal.t)
   | BuyScreen(Animal.t)
   | NoExtraState;
 type ethState =

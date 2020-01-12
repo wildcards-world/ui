@@ -11,11 +11,11 @@ module Transaction = {
     let currentUser = RootProvider.useCurrentUser();
     // let changePriceObj = useChangePriceTransaction();
     // let changePriceObjNew = useChangePriceTransactionNew();
-    let tokenId = Animal.getId(animal);
     // let userBalance =
     //   DrizzleReact.Hooks.useUserBalance()->mapWithDefault("", a => a);
 
     let (updatePriceFunc, txState) = {
+      let tokenId = Animal.getId(animal);
       (
         // let priceChangeObj = useChangePriceTransactionNew();
         // (
@@ -84,34 +84,14 @@ module ModalContainer = {
 
 [@react.component]
 let make = (~animal: Animal.t) => {
-  let (isModalOpen, setModalOpen) = React.useState(() => false);
-
-  let onUnlockMetamaskAndOpenModal = event => {
-    ReactEvent.Form.preventDefault(event);
-    ReactEvent.Form.stopPropagation(event);
-    setModalOpen(_ => true);
-  };
+  // TODO: if the token is foreclosed handle that logic... (say something like -- "add deposit quick! to keep your token")
+  let goToDepositUpdate = RootProvider.useGoToDepositUpdate();
 
   <React.Fragment>
     <Rimble.Box p=1>
-      <Rimble.Button onClick=onUnlockMetamaskAndOpenModal>
-        {React.string("Price")}
+      <Rimble.Button onClick={_e => {goToDepositUpdate(animal)}}>
+        "Price"->React.string
       </Rimble.Button>
     </Rimble.Box>
-    <Rimble.Modal isOpen=isModalOpen>
-      <Rimble.Card width={Rimble.AnyStr("420px")} p=0>
-        <Rimble.Button.Text
-          icononly=true
-          icon="Close"
-          color="moon-gray"
-          position="absolute"
-          top=0
-          right=0
-          m=3
-          onClick={_ => setModalOpen(_ => false)}
-        />
-        <ModalContainer animal />
-      </Rimble.Card>
-    </Rimble.Modal>
   </React.Fragment>;
 };
