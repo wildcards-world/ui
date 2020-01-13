@@ -263,10 +263,11 @@ module Transaction = {
 };
 
 [@react.component]
-let make = (~animal: Animal.t) => {
+let make = (~animal: Animal.t, ~isExplorer: bool = false) => {
   let currentPriceWei = QlHooks.usePrice(animal);
 
   let goToBuy = RootProvider.useGoToBuy();
+  let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
   // TODO:: check if foreclosed!!
   let buttonText =
@@ -277,7 +278,16 @@ let make = (~animal: Animal.t) => {
     };
 
   <React.Fragment>
-    <Rimble.Button onClick={_e => {goToBuy(animal)}}>
+    <Rimble.Button
+      onClick={_e => {
+        clearAndPush(
+          "#"
+          ++ InputHelp.getPagePrefix(isExplorer)
+          ++ "details/"
+          ++ animal->Animal.getName->Js.Global.encodeURI,
+        );
+        goToBuy(animal);
+      }}>
       {React.string(buttonText)}
     </Rimble.Button>
   </React.Fragment>;

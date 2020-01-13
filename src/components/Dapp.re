@@ -112,7 +112,8 @@ module BasicAnimalDisplay = {
       <PriceDisplay animal />
       userIdComponent
       <br />
-      {owned ? <EditButton animal isExplorer /> : <BuyModal animal />}
+      {owned
+         ? <EditButton animal isExplorer /> : <BuyModal animal isExplorer />}
     </React.Fragment>;
   };
 };
