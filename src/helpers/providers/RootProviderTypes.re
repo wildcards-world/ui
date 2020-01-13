@@ -5,6 +5,7 @@ type web3Library = {
     (. Web3.ethAddress) => Promise.promise(option(ethersBigNumber)),
   getSigner: (. Web3.ethAddress) => web3Library,
   // pollingInterval: ref(int),
+  provider: rawProvider,
 };
 type injectedType = {isAuthorized: unit => Promise.promise(bool)};
 type web3reactContext = {
