@@ -342,8 +342,8 @@ module AnimalActionsOnDetailsPage = {
   [@react.component]
   let make = (~animal) => {
     let owned = animal->QlHooks.useIsAnimalOwened;
-    let currentAccount =
-      RootProvider.useCurrentUser()->mapWithDefault("loading", a => a);
+    // let currentAccount =
+    //   RootProvider.useCurrentUser()->mapWithDefault("loading", a => a);
     let currentPatron =
       QlHooks.usePatron(animal)->mapWithDefault("Loading", a => a);
     let userId = UserProvider.useUserNameOrTwitterHandle(currentPatron);
@@ -363,8 +363,9 @@ module AnimalActionsOnDetailsPage = {
         <br />
         <UpdateDeposit animal />
         <br />
-        {UserProvider.useIsUserValidated(currentAccount)
-           ? <ShareSocial /> : <Validate />}
+        // {UserProvider.useIsUserValidated(currentAccount)
+        //    ? <ShareSocial /> : <Validate />}
+        <Validate />
       </React.Fragment>;
     } else {
       <React.Fragment>

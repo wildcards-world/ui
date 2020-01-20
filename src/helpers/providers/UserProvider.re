@@ -1,10 +1,32 @@
-[@bs.deriving {abstract: light}]
-type userVerification = {twitter: option(string)};
+type threeBoxImage;
+type threeBoxTwitterVerification = {
+  username: string,
+  proof: string,
+  verifiedBy: string,
+};
+type threeBoxProfile = {
+  coverPhoto: option(threeBoxImage),
+  description: option(string),
+  image: option(threeBoxImage),
+  name: option(string),
+};
+type threeBoxVerifications = {
+  did: string,
+  twitter: option(threeBoxTwitterVerification),
+};
+type threeBoxUserInfo = {
+  profile: option(threeBoxProfile),
+  wildcardsSpace: option(string),
+  verifications: option(threeBoxVerifications),
+};
+type userVerification = {
+  twitter: option(string),
+  threeBox: threeBoxUserInfo,
+};
 
-[@bs.deriving {abstract: light}]
 type userInfo = {
   verifications: Js.Dict.t(userVerification),
-  update: string => unit,
+  update: (string, bool) => unit,
 };
 
 [@bs.module "./UserProvider"]
@@ -19,19 +41,32 @@ let useUserNameOrTwitterHandle: string => userId =
     let userContext = useUserInfoContext();
     let ethAddressLower = Js.String.toLowerCase(ethAddress);
 
-    switch (Js.Dict.get(userContext->verifications, ethAddressLower)) {
+    switch (Js.Dict.get(userContext.verifications, ethAddressLower)) {
     | None =>
       if (ethAddressLower !== "loading") {
-        userContext->update(ethAddressLower);
+        userContext.update(ethAddressLower, false);
       } else {
         ();
       };
       EthAddress(ethAddress);
     | Some(verification) =>
-      switch (verification->twitter) {
+      switch (verification.twitter) {
       | None => EthAddress(ethAddress)
-      | Some(twitterId) => TwitterHandle(twitterId)
+      | Some(twitterId) =>
+        Js.log(ethAddress ++ " has 3box");
+        TwitterHandle(twitterId);
       }
+    };
+  };
+
+let use3BoxUserData: string => option(threeBoxUserInfo) =
+  ethAddress => {
+    let userContext = useUserInfoContext();
+    let ethAddressLower = Js.String.toLowerCase(ethAddress);
+
+    switch (Js.Dict.get(userContext.verifications, ethAddressLower)) {
+    | None => None
+    | Some(verifications) => Some(verifications.threeBox)
     };
   };
 

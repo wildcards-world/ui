@@ -1,4 +1,3 @@
-open Hooks;
 open Belt.Option;
 
 let getToDisplay = (label, value) =>

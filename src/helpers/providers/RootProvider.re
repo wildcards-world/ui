@@ -287,8 +287,10 @@ let useActivateConnector: unit => (connection, injectedType => unit) =
 [@react.component]
 let make = (~children) => {
   <Web3ReactProvider getLibrary>
-    <DrizzleUserAndTranslationProvider>
-      <RootWithWeb3> children </RootWithWeb3>
-    </DrizzleUserAndTranslationProvider>
+    <RootWithWeb3>
+      <DrizzleUserAndTranslationProvider>
+        children
+      </DrizzleUserAndTranslationProvider>
+    </RootWithWeb3>
   </Web3ReactProvider>;
 };
