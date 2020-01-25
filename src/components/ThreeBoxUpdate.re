@@ -475,73 +475,85 @@ module TwitterVerification = {
   };
 };
 
-module Main = {
-  // [@react.component]
-  // let makeWith3Box = () => {
-  //   let currentUser =
-  //     RootProvider.useCurrentUser()->Belt.Option.mapWithDefault("", a => a);
-
-  //   let userInfoContext = UserProvider.useUserInfoContext();
-  //   let reloadUser = forceReload =>
-  //     userInfoContext.update(currentUser, forceReload); // double check that data is loaded.
-  //   reloadUser(false);
-
-  //   let optThreeBoxData = UserProvider.use3BoxUserData(currentUser);
-
-  //   let (threeBoxState, setThreeBoxState) =
-  //     React.useState(() => DefaultView(NoState));
-
-  //   switch (optThreeBoxData) {
-  //   | Some(threeBoxData) =>
-  //     <React.Fragment>
-  //       {switch (threeBoxData.profile) {
-  //        | Some(profile) =>
-  //          <div>
-  //            <ProfileDetails
-  //              profileName={
-  //                profile.name->Belt.Option.mapWithDefault("", a => a)
-  //              }
-  //              profileDescription={
-  //                profile.description->Belt.Option.mapWithDefault("", a => a)
-  //              }
-  //              reloadUser
-  //              threeBoxState
-  //              setThreeBoxState
-  //            />
-  //          </div>
-  //        | None => <Rimble.Loader />
-  //        }}
-  //       {switch (threeBoxData.verifications) {
-  //        | Some(verification) =>
-  //          <TwitterVerification
-  //            twitterVerification={verification.twitter}
-  //            threeBoxState
-  //            setThreeBoxState
-  //            reloadUser
-  //          />
-  //        | None => <Rimble.Loader />
-  //        }}
-  //     </React.Fragment>
-  //   | None => <Rimble.Loader />
-  //   };
-  // };
+module ThreeBoxUpdate = {
   [@react.component]
   let make = () => {
     let currentUser =
       RootProvider.useCurrentUser()->Belt.Option.mapWithDefault("", a => a);
 
+    let userInfoContext = UserProvider.useUserInfoContext();
+    let reloadUser = forceReload =>
+      userInfoContext.update(currentUser, forceReload); // double check that data is loaded.
+    reloadUser(false);
+
+    let optThreeBoxData = UserProvider.use3BoxUserData(currentUser);
+
+    let (threeBoxState, setThreeBoxState) =
+      React.useState(() => DefaultView(NoState));
+
+    switch (optThreeBoxData) {
+    | Some(threeBoxData) =>
+      <React.Fragment>
+        {switch (threeBoxData.profile) {
+         | Some(profile) =>
+           <div>
+             <ProfileDetails
+               profileName={
+                 profile.name->Belt.Option.mapWithDefault("", a => a)
+               }
+               profileDescription={
+                 profile.description->Belt.Option.mapWithDefault("", a => a)
+               }
+               reloadUser
+               threeBoxState
+               setThreeBoxState
+             />
+           </div>
+         | None => <Rimble.Loader />
+         }}
+        {switch (threeBoxData.verifications) {
+         | Some(verification) =>
+           <TwitterVerification
+             twitterVerification={verification.twitter}
+             threeBoxState
+             setThreeBoxState
+             reloadUser
+           />
+         | None => <Rimble.Loader />
+         }}
+      </React.Fragment>
+    | None => <Rimble.Loader />
+    };
+  };
+};
+module Main = {
+  [@react.component]
+  let make = () => {
+    let currentUser =
+      RootProvider.useCurrentUser()->Belt.Option.mapWithDefault("", a => a);
+    let (isIntegrated3Box, setIsIntegarted3Box) = React.useState(_ => false);
     <div>
       <Rimble.Heading> "Verify your identity"->React.string </Rimble.Heading>
       <br />
-      <Rimble.Text>
-        "Please use"->React.string
-        <strong>
-          <a target="_blank" href={"https://3box.io/" ++ currentUser}>
-            " 3Box.io "->React.string
-          </a>
-        </strong>
-        "to validate your identity on twitter."->React.string
-      </Rimble.Text>
+      {if (isIntegrated3Box) {
+         <ThreeBoxUpdate />;
+       } else {
+         <React.Fragment>
+           <Rimble.Text>
+             "Please use"->React.string
+             <strong>
+               <a target="_blank" href={"https://3box.io/" ++ currentUser}>
+                 " 3Box.io "->React.string
+               </a>
+             </strong>
+             "to validate your identity on twitter."->React.string
+           </Rimble.Text>
+           <br />
+           <Rimble.Button onClick={_e => {setIsIntegarted3Box(_ => true)}}>
+             {React.string("Try Experimental 3box integration")}
+           </Rimble.Button>
+         </React.Fragment>;
+       }}
     </div>;
   };
 };
