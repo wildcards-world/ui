@@ -42,15 +42,22 @@ let rec reducer = (prevState, action) =>
   switch (action) {
   | ClearNonUrlState => {...prevState, nonUrlState: NoExtraState}
   | LoadAddress(address, optBalance) =>
-    Js.log("loading the new address");
     let newState = {...prevState, ethState: Connected(address, optBalance)};
     switch (prevState.nonUrlState) {
     | LoginScreen(followOnAction) => reducer(newState, followOnAction)
     | _ => newState
     };
+  | GoToWeb3Connect =>
+    Js.log("going to web3 connect");
+    switch (prevState.ethState) {
+    | Connected(_, _) => prevState
+    | Disconnected =>
+      Js.log("IN the login screen");
+      {...prevState, nonUrlState: LoginScreen(GoToWeb3Connect)};
+    };
   | GoToBuy(animal) =>
     switch (prevState.ethState) {
-    | Connected(_, _) => {...prevState, nonUrlState: BuyScreen(animal)}
+    | Connected(_, _) => prevState
     | Disconnected => {...prevState, nonUrlState: LoginScreen(action)}
     }
   | GoToDepositUpdate(animal) =>
@@ -96,7 +103,7 @@ module RootWithWeb3 = {
     let context = useWeb3React();
 
     let (tried, setTried) = React.useState(() => false);
-    React.useEffect1(
+    React.useEffect2(
       () => {
         injected.isAuthorized()
         ->Promise.get(authorised =>
@@ -114,10 +121,14 @@ module RootWithWeb3 = {
               setTried(_ => true);
             }
           );
+        switch (context.chainId) {
+        | None => dispatch(Logout)
+        | _ => ()
+        };
         None;
       },
       // intentionally only running on mount (make sure it's only mounted once :))
-      [|context.activate|],
+      (context.activate, context.chainId),
     );
 
     //// This will never fire when metamask logs out unfortunately https://stackoverflow.com/a/59215775/3103033
@@ -247,6 +258,14 @@ let useClearNonUrlState: (unit, unit) => unit =
     let (_, dispatch) = React.useContext(RootContext.context);
     () => {
       dispatch(ClearNonUrlState);
+    };
+  };
+let useConnectWeb3: (unit, unit) => unit =
+  () => {
+    let (_, dispatch) = React.useContext(RootContext.context);
+    () => {
+      Js.log("connecting web3");
+      dispatch(GoToWeb3Connect);
     };
   };
 

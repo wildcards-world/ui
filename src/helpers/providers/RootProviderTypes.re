@@ -22,6 +22,7 @@ type rootActions =
   | GoToPriceUpdate(Animal.t)
   | GoToUserVerification
   | ClearNonUrlState
+  | GoToWeb3Connect
   | Logout
   | LoadAddress(Web3.ethAddress, option(Eth.t));
 type nonUrlState =

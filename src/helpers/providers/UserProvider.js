@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useReducer } from "react";
 // import { useAppStatus } from "./RootProvider";
 import { useCurrentUser } from "./RootProvider.bs";
-import Box from "3box";
 export const UserInfoContext = createContext("");
 
 const {
@@ -73,7 +72,6 @@ function reducer(state, action) {
     }
   };
   const testResult = test();
-  console.log(testResult);
   return testResult;
 }
 
@@ -100,7 +98,7 @@ export const UserInfoProvider = ({ children }) => {
         data: profile
       });
       if (!!profile.name) {
-        Box.getVerifiedAccounts(profile).then(verifiedAccounts => {
+        getVerifiedAccounts(profile).then(verifiedAccounts => {
           console.log("verified accounts!!]", verifiedAccounts);
           dispatchUserProvider({
             type: ADD_3BOX_VERIFICATIONS,

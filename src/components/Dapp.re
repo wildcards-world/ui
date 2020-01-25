@@ -502,7 +502,7 @@ module DefaultLeftPanel = {
       <h1 className=Styles.heading>
         <span className=Styles.colorBlue> <S> "Always for sale" </S> </span>
         <br />
-        <S> {translation(. "ethereum") ++ " based"} </S>
+        <S> {translation(. "ethereum")} </S>
         <br />
         <span className=Styles.colorGreen> <S> "conservation" </S> </span>
         <S> {" " ++ translation(. "tokens")} </S>
@@ -817,7 +817,9 @@ let make = () => {
                m=1
                onClick={_ => clearNonUrlState()}
              />
-             <Validate.Input />
+             <React.Suspense fallback={<Rimble.Loader />}>
+               <LazyThreeBoxUpdate.Lazy />
+             </React.Suspense>
            </div>
          | UpdateDepositScreen(animal) =>
            <div className=Css.(style([position(`relative)]))>

@@ -199,12 +199,16 @@ let make = () => {
     | _ => (None, false, false)
     };
 
-  let ref = React.useRef(Js.Nullable.null);
+  // TODO: add code that scrolls to the correct height on mobile (to buy etc).
+  // let ref = React.useRef(Js.Nullable.null);
   // ref.current.scrollHeight;
-  ReactDOMRe.Ref.domRef(ref);
+  // ReactDOMRe.Ref.domRef(ref);
+  /*ref={ReactDOMRe.Ref.domRef(ref)}*/
 
-  <div ref={ReactDOMRe.Ref.domRef(ref)} className=Styles.app>
+  let connectWeb3 = RootProvider.useConnectWeb3();
+  <div className=Styles.app>
     <img src=betaBanner className=Styles.betaBanner />
+    <Web3Connect/>
     <Header animalCarousel isExplorer isDetails />
     <Providers.UsdPriceProvider>
       {isDetails

@@ -1,7 +1,7 @@
 export default {
   locale: "en",
   crypto: {
-    ethereum: "ethereum",
+    ethereum: "ethereum based",
     tokens: "tokens",
     subHeading:
       "Let your digital assets make a valuable contribution to the world.",
@@ -11,7 +11,7 @@ export default {
     harbergerTax: "Harberger Tax"
   },
   muggle: {
-    ethereum: "blockchain",
+    ethereum: "digital",
     tokens: "animals",
     subHeading:
       "Become the guardian of a wildcard and contribute to endangered animals",

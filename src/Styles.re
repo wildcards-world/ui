@@ -400,6 +400,13 @@ let betaBanner =
     top(`px(0)),
     width(`px(80)),
   ]);
+let loginButton =
+  style([
+    position(`absolute),
+    right(`px(0)),
+    top(`px(0)),
+    padding(`px(70)),
+  ]);
 
 let forwardBackButton = style([width(`percent(100.)), height(`em(5.))]);
 
