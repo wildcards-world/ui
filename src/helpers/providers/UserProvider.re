@@ -19,10 +19,7 @@ type threeBoxUserInfo = {
   wildcardsSpace: option(string),
   verifications: option(threeBoxVerifications),
 };
-type userVerification = {
-  twitter: option(string),
-  threeBox: threeBoxUserInfo,
-};
+type userVerification = {threeBox: threeBoxUserInfo};
 
 type userInfo = {
   verifications: Js.Dict.t(userVerification),
@@ -50,11 +47,13 @@ let useUserNameOrTwitterHandle: string => userId =
       };
       EthAddress(ethAddress);
     | Some(verification) =>
-      switch (verification.twitter) {
+      switch (
+        verification.threeBox.verifications
+        ->Belt.Option.flatMap(verification => {verification.twitter})
+        ->Belt.Option.flatMap(twitter => {Some(twitter.username)})
+      ) {
       | None => EthAddress(ethAddress)
-      | Some(twitterId) =>
-        Js.log(ethAddress ++ " has 3box");
-        TwitterHandle(twitterId);
+      | Some(twitterUserName) => TwitterHandle(twitterUserName)
       }
     };
   };

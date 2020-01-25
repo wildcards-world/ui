@@ -58,7 +58,6 @@ module ProfileItem = {
                let value =
                  ReactEvent.Form.target(event)##value
                  ->Belt.Option.getWithDefault("");
-               Js.log(value ++ "is the current value");
                onEdit(_ => value);
              }}
            />

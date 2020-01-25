@@ -200,14 +200,9 @@ let useBuySubscription = () =>
   );
 let useBuySubscriptionData = () => {
   let (simple, _) = useBuySubscription();
-  Js.log(simple);
   switch (simple) {
-  | Data(response) =>
-    Js.log("got data");
-    Some(response);
-  | _ =>
-    Js.log("NOO data");
-    None;
+  | Data(response) => Some(response)
+  | _ => None
   };
 };
 

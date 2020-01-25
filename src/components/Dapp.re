@@ -258,8 +258,6 @@ module AnimalCarousel = {
     let (carouselIndex, setCarouselIndex) = React.useState(() => 17);
     let numItems = Animal.orderedArray->Array.length;
 
-    Js.log("render AnimalCarousel root again");
-
     <Rimble.Box className=Styles.positionRelative>
       <Carousel
         className=Styles.carousel
@@ -361,7 +359,7 @@ module AnimalActionsOnDetailsPage = {
         <PriceDisplay animal />
         <UpdatePrice animal />
         <br />
-        <UpdateDeposit animal />
+        <UpdateDeposit />
         <br />
         // {UserProvider.useIsUserValidated(currentAccount)
         //    ? <ShareSocial /> : <Validate />}
@@ -821,7 +819,7 @@ let make = () => {
                <LazyThreeBoxUpdate.Lazy />
              </React.Suspense>
            </div>
-         | UpdateDepositScreen(animal) =>
+         | UpdateDepositScreen =>
            <div className=Css.(style([position(`relative)]))>
              <Rimble.Button.Text
                icononly=true
@@ -833,7 +831,7 @@ let make = () => {
                m=1
                onClick={_ => clearNonUrlState()}
              />
-             <UpdateDeposit.Transaction animal />
+             <UpdateDeposit.Transaction />
            </div>
          | UpdatePriceScreen(animal) =>
            <div className=Css.(style([position(`relative)]))>

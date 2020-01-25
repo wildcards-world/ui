@@ -18,7 +18,7 @@ type web3reactContext = {
 
 type rootActions =
   | GoToBuy(Animal.t)
-  | GoToDepositUpdate(Animal.t)
+  | GoToDepositUpdate
   | GoToPriceUpdate(Animal.t)
   | GoToUserVerification
   | ClearNonUrlState
@@ -28,7 +28,7 @@ type rootActions =
 type nonUrlState =
   | LoginScreen(rootActions)
   | UserVerificationScreen
-  | UpdateDepositScreen(Animal.t)
+  | UpdateDepositScreen
   | UpdatePriceScreen(Animal.t)
   | BuyScreen(Animal.t)
   | NoExtraState;

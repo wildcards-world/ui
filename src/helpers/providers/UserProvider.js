@@ -8,14 +8,12 @@ const {
   getProfile,
   // getProfiles,
   // getConfig,
-  getVerifiedAccounts,
-  getSpace
+  getVerifiedAccounts
+  // getSpace
 } = require("3box/lib/api");
-const ADD_TWITTER_HANDLE_LEGACY = "ADD_TWITTER_HANDLE_LEGACY";
 const ADD_3BOX_PROFILE = "ADD_3BOX_PROFILE";
 const ADD_3BOX_VERIFICATIONS = "ADD_3BOX_VERIFICATIONS";
 const emptyProfileData = {
-  twitter: undefined,
   threeBox: { profile: undefined, verifications: undefined }
 };
 function reducer(state, action) {
@@ -23,19 +21,6 @@ function reducer(state, action) {
     state.verifications[action.ethAddress] || emptyProfileData;
   const test = () => {
     switch (action.type) {
-      case ADD_TWITTER_HANDLE_LEGACY:
-        return {
-          ...state,
-          verifications: {
-            ...state.verifications,
-            [action.ethAddress]: {
-              ...currentAdressData,
-              twitter: action.data.success
-                ? action.data.verification.twitterVerification.handle
-                : undefined
-            }
-          }
-        };
       case ADD_3BOX_PROFILE:
         return {
           ...state,
@@ -99,7 +84,6 @@ export const UserInfoProvider = ({ children }) => {
       });
       if (!!profile.name) {
         getVerifiedAccounts(profile).then(verifiedAccounts => {
-          console.log("verified accounts!!]", verifiedAccounts);
           dispatchUserProvider({
             type: ADD_3BOX_VERIFICATIONS,
             ethAddress: currentUserEthAddressLower,
@@ -112,19 +96,6 @@ export const UserInfoProvider = ({ children }) => {
     // getSpace(currentUserEthAddressLower, "wildcards").then(profile => {
     //   console.log("wildcards SPACE ", { profile });
     // });
-
-    // TODO: should try to catch any errors here with this request.
-    // TODO:: depricate this code ASAP :D
-    fetch(`https://wildcards.xyz/verification/${currentUserEthAddress}`).then(
-      async result => {
-        let resultJson = await result.json();
-
-        dispatchUserProvider({
-          type: ADD_TWITTER_HANDLE_LEGACY,
-          data: resultJson
-        });
-      }
-    );
   };
 
   // This code loads the logged in users eth address first.

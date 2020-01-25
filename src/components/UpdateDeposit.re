@@ -19,8 +19,7 @@ let getToDisplay = (label, value) =>
   React.string(label ++ ": " ++ value->mapWithDefault("loading", a => a));
 module Transaction = {
   [@react.component]
-  let make = (~animal: Animal.t) => {
-    Js.log(animal);
+  let make = () => {
     let (depositChange, setDepositChange) = React.useState(() => "");
     let (isAddDeposit, setIsAddDeposit) = React.useState(() => true);
 
@@ -71,18 +70,18 @@ module Transaction = {
 
 module ModalContainer = {
   [@react.component]
-  let make = (~animal: Animal.t) => {
-    <Transaction animal />;
+  let make = () => {
+    <Transaction />;
   };
 };
 
 [@react.component]
-let make = (~animal: Animal.t) => {
+let make = () => {
   // TODO: if the token is foreclosed handle that logic... (say something like -- "add deposit quick! to keep your token")
   let goToDepositUpdate = RootProvider.useGoToDepositUpdate();
 
   <React.Fragment>
-    <Rimble.Button onClick={_e => {goToDepositUpdate(animal)}}>
+    <Rimble.Button onClick={_e => goToDepositUpdate()}>
       "Deposit"->React.string
     </Rimble.Button>
   </React.Fragment>;

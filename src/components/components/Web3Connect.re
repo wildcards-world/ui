@@ -1,8 +1,9 @@
 module UserComponent = {
   [@react.component]
   let make = (~currentUser) => {
-    let userIdComponent =
-      UserProvider.useUserComponent(EthAddress(currentUser));
+    let userId = UserProvider.useUserNameOrTwitterHandle(currentUser);
+    Js.log(userId);
+    let userIdComponent = UserProvider.useUserComponent(userId);
 
     userIdComponent;
   };

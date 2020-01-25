@@ -59,12 +59,9 @@ let rec reducer = (prevState, action) =>
     | Connected(_, _) => {...prevState, nonUrlState: BuyScreen(animal)}
     | Disconnected => {...prevState, nonUrlState: LoginScreen(action)}
     }
-  | GoToDepositUpdate(animal) =>
+  | GoToDepositUpdate =>
     switch (prevState.ethState) {
-    | Connected(_, _) => {
-        ...prevState,
-        nonUrlState: UpdateDepositScreen(animal),
-      }
+    | Connected(_, _) => {...prevState, nonUrlState: UpdateDepositScreen}
     | Disconnected => {...prevState, nonUrlState: LoginScreen(action)}
     }
   | GoToPriceUpdate(animal) =>
@@ -231,11 +228,11 @@ let useGoToBuy: (unit, Animal.t) => unit =
       dispatch(GoToBuy(animal));
     };
   };
-let useGoToDepositUpdate: (unit, Animal.t) => unit =
+let useGoToDepositUpdate: (unit, unit) => unit =
   () => {
     let (_, dispatch) = React.useContext(RootContext.context);
-    animal => {
-      dispatch(GoToDepositUpdate(animal));
+    () => {
+      dispatch(GoToDepositUpdate);
     };
   };
 let useGoToPriceUpdate: (unit, Animal.t) => unit =
