@@ -285,6 +285,9 @@ module TwitterVerification = {
   [@react.component]
   let make =
       (~twitterVerification, ~threeBoxState, ~setThreeBoxState, ~reloadUser) => {
+    let currentUser =
+      RootProvider.useCurrentUser()->Belt.Option.mapWithDefault("", a => a);
+
     let optEthereumWallet = RootProvider.useCurrentUser();
     let optWeb3Provider = RootProvider.useWeb3();
     let (twitterVerificationStep, setTwitterVerificationStep) =
@@ -440,10 +443,10 @@ module TwitterVerification = {
         </React.Fragment>
       | PreparePostToTwitter => <p> "Please login to 3box!"->React.string </p>
       | PostToTwitter(did) =>
-        let link = {j|https://twitter.com/intent/tweet?text=This Tweet links my Twitter account to my 3Box profile!\n%0D%0A%0D%0Ahttps://wildcards.world/user/blablabla\n%0D%0A%0D%0ASupport Animal conservation @wildcards_world\n%0D%0A✅\n%0D%0A$did\n%0D%0A✅|j};
+        let link = {j|https://twitter.com/intent/tweet?text=This Tweet links my Twitter account to my 3Box profile!\n%0D%0A%0D%0Ahttps://wildcards.world/%23user/$currentUser\n%0D%0A%0D%0ASupport Animal conservation @wildcards_world\n%0D%0A✅\n%0D%0A$did\n%0D%0A✅|j};
 
         <React.Fragment>
-          <p> "Post to twitter..."->React.string </p>
+          <p> "Post the following proof to twitter"->React.string </p>
           <p> did->React.string </p>
           <button>
             <a
@@ -519,7 +522,13 @@ module ThreeBoxUpdate = {
              setThreeBoxState
              reloadUser
            />
-         | None => <Rimble.Loader />
+         | None =>
+           <TwitterVerification
+             twitterVerification=None
+             threeBoxState
+             setThreeBoxState
+             reloadUser
+           />
          }}
       </React.Fragment>
     | None => <Rimble.Loader />
