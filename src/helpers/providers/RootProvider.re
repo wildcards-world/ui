@@ -48,16 +48,15 @@ let rec reducer = (prevState, action) =>
     | _ => newState
     };
   | GoToWeb3Connect =>
-    Js.log("going to web3 connect");
     switch (prevState.ethState) {
     | Connected(_, _) => prevState
     | Disconnected =>
       Js.log("IN the login screen");
       {...prevState, nonUrlState: LoginScreen(GoToWeb3Connect)};
-    };
+    }
   | GoToBuy(animal) =>
     switch (prevState.ethState) {
-    | Connected(_, _) => prevState
+    | Connected(_, _) => {...prevState, nonUrlState: BuyScreen(animal)}
     | Disconnected => {...prevState, nonUrlState: LoginScreen(action)}
     }
   | GoToDepositUpdate(animal) =>

@@ -84,11 +84,11 @@ module ModalContainer = {
 [@react.component]
 let make = (~animal: Animal.t) => {
   // TODO: if the token is foreclosed handle that logic... (say something like -- "add deposit quick! to keep your token")
-  let goToDepositUpdate = RootProvider.useGoToDepositUpdate();
+  let goToPriceUpdate = RootProvider.useGoToPriceUpdate();
 
   <React.Fragment>
     <Rimble.Box p=1>
-      <Rimble.Button onClick={_e => {goToDepositUpdate(animal)}}>
+      <Rimble.Button onClick={_e => {goToPriceUpdate(animal)}}>
         "Price"->React.string
       </Rimble.Button>
     </Rimble.Box>
