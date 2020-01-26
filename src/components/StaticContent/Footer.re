@@ -70,28 +70,6 @@ module Footer = {
                 fgColor="#aaa"
               />
             </li>
-            <li className=Styles.footerSocialButton>
-              <SocialButtons
-                className=Styles.footerSocailButtonLink
-                url="https://telegram.org/w46bOv3jxJ?amp=1"
-                // url="https://t.co/w46bOv3jxJ?amp=1"
-                bgColor="transparent"
-                target="_blank"
-                network="telegram"
-                fgColor="#aaa"
-              />
-            </li>
-            <li className=Styles.footerSocialButton>
-              <SocialButtons
-                className=Styles.footerSocailButtonLink
-                url="https://telegram.org/w46bOv3jxJ?amp=1"
-                // url="https://t.co/w46bOv3jxJ?amp=1"
-                bgColor="transparent"
-                target="_blank"
-                network="telegram"
-                fgColor="#aaa"
-              />
-            </li>
           </ul>
         </div>
       </div>
