@@ -205,10 +205,7 @@ let make = () => {
            <AnimalFocusDetails animalCarousel />
          | NormalView =>
            <React.Fragment>
-             <AnimalFocusDetails
-               animalCarousel={Some((Animal.Andy, Animal.Simon))}
-             />
-             //  <CarouselTestApp />
+             <AnimalFocusDetails animalCarousel=None />
              <StaticContent.CustomerBenefit />
              <StaticContent.HowItWorks />
              <StaticContent.About />
