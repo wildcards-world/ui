@@ -15,8 +15,9 @@ module BuyGrid = {
 
 module AnimalFocusDetails = {
   [@react.component]
-  let make = (~animalCarousel, ~isExplorer) => {
+  let make = (~animalCarousel) => {
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+    let isExplorer = Router.useIsExplorer();
 
     <Rimble.Flex flexWrap="wrap" alignItems="center" className=Styles.topBody>
       {switch (animalCarousel) {
@@ -80,8 +81,10 @@ module AnimalFocusDetails = {
 
 module Header = {
   [@react.component]
-  let make = (~animalCarousel, ~isExplorer, ~isDetails) => {
+  let make = (~animalCarousel) => {
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+    let isExplorer = Router.useIsExplorer();
+    let isDetails = Router.useIsDetails();
     open ReactTranslate;
     let usedtranslationModeContext = useTranslationModeContext();
     <header className=Styles.header>
@@ -169,35 +172,7 @@ module Header = {
 
 [@react.component]
 let make = () => {
-  let url = ReasonReactRouter.useUrl();
-
-  let (animalCarousel, isExplorer, isDetails) =
-    switch (Js.String.split("/", url.hash)) {
-    | [|"explorer", "details", animalStr|]
-    | [|"explorer", "details", animalStr, ""|] =>
-      let optionAnimal = Animal.getAnimal(animalStr);
-      (
-        optionAnimal->Belt.Option.map(animal => Animal.getNextPrev(animal)),
-        true,
-        true,
-      );
-    | [|"details", animalStr|] =>
-      let optionAnimal = Animal.getAnimal(animalStr);
-      (
-        optionAnimal->Belt.Option.map(animal => Animal.getNextPrev(animal)),
-        false,
-        true,
-      );
-    | urlArray
-        when
-          Belt.Array.get(urlArray, 0)
-          ->Belt.Option.mapWithDefault(false, a => a == "explorer") => (
-        None,
-        true,
-        false,
-      )
-    | _ => (None, false, false)
-    };
+  let urlState = Router.useUrlState();
 
   // TODO: add code that scrolls to the correct height on mobile (to buy etc).
   // let ref = React.useRef(Js.Nullable.null);
@@ -205,38 +180,46 @@ let make = () => {
   // ReactDOMRe.Ref.domRef(ref);
   /*ref={ReactDOMRe.Ref.domRef(ref)}*/
 
-  let connectWeb3 = RootProvider.useConnectWeb3();
   <div className=Styles.app>
     <img src=betaBanner className=Styles.betaBanner />
-    <Web3Connect/>
-    <Header animalCarousel isExplorer isDetails />
+    <Web3Connect />
+    <Header animalCarousel={Some((Animal.Andy, Animal.Simon))} />
     <Providers.UsdPriceProvider>
-      {isDetails
-         ? <AnimalFocusDetails animalCarousel isExplorer />
-         : isExplorer
-             ? <BuyGrid
-                 animalArray={
-                   Animal.orderedArray->Belt.Array.map((animal, ()) =>
-                     <Dapp.CarouselAnimal
-                       animal
-                       isGqlLoaded=true
-                       isExplorer
-                       scalar=1.
-                     />
-                   )
-                 }
-               />
-             : <React.Fragment>
-                 <AnimalFocusDetails animalCarousel isExplorer />
-                 //  <CarouselTestApp />
-                 <StaticContent.CustomerBenefit />
-                 <StaticContent.HowItWorks />
-                 <StaticContent.About />
-                 <StaticContent.CoreConcepts />
-                 <StaticContent.EmailSignup />
-                 <StaticContent.FAQs />
-                 <StaticContent.Partners />
-               </React.Fragment>}
+      {switch (urlState) {
+       | Explorer(animalPageState) =>
+         switch (animalPageState) {
+         | DetailView(animalCarousel, _) =>
+           <AnimalFocusDetails animalCarousel />
+         | NormalView =>
+           <BuyGrid
+             animalArray={
+               Animal.orderedArray->Belt.Array.map((animal, ()) =>
+                 <Dapp.CarouselAnimal animal isGqlLoaded=true scalar=1. />
+               )
+             }
+           />
+         }
+       | Home(animalPageState) =>
+         switch (animalPageState) {
+         | DetailView(animalCarousel, _) =>
+           <AnimalFocusDetails animalCarousel />
+         | NormalView =>
+           <React.Fragment>
+             <AnimalFocusDetails
+               animalCarousel={Some((Animal.Andy, Animal.Simon))}
+             />
+             //  <CarouselTestApp />
+             <StaticContent.CustomerBenefit />
+             <StaticContent.HowItWorks />
+             <StaticContent.About />
+             <StaticContent.CoreConcepts />
+             <StaticContent.EmailSignup />
+             <StaticContent.FAQs />
+             <StaticContent.Partners />
+           </React.Fragment>
+         }
+       | User(_) => <p> "the new page"->React.string </p>
+       }}
     </Providers.UsdPriceProvider>
     <StaticContent.Footer />
   </div>;

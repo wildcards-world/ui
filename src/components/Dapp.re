@@ -26,8 +26,10 @@ module CountDown = {
 
 module EditButton = {
   [@react.component]
-  let make = (~animal: Animal.t, ~isExplorer) => {
+  let make = (~animal: Animal.t) => {
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+    let isExplorer = Router.useIsExplorer();
+
     <Rimble.Button
       onClick={event => {
         ReactEvent.Form.preventDefault(event);
@@ -100,7 +102,7 @@ module DisplayAfterDate = {
 
 module BasicAnimalDisplay = {
   [@react.component]
-  let make = (~animal: Animal.t, ~isExplorer) => {
+  let make = (~animal: Animal.t) => {
     let owned = animal->QlHooks.useIsAnimalOwened;
     let currentPatron =
       QlHooks.usePatron(animal)->mapWithDefault("Loading", a => a);
@@ -112,8 +114,7 @@ module BasicAnimalDisplay = {
       <PriceDisplay animal />
       userIdComponent
       <br />
-      {owned
-         ? <EditButton animal isExplorer /> : <BuyModal animal isExplorer />}
+      {owned ? <EditButton animal /> : <BuyModal animal />}
     </React.Fragment>;
   };
 };
@@ -126,10 +127,10 @@ module AnimalOnLandingPage = {
         ~scalar: float=1.,
         ~enlargement: float=1.,
         ~optionEndDateMoment: option(MomentRe.Moment.t),
-        ~isExplorer,
         ~isGqlLoaded,
       ) => {
     let name = Animal.getName(animal);
+    let isExplorer = Router.useIsExplorer();
 
     let optAlternateImage = Animal.getAlternateImage(animal);
     let orgBadge = Animal.getOrgBadgeImage(animal);
@@ -211,8 +212,7 @@ module AnimalOnLandingPage = {
            <CountDown endDateMoment leadingZeros=true includeWords=false />
          </div>
        | None =>
-         isGqlLoaded
-           ? <div> <BasicAnimalDisplay animal isExplorer /> </div> : React.null
+         isGqlLoaded ? <div> <BasicAnimalDisplay animal /> </div> : React.null
        }}
     </Rimble.Box>;
   };
@@ -220,8 +220,7 @@ module AnimalOnLandingPage = {
 
 module CarouselAnimal = {
   [@react.component]
-  let make =
-      (~animal, ~scalar, ~isExplorer, ~enlargement: float=1., ~isGqlLoaded) => {
+  let make = (~animal, ~scalar, ~enlargement: float=1., ~isGqlLoaded) => {
     let isLaunched = animal->Animal.isLaunched;
 
     switch (animal) {
@@ -236,7 +235,6 @@ module CarouselAnimal = {
         animal
         scalar
         optionEndDateMoment
-        isExplorer
         enlargement
         isGqlLoaded
       />;
@@ -254,7 +252,7 @@ module CarouselAnimal = {
 
 module AnimalCarousel = {
   [@react.component]
-  let make = (~isExplorer, ~isGqlLoaded) => {
+  let make = (~isGqlLoaded) => {
     let (carouselIndex, setCarouselIndex) = React.useState(() => 17);
     let numItems = Animal.orderedArray->Array.length;
 
@@ -319,13 +317,7 @@ module AnimalCarousel = {
                  };
 
                <div className={Styles.fadeOut(opacity)}>
-                 <CarouselAnimal
-                   animal
-                   isGqlLoaded
-                   isExplorer
-                   scalar
-                   enlargement=1.5
-                 />
+                 <CarouselAnimal animal isGqlLoaded scalar enlargement=1.5 />
                </div>;
              },
              Animal.orderedArray,
@@ -455,7 +447,7 @@ module DetailsView = {
 
 module DefaultLook = {
   [@react.component]
-  let make = (~isExplorer, ~isGqlLoaded) => {
+  let make = (~isGqlLoaded) => {
     open Components;
 
     let url = ReasonReactRouter.useUrl();
@@ -467,7 +459,7 @@ module DefaultLook = {
        | [|"explorer", "details", animalStr, ""|] => <DetailsView animalStr />
        | _ =>
          <React.Fragment>
-           <AnimalCarousel isExplorer isGqlLoaded />
+           <AnimalCarousel isGqlLoaded />
            <Rimble.Box className=Styles.dappImagesCounteractOffset>
              {isGqlLoaded ? <TotalRaised /> : React.null}
            </Rimble.Box>
@@ -766,20 +758,19 @@ let make = () => {
   let isGqlLoaded = QlStateManager.useIsInitialized();
   let nonUrlRouting = RootProvider.useNonUrlState();
   let clearNonUrlState = RootProvider.useClearNonUrlState();
-  let (isDetailView, animalStr, isExplorer) = {
+  let (isDetailView, animalStr) = {
     switch (Js.String.split("/", url.hash)) {
     | [|"explorer", "details", animalStr|]
-    | [|"explorer", "details", animalStr, ""|] => (true, animalStr, true)
-    | [|"details", animalStr|] => (true, animalStr, false)
+    | [|"explorer", "details", animalStr, ""|] => (true, animalStr)
+    | [|"details", animalStr|] => (true, animalStr)
     | urlArray
         when
           Belt.Array.get(urlArray, 0)
           ->Belt.Option.mapWithDefault(false, a => a == "explorer") => (
         false,
         "",
-        true,
       )
-    | _ => (false, "", false)
+    | _ => (false, "")
     };
   };
 
@@ -864,7 +855,7 @@ let make = () => {
       </React.Fragment>
     </Rimble.Box>
     <Rimble.Box p=1 width=[|1., 1., 0.5|]>
-      <DefaultLook isExplorer isGqlLoaded />
+      <DefaultLook isGqlLoaded />
     </Rimble.Box>
   </Rimble.Flex>;
   // <CarouselTestApp />
