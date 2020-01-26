@@ -6,7 +6,7 @@ module UpdateDepositInput = {
       ~updateDepositChange: ReactEvent.Form.t => (string, bool),
       ~isAddDeposit: bool,
       ~updateIsAddDeposit: bool => unit,
-      ~onSubmitDepositChange: ReactEvent.Form.t => (string, bool)
+      ~onSubmitDepositChange: ReactEvent.Form.t => unit
     ) =>
     React.element =
     "default";
@@ -38,7 +38,6 @@ module Transaction = {
       } else {
         withdrawFunc(depositChangeWei);
       };
-      ("implement", true);
     };
 
     let updateDepositChange = event => {
@@ -52,7 +51,6 @@ module Transaction = {
     let updateIsAddDeposit = isDeposit => {
       setIsAddDeposit(_ => isDeposit);
     };
-    // <TxTemplate>
     <TxTemplate txState=txDepositObject>
       <TxTemplate txState=txWithdrawObject>
         <UpdateDepositInput
