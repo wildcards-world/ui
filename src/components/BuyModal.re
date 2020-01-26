@@ -69,7 +69,6 @@ let calcRequiredDepositForTime = (time, price, numerator, denominator) => {
 module Transaction = {
   [@react.component]
   let make = (~animal: Animal.t) => {
-    let currentUser = RootProvider.useCurrentUser();
     let (buyFunc, txState) = AnimalActions.useBuy(animal);
     let userBalance =
       Belt.Option.mapWithDefault(
@@ -149,8 +148,6 @@ module Transaction = {
       React.useState(() => defaultDepositTime);
 
     let onSubmitBuy = () => {
-      // TODO: Abstract this better into a utility library of sorts.
-      // let setFunctionObj = [%bs.raw {| (value, from) => ({ value, from }) |}];
       let amountToSend =
         BN.new_(newPrice)
         ->BN.addGet(. currentPriceWei)
@@ -167,7 +164,6 @@ module Transaction = {
           value,
         );
       if (didUpdate) {
-        // TODO: Add error checking here, - `float_of_string` is an unsafe operation in Ocaml (it can throw an error)
         let patronage =
           Js.Float.toString(Float.fromString(value)->defaultZeroF *. ratio);
         setPatronage(_ => patronage);
@@ -192,7 +188,6 @@ module Transaction = {
           value,
         );
       if (didUpdate) {
-        // TODO: Add error checking here, - `float_of_string` is an unsafe operation in Ocaml (it can throw an error)
         let price =
           Js.Float.toString(
             Float.fromString(value)->defaultZeroF *. ratioInverse,
@@ -263,7 +258,7 @@ module Transaction = {
 };
 
 [@react.component]
-let make = (~animal: Animal.t, ~isExplorer: bool = false) => {
+let make = (~animal: Animal.t, ~isExplorer: bool=false) => {
   let currentPriceWei = QlHooks.usePrice(animal);
 
   let goToBuy = RootProvider.useGoToBuy();

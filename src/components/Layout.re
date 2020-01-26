@@ -24,32 +24,19 @@ module AnimalFocusDetails = {
        | None => React.null
        | Some((_, previousAnimal)) =>
          <Rimble.Box p=1 width=[|0.05, 0.05, 0.05|]>
-           //  <Rimble.Button
-           //    className=Styles.forwardBackButton
-           //    onClick={InputHelp.handleEvent(() =>
-           //      clearAndPush(
-           //        "#"
-           //        ++ InputHelp.getPagePrefix(isExplorer)
-           //        ++ "details/"
-           //        ++ previousAnimal->Animal.getName->Js.Global.encodeURI,
-           //      )
-           //    )}>
-           //    <S> {js|◄|js} </S>
-           //  </Rimble.Button>
-
-             <span
-               className={Styles.carouselArrow(true, ~absolutePosition=false)}
-               onClick={InputHelp.handleMouseEvent(() =>
-                 clearAndPush(
-                   "#"
-                   ++ InputHelp.getPagePrefix(isExplorer)
-                   ++ "details/"
-                   ++ previousAnimal->Animal.getName->Js.Global.encodeURI,
-                 )
-               )}>
-               {js|◄|js}->React.string
-             </span>
-           </Rimble.Box>
+           <span
+             className={Styles.carouselArrow(true, ~absolutePosition=false)}
+             onClick={InputHelp.handleMouseEvent(() =>
+               clearAndPush(
+                 "#"
+                 ++ InputHelp.getPagePrefix(isExplorer)
+                 ++ "details/"
+                 ++ previousAnimal->Animal.getName->Js.Global.encodeURI,
+               )
+             )}>
+             {js|◄|js}->React.string
+           </span>
+         </Rimble.Box>
        }}
       <Rimble.Box
         width={

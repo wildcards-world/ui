@@ -10,7 +10,7 @@ external connectors: Js.Array.t(connectorObj) = "default";
 
 [@react.component]
 let make = () => {
-  let (connectionStatus, activateConnector) =
+  let (_connectionStatus, activateConnector) =
     RootProvider.useActivateConnector();
 
   <div>
