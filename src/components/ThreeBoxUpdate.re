@@ -384,7 +384,7 @@ module TwitterVerification = {
                  | SyncedSpace(threeBoxInstance, _) =>
                    threeBoxInstance.verified.addTwitter(. twitterProof)
                    ->Promise.Js.toResult
-                   ->Promise.getOk(result => {
+                   ->Promise.getOk(_result => {
                        reloadUser(true);
                        setTwitterVerificationStep(_ => Uninitialized);
                      });
@@ -396,7 +396,6 @@ module TwitterVerification = {
                Js.Promise.resolve();
              })
         );
-      // |> then_(text => getResult)
       ();
     };
 

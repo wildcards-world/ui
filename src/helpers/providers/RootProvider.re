@@ -81,7 +81,7 @@ let rec reducer = (prevState, action) =>
   | _ => prevState
   };
 module RootContext = {
-  let context = React.createContext((initialState, a => ()));
+  let context = React.createContext((initialState, _ => ()));
   // Create a provider component
   let make = React.Context.provider(context);
 
