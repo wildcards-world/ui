@@ -434,9 +434,7 @@ module DetailsView = {
            />
          }}
         <h2> <S> {Animal.getName(animal)} </S> </h2>
-        <Offline requireSmartContractsLoaded=true>
-          <AnimalActionsOnDetailsPage animal />
-        </Offline>
+        <AnimalActionsOnDetailsPage animal />
       </React.Fragment>;
     };
   };
@@ -749,7 +747,6 @@ module AnimalInfo = {
 };
 
 [@react.component]
-// The Offline container here shows the website, but without loading the requirements
 let make = () => {
   let isGqlLoaded = QlStateManager.useIsInitialized();
   let nonUrlRouting = RootProvider.useNonUrlState();
@@ -823,10 +820,7 @@ let make = () => {
            </div>
          | _ =>
            switch (optAnimalForDetails) {
-           | Some(animal) =>
-             <Offline requireSmartContractsLoaded=true>
-               <AnimalInfo animal />
-             </Offline>
+           | Some(animal) => <AnimalInfo animal />
            | None => <DefaultLeftPanel />
            }
          }}
