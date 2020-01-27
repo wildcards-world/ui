@@ -52,9 +52,6 @@ module Streak = {
 
     let daysHeld = QlHooks.useDaysHeld(animal);
 
-    // Js.log("Streak");
-    // Js.log(daysHeld);
-
     switch (daysHeld) {
     | Some((daysHeldFloat, _timeAquired)) =>
       let numDaysStr = daysHeldFloat->Js.Float.toFixed;
@@ -754,25 +751,11 @@ module AnimalInfo = {
 [@react.component]
 // The Offline container here shows the website, but without loading the requirements
 let make = () => {
-  let url = ReasonReactRouter.useUrl();
   let isGqlLoaded = QlStateManager.useIsInitialized();
   let nonUrlRouting = RootProvider.useNonUrlState();
   let clearNonUrlState = RootProvider.useClearNonUrlState();
-  let (isDetailView, animalStr) = {
-    switch (Js.String.split("/", url.hash)) {
-    | [|"explorer", "details", animalStr|]
-    | [|"explorer", "details", animalStr, ""|] => (true, animalStr)
-    | [|"details", animalStr|] => (true, animalStr)
-    | urlArray
-        when
-          Belt.Array.get(urlArray, 0)
-          ->Belt.Option.mapWithDefault(false, a => a == "explorer") => (
-        false,
-        "",
-      )
-    | _ => (false, "")
-    };
-  };
+  let isDetailView = Router.useIsDetails();
+  let optAnimalForDetails = Router.useAnimalForDetails();
 
   <Rimble.Flex
     flexWrap={isDetailView ? "wrap-reverse" : "wrap"} alignItems="start">
@@ -839,18 +822,13 @@ let make = () => {
              <UpdatePrice.Transaction animal />
            </div>
          | _ =>
-           isDetailView
-             ? {
-               let optionAnimal = Animal.getAnimal(animalStr);
-               switch (optionAnimal) {
-               | None => <DefaultLeftPanel />
-               | Some(animal) =>
-                 <Offline requireSmartContractsLoaded=true>
-                   <AnimalInfo animal />
-                 </Offline>
-               };
-             }
-             : <DefaultLeftPanel />
+           switch (optAnimalForDetails) {
+           | Some(animal) =>
+             <Offline requireSmartContractsLoaded=true>
+               <AnimalInfo animal />
+             </Offline>
+           | None => <DefaultLeftPanel />
+           }
          }}
       </React.Fragment>
     </Rimble.Box>
@@ -858,5 +836,4 @@ let make = () => {
       <DefaultLook isGqlLoaded />
     </Rimble.Box>
   </Rimble.Flex>;
-  // <CarouselTestApp />
 };

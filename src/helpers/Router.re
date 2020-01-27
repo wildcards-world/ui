@@ -81,3 +81,24 @@ let useIsDetails = () => {
     [|urlState|],
   );
 };
+let getAnimalFormAnimalPageState: animalPageState => option(Animal.t) =
+  animalPageState =>
+    switch (animalPageState) {
+    | DetailView(_, optAnimal) => optAnimal
+    | _ => None
+    };
+let useAnimalForDetails = () => {
+  let urlState = useUrlState();
+
+  React.useMemo1(
+    () =>
+      switch (urlState) {
+      | Explorer(animalPageState) =>
+        getAnimalFormAnimalPageState(animalPageState)
+      | Home(animalPageState) =>
+        getAnimalFormAnimalPageState(animalPageState)
+      | _ => None
+      },
+    [|urlState|],
+  );
+};
