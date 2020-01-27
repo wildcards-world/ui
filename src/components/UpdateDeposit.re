@@ -1,6 +1,3 @@
-open Hooks;
-open Belt.Option;
-
 module UpdateDepositInput = {
   [@bs.module "./UpdateDepositInput"] [@react.component]
   external make:
@@ -16,7 +13,9 @@ module UpdateDepositInput = {
 };
 
 let getToDisplay = (label, value) =>
-  React.string(label ++ ": " ++ value->mapWithDefault("loading", a => a));
+  React.string(
+    label ++ ": " ++ value->Belt.Option.mapWithDefault("loading", a => a),
+  );
 module Transaction = {
   [@react.component]
   let make = () => {
