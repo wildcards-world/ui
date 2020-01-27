@@ -261,7 +261,7 @@ let useChangePrice = animal => {
       setTxState(_ => Created);
       switch (optSteward) {
       | Some(steward) =>
-        let updateDepositPromise =
+        let updatePricePromise =
           steward.changePrice(.
             animalId,
             newPriceEncoded,
@@ -271,7 +271,7 @@ let useChangePrice = animal => {
             },
           )
           ->Promise.Js.toResult;
-        updateDepositPromise->Promise.getOk(tx => {
+        updatePricePromise->Promise.getOk(tx => {
           setTxState(_ => SignedAndSubmitted);
           let txMinedPromise = tx.wait(.)->Promise.Js.toResult;
           txMinedPromise->Promise.getOk(txOutcome => {
@@ -284,7 +284,7 @@ let useChangePrice = animal => {
           });
           ();
         });
-        updateDepositPromise->Promise.getError(error => {
+        updatePricePromise->Promise.getError(error => {
           Js.log(error.message)
         });
         ();
