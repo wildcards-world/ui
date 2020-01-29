@@ -33,7 +33,11 @@ type txError = {
   message: string,
   stack: option(string),
 };
-type tx = {wait: (. unit) => Promise.Js.t(txResult, txError)};
+type txHash = string;
+type tx = {
+  hash: txHash,
+  wait: (. unit) => Promise.Js.t(txResult, txError),
+};
 type parsedUnits;
 type txOptions = {value: parsedUnits};
 type tokenIdString = string;
@@ -110,7 +114,7 @@ let useStewardContract = () => {
 type transactionState =
   | UnInitialised
   | Created
-  | SignedAndSubmitted
+  | SignedAndSubmitted(txHash)
   | Declined
   | Complete(txResult)
   | Failed;
@@ -140,7 +144,7 @@ let useBuy = animal => {
           )
           ->Promise.Js.toResult;
         buyPromise->Promise.getOk(tx => {
-          setTxState(_ => SignedAndSubmitted);
+          setTxState(_ => SignedAndSubmitted(tx.hash));
           let txMinedPromise = tx.wait(.)->Promise.Js.toResult;
           txMinedPromise->Promise.getOk(txOutcome => {
             Js.log(txOutcome);
@@ -180,7 +184,7 @@ let useUpdateDeposit = () => {
           })
           ->Promise.Js.toResult;
         updateDepositPromise->Promise.getOk(tx => {
-          setTxState(_ => SignedAndSubmitted);
+          setTxState(_ => SignedAndSubmitted(tx.hash));
           let txMinedPromise = tx.wait(.)->Promise.Js.toResult;
           txMinedPromise->Promise.getOk(txOutcome => {
             setTxState(_ => Complete(txOutcome))
@@ -225,7 +229,7 @@ let useWithdrawDeposit = () => {
           )
           ->Promise.Js.toResult;
         updateDepositPromise->Promise.getOk(tx => {
-          setTxState(_ => SignedAndSubmitted);
+          setTxState(_ => SignedAndSubmitted(tx.hash));
           let txMinedPromise = tx.wait(.)->Promise.Js.toResult;
           txMinedPromise->Promise.getOk(txOutcome => {
             Js.log(txOutcome);
@@ -272,7 +276,7 @@ let useChangePrice = animal => {
           )
           ->Promise.Js.toResult;
         updatePricePromise->Promise.getOk(tx => {
-          setTxState(_ => SignedAndSubmitted);
+          setTxState(_ => SignedAndSubmitted(tx.hash));
           let txMinedPromise = tx.wait(.)->Promise.Js.toResult;
           txMinedPromise->Promise.getOk(txOutcome => {
             Js.log(txOutcome);

@@ -24,7 +24,7 @@ let useUrlState = () => {
             optionAnimal->Belt.Option.map(animal =>
               Animal.getNextPrev(animal)
             ),
-            Animal.getAnimalFromId(animalStr),
+            optionAnimal,
           ),
         );
       // | [|"details"|] => Home(NormalView)
@@ -35,7 +35,7 @@ let useUrlState = () => {
             optionAnimal->Belt.Option.map(animal =>
               Animal.getNextPrev(animal)
             ),
-            Animal.getAnimalFromId(animalStr),
+            optionAnimal,
           ),
         );
       | urlArray =>
@@ -94,9 +94,15 @@ let useAnimalForDetails = () => {
     () =>
       switch (urlState) {
       | Explorer(animalPageState) =>
-        getAnimalFormAnimalPageState(animalPageState)
+        Js.log("got the animal for the explorer");
+        Js.log(
+          getAnimalFormAnimalPageState(animalPageState)
+          ->Belt.Option.mapWithDefault("animal", a => a->Animal.getName),
+        );
+        getAnimalFormAnimalPageState(animalPageState);
       | Home(animalPageState) =>
         getAnimalFormAnimalPageState(animalPageState)
+      // | DetailView(_, optAnimal) => optAnimal
       | _ => None
       },
     [|urlState|],

@@ -46,13 +46,6 @@ module Transaction = {
   };
 };
 
-module ModalContainer = {
-  [@react.component]
-  let make = (~animal: Animal.t) => {
-    <Transaction animal />;
-  };
-};
-
 [@react.component]
 let make = (~animal: Animal.t) => {
   // TODO: if the token is foreclosed handle that logic... (say something like -- "add deposit quick! to keep your token")
