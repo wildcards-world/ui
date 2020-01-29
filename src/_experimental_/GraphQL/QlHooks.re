@@ -263,19 +263,6 @@ let useForeclosureTime: string => option(MomentRe.Moment.t) =
     | _ => None
     };
   };
-
-let usePreviousTokens: string => option(MomentRe.Moment.t) =
-  patron => {
-    let (simple, _) = useQueryPatron(patron);
-    switch (simple) {
-    | Data(response) =>
-      response##patron
-      ->Belt.Option.flatMap(patron => Some(patron##foreclosureTime));
-      Js.log(response##patron);
-      None;
-    | _ => None
-    };
-  };
 let usePatronQuery = patron => {
   let (simple, _) = useQueryPatron(patron);
   switch (simple) {
@@ -283,23 +270,6 @@ let usePatronQuery = patron => {
   | _ => None
   };
 };
-let useMonthlyContribution: string => option(BN.bn) =
-  patron => {
-    let (simple, _) = useQueryPatron(patron);
-    switch (simple) {
-    | Data(response) =>
-      response##patron
-      ->Belt.Option.flatMap(patron =>
-          Some(
-            patron##patronTokenCostScaledNumerator
-            ->BN.mulGet(. BN.new_("2592000"))
-            ->BN.divGet(. BN.new_("1000000000000")),
-          )
-        )
-    | _ => None
-    };
-  };
-
 let useTimeAcquiredWithDefault = (animal, default: MomentRe.Moment.t) => {
   switch (useTimeAcquired(animal)) {
   | Data(moment) => moment

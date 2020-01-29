@@ -94,12 +94,7 @@ let useAnimalForDetails = () => {
     () =>
       switch (urlState) {
       | Explorer(animalPageState) =>
-        Js.log("got the animal for the explorer");
-        Js.log(
-          getAnimalFormAnimalPageState(animalPageState)
-          ->Belt.Option.mapWithDefault("animal", a => a->Animal.getName),
-        );
-        getAnimalFormAnimalPageState(animalPageState);
+        getAnimalFormAnimalPageState(animalPageState)
       | Home(animalPageState) =>
         getAnimalFormAnimalPageState(animalPageState)
       // | DetailView(_, optAnimal) => optAnimal
