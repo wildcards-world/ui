@@ -263,7 +263,13 @@ let useForeclosureTime: string => option(MomentRe.Moment.t) =
     | _ => None
     };
   };
-
+let usePatronQuery = patron => {
+  let (simple, _) = useQueryPatron(patron);
+  switch (simple) {
+  | Data(response) => Some(response)
+  | _ => None
+  };
+};
 let useTimeAcquiredWithDefault = (animal, default: MomentRe.Moment.t) => {
   switch (useTimeAcquired(animal)) {
   | Data(moment) => moment

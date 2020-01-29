@@ -14,18 +14,18 @@ const {
 const ADD_3BOX_PROFILE = "ADD_3BOX_PROFILE";
 const ADD_3BOX_VERIFICATIONS = "ADD_3BOX_VERIFICATIONS";
 const emptyProfileData = {
-  threeBox: { profile: undefined, verifications: undefined }
+  threeBox: { profile: undefined, userInfo: undefined }
 };
 function reducer(state, action) {
   const currentAdressData =
-    state.verifications[action.ethAddress] || emptyProfileData;
+    state.userInfo[action.ethAddress] || emptyProfileData;
   const test = () => {
     switch (action.type) {
       case ADD_3BOX_PROFILE:
         return {
           ...state,
-          verifications: {
-            ...state.verifications,
+          userInfo: {
+            ...state.userInfo,
             [action.ethAddress]: {
               ...currentAdressData,
               threeBox: {
@@ -42,12 +42,12 @@ function reducer(state, action) {
         }
         return {
           ...state,
-          verifications: {
-            ...state.verifications,
+          userInfo: {
+            ...state.userInfo,
             [action.ethAddress]: {
               threeBox: {
                 ...currentAdressData.threeBox,
-                verifications: action.data
+                userInfo: action.data
               }
             }
           }
@@ -63,7 +63,7 @@ function reducer(state, action) {
 export const UserInfoProvider = ({ children }) => {
   const currentUserEthAddress = useCurrentUser();
   const [userProvider, dispatchUserProvider] = useReducer(reducer, {
-    verifications: {}
+    userInfo: {}
   });
 
   const updateUserProvider = (currentUserEthAddress, forceReload) => {

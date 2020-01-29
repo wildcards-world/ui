@@ -202,7 +202,7 @@ let make = () => {
              <StaticContent.Partners />
            </React.Fragment>
          }
-       | User(_) => <p> "the new page"->React.string </p>
+       | User(userAddress) => <UserProfile userAddress />
        }}
     </Providers.UsdPriceProvider>
     <StaticContent.Footer />

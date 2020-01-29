@@ -220,13 +220,6 @@ module CarouselAnimal = {
   let make = (~animal, ~scalar, ~enlargement: float=1., ~isGqlLoaded) => {
     let isLaunched = animal->Animal.isLaunched;
 
-    switch (animal) {
-    | Animal.Andy =>
-      Js.log("render AnimalCarousel root again: " ++ animal->Animal.getName)
-    //  | Animal.Simon => Js.log("render AnimalCarousel root again: " ++ animal->Animal.getName);
-    | _ => ()
-    };
-
     let makeAnimalOnLandingPage = optionEndDateMoment =>
       <AnimalOnLandingPage
         animal

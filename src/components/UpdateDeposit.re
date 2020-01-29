@@ -65,13 +65,6 @@ module Transaction = {
   };
 };
 
-module ModalContainer = {
-  [@react.component]
-  let make = () => {
-    <Transaction />;
-  };
-};
-
 [@react.component]
 let make = () => {
   // TODO: if the token is foreclosed handle that logic... (say something like -- "add deposit quick! to keep your token")
