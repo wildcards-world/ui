@@ -36,14 +36,17 @@ type txError = {
 type tx = {wait: (. unit) => Promise.Js.t(txResult, txError)};
 type parsedUnits;
 type txOptions = {value: parsedUnits};
+type tokenIdString = string;
 type estimateBuy = {
   buy: (. string, parsedUnits, txOptions) => Promise.Js.t(string, string),
 };
 type stewardContract = {
   estimate: estimateBuy,
-  buy: (. string, parsedUnits, txOptions) => Promise.Js.t(tx, txError),
+  buy: (. tokenIdString, parsedUnits, txOptions) => Promise.Js.t(tx, txError),
   depositWei: (. txOptions) => Promise.Js.t(tx, txError),
   withdrawDeposit: (. parsedUnits, txOptions) => Promise.Js.t(tx, txError),
+  changePrice:
+    (. tokenIdString, parsedUnits, txOptions) => Promise.Js.t(tx, txError),
 };
 
 [@bs.new] [@bs.module "ethers"]
@@ -235,6 +238,53 @@ let useWithdrawDeposit = () => {
           ();
         });
         updateDepositPromise->Promise.getError(error => {
+          Js.log(error.message)
+        });
+        ();
+      | None => ()
+      };
+    },
+    txState,
+  );
+};
+let useChangePrice = animal => {
+  let animalId = Animal.getId(animal);
+  let (txState, setTxState) = React.useState(() => UnInitialised);
+
+  let optSteward = useStewardContract();
+
+  (
+    newPrice => {
+      let value = parseUnits(. "0", 0);
+      let newPriceEncoded = parseUnits(. newPrice, 0);
+
+      setTxState(_ => Created);
+      switch (optSteward) {
+      | Some(steward) =>
+        let updatePricePromise =
+          steward.changePrice(.
+            animalId,
+            newPriceEncoded,
+            {
+              // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
+              value: value,
+            },
+          )
+          ->Promise.Js.toResult;
+        updatePricePromise->Promise.getOk(tx => {
+          setTxState(_ => SignedAndSubmitted);
+          let txMinedPromise = tx.wait(.)->Promise.Js.toResult;
+          txMinedPromise->Promise.getOk(txOutcome => {
+            Js.log(txOutcome);
+            setTxState(_ => Complete(txOutcome));
+          });
+          txMinedPromise->Promise.getError(error => {
+            setTxState(_ => Failed);
+            Js.log(error);
+          });
+          ();
+        });
+        updatePricePromise->Promise.getError(error => {
           Js.log(error.message)
         });
         ();

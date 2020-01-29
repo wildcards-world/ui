@@ -6,41 +6,13 @@ module Transaction = {
   [@react.component]
   let make = (~animal: Animal.t) => {
     let (newBuyPrice, setNewBuyPrice) = React.useState(() => "");
-    // let currentPrice = useCurrentPriceWei()->mapWithDefault("loading", a => a);
-    let currentUser = RootProvider.useCurrentUser();
-    // let changePriceObj = useChangePriceTransaction();
-    // let changePriceObjNew = useChangePriceTransactionNew();
-    // let userBalance =
-    //   DrizzleReact.Hooks.useUserBalance()->mapWithDefault("", a => a);
 
-    let (updatePriceFunc, txState) = {
-      let tokenId = Animal.getId(animal);
-      (
-        // let priceChangeObj = useChangePriceTransactionNew();
-        // (
-        //   (priceChange, txObject) =>
-        //     priceChangeObj##send(. tokenId, priceChange, txObject),
-        //   priceChangeObj##_TXObjects,
-        // );
-        (priceChange, txObject) => {
-          Js.log("TODO: implement sending price change!!");
-          Js.log(priceChange);
-          Js.log(txObject);
-        },
-        AnimalActions.UnInitialised,
-      );
-    };
+    let (updatePriceFunc, txState) = AnimalActions.useChangePrice(animal);
 
     let onSubmitBuy = event => {
       ReactEvent.Form.preventDefault(event);
 
-      // TODO: Abstract this better into a utility library of sorts.
-      let setFunctionObj = [%bs.raw {| (from) => ({ from }) |}];
-
-      updatePriceFunc(
-        newBuyPrice->Web3Utils.toWeiFromEth,
-        setFunctionObj(. currentUser),
-      );
+      updatePriceFunc(Web3Utils.toWei(newBuyPrice, "ether"));
     };
 
     <TxTemplate txState>
