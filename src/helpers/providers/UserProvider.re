@@ -22,7 +22,7 @@ type threeBoxUserInfo = {
 type userVerification = {threeBox: threeBoxUserInfo};
 
 type userInfo = {
-  verifications: Js.Dict.t(userVerification),
+  userInfo: Js.Dict.t(userVerification),
   update: (string, bool) => unit,
 };
 
@@ -38,7 +38,7 @@ let useUserNameOrTwitterHandle: string => userId =
     let userContext = useUserInfoContext();
     let ethAddressLower = Js.String.toLowerCase(ethAddress);
 
-    switch (Js.Dict.get(userContext.verifications, ethAddressLower)) {
+    switch (Js.Dict.get(userContext.userInfo, ethAddressLower)) {
     | None =>
       if (ethAddressLower !== "loading") {
         userContext.update(ethAddressLower, false);
@@ -46,9 +46,9 @@ let useUserNameOrTwitterHandle: string => userId =
         ();
       };
       EthAddress(ethAddress);
-    | Some(verification) =>
+    | Some(userInfo) =>
       switch (
-        verification.threeBox.verifications
+        userInfo.threeBox.verifications
         ->Belt.Option.flatMap(verification => {verification.twitter})
         ->Belt.Option.flatMap(twitter => {Some(twitter.username)})
       ) {
@@ -63,9 +63,9 @@ let use3BoxUserData: string => option(threeBoxUserInfo) =
     let userContext = useUserInfoContext();
     let ethAddressLower = Js.String.toLowerCase(ethAddress);
 
-    switch (Js.Dict.get(userContext.verifications, ethAddressLower)) {
+    switch (Js.Dict.get(userContext.userInfo, ethAddressLower)) {
     | None => None
-    | Some(verifications) => Some(verifications.threeBox)
+    | Some(userInfo) => Some(userInfo.threeBox)
     };
   };
 
@@ -78,19 +78,23 @@ let useIsUserValidated: string => bool =
 
 let useUserComponent = user =>
   switch (user) {
-  | EthAddress(ethAddress) =>
-    <a href={j|https://etherscan.io/address/$ethAddress|j} target="_blank">
-      // I couldn't get this to work: http://www.mattsnider.com/css-string-truncation-with-ellipsis/
+  | EthAddress(address) =>
+    <React.Fragment>
+      <ProfileHover address />
+      <ProfileHover.Test address />
+    </React.Fragment>
+  // <a href={j|https://etherscan.io/address/$ethAddress|j} target="_blank">
+  //   // I couldn't get this to work: http://www.mattsnider.com/css-string-truncation-with-ellipsis/
 
-        {let stringReplace: string => string = [%raw
-           {|
-              function(longAddress) {
-                return longAddress.replace(/(.{7})..+/, "$1...");
-              }
-            |}
-         ];
-         React.string({j|$ethAddress|j}->stringReplace)}
-      </a>
+  //     {let stringReplace: string => string = [%raw
+  //        {|
+  //           function(longAddress) {
+  //             return longAddress.replace(/(.{7})..+/, "$1...");
+  //           }
+  //         |}
+  //      ];
+  //      React.string({j|$ethAddress|j}->stringReplace)}
+  //   </a>
   | TwitterHandle(twitterHandle) =>
     <a href={j|https://twitter.com/$twitterHandle|j} target="_blank">
       {React.string({j|@$twitterHandle|j})}

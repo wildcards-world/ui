@@ -1,5 +1,6 @@
 import React, { Fragment } from "react";
 import { Card, Box, Flex } from "rimble-ui";
+import ProfileHover from "profile-hover";
 
 const styles = {
   background: {

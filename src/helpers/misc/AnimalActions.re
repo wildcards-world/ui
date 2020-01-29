@@ -180,6 +180,8 @@ let useUpdateDeposit = () => {
           })
           ->Promise.Js.toResult;
         updateDepositPromise->Promise.getOk(tx => {
+          Js.log("tx");
+          Js.log(tx);
           setTxState(_ => SignedAndSubmitted);
           let txMinedPromise = tx.wait(.)->Promise.Js.toResult;
           txMinedPromise->Promise.getOk(txOutcome => {

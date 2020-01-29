@@ -10,11 +10,9 @@ let make =
         <WildcardsLoader />
       </Rimble.Heading>
       <Rimble.Text> "Tx Created."->React.string </Rimble.Text>
-      <Rimble.Loader
-        className=Styles.centerItems /*color="green"*/
-        size="80px"
-      />
+      <Rimble.Loader className=Styles.centerItems size="80px" />
     </React.Fragment>
+  // TODO: make it show the link to the tx on etherscan.io!
   | AnimalActions.SignedAndSubmitted =>
     <React.Fragment>
       <Rimble.Heading>
@@ -22,34 +20,41 @@ let make =
         <WildcardsLoader />
       </Rimble.Heading>
       <Rimble.Text> "Tx ."->React.string </Rimble.Text>
-      <Rimble.Loader
-        className=Styles.centerItems /*color="green"*/
-        size="80px"
-      />
+      <Rimble.Loader className=Styles.centerItems size="80px" />
     </React.Fragment>
-  | AnimalActions.Complete(_result) =>
+  | AnimalActions.Complete(result) =>
+    let txHash = result.transactionHash;
     <React.Fragment>
       <Rimble.Heading>
         "Transaction Complete "->React.string
         <WildcardsLoader />
       </Rimble.Heading>
-      <Rimble.Text> "Tx ."->React.string </Rimble.Text>
-      <Rimble.Loader
-        className=Styles.centerItems /*color="green"*/
-        size="80px"
-      />
-    </React.Fragment>
-  | _ =>
+      <Rimble.Text>
+        <a href={j|https://etherscan.io/tx/$txHash|j}>
+          "View the transaction on Etherscan"->React.string
+        </a>
+      </Rimble.Text>
+    </React.Fragment>;
+  | AnimalActions.Declined =>
     <React.Fragment>
       <Rimble.Heading>
-        "Processing Transaction "->React.string
+        "The transaction was desclined by signing device, please try again."
+        ->React.string
         <WildcardsLoader />
       </Rimble.Heading>
-      <Rimble.Text> "Unimplemented yet..."->React.string </Rimble.Text>
-      <Rimble.Loader
-        className=Styles.centerItems /*color="green"*/
-        size="80px"
-      />
+      children
+    </React.Fragment>
+  | AnimalActions.Failed =>
+    <React.Fragment>
+      <Rimble.Heading>
+        "The transaction failed."->React.string
+        <WildcardsLoader />
+      </Rimble.Heading>
+      <Rimble.Text>
+        "It is possible that someone else bought the token before you, or the price changed. If you are unsure please feel free to contact our support."
+        ->React.string
+      </Rimble.Text>
+      children
     </React.Fragment>
   // <Fragment>
   //   {(() => {

@@ -103,7 +103,7 @@ module BasicAnimalDisplay = {
     let owned = animal->QlHooks.useIsAnimalOwened;
     let currentPatron =
       QlHooks.usePatron(animal)->mapWithDefault("Loading", a => a);
-    let userId = UserProvider.useUserNameOrTwitterHandle(currentPatron);
+    let userId = UserProvider.EthAddress(currentPatron);//UserProvider.useUserNameOrTwitterHandle(currentPatron);
 
     let userIdComponent = UserProvider.useUserComponent(userId);
 
