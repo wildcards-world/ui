@@ -286,12 +286,14 @@ let useActivateConnector: unit => (connection, injectedType => unit) =
     (
       connectionStatus,
       provider => {
-        ignore(context.activate(provider, () => (), true));
-        // ->Promise.Js.catch(_error => {
-        //     setConnectionStatus(_ => ErrorConnecting);
-        //     Promise.resolved();
-        //   })
-        // ->Promise.get(() => {setConnectionStatus(_ => Connected)});
+        context.activate(provider, () => (), true)
+        ->Promise.Js.catch(error => {
+            Js.log("Error connecting to network:");
+            Js.log(error);
+            setConnectionStatus(_ => ErrorConnecting);
+            Promise.resolved();
+          })
+        ->Promise.get(() => {setConnectionStatus(_ => Connected)});
         setConnectionStatus(_ => Connecting);
       },
     );
