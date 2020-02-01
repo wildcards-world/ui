@@ -1,1 +1,0 @@
-(this["webpackJsonpwild-cards-playground"]=this["webpackJsonpwild-cards-playground"]||[]).push([[16],{2043:function(p,s){}}]);

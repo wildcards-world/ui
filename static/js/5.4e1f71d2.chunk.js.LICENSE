@@ -1,5 +1,7 @@
 /*! bignumber.js v2.0.7 https://github.com/MikeMcl/bignumber.js/LICENCE */
 
+/*! https://mths.be/punycode v1.4.1 by @mathias */
+
 /*!
  * web3.js - Ethereum JavaScript API
  *
