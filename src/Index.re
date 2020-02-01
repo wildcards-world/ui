@@ -1,5 +1,3 @@
-open Providers;
-
 [%bs.raw {|require("./custom.css")|}];
 
 module Router = {
@@ -7,19 +5,36 @@ module Router = {
   let make = () => {
     let url = ReasonReactRouter.useUrl();
     switch (url.path) {
-    | ["new-data"] => <QlHooks />
+    // | ["new-data"] => <QlHooks />
     | [_] => <p> {React.string("Unknown page")} </p>
     | _ => <Layout />
     };
   };
 };
 
+module ReasonApolloProvderNetworkSwitcher = {
+  [@react.component]
+  let make = (~children) => {
+    let networkId =
+      RootProvider.useNetworkId()->Belt.Option.mapWithDefault(0, a => a);
+    let client = Client.instance(networkId);
+
+    <ReasonApollo.Provider key={networkId->string_of_int} client>
+      <ReasonApolloHooks.ApolloHooks.Provider
+        key={networkId->string_of_int} client>
+        children
+      </ReasonApolloHooks.ApolloHooks.Provider>
+    </ReasonApollo.Provider>;
+    // };
+  };
+};
+
 ReactDOMRe.renderToElementWithId(
-  <ReasonApollo.Provider client=Client.instance>
-    <ReasonApolloHooks.ApolloProvider client=Client.instance>
-      <DrizzleProvider> <Router /> </DrizzleProvider>
-    </ReasonApolloHooks.ApolloProvider>
-  </ReasonApollo.Provider>,
+  <RootProvider>
+    <ReasonApolloProvderNetworkSwitcher>
+      <QlStateManager> <Router /> </QlStateManager>
+    </ReasonApolloProvderNetworkSwitcher>
+  </RootProvider>,
   "root",
 );
 

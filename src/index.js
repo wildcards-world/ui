@@ -1,1 +1,1 @@
-import "./Index.bs.js"
+import "./Index.bs.js";

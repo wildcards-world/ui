@@ -15,24 +15,27 @@ module BuyGrid = {
 
 module AnimalFocusDetails = {
   [@react.component]
-  let make = (~animalCarousel, ~isExplorer) =>
+  let make = (~animalCarousel) => {
+    let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+    let isExplorer = Router.useIsExplorer();
+
     <Rimble.Flex flexWrap="wrap" alignItems="center" className=Styles.topBody>
       {switch (animalCarousel) {
        | None => React.null
        | Some((_, previousAnimal)) =>
          <Rimble.Box p=1 width=[|0.05, 0.05, 0.05|]>
-           <Rimble.Button
-             className=Styles.forwardBackButton
-             onClick={InputHelp.handleEvent(() =>
-               ReasonReactRouter.push(
+           <span
+             className={Styles.carouselArrow(true, ~absolutePosition=false)}
+             onClick={InputHelp.handleMouseEvent(() =>
+               clearAndPush(
                  "#"
                  ++ InputHelp.getPagePrefix(isExplorer)
                  ++ "details/"
                  ++ previousAnimal->Animal.getName->Js.Global.encodeURI,
                )
              )}>
-             <S> {js|◄|js} </S>
-           </Rimble.Button>
+             {js|◄|js}->React.string
+           </span>
          </Rimble.Box>
        }}
       <Rimble.Box
@@ -45,26 +48,30 @@ module AnimalFocusDetails = {
        | None => React.null
        | Some((nextAnimal, _)) =>
          <Rimble.Box p=1 width=[|0.05, 0.05, 0.05|]>
-           <Rimble.Button
-             className=Styles.forwardBackButton
-             onClick={InputHelp.handleEvent(() =>
-               ReasonReactRouter.push(
+           <span
+             className={Styles.carouselArrow(false, ~absolutePosition=false)}
+             onClick={InputHelp.handleMouseEvent(() =>
+               clearAndPush(
                  "#"
                  ++ InputHelp.getPagePrefix(isExplorer)
                  ++ "details/"
                  ++ nextAnimal->Animal.getName->Js.Global.encodeURI,
                )
              )}>
-             <S> {js|►|js} </S>
-           </Rimble.Button>
+             {js|►|js}->React.string
+           </span>
          </Rimble.Box>
        }}
     </Rimble.Flex>;
+  };
 };
 
 module Header = {
   [@react.component]
-  let make = (~animalCarousel, ~isExplorer, ~isDetails) => {
+  let make = (~animalCarousel) => {
+    let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+    let isExplorer = Router.useIsExplorer();
+    let isDetails = Router.useIsDetails();
     open ReactTranslate;
     let usedtranslationModeContext = useTranslationModeContext();
     <header className=Styles.header>
@@ -74,7 +81,7 @@ module Header = {
             className=Styles.clickableLink
             onClick={event => {
               ReactEvent.Mouse.preventDefault(event);
-              ReasonReactRouter.push("#");
+              clearAndPush("#");
             }}>
             <div className=Styles.headerLogo> <img src=smallIcon /> </div>
           </a>
@@ -112,7 +119,7 @@ module Header = {
                    className=Styles.navListText
                    onClick={event => {
                      ReactEvent.Mouse.preventDefault(event);
-                     ReasonReactRouter.push("#");
+                     clearAndPush("#");
                    }}>
                    <S> "HOME" </S>
                  </a>
@@ -130,14 +137,14 @@ module Header = {
                      href=""
                      onClick={event => {
                        ReactEvent.Mouse.preventDefault(event);
-                       ReasonReactRouter.push("#");
+                       clearAndPush("#");
                      }}>
                      <S> "HOME" </S>
                    </a>
                  : <Rimble.Button
                      onClick={event => {
                        ReactEvent.Form.preventDefault(event);
-                       ReasonReactRouter.push("#explorer");
+                       clearAndPush("#explorer");
                      }}
                      className=Styles.whiteText>
                      <S> "ANIMAL KINGDOM" </S>
@@ -152,59 +159,51 @@ module Header = {
 
 [@react.component]
 let make = () => {
-  let url = ReasonReactRouter.useUrl();
+  let urlState = Router.useUrlState();
 
-  let (animalCarousel, isExplorer, isDetails) =
-    switch (Js.String.split("/", url.hash)) {
-    | [|"explorer", "details", animalStr|]
-    | [|"explorer", "details", animalStr, ""|] =>
-      let optionAnimal = Animal.getAnimal(animalStr);
-      (
-        optionAnimal->Belt.Option.map(animal => Animal.getNextPrev(animal)),
-        true,
-        true,
-      );
-    | [|"details", animalStr|] =>
-      let optionAnimal = Animal.getAnimal(animalStr);
-      (
-        optionAnimal->Belt.Option.map(animal => Animal.getNextPrev(animal)),
-        false,
-        true,
-      );
-    | urlArray
-        when
-          Belt.Array.get(urlArray, 0)
-          ->Belt.Option.mapWithDefault(false, a => a == "explorer") => (
-        None,
-        true,
-        false,
-      )
-    | _ => (None, false, false)
-    };
+  // TODO: add code that scrolls to the correct height on mobile (to buy etc).
+  // let ref = React.useRef(Js.Nullable.null);
+  // ref.current.scrollHeight;
+  // ReactDOMRe.Ref.domRef(ref);
+  /*ref={ReactDOMRe.Ref.domRef(ref)}*/
 
   <div className=Styles.app>
     <img src=betaBanner className=Styles.betaBanner />
-    <Header animalCarousel isExplorer isDetails />
+    <Web3Connect />
+    <Header animalCarousel={Some((Animal.Andy, Animal.Simon))} />
     <Providers.UsdPriceProvider>
-      {isDetails
-         ? <AnimalFocusDetails animalCarousel isExplorer />
-         : isExplorer
-             ? <BuyGrid
-                 animalArray={
-                   Animal.orderedArray->Belt.Array.map((animal, ()) =>
-                     <Dapp.CarouselAnimal animal isExplorer scalar=1. />
-                   )
-                 }
-               />
-             : <React.Fragment>
-                 <AnimalFocusDetails animalCarousel isExplorer />
-                 <StaticContent.CustomerBenefit />
-                 <StaticContent.HowItWorks />
-                 <StaticContent.About />
-                 <StaticContent.CoreConcepts />
-                 <StaticContent.EmailSignup />
-                 <StaticContent.Partners />
-               </React.Fragment>}
+      {switch (urlState) {
+       | Explorer(animalPageState) =>
+         switch (animalPageState) {
+         | DetailView(animalCarousel, _) =>
+           <AnimalFocusDetails animalCarousel />
+         | NormalView =>
+           <BuyGrid
+             animalArray={
+               Animal.orderedArray->Belt.Array.map((animal, ()) =>
+                 <Dapp.CarouselAnimal animal isGqlLoaded=true scalar=1. />
+               )
+             }
+           />
+         }
+       | Home(animalPageState) =>
+         switch (animalPageState) {
+         | DetailView(animalCarousel, _) =>
+           <AnimalFocusDetails animalCarousel />
+         | NormalView =>
+           <React.Fragment>
+             <AnimalFocusDetails animalCarousel=None />
+             <StaticContent.CustomerBenefit />
+             <StaticContent.HowItWorks />
+             <StaticContent.About />
+             <StaticContent.CoreConcepts />
+             <StaticContent.EmailSignup />
+             <StaticContent.FAQs />
+             <StaticContent.Partners />
+           </React.Fragment>
+         }
+       | User(userAddress) => <UserProfile userAddress />
+       }}
     </Providers.UsdPriceProvider>
     <StaticContent.Footer />
   </div>;

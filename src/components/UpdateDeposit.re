@@ -1,6 +1,3 @@
-open Hooks;
-open Belt.Option;
-
 module UpdateDepositInput = {
   [@bs.module "./UpdateDepositInput"] [@react.component]
   external make:
@@ -9,50 +6,37 @@ module UpdateDepositInput = {
       ~updateDepositChange: ReactEvent.Form.t => (string, bool),
       ~isAddDeposit: bool,
       ~updateIsAddDeposit: bool => unit,
-      ~onSubmitDepositChange: ReactEvent.Form.t => (string, bool)
+      ~onSubmitDepositChange: ReactEvent.Form.t => unit
     ) =>
     React.element =
     "default";
 };
 
 let getToDisplay = (label, value) =>
-  React.string(label ++ ": " ++ value->mapWithDefault("loading", a => a));
+  React.string(
+    label ++ ": " ++ value->Belt.Option.mapWithDefault("loading", a => a),
+  );
 module Transaction = {
   [@react.component]
-  let make = (~animal: Animal.t) => {
+  let make = () => {
     let (depositChange, setDepositChange) = React.useState(() => "");
     let (isAddDeposit, setIsAddDeposit) = React.useState(() => true);
-    let currentUser = useCurrentUser()->mapWithDefault("", a => a);
-    let tokenId = Animal.getId(animal);
-    // let userBalance =
-    //   DrizzleReact.Hooks.useUserBalance()->mapWithDefault("", a => a);
 
-    let (withdrawFunc, txWithdrawObjects) = {
-      let withdrawObj = useWithdrawTransactionNew();
-      (
-        (depositChange, txObject) =>
-          withdrawObj##send(. depositChange, txObject),
-        withdrawObj##_TXObjects,
-      );
-    };
-    let (depositFunc, txDepositObjects) = {
-      let depositObj = useAddDepositTransactionNew();
-      (txObject => depositObj##send(. txObject), depositObj##_TXObjects);
-    };
+    let (depositFunc, txWithdrawObject) = AnimalActions.useUpdateDeposit();
+    let (withdrawFunc, txDepositObject) = AnimalActions.useWithdrawDeposit();
 
-    let _availableDeposit =
-      useDepositAbleToWithdrawWeiNew(currentUser)
-      ->mapWithDefault("0", price => price);
+    // let _availableDeposit =
+    //   useDepositAbleToWithdrawWeiNew(currentUser)
+    //   ->mapWithDefault("0", price => price);
 
     let onSubmitDepositChange = event => {
       ReactEvent.Form.preventDefault(event);
       let depositChangeWei = Web3Utils.toWei(depositChange, "ether");
-      let setFunctionObj = [%bs.raw {| (value, from) => ({ value, from }) |}];
 
       if (isAddDeposit) {
-        depositFunc(setFunctionObj(. depositChangeWei, currentUser));
+        depositFunc(depositChangeWei);
       } else {
-        withdrawFunc(depositChangeWei, setFunctionObj(. "0", currentUser));
+        withdrawFunc(depositChangeWei);
       };
     };
 
@@ -67,9 +51,8 @@ module Transaction = {
     let updateIsAddDeposit = isDeposit => {
       setIsAddDeposit(_ => isDeposit);
     };
-    // <TxTemplate>
-    <TxTemplate txObjects=txDepositObjects>
-      <TxTemplate txObjects=txWithdrawObjects>
+    <TxTemplate txState=txDepositObject>
+      <TxTemplate txState=txWithdrawObject>
         <UpdateDepositInput
           depositChange
           updateDepositChange
@@ -82,43 +65,14 @@ module Transaction = {
   };
 };
 
-module ModalContainer = {
-  [@react.component]
-  let make = (~animal: Animal.t) => {
-    <Transaction animal />;
-  };
-};
-
 [@react.component]
-let make = (~animal: Animal.t) => {
-  let (isModalOpen, setModalOpen) = React.useState(() => false);
-
-  let onUnlockMetamaskAndOpenModal = event => {
-    ReactEvent.Form.preventDefault(event);
-    ReactEvent.Form.stopPropagation(event);
-    setModalOpen(_ => true);
-  };
+let make = () => {
+  // TODO: if the token is foreclosed handle that logic... (say something like -- "add deposit quick! to keep your token")
+  let goToDepositUpdate = RootProvider.useGoToDepositUpdate();
 
   <React.Fragment>
-    <Rimble.Box p=1>
-      <Rimble.Button onClick=onUnlockMetamaskAndOpenModal>
-        {React.string("Deposit")}
-      </Rimble.Button>
-    </Rimble.Box>
-    <Rimble.Modal isOpen=isModalOpen>
-      <Rimble.Card width={Rimble.AnyStr("420px")} p=0>
-        <Rimble.Button.Text
-          icononly=true
-          icon="Close"
-          color="moon-gray"
-          position="absolute"
-          top=0
-          right=0
-          m=3
-          onClick={_ => setModalOpen(_ => false)}
-        />
-        <ModalContainer animal />
-      </Rimble.Card>
-    </Rimble.Modal>
+    <Rimble.Button onClick={_e => goToDepositUpdate()}>
+      "Deposit"->React.string
+    </Rimble.Button>
   </React.Fragment>;
 };

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
 class Countdown extends Component {
   constructor(props) {
@@ -8,14 +8,14 @@ class Countdown extends Component {
       days: 0,
       hours: 0,
       min: 0,
-      sec: 0,
-    }
+      sec: 0
+    };
   }
 
   componentDidMount() {
     // update every second
     this.interval = setInterval(() => {
-      const date = this.calculateCountdown('2019-12-02T19:00:00');
+      const date = this.calculateCountdown("2019-12-02T19:00:00");
       date ? this.setState(date) : this.stop();
     }, 1000);
   }
@@ -36,19 +36,22 @@ class Countdown extends Component {
       hours: 0,
       min: 0,
       sec: 0,
-      millisec: 0,
+      millisec: 0
     };
 
     // calculate time difference between now and expected date
-    if (diff >= (365.25 * 86400)) { // 365.25 * 24 * 60 * 60
+    if (diff >= 365.25 * 86400) {
+      // 365.25 * 24 * 60 * 60
       timeLeft.years = Math.floor(diff / (365.25 * 86400));
       diff -= timeLeft.years * 365.25 * 86400;
     }
-    if (diff >= 86400) { // 24 * 60 * 60
+    if (diff >= 86400) {
+      // 24 * 60 * 60
       timeLeft.days = Math.floor(diff / 86400);
       diff -= timeLeft.days * 86400;
     }
-    if (diff >= 3600) { // 60 * 60
+    if (diff >= 3600) {
+      // 60 * 60
       timeLeft.hours = Math.floor(diff / 3600);
       diff -= timeLeft.hours * 3600;
     }
@@ -68,7 +71,7 @@ class Countdown extends Component {
   addLeadingZeros(value) {
     value = String(value);
     while (value.length < 2) {
-      value = '0' + value;
+      value = "0" + value;
     }
     return value;
   }
@@ -79,20 +82,19 @@ class Countdown extends Component {
     return (
       <div className="countdown-timer">
         <strong>{this.addLeadingZeros(countDown.days)}</strong>&nbsp;
-            {/* <span>{countDown.days === 1 ? 'Day' : 'Days'}</span>&nbsp; */}
+        {/* <span>{countDown.days === 1 ? 'Day' : 'Days'}</span>&nbsp; */}
         <span>:</span>&nbsp;
-            <strong>{this.addLeadingZeros(countDown.hours)}</strong>&nbsp;
-            <span>:</span>&nbsp;
-            <strong>{this.addLeadingZeros(countDown.min)}</strong>&nbsp;
-            <span>:</span>&nbsp;
-            <strong>{this.addLeadingZeros(countDown.sec)}</strong>&nbsp;
-            <span></span>
+        <strong>{this.addLeadingZeros(countDown.hours)}</strong>&nbsp;
+        <span>:</span>&nbsp;
+        <strong>{this.addLeadingZeros(countDown.min)}</strong>&nbsp;
+        <span>:</span>&nbsp;
+        <strong>{this.addLeadingZeros(countDown.sec)}</strong>&nbsp;
+        <span></span>
       </div>
     );
   }
 }
 
-Countdown.propTypes = {
-};
+Countdown.propTypes = {};
 
 export default Countdown;

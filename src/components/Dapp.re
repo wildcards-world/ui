@@ -1,5 +1,3 @@
-open Hooks;
-open Providers.DrizzleProvider;
 open Belt.Option;
 open Components;
 
@@ -28,11 +26,14 @@ module CountDown = {
 
 module EditButton = {
   [@react.component]
-  let make = (~animal: Animal.t, ~isExplorer) => {
+  let make = (~animal: Animal.t) => {
+    let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+    let isExplorer = Router.useIsExplorer();
+
     <Rimble.Button
       onClick={event => {
         ReactEvent.Form.preventDefault(event);
-        ReasonReactRouter.push(
+        clearAndPush(
           "#"
           ++ InputHelp.getPagePrefix(isExplorer)
           ++ "details/"
@@ -98,11 +99,10 @@ module DisplayAfterDate = {
 
 module BasicAnimalDisplay = {
   [@react.component]
-  let make = (~animal: Animal.t, ~isExplorer) => {
-    let owned = animal->Animal.useIsAnimalOwened;
+  let make = (~animal: Animal.t) => {
+    let owned = animal->QlHooks.useIsAnimalOwened;
     let currentPatron =
-      GeneralHooks.useCurrentPatronAnimal(animal)
-      ->mapWithDefault("Loading", a => a);
+      QlHooks.usePatron(animal)->mapWithDefault("Loading", a => a);
     let userId = UserProvider.useUserNameOrTwitterHandle(currentPatron);
 
     let userIdComponent = UserProvider.useUserComponent(userId);
@@ -111,7 +111,7 @@ module BasicAnimalDisplay = {
       <PriceDisplay animal />
       userIdComponent
       <br />
-      {owned ? <EditButton animal isExplorer /> : <BuyModal animal />}
+      {owned ? <EditButton animal /> : <BuyModal animal />}
     </React.Fragment>;
   };
 };
@@ -124,12 +124,15 @@ module AnimalOnLandingPage = {
         ~scalar: float=1.,
         ~enlargement: float=1.,
         ~optionEndDateMoment: option(MomentRe.Moment.t),
-        ~isExplorer,
+        ~isGqlLoaded,
       ) => {
     let name = Animal.getName(animal);
+    let isExplorer = Router.useIsExplorer();
 
     let optAlternateImage = Animal.getAlternateImage(animal);
     let orgBadge = Animal.getOrgBadgeImage(animal);
+
+    let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
     let normalImage = () =>
       <img
@@ -144,11 +147,15 @@ module AnimalOnLandingPage = {
            React.null;
          } else {
            <React.Fragment>
-             {switch (optionEndDateMoment) {
-              | Some(_endDateMoment) => React.null
-              | None =>
-                <div className=Styles.overlayFlameImg> <Streak animal /> </div>
-              }}
+             {isGqlLoaded
+                ? switch (optionEndDateMoment) {
+                  | Some(_endDateMoment) => React.null
+                  | None =>
+                    <div className=Styles.overlayFlameImg>
+                      <Streak animal />
+                    </div>
+                  }
+                : React.null}
              {<div className=Styles.overlayBadgeImg>
                 <img className=Styles.flameImg src=orgBadge />
               </div>}
@@ -184,7 +191,7 @@ module AnimalOnLandingPage = {
           className=Styles.clickableLink
           onClick={event => {
             ReactEvent.Mouse.preventDefault(event);
-            ReasonReactRouter.push(
+            clearAndPush(
               "#"
               ++ InputHelp.getPagePrefix(isExplorer)
               ++ "details/"
@@ -202,11 +209,7 @@ module AnimalOnLandingPage = {
            <CountDown endDateMoment leadingZeros=true includeWords=false />
          </div>
        | None =>
-         <div>
-           <Offline requireSmartContractsLoaded=true>
-             <BasicAnimalDisplay animal isExplorer />
-           </Offline>
-         </div>
+         isGqlLoaded ? <div> <BasicAnimalDisplay animal /> </div> : React.null
        }}
     </Rimble.Box>;
   };
@@ -214,38 +217,24 @@ module AnimalOnLandingPage = {
 
 module CarouselAnimal = {
   [@react.component]
-  let make = (~animal, ~scalar, ~isExplorer, ~enlargement: float=1.) => {
+  let make = (~animal, ~scalar, ~enlargement: float=1., ~isGqlLoaded) => {
     let isLaunched = animal->Animal.isLaunched;
-    switch (isLaunched) {
-    | Animal.Launched =>
+
+    let makeAnimalOnLandingPage = optionEndDateMoment =>
       <AnimalOnLandingPage
         animal
         scalar
-        optionEndDateMoment=None
-        isExplorer
+        optionEndDateMoment
         enlargement
-      />
+        isGqlLoaded
+      />;
+    switch (isLaunched) {
+    | Animal.Launched => makeAnimalOnLandingPage(None)
     | Animal.LaunchDate(endDateMoment) =>
       <DisplayAfterDate
         endDateMoment
-        afterComponent={
-          <AnimalOnLandingPage
-            animal
-            isExplorer
-            scalar
-            optionEndDateMoment=None
-            enlargement
-          />
-        }
-        beforeComponent={
-          <AnimalOnLandingPage
-            animal
-            scalar
-            isExplorer
-            optionEndDateMoment={Some(endDateMoment)}
-            enlargement
-          />
-        }
+        afterComponent={makeAnimalOnLandingPage(None)}
+        beforeComponent={makeAnimalOnLandingPage(Some(endDateMoment))}
       />
     };
   };
@@ -253,9 +242,10 @@ module CarouselAnimal = {
 
 module AnimalCarousel = {
   [@react.component]
-  let make = (~isExplorer) => {
+  let make = (~isGqlLoaded) => {
     let (carouselIndex, setCarouselIndex) = React.useState(() => 17);
     let numItems = Animal.orderedArray->Array.length;
+
     <Rimble.Box className=Styles.positionRelative>
       <Carousel
         className=Styles.carousel
@@ -317,7 +307,7 @@ module AnimalCarousel = {
                  };
 
                <div className={Styles.fadeOut(opacity)}>
-                 <CarouselAnimal animal isExplorer scalar enlargement=1.5 />
+                 <CarouselAnimal animal isGqlLoaded scalar enlargement=1.5 />
                </div>;
              },
              Animal.orderedArray,
@@ -331,11 +321,11 @@ module AnimalCarousel = {
 module AnimalActionsOnDetailsPage = {
   [@react.component]
   let make = (~animal) => {
-    let owned = animal->Animal.useIsAnimalOwened;
-    let currentAccount = useCurrentUser()->mapWithDefault("loading", a => a);
+    let owned = animal->QlHooks.useIsAnimalOwened;
+    // let currentAccount =
+    //   RootProvider.useCurrentUser()->mapWithDefault("loading", a => a);
     let currentPatron =
-      GeneralHooks.useCurrentPatronAnimal(animal)
-      ->mapWithDefault("Loading", a => a);
+      QlHooks.usePatron(animal)->mapWithDefault("Loading", a => a);
     let userId = UserProvider.useUserNameOrTwitterHandle(currentPatron);
     let userIdComponent = UserProvider.useUserComponent(userId);
 
@@ -349,12 +339,13 @@ module AnimalActionsOnDetailsPage = {
     if (owned) {
       <React.Fragment>
         <PriceDisplay animal />
-        <UpdatePriceModal animal />
+        <UpdatePrice animal />
         <br />
-        <UpdateDeposit animal />
+        <UpdateDeposit />
         <br />
-        {UserProvider.useIsUserValidated(currentAccount)
-           ? <ShareSocial /> : <ValidateModal />}
+        // {UserProvider.useIsUserValidated(currentAccount)
+        //    ? <ShareSocial /> : <Validate />}
+        <Validate />
       </React.Fragment>;
     } else {
       <React.Fragment>
@@ -436,9 +427,7 @@ module DetailsView = {
            />
          }}
         <h2> <S> {Animal.getName(animal)} </S> </h2>
-        <Offline requireSmartContractsLoaded=true>
-          <AnimalActionsOnDetailsPage animal />
-        </Offline>
+        <AnimalActionsOnDetailsPage animal />
       </React.Fragment>;
     };
   };
@@ -446,15 +435,8 @@ module DetailsView = {
 
 module DefaultLook = {
   [@react.component]
-  let make = (~isExplorer) => {
+  let make = (~isGqlLoaded) => {
     open Components;
-    let setProvider = useSetProvider();
-    React.useEffect0(() => {
-      open Web3connect.Core;
-      let core = getCore(None); // TOGGLE THE ABOVE LINE OUT BEFORE PRODUCTION!!
-      core->setOnConnect(setProvider);
-      None;
-    });
 
     let url = ReasonReactRouter.useUrl();
 
@@ -465,11 +447,9 @@ module DefaultLook = {
        | [|"explorer", "details", animalStr, ""|] => <DetailsView animalStr />
        | _ =>
          <React.Fragment>
-           <AnimalCarousel isExplorer />
+           <AnimalCarousel isGqlLoaded />
            <Rimble.Box className=Styles.dappImagesCounteractOffset>
-             <Offline requireSmartContractsLoaded=true>
-               <TotalRaised />
-             </Offline>
+             {isGqlLoaded ? <TotalRaised /> : React.null}
            </Rimble.Box>
            <Rimble.Box className=Styles.dappImagesCounteractOffset>
              <p>
@@ -500,7 +480,7 @@ module DefaultLeftPanel = {
       <h1 className=Styles.heading>
         <span className=Styles.colorBlue> <S> "Always for sale" </S> </span>
         <br />
-        <S> {translation(. "ethereum") ++ " based"} </S>
+        <S> {translation(. "ethereum")} </S>
         <br />
         <span className=Styles.colorGreen> <S> "conservation" </S> </span>
         <S> {" " ++ translation(. "tokens")} </S>
@@ -512,6 +492,7 @@ module DefaultLeftPanel = {
     </React.Fragment>;
   };
 };
+
 type maybeDate =
   | Loading
   | Date(MomentRe.Moment.t);
@@ -524,8 +505,7 @@ module AnimalInfoStats = {
     let daysHeld = QlHooks.useDaysHeld(animal);
 
     let currentPatron =
-      GeneralHooks.useCurrentPatronAnimal(animal)
-      ->mapWithDefault("Loading", a => a);
+      QlHooks.usePatron(animal)->mapWithDefault("Loading", a => a);
     let userId = UserProvider.useUserNameOrTwitterHandle(currentPatron);
     let userIdType =
       switch (userId) {
@@ -533,32 +513,55 @@ module AnimalInfoStats = {
       | TwitterHandle(_) => "verified twitter account"
       };
     let userIdComponent = UserProvider.useUserComponent(userId);
-    let depositAvailableToWithdraw =
-      GeneralHooks.useDepositAbleToWithdrawEthAnimal(animal)
-      ->mapWithDefault("Loading", a => a);
-    let depositAvailableToWithdrawUsd =
-      GeneralHooks.useDepositAbleToWithdrawUsdAnimal(animal)
-      ->mapWithDefault("Loading", a => a);
-    let totalPatronage = GeneralHooks.useTotalPatronageEthAnimal(animal);
-    let totalPatronageUsd =
-      GeneralHooks.useTotalPatronageUsdAnimal(animal)
-      ->mapWithDefault("Loading", a => a);
-    let foreclosureTime = GeneralHooks.useForeclosureTimeAnimal(animal);
+    let currentUsdEthPrice = Providers.UsdPriceProvider.useUsdPrice();
+    let (depositAvailableToWithdrawEth, depositAvailableToWithdrawUsd) =
+      // GeneralHooks.useDepositAbleToWithdrawEthAnimal(animal)
+      QlHooks.useRemainingDepositEth(currentPatron)
+      ->mapWithDefault(("Loading", "Loading"), a =>
+          (
+            a->Eth.get(Eth.Eth(`ether)),
+            currentUsdEthPrice->Belt.Option.mapWithDefault(
+              "Loading", usdEthRate =>
+              a->Eth.get(Eth.Usd(usdEthRate, 2))
+            ),
+          )
+        );
+
+    let (totalPatronage, totalPatronageUsd) =
+      QlHooks.useAmountRaisedToken(animal)
+      ->mapWithDefault(("Loading", "Loading"), a =>
+          (
+            a->Eth.get(Eth.Eth(`ether)),
+            currentUsdEthPrice->Belt.Option.mapWithDefault(
+              "Loading", usdEthRate =>
+              a->Eth.get(Eth.Usd(usdEthRate, 2))
+            ),
+          )
+        );
+    let foreclosureTime = QlHooks.useForeclosureTime(currentPatron);
     let definiteTime = foreclosureTime->mapWithDefault(Loading, a => Date(a));
     let (_, _, ratio, _) = Animal.pledgeRate(animal);
-    let currentPrice = Animal.useCurrentPriceEth(animal);
-    let currentPriceUsd = Animal.useCurrentPriceUsd(animal);
-    let monthlyPledgeEth =
-      Js.Float.toString(
-        Belt.Float.fromString(currentPrice)->Accounting.defaultZeroF *. ratio,
-      );
-    let monthlyPledgeUsd =
-      // Js.Float.toString(
-      Js.Float.toFixedWithPrecision(
-        Belt.Float.fromString(currentPriceUsd)->Accounting.defaultZeroF
-        *. ratio,
-        ~digits=2,
-      );
+
+    let optCurrentPrice = PriceDisplay.uesPrice(animal);
+
+    let (optMonthlyPledgeEth, optMonthlyPledgeUsd) =
+      switch (optCurrentPrice) {
+      | Some((priceEth, optPriceUsd)) => (
+          Some(
+            Js.Float.toString(
+              Belt.Float.fromString(priceEth)->Accounting.defaultZeroF
+              *. ratio,
+            ),
+          ),
+          switch (optPriceUsd) {
+          | Some(_priceUsd) => None
+
+          | None => None
+          },
+        )
+      | None => (None, None)
+      };
+
     let monthlyRate = Js.Float.toString(ratio *. 100.);
 
     <React.Fragment>
@@ -578,9 +581,18 @@ module AnimalInfoStats = {
           </strong>
         </small>
         <br />
-        <S> {monthlyPledgeEth ++ " ETH"} </S>
+        {switch (optMonthlyPledgeEth) {
+         | Some(monthlyPledgeEth) => <S> {monthlyPledgeEth ++ " ETH"} </S>
+         | None => <Rimble.Loader />
+         }}
         <br />
-        <small> <S> {"(" ++ monthlyPledgeUsd ++ " USD)"} </S> </small>
+        <small>
+          {switch (optMonthlyPledgeUsd) {
+           | Some(monthlyPledgeUsd) =>
+             <S> {"(" ++ monthlyPledgeUsd ++ " USD)"} </S>
+           | None => React.null
+           }}
+        </small>
       </div>
       <p>
         <small>
@@ -608,7 +620,7 @@ module AnimalInfoStats = {
           </strong>
         </small>
         <br />
-        <S> {depositAvailableToWithdraw ++ " ETH"} </S>
+        <S> {depositAvailableToWithdrawEth ++ " ETH"} </S>
         <br />
         <small>
           <S> {"(" ++ depositAvailableToWithdrawUsd ++ " USD)"} </S>
@@ -700,7 +712,8 @@ module AnimalInfo = {
           <h2> "Story"->React.string </h2>
           {ReasonReact.array(
              Array.mapi(
-               (i, paragraphText) => <p key=i->string_of_int> paragraphText->React.string </p>,
+               (i, paragraphText) =>
+                 <p key={i->string_of_int}> paragraphText->React.string </p>,
                Animal.getStoryParagraphs(animal),
              ),
            )}
@@ -727,46 +740,87 @@ module AnimalInfo = {
 };
 
 [@react.component]
-// The Offline container here shows the website, but without loading the requirements
 let make = () => {
-  let url = ReasonReactRouter.useUrl();
-  let (isDetailView, animalStr, isExplorer) = {
-    switch (Js.String.split("/", url.hash)) {
-    | [|"explorer", "details", animalStr|]
-    | [|"explorer", "details", animalStr, ""|] => (true, animalStr, true)
-    | [|"details", animalStr|] => (true, animalStr, false)
-    | urlArray
-        when
-          Belt.Array.get(urlArray, 0)
-          ->Belt.Option.mapWithDefault(false, a => a == "explorer") => (
-        false,
-        "",
-        true,
-      )
-    | _ => (false, "", false)
-    };
-  };
+  let isGqlLoaded = QlStateManager.useIsInitialized();
+  let nonUrlRouting = RootProvider.useNonUrlState();
+  let clearNonUrlState = RootProvider.useClearNonUrlState();
+  let isDetailView = Router.useIsDetails();
+  let optAnimalForDetails = Router.useAnimalForDetails();
 
   <Rimble.Flex
     flexWrap={isDetailView ? "wrap-reverse" : "wrap"} alignItems="start">
     <Rimble.Box p=1 width=[|1., 1., 0.5|]>
       <React.Fragment>
-        {isDetailView
-           ? {
-             let optionAnimal = Animal.getAnimal(animalStr);
-             switch (optionAnimal) {
-             | None => <DefaultLeftPanel />
-             | Some(animal) =>
-               <Offline requireSmartContractsLoaded=true>
-                 <AnimalInfo animal />
-               </Offline>
-             };
+        {switch (nonUrlRouting) {
+         | LoginScreen(_followOnAction) => <Login />
+         | BuyScreen(animal) =>
+           <div className=Css.(style([position(`relative)]))>
+             <Rimble.Button.Text
+               icononly=true
+               icon="Close"
+               color="moon-gray"
+               position="absolute"
+               top=0
+               right=0
+               m=1
+               onClick={_ => clearNonUrlState()}
+             />
+             <BuyModal.Transaction animal />
+           </div>
+         | UserVerificationScreen =>
+           <div className=Css.(style([position(`relative)]))>
+             <Rimble.Button.Text
+               icononly=true
+               icon="Close"
+               color="moon-gray"
+               position="absolute"
+               top=0
+               right=0
+               m=1
+               onClick={_ => clearNonUrlState()}
+             />
+             <React.Suspense fallback={<Rimble.Loader />}>
+               <LazyThreeBoxUpdate.Lazy />
+             </React.Suspense>
+           </div>
+         | UpdateDepositScreen =>
+           <div className=Css.(style([position(`relative)]))>
+             <Rimble.Button.Text
+               icononly=true
+               icon="Close"
+               color="moon-gray"
+               position="absolute"
+               top=0
+               right=0
+               m=1
+               onClick={_ => clearNonUrlState()}
+             />
+             <UpdateDeposit.Transaction />
+           </div>
+         | UpdatePriceScreen(animal) =>
+           <div className=Css.(style([position(`relative)]))>
+             <Rimble.Button.Text
+               icononly=true
+               icon="Close"
+               color="moon-gray"
+               position="absolute"
+               top=0
+               right=0
+               m=1
+               onClick={_ => clearNonUrlState()}
+             />
+             <UpdatePrice.Transaction animal />
+           </div>
+         | _ =>
+           switch (optAnimalForDetails) {
+           | Some(animal) => <AnimalInfo animal />
+           | None => <DefaultLeftPanel />
            }
-           : <DefaultLeftPanel />}
+         }}
       </React.Fragment>
     </Rimble.Box>
     <Rimble.Box p=1 width=[|1., 1., 0.5|]>
-      <DefaultLook isExplorer />
+      <DefaultLook isGqlLoaded />
     </Rimble.Box>
   </Rimble.Flex>;
 };

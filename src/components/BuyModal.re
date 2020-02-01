@@ -1,5 +1,4 @@
-open Hooks;
-open Providers.DrizzleProvider;
+// open Providers.RootProvider;
 open Belt;
 open Accounting;
 
@@ -70,41 +69,48 @@ let calcRequiredDepositForTime = (time, price, numerator, denominator) => {
 module Transaction = {
   [@react.component]
   let make = (~animal: Animal.t) => {
-    let currentUser = useCurrentUser();
-    let (buyFunc, txObjects) = Animal.useBuy(animal);
-    let userBalance = DrizzleReact.Hooks.useUserBalance()->defaultZeroS;
+    let (buyFunc, txState) = AnimalActions.useBuy(animal);
+    let userBalance =
+      Belt.Option.mapWithDefault(
+        RootProvider.useEthBalance(), BN.new_("0"), a =>
+        a
+      );
 
     let (numerator, denominator, ratio, ratioInverse) =
       Animal.pledgeRate(animal);
-    let currentPriceWei = Animal.useCurrentPrice(animal);
+    let currentPriceWei =
+      switch (QlHooks.usePrice(animal)) {
+      | Price(price) => price
+      | _ => BN.new_("0")
+      };
 
     let animalName = Animal.getName(animal);
 
     let maxAvailableDepositBN =
-      BN.new_(userBalance)
+      userBalance
       ->BN.subGet(. BN.new_("3000000000000000")) // 0.003 eth as gas
-      ->BN.subGet(. BN.new_(currentPriceWei));
+      ->BN.subGet(. currentPriceWei);
     let maxAvailableDeposit =
       maxAvailableDepositBN->BN.toStringGet(.)->Web3Utils.fromWeiToEth;
 
     let isAbleToBuy = maxAvailableDepositBN->BN.gtGet(. BN.new_("0"));
 
-    let currentPriceEth = Web3Utils.fromWeiToEth(currentPriceWei);
+    let currentPriceEth = Web3Utils.fromWeiBNToEth(currentPriceWei);
     let currentPriceFloat = Float.fromString(currentPriceEth)->defaultZeroF;
     let getMax = [%bs.raw {| (first, second) => Math.max(first,second) |}];
     let currentPriceFloatWithMinimum = getMax(. currentPriceFloat, 0.005);
     let defaultPriceValue =
-      Js.Float.toPrecisionWithPrecision(
+      Js.Float.toFixedWithPrecision(
         currentPriceFloatWithMinimum *. 1.5,
         ~digits=2,
       );
     let defaultMonthlyPatronage =
-      Js.Float.toPrecisionWithPrecision(
+      Js.Float.toFixedWithPrecision(
         currentPriceFloatWithMinimum *. 1.5 *. ratio,
         ~digits=3,
       );
     let priceSliderInitialMax =
-      Js.Float.toPrecisionWithPrecision(
+      Js.Float.toFixedWithPrecision(
         currentPriceFloatWithMinimum *. 3.,
         ~digits=3,
       );
@@ -142,14 +148,12 @@ module Transaction = {
       React.useState(() => defaultDepositTime);
 
     let onSubmitBuy = () => {
-      // TODO: Abstract this better into a utility library of sorts.
-      let setFunctionObj = [%bs.raw {| (value, from) => ({ value, from }) |}];
       let amountToSend =
         BN.new_(newPrice)
-        ->BN.addGet(. BN.new_(currentPriceWei))
+        ->BN.addGet(. currentPriceWei)
         ->BN.addGet(. BN.new_(Web3Utils.toWei(deposit, "ether")))
         ->BN.toStringGet(.);
-      buyFunc(newPrice, setFunctionObj(. amountToSend, currentUser));
+      buyFunc(newPrice, amountToSend);
     };
 
     let setNewPrice = value => {
@@ -160,7 +164,6 @@ module Transaction = {
           value,
         );
       if (didUpdate) {
-        // TODO: Add error checking here, - `float_of_string` is an unsafe operation in Ocaml (it can throw an error)
         let patronage =
           Js.Float.toString(Float.fromString(value)->defaultZeroF *. ratio);
         setPatronage(_ => patronage);
@@ -185,7 +188,6 @@ module Transaction = {
           value,
         );
       if (didUpdate) {
-        // TODO: Add error checking here, - `float_of_string` is an unsafe operation in Ocaml (it can throw an error)
         let price =
           Js.Float.toString(
             Float.fromString(value)->defaultZeroF *. ratioInverse,
@@ -228,7 +230,7 @@ module Transaction = {
       };
     };
 
-    <TxTemplate txObjects>
+    <TxTemplate txState>
       {isAbleToBuy
          ? <BuyInput
              onSubmitBuy
@@ -256,47 +258,32 @@ module Transaction = {
 };
 
 [@react.component]
-let make = (~animal: Animal.t) => {
-  let (isModalOpen, setModalOpen) = React.useState(() => false);
-  let isProviderSelected = useIsProviderSelected();
+let make = (~animal: Animal.t, ~isExplorer: bool=false) => {
+  let currentPriceWei = QlHooks.usePrice(animal);
 
-  let onUnlockMetamaskAndOpenModal = () => {
-    setModalOpen(_ => true);
-  };
-  let onOpenModal = event => {
-    ReactEvent.Form.preventDefault(event);
-    ReactEvent.Form.stopPropagation(event);
-    setModalOpen(_ => true);
-  };
+  let goToBuy = RootProvider.useGoToBuy();
+  let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
-  let currentPriceWei = Animal.useCurrentPrice(animal);
-
-  let buttonText = currentPriceWei == "0" ? "Claim" : "Buy";
+  // TODO:: check if foreclosed!!
+  let buttonText =
+    switch (currentPriceWei) {
+    | Price(_price) => "Buy"
+    | Foreclosed => "Claim"
+    | Loading => "loading"
+    };
 
   <React.Fragment>
-    {if (isProviderSelected) {
-       <Rimble.Button onClick=onOpenModal>
-         {React.string(buttonText)}
-       </Rimble.Button>;
-     } else {
-       <Web3connect.CustomButton afterConnect=onUnlockMetamaskAndOpenModal>
-         {React.string(buttonText)}
-       </Web3connect.CustomButton>;
-     }}
-    <Rimble.Modal isOpen=isModalOpen>
-      <Rimble.Card width={Rimble.AnyStr("70%")} p=0>
-        <Rimble.Button.Text
-          icononly=true
-          icon="Close"
-          color="moon-gray"
-          position="absolute"
-          top=0
-          right=0
-          m=3
-          onClick={_ => setModalOpen(_ => false)}
-        />
-        <Transaction animal />
-      </Rimble.Card>
-    </Rimble.Modal>
+    <Rimble.Button
+      onClick={_e => {
+        clearAndPush(
+          "#"
+          ++ InputHelp.getPagePrefix(isExplorer)
+          ++ "details/"
+          ++ animal->Animal.getName->Js.Global.encodeURI,
+        );
+        goToBuy(animal);
+      }}>
+      {React.string(buttonText)}
+    </Rimble.Button>
   </React.Fragment>;
 };

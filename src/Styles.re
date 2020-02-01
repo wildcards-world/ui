@@ -6,20 +6,18 @@ let backgroundImageGorilla = [%bs.raw
   {|require("../src/img/wildcardsimages/wild-jungle-background.png")|}
 ];
 
-Css.(
-  global(
-    "body",
-    [
-      margin(`px(0)),
-      fontFamily("Lato, Helvetica, sans-serif"),
-      overflowX(hidden),
-    ],
-  )
+global(
+  "body",
+  [
+    margin(`px(0)),
+    fontFamily("Lato, Helvetica, sans-serif"),
+    overflowX(hidden),
+  ],
 );
-Css.(global("a", [color(hex("303030")), textDecoration(none)]));
-Css.(global("a:hover", [textDecoration(underline)]));
-Css.(global("a:active", [color(hex("303030"))]));
-Css.(global("a:visited", [color(hex("303030"))]));
+global("a", [color(hex("303030")), textDecoration(none)]);
+global("a:hover", [textDecoration(underline)]);
+global("a:active", [color(hex("303030"))]);
+global("a:visited", [color(hex("303030"))]);
 
 let app =
   style([
@@ -32,8 +30,6 @@ let textOnlyModalText = style([padding(em(2.))]);
 let totalRaisedText = size => style([fontSize(em(size))]);
 
 let copyButton = style([float(`right), zIndex(50)]);
-
-let centerText = style([textAlign(center)]);
 
 // Use flex box to center
 let centerItems =
@@ -402,6 +398,13 @@ let betaBanner =
     top(`px(0)),
     width(`px(80)),
   ]);
+let loginButton =
+  style([
+    position(`absolute),
+    right(`px(0)),
+    top(`px(0)),
+    padding(`px(70)),
+  ]);
 
 let forwardBackButton = style([width(`percent(100.)), height(`em(5.))]);
 
@@ -431,25 +434,33 @@ let fadeOut = targetOpacity =>
     ->List.append([opacity(targetOpacity)]),
   );
 
-let carouselArrow = onLeft =>
-  style([
-    cursor(`pointer),
-    padding(`px(20)),
-    color(white),
-    backgroundColor(hex("72c7d7")),
-    hover(
-      [backgroundColor(hex("40b2c9"))]
-      @ {
-        onLeft
-          ? [paddingLeft(`px(15)), paddingRight(`px(25))]
-          : [paddingRight(`px(15)), paddingLeft(`px(25))];
-      },
-    ),
-    borderRadius(px(4)),
-    position(absolute),
-    zIndex(3),
-    transform(translateX(`percent(-50.))),
-    {
-      onLeft ? left(`percent(20.)) : left(`percent(80.));
+let carouselArrow = (~absolutePosition=true, onLeft) =>
+  style(
+    [
+      cursor(`pointer),
+      padding(`px(20)),
+      color(white),
+      backgroundColor(hex("72c7d7")),
+      hover(
+        [backgroundColor(hex("40b2c9"))]
+        @ {
+          onLeft
+            ? [paddingLeft(`px(15)), paddingRight(`px(25))]
+            : [paddingRight(`px(15)), paddingLeft(`px(25))];
+        },
+      ),
+      borderRadius(px(4)),
+      zIndex(3),
+    ]
+    @ {
+      absolutePosition
+        ? [
+          position(absolute),
+          transform(translateX(`percent(-50.))),
+          {
+            onLeft ? left(`percent(20.)) : left(`percent(80.));
+          },
+        ]
+        : [];
     },
-  ]);
+  );
