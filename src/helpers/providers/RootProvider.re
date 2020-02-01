@@ -47,12 +47,10 @@ let rec reducer = (prevState, action) =>
     | LoginScreen(followOnAction) => reducer(newState, followOnAction)
     | _ => newState
     };
-  | GoToWeb3Connect =>
+  | GoToWeb3Connect(action) =>
     switch (prevState.ethState) {
-    | Connected(_, _) => prevState
-    | Disconnected =>
-      Js.log("IN the login screen");
-      {...prevState, nonUrlState: LoginScreen(GoToWeb3Connect)};
+    | Connected(_, _) => reducer(prevState, action)
+    | Disconnected => {...prevState, nonUrlState: LoginScreen(action)}
     }
   | GoToBuy(animal) =>
     switch (prevState.ethState) {
@@ -78,7 +76,8 @@ let rec reducer = (prevState, action) =>
     | Disconnected => {...prevState, nonUrlState: LoginScreen(action)}
     }
   | Logout => {ethState: Disconnected, nonUrlState: NoExtraState}
-  | _ => prevState
+  | NoAction => {...prevState, nonUrlState: NoExtraState}
+  // | _ => prevState
   };
 module RootContext = {
   let context = React.createContext((initialState, _ => ()));
@@ -256,12 +255,11 @@ let useClearNonUrlState: (unit, unit) => unit =
       dispatch(ClearNonUrlState);
     };
   };
-let useConnectWeb3: (unit, unit) => unit =
+let useConnectWeb3: (unit, RootProviderTypes.rootActions) => unit =
   () => {
     let (_, dispatch) = React.useContext(RootContext.context);
-    () => {
-      Js.log("connecting web3");
-      dispatch(GoToWeb3Connect);
+    action => {
+      dispatch(GoToWeb3Connect(action));
     };
   };
 

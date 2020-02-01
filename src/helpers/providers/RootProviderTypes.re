@@ -17,12 +17,13 @@ type web3reactContext = {
 };
 
 type rootActions =
+  | NoAction
   | GoToBuy(Animal.t)
   | GoToDepositUpdate
   | GoToPriceUpdate(Animal.t)
   | GoToUserVerification
   | ClearNonUrlState
-  | GoToWeb3Connect
+  | GoToWeb3Connect(rootActions)
   | Logout
   | LoadAddress(Web3.ethAddress, option(Eth.t));
 type nonUrlState =

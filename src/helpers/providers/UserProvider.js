@@ -47,7 +47,7 @@ function reducer(state, action) {
             [action.ethAddress]: {
               threeBox: {
                 ...currentAdressData.threeBox,
-                userInfo: action.data
+                verifications: action.data
               }
             }
           }

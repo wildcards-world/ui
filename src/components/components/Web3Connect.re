@@ -21,7 +21,8 @@ let make = () => {
     | None =>
       <div>
         <p> message </p>
-        <Rimble.Button onClick={_e => {connectWeb3()}}>
+        <Rimble.Button
+          onClick={_e => {connectWeb3(RootProviderTypes.NoAction)}}>
           {React.string("Connect User")}
         </Rimble.Button>
       </div>
@@ -40,7 +41,7 @@ let make = () => {
        connected(
          <React.Fragment>
            "connected to "->React.string
-           <strong> "TESTNET"->React.string </strong>
+           <strong> "GOERLI TESTNET"->React.string </strong>
          </React.Fragment>,
        )
      | Some(_) =>
@@ -52,7 +53,7 @@ let make = () => {
        <Rimble.Button
          onClick={_e => {
            ReasonReactRouter.push("#");
-           connectWeb3();
+           connectWeb3(RootProviderTypes.NoAction);
          }}>
          {React.string("Connect")}
        </Rimble.Button>
