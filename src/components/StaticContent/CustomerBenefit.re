@@ -6,8 +6,11 @@ module CustomerBenefit = {
     <Rimble.Box className=Styles.horizantalBlueTile>
       <p className=Styles.explainerLargeText>
         <span className=Styles.boldExplainerText> <S> "Wildcards" </S> </span>
+        <S> " connects global conservation organisations to users. " </S>
+      </p>
+      <p className=Styles.explainerMediumText>
         <S>
-          " lets you support conservation, become a patron of endangered animals and even earn a profit since wildcards are always for sale."
+          "Social, gamified and transparent giving makes wildcards the perfect platfrom to start making your difference."
         </S>
       </p>
     </Rimble.Box>;

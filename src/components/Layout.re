@@ -93,7 +93,7 @@ module Header = {
                      <span className=Styles.someMarginRight>
                        <S>
                          {usedtranslationModeContext->translationModeCrypto
-                            ? "EXPERT MODE" : "SIMPLE MODE"}
+                            ? "FULL NERD MODE" : "SIMPLE MODE"}
                        </S>
                      </span>
                      <ReactTranslate.Switch
@@ -147,7 +147,7 @@ module Header = {
                        clearAndPush("#explorer");
                      }}
                      className=Styles.whiteText>
-                     <S> "ANIMAL KINGDOM" </S>
+                     <S> "VIEW ALL WILDCARDS" </S>
                    </Rimble.Button>}
             </li>
           </ul>
