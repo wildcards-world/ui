@@ -13,7 +13,7 @@ export default {
   },
   muggle: {
     bluetext: "Always",
-    ethereum: "Raising funds for",
+    ethereum: "raising funds for",
     tokens: "",
     subHeading: "Adopt an animal to start giving today. ",
     nft: "Blockchain Animal",
