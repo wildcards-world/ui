@@ -66,7 +66,7 @@ module HowItWorks = {
                     <S> "As the gaurdian of a wildcard, you pay a " </S>
                     <strong> <S> "Harberger tax" </S> </strong>
                     <S>
-                      " (percentage based fee) on your newly set sale price. Your harberger tax goes towards supporting the associated conservation organisation. "
+                      " (percentage based fee) on your newly set sale price. This fee goes towards supporting wildlife conservation. "
                     </S>
                   </Text>
                   <br />
