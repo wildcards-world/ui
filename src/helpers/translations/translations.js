@@ -5,7 +5,7 @@ export default {
     ethereum: "ethereum based",
     tokens: "tokens",
     subHeading:
-      "Link your social profile to your preferred public address and verifiably showcase your patronage on our platform.",
+      "Link your social profile to your address and showcase your giving.",
     nft: "Non-Fungible Token",
     whatIsANFT:
       " is a way to ensure digital assets are unique and easily tradable on a blockchain.",
