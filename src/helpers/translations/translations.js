@@ -12,7 +12,7 @@ export default {
     harbergerTax: "Harberger Tax"
   },
   muggle: {
-    bluetext: "",
+    bluetext: "Always",
     ethereum: "Raising funds for",
     tokens: "",
     subHeading: "Adopt an animal to start giving today. ",
