@@ -93,7 +93,7 @@ module Header = {
                      <span className=Styles.someMarginRight>
                        <S>
                          {usedtranslationModeContext->translationModeCrypto
-                            ? "FULL NERD MODE" : "SIMPLE MODE"}
+                            ? "EXPERT MODE" : "DEFAULT MODE"}
                        </S>
                      </span>
                      <ReactTranslate.Switch

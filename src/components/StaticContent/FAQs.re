@@ -77,7 +77,7 @@ module FAQs = {
                     <div className=faqExplainerText>
                       <Text className=Styles.colorGreen>
                         <S>
-                          "Some wildcards do represent real animals, while other wildcards are symoblic of the coservation efforts of that organisation. When partnering with a conservation organisation, if that organisation has specific ainimals they track and care for, we aim to list those real animals. In other cases, conservation efforts can occur on a more macro level (without specific animals). To raise funds for these efforts we create a fictional animal representative of that organisation. In both cases, an animal will simply represent an organisation, and funds generated from that animal will flow to the organisation it represents. "
+                          "Some wildcards do represent real animals, while other wildcards are symoblic of the coservation efforts of that organisation. When partnering with a conservation organisation, if that organisation has specific ainimals they track and care for, we aim to list those real animals. In other cases, conservation efforts can occur on a more macro level (without specific animals). To raise funds for these efforts we create an animal representative of that organisation. In both cases, an animal will simply represent an organisation, and funds generated from that animal will flow to the organisation it represents. "
                         </S>
                       </Text>
                     </div>
