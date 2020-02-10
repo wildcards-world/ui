@@ -28,7 +28,7 @@ module HowItWorks = {
                 <Rimble.Button
                   className=Styles.centerItemsMargin
                   onClick={_ => setModalOpen(_ => true)}>
-                  <S> "See More" </S>
+                  <S> "Click here for a simple text explanation" </S>
                 </Rimble.Button>
               </Rimble.Box>
               <Rimble.Modal isOpen=isModalOpen>
@@ -53,11 +53,11 @@ module HowItWorks = {
                   <hr />
                   <Text>
                     <S>
-                      "You can become the patron of Vitalik the animal by purchasing him for his current sale price. Vitalik the animal is "
+                      "You can become the guardian of a wildcard by simply clicking buy on any of the listed wildcards. Wildcards are "
                     </S>
                     <strong> <S> "always for sale" </S> </strong>
                     <S>
-                      " since anyone can purchase him at anytime for his current sale price. When someone purchases a wildcard, they are required to immediately set a sale price for that wildcard. This ensures wildcards are "
+                      " since anyone can purchase them at anytime for their current sale price. When someone purchases a wildcard, they are required to immediately set a sale price for that wildcard. This ensures wildcards are "
                     </S>
                     <strong> <S> "always for sale" </S> </strong>
                   </Text>
@@ -66,7 +66,7 @@ module HowItWorks = {
                     <S> "As the gaurdian of a wildcard, you pay a " </S>
                     <strong> <S> "Harberger tax" </S> </strong>
                     <S>
-                      " (percentage based fee) on your newly set sale price. Your harberger tax goes towards supporting conservation. "
+                      " (percentage based fee) on your newly set sale price. This fee goes towards supporting wildlife conservation. "
                     </S>
                   </Text>
                   <br />
@@ -82,7 +82,7 @@ module HowItWorks = {
                   <Text>
                     <span className=Styles.redDisclaimer>
                       <S>
-                        "The first wildcard, Vitalik, has a 2.5% Harberger tax rate per month. Andy and Simon have a Harberger tax rate of 20% per month. Future wildcards will have different harberger tax rates."
+                        "The first wildcard we released, Vitalik, has a 2.5% Harberger tax rate per month. Other wildcards have different harberger tax rates ranging from 2.5% to 100% per month."
                       </S>
                     </span>
                   </Text>

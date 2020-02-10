@@ -13,7 +13,7 @@ module About = {
           <S> "winners" </S>
         </a>
         <S>
-          ". The focus of the project is raising funds for endangered animals through combining leading technologies and innovative economic mechanisms into a fun and engaging platform."
+          ". The focus of the project is raising funds for endangered animals."
         </S>
       </p>
     </Rimble.Box>;

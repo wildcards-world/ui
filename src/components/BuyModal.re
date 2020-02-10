@@ -267,7 +267,7 @@ let make = (~animal: Animal.t, ~isExplorer: bool=false) => {
   // TODO:: check if foreclosed!!
   let buttonText =
     switch (currentPriceWei) {
-    | Price(_price) => "Buy"
+    | Price(_price) => "Adopt"
     | Foreclosed => "Claim"
     | Loading => "loading"
     };

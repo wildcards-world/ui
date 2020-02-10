@@ -5,7 +5,7 @@ import translations from "../translations/translations";
 export const TranslationContext = createContext("");
 
 export const TranslationProvider = ({ children }) => {
-  const [translationModeCrypto, settranslationModeCrypto] = useState(true);
+  const [translationModeCrypto, settranslationModeCrypto] = useState(false);
 
   return (
     <TranslatorProvider translations={translations}>

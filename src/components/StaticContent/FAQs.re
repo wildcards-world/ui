@@ -55,7 +55,7 @@ module FAQs = {
           className=Styles.floatingSignupBoxInner>
           <Rimble.Box width=[|1., 1., 1.|]>
             <Rimble.Card>
-              <Heading> <S> "FAQs" </S> </Heading>
+              <Heading> <S> "Frequently Asked Questions (FAQs)" </S> </Heading>
               <div className=accordionSection>
                 <div onClick={_ => toggleAccordion(0)}>
                   <Text className="accordion-title">
@@ -75,9 +75,9 @@ module FAQs = {
                   )}>
                   <div>
                     <div className=faqExplainerText>
-                      <Text>
+                      <Text className=Styles.colorGreen>
                         <S>
-                          "Yes! but not all of them. Some represent real animals and some like Simon and Andy don't but all the funds raised by the animals go to the conservations."
+                          "Some wildcards do represent real animals, while other wildcards are symoblic of the coservation efforts of that organisation. When partnering with a conservation organisation, if that organisation has specific ainimals they track and care for, we aim to list those real animals. In other cases, conservation efforts can occur on a more macro level (without specific animals). To raise funds for these efforts we create an animal representative of that organisation. In both cases, an animal will simply represent an organisation, and funds generated from that animal will flow to the organisation it represents. "
                         </S>
                       </Text>
                     </div>
@@ -101,9 +101,17 @@ module FAQs = {
                   )}>
                   <div>
                     <div className=faqExplainerText>
-                      <Text>
+                      <Text className=Styles.colorGreen>
                         <S>
-                          "Thanks to the help of the blockchain! Read our blog post here and you and anyone else can follow the public transactions to verify that the funds are going to our conservation partners."
+                          "Our platform uses ethereum (a blockchain), which is essentially a public transaction ledger. This means that every single action happening on this platfrom is completely public, verifiable and auditable. If you would like to learn more, "
+                        </S>
+                        <a
+                          href="https://blog.wildcards.world/where-is-the-money-going/"
+                          target="_blank">
+                          <S> "read our blog post" </S>
+                        </a>
+                        <S>
+                          "  which details how funds are transparently recieved by our conservation partners."
                         </S>
                       </Text>
                     </div>
@@ -111,8 +119,7 @@ module FAQs = {
                 </div>
                 <div onClick={_ => toggleAccordion(2)}>
                   <Text className="accordion-title">
-                    <S> "Can I only buy a wildcard using cryptocurrency?
-" </S>
+                    <S> "Can I only buy a wildcard using cryptocurrency?" </S>
                     <Chevron
                       className={rotate(activeIndex == 2 ? 90. : 0.)}
                     />
@@ -126,10 +133,17 @@ module FAQs = {
                   )}>
                   <div>
                     <div className=faqExplainerText>
-                      <Text>
+                      <Text className=Styles.colorGreen>
                         <S>
-                          "Unfortunately for now this is the only way to purchase a wildcard. You can exchange your fiat currency into Eth through Torus and this will allow you to become the owner of a wildcard.
-"
+                          "Unfortunately, for now cryptocurrency is the only way to buy a wildcard. We are actively working on FIAT currency solutions. In the mean time, we have intergrated with Torus, allowing you to use your credit card easily to buy the required ETH necessary to purchase a wildcard."
+                        </S>
+                        <a
+                          href="https://blog.wildcards.world/how-to-buy-a-wildcard-web3-ethereum/"
+                          target="_blank">
+                          <S> " Read our guide" </S>
+                        </a>
+                        <S>
+                          " to find out more about how to buy a wildcard."
                         </S>
                       </Text>
                     </div>
@@ -137,7 +151,7 @@ module FAQs = {
                 </div>
                 <div onClick={_ => toggleAccordion(3)}>
                   <Text className="accordion-title">
-                    <S> "What is a Non-fungible token?" </S>
+                    <S> "What is a non-fungible token?" </S>
                     <Chevron
                       className={rotate(activeIndex == 3 ? 90. : 0.)}
                     />
@@ -151,11 +165,9 @@ module FAQs = {
                   )}>
                   <div>
                     <div className=faqExplainerText>
-                      <Text>
+                      <Text className=Styles.colorGreen>
                         <S>
-                          "A Non-Fungible Token or NFT is a cryptographic token that is unique. Wildcards uses NFT’s to represent digitally unique wild animals.
-
-"
+                          "A non-fungible token (NFT), is simply put, a token that is unique. This is in contrast to bitcoin (which is fungible), as each bitcoin is always equivalent to another one in value. Every wildcard is an NFT representing a unique animal. Since wildcards are non-fungible (unique), every wildcard has a unique history and independant value."
                         </S>
                       </Text>
                     </div>
@@ -178,9 +190,9 @@ module FAQs = {
                   )}>
                   <div>
                     <div className=faqExplainerText>
-                      <Text>
+                      <Text className=Styles.colorGreen>
                         <S>
-                          "Always for sale refers to the economic model used on the animals to ensure a recurring revenue generation for conservations. Wildcards are always for sale! This means that as soon as you buy a wildcard you are required to set a selling price that someone can buy it from you for. It’s always for sale. You won’t set the selling price to high because you have to pay a percentage of the selling price in order to own the wildcard.
+                          "Always for sale means exactly what it says, the asset or thing in question can be bought by any person at anytime, and is hence, always for sale. How this functions in practice is very interesting. The owner of the asset is required to always have a listed selling price for this asset at which anyone could buy this asset from them at any point in time. The owner won’t set the selling price too high because they are required to continually pay a percentage of the selling price in order to keep ownership of the asset.
 "
                         </S>
                       </Text>
@@ -189,7 +201,9 @@ module FAQs = {
                 </div>
                 <div onClick={_ => toggleAccordion(5)}>
                   <Text className="accordion-title">
-                    <S> "What happens if my deposit runs out?" </S>
+                    <S>
+                      "What is a deposit and what happens if my deposit runs out?"
+                    </S>
                     <Chevron
                       className={rotate(activeIndex == 5 ? 90. : 0.)}
                     />
@@ -203,10 +217,9 @@ module FAQs = {
                   )}>
                   <div>
                     <div className=faqExplainerText>
-                      <Text>
+                      <Text className=Styles.colorGreen>
                         <S>
-                          "If your deposit runs out then anyone can claim the wildcard for free and set a new selling price.
-"
+                          "Your deposit is used to contiually pay the percentage fee of the selling price you set, in order for you to continue your ownership of the asset. If your deposit runs out then anyone can claim the asset for free and set a new selling price."
                         </S>
                       </Text>
                     </div>
@@ -215,8 +228,7 @@ module FAQs = {
                 <div onClick={_ => toggleAccordion(6)}>
                   <Text className="accordion-title">
                     <S>
-                      "Can I join wildcards and raise funds for my animal conservation project?
-"
+                      "Can I join wildcards and raise funds for my animal conservation project?"
                     </S>
                     <Chevron
                       className={rotate(activeIndex == 6 ? 90. : 0.)}
@@ -231,7 +243,11 @@ module FAQs = {
                   )}>
                   <div>
                     <div className=faqExplainerText>
-                      <Text> <S> "" </S> </Text>
+                      <Text className=Styles.colorGreen>
+                        <S>
+                          "Yes! Please send an email to jonjon@wildcards.world"
+                        </S>
+                      </Text>
                     </div>
                   </div>
                 </div>
