@@ -459,7 +459,7 @@ module DefaultLook = {
                    href="https://blog.wildcards.world/how-to-buy-a-wildcard-web3-ethereum/"
                    target="_blank">
                    <span className=Styles.colorGreen>
-                   <S> "Read our guide" </S>
+                     <S> "Read our guide" </S>
                    </span>
                  </a>
                </small>
@@ -480,7 +480,9 @@ module DefaultLeftPanel = {
       useTranslate(. usedtranslationModeContext->translationMode);
     <React.Fragment>
       <h1 className=Styles.heading>
-        <span className=Styles.colorBlue> <S> {translation(. "bluetext")} </S> </span>
+        <span className=Styles.colorBlue>
+          <S> {translation(. "bluetext")} </S>
+        </span>
         <br />
         <S> {translation(. "ethereum")} </S>
         <br />
