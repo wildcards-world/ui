@@ -1,87 +1,87 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "9c4436a6ee76926f451cf3a374fda050",
+    "revision": "308c4d7782fecc0f124f74a03fa6db3d",
     "url": "./index.html"
   },
   {
-    "revision": "2aa88d7ef8a9a973dd61",
+    "revision": "e27127ee6ff278b11001",
     "url": "./static/css/4.90ed8ad9.chunk.css"
   },
   {
-    "revision": "db6c26af0459c2944fec",
+    "revision": "0993e34913bcfbca1063",
     "url": "./static/css/main.c4212292.chunk.css"
   },
   {
-    "revision": "216f048cbac6a38ede12",
-    "url": "./static/js/0.1b67dcdc.chunk.js"
+    "revision": "b92845aad99e9b97cd13",
+    "url": "./static/js/0.455db059.chunk.js"
   },
   {
-    "revision": "6f886fe79b1b41b82c09",
-    "url": "./static/js/10.40d7c7a3.chunk.js"
+    "revision": "778dbed5dcb52902909f",
+    "url": "./static/js/10.6a66f25c.chunk.js"
   },
   {
     "revision": "d872cda04d5e87ce69609d3f8887b124",
-    "url": "./static/js/10.40d7c7a3.chunk.js.LICENSE"
+    "url": "./static/js/10.6a66f25c.chunk.js.LICENSE"
   },
   {
-    "revision": "e341e00c294095c8b246",
-    "url": "./static/js/11.1530a281.chunk.js"
+    "revision": "fb8b2549c7e5b4e9f8e6",
+    "url": "./static/js/11.3b0edf49.chunk.js"
   },
   {
-    "revision": "519208d711168c978e94",
-    "url": "./static/js/3.f68f22b0.chunk.js"
+    "revision": "a9c05d6db14879d7c17a",
+    "url": "./static/js/3.f77c60c0.chunk.js"
   },
   {
     "revision": "672c52a24cecdabca57ab6829bb5204f",
-    "url": "./static/js/3.f68f22b0.chunk.js.LICENSE"
+    "url": "./static/js/3.f77c60c0.chunk.js.LICENSE"
   },
   {
-    "revision": "2aa88d7ef8a9a973dd61",
-    "url": "./static/js/4.356358c4.chunk.js"
+    "revision": "e27127ee6ff278b11001",
+    "url": "./static/js/4.78376fdb.chunk.js"
   },
   {
     "revision": "af9bae19e73286c222829fdb74b1dedf",
-    "url": "./static/js/4.356358c4.chunk.js.LICENSE"
+    "url": "./static/js/4.78376fdb.chunk.js.LICENSE"
   },
   {
-    "revision": "41a38c931c3167584005",
-    "url": "./static/js/5.4e1f71d2.chunk.js"
+    "revision": "f3a8a9fc48bb77e1654b",
+    "url": "./static/js/5.8b17e098.chunk.js"
   },
   {
     "revision": "f8eb162949b2e1fd1a561d02ba4e6489",
-    "url": "./static/js/5.4e1f71d2.chunk.js.LICENSE"
+    "url": "./static/js/5.8b17e098.chunk.js.LICENSE"
   },
   {
-    "revision": "bd05b4b738cfd876f9bf",
-    "url": "./static/js/6.109a0630.chunk.js"
+    "revision": "92ca0dbf30582d553e87",
+    "url": "./static/js/6.721b8627.chunk.js"
   },
   {
-    "revision": "0afa12a03f161f58bc64",
-    "url": "./static/js/7.5253e56d.chunk.js"
+    "revision": "6d2bae7a256cffd73b0b",
+    "url": "./static/js/7.a079f1c8.chunk.js"
   },
   {
-    "revision": "0ae839c097324a46d405",
-    "url": "./static/js/8.af64f162.chunk.js"
+    "revision": "181a1324ae34e378585e",
+    "url": "./static/js/8.7650582f.chunk.js"
   },
   {
     "revision": "d828d064fd611903189974745a0859f2",
-    "url": "./static/js/8.af64f162.chunk.js.LICENSE"
+    "url": "./static/js/8.7650582f.chunk.js.LICENSE"
   },
   {
-    "revision": "0b8a2094910b1a57b189",
-    "url": "./static/js/9.9ff267b4.chunk.js"
+    "revision": "0924b4268315b95e19b1",
+    "url": "./static/js/9.e025b7f8.chunk.js"
   },
   {
     "revision": "76208af35efdb696399631b2a145f170",
-    "url": "./static/js/9.9ff267b4.chunk.js.LICENSE"
+    "url": "./static/js/9.e025b7f8.chunk.js.LICENSE"
   },
   {
-    "revision": "db6c26af0459c2944fec",
-    "url": "./static/js/main.4c829ecd.chunk.js"
+    "revision": "0993e34913bcfbca1063",
+    "url": "./static/js/main.ca0f95ac.chunk.js"
   },
   {
-    "revision": "da4f4ef6d1de94555e2d",
-    "url": "./static/js/runtime-main.d16de9de.js"
+    "revision": "9d7f053283bf77cecfc1",
+    "url": "./static/js/runtime-main.571301c1.js"
   },
   {
     "revision": "8d8c017f17920ceaeb5449a83ec47c6b",
@@ -258,10 +258,6 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "959b3945e3c98525dbcb9ebee076de9b",
     "url": "./static/media/walletConnect.959b3945.svg"
-  },
-  {
-    "revision": "a59c97f611aac33bd0bbb06e6f1fd96b",
-    "url": "./static/media/wild-cards-small.a59c97f6.png"
   },
   {
     "revision": "ae5d91e259c50b670869803381cee1bc",
