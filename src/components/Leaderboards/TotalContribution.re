@@ -92,7 +92,8 @@ module MostContributed = {
 };
 
 [@react.component]
-let make = () => {
+let make = (~numberOfLeaders) => {
+  Js.log(numberOfLeaders);
   let highestContributorsOpt = useLoadMostContributedData();
 
   <Rimble.Flex flexWrap="wrap" alignItems="center" className=Styles.topBody>

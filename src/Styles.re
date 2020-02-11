@@ -331,23 +331,17 @@ let linkPillBox =
 let linkPillText =
   style([margin(px(10)), marginBottom(px(1)), color(hex("fff"))]);
 
-let footer =
-  style([backgroundColor(hex("303030")), padding2(~v=px(40), ~h=px(0))]);
-
-let footerContainer =
-  style([
-    margin(auto),
-    padding2(~v=px(0), ~h=px(15)),
-    maxWidth(px(1080)),
-  ]);
+let footer = style([backgroundColor(hex("303030")), height(vh(12.))]);
 
 let footerWrapper =
   style([
+    margin(auto),
+    maxWidth(px(1080)),
     display(`flex),
     justifyContent(spaceBetween),
-    alignItems(flexStart),
-    alignSelf(center),
+    alignItems(center),
     flexWrap(`wrap),
+    height(`percent(100.)),
   ]);
 
 let footerText =

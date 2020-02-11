@@ -168,46 +168,49 @@ let make = () => {
 
   <div className=Styles.app>
     <img src=betaBanner className=Styles.betaBanner />
-    <Header animalCarousel={Some((Animal.Andy, Animal.Simon))} />
-    <Providers.UsdPriceProvider>
-      {switch (urlState) {
-       | Explorer(animalPageState) =>
-         switch (animalPageState) {
-         | DetailView(animalCarousel, _) =>
-           <AnimalFocusDetails animalCarousel />
-         | NormalView =>
-           <BuyGrid
-             animalArray={
-               Animal.orderedArray->Belt.Array.map((animal, ()) =>
-                 <Dapp.CarouselAnimal animal isGqlLoaded=true scalar=1. />
-               )
-             }
-           />
-         }
-       | Home(animalPageState) =>
-         switch (animalPageState) {
-         | DetailView(animalCarousel, _) =>
-           <AnimalFocusDetails animalCarousel />
-         | NormalView =>
-           <React.Fragment>
-             <AnimalFocusDetails animalCarousel=None />
-             <StaticContent.CustomerBenefit />
-             <HomepageLeaderBoard />
-             <StaticContent.About />
-             <StaticContent.HowItWorks />
-             <StaticContent.EmailSignup />
-             <StaticContent.FAQs />
-             <StaticContent.Partners />
-           </React.Fragment>
-         }
-       | User(userAddress) => <UserProfile userAddress />
-       | Leaderboards(_) =>
-         <Rimble.Flex
-           flexWrap="wrap" alignItems="center" className=Styles.topBody>
-           <MonthlyContribution numberOfLeaders=10 />
-         </Rimble.Flex>
-       }}
-    </Providers.UsdPriceProvider>
+    <Web3Connect />
+    <div className=Css.(style([minHeight(vh(88.))]))>
+      <Header animalCarousel={Some((Animal.Andy, Animal.Simon))} />
+      <Providers.UsdPriceProvider>
+        {switch (urlState) {
+         | Explorer(animalPageState) =>
+           switch (animalPageState) {
+           | DetailView(animalCarousel, _) =>
+             <AnimalFocusDetails animalCarousel />
+           | NormalView =>
+             <BuyGrid
+               animalArray={
+                 Animal.orderedArray->Belt.Array.map((animal, ()) =>
+                   <Dapp.CarouselAnimal animal isGqlLoaded=true scalar=1. />
+                 )
+               }
+             />
+           }
+         | Home(animalPageState) =>
+           switch (animalPageState) {
+           | DetailView(animalCarousel, _) =>
+             <AnimalFocusDetails animalCarousel />
+           | NormalView =>
+             <React.Fragment>
+               <AnimalFocusDetails animalCarousel=None />
+               <StaticContent.CustomerBenefit />
+               <HomepageLeaderBoard />
+               <StaticContent.About />
+               <StaticContent.HowItWorks />
+               <StaticContent.EmailSignup />
+               <StaticContent.FAQs />
+               <StaticContent.Partners />
+             </React.Fragment>
+           }
+         | User(userAddress) => <UserProfile userAddress />
+         | Leaderboards(leaderboardType) =>
+           <Rimble.Flex
+             flexWrap="wrap" alignItems="center" className=Styles.topBody>
+             <LeaderBoards leaderboardType />
+           </Rimble.Flex>
+         }}
+      </Providers.UsdPriceProvider>
+    </div>
     <StaticContent.Footer />
   </div>;
 };

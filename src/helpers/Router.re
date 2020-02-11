@@ -3,9 +3,10 @@ type animalPageState =
   | DetailView(previousNextAnimal, option(Animal.t))
   | NormalView;
 type leaderBoard =
-  | TotalPatronage
-  | SecoundsHeld
-  | GivingRate;
+  | TotalContribution
+  | TotalDaysHeld
+  | Unknown
+  | MonthlyContribution;
 type urlState =
   | User(Web3.ethAddress)
   | Explorer(animalPageState)
@@ -20,7 +21,13 @@ let useUrlState = () => {
     () =>
       switch (Js.String.split("/", url.hash)) {
       | [|"user", address|] => User(address)
-      | [|"leaderboards"|] => Leaderboards(GivingRate)
+      | [|"leaderboards", leaderboardType|] =>
+        switch (leaderboardType) {
+        | "monthly-contribution" => Leaderboards(MonthlyContribution)
+        | "days-held" => Leaderboards(TotalDaysHeld)
+        | "total-contribution" => Leaderboards(TotalContribution)
+        | _ => Leaderboards(Unknown)
+        }
       // | [|"explorer"|] => Explorer(NormalView)
       | [|"explorer", "details", animalStr|]
       | [|"explorer", "details", animalStr, ""|] =>
