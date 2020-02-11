@@ -1,11 +1,7 @@
 open Components;
 
 // TODO: there must be a better way of importing images in reason react...
-let smallIcon = [%bs.raw {|require('../img/logos/wild-cards-small.png')|}];
 let betaBanner = [%bs.raw {|require('../img/beta-banner.png')|}];
-
-// type DetailView = | Details(contentWidth, nextAnimal, previousAnimal)
-// | NoDetails(contentWidth)
 
 module BuyGrid = {
   [@bs.module "./BuyGrid.js"] [@react.component]
@@ -83,7 +79,9 @@ module Header = {
               ReactEvent.Mouse.preventDefault(event);
               clearAndPush("#");
             }}>
-            <div className=Styles.headerLogo> <img src=smallIcon /> </div>
+            <div className=Styles.headerLogo>
+              <WildcardsLogo maxWidth="258px" />
+            </div>
           </a>
           <ul className=Styles.navList>
             <li className=Styles.navListItem>
