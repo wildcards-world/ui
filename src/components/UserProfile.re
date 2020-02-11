@@ -38,8 +38,8 @@ module UserDetails = {
       patronQueryResult##patron
       ->Belt.Option.flatMap(patron => patron##previouslyOwnedTokens);
     let currentlyOwnedTokens =
-      patronQueryResult##patron->Belt.Option.flatMap(patron => patron##tokens);
-
+      patronQueryResult##patron
+      ->Belt.Option.flatMap(patron => Some(patron##tokens));
     <div>
       {switch (optThreeBoxData) {
        | Some(threeBoxData) =>

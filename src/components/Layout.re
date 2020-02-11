@@ -201,7 +201,7 @@ let make = () => {
            </React.Fragment>
          }
        | User(userAddress) => <UserProfile userAddress />
-       | Leaderboards(_) => <PatronageRate />
+       | Leaderboards(_) => <MostContributed />
        }}
     </Providers.UsdPriceProvider>
     <StaticContent.Footer />

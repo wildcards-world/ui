@@ -6,6 +6,9 @@ type bn = {
   mul: (. bn) => bn,
   div: (. bn) => bn,
   gt: (. bn) => bool,
+  lt: (. bn) => bool,
+  eq: (. bn) => bool,
+  cmp: (. bn) => int,
   toString: (. unit) => string,
 };
 
