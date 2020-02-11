@@ -165,6 +165,17 @@ module LoadPatron = [%graphql
   |}
 ];
 
+module LoadTopContributors = [%graphql
+  {|
+    query {
+      patrons(first: 10, orderBy: patronTokenCostScaledNumerator, orderDirection: desc) {
+        id
+        patronTokenCostScaledNumerator  @bsDecoder(fn: "decodeBN")
+      }
+    }
+  |}
+];
+
 module SubTotalRaisedOrDueQuery = [%graphql
   {|
     query {
@@ -202,6 +213,33 @@ let useBuySubscriptionData = () => {
   let (simple, _) = useBuySubscription();
   switch (simple) {
   | Data(response) => Some(response)
+  | _ => None
+  };
+};
+
+let useLoadTopContributors = () =>
+  ApolloHooks.useSubscription(LoadTopContributors.definition);
+let useLoadTopContributorsData = () => {
+  let (simple, _) = useLoadTopContributors();
+  switch (simple) {
+  | Data(largestContributors) =>
+    let dailyContributions =
+      largestContributors##patrons
+      |> Js.Array.map(a => {
+           let dailyContribution =
+             a##patronTokenCostScaledNumerator
+             ->BN.mulGet(. BN.new_("2592000")) // A month with 30 days has 2592000 seconds
+             ->BN.divGet(.
+                 // BN.new_("1000000000000")->BN.mulGet(. BN.new_("31536000")),
+                 BN.new_("31536000000000000000"),
+               )
+             ->Web3Utils.fromWeiBNToEth
+             ->Belt.Float.fromString
+             ->Belt.Option.mapWithDefault(0., a => a)
+             |> Js.Float.toFixedWithPrecision(~digits=4);
+           (a##id, dailyContribution);
+         });
+    Some(dailyContributions);
   | _ => None
   };
 };
