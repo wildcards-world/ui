@@ -192,16 +192,20 @@ let make = () => {
            <React.Fragment>
              <AnimalFocusDetails animalCarousel=None />
              <StaticContent.CustomerBenefit />
-             <StaticContent.HowItWorks />
+             <HomepageLeaderBoard />
              <StaticContent.About />
-             <StaticContent.CoreConcepts />
+             <StaticContent.HowItWorks />
              <StaticContent.EmailSignup />
              <StaticContent.FAQs />
              <StaticContent.Partners />
            </React.Fragment>
          }
        | User(userAddress) => <UserProfile userAddress />
-       | Leaderboards(_) => <MostContributed />
+       | Leaderboards(_) =>
+         <Rimble.Flex
+           flexWrap="wrap" alignItems="center" className=Styles.topBody>
+           <MonthlyContribution numberOfLeaders=10 />
+         </Rimble.Flex>
        }}
     </Providers.UsdPriceProvider>
     <StaticContent.Footer />

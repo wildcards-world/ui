@@ -142,7 +142,11 @@ let centerText = style([textAlign(center)]);
 /// NOTE: the padding of 4% is calculated as 12/3 since there is a right padding of 12% and 3 animal images shown.
 let dappImagesCounteractOffset = style([marginLeft(`percent(4.))]);
 
-let heading = style([fontSize(em(3.))]);
+let heading =
+  style([
+    fontSize(em(3.)),
+    media("(min-width: 768px)", [paddingTop(`rem(3.))]),
+  ]);
 
 let subHeading = style([fontSize(em(1.8)), fontWeight(`num(200))]);
 

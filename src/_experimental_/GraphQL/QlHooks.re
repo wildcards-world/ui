@@ -167,8 +167,8 @@ module LoadPatron = [%graphql
 
 module LoadTopContributors = [%graphql
   {|
-    query {
-      patrons(first: 10, orderBy: patronTokenCostScaledNumerator, orderDirection: desc) {
+    query ($numberOfLeaders: Int!) {
+      patrons(first: $numberOfLeaders, orderBy: patronTokenCostScaledNumerator, orderDirection: desc) {
         id
         patronTokenCostScaledNumerator  @bsDecoder(fn: "decodeBN")
       }
@@ -217,10 +217,13 @@ let useBuySubscriptionData = () => {
   };
 };
 
-let useLoadTopContributors = () =>
-  ApolloHooks.useSubscription(LoadTopContributors.definition);
-let useLoadTopContributorsData = () => {
-  let (simple, _) = useLoadTopContributors();
+let useLoadTopContributors = numberOfLeaders =>
+  ApolloHooks.useSubscription(
+    ~variables=LoadTopContributors.make(~numberOfLeaders, ())##variables,
+    LoadTopContributors.definition,
+  );
+let useLoadTopContributorsData = numberOfLeaders => {
+  let (simple, _) = useLoadTopContributors(numberOfLeaders);
   switch (simple) {
   | Data(largestContributors) =>
     let monthlyContributions =
