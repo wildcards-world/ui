@@ -1,7 +1,7 @@
 open Components;
 
 // TODO: there must be a better way of importing images in reason react...
-let smallIcon = [%bs.raw {|require('../img/logos/wild-cards-small.png')|}];
+let smallIcon = [%bs.raw {|require('../img/logos/wildcards-logo.svg')|}];
 let betaBanner = [%bs.raw {|require('../img/beta-banner.png')|}];
 
 // type DetailView = | Details(contentWidth, nextAnimal, previousAnimal)
