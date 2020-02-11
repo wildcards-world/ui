@@ -167,8 +167,8 @@ module LoadPatron = [%graphql
 
 module LoadTopContributors = [%graphql
   {|
-    query {
-      patrons(first: 10, orderBy: patronTokenCostScaledNumerator, orderDirection: desc) {
+    query ($numberOfLeaders: Int!) {
+      patrons(first: $numberOfLeaders, orderBy: patronTokenCostScaledNumerator, orderDirection: desc) {
         id
         patronTokenCostScaledNumerator  @bsDecoder(fn: "decodeBN")
       }
@@ -217,29 +217,29 @@ let useBuySubscriptionData = () => {
   };
 };
 
-let useLoadTopContributors = () =>
-  ApolloHooks.useSubscription(LoadTopContributors.definition);
-let useLoadTopContributorsData = () => {
-  let (simple, _) = useLoadTopContributors();
+let useLoadTopContributors = numberOfLeaders =>
+  ApolloHooks.useSubscription(
+    ~variables=LoadTopContributors.make(~numberOfLeaders, ())##variables,
+    LoadTopContributors.definition,
+  );
+let useLoadTopContributorsData = numberOfLeaders => {
+  let (simple, _) = useLoadTopContributors(numberOfLeaders);
   switch (simple) {
   | Data(largestContributors) =>
-    let dailyContributions =
+    let monthlyContributions =
       largestContributors##patrons
-      |> Js.Array.map(a => {
-           let dailyContribution =
-             a##patronTokenCostScaledNumerator
+      |> Js.Array.map(patron => {
+           let monthlyContribution =
+             patron##patronTokenCostScaledNumerator
              ->BN.mulGet(. BN.new_("2592000")) // A month with 30 days has 2592000 seconds
              ->BN.divGet(.
                  // BN.new_("1000000000000")->BN.mulGet(. BN.new_("31536000")),
                  BN.new_("31536000000000000000"),
                )
-             ->Web3Utils.fromWeiBNToEth
-             ->Belt.Float.fromString
-             ->Belt.Option.mapWithDefault(0., a => a)
-             |> Js.Float.toFixedWithPrecision(~digits=4);
-           (a##id, dailyContribution);
+             ->Web3Utils.fromWeiBNToEthPrecision(~digits=4);
+           (patron##id, monthlyContribution);
          });
-    Some(dailyContributions);
+    Some(monthlyContributions);
   | _ => None
   };
 };

@@ -186,6 +186,13 @@ module Flex = {
     "Flex";
 };
 
+module Table = {
+  [@bs.module "rimble-ui"] [@react.component]
+  external make:
+    (~children: React.element, ~className: string=?) => React.element =
+    "Table";
+};
+
 module Form = {
   [@bs.module "rimble-ui"] [@react.component]
   external make:
