@@ -18,7 +18,7 @@ module Footer = {
                 className=Styles.footerLink
                 target="_blank"
                 href="https://wildcards.world">
-                <S> "Wild Cards" </S>
+                <S> "Wildcards" </S>
               </a>
             </div>
           </div>
