@@ -1,8 +1,29 @@
+let indexToType = tabIndex =>
+  switch (tabIndex) {
+  | 0 => "monthly-contribution"
+  | 1 => "total-contribution"
+  | 2 => "days-held"
+  | _ => "unknown"
+  };
+
 [@react.component]
 let make = (~leaderboardType) => {
-  Js.log(leaderboardType);
-  // React.null;
-  <ReactTabs>
+  let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+
+  let index =
+    switch (leaderboardType) {
+    | Router.MonthlyContribution => 0
+    | Router.TotalContribution => 1
+    | Router.TotalDaysHeld => 2
+    | Router.Unknown => (-1)
+    };
+  let selectLeaderBoard = (newIndex, _oldIndex) => {
+    clearAndPush("#leaderboards/" ++ indexToType(newIndex));
+
+    true;
+  };
+
+  <ReactTabs selectedIndex=index onSelect=selectLeaderBoard>
     <ReactTabs.TabList>
       <ReactTabs.Tab> "Monthly Contribution"->React.string </ReactTabs.Tab>
       <ReactTabs.Tab> "Total Contribution"->React.string </ReactTabs.Tab>
@@ -18,9 +39,4 @@ let make = (~leaderboardType) => {
       <TotalDaysHeld numberOfLeaders=10 />
     </ReactTabs.TabPanel>
   </ReactTabs>;
-  // switch (leaderboardType) {
-  // | Router.TotalContribution => <TotalContribution numberOfLeaders=10 />
-  // | Router.MonthlyContribution => <MonthlyContribution numberOfLeaders=10 />
-  // | Router.Unknown => <p> "Not found"->React.string </p>
-  // };
 };
