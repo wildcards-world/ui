@@ -1,3 +1,4 @@
+let transparency_link = "https://blog.wildcards.world/where-is-the-money-going/";
 let privacy_policy_link = "https://wildcards.world/privacy_policy.html";
 let terms_and_conditions_link = "https://wildcards.world/terms_and_conditions.html";
 
@@ -19,8 +20,15 @@ module Footer = {
                 href="https://wildcards.world">
                 <S> "Wild Cards" </S>
               </a>
-              <S> ". All rights reserved." </S>
             </div>
+          </div>
+          <div className=Styles.footerText>
+            <a
+              className=Styles.footerLink
+              target="_blank"
+              href=transparency_link>
+              <S> "Transparency" </S>
+            </a>
           </div>
           <div className=Styles.footerText>
             <a
