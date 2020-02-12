@@ -62,8 +62,7 @@ module Footer = {
             <li className=Styles.footerSocialButton>
               <SocialButtons
                 className=Styles.footerSocailButtonLink
-                url="https://telegram.org/w46bOv3jxJ?amp=1"
-                // url="https://t.co/w46bOv3jxJ?amp=1"
+                url="https://t.me/wildcardsworld"
                 bgColor="transparent"
                 target="_blank"
                 network="telegram"
