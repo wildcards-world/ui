@@ -148,6 +148,7 @@ module Header = {
                      <S> "VIEW ALL WILDCARDS" </S>
                    </Rimble.Button>}
             </li>
+            <li className=Styles.navListItem> <Web3Connect /> </li>
           </ul>
         </div>
       </nav>
@@ -167,7 +168,7 @@ let make = () => {
 
   <div className=Styles.app>
     <img src=betaBanner className=Styles.betaBanner />
-    <Web3Connect />
+    // <Web3Connect />
     <Header animalCarousel={Some((Animal.Andy, Animal.Simon))} />
     <Providers.UsdPriceProvider>
       {switch (urlState) {

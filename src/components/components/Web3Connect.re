@@ -33,22 +33,16 @@ let make = () => {
      | Some(1) =>
        connected(
          <React.Fragment>
-           "connected to "->React.string
            <strong> "MAINNET"->React.string </strong>
          </React.Fragment>,
        )
      | Some(5) =>
        connected(
          <React.Fragment>
-           "connected to "->React.string
            <strong> "GOERLI TESTNET"->React.string </strong>
          </React.Fragment>,
        )
-     | Some(_) =>
-       <div>
-         <p> "UNKNOWN Network"->React.string </p>
-         <p> "please use MAINNET or goerli testnet"->React.string </p>
-       </div>
+     | Some(_) => <div> <p> "UNKNOWN Network"->React.string </p> </div>
      | None =>
        <Rimble.Button
          onClick={_e => {
