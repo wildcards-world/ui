@@ -80,19 +80,17 @@ let useUserComponent = user =>
   switch (user) {
   | EthAddress(ethAddress) =>
     <a href={j|https://etherscan.io/address/$ethAddress|j} target="_blank">
-      // I couldn't get this to work: http://www.mattsnider.com/css-string-truncation-with-ellipsis/
-
-        {let stringReplace: string => string = [%raw
-           {|
-            function(longAddress) {
-              return longAddress.replace(/(.{7})..+/, "$1...");
-            }
-          |}
-         ];
-         React.string({j|$ethAddress|j}->stringReplace)}
-      </a>
+      {React.string(String.sub({j|$ethAddress|j}, 0, 12))}
+      {React.string("...")}
+    </a>
   | TwitterHandle(twitterHandle) =>
     <a href={j|https://twitter.com/$twitterHandle|j} target="_blank">
       {React.string({j|@$twitterHandle|j})}
     </a>
+  };
+
+let useUserName = user =>
+  switch (user) {
+  | EthAddress(ethAddress) => String.sub({j|$ethAddress|j}, 0, 14) ++ "..."
+  | TwitterHandle(twitterHandle) => {j|@$twitterHandle|j}
   };
