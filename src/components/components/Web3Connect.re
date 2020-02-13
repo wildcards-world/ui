@@ -1,56 +1,27 @@
-module UserComponent = {
-  [@react.component]
-  let make = (~currentUser) => {
-    let userId = UserProvider.useUserNameOrTwitterHandle(currentUser);
-    let userIdComponent = UserProvider.useUserComponent(userId);
-
-    userIdComponent;
-  };
-};
 [@react.component]
 let make = () => {
   let connectWeb3 = RootProvider.useConnectWeb3();
   let networkId = RootProvider.useNetworkId();
-  let currentUser = RootProvider.useCurrentUser();
 
-  let connected = message =>
-    switch (currentUser) {
-    | Some(currentUser) =>
-      <div> <p> message </p> <UserComponent currentUser /> </div>
-
-    | None =>
-      <div>
-        <p> message </p>
-        <Rimble.Button
-          onClick={_e => {connectWeb3(RootProviderTypes.NoAction)}}>
-          {React.string("Connect User")}
-        </Rimble.Button>
-      </div>
+  let connectionMessageState = networkId =>
+    switch (networkId) {
+    | Some(1) => "MAINNET"->React.string
+    | Some(5) => "GOERLI"->React.string
+    | Some(_) => "Unknown Network"->React.string
+    | None => "Connect"->React.string
     };
 
   <div className=Styles.loginButton>
-    {switch (networkId) {
-     | Some(1) =>
-       connected(
-         <React.Fragment>
-           <strong> "MAINNET"->React.string </strong>
-         </React.Fragment>,
-       )
-     | Some(5) =>
-       connected(
-         <React.Fragment>
-           <strong> "GOERLI TESTNET"->React.string </strong>
-         </React.Fragment>,
-       )
-     | Some(_) => <div> <p> "UNKNOWN Network"->React.string </p> </div>
-     | None =>
-       <Rimble.Button
-         onClick={_e => {
-           ReasonReactRouter.push("#");
-           connectWeb3(RootProviderTypes.NoAction);
-         }}>
-         {React.string("Connect")}
-       </Rimble.Button>
-     }}
+    <Rimble.Button
+      mainColor="#72C7D7"
+      disabled={!(networkId == None)}
+      onClick={_e => {
+        ReasonReactRouter.push("#");
+        connectWeb3(RootProviderTypes.NoAction);
+      }}>
+      {connectionMessageState(networkId)}
+    </Rimble.Button>
   </div>;
+  //" "->React.string
+  // <Rimble.Icon name="ExitToApp" size="16px" /> for when the logout button appears
 };
