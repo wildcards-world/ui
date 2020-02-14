@@ -89,29 +89,29 @@ export default [
   {
     name: "WalletConnect",
     connector: walletconnect,
-    connectionPhrase: "Connect via a WalletConnect enabled wallet",
+    connectionPhrase: "Connect via WalletConnect",
     img: require("./icons/walletConnect.svg")
   },
   {
-    name: "torus",
+    name: "Torus",
     connector: torus,
     connectionPhrase: "Connect via a Torus",
     img: require("./icons/torus.svg")
   },
   {
-    name: "portis",
+    name: "Portis",
     connector: portis,
     connectionPhrase: "Connect via a Portis",
     img: require("./icons/portis.svg")
   },
   {
-    name: "fortmatic",
+    name: "Fortmatic",
     connector: fortmatic,
     connectionPhrase: "Connect via a Fortmatic",
     img: require("./icons/fortmatic.svg")
   },
   {
-    name: "squarelin",
+    name: "Squarelink",
     connector: squarelink,
     connectionPhrase: "Connect via a Squarelink",
     img: require("./icons/squarelink.svg")
