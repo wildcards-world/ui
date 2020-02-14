@@ -1,3 +1,4 @@
+let transparency_link = "https://blog.wildcards.world/where-is-the-money-going/";
 let privacy_policy_link = "https://wildcards.world/privacy_policy.html";
 let terms_and_conditions_link = "https://wildcards.world/terms_and_conditions.html";
 
@@ -17,10 +18,17 @@ module Footer = {
                 className=Styles.footerLink
                 target="_blank"
                 href="https://wildcards.world">
-                <S> "Wild Cards" </S>
+                <S> "Wildcards" </S>
               </a>
-              <S> ". All rights reserved." </S>
             </div>
+          </div>
+          <div className=Styles.footerText>
+            <a
+              className=Styles.footerLink
+              target="_blank"
+              href=transparency_link>
+              <S> "Transparency" </S>
+            </a>
           </div>
           <div className=Styles.footerText>
             <a
@@ -62,8 +70,7 @@ module Footer = {
             <li className=Styles.footerSocialButton>
               <SocialButtons
                 className=Styles.footerSocailButtonLink
-                url="https://telegram.org/w46bOv3jxJ?amp=1"
-                // url="https://t.co/w46bOv3jxJ?amp=1"
+                url="https://t.me/wildcardsworld"
                 bgColor="transparent"
                 target="_blank"
                 network="telegram"
