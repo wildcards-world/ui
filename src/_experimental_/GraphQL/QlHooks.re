@@ -191,7 +191,7 @@ module SubTotalRaisedOrDueQuery = [%graphql
 
 type graphqlDataLoad('a) =
   | Loading
-  | Error(ReasonApolloHooks.ApolloHooksQuery.queryError)
+  | Error(ReasonApolloHooks.ApolloHooksTypes.apolloError)
   | NoData
   | Data('a);
 

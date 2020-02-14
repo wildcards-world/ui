@@ -71,7 +71,13 @@ let make = (~children) => {
                      ~tokenId=buyEvent##token##id,
                      (),
                    );
-                 let readQueryOptions = toReadQueryOptions(filterByNameQuery);
+                 let readQueryOptions: ApolloClient.ReadQuery(WildCards.QlHooks.SubWildcardQuery).readQueryOptions = {
+                   query: ApolloClient.gql(. filterByNameQuery##query),
+                   variables:
+                     Js.Nullable.fromOption(
+                       Some(filterByNameQuery##variables),
+                     ),
+                 };
                  module WildcardsNameFilterReadQuery =
                    ApolloClient.ReadQuery(QlHooks.SubWildcardQuery);
                  module WildcardsNameFilterWriteQuery =

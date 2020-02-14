@@ -51,24 +51,26 @@ let httpLink = networkId =>
   );
 /* Create an WS Link */
 let wsLink = networkId =>
-  ApolloLinks.webSocketLink(
-    ~uri=
+  ApolloLinks.webSocketLink({
+    uri:
       switch (networkId) {
       | 5 => "wss://api.thegraph.com/subgraphs/name/wild-cards/wildcards-goerli"
       | _ => "wss://api.thegraph.com/subgraphs/name/wild-cards/wildcards"
       },
-    (),
-  );
+    options: {
+      reconnect: true,
+      connectionParams: None,
+    },
+  });
 
 /* based on test, execute left or right */
 let webSocketHttpLink = networkId =>
   ApolloLinks.split(
     operation => {
       let operationDefition =
-        ApolloUtilities.getMainDefinition(operation##query);
-      operationDefition##kind == "OperationDefinition"
-      &&
-      operationDefition##operation == "subscription";
+        ApolloUtilities.getMainDefinition(operation.query);
+      operationDefition.kind == "OperationDefinition"
+      && operationDefition.operation == "subscription";
     },
     wsLink(networkId),
     httpLink(networkId),
