@@ -79,7 +79,10 @@ module ContributorName = {
          | Some(name) => <span> name->React.string </span>
          | None =>
            <span>
-             {(String.sub(contributor, 0, 20) ++ "...")->React.string}
+             {{
+                Helper.elipsify(contributor, 20);
+              }
+              ->React.string}
            </span>
          }}
       </a>

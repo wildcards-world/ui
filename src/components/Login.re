@@ -14,7 +14,20 @@ let make = () => {
     RootProvider.useActivateConnector();
 
   <div>
-    <p> "Login to proceed"->React.string </p>
+    <p>
+      "Use one of the wallet providers below. "->React.string
+      <small>
+        "(Not sure where to go from here? "->React.string
+        <a
+          href="https://blog.wildcards.world/how-to-buy-a-wildcard-web3-ethereum/"
+          target="_blank">
+          <span className=Styles.colorGreen>
+            "Read our guide"->React.string
+          </span>
+        </a>
+        ")"->React.string
+      </small>
+    </p>
     <div
       className=Css.(
         style([

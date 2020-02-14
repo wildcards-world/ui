@@ -14,6 +14,8 @@ module Button = {
       ~className: string=?,
       ~href: string=?,
       ~target: string=?,
+      ~mainColor: string=?,
+      ~disabled: bool=?,
       ~children: React.element,
       ~m: int=?,
       ~onClick: ReactEvent.Form.t => unit=?,
@@ -69,7 +71,7 @@ module Icon = {
       ~className: string=?
     ) =>
     React.element =
-    "Tooltip";
+    "Icon";
 };
 
 module Input = {
