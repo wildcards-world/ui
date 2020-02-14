@@ -451,20 +451,6 @@ module DefaultLook = {
            <Rimble.Box className=Styles.dappImagesCounteractOffset>
              {isGqlLoaded ? <TotalRaised /> : React.null}
            </Rimble.Box>
-           <Rimble.Box className=Styles.dappImagesCounteractOffset>
-             <p>
-               <small>
-                 <S> "Having problems buying? " </S>
-                 <a
-                   href="https://blog.wildcards.world/how-to-buy-a-wildcard-web3-ethereum/"
-                   target="_blank">
-                   <span className=Styles.colorGreen>
-                     <S> "Read our guide" </S>
-                   </span>
-                 </a>
-               </small>
-             </p>
-           </Rimble.Box>
          </React.Fragment>
        }}
     </div>;
