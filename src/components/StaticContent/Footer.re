@@ -9,76 +9,23 @@ module Footer = {
   [@react.component]
   let make = () =>
     <Box className=Styles.footer>
-      <div className=Styles.footerContainer>
-        <div className=Styles.footerWrapper>
-          <div className=Styles.footerText>
-            <div>
-              <S> {js|©|js} </S>
-              <a
-                className=Styles.footerLink
-                target="_blank"
-                href="https://wildcards.world">
-                <S> "Wildcards" </S>
-              </a>
-            </div>
-          </div>
-          <div className=Styles.footerText>
+      <div className=Styles.footerWrapper>
+        <div className=Styles.footerText>
+          <div>
+            <S> {js|©|js} </S>
             <a
               className=Styles.footerLink
               target="_blank"
-              href=transparency_link>
-              <S> "Transparency" </S>
+              href="https://wildcards.world">
+              <S> "Wildcards" </S>
             </a>
           </div>
-          <div className=Styles.footerText>
-            <a
-              className=Styles.footerLink
-              target="_blank"
-              href=privacy_policy_link>
-              <S> "Privacy Policy" </S>
-            </a>
-            <S> ". All rights reserved." </S>
-          </div>
-          <div className=Styles.footerText>
-            <a
-              className=Styles.footerLink
-              target="_blank"
-              href=terms_and_conditions_link>
-              <S> "Terms and Conditions" </S>
-            </a>
-          </div>
-          <ul className=Styles.footerSocialButtons>
-            <li className=Styles.footerSocialButton>
-              <SocialButtons
-                url="https://twitter.com/wildcards_world"
-                bgColor="transparent"
-                fgColor="#aaa"
-                target="_blank"
-                network="twitter"
-                className=Styles.footerSocailButtonLink
-              />
-            </li>
-            <li className=Styles.footerSocialButton>
-              <SocialButtons
-                className=Styles.footerSocailButtonLink
-                url="https://www.facebook.com/wildcardscrypto"
-                bgColor="transparent"
-                target="_blank"
-                network="facebook"
-                fgColor="#aaa"
-              />
-            </li>
-            <li className=Styles.footerSocialButton>
-              <SocialButtons
-                className=Styles.footerSocailButtonLink
-                url="https://t.me/wildcardsworld"
-                bgColor="transparent"
-                target="_blank"
-                network="telegram"
-                fgColor="#aaa"
-              />
-            </li>
-          </ul>
+        </div>
+        <div className=Styles.footerText>
+          <a
+            className=Styles.footerLink target="_blank" href=transparency_link>
+            <S> "Transparency" </S>
+          </a>
         </div>
         <div className=Styles.footerText>
           <a
@@ -120,7 +67,7 @@ module Footer = {
           <li className=Styles.footerSocialButton>
             <SocialButtons
               className=Styles.footerSocailButtonLink
-              url="https://telegram.org/w46bOv3jxJ?amp=1"
+              url="https://t.me/wildcardsworld"
               bgColor="transparent"
               target="_blank"
               network="telegram"
