@@ -9,6 +9,7 @@ type web3reactContext = {
   account: option(Web3.ethAddress),
   library: option(web3Library),
   chainId: option(int),
+  deactivate: unit => unit,
 };
 [@bs.module "@web3-react/core"]
 external useWeb3React: unit => web3reactContext = "useWeb3React";
@@ -97,23 +98,24 @@ module RootWithWeb3 = {
     let (rootState, dispatch) = React.useReducer(reducer, initialState);
     let context = useWeb3React();
 
-    let (tried, setTried) = React.useState(() => false);
+    // This prevents repeated tries at logging in (or re-login after logout)
+    let (triedLoginAlready, setTriedLoginAlready) =
+      React.useState(() => false);
     React.useEffect2(
       () => {
         injected.isAuthorized()
         ->Promise.get(authorised =>
-            if (authorised) {
+            if (authorised && !triedLoginAlready) {
               ignore(
                 context.activate(injected, () => (), true)
-                // We catch any errors here, and set tried to true to prevent an infinite loop of failing tries!
                 ->Promise.Js.catch(_ => {
-                    setTried(_ => true);
+                    setTriedLoginAlready(_ => true);
                     Promise.resolved();
                   }),
               );
               ();
             } else {
-              setTried(_ => true);
+              setTriedLoginAlready(_ => true);
             }
           );
         switch (context.chainId) {
@@ -143,11 +145,12 @@ module RootWithWeb3 = {
     // if the connection worked, wait until we get confirmation of that to flip the flag
     React.useEffect2(
       () => {
-        !tried && context.active ? setTried(_ => true) : ();
+        !triedLoginAlready && context.active
+          ? setTriedLoginAlready(_ => true) : ();
 
         None;
       },
-      (tried, context.active),
+      (triedLoginAlready, context.active),
     );
 
     React.useEffect3(
@@ -212,6 +215,12 @@ let useNetworkId: unit => option(int) =
 
     context.chainId;
   };
+let useDeactivateWeb3: (unit, unit) => unit =
+  () => {
+    let context = useWeb3React();
+
+    context.deactivate;
+  };
 let useWeb3: unit => option(RootProviderTypes.web3Library) =
   () => {
     let context = useWeb3React();
@@ -262,6 +271,13 @@ let useConnectWeb3: (unit, RootProviderTypes.rootActions) => unit =
       dispatch(GoToWeb3Connect(action));
     };
   };
+// let useConnectWeb3: (unit, unit) => unit =
+//   () => {
+//     // let (_, dispatch) = React.useContext(RootContext.context);
+//     // action => {
+//     //   dispatch(GoToWeb3Connect(action));
+//     // };
+//   };
 
 let useClearNonUrlStateAndPushRoute: (unit, string) => unit =
   () => {

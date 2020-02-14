@@ -80,8 +80,7 @@ let useUserComponent = user =>
   switch (user) {
   | EthAddress(ethAddress) =>
     <a href={j|https://etherscan.io/address/$ethAddress|j} target="_blank">
-      {React.string(String.sub({j|$ethAddress|j}, 0, 12))}
-      {React.string("...")}
+      {React.string(Helper.elipsify(ethAddress, 12))}
     </a>
   | TwitterHandle(twitterHandle) =>
     <a href={j|https://twitter.com/$twitterHandle|j} target="_blank">
@@ -91,6 +90,6 @@ let useUserComponent = user =>
 
 let useUserName = user =>
   switch (user) {
-  | EthAddress(ethAddress) => String.sub({j|$ethAddress|j}, 0, 14) ++ "..."
+  | EthAddress(ethAddress) => Helper.elipsify(ethAddress, 14)
   | TwitterHandle(twitterHandle) => {j|@$twitterHandle|j}
   };
