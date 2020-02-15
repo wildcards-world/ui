@@ -92,7 +92,7 @@ module UserDetails = {
         {previouslyOwnedTokens->Belt.Option.mapWithDefault(
            <p> "No previously owned tokens"->React.string </p>, a =>
            ReasonReact.array(
-             Array.mapi((i, token) => <Token tokenId={token##id} />, a),
+             Array.mapi((_i, token) => <Token tokenId={token##id} />, a),
            )
          )}
       </div>
@@ -101,7 +101,7 @@ module UserDetails = {
         {currentlyOwnedTokens->Belt.Option.mapWithDefault(
            <p> "No currently owned tokens"->React.string </p>, a =>
            ReasonReact.array(
-             Array.mapi((i, token) => <Token tokenId={token##id} />, a),
+             Array.mapi((_i, token) => <Token tokenId={token##id} />, a),
            )
          )}
       </div>

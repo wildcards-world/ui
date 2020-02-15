@@ -55,7 +55,6 @@ let make = (~children) => {
        ? result->Belt.Option.mapWithDefault(React.null, result =>
            <ApolloConsumer>
              ...{client => {
-               open ReasonApolloHooks.ApolloHooks;
                let latestBuyEvent =
                  result##eventCounter
                  ->Belt.Option.flatMap(eventCounter => eventCounter##buyEvents)
