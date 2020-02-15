@@ -37,5 +37,11 @@
     "@jsiebern/get_in_ppx/ppx6",
     "@baransu/graphql_ppx_re/ppx6"
   ],
+  // referenc: https://dev.to/yawaramin/ocaml-reasonml-best-practice-warnings-and-errors-4mkm
+  // TODO: when you get time, go through and remove "-40-42-4-11-12-32-33" fixing the issues as you go.
+  "warnings": {
+    "number": "+A-48",
+    "error": "+A-3-44-102-40-42-4-11-12-32-33"
+  },
   "refmt": 3
 }
