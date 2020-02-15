@@ -39,3 +39,6 @@ dist
 
 # used for testing the library "@brainhubeu/react-carousel"
 react-carousel
+
+# since we are using yarn instead of npm now.
+package-lock.json
