@@ -503,7 +503,7 @@ module AnimalInfoStats = {
       | TwitterHandle(_) => "verified twitter account"
       };
     let userIdComponent = UserProvider.useUserComponent(userId);
-    let currentUsdEthPrice = Providers.UsdPriceProvider.useUsdPrice();
+    let currentUsdEthPrice = UsdPriceProvider.useUsdPrice();
     let (depositAvailableToWithdrawEth, depositAvailableToWithdrawUsd) =
       // GeneralHooks.useDepositAbleToWithdrawEthAnimal(animal)
       QlHooks.useRemainingDepositEth(currentPatron)

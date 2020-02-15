@@ -2,7 +2,7 @@ open Components;
 
 let uesPrice = animal => {
   let optPriceWei = QlHooks.usePrice(animal); //->Web3Utils.fromWeiBNToEth;
-  let optCurrentUsdEthPrice = Providers.UsdPriceProvider.useUsdPrice(); //->mapWithDefault(0., a => a);
+  let optCurrentUsdEthPrice = UsdPriceProvider.useUsdPrice(); //->mapWithDefault(0., a => a);
   // let optCurrentUsdEthPrice = Some(0.5); //->mapWithDefault(0., a => a);
 
   switch (optPriceWei) {

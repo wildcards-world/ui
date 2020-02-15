@@ -170,7 +170,7 @@ let make = () => {
     <img src=betaBanner className=Styles.betaBanner />
     <div className=Css.(style([minHeight(vh(88.))]))>
       <Header animalCarousel={Some((Animal.Andy, Animal.Simon))} />
-      <Providers.UsdPriceProvider>
+      <UsdPriceProvider>
         {switch (urlState) {
          | Explorer(animalPageState) =>
            switch (animalPageState) {
@@ -208,7 +208,7 @@ let make = () => {
              <LeaderBoards leaderboardType />
            </Rimble.Flex>
          }}
-      </Providers.UsdPriceProvider>
+      </UsdPriceProvider>
     </div>
     <StaticContent.Footer />
   </div>;
