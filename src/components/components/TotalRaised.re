@@ -1,4 +1,4 @@
-open Providers.UsdPriceProvider;
+open UsdPriceProvider;
 open Belt.Option;
 
 module TotalRaisedEtherCountup = {
