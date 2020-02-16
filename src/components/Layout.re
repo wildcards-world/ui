@@ -192,12 +192,12 @@ let make = () => {
            | NormalView =>
              <React.Fragment>
                <AnimalFocusDetails animalCarousel=None />
-               <StaticContent.CustomerBenefit />
+               <CustomerBenefit />
                <HomepageLeaderBoard />
-               <StaticContent.About />
-               <StaticContent.HowItWorks />
-               <StaticContent.EmailSignup />
-               <StaticContent.FAQs />
+               <About />
+               <HowItWorks />
+               <EmailSignup />
+               <FAQs />
                <StaticContent.Partners />
              </React.Fragment>
            }
@@ -210,6 +210,6 @@ let make = () => {
          }}
       </UsdPriceProvider>
     </div>
-    <StaticContent.Footer />
+    <Footer />
   </div>;
 };
