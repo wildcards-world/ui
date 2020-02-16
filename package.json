@@ -23,6 +23,7 @@
     "bs-css": "^10.0.1",
     "bs-fetch": "^0.5.1",
     "bs-moment": "git+https://github.com/reasonml-community/bs-moment.git#0d476e5",
+    "bs-webapi": "^0.15.7",
     "copy-to-clipboard": "^3.2.1",
     "decco": "^1.1.1",
     "ethers": "^4.0.44",

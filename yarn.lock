@@ -4590,6 +4590,11 @@ bs-platform@^7.1.0:
   resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-7.1.0.tgz#72b52148b1c4be7f878969e6e2afd1bfab068cdd"
   integrity sha512-XUeZf1nGzmsVymG89j5L8G9YNDHl0J/5iDGExXA7a4RKxnbvP2TselBZAzFeEH4rs3gG01b7yKt+h2pm7yh7Ww==
 
+bs-webapi@^0.15.7:
+  version "0.15.7"
+  resolved "https://registry.yarnpkg.com/bs-webapi/-/bs-webapi-0.15.7.tgz#4d6bc7723d0614a2864953659e703163f1023ba4"
+  integrity sha512-Mu8H+9DRIPK6VuqgzyUp5FoeBLSlhOqQcqc6G05At019kIZowQU783MoSedTbt9OctE9N1yO91DoDzMTWHspdg==
+
 bs58@4.0.1, bs58@^4.0.0, bs58@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/bs58/-/bs58-4.0.1.tgz#be161e76c354f6f788ae4071f63f34e8c4f0a42a"
