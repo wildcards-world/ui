@@ -264,11 +264,10 @@ let make = (~animal: Animal.t, ~isExplorer: bool=false) => {
   let goToBuy = RootProvider.useGoToBuy();
   let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
-  // TODO:: check if foreclosed!!
   let buttonText =
     switch (currentPriceWei) {
-    | Price(_price) => "Adopt"
-    | Foreclosed => "Claim"
+    | Price(_price) => "Buy"
+    | Foreclosed => "Adopt"
     | Loading => "loading"
     };
 

@@ -168,7 +168,6 @@ let make = () => {
 
   <div className=Styles.app>
     <img src=betaBanner className=Styles.betaBanner />
-    // <Web3Connect />
     <Header animalCarousel={Some((Animal.Andy, Animal.Simon))} />
     <Providers.UsdPriceProvider>
       {switch (urlState) {
