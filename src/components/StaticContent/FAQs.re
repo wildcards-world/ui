@@ -46,12 +46,12 @@ module FaqItem = {
   [@react.component]
   let make = (~isOpen, ~toggleAccordion, ~title, ~content) => {
     let (height, setHeight) = useState(_ => "0px");
-    let canvasElementRef = useRef(Js.Nullable.null);
+    let accordianContentRef = useRef(Js.Nullable.null);
 
     useEffect1(
       () => {
         let optHeight =
-          Ref.current(canvasElementRef)
+          Ref.current(accordianContentRef)
           |> Js.Nullable.toOption
           |> Belt.Option.map(_, Webapi.Dom.Element.scrollHeight);
 
@@ -75,7 +75,7 @@ module FaqItem = {
       </div>
       <div
         className=accordionContent
-        ref={ReactDOMRe.Ref.domRef(canvasElementRef)}
+        ref={ReactDOMRe.Ref.domRef(accordianContentRef)}
         style={inlineStyle(~maxHeight=height, ())}>
         <div>
           <div className=faqExplainerText>
@@ -153,7 +153,7 @@ let content = [|
 
 [@react.component]
 let make = () => {
-  let (activeIndex, setActiveIndex) = useState(() => 3);
+  let (activeIndex, setActiveIndex) = useState(() => (-1));
   let toggleAccordion = (faqItemIndex, ()) => {
     setActiveIndex(_ => faqItemIndex == activeIndex ? (-1) : faqItemIndex);
   };
