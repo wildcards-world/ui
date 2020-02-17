@@ -1,5 +1,12 @@
 [@bs.module "react-tabs"] [@react.component]
-external make: (~children: React.element) => React.element = "Tabs";
+external make:
+  (
+    ~selectedIndex: int=?,
+    ~onSelect: (int, int) => bool=?,
+    ~children: React.element
+  ) =>
+  React.element =
+  "Tabs";
 
 module Tab = {
   [@bs.module "react-tabs"] [@react.component]
