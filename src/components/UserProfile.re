@@ -117,7 +117,7 @@ module UserDetails = {
           <a
             className=Styles.navListText
             target="_blank"
-            href={"https://" ++ etherScanUrl ++ userAddress}>
+            href={"https://" ++ etherScanUrl ++ "/address/" ++ userAddress}>
             {Helper.elipsify(userAddress, 10)->restr}
           </a>
         </Rimble.Box>
