@@ -1,26 +1,38 @@
-type threeBoxImage;
+[@bs.deriving accessors]
+type threeBoxImageData = {
+  [@bs.as "@type"]
+  imageType: string,
+  contentUrl: Js.Dict.t(string),
+};
+type threeBoxImage = array(threeBoxImageData);
+[@bs.deriving accessors]
 type threeBoxTwitterVerification = {
   username: string,
   proof: string,
   verifiedBy: string,
 };
+[@bs.deriving accessors]
 type threeBoxProfile = {
   coverPhoto: option(threeBoxImage),
   description: option(string),
   image: option(threeBoxImage),
   name: option(string),
 };
+[@bs.deriving accessors]
 type threeBoxVerifications = {
   did: string,
   twitter: option(threeBoxTwitterVerification),
 };
+[@bs.deriving accessors]
 type threeBoxUserInfo = {
   profile: option(threeBoxProfile),
   wildcardsSpace: option(string),
   verifications: option(threeBoxVerifications),
 };
+[@bs.deriving accessors]
 type userVerification = {threeBox: threeBoxUserInfo};
 
+[@bs.deriving accessors]
 type userInfo = {
   userInfo: Js.Dict.t(userVerification),
   update: (string, bool) => unit,

@@ -215,6 +215,15 @@ let useNetworkId: unit => option(int) =
 
     context.chainId;
   };
+let useEtherscanUrl: unit => string =
+  () => {
+    let networkId = useNetworkId();
+
+    switch (networkId) {
+    | Some(5) => "goerli.etherscan.io"
+    | _ => "etherscan.io"
+    };
+  };
 let useDeactivateWeb3: (unit, unit) => unit =
   () => {
     let context = useWeb3React();

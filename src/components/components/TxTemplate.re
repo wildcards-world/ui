@@ -1,14 +1,7 @@
 [@react.component]
 let make =
     (~children: React.element, ~txState: AnimalActions.transactionState) => {
-  let networkId = RootProvider.useNetworkId();
-
-  let etherscanUrl = {
-    switch (networkId) {
-    | Some(5) => "goerli.etherscan.io"
-    | _ => "etherscan.io"
-    };
-  };
+  let etherscanUrl = RootProvider.useEtherscanUrl();
   let clearNonUrlState = RootProvider.useClearNonUrlState();
 
   switch (txState) {
