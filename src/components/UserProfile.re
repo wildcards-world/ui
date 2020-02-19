@@ -6,9 +6,13 @@ open Belt;
 module Token = {
   [@react.component]
   let make = (~tokenId) => {
+    let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+    let animal = Animal.getNameFromId(tokenId);
+
     <div>
       <img
-        className=Css.(style([maxWidth(px(30))]))
+        className=Css.(style([maxWidth(vh(15.))]))
+        onClick={_e => clearAndPush("/#details/" ++ animal)}
         src={
           tokenId
           ->Animal.getAnimalFromId
@@ -98,7 +102,12 @@ module UserDetails = {
           className=Css.(style([textAlign(`center)]))>
           <img
             className=Css.(
-              style([borderRadius(`percent(100.)), maxWidth(`vh(50.))])
+              style([
+                borderRadius(`percent(100.)),
+                width(`vh(25.)),
+                height(`vh(25.)),
+                objectFit(`cover),
+              ])
             )
             src=image
           />
@@ -122,17 +131,22 @@ module UserDetails = {
           </a>
         </Rimble.Box>
         <Rimble.Box p=1 width=[|1., 1., 0.33|]>
-          {optMonthlyCotribution->reactMap(((ethValue, optUsdValue)) =>
-             <React.Fragment>
-               <h2> "Monthly Contribution"->restr </h2>
-               <p>
-                 ethValue->restr
+          <h2> "Monthly Contribution"->restr </h2>
+          <p>
+            {optMonthlyCotribution->reactMapWithDefault(
+               {
+                 "0 ETH";
+               }
+               ->restr,
+               ((ethValue, optUsdValue)) =>
+               <React.Fragment>
+                 {j|$ethValue ETH\xa0|j}->restr
                  {optUsdValue->reactMap(usdValue =>
-                    ("(" ++ usdValue ++ " USD)")->restr
+                    <small> {j|($usdValue USD)|j}->restr </small>
                   )}
-               </p>
-             </React.Fragment>
-           )}
+               </React.Fragment>
+             )}
+          </p>
         </Rimble.Box>
         <Rimble.Box p=1 width=[|1., 1., 0.33|]>
           <Rimble.Heading>

@@ -94,6 +94,18 @@ let useIsDetails = () => {
     [|urlState|],
   );
 };
+let useIsHome = () => {
+  let urlState = useUrlState();
+
+  React.useMemo1(
+    () =>
+      switch (urlState) {
+      | Home(_) => true
+      | _ => false
+      },
+    [|urlState|],
+  );
+};
 let getAnimalFormAnimalPageState: animalPageState => option(Animal.t) =
   animalPageState =>
     switch (animalPageState) {

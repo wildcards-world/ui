@@ -68,6 +68,7 @@ module Header = {
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
     let isExplorer = Router.useIsExplorer();
     let isDetails = Router.useIsDetails();
+    let isHome = Router.useIsHome();
     open ReactTranslate;
     let usedtranslationModeContext = useTranslationModeContext();
     <header className=Styles.header>
@@ -85,9 +86,8 @@ module Header = {
           </a>
           <ul className=Styles.navList>
             <li className=Styles.navListItem>
-              {isExplorer || isDetails
-                 ? React.null
-                 : <div className=Styles.navListItemToggle>
+              {isHome
+                 ? <div className=Styles.navListItemToggle>
                      <span className=Styles.someMarginRight>
                        <S>
                          {usedtranslationModeContext->translationModeCrypto
@@ -107,11 +107,13 @@ module Header = {
                        checkedIcon=false
                        className=Styles.translationSwitch
                      />
-                   </div>}
+                   </div>
+                 : React.null}
             </li>
             <li className=Styles.navListItem>
-              {isExplorer || isDetails
-                 ? <a
+              {isHome
+                 ? React.null
+                 : <a
                      className=Styles.navListText
                      href=""
                      onClick={event => {
@@ -119,8 +121,7 @@ module Header = {
                        clearAndPush("#");
                      }}>
                      <S> "HOME" </S>
-                   </a>
-                 : React.null}
+                   </a>}
               <a
                 className=Styles.navListText
                 target="_blank"
