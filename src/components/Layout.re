@@ -64,7 +64,7 @@ module AnimalFocusDetails = {
 
 module Header = {
   [@react.component]
-  let make = (~animalCarousel) => {
+  let make = () => {
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
     let isExplorer = Router.useIsExplorer();
     let isDetails = Router.useIsDetails();
@@ -110,28 +110,9 @@ module Header = {
                    </div>}
             </li>
             <li className=Styles.navListItem>
-              {switch (animalCarousel) {
-               | None => React.null
-               | Some(_) =>
-                 <a
-                   className=Styles.navListText
-                   onClick={event => {
-                     ReactEvent.Mouse.preventDefault(event);
-                     clearAndPush("#");
-                   }}>
-                   <S> "HOME" </S>
-                 </a>
-               }}
-              <a
-                className=Styles.navListText
-                target="_blank"
-                href="https://blog.wildcards.world/">
-                <S> "BLOG" </S>
-              </a>
-              {isExplorer && !isDetails
+              {isExplorer || isDetails
                  ? <a
                      className=Styles.navListText
-                     target="_blank"
                      href=""
                      onClick={event => {
                        ReactEvent.Mouse.preventDefault(event);
@@ -139,6 +120,15 @@ module Header = {
                      }}>
                      <S> "HOME" </S>
                    </a>
+                 : React.null}
+              <a
+                className=Styles.navListText
+                target="_blank"
+                href="https://blog.wildcards.world/">
+                <S> "BLOG" </S>
+              </a>
+              {isExplorer && !isDetails
+                 ? React.null
                  : <Rimble.Button
                      onClick={event => {
                        ReactEvent.Form.preventDefault(event);
@@ -169,7 +159,7 @@ let make = () => {
   <div className=Styles.app>
     <img src=betaBanner className=Styles.betaBanner />
     <div className=Css.(style([minHeight(vh(88.))]))>
-      <Header animalCarousel={Some((Animal.Andy, Animal.Simon))} />
+      <Header />
       <UsdPriceProvider>
         {switch (urlState) {
          | Explorer(animalPageState) =>

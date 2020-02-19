@@ -72,9 +72,13 @@ module ContributorName = {
         ->flatMap(threeBoxData => threeBoxData.profile)
         ->flatMap(threeBoxData => threeBoxData.name)
       );
+    let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
     <span>
-      <a href={"/#user/" ++ contributor}>
+      <a
+        href=""
+        onClick={_e => clearAndPush("/#user/" ++ contributor)}
+        target="_blank">
         {switch (optUserName) {
          | Some(name) => <span> name->React.string </span>
          | None =>
