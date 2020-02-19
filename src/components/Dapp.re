@@ -1,4 +1,5 @@
 open Belt.Option;
+open Globals;
 open Components;
 
 // Load styles for the carousel and react-tabs
@@ -103,13 +104,16 @@ module BasicAnimalDisplay = {
     let owned = animal->QlHooks.useIsAnimalOwened;
     let currentPatron =
       QlHooks.usePatron(animal)->mapWithDefault("Loading", a => a);
-    let userId = UserProvider.useUserNameOrTwitterHandle(currentPatron);
+    let displayName = UserProvider.useDisplayName(currentPatron);
 
-    let userIdComponent = UserProvider.useUserComponent(userId);
+    let displayNameStr = UserProvider.displayNameToString(displayName);
+    let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
     <React.Fragment>
       <PriceDisplay animal />
-      userIdComponent
+      <a onClick={_e => clearAndPush({j|/#user/$currentPatron|j})}>
+        displayNameStr->restr
+      </a>
       <br />
       {owned ? <EditButton animal /> : <BuyModal animal />}
     </React.Fragment>;
@@ -326,12 +330,15 @@ module AnimalActionsOnDetailsPage = {
     //   RootProvider.useCurrentUser()->mapWithDefault("loading", a => a);
     let currentPatron =
       QlHooks.usePatron(animal)->mapWithDefault("Loading", a => a);
-    let userId = UserProvider.useUserNameOrTwitterHandle(currentPatron);
-    let userIdComponent = UserProvider.useUserComponent(userId);
+    let displayName = UserProvider.useDisplayName(currentPatron);
+    let displayNameStr = UserProvider.displayNameToString(displayName);
+    let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
     let price = () =>
       <React.Fragment>
-        userIdComponent
+        <a onClick={_e => clearAndPush({j|/#user/$currentPatron|j})}>
+          displayNameStr->restr
+        </a>
         <PriceDisplay animal />
         <BuyModal animal />
       </React.Fragment>;
@@ -436,8 +443,6 @@ module DetailsView = {
 module DefaultLook = {
   [@react.component]
   let make = (~isGqlLoaded) => {
-    open Components;
-
     let url = ReasonReactRouter.useUrl();
 
     <div className=Styles.centerText>
@@ -496,13 +501,17 @@ module AnimalInfoStats = {
 
     let currentPatron =
       QlHooks.usePatron(animal)->mapWithDefault("Loading", a => a);
-    let userId = UserProvider.useUserNameOrTwitterHandle(currentPatron);
+    let userId = UserProvider.useDisplayName(currentPatron);
+    let displayName = UserProvider.useDisplayName(currentPatron);
+    let displayNameStr = UserProvider.displayNameToString(displayName);
     let userIdType =
       switch (userId) {
       | EthAddress(_) => "public address"
       | TwitterHandle(_) => "verified twitter account"
+      | ThreeBoxName(_) => "3box name"
       };
-    let userIdComponent = UserProvider.useUserComponent(userId);
+    let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+
     let currentUsdEthPrice = UsdPriceProvider.useUsdPrice();
     let (depositAvailableToWithdrawEth, depositAvailableToWithdrawUsd) =
       // GeneralHooks.useDepositAbleToWithdrawEthAnimal(animal)
@@ -596,7 +605,9 @@ module AnimalInfoStats = {
           </strong>
         </small>
         <br />
-        userIdComponent
+        <a onClick={_e => clearAndPush({j|/#user/$currentPatron|j})}>
+          displayNameStr->restr
+        </a>
       </p>
       <p>
         <small>
