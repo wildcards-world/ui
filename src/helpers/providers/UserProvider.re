@@ -1,4 +1,9 @@
-type threeBoxImage;
+type threeBoxImageData = {
+  [@bs.as "@type"]
+  imageType: string,
+  contentUrl: Js.Dict.t(string),
+};
+type threeBoxImage = array(threeBoxImageData);
 type threeBoxTwitterVerification = {
   username: string,
   proof: string,
@@ -76,10 +81,12 @@ let useIsUserValidated: string => bool =
     | TwitterHandle(_) => true
     };
 
-let useUserComponent = user =>
+let useUserComponent = user => {
+  let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+
   switch (user) {
   | EthAddress(ethAddress) =>
-    <a href={j|https://etherscan.io/address/$ethAddress|j} target="_blank">
+    <a onClick={_e => clearAndPush("/#user/" ++ ethAddress)}>
       {React.string(Helper.elipsify(ethAddress, 12))}
     </a>
   | TwitterHandle(twitterHandle) =>
@@ -87,7 +94,7 @@ let useUserComponent = user =>
       {React.string({j|@$twitterHandle|j})}
     </a>
   };
-
+};
 let useUserName = user =>
   switch (user) {
   | EthAddress(ethAddress) => Helper.elipsify(ethAddress, 14)

@@ -14,9 +14,9 @@ let make = () => {
 
   let connectedNetworkName = networkId =>
     switch (networkId) {
-    | 1 => "MAINNET"->React.string
-    | 5 => "GOERLI"->React.string
-    | _ => "Unknown Network"->React.string
+    | 1 => {j|MAINNET\xa0|j}->React.string
+    | 5 => {j|GOERLI\xa0|j}->React.string
+    | _ => {j|Unknown Network\xa0|j}->React.string
     };
 
   let web3Button =

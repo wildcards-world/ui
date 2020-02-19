@@ -64,10 +64,11 @@ module AnimalFocusDetails = {
 
 module Header = {
   [@react.component]
-  let make = (~animalCarousel) => {
+  let make = () => {
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
     let isExplorer = Router.useIsExplorer();
     let isDetails = Router.useIsDetails();
+    let isHome = Router.useIsHome();
     open ReactTranslate;
     let usedtranslationModeContext = useTranslationModeContext();
     <header className=Styles.header>
@@ -85,9 +86,8 @@ module Header = {
           </a>
           <ul className=Styles.navList>
             <li className=Styles.navListItem>
-              {isExplorer || isDetails
-                 ? React.null
-                 : <div className=Styles.navListItemToggle>
+              {isHome
+                 ? <div className=Styles.navListItemToggle>
                      <span className=Styles.someMarginRight>
                        <S>
                          {usedtranslationModeContext->translationModeCrypto
@@ -107,21 +107,21 @@ module Header = {
                        checkedIcon=false
                        className=Styles.translationSwitch
                      />
-                   </div>}
+                   </div>
+                 : React.null}
             </li>
             <li className=Styles.navListItem>
-              {switch (animalCarousel) {
-               | None => React.null
-               | Some(_) =>
-                 <a
-                   className=Styles.navListText
-                   onClick={event => {
-                     ReactEvent.Mouse.preventDefault(event);
-                     clearAndPush("#");
-                   }}>
-                   <S> "HOME" </S>
-                 </a>
-               }}
+              {isHome
+                 ? React.null
+                 : <a
+                     className=Styles.navListText
+                     href=""
+                     onClick={event => {
+                       ReactEvent.Mouse.preventDefault(event);
+                       clearAndPush("#");
+                     }}>
+                     <S> "HOME" </S>
+                   </a>}
               <a
                 className=Styles.navListText
                 target="_blank"
@@ -129,16 +129,7 @@ module Header = {
                 <S> "BLOG" </S>
               </a>
               {isExplorer && !isDetails
-                 ? <a
-                     className=Styles.navListText
-                     target="_blank"
-                     href=""
-                     onClick={event => {
-                       ReactEvent.Mouse.preventDefault(event);
-                       clearAndPush("#");
-                     }}>
-                     <S> "HOME" </S>
-                   </a>
+                 ? React.null
                  : <Rimble.Button
                      onClick={event => {
                        ReactEvent.Form.preventDefault(event);
@@ -169,7 +160,7 @@ let make = () => {
   <div className=Styles.app>
     <img src=betaBanner className=Styles.betaBanner />
     <div className=Css.(style([minHeight(vh(88.))]))>
-      <Header animalCarousel={Some((Animal.Andy, Animal.Simon))} />
+      <Header />
       <UsdPriceProvider>
         {switch (urlState) {
          | Explorer(animalPageState) =>
