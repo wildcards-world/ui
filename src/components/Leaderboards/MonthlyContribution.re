@@ -74,7 +74,7 @@ module ContributorName = {
       );
 
     <span>
-      <a href={"https://3box.io/" ++ contributor} target="_blank">
+      <a href={"/#user/" ++ contributor}>
         {switch (optUserName) {
          | Some(name) => <span> name->React.string </span>
          | None =>

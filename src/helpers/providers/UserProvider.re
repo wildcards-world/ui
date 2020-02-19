@@ -91,7 +91,7 @@ let useIsUserValidated: string => bool =
 let useUserComponent = user =>
   switch (user) {
   | EthAddress(ethAddress) =>
-    <a href={j|https://etherscan.io/address/$ethAddress|j} target="_blank">
+    <a href={j|/#user/$ethAddress|j} target="_blank">
       {React.string(Helper.elipsify(ethAddress, 12))}
     </a>
   | TwitterHandle(twitterHandle) =>
