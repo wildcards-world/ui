@@ -37,25 +37,26 @@ module UserDetails = {
     let currentlyOwnedTokens =
       patronQueryResult##patron
       ->Option.flatMap(patron => Some(patron##tokens));
-    let optProfile = UserProvider.(optThreeBoxData >>= profile);
+    let optProfile = optThreeBoxData >>= (a => a.profile);
     let image: string =
-      UserProvider.(
-        (
-          optProfile
-          >>= image
-          >>= (img => img->Array.get(0))
-          <$> contentUrl
-          >>= (content => Js.Dict.get(content, "/"))
-        )
-        ->Option.mapWithDefault(Blockie.makeBlockie(. userAddress), hash =>
-            "https://ipfs.infura.io/ipfs/" ++ hash
-          )
-      );
-    let optName = UserProvider.(optProfile >>= name);
-    let optDescription = UserProvider.(optProfile >>= description);
+      (
+        optProfile
+        >>= (a => a.image)
+        >>= (img => img->Array.get(0))
+        <$> (a => a.contentUrl)
+        >>= (content => Js.Dict.get(content, "/"))
+      )
+      ->Option.mapWithDefault(Blockie.makeBlockie(. userAddress), hash =>
+          "https://ipfs.infura.io/ipfs/" ++ hash
+        );
+    let optName = optProfile >>= (a => a.name);
+    let optDescription = optProfile >>= (a => a.description);
     let optTwitter =
       UserProvider.(
-        optThreeBoxData >>= verifications >>= twitter <$> username
+        optThreeBoxData
+        >>= (a => a.verifications)
+        >>= (a => a.twitter)
+        <$> (a => a.username)
       );
     let etherScanUrl = RootProvider.useEtherscanUrl();
 
