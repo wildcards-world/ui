@@ -111,7 +111,11 @@ module BasicAnimalDisplay = {
 
     <React.Fragment>
       <PriceDisplay animal />
-      <a onClick={_e => clearAndPush({j|/#user/$currentPatron|j})}>
+      <a
+        onClick={e => {
+          ReactEvent.Mouse.preventDefault(e);
+          clearAndPush({j|/#user/$currentPatron|j});
+        }}>
         displayNameStr->restr
       </a>
       <br />
@@ -336,7 +340,11 @@ module AnimalActionsOnDetailsPage = {
 
     let price = () =>
       <React.Fragment>
-        <a onClick={_e => clearAndPush({j|/#user/$currentPatron|j})}>
+        <a
+          onClick={e => {
+            ReactEvent.Mouse.preventDefault(e);
+            clearAndPush({j|/#user/$currentPatron|j});
+          }}>
           displayNameStr->restr
         </a>
         <PriceDisplay animal />
@@ -605,7 +613,11 @@ module AnimalInfoStats = {
           </strong>
         </small>
         <br />
-        <a onClick={_e => clearAndPush({j|/#user/$currentPatron|j})}>
+        <a
+          onClick={e => {
+            ReactEvent.Mouse.preventDefault(e);
+            clearAndPush({j|/#user/$currentPatron|j});
+          }}>
           displayNameStr->restr
         </a>
       </p>
