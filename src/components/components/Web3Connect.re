@@ -6,11 +6,11 @@ let make = () => {
   let deactivateWeb3 = RootProvider.useDeactivateWeb3();
   let networkIdOpt = RootProvider.useNetworkId();
   let currentUser = RootProvider.useCurrentUser();
-  let userId =
-    UserProvider.useUserNameOrTwitterHandle(
+  let displayName =
+    UserProvider.useDisplayName(
       currentUser->Option.mapWithDefault("loading", a => a),
     );
-  let username = UserProvider.useUserName(userId);
+  let displayNameStr = UserProvider.displayNameToString(displayName);
 
   let connectedNetworkName = networkId =>
     switch (networkId) {
@@ -41,7 +41,7 @@ let make = () => {
     switch (networkIdOpt, currentUser) {
     | (None, _) => "Connect to network"
     | (Some(_), None) => "Loading user"
-    | (Some(_), Some(_)) => username
+    | (Some(_), Some(_)) => displayNameStr
     };
 
   <div className=Styles.loginButton>

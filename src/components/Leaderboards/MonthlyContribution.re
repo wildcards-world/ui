@@ -75,7 +75,11 @@ module ContributorName = {
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
     <span>
-      <a href="" onClick={_e => clearAndPush("/#user/" ++ contributor)}>
+      <a
+        onClick={e => {
+          ReactEvent.Mouse.preventDefault(e);
+          clearAndPush({j|/#user/$contributor|j});
+        }}>
         {switch (optUserName) {
          | Some(name) => <span> name->React.string </span>
          | None =>
