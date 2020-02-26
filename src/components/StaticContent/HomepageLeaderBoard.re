@@ -25,7 +25,7 @@ let make = () => {
                 ReactEvent.Form.preventDefault(e);
                 clearAndPush({j|/#leaderboards/monthly-contribution|j});
               }}>
-              "View Other Leaderboards - "->restr
+              "View Other Leaderboards"->restr
             </Button>
           </Rimble.Box>
         </Card>
