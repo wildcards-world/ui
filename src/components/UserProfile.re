@@ -31,12 +31,17 @@ module UserDetails = {
         ~optThreeBoxData: option(UserProvider.threeBoxUserInfo),
         ~userAddress: string,
       ) => {
-    let previouslyOwnedTokens =
-      patronQueryResult##patron
-      ->Option.flatMap(patron => patron##previouslyOwnedTokens);
     let currentlyOwnedTokens =
-      patronQueryResult##patron
-      ->Option.flatMap(patron => Some(patron##tokens));
+      (patronQueryResult##patron <$> (patron => patron##tokens))
+      ->Option.mapWithDefault([||], a => a->Array.map(token => token##id));
+    let allPreviouslyOwnedTokens: array(string) =
+      (patronQueryResult##patron >>= (patron => patron##previouslyOwnedTokens))
+      ->Option.mapWithDefault([||], a => a->Array.map(token => token##id));
+    let uniquePreviouslyOwnedTokens =
+      Set.String.fromArray(allPreviouslyOwnedTokens)
+      ->Set.String.removeMany(currentlyOwnedTokens)
+      ->Set.String.toArray;
+
     let optProfile = optThreeBoxData >>= (a => a.profile);
     let image: string =
       (
@@ -99,7 +104,7 @@ module UserDetails = {
       <Rimble.Flex alignItems="start">
         <Rimble.Box
           p=1
-          width=[|1., 1., 0.33|]
+          width=[|1., 1., 0.3333|]
           className=Css.(style([textAlign(`center)]))>
           <img
             className=Css.(
@@ -131,7 +136,7 @@ module UserDetails = {
             {Helper.elipsify(userAddress, 10)->restr}
           </a>
         </Rimble.Box>
-        <Rimble.Box p=1 width=[|1., 1., 0.33|]>
+        <Rimble.Box p=1 width=[|1., 1., 0.3333|]>
           <h2> "Monthly Contribution"->restr </h2>
           <p>
             {optMonthlyCotribution->reactMapWithDefault(
@@ -149,36 +154,43 @@ module UserDetails = {
              )}
           </p>
         </Rimble.Box>
-        <Rimble.Box p=1 width=[|1., 1., 0.33|]>
-          <Rimble.Heading>
-            "Currently owned tokens"->React.string
-          </Rimble.Heading>
-          <Rimble.Flex>
-            {currentlyOwnedTokens->Option.mapWithDefault(
-               <p> "No currently owned tokens"->React.string </p>, a =>
-               ReasonReact.array(
-                 a->Array.mapWithIndex((_i, token) =>
-                   <Token tokenId={token##id} />
-                 ),
-               )
-             )}
-          </Rimble.Flex>
-          <br />
-          <br />
-          <br />
-          <Rimble.Heading>
-            "Previously owned tokens"->React.string
-          </Rimble.Heading>
-          <Rimble.Flex>
-            {previouslyOwnedTokens->Option.mapWithDefault(
-               <p> "No previously owned tokens"->React.string </p>, a =>
-               ReasonReact.array(
-                 a->Array.mapWithIndex((_i, token) =>
-                   <Token tokenId={token##id} />
-                 ),
-               )
-             )}
-          </Rimble.Flex>
+        <Rimble.Box p=1 width=[|1., 1., 0.3333|]>
+          {switch (currentlyOwnedTokens) {
+           | [||] => <p> "User has never owned a wildcard."->restr </p>
+           | currentlyOwnedTokens =>
+             <React.Fragment>
+               <Rimble.Heading>
+                 "Currently owned tokens"->React.string
+               </Rimble.Heading>
+               <Rimble.Flex>
+                 {ReasonReact.array(
+                    currentlyOwnedTokens->Array.mapWithIndex((i, tokenId) =>
+                      <Token key={i->string_of_int} tokenId />
+                    ),
+                  )}
+               </Rimble.Flex>
+               <br />
+               <br />
+               <br />
+               {switch (uniquePreviouslyOwnedTokens) {
+                | [||] => <p> "User has never owned a wildcard."->restr </p>
+                | uniquePreviouslyOwnedTokens =>
+                  <React.Fragment>
+                    <Rimble.Heading>
+                      "Previously owned tokens"->React.string
+                    </Rimble.Heading>
+                    <Rimble.Flex>
+                      {ReasonReact.array(
+                         uniquePreviouslyOwnedTokens->Array.mapWithIndex(
+                           (i, tokenId) =>
+                           <Token key={i->string_of_int} tokenId />
+                         ),
+                       )}
+                    </Rimble.Flex>
+                  </React.Fragment>
+                }}
+             </React.Fragment>
+           }}
         </Rimble.Box>
       </Rimble.Flex>
     </div>;
