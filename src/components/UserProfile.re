@@ -1,6 +1,16 @@
 open Globals;
 open Belt;
 
+let centreAlignOnMobile =
+  Css.(
+    style([
+      media(
+        "(max-width: 831px)",
+        [alignItems(center), justifyContent(center)],
+      ),
+    ])
+  );
+
 // TODO:: check that the address is valid:
 // Something like this maybe? https://docs.ethers.io/ethers.js/html/api-utils.html
 module Token = {
@@ -11,7 +21,7 @@ module Token = {
 
     <div>
       <img
-        className=Css.(style([maxWidth(vh(15.))]))
+        className=Css.(style([maxWidth(vh(12.))]))
         onClick={_e => clearAndPush("/#details/" ++ animal)}
         src={
           tokenId
@@ -101,7 +111,7 @@ module UserDetails = {
     };
 
     <div className=Css.(style([width(`percent(100.))]))>
-      <Rimble.Flex alignItems="start">
+      <Rimble.Flex flexWrap="wrap" alignItems="start">
         <Rimble.Box
           p=1
           width=[|1., 1., 0.3333|]
@@ -162,7 +172,7 @@ module UserDetails = {
                <Rimble.Heading>
                  "Currently owned tokens"->React.string
                </Rimble.Heading>
-               <Rimble.Flex>
+               <Rimble.Flex flexWrap="wrap" className=centreAlignOnMobile>
                  {ReasonReact.array(
                     currentlyOwnedTokens->Array.mapWithIndex((i, tokenId) =>
                       <Token key={i->string_of_int} tokenId />
@@ -179,7 +189,7 @@ module UserDetails = {
                     <Rimble.Heading>
                       "Previously owned tokens"->React.string
                     </Rimble.Heading>
-                    <Rimble.Flex>
+                    <Rimble.Flex flexWrap="wrap" className=centreAlignOnMobile>
                       {ReasonReact.array(
                          uniquePreviouslyOwnedTokens->Array.mapWithIndex(
                            (i, tokenId) =>
