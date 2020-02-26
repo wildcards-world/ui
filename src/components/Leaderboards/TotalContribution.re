@@ -3,7 +3,7 @@ open ReasonApolloHooks;
 module LoadMostContributed = [%graphql
   {|
     query {
-      patrons(first: 20, orderBy: totalContributed, orderDirection: desc) {
+      patronNews(first: 20, orderBy: totalContributed, orderDirection: desc) {
         id
         patronTokenCostScaledNumerator  @bsDecoder(fn: "QlHooks.decodeBN")
         totalContributed @bsDecoder(fn: "QlHooks.decodeBN")
@@ -21,7 +21,7 @@ let useLoadMostContributedData = () => {
   switch (simple) {
   | Data(largestContributors) =>
     let dailyContributions =
-      largestContributors##patrons
+      largestContributors##patronNews
       |> Js.Array.map(patron => {
            let timeElapsed =
              BN.new_(currentTimestamp)->BN.subGet(. patron##lastUpdated);
@@ -119,6 +119,7 @@ module ContributorsRow = {
         ->flatMap(threeBoxData => threeBoxData.profile)
         ->flatMap(threeBoxData => threeBoxData.name)
       );
+    let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
     <tr className={rankingColor(index)}>
       <td>
@@ -139,10 +140,22 @@ module ContributorsRow = {
         </span>
       </td>
       <td>
-        {switch (optUserName) {
-         | Some(name) => <div> name->React.string </div>
-         | None => <div> contributor->React.string </div>
-         }}
+        <a
+          onClick={e => {
+            ReactEvent.Mouse.preventDefault(e);
+            clearAndPush({j|/#user/$contributor|j});
+          }}>
+          {switch (optUserName) {
+           | Some(name) => <span> name->React.string </span>
+           | None =>
+             <span>
+               {{
+                  Helper.elipsify(contributor, 20);
+                }
+                ->React.string}
+             </span>
+           }}
+        </a>
       </td>
       //  <td>
       //    <span className=centerFlame>

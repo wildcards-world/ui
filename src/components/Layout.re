@@ -124,6 +124,14 @@ module Header = {
                    </a>}
               <a
                 className=Styles.navListText
+                onClick={event => {
+                  ReactEvent.Mouse.preventDefault(event);
+                  clearAndPush({j|/#leaderboards/monthly-contribution|j});
+                }}>
+                <S> "LEADERBOARDS" </S>
+              </a>
+              <a
+                className=Styles.navListText
                 target="_blank"
                 href="https://blog.wildcards.world/">
                 <S> "BLOG" </S>

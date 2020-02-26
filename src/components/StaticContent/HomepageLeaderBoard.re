@@ -3,9 +3,12 @@ let gorillaOnVine = [%bs.raw
 ];
 
 open Rimble;
+open Globals;
 
 [@react.component]
 let make = () => {
+  let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+
   <Box className=Styles.infoBackground>
     <Flex flexWrap="wrap">
       <Box width=[|0.28|] className=Styles.animalImage>
@@ -14,6 +17,17 @@ let make = () => {
       <Box width=[|1., 1., 0.59|] className=Styles.infoCardContainer>
         <Card className=Styles.infoCardStyles>
           <MonthlyContribution numberOfLeaders=6 />
+          <br />
+          <Rimble.Box width=[|1.|]>
+            <Button
+              className=Styles.centerItemsMargin
+              onClick={e => {
+                ReactEvent.Form.preventDefault(e);
+                clearAndPush({j|/#leaderboards/monthly-contribution|j});
+              }}>
+              "View Other Leaderboards"->restr
+            </Button>
+          </Rimble.Box>
         </Card>
       </Box>
     </Flex>

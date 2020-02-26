@@ -28,13 +28,6 @@ let useLoadMostDaysHeldData = () => {
            let numberOfTokens = patron##tokens->Js.Array.length->string_of_int;
            let timeElapsed =
              BN.new_(currentTimestamp)->BN.subGet(. patron##lastUpdated);
-           Js.log4(
-             "here",
-             currentTimestamp,
-             patron##lastUpdated->BN.toStringGet(.),
-             timeElapsed->BN.toStringGet(.),
-           );
-           Js.log(numberOfTokens);
 
            let totalTimeHeldWei =
              patron##totalTimeHeld
@@ -123,6 +116,7 @@ module ContributorsRow = {
         ->flatMap(threeBoxData => threeBoxData.profile)
         ->flatMap(threeBoxData => threeBoxData.name)
       );
+    let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
     <tr className={rankingColor(index)}>
       <td>
@@ -143,10 +137,22 @@ module ContributorsRow = {
         </span>
       </td>
       <td>
-        {switch (optUserName) {
-         | Some(name) => <div> name->React.string </div>
-         | None => <div> contributor->React.string </div>
-         }}
+        <a
+          onClick={e => {
+            ReactEvent.Mouse.preventDefault(e);
+            clearAndPush({j|/#user/$contributor|j});
+          }}>
+          {switch (optUserName) {
+           | Some(name) => <span> name->React.string </span>
+           | None =>
+             <span>
+               {{
+                  Helper.elipsify(contributor, 20);
+                }
+                ->React.string}
+             </span>
+           }}
+        </a>
       </td>
       //  <td>
       //    <span className=centerFlame>
