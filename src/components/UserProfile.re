@@ -41,16 +41,32 @@ module UserDetails = {
         ~optThreeBoxData: option(UserProvider.threeBoxUserInfo),
         ~userAddress: string,
       ) => {
+    let isForeclosed = QlHooks.useIsForeclosed(userAddress);
+
+    /**
+     * 1 of four scenarios for each user:
+     * User has never owned a wildcard.
+     * User owns a wildcard(s), hasn't owned others in the past.
+     * User owns a wildcard(s), has owned others in the past.
+     * User owned (past tense) wildcards, but they have foreclosed / been bought from them.
+     *
+     * TODO: It might make the code more readable to encode the above for options into an variant.
+     *       It is hard to reason about if we are just checking if the array is null, or not etc.
+     */
     let currentlyOwnedTokens =
-      (patronQueryResult##patron <$> (patron => patron##tokens))
-      ->Option.mapWithDefault([||], a => a->Array.map(token => token##id));
+      isForeclosed
+        ? [||]
+        : (patronQueryResult##patron <$> (patron => patron##tokens))
+          ->Option.mapWithDefault([||], a => a->Array.map(token => token##id));
     let allPreviouslyOwnedTokens: array(string) =
       (patronQueryResult##patron >>= (patron => patron##previouslyOwnedTokens))
       ->Option.mapWithDefault([||], a => a->Array.map(token => token##id));
     let uniquePreviouslyOwnedTokens =
-      Set.String.fromArray(allPreviouslyOwnedTokens)
-      ->Set.String.removeMany(currentlyOwnedTokens)
-      ->Set.String.toArray;
+      isForeclosed
+        ? allPreviouslyOwnedTokens
+        : Set.String.fromArray(allPreviouslyOwnedTokens)
+          ->Set.String.removeMany(currentlyOwnedTokens)
+          ->Set.String.toArray;
 
     let optProfile = optThreeBoxData >>= (a => a.profile);
     let image: string =
@@ -166,7 +182,10 @@ module UserDetails = {
         </Rimble.Box>
         <Rimble.Box p=1 width=[|1., 1., 0.3333|]>
           {switch (currentlyOwnedTokens) {
-           | [||] => <p> "User has never owned a wildcard."->restr </p>
+           | [||] =>
+             uniquePreviouslyOwnedTokens->Array.length > 0
+               ? <p> "User currently doesn't own a wildcard."->restr </p>
+               : <p> "User has never owned a wildcard."->restr </p>
            | currentlyOwnedTokens =>
              <React.Fragment>
                <Rimble.Heading>
