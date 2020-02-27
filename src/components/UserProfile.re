@@ -184,7 +184,9 @@ module UserDetails = {
           {switch (currentlyOwnedTokens) {
            | [||] =>
              uniquePreviouslyOwnedTokens->Array.length > 0
-               ? <p> "User currently doesn't own a wildcard."->restr </p>
+               ? <p>
+                   "User currently doesn't currently own a wildcard."->restr
+                 </p>
                : <p> "User has never owned a wildcard."->restr </p>
            | currentlyOwnedTokens =>
              <React.Fragment>
@@ -201,23 +203,23 @@ module UserDetails = {
                <br />
                <br />
                <br />
-               {switch (uniquePreviouslyOwnedTokens) {
-                | [||] => React.null
-                | uniquePreviouslyOwnedTokens =>
-                  <React.Fragment>
-                    <Rimble.Heading>
-                      "Previously owned tokens"->React.string
-                    </Rimble.Heading>
-                    <Rimble.Flex flexWrap="wrap" className=centreAlignOnMobile>
-                      {ReasonReact.array(
-                         uniquePreviouslyOwnedTokens->Array.mapWithIndex(
-                           (i, tokenId) =>
-                           <Token key={i->string_of_int} tokenId />
-                         ),
-                       )}
-                    </Rimble.Flex>
-                  </React.Fragment>
-                }}
+             </React.Fragment>
+           }}
+          {switch (uniquePreviouslyOwnedTokens) {
+           | [||] => React.null
+           | uniquePreviouslyOwnedTokens =>
+             <React.Fragment>
+               <Rimble.Heading>
+                 "Previously owned tokens"->React.string
+               </Rimble.Heading>
+               <Rimble.Flex flexWrap="wrap" className=centreAlignOnMobile>
+                 {ReasonReact.array(
+                    uniquePreviouslyOwnedTokens->Array.mapWithIndex(
+                      (i, tokenId) =>
+                      <Token key={i->string_of_int} tokenId />
+                    ),
+                  )}
+               </Rimble.Flex>
              </React.Fragment>
            }}
         </Rimble.Box>
