@@ -183,7 +183,7 @@ module UserDetails = {
                <br />
                <br />
                {switch (uniquePreviouslyOwnedTokens) {
-                | [||] => <p> "User has never owned a wildcard."->restr </p>
+                | [||] => React.null
                 | uniquePreviouslyOwnedTokens =>
                   <React.Fragment>
                     <Rimble.Heading>
