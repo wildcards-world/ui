@@ -1,4 +1,6 @@
 open ReasonApolloHooks;
+open Belt;
+
 type owner = {. "address": Js.Json.t};
 
 type price = {. "price": Eth.t};
@@ -502,4 +504,13 @@ let usePrice: Animal.t => animalPrice =
       };
     | _ => Loading
     };
+  };
+
+let useIsForeclosed: Web3.ethAddress => bool =
+  currentPatron => {
+    let optAvailableDeposit = useRemainingDepositEth(currentPatron);
+
+    optAvailableDeposit->Option.mapWithDefault(true, availableDeposit =>
+      availableDeposit->BN.ltGet(. BN.new_("0"))
+    );
   };

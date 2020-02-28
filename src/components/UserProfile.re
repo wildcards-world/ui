@@ -1,6 +1,16 @@
 open Globals;
 open Belt;
 
+let centreAlignOnMobile =
+  Css.(
+    style([
+      media(
+        "(max-width: 831px)",
+        [alignItems(center), justifyContent(center)],
+      ),
+    ])
+  );
+
 // TODO:: check that the address is valid:
 // Something like this maybe? https://docs.ethers.io/ethers.js/html/api-utils.html
 module Token = {
@@ -11,7 +21,7 @@ module Token = {
 
     <div>
       <img
-        className=Css.(style([maxWidth(vh(15.))]))
+        className=Css.(style([maxWidth(vh(12.))]))
         onClick={_e => clearAndPush("/#details/" ++ animal)}
         src={
           tokenId
@@ -31,12 +41,33 @@ module UserDetails = {
         ~optThreeBoxData: option(UserProvider.threeBoxUserInfo),
         ~userAddress: string,
       ) => {
-    let previouslyOwnedTokens =
-      patronQueryResult##patron
-      ->Option.flatMap(patron => patron##previouslyOwnedTokens);
+    let isForeclosed = QlHooks.useIsForeclosed(userAddress);
+
+    /**
+     * 1 of four scenarios for each user:
+     * User has never owned a wildcard.
+     * User owns a wildcard(s), hasn't owned others in the past.
+     * User owns a wildcard(s), has owned others in the past.
+     * User owned (past tense) wildcards, but they have foreclosed / been bought from them.
+     *
+     * TODO: It might make the code more readable to encode the above for options into an variant.
+     *       It is hard to reason about if we are just checking if the array is null, or not etc.
+     */
     let currentlyOwnedTokens =
-      patronQueryResult##patron
-      ->Option.flatMap(patron => Some(patron##tokens));
+      isForeclosed
+        ? [||]
+        : (patronQueryResult##patron <$> (patron => patron##tokens))
+          ->Option.mapWithDefault([||], a => a->Array.map(token => token##id));
+    let allPreviouslyOwnedTokens: array(string) =
+      (patronQueryResult##patron >>= (patron => patron##previouslyOwnedTokens))
+      ->Option.mapWithDefault([||], a => a->Array.map(token => token##id));
+    let uniquePreviouslyOwnedTokens =
+      isForeclosed
+        ? allPreviouslyOwnedTokens
+        : Set.String.fromArray(allPreviouslyOwnedTokens)
+          ->Set.String.removeMany(currentlyOwnedTokens)
+          ->Set.String.toArray;
+
     let optProfile = optThreeBoxData >>= (a => a.profile);
     let image: string =
       (
@@ -96,10 +127,10 @@ module UserDetails = {
     };
 
     <div className=Css.(style([width(`percent(100.))]))>
-      <Rimble.Flex alignItems="start">
+      <Rimble.Flex flexWrap="wrap" alignItems="start">
         <Rimble.Box
           p=1
-          width=[|1., 1., 0.33|]
+          width=[|1., 1., 0.3333|]
           className=Css.(style([textAlign(`center)]))>
           <img
             className=Css.(
@@ -131,7 +162,7 @@ module UserDetails = {
             {Helper.elipsify(userAddress, 10)->restr}
           </a>
         </Rimble.Box>
-        <Rimble.Box p=1 width=[|1., 1., 0.33|]>
+        <Rimble.Box p=1 width=[|1., 1., 0.3333|]>
           <h2> "Monthly Contribution"->restr </h2>
           <p>
             {optMonthlyCotribution->reactMapWithDefault(
@@ -149,36 +180,48 @@ module UserDetails = {
              )}
           </p>
         </Rimble.Box>
-        <Rimble.Box p=1 width=[|1., 1., 0.33|]>
-          <Rimble.Heading>
-            "Currently owned tokens"->React.string
-          </Rimble.Heading>
-          <Rimble.Flex>
-            {currentlyOwnedTokens->Option.mapWithDefault(
-               <p> "No currently owned tokens"->React.string </p>, a =>
-               ReasonReact.array(
-                 a->Array.mapWithIndex((_i, token) =>
-                   <Token tokenId={token##id} />
-                 ),
-               )
-             )}
-          </Rimble.Flex>
-          <br />
-          <br />
-          <br />
-          <Rimble.Heading>
-            "Previously owned tokens"->React.string
-          </Rimble.Heading>
-          <Rimble.Flex>
-            {previouslyOwnedTokens->Option.mapWithDefault(
-               <p> "No previously owned tokens"->React.string </p>, a =>
-               ReasonReact.array(
-                 a->Array.mapWithIndex((_i, token) =>
-                   <Token tokenId={token##id} />
-                 ),
-               )
-             )}
-          </Rimble.Flex>
+        <Rimble.Box p=1 width=[|1., 1., 0.3333|]>
+          {switch (currentlyOwnedTokens) {
+           | [||] =>
+             uniquePreviouslyOwnedTokens->Array.length > 0
+               ? <p>
+                   "User currently doesn't currently own a wildcard."->restr
+                 </p>
+               : <p> "User has never owned a wildcard."->restr </p>
+           | currentlyOwnedTokens =>
+             <React.Fragment>
+               <Rimble.Heading>
+                 "Currently owned tokens"->React.string
+               </Rimble.Heading>
+               <Rimble.Flex flexWrap="wrap" className=centreAlignOnMobile>
+                 {ReasonReact.array(
+                    currentlyOwnedTokens->Array.mapWithIndex((i, tokenId) =>
+                      <Token key={i->string_of_int} tokenId />
+                    ),
+                  )}
+               </Rimble.Flex>
+               <br />
+               <br />
+               <br />
+             </React.Fragment>
+           }}
+          {switch (uniquePreviouslyOwnedTokens) {
+           | [||] => React.null
+           | uniquePreviouslyOwnedTokens =>
+             <React.Fragment>
+               <Rimble.Heading>
+                 "Previously owned tokens"->React.string
+               </Rimble.Heading>
+               <Rimble.Flex flexWrap="wrap" className=centreAlignOnMobile>
+                 {ReasonReact.array(
+                    uniquePreviouslyOwnedTokens->Array.mapWithIndex(
+                      (i, tokenId) =>
+                      <Token key={i->string_of_int} tokenId />
+                    ),
+                  )}
+               </Rimble.Flex>
+             </React.Fragment>
+           }}
         </Rimble.Box>
       </Rimble.Flex>
     </div>;
