@@ -39,6 +39,40 @@ export const getCountDisplay = (
   )}`;
 };
 
+export const getCountDisplayToHours = (
+  countDown,
+  includeWords = true,
+  leadingZeros = false
+) => {
+  const addLeadingZeros = value => {
+    let valueS = String(value);
+    while (valueS.length < 2) {
+      valueS = "0" + valueS;
+    }
+    return valueS;
+  };
+  const displayTime = (unit, appendage = true) =>
+    countDown[unit] > 0
+      ? leadingZeros
+        ? `${addLeadingZeros(countDown[unit])} ${
+            includeWords ? unit : appendage ? ":" : ""
+          } `
+        : `${countDown[unit]} ${
+            includeWords
+              ? countDown[unit] == 1
+                ? unit.substring(0, unit.length - 1)
+                : unit
+              : appendage
+              ? ":"
+              : ""
+          } `
+      : "";
+
+  return `${displayTime("years")}${displayTime("months")}${displayTime(
+    "days"
+  )}${displayTime("hours")}`;
+};
+
 export const calculateTimeRemainingFromSeconds = numSeconds => {
   // clear countdown when date is reached
   if (numSeconds <= 0) return { ...nullTime };

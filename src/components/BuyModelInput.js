@@ -13,7 +13,7 @@ import {
 import moment from "moment";
 import { useDebouncedCallback } from "use-debounce";
 import {
-  getCountDisplay,
+  getCountDisplayToHours,
   calculateTimeRemainingFromSeconds
 } from "./components/CountDown";
 const inputStyle = {
@@ -64,31 +64,11 @@ export default ({
       <Flex>
         <Box p={2} mb={2} width={[1, 0.5]}>
           <Tooltip
-            message="This is the monthly contribution that will go towards conservation of endangered animals. This will be deducted continuously from your deposit"
-            placement="top"
-          >
-            <Text>
-              Set your monthly contribution:
-              <div style={infoTooltipStyle}>
-                <Icon color="green" name="Info" size="16" />
-              </div>
-            </Text>
-          </Tooltip>
-          <Input
-            style={inputStyle}
-            type="number"
-            placeholder="Monthly Patronage"
-            onChange={eventToValue(updatePatronage)}
-            value={patronage}
-          />
-        </Box>
-        <Box p={2} mb={2} width={[1, 0.5]}>
-          <Tooltip
             message={`This is the amount of money you will receive if someone purchases ${animalName} from you.`}
             placement="top"
           >
-            <Text style={rightAlignedText}>
-              {animalName}'s new for sale price:
+            <Text>
+              Set {animalName}'s new for sale price:
               <div style={infoTooltipStyle}>
                 <Icon color="green" name="Info" size="16" />
               </div>
@@ -102,11 +82,31 @@ export default ({
             value={newPrice}
           />
         </Box>
+        <Box p={2} mb={2} width={[1, 0.5]}>
+          <Tooltip
+            message="This is the monthly contribution that will go towards conservation of endangered animals. This will be deducted continuously from your deposit"
+            placement="top"
+          >
+            <Text style={rightAlignedText}>
+              Your monthly contribution:
+              <div style={infoTooltipStyle}>
+                <Icon color="green" name="Info" size="16" />
+              </div>
+            </Text>
+          </Tooltip>
+          <br />
+          <Text style={rightAlignedText}>{patronage}</Text>
+        </Box>
       </Flex>
-      <Flex layout="verticalAlign">
+      <Flex
+        alignItems="center"
+        justifyContent="center"
+        alignContent="center"
+        verticalAlign
+      >
         <Box p={2} mb={2} width={[1, 0.3]}>
           <Tooltip
-            message="The deposit is the funds that will be used to cover the Harbeger tax."
+            message="The deposit is the funds that will be used to cover your monthly contribution."
             placement="top"
           >
             <Text>
@@ -123,11 +123,8 @@ export default ({
             onChange={eventToValue(setDeposit)}
             value={deposit}
           />
-        </Box>
+        </Box>{" "}
         <Box p={2} mb={2} width={[1, 0.7]}>
-          <Text style={rightAlignedText}>
-            You can also use this slider to adjust your deposit:
-          </Text>
           <Slider
             value={depositSlider}
             style={inputStyle}
@@ -140,17 +137,16 @@ export default ({
             max={maxAvailableDeposit}
             step={"0.0000001"}
           />
-          <br />
         </Box>
       </Flex>
 
       {/* <p>{depositTimeInSeconds} , {moment.duration(depositTimeInSeconds, 'seconds').humanize(true)}</p> */}
       <p>
-        Your deposit will run out in{" "}
-        {getCountDisplay(
+        This deposit will last{" "}
+        {getCountDisplayToHours(
           calculateTimeRemainingFromSeconds(depositTimeInSeconds)
-        )}
-        .
+        )}{" "}
+        for your monthly contribution
       </p>
       <Flex>
         <Box p={2} mb={2} width={[1, 0.7]}>
