@@ -32,7 +32,7 @@ let getLibrary = provider => {
   let library = createWeb3Provider(provider);
 
   let setPollingInterval: web3Library => web3Library = [%raw
-    lib => "{lib.pollingInterval = 8000; return lib; }"
+    "lib => {lib.pollingInterval = 8000; return lib; }"
   ];
   setPollingInterval(library);
 };
