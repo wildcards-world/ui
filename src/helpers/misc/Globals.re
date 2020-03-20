@@ -1,4 +1,5 @@
 // A collection of functions to make code cleaner.
+include Belt;
 
 // From here: https://dev.to/johnridesabike/optional-chaining-in-reason-1im6
 let (<$>) = Belt.Option.map;

@@ -167,16 +167,14 @@ let make = () => {
           <Rimble.Card>
             <Heading> <S> "Frequently Asked Questions (FAQs)" </S> </Heading>
             <div className=accordionSection>
-              {Array.mapi(
-                 (index, {title, content}) =>
-                   <FaqItem
-                     key={index->string_of_int}
-                     isOpen={index == activeIndex}
-                     toggleAccordion={toggleAccordion(index)}
-                     title
-                     content
-                   />,
-                 content,
+              {Array.mapWithIndex(content, (index, {title, content}) =>
+                 <FaqItem
+                   key={index->string_of_int}
+                   isOpen={index == activeIndex}
+                   toggleAccordion={toggleAccordion(index)}
+                   title
+                   content
+                 />
                )
                ->array}
             </div>

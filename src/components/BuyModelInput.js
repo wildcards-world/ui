@@ -10,12 +10,8 @@ import {
   Tooltip,
   Icon
 } from "rimble-ui";
-import moment from "moment";
 import { useDebouncedCallback } from "use-debounce";
-import {
-  getCountDisplayToHours,
-  calculateTimeRemainingFromSeconds
-} from "./components/CountDown";
+import { displayTimeLeftHours } from "./components/CountDown.bs";
 const inputStyle = {
   width: "100%"
 };
@@ -139,14 +135,9 @@ export default ({
           />
         </Box>
       </Flex>
-
-      {/* <p>{depositTimeInSeconds} , {moment.duration(depositTimeInSeconds, 'seconds').humanize(true)}</p> */}
       <p>
-        This deposit will last{" "}
-        {getCountDisplayToHours(
-          calculateTimeRemainingFromSeconds(depositTimeInSeconds)
-        )}{" "}
-        for your monthly contribution
+        This deposit will last {displayTimeLeftHours(depositTimeInSeconds)} for
+        your monthly contribution
       </p>
       <Flex>
         <Box p={2} mb={2} width={[1, 0.7]}>

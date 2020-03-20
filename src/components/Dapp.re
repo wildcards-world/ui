@@ -13,18 +13,6 @@ module ShareSocial = {
   [@bs.module "./components/shareSocialMedia"] [@react.component]
   external make: unit => React.element = "default";
 };
-module CountDown = {
-  [@bs.module "./components/CountDown"] [@react.component]
-  external make:
-    (
-      ~endDateMoment: MomentRe.Moment.t,
-      ~includeWords: bool=? /*default true*/,
-      ~leadingZeros: bool=?
-    ) /*default false*/ =>
-    React.element =
-    "default";
-};
-
 module EditButton = {
   [@react.component]
   let make = (~animal: Animal.t) => {
@@ -214,7 +202,7 @@ module AnimalOnLandingPage = {
        | Some(endDateMoment) =>
          <div>
            <h3 className=Styles.colorGreen> {React.string("COMING IN")} </h3>
-           <CountDown endDateMoment leadingZeros=true includeWords=false />
+           <CountDown endDateMoment displayUnits=false />
          </div>
        | None =>
          isGqlLoaded ? <div> <BasicAnimalDisplay animal /> </div> : React.null
@@ -288,38 +276,35 @@ module AnimalCarousel = {
         arrows=true
         onChange={test => setCarouselIndex(_ => test)}>
         {ReasonReact.array(
-           Array.mapi(
-             (index, animal) => {
-               let (opacity, scalar) =
-                 switch (index) {
-                 | x when x == carouselIndex mod numItems => (1., 1.0)
-                 | x
-                     when
-                       x == (carouselIndex - 1)
-                       mod numItems
-                       || x == (carouselIndex + 1)
-                       mod numItems => (
-                     0.8,
-                     0.8,
-                   )
-                 | x
-                     when
-                       x == (carouselIndex - 2)
-                       mod numItems
-                       || x == (carouselIndex + 2)
-                       mod numItems => (
-                     0.1,
-                     0.7,
-                   )
-                 | _ => (0., 0.6)
-                 };
+           Animal.orderedArray->Array.mapWithIndex((index, animal) => {
+             let (opacity, scalar) =
+               switch (index) {
+               | x when x == carouselIndex mod numItems => (1., 1.0)
+               | x
+                   when
+                     x == (carouselIndex - 1)
+                     mod numItems
+                     || x == (carouselIndex + 1)
+                     mod numItems => (
+                   0.8,
+                   0.8,
+                 )
+               | x
+                   when
+                     x == (carouselIndex - 2)
+                     mod numItems
+                     || x == (carouselIndex + 2)
+                     mod numItems => (
+                   0.1,
+                   0.7,
+                 )
+               | _ => (0., 0.6)
+               };
 
-               <div className={Styles.fadeOut(opacity)}>
-                 <CarouselAnimal animal isGqlLoaded scalar enlargement=1.5 />
-               </div>;
-             },
-             Animal.orderedArray,
-           ),
+             <div className={Styles.fadeOut(opacity)}>
+               <CarouselAnimal animal isGqlLoaded scalar enlargement=1.5 />
+             </div>;
+           }),
          )}
       </Carousel>
     </Rimble.Box>;
@@ -724,11 +709,10 @@ module AnimalInfo = {
         <ReactTabs.TabPanel>
           <h2> "Story"->React.string </h2>
           {ReasonReact.array(
-             Array.mapi(
-               (i, paragraphText) =>
-                 <p key={i->string_of_int}> paragraphText->React.string </p>,
-               Animal.getStoryParagraphs(animal),
-             ),
+             Animal.getStoryParagraphs(animal)
+             ->Array.mapWithIndex((i, paragraphText) =>
+                 <p key={i->string_of_int}> paragraphText->React.string </p>
+               ),
            )}
         </ReactTabs.TabPanel>
         <ReactTabs.TabPanel>
