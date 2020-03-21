@@ -149,8 +149,7 @@ module Transaction = {
 
     let onSubmitBuy = () => {
       let amountToSend =
-        BN.new_(newPrice)
-        ->BN.addGet(. currentPriceWei)
+        currentPriceWei
         ->BN.addGet(. BN.new_(Web3Utils.toWei(deposit, "ether")))
         ->BN.toStringGet(.);
       buyFunc(newPrice, amountToSend);

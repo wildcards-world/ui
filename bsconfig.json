@@ -20,12 +20,12 @@
   "namespace": true,
   "bs-dependencies": [
     "bs-css",
+    "bs-css-emotion",
     "bs-dynamic-import",
     "bs-fetch",
     "bs-moment",
     "bs-webapi",
     "decco",
-    "re-formality",
     "reason-loadable",
     "reason-promise",
     "reason-react",
@@ -37,8 +37,8 @@
   "ppx-flags": [
     "bs-let/ppx",
     "decco/ppx",
-    "@jsiebern/get_in_ppx/ppx6",
-    "@baransu/graphql_ppx_re/ppx6"
+    "get_in_ppx/ppx",
+    "@baransu/graphql_ppx_re/ppx"
   ],
   // referenc: https://dev.to/yawaramin/ocaml-reasonml-best-practice-warnings-and-errors-4mkm
   // TODO: when you get time, go through and remove "-40-42-4-11-12-32-33" fixing the issues as you go.

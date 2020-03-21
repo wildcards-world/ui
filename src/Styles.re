@@ -10,7 +10,7 @@ global(
   "body",
   [
     margin(`px(0)),
-    fontFamily("Lato, Helvetica, sans-serif"),
+    fontFamily(`custom("Lato, Helvetica, sans-serif")),
     overflowX(hidden),
   ],
 );
