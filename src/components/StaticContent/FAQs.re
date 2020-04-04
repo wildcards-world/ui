@@ -102,7 +102,7 @@ let content = [|
     title: "How do I know my funds are going to the organization?",
     content:
       <Fragment>
-        "Our platform uses ethereum (a blockchain), which is essentially a public transaction ledger. This means that every single action happening on this platfrom is completely public, verifiable and auditable. If you would like to learn more, "
+        "Our platform uses ethereum (a blockchain), which is essentially a public transaction ledger. This means that every single action happening on this platform is completely public, verifiable and auditable. If you would like to learn more, "
         ->restr
         <a
           href="https://blog.wildcards.world/where-is-the-money-going/"
