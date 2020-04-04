@@ -9,7 +9,7 @@ let make = () => {
     </p>
     <p className=Styles.explainerMediumText>
       <S>
-        "Social, gamified and transparent giving makes wildcards the perfect platfrom to start making your difference."
+        "Social, gamified and transparent giving makes wildcards the perfect platform to start making your difference."
       </S>
     </p>
   </Rimble.Box>;
