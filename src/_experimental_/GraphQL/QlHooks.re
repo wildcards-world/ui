@@ -406,6 +406,26 @@ let useTotalCollectedToken: Animal.t => option((Eth.t, BN.bn, BN.bn)) =
     };
   };
 
+let usePatronTimeLastUpdated: Web3.ethAddress => option(BN.bn) =
+  address => {
+    let (response, _) = useQueryPatron(address);
+
+    switch (response) {
+    | Data(responseData) =>
+      responseData##patron
+      ->Belt.Option.flatMap(patron =>
+          Some(        
+            patron##lastUpdated,
+          ))
+        
+    // | Loading
+    // | Error(_error)
+    // | NoData => None
+    | _ => None
+    };
+  };
+  
+
 // TODO:: Take min of total deposit and amount raised
 let useAmountRaisedToken: Animal.t => option(Eth.t) =
   animal => {
@@ -433,6 +453,45 @@ let useAmountRaisedToken: Animal.t => option(Eth.t) =
     | None => None
     };
   };
+
+let useTotalLoyaltyToken: Web3.ethAddress => option(BN.t) =
+  patron => {
+    let currentTimestamp = useCurrentTime();
+
+    switch (usePatronTimeLastUpdated(patron)) {
+    | 
+      // let timeElapsed = currentTime - timeLastCollected;
+      // let totalLoyaltyTokensPerSecondPerAnimal = 
+      // 
+      // let totalLoyaltyTokensFor1Animal = totalLoyaltyTokensPerSecondPerAnimal * timeElapsed
+      // let totalLoyaltyTokensForAllAnimal = # of animalsOwned *  totalLoyaltyTokensFor1Animal
+      // let previouslyCollected = 0;
+      // let totalLoyaltyTokensForUser = previouslyCollected + totalLoyaltyTokensForAllAnimal
+      // return totalLoyaltyTokensForUser;
+
+    // Some((
+    //     amountCollectedOrDue,
+    //     timeCalculated,
+    //     patronageNumeratorPriceScaled,
+    //   )) =>
+    //   let timeElapsed =
+    //     BN.new_(currentTimestamp)->BN.subGet(. timeCalculated);
+
+    //   let amountRaisedSinceLastCollection =
+    //     patronageNumeratorPriceScaled
+    //     ->BN.mulGet(. timeElapsed)
+    //     ->BN.divGet(.
+    //         // BN.new_("1000000000000")->BN.mulGet(. BN.new_("31536000")),
+    //         BN.new_("31536000000000000000"),
+    //       );
+    //   Some(
+    //     amountCollectedOrDue->BN.addGet(. amountRaisedSinceLastCollection),
+    //   );
+    | None => None
+    };
+  };
+
+
 
 let useRemainingDeposit: string => option((Eth.t, BN.bn, BN.bn)) =
   patron => {

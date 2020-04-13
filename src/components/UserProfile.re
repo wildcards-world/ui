@@ -42,7 +42,8 @@ module UserDetails = {
         ~userAddress: string,
       ) => {
     let isForeclosed = QlHooks.useIsForeclosed(userAddress);
-
+    let _isAddressCurrentUser = RootProvider.useIsAddressCurrentUser(userAddress);
+    
     /**
      * 1 of four scenarios for each user:
      * User has never owned a wildcard.
@@ -161,6 +162,12 @@ module UserDetails = {
             href={"https://" ++ etherScanUrl ++ "/address/" ++ userAddress}>
             {Helper.elipsify(userAddress, 10)->restr}
           </a>
+          <br />
+          {
+            _isAddressCurrentUser ?
+            <p><small>"Loyalty Token Balance:"->restr </small></p>
+            :
+            React.null}
         </Rimble.Box>
         <Rimble.Box p=1 width=[|1., 1., 0.3333|]>
           <h2> "Monthly Contribution"->restr </h2>

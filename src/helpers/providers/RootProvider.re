@@ -188,6 +188,16 @@ let useCurrentUser: unit => option(Web3.ethAddress) =
     | Disconnected => None
     };
   };
+
+let useIsAddressCurrentUser: Web3.ethAddress => bool = (address) => {
+  let currentUser = useCurrentUser()
+  switch (currentUser)
+  {
+    | Some(currentUserAddress) => address->Js.String.toLowerCase == currentUserAddress->Js.String.toLowerCase
+    | None => false
+  }
+}
+
 let useIsProviderSelected: unit => bool =
   () => {
     let (state, _) = React.useContext(RootContext.context);
