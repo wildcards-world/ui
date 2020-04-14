@@ -1,5 +1,4 @@
 open Globals;
-open Belt;
 
 let centreAlignOnMobile =
   Css.(
@@ -42,8 +41,9 @@ module UserDetails = {
         ~userAddress: string,
       ) => {
     let isForeclosed = QlHooks.useIsForeclosed(userAddress);
-    let _isAddressCurrentUser = RootProvider.useIsAddressCurrentUser(userAddress);
-    
+    let isAddressCurrentUser =
+      RootProvider.useIsAddressCurrentUser(userAddress);
+
     /**
      * 1 of four scenarios for each user:
      * User has never owned a wildcard.
@@ -127,6 +127,8 @@ module UserDetails = {
       );
     };
 
+    let totalLoyaltyTokensOpt = QlHooks.useTotalLoyaltyToken(userAddress);
+
     <div className=Css.(style([width(`percent(100.))]))>
       <Rimble.Flex flexWrap="wrap" alignItems="start">
         <Rimble.Box
@@ -163,11 +165,17 @@ module UserDetails = {
             {Helper.elipsify(userAddress, 10)->restr}
           </a>
           <br />
-          {
-            _isAddressCurrentUser ?
-            <p><small>"Loyalty Token Balance:"->restr </small></p>
-            :
-            React.null}
+          {isAddressCurrentUser
+             ? <p>
+                 <small>
+                   "Loyalty Token Balance:"->restr
+                   {totalLoyaltyTokensOpt->Option.mapWithDefault(
+                      "Loading"->restr, totalLoyaltyTokens =>
+                      totalLoyaltyTokens->BN.toStringGet(.)->restr
+                    )}
+                 </small>
+               </p>
+             : React.null}
         </Rimble.Box>
         <Rimble.Box p=1 width=[|1., 1., 0.3333|]>
           <h2> "Monthly Contribution"->restr </h2>

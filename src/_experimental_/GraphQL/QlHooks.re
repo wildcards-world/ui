@@ -405,8 +405,13 @@ let useTotalCollectedToken: Animal.t => option((Eth.t, BN.bn, BN.bn)) =
     | _ => None
     };
   };
-
-let usePatronTimeLastUpdated: Web3.ethAddress => option(BN.bn) =
+type patronLoyaltyTokenDetails = {
+  currentLoyaltyTokens: Eth.t,
+  lastCollected: BN.bn,
+  numberOfAnimalsOwned: BN.bn,
+};
+let usePatronLoyaltyTokenDetails:
+  Web3.ethAddress => option(patronLoyaltyTokenDetails) =
   address => {
     let (response, _) = useQueryPatron(address);
 
@@ -414,17 +419,20 @@ let usePatronTimeLastUpdated: Web3.ethAddress => option(BN.bn) =
     | Data(responseData) =>
       responseData##patron
       ->Belt.Option.flatMap(patron =>
-          Some(        
-            patron##lastUpdated,
-          ))
-        
+          Some({
+            currentLoyaltyTokens: BN.new_("123"),
+            lastCollected: patron##lastUpdated,
+            numberOfAnimalsOwned:
+              BN.new_(patron##tokens->Array.length->string_of_int),
+          })
+        )
+
     // | Loading
     // | Error(_error)
     // | NoData => None
     | _ => None
     };
   };
-  
 
 // TODO:: Take min of total deposit and amount raised
 let useAmountRaisedToken: Animal.t => option(Eth.t) =
@@ -454,44 +462,26 @@ let useAmountRaisedToken: Animal.t => option(Eth.t) =
     };
   };
 
-let useTotalLoyaltyToken: Web3.ethAddress => option(BN.t) =
+let useTotalLoyaltyToken: Web3.ethAddress => option(Eth.t) =
   patron => {
     let currentTimestamp = useCurrentTime();
 
-    switch (usePatronTimeLastUpdated(patron)) {
-    | 
-      // let timeElapsed = currentTime - timeLastCollected;
-      // let totalLoyaltyTokensPerSecondPerAnimal = 
-      // 
-      // let totalLoyaltyTokensFor1Animal = totalLoyaltyTokensPerSecondPerAnimal * timeElapsed
-      // let totalLoyaltyTokensForAllAnimal = # of animalsOwned *  totalLoyaltyTokensFor1Animal
-      // let previouslyCollected = 0;
-      // let totalLoyaltyTokensForUser = previouslyCollected + totalLoyaltyTokensForAllAnimal
-      // return totalLoyaltyTokensForUser;
-
-    // Some((
-    //     amountCollectedOrDue,
-    //     timeCalculated,
-    //     patronageNumeratorPriceScaled,
-    //   )) =>
-    //   let timeElapsed =
-    //     BN.new_(currentTimestamp)->BN.subGet(. timeCalculated);
-
-    //   let amountRaisedSinceLastCollection =
-    //     patronageNumeratorPriceScaled
-    //     ->BN.mulGet(. timeElapsed)
-    //     ->BN.divGet(.
-    //         // BN.new_("1000000000000")->BN.mulGet(. BN.new_("31536000")),
-    //         BN.new_("31536000000000000000"),
-    //       );
-    //   Some(
-    //     amountCollectedOrDue->BN.addGet(. amountRaisedSinceLastCollection),
-    //   );
+    switch (usePatronLoyaltyTokenDetails(patron)) {
+    | Some({currentLoyaltyTokens, lastCollected, numberOfAnimalsOwned}) =>
+      let timeElapsed =
+        BN.new_(currentTimestamp)->BN.subGet(. lastCollected);
+      // Reference: https://github.com/wild-cards/contracts-private/blob/v2testing/migrations/7_receipt_tokens.js#L6
+      let totalLoyaltyTokensPerSecondPerAnimal = BN.new_("11574074074074");
+      let totalLoyaltyTokensFor1Animal =
+        totalLoyaltyTokensPerSecondPerAnimal->BN.mulGet(. timeElapsed);
+      let totalLoyaltyTokensForAllAnimal =
+        numberOfAnimalsOwned->BN.mulGet(. totalLoyaltyTokensFor1Animal);
+      let totalLoyaltyTokensForUser =
+        currentLoyaltyTokens->BN.addGet(. totalLoyaltyTokensForAllAnimal);
+      Some(totalLoyaltyTokensForUser);
     | None => None
     };
   };
-
-
 
 let useRemainingDeposit: string => option((Eth.t, BN.bn, BN.bn)) =
   patron => {
