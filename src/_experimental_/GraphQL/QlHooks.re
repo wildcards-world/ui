@@ -1,5 +1,5 @@
 open ReasonApolloHooks;
-open Belt;
+open Globals;
 
 type owner = {. "address": Js.Json.t};
 
@@ -468,16 +468,15 @@ let useTotalLoyaltyToken: Web3.ethAddress => option(Eth.t) =
 
     switch (usePatronLoyaltyTokenDetails(patron)) {
     | Some({currentLoyaltyTokens, lastCollected, numberOfAnimalsOwned}) =>
-      let timeElapsed =
-        BN.new_(currentTimestamp)->BN.subGet(. lastCollected);
+      let timeElapsed = BN.new_(currentTimestamp) |-| lastCollected;
       // Reference: https://github.com/wild-cards/contracts-private/blob/v2testing/migrations/7_receipt_tokens.js#L6
       let totalLoyaltyTokensPerSecondPerAnimal = BN.new_("11574074074074");
       let totalLoyaltyTokensFor1Animal =
-        totalLoyaltyTokensPerSecondPerAnimal->BN.mulGet(. timeElapsed);
+        totalLoyaltyTokensPerSecondPerAnimal |*| timeElapsed;
       let totalLoyaltyTokensForAllAnimal =
-        numberOfAnimalsOwned->BN.mulGet(. totalLoyaltyTokensFor1Animal);
+        numberOfAnimalsOwned |*| totalLoyaltyTokensFor1Animal;
       let totalLoyaltyTokensForUser =
-        currentLoyaltyTokens->BN.addGet(. totalLoyaltyTokensForAllAnimal);
+        currentLoyaltyTokens |+| totalLoyaltyTokensForAllAnimal;
       Some(totalLoyaltyTokensForUser);
     | None => None
     };
