@@ -167,6 +167,23 @@ module LoadPatron = [%graphql
   |}
 ];
 
+module LoadPatronNew = [%graphql
+  {|
+    query ($patronId: String!) {
+      patronNew(id: $patronId) {
+        id
+        address @bsDecoder(fn: "decodeAddress")
+        lastUpdated @bsDecoder(fn: "decodeBN")
+        totalLoyaltyTokens @bsDecoder(fn: "decodeBN")
+        totalLoyaltyTokensIncludingUnRedeemed @bsDecoder(fn: "decodeBN")
+        tokens {
+          id
+        }
+      }
+    }
+  |}
+];
+
 module LoadTopContributors = [%graphql
   {|
     query ($numberOfLeaders: Int!) {
@@ -292,6 +309,11 @@ let useQueryPatron = patron =>
     ~variables=LoadPatron.make(~patronId=patron, ())##variables,
     LoadPatron.definition,
   );
+let useQueryPatronNew = patron =>
+  ApolloHooks.useQuery(
+    ~variables=LoadPatronNew.make(~patronId=patron, ())##variables,
+    LoadPatronNew.definition,
+  );
 
 let useForeclosureTime: string => option(MomentRe.Moment.t) =
   patron => {
@@ -413,11 +435,11 @@ type patronLoyaltyTokenDetails = {
 let usePatronLoyaltyTokenDetails:
   Web3.ethAddress => option(patronLoyaltyTokenDetails) =
   address => {
-    let (response, _) = useQueryPatron(address);
+    let (response, _) = useQueryPatronNew(address);
 
     switch (response) {
     | Data(responseData) =>
-      responseData##patron
+      responseData##patronNew
       ->Belt.Option.flatMap(patron =>
           Some({
             currentLoyaltyTokens: BN.new_("123"),
