@@ -445,7 +445,7 @@ let usePatronLoyaltyTokenDetails:
             currentLoyaltyTokens: BN.new_("123"),
             lastCollected: patron##lastUpdated,
             numberOfAnimalsOwned:
-              BN.new_(patron##tokens->Array.length->string_of_int),
+              BN.new_(patron##tokens->Obj.magic->Array.length->string_of_int),
           })
         )
 
