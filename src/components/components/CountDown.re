@@ -86,7 +86,7 @@ let calculateCountdown = endDateMoment =>
 let make = (~endDateMoment, ~displayUnits=true) => {
   let (countDown, setCountdown) = React.useState(() => 0);
 
-  React.useEffect1(
+  React.useEffect2(
     () => {
       let date = calculateCountdown(endDateMoment);
       setCountdown(_ => date);
@@ -100,7 +100,7 @@ let make = (~endDateMoment, ~displayUnits=true) => {
         );
       Some(() => Js.Global.clearInterval(interval));
     },
-    [|endDateMoment|],
+    (endDateMoment, setCountdown),
   );
 
   <React.Fragment>

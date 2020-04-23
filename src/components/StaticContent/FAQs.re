@@ -48,7 +48,7 @@ module FaqItem = {
     let (height, setHeight) = useState(_ => "0px");
     let accordianContentRef = useRef(Js.Nullable.null);
 
-    useEffect1(
+    useEffect2(
       () => {
         let optHeight =
           Ref.current(accordianContentRef)
@@ -63,7 +63,7 @@ module FaqItem = {
         setHeight(_ => !isOpen ? "0px" : height);
         None;
       },
-      [|isOpen|],
+      (isOpen, setHeight),
     );
 
     <Fragment>

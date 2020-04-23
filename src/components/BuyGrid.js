@@ -1,14 +1,14 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { Card, Box, Flex } from "rimble-ui";
 
 const styles = {
   background: {
     paddingTop: "1rem",
-    backgroundImage: "linear-gradient(to top, #74C7D7 0%, white 100%)"
+    backgroundImage: "linear-gradient(to top, #74C7D7 0%, white 100%)",
   },
   center: {
-    textAlign: "center"
-  }
+    textAlign: "center",
+  },
 };
 
 export default ({ animalArray }) => {
