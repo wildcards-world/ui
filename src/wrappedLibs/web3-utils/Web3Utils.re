@@ -15,6 +15,6 @@ let fromWeiBNToEthPrecision = (value, ~digits) =>
   ->fromWeiBNToEth
   ->Belt.Float.fromString
   ->Belt.Option.mapWithDefault(0., a => a)
-  |> Js.Float.toFixedWithPrecision(~digits);
+  ->Js.Float.toFixedWithPrecision(~digits);
 
 let toWeiFromEth = value => toWei(value, "ether");
