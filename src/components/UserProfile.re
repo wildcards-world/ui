@@ -174,10 +174,16 @@ module UserDetails = {
           {isAddressCurrentUser || true
              ? <p>
                  <small>
-                   "Loyalty Token Balance:"->restr
+                   "Loyalty Token Balance: "->restr
                    {totalLoyaltyTokensOpt->Option.mapWithDefault(
-                      "Loading"->restr, totalLoyaltyTokens =>
-                      totalLoyaltyTokens->Eth.fromWeiEth->restr
+                      "Loading"->restr,
+                      totalLoyaltyTokens => {
+                        Js.log2("Rate", totalLoyaltyTokens);
+                        //http://localhost:3000/#user/0x9241DcC41515150E8363BEf238f92B15167791d7
+                        totalLoyaltyTokens
+                        ->Web3Utils.fromWeiBNToEthPrecision(~digits=3)
+                        ->restr;
+                      },
                     )}
                  </small>
                </p>
