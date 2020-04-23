@@ -57,11 +57,17 @@ module UserDetails = {
     let currentlyOwnedTokens =
       isForeclosed
         ? [||]
-        : (patronQueryResult##patron <$> (patron => patron##tokens))
-          ->Option.mapWithDefault([||], a => a->Array.map(token => token##id));
-    let allPreviouslyOwnedTokens: array(string) =
-      (patronQueryResult##patron >>= (patron => patron##previouslyOwnedTokens))
-      ->Option.mapWithDefault([||], a => a->Array.map(token => token##id));
+        : patronQueryResult##patron
+          ->map(patron => patron##tokens->Array.map(token => token##id))
+          ->setDefault([||]);
+
+    let allPreviouslyOwnedTokens =
+      patronQueryResult##patron
+      ->map(patron =>
+          patron##previouslyOwnedTokens->Array.map(token => token##id)
+        )
+      ->setDefault([||]);
+
     let uniquePreviouslyOwnedTokens =
       isForeclosed
         ? allPreviouslyOwnedTokens
@@ -165,13 +171,13 @@ module UserDetails = {
             {Helper.elipsify(userAddress, 10)->restr}
           </a>
           <br />
-          {isAddressCurrentUser
+          {isAddressCurrentUser || true
              ? <p>
                  <small>
                    "Loyalty Token Balance:"->restr
                    {totalLoyaltyTokensOpt->Option.mapWithDefault(
                       "Loading"->restr, totalLoyaltyTokens =>
-                      totalLoyaltyTokens->BN.toStringGet(.)->restr
+                      totalLoyaltyTokens->Eth.fromWeiEth->restr
                     )}
                  </small>
                </p>
@@ -246,7 +252,7 @@ module UserDetails = {
 [@react.component]
 let make = (~userAddress: string) => {
   let userAddressLowerCase = userAddress->Js.String.toLowerCase;
-  let previousTokens = QlHooks.usePatronQuery(userAddressLowerCase);
+  let patronQuery = QlHooks.usePatronQuery(userAddressLowerCase);
   let userInfoContext = UserProvider.useUserInfoContext();
   let reloadUser = forceReload =>
     userInfoContext.update(userAddressLowerCase, forceReload); // double check that data is loaded.
@@ -254,7 +260,7 @@ let make = (~userAddress: string) => {
   let optThreeBoxData = UserProvider.use3BoxUserData(userAddressLowerCase);
 
   <Rimble.Flex flexWrap="wrap" alignItems="center" className=Styles.topBody>
-    {switch (previousTokens) {
+    {switch (patronQuery) {
      | Some(patronQueryResult) =>
        <UserDetails optThreeBoxData patronQueryResult userAddress />
      | None =>
