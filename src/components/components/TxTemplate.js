@@ -39,12 +39,15 @@ export default ({ txObjects, children }) =>
                           txObjects[0].receipt.transactionHash
                         }
                         target="_blank"
+                        rel="noopener noreferrer"
                       >
                         View transaction on Ethersan
                       </a>
                     </Text>
                   </Fragment>
                 );
+              default:
+                return <Text>The transaction entered an undefined state.</Text>;
             }
           })()}
         </Fragment>

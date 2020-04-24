@@ -11,13 +11,13 @@ export default ({ totalRaised }) => {
 
   const [styles, setStyles] = useState({});
   const ref = useRef(0);
-  const { countUp, start, pauseResume, reset, update } = useCountUp({
+  const { countUp, start, update } = useCountUp({
     start: decimals,
     end: decimals,
     delay: 1000,
     duration: 1,
     redraw: false,
-    preserveValue: true // This line is extremely important, otherwise it always starts from zero!!
+    preserveValue: true, // This line is extremely important, otherwise it always starts from zero!!
   });
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export default ({ totalRaised }) => {
       }
     }
     return () => clearTimeout(timeout);
-  }, [totalRaised]);
+  }, [totalRaised, decimals, start, update]);
 
   return (
     <React.Fragment>

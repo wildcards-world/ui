@@ -1,5 +1,4 @@
 open Async;
-open Belt;
 open Globals;
 
 type usdPrice = {usdPrice: option(float)};
@@ -56,19 +55,22 @@ let getPrice = () =>
 let make = (~children) => {
   let (etherUsdPrice, setEtherUsdPrice) = React.useState(_ => None);
 
-  React.useEffect0(() => {
-    if (etherUsdPrice == None) {
-      let _ =
-        getPrice()
-        ->mapAsync(newPrice =>
-            setEtherUsdPrice(_ => newPrice >>= Float.fromString)
-          );
-      ();
-    } else {
-      ();
-    };
-    None;
-  });
+  React.useEffect2(
+    () => {
+      if (etherUsdPrice == None) {
+        let _ =
+          getPrice()
+          ->mapAsync(newPrice =>
+              setEtherUsdPrice(_ => newPrice >>= Float.fromString)
+            );
+        ();
+      } else {
+        ();
+      };
+      None;
+    },
+    (setEtherUsdPrice, etherUsdPrice),
+  );
 
   <PriceProvider value=etherUsdPrice> children </PriceProvider>;
 };

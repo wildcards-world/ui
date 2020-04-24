@@ -351,7 +351,7 @@ let useCurrentTime = () => {
   let (currentTime, setTimeLeft) =
     React.useState(() => getCurrentTimestamp());
 
-  React.useEffect0(() => {
+  React.useEffect(() => {
     let interval =
       Js.Global.setInterval(
         () => {setTimeLeft(_ => {getCurrentTimestamp()})},

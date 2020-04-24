@@ -48,7 +48,7 @@ module FaqItem = {
     let (height, setHeight) = useState(_ => "0px");
     let accordianContentRef = useRef(Js.Nullable.null);
 
-    useEffect1(
+    useEffect2(
       () => {
         let optHeight =
           Ref.current(accordianContentRef)
@@ -63,7 +63,7 @@ module FaqItem = {
         setHeight(_ => !isOpen ? "0px" : height);
         None;
       },
-      [|isOpen|],
+      (isOpen, setHeight),
     );
 
     <Fragment>
@@ -106,7 +106,8 @@ let content = [|
         ->restr
         <a
           href="https://blog.wildcards.world/where-is-the-money-going/"
-          target="_blank">
+          target="_blank"
+          rel="noopener noreferrer">
           "read our blog post"->restr
         </a>
         "  which details how funds are transparently recieved by our conservation partners."
@@ -121,7 +122,8 @@ let content = [|
         ->restr
         <a
           href="https://blog.wildcards.world/how-to-buy-a-wildcard-web3-ethereum/"
-          target="_blank">
+          target="_blank"
+          rel="noopener noreferrer">
           " Read our guide"->restr
         </a>
         " to find out more about how to buy a wildcard."->restr
