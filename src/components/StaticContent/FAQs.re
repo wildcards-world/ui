@@ -106,7 +106,8 @@ let content = [|
         ->restr
         <a
           href="https://blog.wildcards.world/where-is-the-money-going/"
-          target="_blank">
+          target="_blank"
+          rel="noopener noreferrer">
           "read our blog post"->restr
         </a>
         "  which details how funds are transparently recieved by our conservation partners."
@@ -121,7 +122,8 @@ let content = [|
         ->restr
         <a
           href="https://blog.wildcards.world/how-to-buy-a-wildcard-web3-ethereum/"
-          target="_blank">
+          target="_blank"
+          rel="noopener noreferrer">
           " Read our guide"->restr
         </a>
         " to find out more about how to buy a wildcard."->restr

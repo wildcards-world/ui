@@ -1,5 +1,4 @@
 open Globals;
-open Belt;
 
 let centreAlignOnMobile =
   Css.(
@@ -149,6 +148,7 @@ module UserDetails = {
              <a
                className=Styles.navListText
                target="_blank"
+               rel="noopener noreferrer"
                href={"https://twitter.com/" ++ twitterHandle}>
                {("@" ++ twitterHandle)->restr}
              </a>
@@ -157,7 +157,7 @@ module UserDetails = {
           {optDescription->reactMap(description => <p> description->restr </p>)}
           <a
             className=Styles.navListText
-            target="_blank"
+            rel="noopener noreferrer"
             href={"https://" ++ etherScanUrl ++ "/address/" ++ userAddress}>
             {Helper.elipsify(userAddress, 10)->restr}
           </a>

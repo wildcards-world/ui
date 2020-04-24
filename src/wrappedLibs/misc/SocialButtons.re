@@ -6,6 +6,7 @@ external make:
     ~fgColor: string=?,
     ~target: string=?,
     ~className: string=?,
+    ~rel: string=?,
     ~network: string=?
   ) =>
   React.element =

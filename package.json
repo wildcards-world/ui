@@ -49,6 +49,7 @@
     "start": "npm run re:build && react-scripts start",
     "build": "npm run re:build && EXTEND_ESLINT=true react-scripts build",
     "test": "react-scripts test",
+    "lint": "eslint src",
     "re:build": "bsb -make-world -clean-world",
     "re:watch": "bsb -make-world -clean-world -w",
     "deploy": "npm run build && gh-pages -d dist --remote JasoonS",
@@ -86,6 +87,14 @@
       {
         "files": [
           "**/*.js?(x)"
+        ],
+        "rules": {
+          "react-hooks/rules-of-hooks": "error"
+        }
+      },
+      {
+        "files": [
+          "**/*.bs.js?(x)"
         ],
         "rules": {
           "default-case": "off",
