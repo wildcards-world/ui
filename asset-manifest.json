@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "./static/css/main.2e4598d2.chunk.css",
-    "main.js": "./static/js/main.a8653164.chunk.js",
-    "main.js.map": "./static/js/main.a8653164.chunk.js.map",
-    "runtime-main.js": "./static/js/runtime-main.4e5747bd.js",
-    "runtime-main.js.map": "./static/js/runtime-main.4e5747bd.js.map",
+    "main.js": "./static/js/main.7dc3cfe6.chunk.js",
+    "main.js.map": "./static/js/main.7dc3cfe6.chunk.js.map",
+    "runtime-main.js": "./static/js/runtime-main.11ce6905.js",
+    "runtime-main.js.map": "./static/js/runtime-main.11ce6905.js.map",
     "static/js/2.8eb6289a.chunk.js": "./static/js/2.8eb6289a.chunk.js",
     "static/js/2.8eb6289a.chunk.js.map": "./static/js/2.8eb6289a.chunk.js.map",
     "static/css/3.0cd051cd.chunk.css": "./static/css/3.0cd051cd.chunk.css",
     "static/js/3.8f9dc259.chunk.js": "./static/js/3.8f9dc259.chunk.js",
     "static/js/3.8f9dc259.chunk.js.map": "./static/js/3.8f9dc259.chunk.js.map",
-    "static/js/4.67fb119e.chunk.js": "./static/js/4.67fb119e.chunk.js",
-    "static/js/4.67fb119e.chunk.js.map": "./static/js/4.67fb119e.chunk.js.map",
+    "static/js/4.d6326ae2.chunk.js": "./static/js/4.d6326ae2.chunk.js",
+    "static/js/4.d6326ae2.chunk.js.map": "./static/js/4.d6326ae2.chunk.js.map",
     "static/js/5.613f03ec.chunk.js": "./static/js/5.613f03ec.chunk.js",
     "static/js/5.613f03ec.chunk.js.map": "./static/js/5.613f03ec.chunk.js.map",
     "static/js/6.c68400c0.chunk.js": "./static/js/6.c68400c0.chunk.js",
@@ -23,7 +23,7 @@
     "static/js/9.33e92ea4.chunk.js": "./static/js/9.33e92ea4.chunk.js",
     "static/js/9.33e92ea4.chunk.js.map": "./static/js/9.33e92ea4.chunk.js.map",
     "index.html": "./index.html",
-    "precache-manifest.8d8f3fb939f7c22a644c7a745a977762.js": "./precache-manifest.8d8f3fb939f7c22a644c7a745a977762.js",
+    "precache-manifest.d0aad4a5e599f94d212f87e40531dc89.js": "./precache-manifest.d0aad4a5e599f94d212f87e40531dc89.js",
     "service-worker.js": "./service-worker.js",
     "static/css/3.0cd051cd.chunk.css.map": "./static/css/3.0cd051cd.chunk.css.map",
     "static/css/main.2e4598d2.chunk.css.map": "./static/css/main.2e4598d2.chunk.css.map",
@@ -79,10 +79,10 @@
     "static/media/wild-jungle-background.png": "./static/media/wild-jungle-background.ae5d91e2.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.4e5747bd.js",
+    "static/js/runtime-main.11ce6905.js",
     "static/css/3.0cd051cd.chunk.css",
     "static/js/3.8f9dc259.chunk.js",
     "static/css/main.2e4598d2.chunk.css",
-    "static/js/main.a8653164.chunk.js"
+    "static/js/main.7dc3cfe6.chunk.js"
   ]
 }
