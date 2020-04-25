@@ -67,7 +67,7 @@ module DisplayAfterDate = {
       MomentRe.diff(endDateMoment, MomentRe.momentNow(), `seconds) > 0.;
 
     let (beforeDate, setIsBeforeDate) = React.useState(() => isBeforeDate());
-    React.useEffect0(() => {
+    React.useEffect(() => {
       let _timout =
         Js.Global.setTimeout(
           () => setIsBeforeDate(_ => isBeforeDate()),

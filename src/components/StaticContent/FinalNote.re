@@ -28,7 +28,8 @@ module FinalNote = {
               <a
                 className=Styles.linkPillBox
                 href="https://youtu.be/ibBAlrrwjp0?t=322"
-                target="_blank">
+                target="_blank"
+                rel="noopener noreferrer">
                 <span className=Styles.linkPillText>
                   <S> "Watch presentation at the EthCapeTown hackathon." </S>
                 </span>

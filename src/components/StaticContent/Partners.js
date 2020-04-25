@@ -1,5 +1,5 @@
 import React from "react";
-import { Flex, Box, Card, Heading, Text } from "rimble-ui";
+import { Flex, Box, Card, Text } from "rimble-ui";
 import { infoBackground } from "../../Styles.bs";
 import UbisoftLogo from "../../img/logos/Ubisoft.png";
 import EthCapeTownLogo from "../../img/logos/EthCapeTown.png";
@@ -11,14 +11,14 @@ import SendaVerde from "../../img/logos/SendaVerde.png";
 const styles = {
   logo: {
     marginLeft: "10%",
-    width: "80%"
+    width: "80%",
   },
   card: {
-    height: "100%"
+    height: "100%",
   },
   center: {
-    textAlign: "center"
-  }
+    textAlign: "center",
+  },
 };
 
 const Partners = () => (
@@ -33,7 +33,7 @@ const Partners = () => (
       <Box mt={70} mb={70} width={[1, 1, 0.26]} color="black">
         <Card style={styles.card}>
           <a href="https://www.ubisoft.com/en-us/company/start-ups/station-f.aspx">
-            <img src={UbisoftLogo} style={styles.logo} />
+            <img src={UbisoftLogo} alt="ubisoft" style={styles.logo} />
             <Text style={styles.center}>
               Ubisoft's Entrepreneurs Lab, Season 4, participants
             </Text>
@@ -43,7 +43,11 @@ const Partners = () => (
       <Box mt={70} mb={70} width={[1, 1, 0.26]} color="black">
         <Card style={styles.card}>
           <a href="https://ethcapetown.com/">
-            <img src={EthCapeTownLogo} style={styles.logo} />
+            <img
+              src={EthCapeTownLogo}
+              alt="eth-cape-town"
+              style={styles.logo}
+            />
             <Text style={styles.center}>
               Overall winners of EthCapeTown hackathon
             </Text>
@@ -53,7 +57,7 @@ const Partners = () => (
       <Box mt={70} mb={70} width={[1, 1, 0.26]} color="black">
         <Card style={styles.card}>
           <a href="https://cvvc.com/index.php">
-            <img src={CVLabsLogo} style={styles.logo} />
+            <img src={CVLabsLogo} alt="cv-labs" style={styles.logo} />
             <Text style={styles.center}>
               CV Labs Incubator Program, Batch 2
             </Text>
@@ -79,7 +83,7 @@ const Partners = () => (
       <Box mt={30} mb={70} width={[1, 1, 0.26]} color="black">
         <Card style={styles.card}>
           <a href="http://www.sendaverde.org/">
-            <img src={SendaVerde} style={styles.logo} />
+            <img src={SendaVerde} alt="senda-verde" style={styles.logo} />
             <Text style={styles.center}>Senda Verde</Text>
           </a>
         </Card>
@@ -87,7 +91,11 @@ const Partners = () => (
       <Box mt={30} mb={70} width={[1, 1, 0.26]} color="black">
         <Card style={styles.card}>
           <a href="https://wildtomorrowfund.org">
-            <img src={WildTomorrowFundLogo} style={styles.logo} />
+            <img
+              src={WildTomorrowFundLogo}
+              alt="wildtomorrowfund"
+              style={styles.logo}
+            />
             <Text style={styles.center}>Wild Tomorrow Fund</Text>
           </a>
         </Card>
@@ -95,7 +103,7 @@ const Partners = () => (
       <Box mt={30} mb={70} width={[1, 1, 0.26]} color="black">
         <Card style={styles.card}>
           <a href="mailto:denham@wildcards.world">
-            <img src={YourConservationLogo} style={styles.logo} />
+            <img src={YourConservationLogo} alt="you" style={styles.logo} />
             <Text style={styles.center}>You?</Text>
           </a>
         </Card>

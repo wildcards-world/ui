@@ -101,7 +101,7 @@ module RootWithWeb3 = {
     // This prevents repeated tries at logging in (or re-login after logout)
     let (triedLoginAlready, setTriedLoginAlready) =
       React.useState(() => false);
-    React.useEffect2(
+    React.useEffect5(
       () => {
         injected.isAuthorized()
         ->Promise.get(authorised =>
@@ -125,7 +125,13 @@ module RootWithWeb3 = {
         None;
       },
       // intentionally only running on mount (make sure it's only mounted once :))
-      (context.activate, context.chainId),
+      (
+        context.activate,
+        context.chainId,
+        dispatch,
+        setTriedLoginAlready,
+        triedLoginAlready,
+      ),
     );
 
     //// This will never fire when metamask logs out unfortunately https://stackoverflow.com/a/59215775/3103033
@@ -143,17 +149,17 @@ module RootWithWeb3 = {
     // );
 
     // if the connection worked, wait until we get confirmation of that to flip the flag
-    React.useEffect2(
+    React.useEffect3(
       () => {
         !triedLoginAlready && context.active
           ? setTriedLoginAlready(_ => true) : ();
 
         None;
       },
-      (triedLoginAlready, context.active),
+      (triedLoginAlready, context.active, setTriedLoginAlready),
     );
 
-    React.useEffect3(
+    React.useEffect4(
       () => {
         switch (context.library, context.account) {
         | (Some(library), Some(account)) =>
@@ -174,7 +180,7 @@ module RootWithWeb3 = {
         | _ => None
         }
       },
-      (context.library, context.account, context.chainId),
+      (context.library, context.account, context.chainId, dispatch),
     );
 
     <RootContext value=(rootState, dispatch)> children </RootContext>;

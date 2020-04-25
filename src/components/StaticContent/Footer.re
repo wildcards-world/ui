@@ -15,19 +15,27 @@ let make = () =>
           <a
             className=Styles.footerLink
             target="_blank"
+            rel="noopener noreferrer"
             href="https://wildcards.world">
             <S> "Wildcards" </S>
           </a>
         </div>
       </div>
       <div className=Styles.footerText>
-        <a className=Styles.footerLink target="_blank" href=transparency_link>
+        <a
+          className=Styles.footerLink
+          target="_blank"
+          rel="noopener noreferrer"
+          href=transparency_link>
           <S> "Transparency" </S>
         </a>
       </div>
       <div className=Styles.footerText>
         <a
-          className=Styles.footerLink target="_blank" href=privacy_policy_link>
+          className=Styles.footerLink
+          target="_blank"
+          rel="noopener noreferrer"
+          href=privacy_policy_link>
           <S> "Privacy Policy" </S>
         </a>
       </div>
@@ -35,6 +43,7 @@ let make = () =>
         <a
           className=Styles.footerLink
           target="_blank"
+          rel="noopener noreferrer"
           href=terms_and_conditions_link>
           <S> "Terms and Conditions" </S>
         </a>
@@ -46,6 +55,7 @@ let make = () =>
             bgColor="transparent"
             fgColor="#aaa"
             target="_blank"
+            rel="noopener noreferrer"
             network="twitter"
             className=Styles.footerSocailButtonLink
           />
@@ -56,6 +66,7 @@ let make = () =>
             url="https://www.facebook.com/wildcardscrypto"
             bgColor="transparent"
             target="_blank"
+            rel="noopener noreferrer"
             network="facebook"
             fgColor="#aaa"
           />
@@ -66,6 +77,7 @@ let make = () =>
             url="https://t.me/wildcardsworld"
             bgColor="transparent"
             target="_blank"
+            rel="noopener noreferrer"
             network="telegram"
             fgColor="#aaa"
           />

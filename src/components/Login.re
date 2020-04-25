@@ -20,7 +20,7 @@ let make = () => {
         "(Not sure where to go from here? "->React.string
         <a
           href="https://blog.wildcards.world/how-to-buy-a-wildcard-web3-ethereum/"
-          target="_blank">
+          target="_blank" rel="noopener noreferrer">
           <span className=Styles.colorGreen>
             "Read our guide"->React.string
           </span>

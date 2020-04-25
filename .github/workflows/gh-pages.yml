@@ -21,7 +21,7 @@ jobs:
         run: yarn
 
       - name: Build
-        run: yarn run build # TODO: reenable source maps as soon as it is possible - useful for debugging.
+        run: yarn run build
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v2.5.0

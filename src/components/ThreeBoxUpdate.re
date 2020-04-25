@@ -550,7 +550,10 @@ module Main = {
            <Rimble.Text>
              "Please use"->React.string
              <strong>
-               <a target="_blank" href={"https://3box.io/" ++ currentUser}>
+               <a
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 href={"https://3box.io/" ++ currentUser}>
                  " 3Box.io "->React.string
                </a>
              </strong>

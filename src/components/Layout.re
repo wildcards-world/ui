@@ -133,6 +133,7 @@ module Header = {
               <a
                 className=Styles.navListText
                 target="_blank"
+                rel="noopener noreferrer"
                 href="https://blog.wildcards.world/">
                 <S> "BLOG" </S>
               </a>

@@ -23,7 +23,10 @@ let make =
         <WildcardsLoader />
       </Rimble.Heading>
       <Rimble.Text>
-        <a href={j|https://$etherscanUrl/tx/$txHash|j} target="_blank">
+        <a
+          href={j|https://$etherscanUrl/tx/$txHash|j}
+          target="_blank"
+          rel="noopener noreferrer">
           "View the transaction on etherscan.io"->React.string
         </a>
       </Rimble.Text>
@@ -37,7 +40,10 @@ let make =
         <WildcardsLoader />
       </Rimble.Heading>
       <Rimble.Text>
-        <a href={j|https://$etherscanUrl/tx/$txHash|j} target="_blank">
+        <a
+          href={j|https://$etherscanUrl/tx/$txHash|j}
+          target="_blank"
+          rel="noopener noreferrer">
           "View the transaction on etherscan.io"->React.string
         </a>
       </Rimble.Text>
