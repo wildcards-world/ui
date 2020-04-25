@@ -12,7 +12,8 @@ type urlState =
   | Explorer(animalPageState)
   | Leaderboards(leaderBoard)
   // | Unknown
-  | Home(animalPageState);
+  | Home(animalPageState)
+  | VotePage;
 
 let useUrlState = () => {
   let url = ReasonReactRouter.useUrl();
@@ -51,6 +52,7 @@ let useUrlState = () => {
             optionAnimal,
           ),
         );
+      | [|"ethturin-quadratic-voting"|] => VotePage
       | urlArray =>
         switch (
           Belt.Array.get(urlArray, 0)->Belt.Option.mapWithDefault("", a => a)

@@ -186,6 +186,10 @@ module UserDetails = {
                     })}
                  </small>
                </p>
+               <p>
+               <a href="">"redeem tokens"->restr</a>,
+               <a href="/ethturin-quadratic-voting">"vote"->restr</a>
+               </p>
              : React.null}
         </Rimble.Box>
         <Rimble.Box p=1 width=[|1., 1., 0.3333|]>
