@@ -41,6 +41,8 @@ module UserDetails = {
         ~userAddress: string,
       ) => {
     let isForeclosed = QlHooks.useIsForeclosed(userAddress);
+    let isAddressCurrentUser =
+      RootProvider.useIsAddressCurrentUser(userAddress);
 
     /**
      * 1 of four scenarios for each user:
@@ -55,11 +57,17 @@ module UserDetails = {
     let currentlyOwnedTokens =
       isForeclosed
         ? [||]
-        : (patronQueryResult##patron <$> (patron => patron##tokens))
-          ->Option.mapWithDefault([||], a => a->Array.map(token => token##id));
-    let allPreviouslyOwnedTokens: array(string) =
-      (patronQueryResult##patron >>= (patron => patron##previouslyOwnedTokens))
-      ->Option.mapWithDefault([||], a => a->Array.map(token => token##id));
+        : patronQueryResult##patron
+          ->oMap(patron => patron##tokens->Array.map(token => token##id))
+          ->setDefault([||]);
+
+    let allPreviouslyOwnedTokens =
+      patronQueryResult##patron
+      ->oMap(patron =>
+          patron##previouslyOwnedTokens->Array.map(token => token##id)
+        )
+      ->setDefault([||]);
+
     let uniquePreviouslyOwnedTokens =
       isForeclosed
         ? allPreviouslyOwnedTokens
@@ -125,6 +133,8 @@ module UserDetails = {
       );
     };
 
+    let totalLoyaltyTokensOpt = QlHooks.useTotalLoyaltyToken(userAddress);
+
     <div className=Css.(style([width(`percent(100.))]))>
       <Rimble.Flex flexWrap="wrap" alignItems="start">
         <Rimble.Box
@@ -161,6 +171,22 @@ module UserDetails = {
             href={"https://" ++ etherScanUrl ++ "/address/" ++ userAddress}>
             {Helper.elipsify(userAddress, 10)->restr}
           </a>
+          <br />
+          // NOTE: the number of loyalty tokens of a user currently will always show.
+          //       We are thinking of making this "private" only to the current logged in user. To enable this remove the `|| true` from the line below
+          {isAddressCurrentUser || true
+             ? <p>
+                 <small>
+                   "Loyalty Token Balance: "->restr
+                   {totalLoyaltyTokensOpt->Option.mapWithDefault(
+                      "Loading"->restr, totalLoyaltyTokens => {
+                      totalLoyaltyTokens
+                      ->Web3Utils.fromWeiBNToEthPrecision(~digits=3)
+                      ->restr
+                    })}
+                 </small>
+               </p>
+             : React.null}
         </Rimble.Box>
         <Rimble.Box p=1 width=[|1., 1., 0.3333|]>
           <h2> "Monthly Contribution"->restr </h2>
@@ -231,7 +257,7 @@ module UserDetails = {
 [@react.component]
 let make = (~userAddress: string) => {
   let userAddressLowerCase = userAddress->Js.String.toLowerCase;
-  let previousTokens = QlHooks.usePatronQuery(userAddressLowerCase);
+  let patronQuery = QlHooks.usePatronQuery(userAddressLowerCase);
   let userInfoContext = UserProvider.useUserInfoContext();
   let reloadUser = forceReload =>
     userInfoContext.update(userAddressLowerCase, forceReload); // double check that data is loaded.
@@ -239,7 +265,7 @@ let make = (~userAddress: string) => {
   let optThreeBoxData = UserProvider.use3BoxUserData(userAddressLowerCase);
 
   <Rimble.Flex flexWrap="wrap" alignItems="center" className=Styles.topBody>
-    {switch (previousTokens) {
+    {switch (patronQuery) {
      | Some(patronQueryResult) =>
        <UserDetails optThreeBoxData patronQueryResult userAddress />
      | None =>

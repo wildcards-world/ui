@@ -1,5 +1,5 @@
 open ReasonApolloHooks;
-open Belt;
+open Globals;
 
 type owner = {. "address": Js.Json.t};
 
@@ -167,6 +167,24 @@ module LoadPatron = [%graphql
   |}
 ];
 
+// NOTE: we currently have two patron objects while the graph is in a half updated state. When the graph is refactored these 'patron' queries will be merged into one.
+module LoadPatronNew = [%graphql
+  {|
+    query ($patronId: String!) {
+      patronNew(id: $patronId) {
+        id
+        address @bsDecoder(fn: "decodeAddress")
+        lastUpdated @bsDecoder(fn: "decodeBN")
+        totalLoyaltyTokens @bsDecoder(fn: "decodeBN")
+        totalLoyaltyTokensIncludingUnRedeemed @bsDecoder(fn: "decodeBN")
+        tokens {
+          id
+        }
+      }
+    }
+  |}
+];
+
 module LoadTopContributors = [%graphql
   {|
     query ($numberOfLeaders: Int!) {
@@ -292,6 +310,11 @@ let useQueryPatron = patron =>
     ~variables=LoadPatron.make(~patronId=patron, ())##variables,
     LoadPatron.definition,
   );
+let useQueryPatronNew = patron =>
+  ApolloHooks.useQuery(
+    ~variables=LoadPatronNew.make(~patronId=patron, ())##variables,
+    LoadPatronNew.definition,
+  );
 
 let useForeclosureTime: string => option(MomentRe.Moment.t) =
   patron => {
@@ -405,6 +428,34 @@ let useTotalCollectedToken: Animal.t => option((Eth.t, BN.bn, BN.bn)) =
     | _ => None
     };
   };
+type patronLoyaltyTokenDetails = {
+  currentLoyaltyTokens: Eth.t,
+  lastCollected: BN.bn,
+  numberOfAnimalsOwned: BN.bn,
+};
+let usePatronLoyaltyTokenDetails:
+  Web3.ethAddress => option(patronLoyaltyTokenDetails) =
+  address => {
+    let (response, _) = useQueryPatronNew(address);
+
+    switch (response) {
+    | Data(responseData) =>
+      responseData##patronNew
+      ->Belt.Option.flatMap(patron =>
+          Some({
+            currentLoyaltyTokens: BN.new_("123"),
+            lastCollected: patron##lastUpdated,
+            numberOfAnimalsOwned:
+              BN.new_(patron##tokens->Obj.magic->Array.length->string_of_int),
+          })
+        )
+
+    // | Loading
+    // | Error(_error)
+    // | NoData => None
+    | _ => None
+    };
+  };
 
 // TODO:: Take min of total deposit and amount raised
 let useAmountRaisedToken: Animal.t => option(Eth.t) =
@@ -430,6 +481,26 @@ let useAmountRaisedToken: Animal.t => option(Eth.t) =
       Some(
         amountCollectedOrDue->BN.addGet(. amountRaisedSinceLastCollection),
       );
+    | None => None
+    };
+  };
+
+let useTotalLoyaltyToken: Web3.ethAddress => option(Eth.t) =
+  patron => {
+    let currentTimestamp = useCurrentTime();
+
+    switch (usePatronLoyaltyTokenDetails(patron)) {
+    | Some({currentLoyaltyTokens, lastCollected, numberOfAnimalsOwned}) =>
+      let timeElapsed = BN.new_(currentTimestamp) |-| lastCollected;
+      // Reference: https://github.com/wild-cards/contracts-private/blob/v2testing/migrations/7_receipt_tokens.js#L6
+      let totalLoyaltyTokensPerSecondPerAnimal = BN.new_("11574074074074");
+      let totalLoyaltyTokensFor1Animal =
+        totalLoyaltyTokensPerSecondPerAnimal |*| timeElapsed;
+      let totalLoyaltyTokensForAllAnimal =
+        numberOfAnimalsOwned |*| totalLoyaltyTokensFor1Animal;
+      let totalLoyaltyTokensForUser =
+        currentLoyaltyTokens |+| totalLoyaltyTokensForAllAnimal;
+      Some(totalLoyaltyTokensForUser);
     | None => None
     };
   };

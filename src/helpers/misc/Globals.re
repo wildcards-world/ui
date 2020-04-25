@@ -2,8 +2,22 @@
 include Belt;
 
 // From here: https://dev.to/johnridesabike/optional-chaining-in-reason-1im6
-let (<$>) = Belt.Option.map;
-let (>>=) = Belt.Option.flatMap;
+let oMap = Belt.Option.map;
+let (<$>) = oMap;
+let oFlatMap = Belt.Option.flatMap;
+let (>>=) = oFlatMap;
+let mapd = Option.mapWithDefault;
+let setDefault = (optionalValue, default) =>
+  Option.mapWithDefault(optionalValue, default, b => b);
+let (||||) = setDefault;
+
+let (|+|) = (a, b) => a->BN.addGet(. b);
+let (|*|) = (a, b) => a->BN.mulGet(. b);
+let (|-|) = (a, b) => a->BN.subGet(. b);
+let (|/|) = (a, b) => a->BN.divGet(. b);
+let (|==|) = (a, b) => a->BN.eqGet(. b);
+let (|>|) = (a, b) => a->BN.ltGet(. b);
+let (|<|) = (a, b) => a->BN.gtGet(. b);
 
 let restr = React.string;
 let reactMapWithDefault:
