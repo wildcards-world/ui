@@ -12,6 +12,7 @@ type urlState =
   | Explorer(animalPageState)
   | Leaderboards(leaderBoard)
   // | Unknown
+  | VotePage
   | Home(animalPageState);
 
 let useUrlState = () => {
@@ -40,6 +41,7 @@ let useUrlState = () => {
             optionAnimal,
           ),
         );
+      | [|"eth-turin-vote"|] => VotePage
       // | [|"details"|] => Home(NormalView)
       | [|"details", animalStr|] =>
         let optionAnimal = Animal.getAnimal(animalStr);
