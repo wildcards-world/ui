@@ -252,7 +252,7 @@ let getImage = animal =>
     {|require('../../img/animals/EditedHyena2.png')|}
   | Glen =>
     %bs.raw
-    {|require('../../img/animals/EditedHyena2.png')|}
+    {|require('../../img/animals/Glen.svg')|}
   // | Ajayu
   // | Mijungla
   // | Tarkus
@@ -332,7 +332,7 @@ let getOrgBadgeImage: t => string =
       {|require('../../img/badges/WildTomorrowBadge.png')|}
     | Glen =>
       %bs.raw
-      {|require('../../img/animals/Dlala.jpg')|}
+      {|require('../../img/badges/EthTurin.svg')|}
     // | Espumita
     // | Ajayu
     // | Mijungla
@@ -417,7 +417,8 @@ let getStoryParagraphs = animal =>
       "Dlala is a young male spotted hyena, currently about 13 months old. At this age he has recently grown large enough to leave the safety of his clan's den and is out exploring the world within their territory. Too young to breed, his current existence is more about learning and interacting with his new environment; in Zulu his name means \"play\".",
     |]
   | Glen => [|
-      "Glen is a special Wildcard, this mystical creature is not tied to a specific conservation but rather each month the owners of Wildcards vote on which conservation they think should receive the funds raised. The voting mechanism uses quadratic voting. Wildcards owners vote using Wildcards Loyalty tokens which they earn from holding a Wildcard. Quadratic voting means that the number of loyalty tokens don't represent the exact number of votes but rather the number of loyalty tokens is square rooted to represent the number of votes.",
+      "It was a tough and trying time in Turin, Italy. A pandemic had taken over the land and the villagers were facing hardships. Unexpectedly nature was prospering, the villagers were in hiding and the flora and fauna of the region was reclaiming its land. Most unexpectedly the dragon returned, which for a long time was believed to be extinct. Glen the Dragon of Turin emerged from the Alps just North of the city. One of the last of his kind.",
+      "Glen is a unique Wildcard that is named after Glen Weyl the author of Radical Markets. He was developed during the ETHTurin hackathon. The funds raised by Glen go to the conservation voted by the community. Owners of wildcards can vote using their loyalty tokens using quadratic voting to vote which conservation should receive the funds raised for that month.",
     |]
   };
 

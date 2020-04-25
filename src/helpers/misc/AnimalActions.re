@@ -49,6 +49,8 @@ type stewardContract = {
   buy: (. tokenIdString, parsedUnits, txOptions) => Promise.Js.t(tx, txError),
   depositWei: (. txOptions) => Promise.Js.t(tx, txError),
   withdrawDeposit: (. parsedUnits, txOptions) => Promise.Js.t(tx, txError),
+  _collectPatronage:
+    (. tokenIdString, txOptions) => Promise.Js.t(tx, txError),
   changePrice:
     (. tokenIdString, parsedUnits, txOptions) => Promise.Js.t(tx, txError),
 };
@@ -163,6 +165,54 @@ let useBuy = animal => {
     },
     txState,
   );
+};
+
+let useRedeemLoyaltyTokens = (optAnimal: option(string)) => {
+  let (txState, setTxState) = React.useState(() => UnInitialised);
+  let optSteward = useStewardContract();
+  switch (optAnimal) {
+  | None => ((() => ()), Failed)
+  | Some(animalId) => (
+      (
+        () => {
+          let value = parseUnits(. "0", 0);
+
+          setTxState(_ => Created);
+          switch (optSteward) {
+          | Some(steward) =>
+            let claimLoyaltyTokenPromise =
+              steward._collectPatronage(.
+                animalId,
+                {
+                  // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
+                  value: value,
+                },
+              )
+              ->Promise.Js.toResult;
+            claimLoyaltyTokenPromise->Promise.getOk(tx => {
+              setTxState(_ => SignedAndSubmitted(tx.hash));
+              let txMinedPromise = tx.wait(.)->Promise.Js.toResult;
+              txMinedPromise->Promise.getOk(txOutcome => {
+                Js.log(txOutcome);
+                setTxState(_ => Complete(txOutcome));
+              });
+              txMinedPromise->Promise.getError(error => {
+                setTxState(_ => Failed);
+                Js.log(error);
+              });
+              ();
+            });
+            claimLoyaltyTokenPromise->Promise.getError(error => {
+              Js.log(error.message)
+            });
+            ();
+          | None => ()
+          };
+        }
+      ),
+      txState,
+    )
+  };
 };
 
 let useUpdateDeposit = () => {

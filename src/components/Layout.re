@@ -174,7 +174,7 @@ let make = () => {
         {switch (urlState) {
          | VotePage => <VotePage />
          | Explorer(animalPageState) =>
-           switch (animalPageState) {\
+           switch (animalPageState) {
            | DetailView(animalCarousel, _) =>
              <AnimalFocusDetails animalCarousel />
            | NormalView =>

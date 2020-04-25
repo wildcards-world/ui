@@ -135,6 +135,9 @@ module UserDetails = {
 
     let totalLoyaltyTokensOpt = QlHooks.useTotalLoyaltyToken(userAddress);
 
+    let (redeemLoyaltyTokens, _transactionStatus) =
+      AnimalActions.useRedeemLoyaltyTokens(currentlyOwnedTokens[0]);
+
     <div className=Css.(style([width(`percent(100.))]))>
       <Rimble.Flex flexWrap="wrap" alignItems="start">
         <Rimble.Box
@@ -175,8 +178,8 @@ module UserDetails = {
           // NOTE: the number of loyalty tokens of a user currently will always show.
           //       We are thinking of making this "private" only to the current logged in user. To enable this remove the `|| true` from the line below
           {isAddressCurrentUser || true
-             ? <p>
-                 <small>
+             ? <small>
+                 <p>
                    "Loyalty Token Balance: "->restr
                    {totalLoyaltyTokensOpt->Option.mapWithDefault(
                       "Loading"->restr, totalLoyaltyTokens => {
@@ -184,12 +187,23 @@ module UserDetails = {
                       ->Web3Utils.fromWeiBNToEthPrecision(~digits=3)
                       ->restr
                     })}
+                 </p>
+               </small>
+             : React.null}
+          {isAddressCurrentUser
+             ? switch (currentlyOwnedTokens) {
+               | [||] => React.null
+               | _currentlyOwnedTokens =>
+                 <small>
+                   <p>
+                     <a href="" onClick={_ => {redeemLoyaltyTokens()}}>
+                       "redeem tokens"->restr
+                     </a>
+                     ", "->restr
+                     <a href="/#ethturin-quadratic-voting"> "vote"->restr </a>
+                   </p>
                  </small>
-               </p>
-               <p>
-               <a href="">"redeem tokens"->restr</a>,
-               <a href="/ethturin-quadratic-voting">"vote"->restr</a>
-               </p>
+               }
              : React.null}
         </Rimble.Box>
         <Rimble.Box p=1 width=[|1., 1., 0.3333|]>
