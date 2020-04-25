@@ -167,6 +167,7 @@ module LoadPatron = [%graphql
   |}
 ];
 
+// NOTE: we currently have two patron objects while the graph is in a half updated state. When the graph is refactored these 'patron' queries will be merged into one.
 module LoadPatronNew = [%graphql
   {|
     query ($patronId: String!) {

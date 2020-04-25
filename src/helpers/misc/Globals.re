@@ -2,10 +2,10 @@
 include Belt;
 
 // From here: https://dev.to/johnridesabike/optional-chaining-in-reason-1im6
-let map = Belt.Option.map;
-let (<$>) = map;
-let flatMap = Belt.Option.flatMap;
-let (>>=) = flatMap;
+let oMap = Belt.Option.map;
+let (<$>) = oMap;
+let oFlatMap = Belt.Option.flatMap;
+let (>>=) = oFlatMap;
 let mapd = Option.mapWithDefault;
 let setDefault = (optionalValue, default) =>
   Option.mapWithDefault(optionalValue, default, b => b);

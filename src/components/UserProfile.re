@@ -58,12 +58,12 @@ module UserDetails = {
       isForeclosed
         ? [||]
         : patronQueryResult##patron
-          ->map(patron => patron##tokens->Array.map(token => token##id))
+          ->oMap(patron => patron##tokens->Array.map(token => token##id))
           ->setDefault([||]);
 
     let allPreviouslyOwnedTokens =
       patronQueryResult##patron
-      ->map(patron =>
+      ->oMap(patron =>
           patron##previouslyOwnedTokens->Array.map(token => token##id)
         )
       ->setDefault([||]);
@@ -172,20 +172,18 @@ module UserDetails = {
             {Helper.elipsify(userAddress, 10)->restr}
           </a>
           <br />
+          // NOTE: the number of loyalty tokens of a user currently will always show.
+          //       We are thinking of making this "private" only to the current logged in user. To enable this remove the `|| true` from the line below
           {isAddressCurrentUser || true
              ? <p>
                  <small>
                    "Loyalty Token Balance: "->restr
                    {totalLoyaltyTokensOpt->Option.mapWithDefault(
-                      "Loading"->restr,
-                      totalLoyaltyTokens => {
-                        Js.log2("Rate", totalLoyaltyTokens);
-                        //http://localhost:3000/#user/0x9241DcC41515150E8363BEf238f92B15167791d7
-                        totalLoyaltyTokens
-                        ->Web3Utils.fromWeiBNToEthPrecision(~digits=3)
-                        ->restr;
-                      },
-                    )}
+                      "Loading"->restr, totalLoyaltyTokens => {
+                      totalLoyaltyTokens
+                      ->Web3Utils.fromWeiBNToEthPrecision(~digits=3)
+                      ->restr
+                    })}
                  </small>
                </p>
              : React.null}
