@@ -1,6 +1,7 @@
 // TODO: remove the "NoAnimal" option, it makes the code messy for no reason. Rather use an `option` if there might not be a animal.
 type t =
   | Andy
+  | Glen
   | Vitalik
   | Simon
   | Verano
@@ -24,6 +25,7 @@ let orderedArray = [|
   Vitalik,
   Nonhlanhla,
   Cubai,
+  Glen,
   Simon,
   Dlala,
   Aruma,
@@ -54,6 +56,7 @@ let getId: t => string =
     | Nonhlanhla => "10"
     | Dlala => "11"
     | Isisa => "12"
+    | Glen => "13"
     // | Vitalik => Some("42") // We don't show an ID for vitalik since using legacy contract still.
     // | Tarkus
     // | Mijungla
@@ -76,6 +79,7 @@ let getTokenId: t => TokenId.t =
     | Nonhlanhla => TokenId.makeFromInt(10)
     | Dlala => TokenId.makeFromInt(11)
     | Isisa => TokenId.makeFromInt(12)
+    | Glen => TokenId.makeFromInt(13)
     | Vitalik => TokenId.makeFromInt(42)
     // | Espumita => Some(TokenId.makeFromInt(8))
     // | Tarkus => Some(TokenId.makeFromInt(13))
@@ -102,6 +106,7 @@ let getNameFromId: string => string =
     | "10" => "Nonhlanhla"
     | "11" => "Dlala"
     | "12" => "Isisa"
+    | "13" => "Glen"
     | "42" => "Vitalik"
     | _ => "Unknown"
     };
@@ -126,6 +131,7 @@ let getName: t => string =
     | Nonhlanhla => "Nonhlanhla"
     | Isisa => "Isisa"
     | Dlala => "Dlala"
+    | Glen => "Glen"
     };
 
 let getAnimal: string => option(t) =
@@ -149,6 +155,7 @@ let getAnimal: string => option(t) =
     | "dlala" => Some(Dlala)
     | "isisa" => Some(Isisa)
     | "nonhlanhla" => Some(Nonhlanhla)
+    | "glen" => Some(Glen)
     | _ => None
     };
   };
@@ -171,6 +178,7 @@ let getAnimalFromId: string => option(t) =
     | "10" => Some(Nonhlanhla)
     | "11" => Some(Dlala)
     | "12" => Some(Isisa)
+    | "13" => Some(Glen)
     | _ => None
     };
   };
@@ -192,7 +200,8 @@ let getNextPrev = animal =>
   | Apthapi => (Nonhlanhla, Aruma)
   // | Ajayu => (Nonhlanhla, Apthapi)
   | Nonhlanhla => (Isisa, Apthapi)
-  | Isisa => (Simon, Nonhlanhla)
+  | Isisa => (Glen, Nonhlanhla)
+  | Glen => (Dlala, Isisa)
   | Dlala => (Simon, Isisa)
   | _ => (Simon, Vitalik)
   };
@@ -241,6 +250,9 @@ let getImage = animal =>
   | Dlala =>
     %bs.raw
     {|require('../../img/animals/EditedHyena2.png')|}
+  | Glen =>
+    %bs.raw
+    {|require('../../img/animals/EditedHyena2.png')|}
   // | Ajayu
   // | Mijungla
   // | Tarkus
@@ -255,6 +267,7 @@ let getAlternateImage: t => option(string) =
     switch (animal) {
     | Simon
     | Andy
+    | Glen
     | Vitalik => None
     | Verano => Some([%bs.raw {|require('../../img/animals/Verano.jpg')|}])
     | Pancho => Some([%bs.raw {|require('../../img/animals/Pancho.jpg')|}])
@@ -317,6 +330,9 @@ let getOrgBadgeImage: t => string =
     | Dlala =>
       %bs.raw
       {|require('../../img/badges/WildTomorrowBadge.png')|}
+    | Glen =>
+      %bs.raw
+      {|require('../../img/animals/Dlala.jpg')|}
     // | Espumita
     // | Ajayu
     // | Mijungla
@@ -400,6 +416,9 @@ let getStoryParagraphs = animal =>
   | Dlala => [|
       "Dlala is a young male spotted hyena, currently about 13 months old. At this age he has recently grown large enough to leave the safety of his clan's den and is out exploring the world within their territory. Too young to breed, his current existence is more about learning and interacting with his new environment; in Zulu his name means \"play\".",
     |]
+  | Glen => [|
+      "Glen is a special Wildcard, this mystical creature is not tied to a specific conservation but rather each month the owners of Wildcards vote on which conservation they think should receive the funds raised. The voting mechanism uses quadratic voting. Wildcards owners vote using Wildcards Loyalty tokens which they earn from holding a Wildcard. Quadratic voting means that the number of loyalty tokens don't represent the exact number of votes but rather the number of loyalty tokens is square rooted to represent the number of votes.",
+    |]
   };
 
 // [@bs.module "./animaltx.js"]
@@ -418,13 +437,13 @@ let pledgeRate = animal => {
   // TODO: get this from the blockchain / graph - bad hardcoding it here!
   switch (animal) {
   | Vitalik => ("3", "10", 0.025, 40.)
+  | Glen => ("6", "10", 0.05, 20.)
   | Apthapi
   | Pancho => ("12", "10", 0.1, 10.)
   | Simon
   | Andy
   | Aruma
   | CatStevens
-  | Cubai
   | Nonhlanhla
   | Llajuita
   | Dlala => ("24", "10", 0.2, 5.)
@@ -465,8 +484,27 @@ let isLaunched: t => launchStatus =
     | Isisa
     | Apthapi
     | Nonhlanhla
+    | Aruma
     | Llajuita => Launched
-    | Aruma =>
-      LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-04T17:00:00"))
-    | _ => LaunchDate(MomentRe.momentUtcDefaultFormat("2019-12-10T11:00:00"))
+    | Glen =>
+      LaunchDate(MomentRe.momentUtcDefaultFormat("2020-04-26T17:00:00"))
+    };
+
+let hasGovernance: t => bool =
+  anAnimal =>
+    switch (anAnimal) {
+    | Simon
+    | Andy
+    | Vitalik
+    | Cubai
+    | Dlala
+    | CatStevens
+    | Verano
+    | Pancho
+    | Isisa
+    | Apthapi
+    | Nonhlanhla
+    | Aruma
+    | Llajuita => false
+    | Glen => true
     };

@@ -12,8 +12,13 @@ type urlState =
   | Explorer(animalPageState)
   | Leaderboards(leaderBoard)
   // | Unknown
+<<<<<<< HEAD
   | Home(animalPageState)
   | VotePage;
+=======
+  | VotePage
+  | Home(animalPageState);
+>>>>>>> 59d85e7d696e997b1fef4d5cb2d568c5bcc30328
 
 let useUrlState = () => {
   let url = ReasonReactRouter.useUrl();
@@ -41,6 +46,7 @@ let useUrlState = () => {
             optionAnimal,
           ),
         );
+      | [|"eth-turin-vote"|] => VotePage
       // | [|"details"|] => Home(NormalView)
       | [|"details", animalStr|] =>
         let optionAnimal = Animal.getAnimal(animalStr);
