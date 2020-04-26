@@ -85,44 +85,79 @@ module ApproveLoyaltyTokens = {
     </div>;
   };
 };
+/*
+ http://localhost:3000/#ethturin-quadratic-voting
+ http://localhost:3000/#user/<your-eth-address>
 
-// TODO: Delete this, only for testing purposes.
-module TestSubmitVote = {
-  [@react.component]
-  let make = () => {
-    let (voteForProject, transactionStatus) =
-      AnimalActions.useVoteForProject("1");
-    let etherScanUrl = RootProvider.useEtherscanUrl();
+ --
+ */
 
-    <div>
-      {switch (transactionStatus) {
-       | UnInitialised =>
-         <p>
-           <a onClick={_ => {voteForProject(BN.new_("1000000000"))}}>
-             "Test a random vote"->restr
-           </a>
-         </p>
-       | Created => <p> "Transaction Created"->restr </p>
-       | SignedAndSubmitted(txHash) =>
-         <p>
-           "Processing: "->restr
-           <a
-             target="_blank"
-             rel="noopener noreferrer"
-             href={"https://" ++ etherScanUrl ++ "/tx/" ++ txHash}>
-             "view transaction"->restr
-           </a>
-         </p>
-       | Declined => <p> "Transaction denied"->restr </p>
-       | Complete(_txResult) => <p> "You have voted for a project"->restr </p>
-       | Failed => <p> "Transaction failed"->restr </p>
-       }}
-    </div>;
-  };
-};
+// // TODO: Delete this, only for testing purposes.
+// module TestSubmitVote = {
+//   [@react.component]
+//   let make = (~voteValue, ~conservationVoted, ~executeImmediately=false) => {
+//     Js.log2(voteValue, conservationVoted);
+//     let conservationId =
+//       switch (conservationVoted) {
+//       | "The Wild Tomorrow Fund" => "0"
+//       | "The Great Whale Conservancy" => "1"
+//       | "La Senda Verde" => "2"
+//       | "Darwin Animal Doctors"
+//       | _ => "3"
+//       };
+
+//     Js.log3("conservationVoted", "voteValue", "tokensUsedValue");
+//     // Js.log3(voteValue, conservationVoted, conservationId);
+//     let votesBn =
+//       voteValue->Int.toString->BN.new_->BN.mulGet(. BN.new_("1000000000"));
+//     Js.log3(
+//       conservationId,
+//       votesBn->BN.toStringGet(.),
+//       votesBn->BN.sqrGet(.)->BN.toStringGet(.),
+//     );
+
+//     let (voteForProject, transactionStatus) =
+//       AnimalActions.useVoteForProject(conservationId);
+//     let etherScanUrl = RootProvider.useEtherscanUrl();
+
+//     if (executeImmediately) {
+//       voteForProject(votesBn);
+//       ();
+//     } else {
+//       ();
+//     };
+
+//     <div>
+//       {switch (transactionStatus) {
+//        | UnInitialised =>
+//          <p>
+//            <a onClick={_ => {voteForProject(votesBn)}}>
+//              "Test a random vote"->restr
+//            </a>
+//          </p>
+//        | Created => <p> "Transaction Created"->restr </p>
+//        | SignedAndSubmitted(txHash) =>
+//          <p>
+//            "Processing: "->restr
+//            <a
+//              target="_blank"
+//              rel="noopener noreferrer"
+//              href={"https://" ++ etherScanUrl ++ "/tx/" ++ txHash}>
+//              "view transaction"->restr
+//            </a>
+//          </p>
+//        | Declined => <p> "Transaction denied"->restr </p>
+//        | Complete(_txResult) => <p> "You have voted for a project"->restr </p>
+//        | Failed => <p> "Transaction failed"->restr </p>
+//        }}
+//     </div>;
+//   };
+// };
 
 [@react.component]
 let make = () => {
+  let (voteForProject, transactionStatus) = AnimalActions.useVoteForProject();
+
   let networkIdOpt = RootProvider.useNetworkId();
 
   let (voteStep, setVoteStep) = React.useState(() => 0);
@@ -161,6 +196,9 @@ let make = () => {
           };
 
         Js.log3(votes, conservationVoted, conservationId);
+        let votesBn =
+          votes->Int.toString->BN.new_->BN.mulGet(. BN.new_("1000000000"));
+        voteForProject(conservationId, votesBn);
 
         nextVoteStep();
         nextVoteStep();
@@ -204,7 +242,6 @@ let make = () => {
         ),
         switch (optPriceUsd) {
         | Some(_priceUsd) => None
-
         | None => None
         },
       )
@@ -230,8 +267,48 @@ let make = () => {
     | None => [||]
     };
 
-  let totalLoyaltyTokensOpt =
-    QlHooks.useTotalLoyaltyToken(userAddressLowerCase);
+  Js.log2(voteValue, conservationVoted);
+  let conservationId =
+    switch (conservationVoted) {
+    | "The Wild Tomorrow Fund" => "0"
+    | "The Great Whale Conservancy" => "1"
+    | "La Senda Verde" => "2"
+    | "Darwin Animal Doctors"
+    | _ => "3"
+    };
+
+  Js.log3("conservationVoted", "voteValue", "tokensUsedValue");
+  // Js.log3(voteValue, conservationVoted, conservationId);
+  let votesBn =
+    voteValue->Int.toString->BN.new_->BN.mulGet(. BN.new_("1000000000"));
+  Js.log3(
+    conservationId,
+    votesBn->BN.toStringGet(.),
+    votesBn->BN.sqrGet(.)->BN.toStringGet(.),
+  );
+
+  let etherScanUrl = RootProvider.useEtherscanUrl();
+
+  let txStateDisplay =
+    <div>
+      {switch (transactionStatus) {
+       | UnInitialised => <p> "startingTransaction"->restr </p>
+       | Created => <p> "Transaction Created"->restr </p>
+       | SignedAndSubmitted(txHash) =>
+         <p>
+           "Processing: "->restr
+           <a
+             target="_blank"
+             rel="noopener noreferrer"
+             href={"https://" ++ etherScanUrl ++ "/tx/" ++ txHash}>
+             "view transaction"->restr
+           </a>
+         </p>
+       | Declined => <p> "Transaction denied"->restr </p>
+       | Complete(_txResult) => <p> "You have voted for a project"->restr </p>
+       | Failed => <p> "Transaction failed"->restr </p>
+       }}
+    </div>;
 
   // let redeemedLoyaltyTokenBalance =
   //   AnimalActions.useUserLoyaltyTokenBalance(
@@ -240,6 +317,9 @@ let make = () => {
   //   ->Web3Utils.fromWeiBNToEthPrecision(~digits=3)
   //   ->Float.fromString
   //   |||| 0.;
+
+  let totalLoyaltyTokensOpt =
+    QlHooks.useTotalLoyaltyToken(userAddressLowerCase);
   let redeemedLoyaltyTokenBalance: float =
     totalLoyaltyTokensOpt->oFlatMap(((_, claimedLoyaltyTokens)) =>
       claimedLoyaltyTokens
@@ -247,6 +327,7 @@ let make = () => {
       ->Float.fromString
     )
     |||| 0.;
+  // let redeemedLoyaltyTokenBalance: float = 500.0;
 
   let customVote: int => unit =
     votes =>
@@ -378,7 +459,7 @@ let make = () => {
                         customVote
                         makeVote
                       />
-                    | 3 => <Rimble.Loader />
+                    | 3 => txStateDisplay
                     | 4 =>
                       <p
                         className=Css.(
@@ -433,7 +514,7 @@ let make = () => {
                         customVote
                         makeVote
                       />
-                    | 3 => <Rimble.Loader />
+                    | 3 => txStateDisplay
                     | 4 =>
                       <p
                         className=Css.(
@@ -485,7 +566,7 @@ let make = () => {
                         customVote
                         makeVote
                       />
-                    | 3 => <Rimble.Loader />
+                    | 3 => txStateDisplay
                     | 4 =>
                       <p
                         className=Css.(
@@ -538,7 +619,7 @@ let make = () => {
                         customVote
                         makeVote
                       />
-                    | 3 => <Rimble.Loader />
+                    | 3 => txStateDisplay
                     | 4 =>
                       <p
                         className=Css.(
@@ -554,7 +635,7 @@ let make = () => {
           </Rimble.Flex>
         </Rimble.Box>
       </Rimble.Flex>
-      <TestSubmitVote />
     </Rimble.Box>
   </Rimble.Box>;
+  // <TestSubmitVote voteValue=1 conservationVoted="La Senda Verde" />
 };

@@ -118,7 +118,7 @@ let getVotingContract = (stewardAddress, library, account) => {
 };
 
 let loyaltyTokenAddressGoerli = "0xd7d8c42ab5b83aa3d4114e5297989dc27bdfb715";
-let voteContractGoerli = "0xa8751eE9e0Fb34fD01f37c04Ee8FA2f1Cb53B1b6";
+let voteContractGoerli = "0x2F2D5f29dD364f11423deEadAbbca6cd4adF7392";
 
 let useStewardContract = () => {
   let context = RootProvider.useWeb3React();
@@ -357,10 +357,10 @@ let useApproveLoyaltyTokens = (address: Web3.ethAddress) => {
 
   (buyFunction, txState);
 };
-let useVoteForProject = (proposalId: string) => {
+let useVoteForProject = () => {
   let (txState, setTxState) = React.useState(() => UnInitialised);
   let optSteward = useVoteContract();
-  let buyFunction = (squareRoot: BN.bn) => {
+  let buyFunction = (proposalId: string, squareRoot: BN.bn) => {
     Js.log("ProposalId" ++ proposalId);
     let value = parseUnits(. "0", 0);
 
