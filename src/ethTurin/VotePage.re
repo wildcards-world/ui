@@ -49,6 +49,24 @@ let darwinAnimalDoctorsImg = [%bs.raw
 //   },
 // |];
 
+module ApproveLoyaltyTokens = {
+  [@react.component]
+  let make = () => {
+    let currentUser = RootProvider.useCurrentUser();
+    let (redeemLoyaltyTokens, _transactionStatus) =
+      AnimalActions.useApproveLoyaltyTokens(
+        currentUser |||| "USER NOT LOGGED IN",
+      );
+    // let etherScanUrl = RootProvider.useEtherscanUrl();
+
+    <div>
+      <a onClick={_ => {redeemLoyaltyTokens()}}>
+        "Approve wildcards to spend your tokens"->restr
+      </a>
+    </div>;
+  };
+};
+
 [@react.component]
 let make = () => {
   let networkIdOpt = RootProvider.useNetworkId();
@@ -59,8 +77,8 @@ let make = () => {
 
   let nextVoteStep = () => setVoteStep(voteStep => voteStep + 1);
 
-  Js.log2("current vote step", voteStep);
-  Js.log2("current vote value", voteValue);
+  // Js.log2("current vote step", voteStep);
+  // Js.log2("current vote value", voteValue);
 
   let selectConservation = conservationName => {
     setConservationVoted(conservationName);
@@ -91,7 +109,8 @@ let make = () => {
 
   let notGoerliNetworkWarning = networkId =>
     switch (networkId) {
-    | 5 => React.null
+    // TODO: this should only show if the user hasn't approved yet.
+    | 5 => <ApproveLoyaltyTokens />
     | _ =>
       <p className=Css.(style([color(red)]))>
         "Voting is only available on the Goerli test net right now but will be live once sufficient testing and coverage is accounted for"
