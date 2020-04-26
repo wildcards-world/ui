@@ -252,7 +252,7 @@ let getImage = animal =>
     {|require('../../img/animals/EditedHyena2.png')|}
   | Glen =>
     %bs.raw
-    {|require('../../img/animals/Glen.svg')|}
+    {|require('../../img/animals/Glen.png')|}
   // | Ajayu
   // | Mijungla
   // | Tarkus
@@ -487,8 +487,8 @@ let isLaunched: t => launchStatus =
     | Nonhlanhla
     | Aruma
     | Llajuita => Launched
-    | Glen => 
-      LaunchDate(MomentRe.momentUtcDefaultFormat("2020-04-26T17:00:00"))
+    | Glen => Launched
+    // LaunchDate(MomentRe.momentUtcDefaultFormat("2020-04-26T17:00:00"))
     };
 
 let hasGovernance: t => bool =
