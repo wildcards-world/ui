@@ -487,7 +487,7 @@ let isLaunched: t => launchStatus =
     | Nonhlanhla
     | Aruma
     | Llajuita => Launched
-    | Glen =>
+    | Glen => 
       LaunchDate(MomentRe.momentUtcDefaultFormat("2020-04-26T17:00:00"))
     };
 
