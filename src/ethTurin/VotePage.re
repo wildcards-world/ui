@@ -70,11 +70,10 @@ let make = () => {
   let selectVote: int => unit =
     votes =>
       if (votes == (-1)) {
-        Js.log("custom");
+        nextVoteStep();
       } else {
         setVoteValue(_ => votes);
-        Js.log("votes");
-        Js.log(votes);
+        nextVoteStep();
         nextVoteStep();
       };
 
@@ -83,6 +82,12 @@ let make = () => {
     setVoteValue(_ => 1);
     setConservationVoted(_ => "");
   };
+
+  let makeVote: _ => unit =
+    () => {
+      Js.log("vote made");
+      nextVoteStep();
+    };
 
   let notGoerliNetworkWarning = networkId =>
     switch (networkId) {
@@ -146,6 +151,18 @@ let make = () => {
       ->Float.fromString
     )
     |||| 0.;
+
+  let customVote: int => unit =
+    votes =>
+      if (votes < 0) {
+        setVoteValue(_ => 0);
+      } else if (votes * votes >= redeemedLoyaltyTokenBalance->Float.toInt) {
+        setVoteValue(_ =>
+          redeemedLoyaltyTokenBalance->Js.Math.sqrt->Float.toInt
+        );
+      } else {
+        setVoteValue(_ => votes);
+      };
 
   let cannotVote: bool =
     currentlyOwnedTokens->Array.length <= 0
@@ -260,14 +277,13 @@ let make = () => {
                       </Rimble.Button>
                     | 1 => <QVSelect selectVote redeemedLoyaltyTokenBalance />
                     | 2 =>
-                      <>
-                        <p>
-                          {("The value is" ++ voteValue->Int.toString)->restr}
-                        </p>
-                        {voteValue == (-1)
-                           ? <p> "This should show"->restr </p>
-                           : <Rimble.Loader />}
-                      </>
+                      <CustomVote
+                        redeemedLoyaltyTokenBalance
+                        voteValue
+                        customVote
+                        makeVote
+                      />
+                    | 3 => <Rimble.Loader />
                     | _ => React.null
                     }}
                  </Rimble.Box>
@@ -308,14 +324,13 @@ let make = () => {
                       </Rimble.Button>
                     | 1 => <QVSelect selectVote redeemedLoyaltyTokenBalance />
                     | 2 =>
-                      <>
-                        <p>
-                          {("The value is" ++ voteValue->Int.toString)->restr}
-                        </p>
-                        {voteValue == (-1)
-                           ? <p> "This should show"->restr </p>
-                           : <Rimble.Loader />}
-                      </>
+                      <CustomVote
+                        redeemedLoyaltyTokenBalance
+                        voteValue
+                        customVote
+                        makeVote
+                      />
+                    | 3 => <Rimble.Loader />
                     | _ => React.null
                     }}
                  </Rimble.Box>
@@ -353,14 +368,13 @@ let make = () => {
                       </Rimble.Button>
                     | 1 => <QVSelect selectVote redeemedLoyaltyTokenBalance />
                     | 2 =>
-                      <>
-                        <p>
-                          {("The value is" ++ voteValue->Int.toString)->restr}
-                        </p>
-                        {voteValue == (-1)
-                           ? <p> "This should show"->restr </p>
-                           : <Rimble.Loader />}
-                      </>
+                      <CustomVote
+                        redeemedLoyaltyTokenBalance
+                        voteValue
+                        customVote
+                        makeVote
+                      />
+                    | 3 => <Rimble.Loader />
                     | _ => React.null
                     }}
                  </Rimble.Box>
@@ -399,14 +413,13 @@ let make = () => {
                       </Rimble.Button>
                     | 1 => <QVSelect selectVote redeemedLoyaltyTokenBalance />
                     | 2 =>
-                      <>
-                        <p>
-                          {("The value is" ++ voteValue->Int.toString)->restr}
-                        </p>
-                        {voteValue == (-1)
-                           ? <p> "This should show"->restr </p>
-                           : <Rimble.Loader />}
-                      </>
+                      <CustomVote
+                        redeemedLoyaltyTokenBalance
+                        voteValue
+                        customVote
+                        makeVote
+                      />
+                    | 3 => <Rimble.Loader />
                     | _ => React.null
                     }}
                  </Rimble.Box>
