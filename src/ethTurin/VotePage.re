@@ -53,16 +53,70 @@ module ApproveLoyaltyTokens = {
   [@react.component]
   let make = () => {
     let currentUser = RootProvider.useCurrentUser();
-    let (redeemLoyaltyTokens, _transactionStatus) =
+    let (approveLoyaltyTokens, transactionStatus) =
       AnimalActions.useApproveLoyaltyTokens(
         currentUser |||| "USER NOT LOGGED IN",
       );
-    // let etherScanUrl = RootProvider.useEtherscanUrl();
+    let etherScanUrl = RootProvider.useEtherscanUrl();
 
     <div>
-      <a onClick={_ => {redeemLoyaltyTokens()}}>
-        "Approve wildcards to spend your tokens"->restr
-      </a>
+      {switch (transactionStatus) {
+       | UnInitialised =>
+         <p>
+           <a onClick={_ => {approveLoyaltyTokens()}}>
+             "Approve wildcards to spend your tokens"->restr
+           </a>
+         </p>
+       | Created => <p> "Transaction Created"->restr </p>
+       | SignedAndSubmitted(txHash) =>
+         <p>
+           "Processing: "->restr
+           <a
+             target="_blank"
+             rel="noopener noreferrer"
+             href={"https://" ++ etherScanUrl ++ "/tx/" ++ txHash}>
+             "view transaction"->restr
+           </a>
+         </p>
+       | Declined => <p> "Transaction denied"->restr </p>
+       | Complete(_txResult) => <p> "You are now ready to vote :)"->restr </p>
+       | Failed => <p> "Transaction failed"->restr </p>
+       }}
+    </div>;
+  };
+};
+
+// TODO: Delete this, only for testing purposes.
+module TestSubmitVote = {
+  [@react.component]
+  let make = () => {
+    let (voteForProject, transactionStatus) =
+      AnimalActions.useVoteForProject("1");
+    let etherScanUrl = RootProvider.useEtherscanUrl();
+
+    <div>
+      {switch (transactionStatus) {
+       | UnInitialised =>
+         <p>
+           <a onClick={_ => {voteForProject(BN.new_("1000000000"))}}>
+             "Test a random vote"->restr
+           </a>
+         </p>
+       | Created => <p> "Transaction Created"->restr </p>
+       | SignedAndSubmitted(txHash) =>
+         <p>
+           "Processing: "->restr
+           <a
+             target="_blank"
+             rel="noopener noreferrer"
+             href={"https://" ++ etherScanUrl ++ "/tx/" ++ txHash}>
+             "view transaction"->restr
+           </a>
+         </p>
+       | Declined => <p> "Transaction denied"->restr </p>
+       | Complete(_txResult) => <p> "You have voted for a project"->restr </p>
+       | Failed => <p> "Transaction failed"->restr </p>
+       }}
     </div>;
   };
 };
@@ -90,7 +144,20 @@ let make = () => {
       if (votes == (-1)) {
         nextVoteStep();
       } else {
+        Js.log("VOTE SELECTED");
         setVoteValue(_ => votes);
+        Js.log2(votes, conservationVoted);
+        let conservationId =
+          switch (conservationVoted) {
+          | "The Wild Tomorrow Fund" => "0"
+          | "The Great Whale Conservancy" => "1"
+          | "La Senda Verde" => "2"
+          | "Darwin Animal Doctors"
+          | _ => "3"
+          };
+
+        Js.log3(votes, conservationVoted, conservationId);
+
         nextVoteStep();
         nextVoteStep();
       };
@@ -103,7 +170,6 @@ let make = () => {
 
   let makeVote: _ => unit =
     () => {
-      Js.log("vote made");
       nextVoteStep();
     };
 
@@ -163,6 +229,13 @@ let make = () => {
   let totalLoyaltyTokensOpt =
     QlHooks.useTotalLoyaltyToken(userAddressLowerCase);
 
+  // let redeemedLoyaltyTokenBalance =
+  //   AnimalActions.useUserLoyaltyTokenBalance(
+  //     currentUser |||| "0x0000000000000000000000000000000000000500",
+  //   )
+  //   ->Web3Utils.fromWeiBNToEthPrecision(~digits=3)
+  //   ->Float.fromString
+  //   |||| 0.;
   let redeemedLoyaltyTokenBalance: float =
     totalLoyaltyTokensOpt->oFlatMap(((_, claimedLoyaltyTokens)) =>
       claimedLoyaltyTokens
@@ -446,6 +519,7 @@ let make = () => {
           </Rimble.Flex>
         </Rimble.Box>
       </Rimble.Flex>
+      <TestSubmitVote />
     </Rimble.Box>
   </Rimble.Box>;
 };
