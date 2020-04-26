@@ -59,23 +59,24 @@ let make = () => {
 
   let nextVoteStep = () => setVoteStep(voteStep => voteStep + 1);
 
+  Js.log2("current vote step", voteStep);
+  Js.log2("current vote value", voteValue);
+
   let selectConservation = conservationName => {
     setConservationVoted(conservationName);
     nextVoteStep();
   };
 
-  let selectVote = votes =>
-    if (votes == (-1)) {
-      Js.log("custom"->restr);
-    } else {
-      setVoteValue(_ => votes);
-      Js.log(votes);
-      nextVoteStep();
-    };
-
-  let test = () => {
-    Js.log(voteValue);
-  };
+  let selectVote: int => unit =
+    votes =>
+      if (votes == (-1)) {
+        Js.log("custom");
+      } else {
+        setVoteValue(_ => votes);
+        Js.log("votes");
+        Js.log(votes);
+        nextVoteStep();
+      };
 
   let resetVoting = () => {
     setVoteStep(_ => 0);
@@ -94,8 +95,6 @@ let make = () => {
     };
 
   let _notGoerliNetwork = networkId => networkId != 5;
-
-  let _canVote = _ => true; // if owns a wildcard && on goerli network
 
   let optCurrentPrice = PriceDisplay.uesPrice(Animal.Glen);
 
@@ -140,13 +139,15 @@ let make = () => {
   let totalLoyaltyTokensOpt =
     QlHooks.useTotalLoyaltyToken(userAddressLowerCase);
 
-  let redeemedLoyaltyTokenBalance =
-    totalLoyaltyTokensOpt->Option.mapWithDefault(
-      "Loading"->restr, ((_, claimedLoyaltyTokens)) => {
+  let redeemedLoyaltyTokenBalance: float =
+    totalLoyaltyTokensOpt->oFlatMap(((_, claimedLoyaltyTokens)) =>
       claimedLoyaltyTokens
       ->Web3Utils.fromWeiBNToEthPrecision(~digits=3)
-      ->restr
-    });
+      ->Float.fromString
+    )
+    |||| 0.;
+
+  // let _canVote = _ => currentlyOwnedTokens != [||] && ; // if owns a wildcard && on goerli network
 
   <Rimble.Box className=Styles.topBody>
     <Rimble.Box>
@@ -190,13 +191,6 @@ let make = () => {
             "The voting mechanism uses quadratic voting. Wildcards owners vote using Wildcards Loyalty tokens which they earn from holding a Wildcard. Quadratic voting means that the number of loyalty tokens don't represent the exact number of votes but rather the number of loyalty tokens is square rooted to represent the number of votes."
             ->restr
           </p>
-          <Rimble.Button
-            className=Css.(
-              style([display(`block), margin(auto), width(`percent(90.))])
-            )
-            onClick={_ => test()}>
-            "Test"->restr
-          </Rimble.Button>
           <h3 className=Css.(style([textDecoration(`underline)]))>
             "Quadratic Voting    "->restr
             {voteStep != 0
@@ -218,7 +212,7 @@ let make = () => {
                  </p>
                : <p>
                    "Redeemed loyalty token balance: "->restr
-                   redeemedLoyaltyTokenBalance
+                   {redeemedLoyaltyTokenBalance->Float.toString->restr}
                  </p>}
             {switch (networkIdOpt) {
              | Some(networkId) => notGoerliNetworkWarning(networkId)
@@ -246,65 +240,39 @@ let make = () => {
                        src=wildTomorrowFundImg
                      />
                    </a>
-                   {voteStep == 0
-                      ? <Rimble.Button
-                          className=Css.(
-                            style([
-                              display(`block),
-                              margin(auto),
-                              width(`percent(90.)),
-                            ])
-                          )
-                          // disabled=canVote
-                          onClick={_ =>
-                            selectConservation(_ => "The Wild Tomorrow Fund")
-                          }>
-                          "Vote"->restr
-                        </Rimble.Button>
-                      : voteStep == 1
-                          ? <form>
-                              <select
-                                onChange={event =>
-                                  selectVote(
-                                    ReactEvent.Form.target(event)##value,
-                                  )
-                                }>
-                                <option value="1">
-                                  "1 Vote = 1 Loyalty Token"->restr
-                                </option>
-                                <option value="2">
-                                  "2 Votes = 4 Loyalty Token"->restr
-                                </option>
-                                <option value="3">
-                                  "3 Votes = 9 Loyalty Token"->restr
-                                </option>
-                                <option value="4">
-                                  "4 Votes = 16 Loyalty Token"->restr
-                                </option>
-                                <option value="5">
-                                  "5 Votes = 25 Loyalty Token"->restr
-                                </option>
-                                <option value="6">
-                                  "6 Votes = 36 Loyalty Token"->restr
-                                </option>
-                                <option value="7">
-                                  "7 Votes = 49 Loyalty Token"->restr
-                                </option>
-                                <option value="8">
-                                  "8 Votes = 64 Loyalty Token"->restr
-                                </option>
-                                <option value="9">
-                                  "9 Votes = 81 Loyalty Token"->restr
-                                </option>
-                                <option value="10">
-                                  "10 Votes = 100 Loyalty Token"->restr
-                                </option>
-                                <option value="-1"> "custom"->restr </option>
-                              </select>
-                            </form>
-                          : voteValue == (-1)
-                              ? <p> "this should show"->restr </p>
-                              : <Rimble.Loader />}
+                   {switch (voteStep) {
+                    | 0 =>
+                      <Rimble.Button
+                        className=Css.(
+                          style([
+                            display(`block),
+                            margin(auto),
+                            width(`percent(90.)),
+                          ])
+                        )
+                        // disabled=canVote
+                        onClick={_ =>
+                          selectConservation(_ => "The Wild Tomorrow Fund")
+                        }>
+                        "Vote"->restr
+                      </Rimble.Button>
+                    | 1 => <QVSelect selectVote redeemedLoyaltyTokenBalance />
+                    | 2 =>
+                      Js.log("bool values");
+                      Js.log(voteValue < 0);
+                      Js.log(voteValue == (-1));
+                      Js.log("voteValue");
+                      Js.log(Js.typeof(voteValue));
+                      <>
+                        <p>
+                          {("The value is" ++ voteValue->Int.toString)->restr}
+                        </p>
+                        {voteValue == (-1)
+                           ? <p> "This should show"->restr </p>
+                           : <Rimble.Loader />}
+                      </>;
+                    | _ => React.null
+                    }}
                  </Rimble.Box>
                : React.null}
             {conservationVoted == ""
