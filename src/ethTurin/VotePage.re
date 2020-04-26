@@ -94,7 +94,7 @@ let make = () => {
       </p>
     };
 
-  let _notGoerliNetwork = networkId => networkId != 5;
+  let notGoerliNetwork = networkId => networkId != 5;
 
   let optCurrentPrice = PriceDisplay.uesPrice(Animal.Glen);
 
@@ -147,7 +147,9 @@ let make = () => {
     )
     |||| 0.;
 
-  // let _canVote = _ => currentlyOwnedTokens != [||] && ; // if owns a wildcard && on goerli network
+  let cannotVote: bool =
+    currentlyOwnedTokens->Array.length <= 0
+    || notGoerliNetwork(networkIdOpt |||| (-1));
 
   <Rimble.Box className=Styles.topBody>
     <Rimble.Box>
@@ -250,7 +252,7 @@ let make = () => {
                             width(`percent(90.)),
                           ])
                         )
-                        // disabled=canVote
+                        disabled=cannotVote
                         onClick={_ =>
                           selectConservation(_ => "The Wild Tomorrow Fund")
                         }>
@@ -258,11 +260,6 @@ let make = () => {
                       </Rimble.Button>
                     | 1 => <QVSelect selectVote redeemedLoyaltyTokenBalance />
                     | 2 =>
-                      Js.log("bool values");
-                      Js.log(voteValue < 0);
-                      Js.log(voteValue == (-1));
-                      Js.log("voteValue");
-                      Js.log(Js.typeof(voteValue));
                       <>
                         <p>
                           {("The value is" ++ voteValue->Int.toString)->restr}
@@ -270,7 +267,7 @@ let make = () => {
                         {voteValue == (-1)
                            ? <p> "This should show"->restr </p>
                            : <Rimble.Loader />}
-                      </>;
+                      </>
                     | _ => React.null
                     }}
                  </Rimble.Box>
@@ -291,19 +288,36 @@ let make = () => {
                        src=greatWhaleConservancyImg
                      />
                    </a>
-                   <Rimble.Button
-                     className=Css.(
-                       style([
-                         display(`block),
-                         margin(auto),
-                         width(`percent(90.)),
-                       ])
-                     )
-                     onClick={_ =>
-                       selectConservation(_ => "The Great Whale Conservancy")
-                     }>
-                     "Vote"->restr
-                   </Rimble.Button>
+                   {switch (voteStep) {
+                    | 0 =>
+                      <Rimble.Button
+                        className=Css.(
+                          style([
+                            display(`block),
+                            margin(auto),
+                            width(`percent(90.)),
+                          ])
+                        )
+                        disabled=cannotVote
+                        onClick={_ =>
+                          selectConservation(_ =>
+                            "The Great Whale Conservancy"
+                          )
+                        }>
+                        "Vote"->restr
+                      </Rimble.Button>
+                    | 1 => <QVSelect selectVote redeemedLoyaltyTokenBalance />
+                    | 2 =>
+                      <>
+                        <p>
+                          {("The value is" ++ voteValue->Int.toString)->restr}
+                        </p>
+                        {voteValue == (-1)
+                           ? <p> "This should show"->restr </p>
+                           : <Rimble.Loader />}
+                      </>
+                    | _ => React.null
+                    }}
                  </Rimble.Box>
                : React.null}
             {conservationVoted == "" || conservationVoted == "La Senda Verde"
@@ -321,17 +335,34 @@ let make = () => {
                        src=laSendaVerdeImg
                      />
                    </a>
-                   <Rimble.Button
-                     className=Css.(
-                       style([
-                         display(`block),
-                         margin(auto),
-                         width(`percent(90.)),
-                       ])
-                     )
-                     onClick={_ => selectConservation(_ => "La Senda Verde")}>
-                     "Vote"->restr
-                   </Rimble.Button>
+                   {switch (voteStep) {
+                    | 0 =>
+                      <Rimble.Button
+                        className=Css.(
+                          style([
+                            display(`block),
+                            margin(auto),
+                            width(`percent(90.)),
+                          ])
+                        )
+                        disabled=cannotVote
+                        onClick={_ =>
+                          selectConservation(_ => "La Senda Verde")
+                        }>
+                        "Vote"->restr
+                      </Rimble.Button>
+                    | 1 => <QVSelect selectVote redeemedLoyaltyTokenBalance />
+                    | 2 =>
+                      <>
+                        <p>
+                          {("The value is" ++ voteValue->Int.toString)->restr}
+                        </p>
+                        {voteValue == (-1)
+                           ? <p> "This should show"->restr </p>
+                           : <Rimble.Loader />}
+                      </>
+                    | _ => React.null
+                    }}
                  </Rimble.Box>
                : React.null}
             {conservationVoted == ""
@@ -350,19 +381,34 @@ let make = () => {
                        src=darwinAnimalDoctorsImg
                      />
                    </a>
-                   <Rimble.Button
-                     className=Css.(
-                       style([
-                         display(`block),
-                         margin(auto),
-                         width(`percent(90.)),
-                       ])
-                     )
-                     onClick={_ =>
-                       selectConservation(_ => "Darwin Animal Doctors")
-                     }>
-                     "Vote"->restr
-                   </Rimble.Button>
+                   {switch (voteStep) {
+                    | 0 =>
+                      <Rimble.Button
+                        className=Css.(
+                          style([
+                            display(`block),
+                            margin(auto),
+                            width(`percent(90.)),
+                          ])
+                        )
+                        disabled=cannotVote
+                        onClick={_ =>
+                          selectConservation(_ => "Darwin Animal Doctors")
+                        }>
+                        "Vote"->restr
+                      </Rimble.Button>
+                    | 1 => <QVSelect selectVote redeemedLoyaltyTokenBalance />
+                    | 2 =>
+                      <>
+                        <p>
+                          {("The value is" ++ voteValue->Int.toString)->restr}
+                        </p>
+                        {voteValue == (-1)
+                           ? <p> "This should show"->restr </p>
+                           : <Rimble.Loader />}
+                      </>
+                    | _ => React.null
+                    }}
                  </Rimble.Box>
                : React.null}
           </Rimble.Flex>
