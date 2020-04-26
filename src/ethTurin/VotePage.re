@@ -53,7 +53,7 @@ let darwinAnimalDoctorsImg = [%bs.raw
 let make = () => {
   let networkIdOpt = RootProvider.useNetworkId();
 
-  let (voteStep, setVoteStep) = React.useState(() => 4);
+  let (voteStep, setVoteStep) = React.useState(() => 0);
   let (voteValue, setVoteValue) = React.useState(() => 1);
   let (wildTomorrowLead, _setWildTomorrowLead) = React.useState(() => 25);
   let (laSendaVerdeLead, _setLaSendaVerde) = React.useState(() => 25);
