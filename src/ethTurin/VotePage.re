@@ -53,8 +53,12 @@ let darwinAnimalDoctorsImg = [%bs.raw
 let make = () => {
   let networkIdOpt = RootProvider.useNetworkId();
 
-  let (voteStep, setVoteStep) = React.useState(() => 0);
+  let (voteStep, setVoteStep) = React.useState(() => 4);
   let (voteValue, setVoteValue) = React.useState(() => 1);
+  let (wildTomorrowLead, _setWildTomorrowLead) = React.useState(() => 25);
+  let (laSendaVerdeLead, _setLaSendaVerde) = React.useState(() => 25);
+  let (whaleConservancyLead, _setWhaleConservancy) = React.useState(() => 25);
+  let (darwinAnimalLead, _setDarwinAnimalLead) = React.useState(() => 25);
   let (conservationVoted, setConservationVoted) = React.useState(() => "");
 
   let nextVoteStep = () => setVoteStep(voteStep => voteStep + 1);
@@ -223,8 +227,7 @@ let make = () => {
                : React.null}
           </h3>
           <small>
-            {currentlyOwnedTokens == [||]
-               //userCurrentlyOwnsAWildcard
+            {currentlyOwnedTokens->Array.length <= 0
                ? <p className=Css.(style([color(red)]))>
                    "You can only vote if you are the owner of a wildcard"
                    ->restr
@@ -284,6 +287,14 @@ let make = () => {
                         makeVote
                       />
                     | 3 => <Rimble.Loader />
+                    | 4 =>
+                      <p
+                        className=Css.(
+                          style([textAlign(center), color(teal)])
+                        )>
+                        {wildTomorrowLead->Int.toString->restr}
+                        "% of votes"->restr
+                      </p>
                     | _ => React.null
                     }}
                  </Rimble.Box>
@@ -331,6 +342,14 @@ let make = () => {
                         makeVote
                       />
                     | 3 => <Rimble.Loader />
+                    | 4 =>
+                      <p
+                        className=Css.(
+                          style([textAlign(center), color(teal)])
+                        )>
+                        {whaleConservancyLead->Int.toString->restr}
+                        "% of votes"->restr
+                      </p>
                     | _ => React.null
                     }}
                  </Rimble.Box>
@@ -375,6 +394,14 @@ let make = () => {
                         makeVote
                       />
                     | 3 => <Rimble.Loader />
+                    | 4 =>
+                      <p
+                        className=Css.(
+                          style([textAlign(center), color(teal)])
+                        )>
+                        {laSendaVerdeLead->Int.toString->restr}
+                        "% of votes"->restr
+                      </p>
                     | _ => React.null
                     }}
                  </Rimble.Box>
@@ -420,6 +447,14 @@ let make = () => {
                         makeVote
                       />
                     | 3 => <Rimble.Loader />
+                    | 4 =>
+                      <p
+                        className=Css.(
+                          style([textAlign(center), color(teal)])
+                        )>
+                        {darwinAnimalLead->Int.toString->restr}
+                        "% of votes"->restr
+                      </p>
                     | _ => React.null
                     }}
                  </Rimble.Box>
