@@ -202,7 +202,7 @@ let getNextPrev = animal =>
   | Nonhlanhla => (Isisa, Apthapi)
   | Isisa => (Glen, Nonhlanhla)
   | Glen => (Dlala, Isisa)
-  | Dlala => (Simon, Isisa)
+  | Dlala => (Simon, Glen)
   | _ => (Simon, Vitalik)
   };
 

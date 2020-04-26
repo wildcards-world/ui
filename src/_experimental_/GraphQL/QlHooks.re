@@ -430,26 +430,31 @@ let useTotalCollectedToken: Animal.t => option((Eth.t, BN.bn, BN.bn)) =
   };
 type patronLoyaltyTokenDetails = {
   currentLoyaltyTokens: Eth.t,
+  currentLoyaltyTokensIncludingUnredeemed: Eth.t,
   lastCollected: BN.bn,
   numberOfAnimalsOwned: BN.bn,
 };
 let usePatronLoyaltyTokenDetails:
   Web3.ethAddress => option(patronLoyaltyTokenDetails) =
   address => {
-    let (response, _) = useQueryPatronNew(address);
+    // NOTE: we are using both 'new patron' and 'patron' because the work on the graph is incomplete.
+    let (responseNewPatron, _) = useQueryPatronNew(address);
+    let (response, _) = useQueryPatron(address);
 
-    switch (response) {
-    | Data(responseData) =>
-      responseData##patronNew
-      ->Belt.Option.flatMap(patron =>
-          Some({
-            currentLoyaltyTokens: BN.new_("123"),
-            lastCollected: patron##lastUpdated,
-            numberOfAnimalsOwned:
-              BN.new_(patron##tokens->Obj.magic->Array.length->string_of_int),
-          })
-        )
-
+    switch (responseNewPatron, response) {
+    | (Data(dataNewPatron), Data(dataPatron)) =>
+      switch (dataNewPatron##patronNew, dataPatron##patron) {
+      | (Some(newPatron), Some(patron)) =>
+        Some({
+          currentLoyaltyTokens: newPatron##totalLoyaltyTokens,
+          currentLoyaltyTokensIncludingUnredeemed:
+            newPatron##totalLoyaltyTokensIncludingUnRedeemed,
+          lastCollected: newPatron##lastUpdated,
+          numberOfAnimalsOwned:
+            BN.new_(patron##tokens->Obj.magic->Array.length->string_of_int),
+        })
+      | _ => None
+      }
     // | Loading
     // | Error(_error)
     // | NoData => None
@@ -485,22 +490,69 @@ let useAmountRaisedToken: Animal.t => option(Eth.t) =
     };
   };
 
-let useTotalLoyaltyToken: Web3.ethAddress => option(Eth.t) =
+let useTimeSinceTokenWasLastSettled: Animal.t => option(BN.bn) =
+  animal => {
+    let currentTimestamp = useCurrentTime();
+
+    switch (useTotalCollectedToken(animal)) {
+    | Some((_, timeCalculated, _)) =>
+      let timeElapsed =
+        BN.new_(currentTimestamp)->BN.subGet(. timeCalculated);
+
+      Js.log4(
+        "time elapsed",
+        currentTimestamp,
+        "-",
+        timeCalculated->BN.toStringGet(.),
+      );
+      Js.log2("=", timeElapsed->BN.toStringGet(.));
+      Some(timeElapsed);
+    | None => None
+    };
+  };
+
+let useUnredeemedLoyaltyTokenDueFromWildcard: Animal.t => option(Eth.t) =
+  animal => {
+    switch (useTimeSinceTokenWasLastSettled(animal)) {
+    | Some(timeSinceTokenWasLastSettled) =>
+      let totalLoyaltyTokensPerSecondPerAnimal = BN.new_("11574074074074");
+      Js.log2(
+        "time since last settled",
+        timeSinceTokenWasLastSettled->BN.toStringGet(.),
+      );
+      let totalLoyaltyTokensForAllAnimals =
+        timeSinceTokenWasLastSettled |*| totalLoyaltyTokensPerSecondPerAnimal;
+      Js.log2(
+        "totalLoyaltyTokens",
+        timeSinceTokenWasLastSettled->BN.toStringGet(.),
+      );
+      Some(totalLoyaltyTokensForAllAnimals);
+    | None => None
+    };
+  };
+
+let useTotalLoyaltyToken: Web3.ethAddress => option((Eth.t, Eth.t)) =
   patron => {
     let currentTimestamp = useCurrentTime();
 
     switch (usePatronLoyaltyTokenDetails(patron)) {
-    | Some({currentLoyaltyTokens, lastCollected, numberOfAnimalsOwned}) =>
+    | Some({
+        currentLoyaltyTokens,
+        currentLoyaltyTokensIncludingUnredeemed,
+        lastCollected,
+        numberOfAnimalsOwned,
+      }) =>
       let timeElapsed = BN.new_(currentTimestamp) |-| lastCollected;
       // Reference: https://github.com/wild-cards/contracts-private/blob/v2testing/migrations/7_receipt_tokens.js#L6
       let totalLoyaltyTokensPerSecondPerAnimal = BN.new_("11574074074074");
       let totalLoyaltyTokensFor1Animal =
         totalLoyaltyTokensPerSecondPerAnimal |*| timeElapsed;
-      let totalLoyaltyTokensForAllAnimal =
+      let totalLoyaltyTokensForAllAnimals =
         numberOfAnimalsOwned |*| totalLoyaltyTokensFor1Animal;
       let totalLoyaltyTokensForUser =
-        currentLoyaltyTokens |+| totalLoyaltyTokensForAllAnimal;
-      Some(totalLoyaltyTokensForUser);
+        currentLoyaltyTokensIncludingUnredeemed
+        |+| totalLoyaltyTokensForAllAnimals;
+      Some((totalLoyaltyTokensForUser, currentLoyaltyTokens));
     | None => None
     };
   };
