@@ -1,16 +1,15 @@
-/*
+let approveLoyaltyToken: _ => unit =
+  () => {
+    Js.log("approve loyalty token");
+  };
 
-     let approveLoyaltyToken : _ => unit = () =>{
+let submitVoteToContract = (conservationSelection, numberOfVotes) => {
+  Js.log("submit vote");
+  Js.log2("conservation Selection: ", conservationSelection);
+  Js.log2("votes: ", numberOfVotes);
+};
 
-     }
-
-     let submitVoteToContract : => unit = ( conservationSelection, numberOfVotes ) => {
-
-     }
-
-     let getVoteResults : _ => unit = () => {
-
-     }
-
-
- */
+let getVoteResults: _ => unit =
+  () => {
+    Js.log("get vote results");
+  };

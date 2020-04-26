@@ -714,6 +714,13 @@ module AnimalInfo = {
                  <p key={i->string_of_int}> paragraphText->React.string </p>
                ),
            )}
+          {animal == Animal.Glen
+             ? <a href="/#ethturin-quadratic-voting">
+                 <span className=Css.(style([color(hex("72c7d7"))]))>
+                   "Vote for your favourite conservation"->restr
+                 </span>
+               </a>
+             : React.null}
         </ReactTabs.TabPanel>
         <ReactTabs.TabPanel>
           {switch (animal->Animal.isLaunched) {
