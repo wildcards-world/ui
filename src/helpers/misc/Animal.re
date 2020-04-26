@@ -487,8 +487,8 @@ let isLaunched: t => launchStatus =
     | Nonhlanhla
     | Aruma
     | Llajuita => Launched
-    | Glen => Launched
-    // LaunchDate(MomentRe.momentUtcDefaultFormat("2020-04-26T17:00:00"))
+    | Glen =>
+      LaunchDate(MomentRe.momentUtcDefaultFormat("2020-04-26T17:00:00"))
     };
 
 let hasGovernance: t => bool =
