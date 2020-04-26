@@ -177,6 +177,7 @@ let headerImg = (enlargement, scalar) =>
     position(`relative),
     zIndex(1),
     maxHeight(px(500)),
+    height(`percent(150.)),
     maxWidth(`percent(100. *. enlargement)),
     left(`percent((-50.) *. (enlargement -. 1.))),
     transform(scale(scalar, scalar)),
