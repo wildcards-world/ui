@@ -96,6 +96,7 @@ module BasicAnimalDisplay = {
 
     let displayNameStr = UserProvider.displayNameToString(displayName);
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+    let nonUrlRouting = RootProvider.useNonUrlState();
 
     <React.Fragment>
       <PriceDisplay animal />
@@ -107,7 +108,14 @@ module BasicAnimalDisplay = {
         displayNameStr->restr
       </a>
       <br />
-      {owned ? <EditButton animal /> : <BuyModal animal />}
+      {switch (nonUrlRouting) {
+       | UserVerificationScreen
+       | UpdateDepositScreen
+       | UpdatePriceScreen(_)
+       | BuyScreen(_) => React.null
+       | LoginScreen(_)
+       | NoExtraState => owned ? <EditButton animal /> : <BuyModal animal />
+       }}
     </React.Fragment>;
   };
 };
