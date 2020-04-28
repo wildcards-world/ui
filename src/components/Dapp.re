@@ -331,6 +331,8 @@ module AnimalActionsOnDetailsPage = {
     let displayNameStr = UserProvider.displayNameToString(displayName);
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
+    let nonUrlRouting = RootProvider.useNonUrlState();
+
     let price = () =>
       <React.Fragment>
         <a
@@ -341,7 +343,14 @@ module AnimalActionsOnDetailsPage = {
           displayNameStr->restr
         </a>
         <PriceDisplay animal />
-        <BuyModal animal />
+        {switch (nonUrlRouting) {
+         | UserVerificationScreen
+         | UpdateDepositScreen
+         | UpdatePriceScreen(_)
+         | BuyScreen(_) => React.null
+         | LoginScreen(_)
+         | NoExtraState => <BuyModal animal />
+         }}
       </React.Fragment>;
 
     if (owned) {
