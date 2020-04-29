@@ -12,7 +12,8 @@ type urlState =
   | Explorer(animalPageState)
   | Leaderboards(leaderBoard)
   // | Unknown
-  | Home(animalPageState);
+  | Home(animalPageState)
+  | VotePage;
 
 let useUrlState = () => {
   let url = ReasonReactRouter.useUrl();
@@ -20,7 +21,7 @@ let useUrlState = () => {
   React.useMemo1(
     () =>
       switch (Js.String.split("/", url.hash)) {
-      | [|"user", address|] => User(address)
+      | [|"user", address|] => User(address->Js.String.toLowerCase)
       | [|"leaderboards", leaderboardType|] =>
         switch (leaderboardType) {
         | "monthly-contribution" => Leaderboards(MonthlyContribution)
@@ -51,6 +52,7 @@ let useUrlState = () => {
             optionAnimal,
           ),
         );
+      | [|"ethturin-quadratic-voting"|] => VotePage
       | urlArray =>
         switch (
           Belt.Array.get(urlArray, 0)->Belt.Option.mapWithDefault("", a => a)

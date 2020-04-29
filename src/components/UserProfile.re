@@ -32,6 +32,61 @@ module Token = {
   };
 };
 
+module ClaimLoyaltyTokenButtons = {
+  [@react.component]
+  let make = (~id) => {
+    let (redeemLoyaltyTokens, transactionStatus) =
+      AnimalActions.useRedeemLoyaltyTokens(id);
+    let balanceAvailableOnToken =
+      QlHooks.useUnredeemedLoyaltyTokenDueFromWildcard(
+        id->Animal.getAnimalFromId |||| Andy /* NOTE: this is bad code, giving this a default value of Andy... Just being lazy */,
+      );
+    let tokenName = id->Animal.getNameFromId;
+    let etherScanUrl = RootProvider.useEtherscanUrl();
+
+    switch (balanceAvailableOnToken) {
+    | None => React.null
+    | Some(balanceAvailableOnToken) =>
+      <small>
+        {switch (transactionStatus) {
+         | UnInitialised =>
+           <p>
+             <a onClick={_ => {redeemLoyaltyTokens()}}>
+               {(
+                  "redeem "
+                  ++ balanceAvailableOnToken->Web3Utils.fromWeiBNToEthPrecision(
+                       ~digits=3,
+                     )
+                  ++ " tokens for "
+                  ++ tokenName
+                )
+                ->restr}
+             </a>
+           </p>
+         | Created => <p> "Transaction Created"->restr </p>
+         | SignedAndSubmitted(txHash) =>
+           <p>
+             "Processing: "->restr
+             <a
+               target="_blank"
+               rel="noopener noreferrer"
+               href={"https://" ++ etherScanUrl ++ "/tx/" ++ txHash}>
+               "view transaction"->restr
+             </a>
+           </p>
+         | Declined => <p> "Transaction denied"->restr </p>
+         | Complete(_txResult) =>
+           <p>
+             "Tokens claimed (please reload the page, this will be improved soon)"
+             ->restr
+           </p>
+         | Failed => <p> "Transaction failed"->restr </p>
+         }}
+      </small>
+    };
+  };
+};
+
 module UserDetails = {
   [@react.component]
   let make =
@@ -167,6 +222,7 @@ module UserDetails = {
           {optDescription->reactMap(description => <p> description->restr </p>)}
           <a
             className=Styles.navListText
+            target="_blank"
             rel="noopener noreferrer"
             href={"https://" ++ etherScanUrl ++ "/address/" ++ userAddress}>
             {Helper.elipsify(userAddress, 10)->restr}
@@ -174,19 +230,39 @@ module UserDetails = {
           <br />
           // NOTE: the number of loyalty tokens of a user currently will always show.
           //       We are thinking of making this "private" only to the current logged in user. To enable this remove the `|| true` from the line below
-          {isAddressCurrentUser || true
-             ? <p>
+          {isAddressCurrentUser
+             ? <>
                  <small>
+                   <p>
+                     "Claimed Loyalty Token Balance: "->restr
+                     {totalLoyaltyTokensOpt->Option.mapWithDefault(
+                        "Loading"->restr, ((_, claimedLoyaltyTokens)) => {
+                        claimedLoyaltyTokens
+                        ->Web3Utils.fromWeiBNToEthPrecision(~digits=3)
+                        ->restr
+                      })}
+                   </p>
+                 </small>
+                 {switch (currentlyOwnedTokens) {
+                  | [||] => React.null
+                  | currentlyOwnedTokens =>
+                    currentlyOwnedTokens
+                    ->Array.map(id => <ClaimLoyaltyTokenButtons id />)
+                    ->React.array
+                  }}
+                 <a href="/#ethturin-quadratic-voting"> "vote"->restr </a>
+               </>
+             : <small>
+                 <p>
                    "Loyalty Token Balance: "->restr
                    {totalLoyaltyTokensOpt->Option.mapWithDefault(
-                      "Loading"->restr, totalLoyaltyTokens => {
+                      "Loading"->restr, ((totalLoyaltyTokens, _)) => {
                       totalLoyaltyTokens
                       ->Web3Utils.fromWeiBNToEthPrecision(~digits=3)
                       ->restr
                     })}
-                 </small>
-               </p>
-             : React.null}
+                 </p>
+               </small>}
         </Rimble.Box>
         <Rimble.Box p=1 width=[|1., 1., 0.3333|]>
           <h2> "Monthly Contribution"->restr </h2>

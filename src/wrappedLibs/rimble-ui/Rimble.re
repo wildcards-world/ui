@@ -74,6 +74,27 @@ module Icon = {
     "Icon";
 };
 
+type selectOptionsType = {
+  value: string,
+  label: React.element,
+};
+
+module Field = {
+  [@bs.module "rimble-ui"] [@react.component]
+  external make:
+    (~label: string=?, ~className: string=?, ~children: React.element) =>
+    React.element =
+    "Field";
+};
+module Select = {
+  [@bs.module "rimble-ui"] [@react.component]
+  external make:
+    (~options: array(selectOptionsType)=?, ~className: string=?) =>
+    React.element =
+    "Select";
+};
+
+
 module Input = {
   [@bs.module "rimble-ui"] [@react.component]
   external make:

@@ -96,6 +96,7 @@ module BasicAnimalDisplay = {
 
     let displayNameStr = UserProvider.displayNameToString(displayName);
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+    let nonUrlRouting = RootProvider.useNonUrlState();
 
     <React.Fragment>
       <PriceDisplay animal />
@@ -107,7 +108,14 @@ module BasicAnimalDisplay = {
         displayNameStr->restr
       </a>
       <br />
-      {owned ? <EditButton animal /> : <BuyModal animal />}
+      {switch (nonUrlRouting) {
+       | UserVerificationScreen
+       | UpdateDepositScreen
+       | UpdatePriceScreen(_)
+       | BuyScreen(_) => React.null
+       | LoginScreen(_)
+       | NoExtraState => owned ? <EditButton animal /> : <BuyModal animal />
+       }}
     </React.Fragment>;
   };
 };
@@ -323,6 +331,8 @@ module AnimalActionsOnDetailsPage = {
     let displayNameStr = UserProvider.displayNameToString(displayName);
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
+    let nonUrlRouting = RootProvider.useNonUrlState();
+
     let price = () =>
       <React.Fragment>
         <a
@@ -333,7 +343,14 @@ module AnimalActionsOnDetailsPage = {
           displayNameStr->restr
         </a>
         <PriceDisplay animal />
-        <BuyModal animal />
+        {switch (nonUrlRouting) {
+         | UserVerificationScreen
+         | UpdateDepositScreen
+         | UpdatePriceScreen(_)
+         | BuyScreen(_) => React.null
+         | LoginScreen(_)
+         | NoExtraState => <BuyModal animal />
+         }}
       </React.Fragment>;
 
     if (owned) {
@@ -714,6 +731,13 @@ module AnimalInfo = {
                  <p key={i->string_of_int}> paragraphText->React.string </p>
                ),
            )}
+          {animal == Animal.Glen
+             ? <a href="/#ethturin-quadratic-voting">
+                 <span className=Css.(style([color(hex("72c7d7"))]))>
+                   "Vote for your favourite conservation"->restr
+                 </span>
+               </a>
+             : React.null}
         </ReactTabs.TabPanel>
         <ReactTabs.TabPanel>
           {switch (animal->Animal.isLaunched) {

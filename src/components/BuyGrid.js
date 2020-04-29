@@ -32,6 +32,9 @@ export default ({ animalArray }) => {
             </Card>
           </Box>
         ))}
+        {/* Always empty to ensure grid structure */}
+        <Box fontSize={4} p={3} width={[1, 1, 0.3]}></Box>
+        <Box fontSize={4} p={3} width={[1, 1, 0.3]}></Box>
       </Flex>
     </div>
   );

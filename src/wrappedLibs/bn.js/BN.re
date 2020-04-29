@@ -9,7 +9,12 @@ type bn = {
   lt: (. bn) => bool,
   eq: (. bn) => bool,
   cmp: (. bn) => int,
+  sqr: (. unit) => bn,
   toString: (. unit) => string,
 };
 
 [@bs.new] [@bs.module "bn.js"] external new_: string => bn = "default";
+
+[@bs.module "@polkadot/util"] external bnSqrt: (. bn) => bn = "bnSqrt";
+
+// let test = bnSqrt(. new_("50"));
