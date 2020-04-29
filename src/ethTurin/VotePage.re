@@ -153,6 +153,18 @@ module ApproveLoyaltyTokens = {
 //     </div>;
 //   };
 // };
+// type reasonUneligeableToVote =
+//   | DontOwnAWildcard
+//   | EligeableToVote;
+type organisationIdentifier = int;
+type currentVote = {
+  vote: BN.bn,
+  maxPossibleVote: BN.bn // This should be calculated at the beginning
+};
+type voteStep =
+  | DefaultView // sub-states can either be loading data, ready, or user is not eligible to vote
+  | SelectedOrganisationToVote(organisationIdentifier, currentVote)
+  | ViewResults;
 
 [@react.component]
 let make = () => {
@@ -630,6 +642,11 @@ let make = () => {
                       </p>
                     | _ => React.null
                     }}
+                 </Rimble.Box>
+               : React.null}
+            {conservationVoted != ""
+               ? <Rimble.Box width=[|1., 0.75|]>
+                   "button"->restr
                  </Rimble.Box>
                : React.null}
           </Rimble.Flex>
