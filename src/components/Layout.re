@@ -100,8 +100,12 @@ module Header = {
                        checked={
                          usedtranslationModeContext->translationModeCrypto
                        }
+                       height=16
+                       handleDiameter=18
+                       width=30
                        onColor="#6BAD3D"
                        onHandleColor="#346D4C"
+                       offHandleColor="#cccccc"
                        uncheckedIcon=false
                        checkedIcon=false
                        className=Styles.translationSwitch
@@ -144,10 +148,11 @@ module Header = {
                        clearAndPush("#explorer");
                      }}
                      className=Styles.whiteText>
-                     <S> "VIEW ALL WILDCARDS" </S>
+                     <S> "VIEW WILDCARDS" </S>
                    </Rimble.Button>}
             </li>
             <li className=Styles.navListItem> <Web3Connect /> </li>
+            <li className=Styles.navListItem> <ProfileIcon /> </li>
           </ul>
         </div>
       </nav>
