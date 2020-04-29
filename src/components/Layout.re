@@ -152,6 +152,7 @@ module Header = {
                    </Rimble.Button>}
             </li>
             <li className=Styles.navListItem> <Web3Connect /> </li>
+            <li className=Styles.navListItem> <ProfileIcon /> </li>
           </ul>
         </div>
       </nav>
