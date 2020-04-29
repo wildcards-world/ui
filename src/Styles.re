@@ -85,6 +85,8 @@ let navBox =
 
 let navList =
   style([
+    display(`flex),
+    alignItems(`center),
     media("(max-width: 630px)", [display(none)]),
     marginLeft(`auto),
     listStyle(`none, `inside, `none),
