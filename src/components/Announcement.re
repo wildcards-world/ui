@@ -53,7 +53,7 @@ let make = () => {
            "!"->restr
          </>}
     <span className=closeButton onClick={_ => setShowAnnouncement(_ => `none)}>
-      "X"->restr
+      {js|×|js}->restr
     </span>
   </div>;
 };
