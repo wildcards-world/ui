@@ -14,7 +14,6 @@ module AnimalFocusDetails = {
   let make = (~animalCarousel) => {
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
     let isExplorer = Router.useIsExplorer();
-
     <Rimble.Flex flexWrap="wrap" alignItems="center" className=Styles.topBody>
       {switch (animalCarousel) {
        | None => React.null
@@ -167,8 +166,11 @@ let make = () => {
   /*ref={ReactDOMRe.Ref.domRef(ref)}*/
 
   <div className=Styles.app>
-    <img src=betaBanner className=Styles.betaBanner />
     <div className=Css.(style([minHeight(vh(88.))]))>
+      <Announcement />
+      <div className=Css.(style([position(relative)]))>
+        <img src=betaBanner className=Styles.betaBanner />
+      </div>
       <Header />
       <UsdPriceProvider>
         {switch (urlState) {
