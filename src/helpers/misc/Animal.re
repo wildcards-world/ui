@@ -471,6 +471,7 @@ type launchStatus =
   | Launched
   | LaunchDate(MomentRe.Moment.t);
 
+let glenLaunchDate = MomentRe.momentUtcDefaultFormat("2020-05-06T17:00:00");
 let isLaunched: t => launchStatus =
   anAnimal =>
     switch (anAnimal) {
@@ -487,8 +488,7 @@ let isLaunched: t => launchStatus =
     | Nonhlanhla
     | Aruma
     | Llajuita => Launched
-    | Glen =>
-      LaunchDate(MomentRe.momentUtcDefaultFormat("2020-05-06T17:00:00"))
+    | Glen => LaunchDate(glenLaunchDate)
     };
 
 let hasGovernance: t => bool =

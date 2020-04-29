@@ -18,15 +18,40 @@ let make = () => {
         letterSpacing(px(2)),
       ]);
 
+  let linkToGlen =
+    style([
+      color(white),
+      textDecoration(underline),
+      selector(":visited", [color(hex("ffffff"))]),
+      selector(":hover", [important(color(hex("8200FF")))]),
+    ]);
+
+  let glensLaunchDate = Animal.glenLaunchDate;
+
+  let isLaunched =
+    MomentRe.diff(glensLaunchDate, MomentRe.momentNow(), `seconds) < 0.;
+
   let closeButton = style([position(absolute), right(px(10))]);
 
   let (showAnnouncement, setShowAnnouncement) = React.useState(() => `block);
   <div className={announcement(showAnnouncement)}>
-    "New Wildcard "->restr
-    <a href="/#details/Glen"> "Glen The Dragon"->restr </a>
-    " Coming in "->restr
-    <CountDown endDateMoment=123456. displayUnits=false />
-    " Days!"->restr
+    {isLaunched
+       ? <>
+           "New Wildcard "->restr
+           <a href="/#details/Glen" className=linkToGlen>
+             "Glen The Dragon"->restr
+           </a>
+           " has just been launched "->restr
+         </>
+       : <>
+           "New Wildcard "->restr
+           <a href="/#details/Glen" className=linkToGlen>
+             "Glen The Dragon"->restr
+           </a>
+           " Coming in "->restr
+           <CountDown endDateMoment=glensLaunchDate displayUnits=true />
+           "!"->restr
+         </>}
     <span className=closeButton onClick={_ => setShowAnnouncement(_ => `none)}>
       "X"->restr
     </span>
