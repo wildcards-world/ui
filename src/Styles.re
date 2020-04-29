@@ -120,7 +120,7 @@ let navListItem = style([display(inlineBlock)]);
 let navListItemToggle =
   style([display(`flex), justifyContent(center), alignItems(center)]);
 
-let someMarginRight = style([marginRight(px(10))]);
+let someMarginRight = style([marginRight(px(6))]);
 
 let navListText =
   style([color(rgb(136, 136, 136)), padding(rem(1.)), fontWeight(bold)]);
