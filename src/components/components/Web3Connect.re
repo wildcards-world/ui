@@ -5,12 +5,6 @@ let make = () => {
   let connectWeb3 = RootProvider.useConnectWeb3();
   let deactivateWeb3 = RootProvider.useDeactivateWeb3();
   let networkIdOpt = RootProvider.useNetworkId();
-  let currentUser = RootProvider.useCurrentUser();
-  let displayName =
-    UserProvider.useDisplayName(
-      currentUser->Option.mapWithDefault("loading", a => a),
-    );
-  let displayNameStr = UserProvider.displayNameToString(displayName);
 
   let connectedNetworkName = networkId =>
     switch (networkId) {
@@ -37,14 +31,5 @@ let make = () => {
       </Rimble.Button>
     };
 
-  let message =
-    switch (networkIdOpt, currentUser) {
-    | (None, _) => "Connect to network"
-    | (Some(_), None) => "Loading user"
-    | (Some(_), Some(_)) => displayNameStr
-    };
-
-  <div className=Styles.loginButton>
-    <Rimble.Tooltip message placement="bottom"> web3Button </Rimble.Tooltip>
-  </div>;
+  <div className=Styles.loginButton> web3Button </div>;
 };
