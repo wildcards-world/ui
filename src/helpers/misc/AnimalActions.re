@@ -63,7 +63,6 @@ type voteContract = {
 type loyaltyTokenContract = {
   // approve(address to, uint256 tokenId)
   balanceOf: (. string) => Js.Promise.t(string),
-  // balanceOf: (. string) => Js.Promise.t(BN.bn),
   approve:
     (. Web3.ethAddress, string, txOptions) => Promise.Js.t(tx, txError),
 };
@@ -118,6 +117,7 @@ let getVotingContract = (stewardAddress, library, account) => {
 };
 
 let loyaltyTokenAddressGoerli = "0xd7d8c42ab5b83aa3d4114e5297989dc27bdfb715";
+let loyaltyTokenAddressMainnet = "0x773c75c2277eD3e402BDEfd28Ec3b51A3AfbD8a4";
 let voteContractGoerli = "0x2F2D5f29dD364f11423deEadAbbca6cd4adF7392";
 
 let useStewardContract = () => {
@@ -171,6 +171,14 @@ let useLoyaltyTokenContract = () => {
         switch (optNetworkId) {
         | Some(networkId) =>
           switch (networkId) {
+          | 1 =>
+            Some(
+              getLoyaltyTokenContract(
+                loyaltyTokenAddressMainnet,
+                library,
+                context.account,
+              ),
+            )
           | 5 =>
             Some(
               getLoyaltyTokenContract(
@@ -498,23 +506,29 @@ let useWithdrawDeposit = () => {
 };
 
 let useUserLoyaltyTokenBalance = (address: Web3.ethAddress) => {
-  let (result, _setResult) = React.useState(() => BN.new_("0"));
+  let (result, _setResult) = React.useState(() => None);
+  let (counter, setCounter) = React.useState(() => 0);
 
   let optSteward = useLoyaltyTokenContract();
 
-  switch (optSteward) {
-  | Some(steward) =>
-    let _somePromise = {
-      let%Async balance = steward.balanceOf(. address);
-      Js.log("balance = " ++ balance);
-      _setResult(_ => BN.new_(balance));
-      ()->async;
-    };
-    ();
-  | None => ()
-  };
+  React.useEffect1(
+    () => {
+      switch (optSteward) {
+      | Some(steward) =>
+        let _ = {
+          let%Async balance = steward.balanceOf(. address);
+          _setResult(_ => Some(BN.new_(balance)));
+          ()->async;
+        };
+        ();
+      | None => ()
+      };
+      None;
+    },
+    [|counter|],
+  );
 
-  result;
+  (result, () => setCounter(_ => counter + 1));
 };
 let useChangePrice = animal => {
   let animalId = Animal.getId(animal);

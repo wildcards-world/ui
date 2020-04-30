@@ -34,7 +34,7 @@ module Token = {
 
 module ClaimLoyaltyTokenButtons = {
   [@react.component]
-  let make = (~id) => {
+  let make = (~id, ~refreshLoyaltyTokenBalance) => {
     let (redeemLoyaltyTokens, transactionStatus) =
       AnimalActions.useRedeemLoyaltyTokens(id);
     let balanceAvailableOnToken =
@@ -43,6 +43,17 @@ module ClaimLoyaltyTokenButtons = {
       );
     let tokenName = id->Animal.getNameFromId;
     let etherScanUrl = RootProvider.useEtherscanUrl();
+
+    React.useEffect1(
+      () => {
+        switch (transactionStatus) {
+        | Complete(_) => refreshLoyaltyTokenBalance()
+        | _ => ()
+        };
+        None;
+      },
+      [|transactionStatus|],
+    );
 
     switch (balanceAvailableOnToken) {
     | None => React.null
@@ -188,7 +199,9 @@ module UserDetails = {
       );
     };
 
-    let totalLoyaltyTokensOpt = QlHooks.useTotalLoyaltyToken(userAddress);
+    // let totalLoyaltyTokensOpt = QlHooks.useTotalLoyaltyToken(userAddress);
+    let (totalLoyaltyTokensOpt, updateFunction) =
+      AnimalActions.useUserLoyaltyTokenBalance(userAddress);
 
     <div className=Css.(style([width(`percent(100.))]))>
       <Rimble.Flex flexWrap="wrap" alignItems="start">
@@ -236,7 +249,7 @@ module UserDetails = {
                    <p>
                      "Claimed Loyalty Token Balance: "->restr
                      {totalLoyaltyTokensOpt->Option.mapWithDefault(
-                        "Loading"->restr, ((_, claimedLoyaltyTokens)) => {
+                        "Loading"->restr, claimedLoyaltyTokens => {
                         claimedLoyaltyTokens
                         ->Web3Utils.fromWeiBNToEthPrecision(~digits=3)
                         ->restr
@@ -247,7 +260,12 @@ module UserDetails = {
                   | [||] => React.null
                   | currentlyOwnedTokens =>
                     currentlyOwnedTokens
-                    ->Array.map(id => <ClaimLoyaltyTokenButtons id />)
+                    ->Array.map(id =>
+                        <ClaimLoyaltyTokenButtons
+                          id
+                          refreshLoyaltyTokenBalance=updateFunction
+                        />
+                      )
                     ->React.array
                   }}
                  <a href="/#ethturin-quadratic-voting"> "vote"->restr </a>
@@ -256,7 +274,7 @@ module UserDetails = {
                  <p>
                    "Loyalty Token Balance: "->restr
                    {totalLoyaltyTokensOpt->Option.mapWithDefault(
-                      "Loading"->restr, ((totalLoyaltyTokens, _)) => {
+                      "Loading"->restr, totalLoyaltyTokens => {
                       totalLoyaltyTokens
                       ->Web3Utils.fromWeiBNToEthPrecision(~digits=3)
                       ->restr
