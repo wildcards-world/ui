@@ -2,28 +2,6 @@
 open Belt;
 open Accounting;
 
-module BuyInput = {
-  [@bs.module "./BuyModelInput"] [@react.component]
-  external make:
-    (
-      ~onSubmitBuy: unit => unit=?,
-      ~setNewPrice: string => unit=?,
-      ~newPrice: string=?,
-      ~depositTimeInSeconds: int,
-      ~setDeposit: string => unit=?,
-      ~maxAvailableDeposit: string,
-      ~priceSliderInitialMax: string=?,
-      ~deposit: string=?,
-      ~patronage: string=?,
-      ~updatePatronage: string => unit=?,
-      ~animalName: string,
-      ~depositForAYear: string
-    ) =>
-    // ~depositError: option(string)=?
-    React.element =
-    "default";
-};
-
 let calcPricePerSecond = (price, numerator, denominator) => {
   let priceBn = BN.new_(price);
   let numeratorBn = BN.new_(numerator);
@@ -76,7 +54,7 @@ module Transaction = {
         a
       );
 
-    let (numerator, denominator, ratio, ratioInverse) =
+    let (numerator, denominator, ratio, _ratioInverse) =
       Animal.pledgeRate(animal);
     let currentPriceWei =
       switch (QlHooks.usePrice(animal)) {
@@ -109,11 +87,11 @@ module Transaction = {
         currentPriceFloatWithMinimum *. 1.5 *. ratio,
         ~digits=3,
       );
-    let priceSliderInitialMax =
-      Js.Float.toFixedWithPrecision(
-        currentPriceFloatWithMinimum *. 3.,
-        ~digits=3,
-      );
+    // let priceSliderInitialMax =
+    //   Js.Float.toFixedWithPrecision(
+    //     currentPriceFloatWithMinimum *. 3.,
+    //     ~digits=3,
+    //   );
     let defaultPriceWei = defaultPriceValue->Web3Utils.toWeiFromEth;
     let depositForAYear =
       calcRequiredDepositForTime(
@@ -179,32 +157,32 @@ module Transaction = {
       };
     };
 
-    let updatePatronage = value => {
-      let (value, didUpdate) =
-        InputHelp.onlyUpdateValueIfPositiveFloat(
-          patronage,
-          setPatronage,
-          value,
-        );
-      if (didUpdate) {
-        let price =
-          Js.Float.toString(
-            Float.fromString(value)->defaultZeroF *. ratioInverse,
-          );
-        setInitialPrice(_ => price);
+    // let updatePatronage = value => {
+    //   let (value, didUpdate) =
+    //     InputHelp.onlyUpdateValueIfPositiveFloat(
+    //       patronage,
+    //       setPatronage,
+    //       value,
+    //     );
+    //   if (didUpdate) {
+    //     let price =
+    //       Js.Float.toString(
+    //         Float.fromString(value)->defaultZeroF *. ratioInverse,
+    //       );
+    //     setInitialPrice(_ => price);
 
-        let timeInSeconds =
-          calculateDepositDuration(
-            deposit->Web3Utils.toWeiFromEth,
-            price->Web3Utils.toWeiFromEth,
-            numerator,
-            denominator,
-          );
-        setDepositTimeInSeconds(_ => timeInSeconds);
-      } else {
-        ();
-      };
-    };
+    //     let timeInSeconds =
+    //       calculateDepositDuration(
+    //         deposit->Web3Utils.toWeiFromEth,
+    //         price->Web3Utils.toWeiFromEth,
+    //         numerator,
+    //         denominator,
+    //       );
+    //     setDepositTimeInSeconds(_ => timeInSeconds);
+    //   } else {
+    //     ();
+    //   };
+    // };
     let setDeposit = value => {
       let (value, didUpdate) =
         InputHelp.onlyUpdateValueIfInRangeFloat(
@@ -239,11 +217,11 @@ module Transaction = {
              depositTimeInSeconds
              setDeposit
              patronage
-             updatePatronage
-             priceSliderInitialMax
-             maxAvailableDeposit
              animalName
-             depositForAYear
+             //  priceSliderInitialMax
+             //  depositForAYear
+             maxAvailableDeposit
+             //  updatePatronage
            />
          : <Rimble.Box>
              <p className=Styles.textOnlyModalText>

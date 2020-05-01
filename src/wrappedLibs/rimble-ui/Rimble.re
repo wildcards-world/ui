@@ -74,27 +74,6 @@ module Icon = {
     "Icon";
 };
 
-type selectOptionsType = {
-  value: string,
-  label: React.element,
-};
-
-module Field = {
-  [@bs.module "rimble-ui"] [@react.component]
-  external make:
-    (~label: string=?, ~className: string=?, ~children: React.element) =>
-    React.element =
-    "Field";
-};
-module Select = {
-  [@bs.module "rimble-ui"] [@react.component]
-  external make:
-    (~options: array(selectOptionsType)=?, ~className: string=?) =>
-    React.element =
-    "Select";
-};
-
-
 module Input = {
   [@bs.module "rimble-ui"] [@react.component]
   external make:
@@ -202,7 +181,9 @@ module Flex = {
     (
       ~children: React.element,
       ~flexWrap: string=?,
+      ~flexDirection: string=?,
       ~alignItems: string=?,
+      ~justifyContent: string=?,
       ~className: string=?
     ) =>
     React.element =
@@ -214,6 +195,21 @@ module Table = {
   external make:
     (~children: React.element, ~className: string=?) => React.element =
     "Table";
+};
+
+module Slider = {
+  [@bs.module "rimble-ui"] [@react.component]
+  external make:
+    (
+      ~value: string,
+      ~className: string,
+      ~onChange: ReactEvent.Form.t => unit=?,
+      ~min: string,
+      ~max: string,
+      ~step: string
+    ) =>
+    React.element =
+    "Slider";
 };
 
 module Form = {
