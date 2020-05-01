@@ -143,6 +143,7 @@ module Box = {
       ~p: int=?,
       ~m: int=?,
       ~mb: int=?,
+      ~fontSize: int=?,
       ~children: React.element,
       ~width: array(float)=?,
       ~color: string=?,
@@ -184,6 +185,7 @@ module Flex = {
       ~flexDirection: string=?,
       ~alignItems: string=?,
       ~justifyContent: string=?,
+      ~px: int=?,
       ~className: string=?
     ) =>
     React.element =

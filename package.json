@@ -4,8 +4,10 @@
   "private": true,
   "dependencies": {
     "3box": "^1.18.1",
+    "@ahrefs/bs-emotion": "^1.0.1",
     "@apollo/react-hooks": "^3.1.5",
     "@baransu/graphql_ppx_re": "^0.7.1",
+    "@davesnx/styled-ppx": "^0.9.0",
     "@polkadot/util": "^2.8.1",
     "@web3-react/core": "^6.0.9",
     "@web3-react/fortmatic-connector": "^6.0.9",

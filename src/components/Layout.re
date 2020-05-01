@@ -3,12 +3,6 @@ open Components;
 // TODO: there must be a better way of importing images in reason react...
 let betaBanner = [%bs.raw {|require('../img/beta-banner.png')|}];
 
-module BuyGrid = {
-  [@bs.module "./BuyGrid.js"] [@react.component]
-  external make: (~animalArray: array(unit => React.element)) => React.element =
-    "default";
-};
-
 module AnimalFocusDetails = {
   [@react.component]
   let make = (~animalCarousel) => {
@@ -184,14 +178,7 @@ let make = () => {
            switch (animalPageState) {
            | DetailView(animalCarousel, _) =>
              <AnimalFocusDetails animalCarousel />
-           | NormalView =>
-             <BuyGrid
-               animalArray={
-                 Animal.orderedArray->Belt.Array.map((animal, ()) =>
-                   <Dapp.CarouselAnimal animal isGqlLoaded=true scalar=1. />
-                 )
-               }
-             />
+           | NormalView => <BuyGrid />
            }
          | Home(animalPageState) =>
            switch (animalPageState) {
