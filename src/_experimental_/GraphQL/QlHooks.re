@@ -45,51 +45,51 @@ let decodeAddress: Js.Json.t => string =
   address =>
     address->Js.Json.decodeString->Belt.Option.mapWithDefault("0x0", a => a);
 
-// module InitialLoad = [%graphql
-//   {|
-//     query {
-//       wildcards(first: 14) {
-//         id
-//         animal: tokenId @bsDecoder(fn: "tokenIdToAnimal")
-//         owner {
-//           address
-//           id
-//         }
-//         price {
-//           price @bsDecoder(fn: "decodePrice")
-//           id
-//         }
-//         totalCollected @bsDecoder(fn: "decodePrice")
-//         timeCollected @bsDecoder(fn: "decodeBN")
-//         patronageNumeratorPriceScaled @bsDecoder(fn: "decodeBN")
-//         # timeCollected @bsDecoder(fn: "decodeMoment")
-//         timeAcquired @bsDecoder(fn: "decodeMoment")
-//       }
-//       global(id: 1) {
-//         id
-//         totalCollectedOrDueAccurate @bsDecoder(fn: "decodeBN")
-//         timeLastCollected @bsDecoder(fn: "decodeBN")
-//         totalTokenCostScaledNumeratorAccurate @bsDecoder(fn: "decodeBN")
-//       }
-//     }
-//   |}
-// ];
+module InitialLoad = [%graphql
+  {|
+    query {
+      wildcards(first: 14) {
+        id
+        animal: tokenId @bsDecoder(fn: "tokenIdToAnimal")
+        owner {
+          address
+          id
+        }
+        price {
+          price @bsDecoder(fn: "decodePrice")
+          id
+        }
+        totalCollected @bsDecoder(fn: "decodePrice")
+        timeCollected @bsDecoder(fn: "decodeBN")
+        patronageNumeratorPriceScaled @bsDecoder(fn: "decodeBN")
+        # timeCollected @bsDecoder(fn: "decodeMoment")
+        timeAcquired @bsDecoder(fn: "decodeMoment")
+      }
+      global(id: 1) {
+        id
+        totalCollectedOrDueAccurate @bsDecoder(fn: "decodeBN")
+        timeLastCollected @bsDecoder(fn: "decodeBN")
+        totalTokenCostScaledNumeratorAccurate @bsDecoder(fn: "decodeBN")
+      }
+    }
+  |}
+];
 
-// // TODO: remove this function, it was an interesting but failed experiment.
-// let useInitialDataLoad = () => {
-//   let (simple, _full) =
-//     ApolloHooks.useQuery(
-//       ~notifyOnNetworkStatusChange=true,
-//       InitialLoad.definition,
-//     );
+// TODO: remove this function, it was an interesting but failed experiment.
+let useInitialDataLoad = () => {
+  let (simple, _full) =
+    ApolloHooks.useQuery(
+      ~notifyOnNetworkStatusChange=true,
+      InitialLoad.definition,
+    );
 
-//   switch (simple) {
-//   | Data(data) => Some(data)
-//   | Loading
-//   | NoData
-//   | Error(_) => None
-//   };
-// };
+  switch (simple) {
+  | Data(data) => Some(data)
+  | Loading
+  | NoData
+  | Error(_) => None
+  };
+};
 
 module SubWildcardQuery = [%graphql
   {|

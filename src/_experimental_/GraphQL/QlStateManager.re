@@ -27,34 +27,33 @@ external cast: Js.Json.t => QlHooks.SubWildcardQuery.t = "%identity";
 
 // type gqlState = {isLoaded: bool};
 
-// module RootContext = {
-//   let context = React.createContext(false);
-//   // Create a provider component
-//   let make = React.Context.provider(context);
-//   // Tell bucklescript how to translate props into JS
-//   let makeProps = (~value, ~children, ()) => {
-//     "value": value,
-//     "children": children,
-//   };
-// };
+module RootContext = {
+  let context = React.createContext(false);
+  // Create a provider component
+  let make = React.Context.provider(context);
+  // Tell bucklescript how to translate props into JS
+  let makeProps = (~value, ~children, ()) => {
+    "value": value,
+    "children": children,
+  };
+};
 
-// let useIsInitialized: unit => bool =
-//   () => React.useContext(RootContext.context);
+let useIsInitialized: unit => bool =
+  () => React.useContext(RootContext.context);
 
 [@react.component]
 let make = (~children) => {
   let result = QlHooks.useStateChangeSubscriptionData();
   // let lastEvent = React.useState(() => );
 
-  // let initialDataLoad = QlHooks.useInitialDataLoad();
-  // let hasLoadedInitialData = true;
-  // switch (initialDataLoad) {
-  // | Some(_) => true
-  // | None => false
-  // };
+  let initialDataLoad = QlHooks.useInitialDataLoad();
+  let hasLoadedInitialData =
+    switch (initialDataLoad) {
+    | Some(_) => true
+    | None => false
+    };
 
-  // <RootContext value=hasLoadedInitialData>
-  <>
+  <RootContext value=hasLoadedInitialData>
     {result->Belt.Option.mapWithDefault(React.null, result =>
        <ApolloConsumer>
          ...{client => {
@@ -282,5 +281,5 @@ let make = (~children) => {
      //  React.null;
 }
     children
-  </>;
+  </RootContext>;
 };
