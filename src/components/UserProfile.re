@@ -55,7 +55,7 @@ module ClaimLoyaltyTokenButtons = {
                {(
                   "redeem "
                   ++ balanceAvailableOnToken->Web3Utils.fromWeiBNToEthPrecision(
-                       ~digits=3,
+                       ~digits=5,
                      )
                   ++ " tokens for "
                   ++ tokenName

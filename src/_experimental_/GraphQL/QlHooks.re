@@ -45,50 +45,51 @@ let decodeAddress: Js.Json.t => string =
   address =>
     address->Js.Json.decodeString->Belt.Option.mapWithDefault("0x0", a => a);
 
-module InitialLoad = [%graphql
-  {|
-    query {
-      wildcards(first: 14) {
-        id
-        animal: tokenId @bsDecoder(fn: "tokenIdToAnimal")
-        owner {
-          address
-          id
-        }
-        price {
-          price @bsDecoder(fn: "decodePrice")
-          id
-        }
-        totalCollected @bsDecoder(fn: "decodePrice")
-        timeCollected @bsDecoder(fn: "decodeBN")
-        patronageNumeratorPriceScaled @bsDecoder(fn: "decodeBN")
-        # timeCollected @bsDecoder(fn: "decodeMoment")
-        timeAcquired @bsDecoder(fn: "decodeMoment")
-      }
-      global(id: 1) {
-        id
-        totalCollectedOrDueAccurate @bsDecoder(fn: "decodeBN")
-        timeLastCollected @bsDecoder(fn: "decodeBN")
-        totalTokenCostScaledNumeratorAccurate @bsDecoder(fn: "decodeBN")
-      }
-    }
-  |}
-];
+// module InitialLoad = [%graphql
+//   {|
+//     query {
+//       wildcards(first: 14) {
+//         id
+//         animal: tokenId @bsDecoder(fn: "tokenIdToAnimal")
+//         owner {
+//           address
+//           id
+//         }
+//         price {
+//           price @bsDecoder(fn: "decodePrice")
+//           id
+//         }
+//         totalCollected @bsDecoder(fn: "decodePrice")
+//         timeCollected @bsDecoder(fn: "decodeBN")
+//         patronageNumeratorPriceScaled @bsDecoder(fn: "decodeBN")
+//         # timeCollected @bsDecoder(fn: "decodeMoment")
+//         timeAcquired @bsDecoder(fn: "decodeMoment")
+//       }
+//       global(id: 1) {
+//         id
+//         totalCollectedOrDueAccurate @bsDecoder(fn: "decodeBN")
+//         timeLastCollected @bsDecoder(fn: "decodeBN")
+//         totalTokenCostScaledNumeratorAccurate @bsDecoder(fn: "decodeBN")
+//       }
+//     }
+//   |}
+// ];
 
-let useInitialDataLoad = () => {
-  let (simple, _full) =
-    ApolloHooks.useQuery(
-      ~notifyOnNetworkStatusChange=true,
-      InitialLoad.definition,
-    );
+// // TODO: remove this function, it was an interesting but failed experiment.
+// let useInitialDataLoad = () => {
+//   let (simple, _full) =
+//     ApolloHooks.useQuery(
+//       ~notifyOnNetworkStatusChange=true,
+//       InitialLoad.definition,
+//     );
 
-  switch (simple) {
-  | Data(data) => Some(data)
-  | Loading
-  | NoData
-  | Error(_) => None
-  };
-};
+//   switch (simple) {
+//   | Data(data) => Some(data)
+//   | Loading
+//   | NoData
+//   | Error(_) => None
+//   };
+// };
 
 module SubWildcardQuery = [%graphql
   {|
@@ -113,37 +114,80 @@ module SubWildcardQuery = [%graphql
     }
   |}
 ];
-module SubBuyEvents = [%graphql
+// NOTE: If multiple transactions happen in the same block they may get missed, maybe one day that will be a problem for us ;)
+module SubStateChangeEvents = [%graphql
   {|
     subscription {
-      eventCounter(id: 1) {
+      stateChanges(first: 1, orderBy: timestamp, orderDirection: desc) {
         id
-        buyEventCount
-          buyEvents(first: 5, orderBy: timestamp, orderDirection: desc) {
+        timestamp
+        txEventList
+        wildcardChanges {
           id
-          token {
+          tokenId
+          timeAcquired
+          totalCollected
+          patronageNumeratorPriceScaled
+          timeCollected
+          price {
             id
-            # NOTE: no need to decode these values, this is only for updating the cache.
-            animal: tokenId #@bsDecoder(fn: "tokenIdToAnimal")
-            timeAcquired #@bsDecoder(fn: "decodeMoment")
-            totalCollected #@bsDecoder(fn: "decodePrice")
-            patronageNumeratorPriceScaled #@bsDecoder(fn: "decodeBN")
-            timeCollected #@bsDecoder(fn: "decodeBN")
-            # timeCollected @bsDecoder(fn: "decodeMoment")
-            price {
-              id
-              price #@bsDecoder(fn: "decodePrice")
-            }
-            owner {
-              address #@bsDecoder(fn: "decodeAddress")
-              id
-            }
+            price
           }
+          owner {
+            address
+            id
+          }
+        }
+        patronChanges {
+          id
+          address
+          lastUpdated
+          # lastUpdated @bsDecoder(fn: "decodeMoment")
+          previouslyOwnedTokens {
+            id
+          }
+          tokens {
+            id
+          }
+          availableDeposit
+          patronTokenCostScaledNumerator
+          foreclosureTime
         }
       }
     }
   |}
 ];
+// module SubBuyEvents = [%graphql
+//   {|
+//     subscription {
+//       eventCounter(id: 1) {
+//         id
+//         buyEventCount
+//           buyEvents(first: 5, orderBy: timestamp, orderDirection: desc) {
+//           id
+//           token {
+//             id
+//             # NOTE: no need to decode these values, this is only for updating the cache.
+//             animal: tokenId #@bsDecoder(fn: "tokenIdToAnimal")
+//             timeAcquired #@bsDecoder(fn: "decodeMoment")
+//             totalCollected #@bsDecoder(fn: "decodePrice")
+//             patronageNumeratorPriceScaled #@bsDecoder(fn: "decodeBN")
+//             timeCollected #@bsDecoder(fn: "decodeBN")
+//             # timeCollected @bsDecoder(fn: "decodeMoment")
+//             price {
+//               id
+//               price #@bsDecoder(fn: "decodePrice")
+//             }
+//             owner {
+//               address #@bsDecoder(fn: "decodeAddress")
+//               id
+//             }
+//           }
+//         }
+//       }
+//     }
+//   |}
+// ];
 
 module LoadPatron = [%graphql
   {|
@@ -177,9 +221,19 @@ module LoadPatronNew = [%graphql
         lastUpdated @bsDecoder(fn: "decodeBN")
         totalLoyaltyTokens @bsDecoder(fn: "decodeBN")
         totalLoyaltyTokensIncludingUnRedeemed @bsDecoder(fn: "decodeBN")
-        tokens {
-          id
-        }
+      }
+    }
+  |}
+];
+module LoadPatronNewNoDecode = [%graphql
+  {|
+    query ($patronId: String!) {
+      patronNew(id: $patronId) {
+        id
+        address
+        lastUpdated
+        totalLoyaltyTokens
+        totalLoyaltyTokensIncludingUnRedeemed
       }
     }
   |}
@@ -224,13 +278,26 @@ let useWildcardQuery = animal =>
       SubWildcardQuery.make(~tokenId=Animal.getId(animal), ())##variables,
     SubWildcardQuery.definition,
   );
-let useBuySubscription = () =>
+// let useBuySubscription = () =>
+//   ApolloHooks.useSubscription(
+//     ~variables=SubBuyEvents.make()##variables,
+//     SubBuyEvents.definition,
+//   );
+let useStateChangeSubscription = () =>
   ApolloHooks.useSubscription(
-    ~variables=SubBuyEvents.make()##variables,
-    SubBuyEvents.definition,
+    ~variables=SubStateChangeEvents.make()##variables,
+    SubStateChangeEvents.definition,
   );
-let useBuySubscriptionData = () => {
-  let (simple, _) = useBuySubscription();
+// let useBuySubscriptionData = () => {
+//   let (simple, _) = useBuySubscription();
+//   switch (simple) {
+//   | Data(response) => Some(response)
+//   | _ => None
+//   };
+// };
+let useStateChangeSubscriptionData = () => {
+  Js.log("Tried to make a subscription...");
+  let (simple, _) = useStateChangeSubscription();
   switch (simple) {
   | Data(response) => Some(response)
   | _ => None
@@ -499,13 +566,6 @@ let useTimeSinceTokenWasLastSettled: Animal.t => option(BN.bn) =
       let timeElapsed =
         BN.new_(currentTimestamp)->BN.subGet(. timeCalculated);
 
-      Js.log4(
-        "time elapsed",
-        currentTimestamp,
-        "-",
-        timeCalculated->BN.toStringGet(.),
-      );
-      Js.log2("=", timeElapsed->BN.toStringGet(.));
       Some(timeElapsed);
     | None => None
     };
@@ -516,16 +576,8 @@ let useUnredeemedLoyaltyTokenDueFromWildcard: Animal.t => option(Eth.t) =
     switch (useTimeSinceTokenWasLastSettled(animal)) {
     | Some(timeSinceTokenWasLastSettled) =>
       let totalLoyaltyTokensPerSecondPerAnimal = BN.new_("11574074074074");
-      Js.log2(
-        "time since last settled",
-        timeSinceTokenWasLastSettled->BN.toStringGet(.),
-      );
       let totalLoyaltyTokensForAllAnimals =
         timeSinceTokenWasLastSettled |*| totalLoyaltyTokensPerSecondPerAnimal;
-      Js.log2(
-        "totalLoyaltyTokens",
-        timeSinceTokenWasLastSettled->BN.toStringGet(.),
-      );
       Some(totalLoyaltyTokensForAllAnimals);
     | None => None
     };

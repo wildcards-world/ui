@@ -5,6 +5,24 @@ type dataObject = {
 };
 // createInMemoryCache(~dataIdFromObject=(obj: dataObject) => obj##id, ());
 
+// const defaultOptions: DefaultOptions = {
+//       watchQuery: {
+//         fetchPolicy: 'no-cache',
+//         errorPolicy: 'ignore',
+//       },
+//       query: {
+//         fetchPolicy: 'no-cache',
+//         errorPolicy: 'all',
+//       },
+//     }
+
+// const client = new ApolloClient({
+//     link: concat(authMiddleware, httpLink),
+//     cache: new InMemoryCache(),
+//     defaultOptions: defaultOptions,
+
+// });
+
 /* Create an InMemoryCache */
 let inMemoryCache = () =>
   ApolloInMemoryCache.createInMemoryCache(
@@ -12,6 +30,7 @@ let inMemoryCache = () =>
     //   (obj: dataObject) => {
     //     obj##id ++ obj##__typename;
     //   },
+    // ~addTypename=false,
     ~cacheRedirects=[%raw
       "{
     Query: {
@@ -80,5 +99,6 @@ let instance = networkId =>
   ReasonApollo.createApolloClient(
     ~link=webSocketHttpLink(networkId),
     ~cache=inMemoryCache(),
+    // ~defaultOptions
     (),
   );

@@ -3156,15 +3156,15 @@
   dependencies:
     prop-types "^15.6.2"
 
-"@wildcards/reason-apollo-hooks@^6.0.2":
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/@wildcards/reason-apollo-hooks/-/reason-apollo-hooks-6.0.2.tgz#75a2ae79389c9d47b6e0dfd1c0ebdcf66fc32480"
-  integrity sha512-MH8dRtDNFJdh0upeb/fkKoFp9Gswf9o8ivHRK3+734xUis3V/mggCtx+kpO8ZwQz0pkysPBbsQLtR/5in0iaKg==
+"@wildcards/reason-apollo-hooks@6.0.1-latest1":
+  version "6.0.1-latest1"
+  resolved "https://registry.yarnpkg.com/@wildcards/reason-apollo-hooks/-/reason-apollo-hooks-6.0.1-latest1.tgz#353e3450ea165468a5808fe2a1452f07e44b9b50"
+  integrity sha512-K11X/X4mIH4GfnZ88d3S2ptjeSKg2sEqw5g4zkPkAl8m+bmfcV+B+1xWvUGXGw6RXIZ5V1AY7IBmMI5El48HnA==
 
-"@wildcards/reason-apollo@^0.18.3":
-  version "0.18.3"
-  resolved "https://registry.yarnpkg.com/@wildcards/reason-apollo/-/reason-apollo-0.18.3.tgz#e02c568061983cdff7ea4afb00ca169e67102f99"
-  integrity sha512-tmncvqbNaq0zcRJjR8VF02yj9WW2sruf9zQqnruBE2PBgChjlCgatL39YvjU3oMEfM9GcfG51f9O/IQJAEAWtw==
+"@wildcards/reason-apollo@0.20.0-latest1":
+  version "0.20.0-latest1"
+  resolved "https://registry.yarnpkg.com/@wildcards/reason-apollo/-/reason-apollo-0.20.0-latest1.tgz#0afe567b8b2462b401a4108400600bfe7dbdffb0"
+  integrity sha512-xhHnySgWXo81jbWPrNup8cnBsujwQCV98LNF9jZUZnlY6D5s0Zub2HcNBRLgNJXOqXrACa1CVv7S4Qu16z4Zfg==
   dependencies:
     apollo-cache-inmemory "^1.6.0"
     apollo-client "^2.6.3"
@@ -5232,10 +5232,10 @@ bs-moment@^0.4.5:
   resolved "https://registry.yarnpkg.com/bs-moment/-/bs-moment-0.4.5.tgz#3f84fed55c2a70d25b0b6025e4e8d821fcdd4dc8"
   integrity sha512-anPYkFSof+X8EeomnP0fbQBvWFJeganwPqqARVB+fcdKYX2Uog/n3CCiFGEA+66yHbwnWZD5YFhtHCuyLMcQfQ==
 
-bs-platform@7.3.1:
-  version "7.3.1"
-  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-7.3.1.tgz#2c148fb8aef687c6c195eae5821b31e887fb5bc4"
-  integrity sha512-RlQexm6i2gMKsfuHL8IcOHN0R/SQgxiurP96fo2nj71QgQQRh332ahOwIl0p0yNl9DH2Tg7ZV2pjG6MMMkaU6w==
+bs-platform@^7.2.2:
+  version "7.2.2"
+  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-7.2.2.tgz#76fdc63e4889458ae3d257a0132107a792f2309c"
+  integrity sha512-PWcFfN+jCTtT/rMaHDhKh+W9RUTpaRunmSF9vbLYcrJbpgCNW6aFKAY33u0P3mLxwuhshN3b4FxqGUBPj6exZQ==
 
 bs-webapi@^0.15.9:
   version "0.15.9"
