@@ -44,15 +44,19 @@ module ClaimLoyaltyTokenButtons = {
     let tokenName = id->Animal.getNameFromId;
     let etherScanUrl = RootProvider.useEtherscanUrl();
 
-    React.useEffect1(
+    React.useEffect2(
       () => {
         switch (transactionStatus) {
         | Complete(_) => refreshLoyaltyTokenBalance()
-        | _ => ()
+        | UnInitialised
+        | Created
+        | SignedAndSubmitted(_)
+        | Declined
+        | Failed => ()
         };
         None;
       },
-      [|transactionStatus|],
+      (transactionStatus, refreshLoyaltyTokenBalance),
     );
 
     switch (balanceAvailableOnToken) {

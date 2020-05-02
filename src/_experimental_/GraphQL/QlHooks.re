@@ -269,7 +269,32 @@ type graphqlDataLoad('a) =
   | NoData
   | Data('a);
 
-[@bs.deriving abstract]
+let subscriptionResultOptionMap = (result, mapping) =>
+  switch (result) {
+  | ApolloHooks.Subscription.Data(response) => response->mapping->Some
+  | ApolloHooks.Subscription.Error(_)
+  | ApolloHooks.Subscription.Loading
+  | ApolloHooks.Subscription.NoData => None
+  };
+let subscriptionResultToOption = result =>
+  subscriptionResultOptionMap(result, a => a);
+
+let queryResultOptionMap = (result, mapping) =>
+  switch (result) {
+  | ApolloHooks.Query.Data(response) => response->mapping->Some
+  | ApolloHooks.Query.Error(_)
+  | ApolloHooks.Query.Loading
+  | ApolloHooks.Query.NoData => None
+  };
+let queryResultOptionFlatMap = (result, mapping) =>
+  switch (result) {
+  | ApolloHooks.Query.Data(response) => response->mapping
+  | ApolloHooks.Query.Error(_)
+  | ApolloHooks.Query.Loading
+  | ApolloHooks.Query.NoData => None
+  };
+let queryResultToOption = result => queryResultOptionMap(result, a => a);
+
 type data = {tokenId: string};
 
 let useWildcardQuery = animal =>
@@ -296,12 +321,8 @@ let useStateChangeSubscription = () =>
 //   };
 // };
 let useStateChangeSubscriptionData = () => {
-  Js.log("Tried to make a subscription...");
   let (simple, _) = useStateChangeSubscription();
-  switch (simple) {
-  | Data(response) => Some(response)
-  | _ => None
-  };
+  subscriptionResultToOption(simple);
 };
 
 let useLoadTopContributors = numberOfLeaders =>
@@ -311,8 +332,8 @@ let useLoadTopContributors = numberOfLeaders =>
   );
 let useLoadTopContributorsData = numberOfLeaders => {
   let (simple, _) = useLoadTopContributors(numberOfLeaders);
-  switch (simple) {
-  | Data(largestContributors) =>
+
+  let getLargestContributors = largestContributors => {
     let monthlyContributions =
       largestContributors##patrons
       |> Js.Array.map(patron => {
@@ -326,20 +347,20 @@ let useLoadTopContributorsData = numberOfLeaders => {
              ->Web3Utils.fromWeiBNToEthPrecision(~digits=4);
            (patron##id, monthlyContribution);
          });
-    Some(monthlyContributions);
-  | _ => None
+    monthlyContributions;
   };
+
+  simple->subscriptionResultOptionMap(getLargestContributors);
 };
 
 let usePatron: Animal.t => option(string) =
   animal => {
     let (simple, _) = useWildcardQuery(animal);
-    switch (simple) {
-    | Data(response) =>
+    let getAddress = response =>
       response##wildcard
-      ->Belt.Option.flatMap(wildcard => Some(wildcard##owner##address))
-    | _ => None
-    };
+      ->Belt.Option.flatMap(wildcard => Some(wildcard##owner##address));
+
+    simple->queryResultOptionFlatMap(getAddress);
   };
 
 let useIsAnimalOwened = ownedAnimal => {
@@ -355,21 +376,16 @@ let useIsAnimalOwened = ownedAnimal => {
   == currentPatron->Js.String.toLocaleLowerCase;
 };
 
-let useTimeAcquired: Animal.t => graphqlDataLoad(MomentRe.Moment.t) =
+let useTimeAcquired: Animal.t => option(MomentRe.Moment.t) =
   animal => {
     let (simple, _) = useWildcardQuery(animal);
-    switch (simple) {
-    | Loading => Loading
-    | Error(error) => Error(error)
-    | NoData => Loading
-    | Data(response) =>
-      Data(
-        response##wildcard
-        ->Belt.Option.mapWithDefault(MomentRe.momentNow(), wildcard
-            // wildcard
-            => wildcard##timeAcquired),
-      )
-    };
+    let getTimeAquired = response =>
+      response##wildcard
+      ->Belt.Option.mapWithDefault(MomentRe.momentNow(), wildcard
+          // wildcard
+          => wildcard##timeAcquired);
+
+    simple->queryResultOptionMap(getTimeAquired);
   };
 
 let useQueryPatron = patron =>
@@ -386,52 +402,40 @@ let useQueryPatronNew = patron =>
 let useForeclosureTime: string => option(MomentRe.Moment.t) =
   patron => {
     let (simple, _) = useQueryPatron(patron);
-    switch (simple) {
-    | Data(response) =>
-      response##patron
-      ->Belt.Option.flatMap(patron => Some(patron##foreclosureTime))
-    | _ => None
-    };
+    let getForclosureTime = response =>
+      response##patron->Belt.Option.map(patron => patron##foreclosureTime);
+
+    simple->queryResultOptionFlatMap(getForclosureTime);
   };
 let usePatronQuery = patron => {
   let (simple, _) = useQueryPatron(patron);
-  switch (simple) {
-  | Data(response) => Some(response)
-  | _ => None
-  };
+
+  simple->queryResultToOption;
 };
-let useTimeAcquiredWithDefault = (animal, default: MomentRe.Moment.t) => {
-  switch (useTimeAcquired(animal)) {
-  | Data(moment) => moment
-  | _ => default
-  };
-};
+let useTimeAcquiredWithDefault = (animal, default: MomentRe.Moment.t) =>
+  useTimeAcquired(animal) |||| default;
 
 let useDaysHeld = animal =>
-  switch (useTimeAcquired(animal)) {
-  | Data(moment) =>
-    Some((MomentRe.diff(MomentRe.momentNow(), moment, `days), moment))
-  | _ => None
-  };
-let useTotalCollectedOrDue: unit => graphqlDataLoad((BN.bn, BN.bn, BN.bn)) =
+  useTimeAcquired(animal)
+  ->oMap(moment =>
+      (MomentRe.diff(MomentRe.momentNow(), moment, `days), moment)
+    );
+
+let useTotalCollectedOrDue: unit => option((BN.bn, BN.bn, BN.bn)) =
   () => {
     let (simple, _) =
       ApolloHooks.useQuery(SubTotalRaisedOrDueQuery.definition);
-
-    switch (simple) {
-    | Loading => Loading
-    | Error(error) => Error(error)
-    | NoData => Loading
-    | Data(response) =>
+    let getTotalCollected = response =>
       response##global
-      ->Belt.Option.mapWithDefault(Loading, global =>
-          Data((
+      ->oMap(global =>
+          (
             global##totalCollectedOrDueAccurate,
             global##timeLastCollected,
             global##totalTokenCostScaledNumeratorAccurate,
-          ))
-        )
-    };
+          )
+        );
+
+    simple->queryResultOptionFlatMap(getTotalCollected);
   };
 
 let getCurrentTimestamp = () =>
@@ -455,45 +459,43 @@ let useCurrentTime = () => {
 let useAmountRaised = () => {
   let currentTimestamp = useCurrentTime();
 
-  switch (useTotalCollectedOrDue()) {
-  | Data((
-      amountCollectedOrDue,
-      timeCalculated,
-      totalTokenCostScaledNumeratorAccurate,
-    )) =>
-    let timeElapsed = BN.new_(currentTimestamp)->BN.subGet(. timeCalculated);
+  useTotalCollectedOrDue()
+  ->oMap(
+      (
+        (
+          amountCollectedOrDue,
+          timeCalculated,
+          totalTokenCostScaledNumeratorAccurate,
+        ),
+      ) => {
+      let timeElapsed =
+        BN.new_(currentTimestamp)->BN.subGet(. timeCalculated);
 
-    let amountRaisedSinceLastCollection =
-      totalTokenCostScaledNumeratorAccurate
-      ->BN.mulGet(. timeElapsed)
-      ->BN.divGet(.
-          // BN.new_("1000000000000")->BN.mulGet(. BN.new_("31536000")),
-          BN.new_("31536000000000000000"),
-        );
-    Some(amountCollectedOrDue->BN.addGet(. amountRaisedSinceLastCollection));
-  | _ => None
-  };
+      let amountRaisedSinceLastCollection =
+        totalTokenCostScaledNumeratorAccurate
+        ->BN.mulGet(. timeElapsed)
+        ->BN.divGet(.
+            // BN.new_("1000000000000")->BN.mulGet(. BN.new_("31536000")),
+            BN.new_("31536000000000000000"),
+          );
+      amountCollectedOrDue->BN.addGet(. amountRaisedSinceLastCollection);
+    });
 };
 
 let useTotalCollectedToken: Animal.t => option((Eth.t, BN.bn, BN.bn)) =
   animal => {
     let (simple, _) = useWildcardQuery(animal);
-
-    switch (simple) {
-    | Data(response) =>
+    let getTotalCollectedData = response =>
       response##wildcard
-      ->Belt.Option.flatMap(wc =>
-          Some((
+      ->oMap(wc =>
+          (
             wc##totalCollected,
             wc##timeCollected,
             wc##patronageNumeratorPriceScaled,
-          ))
-        )
-    // | Loading
-    // | Error(_error)
-    // | NoData => None
-    | _ => None
-    };
+          )
+        );
+
+    simple->queryResultOptionFlatMap(getTotalCollectedData);
   };
 type patronLoyaltyTokenDetails = {
   currentLoyaltyTokens: Eth.t,
@@ -525,7 +527,7 @@ let usePatronLoyaltyTokenDetails:
     // | Loading
     // | Error(_error)
     // | NoData => None
-    | _ => None
+    | (_, _) => None
     };
   };
 
@@ -613,18 +615,17 @@ let useRemainingDeposit: string => option((Eth.t, BN.bn, BN.bn)) =
   patron => {
     let (simple, _) = useQueryPatron(patron);
 
-    switch (simple) {
-    | Data(response) =>
+    let getRemainingDepositData = response =>
       response##patron
-      ->Belt.Option.flatMap(wc =>
-          Some((
+      ->oMap(wc =>
+          (
             wc##availableDeposit,
             wc##lastUpdated,
             wc##patronTokenCostScaledNumerator,
-          ))
-        )
-    | _ => None
-    };
+          )
+        );
+
+    simple->queryResultOptionFlatMap(getRemainingDepositData);
   };
 
 // TODO:: Take min of total deposit and amount raised

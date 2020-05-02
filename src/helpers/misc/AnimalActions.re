@@ -506,18 +506,18 @@ let useWithdrawDeposit = () => {
 };
 
 let useUserLoyaltyTokenBalance = (address: Web3.ethAddress) => {
-  let (result, _setResult) = React.useState(() => None);
+  let (result, setResult) = React.useState(() => None);
   let (counter, setCounter) = React.useState(() => 0);
 
   let optSteward = useLoyaltyTokenContract();
 
-  React.useEffect1(
+  React.useEffect4(
     () => {
       switch (optSteward) {
       | Some(steward) =>
         let _ = {
           let%Async balance = steward.balanceOf(. address);
-          _setResult(_ => Some(BN.new_(balance)));
+          setResult(_ => Some(BN.new_(balance)));
           ()->async;
         };
         ();
@@ -525,7 +525,7 @@ let useUserLoyaltyTokenBalance = (address: Web3.ethAddress) => {
       };
       None;
     },
-    [|counter|],
+    (counter, setResult, optSteward, address),
   );
 
   (result, () => setCounter(_ => counter + 1));

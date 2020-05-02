@@ -1,5 +1,4 @@
-// open Providers.RootProvider;
-open Belt;
+open Globals;
 open Accounting;
 
 let calcPricePerSecond = (price, numerator, denominator) => {
@@ -59,7 +58,8 @@ module Transaction = {
     let currentPriceWei =
       switch (QlHooks.usePrice(animal)) {
       | Price(price) => price
-      | _ => BN.new_("0")
+      | Loading
+      | Foreclosed => BN.new_("0")
       };
 
     let animalName = Animal.getName(animal);

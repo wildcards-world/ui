@@ -1,6 +1,4 @@
-open Belt.Option;
 open Globals;
-open Components;
 
 // Load styles for the carousel and react-tabs
 [%bs.raw {|require('@wildcards/react-carousel/lib/style.css')|}];
@@ -90,8 +88,7 @@ module BasicAnimalDisplay = {
   [@react.component]
   let make = (~animal: Animal.t) => {
     let owned = animal->QlHooks.useIsAnimalOwened;
-    let currentPatron =
-      QlHooks.usePatron(animal)->mapWithDefault("Loading", a => a);
+    let currentPatron = QlHooks.usePatron(animal) |||| "Loading";
     let displayName = UserProvider.useDisplayName(currentPatron);
 
     let displayNameStr = UserProvider.displayNameToString(displayName);
@@ -325,8 +322,7 @@ module AnimalActionsOnDetailsPage = {
     let owned = animal->QlHooks.useIsAnimalOwened;
     // let currentAccount =
     //   RootProvider.useCurrentUser()->mapWithDefault("loading", a => a);
-    let currentPatron =
-      QlHooks.usePatron(animal)->mapWithDefault("Loading", a => a);
+    let currentPatron = QlHooks.usePatron(animal) |||| "Loading";
     let displayName = UserProvider.useDisplayName(currentPatron);
     let displayNameStr = UserProvider.displayNameToString(displayName);
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
@@ -400,7 +396,7 @@ module DetailsView = {
              ++ "\" in our system.",
            )}
         </h1>
-        <p> <S> "Please check the spelling and try again." </S> </p>
+        <p> "Please check the spelling and try again."->restr </p>
       </div>
     | Some(animal) =>
       let normalImage = animal =>
@@ -443,7 +439,12 @@ module DetailsView = {
              _ComponentNoHover={displayAnimal(() => normalImage(animal))}
            />
          }}
-        <h2> <S> {Animal.getName(animal)} </S> </h2>
+        <h2>
+          {{
+             Animal.getName(animal);
+           }
+           ->restr}
+        </h2>
         <AnimalActionsOnDetailsPage animal />
       </React.Fragment>;
     };
@@ -482,17 +483,29 @@ module DefaultLeftPanel = {
     <React.Fragment>
       <h1 className=Styles.heading>
         <span className=Styles.colorBlue>
-          <S> {translation(. "bluetext")} </S>
+          {{
+             translation(. "bluetext");
+           }
+           ->restr}
         </span>
         <br />
-        <S> {translation(. "ethereum")} </S>
+        {{
+           translation(. "ethereum");
+         }
+         ->restr}
         <br />
-        <span className=Styles.colorGreen> <S> "conservation" </S> </span>
-        <S> {" " ++ translation(. "tokens")} </S>
+        <span className=Styles.colorGreen> "conservation"->restr </span>
+        {{
+           " " ++ translation(. "tokens");
+         }
+         ->restr}
       </h1>
       <hr />
       <h3 className=Styles.subHeading>
-        <S> {translation(. "subHeading")} </S>
+        {{
+           translation(. "subHeading");
+         }
+         ->restr}
       </h3>
     </React.Fragment>;
   };
@@ -509,8 +522,7 @@ module AnimalInfoStats = {
 
     let daysHeld = QlHooks.useDaysHeld(animal);
 
-    let currentPatron =
-      QlHooks.usePatron(animal)->mapWithDefault("Loading", a => a);
+    let currentPatron = QlHooks.usePatron(animal) |||| "Loading";
     let userId = UserProvider.useDisplayName(currentPatron);
     let displayName = UserProvider.useDisplayName(currentPatron);
     let displayNameStr = UserProvider.displayNameToString(displayName);
@@ -524,13 +536,11 @@ module AnimalInfoStats = {
 
     let currentUsdEthPrice = UsdPriceProvider.useUsdPrice();
     let (depositAvailableToWithdrawEth, depositAvailableToWithdrawUsd) =
-      // GeneralHooks.useDepositAbleToWithdrawEthAnimal(animal)
       QlHooks.useRemainingDepositEth(currentPatron)
-      ->mapWithDefault(("Loading", "Loading"), a =>
+      ->mapd(("Loading", "Loading"), a =>
           (
             a->Eth.get(Eth.Eth(`ether)),
-            currentUsdEthPrice->Belt.Option.mapWithDefault(
-              "Loading", usdEthRate =>
+            currentUsdEthPrice->mapd("Loading", usdEthRate =>
               a->Eth.get(Eth.Usd(usdEthRate, 2))
             ),
           )
@@ -538,17 +548,16 @@ module AnimalInfoStats = {
 
     let (totalPatronage, totalPatronageUsd) =
       QlHooks.useAmountRaisedToken(animal)
-      ->mapWithDefault(("Loading", "Loading"), a =>
+      ->mapd(("Loading", "Loading"), a =>
           (
             a->Eth.get(Eth.Eth(`ether)),
-            currentUsdEthPrice->Belt.Option.mapWithDefault(
-              "Loading", usdEthRate =>
+            currentUsdEthPrice->mapd("Loading", usdEthRate =>
               a->Eth.get(Eth.Usd(usdEthRate, 2))
             ),
           )
         );
     let foreclosureTime = QlHooks.useForeclosureTime(currentPatron);
-    let definiteTime = foreclosureTime->mapWithDefault(Loading, a => Date(a));
+    let definiteTime = foreclosureTime->mapd(Loading, a => Date(a));
     let (_, _, ratio, _) = Animal.pledgeRate(animal);
 
     let optCurrentPrice = PriceDisplay.uesPrice(animal);
@@ -577,7 +586,10 @@ module AnimalInfoStats = {
       <div>
         <small>
           <strong>
-            <S> {"Monthly Pledge (at " ++ monthlyRate ++ "%): "} </S>
+            {{
+               "Monthly Pledge (at " ++ monthlyRate ++ "%): ";
+             }
+             ->restr}
             <Rimble.Tooltip
               message={
                 "This is the monthly percentage contribution of "
@@ -585,20 +597,27 @@ module AnimalInfoStats = {
                 ++ "'s sale price that will go towards conservation of endangered animals. This is deducted continuously from the deposit and paid by the owner of the animal"
               }
               placement="top">
-              <span> <S> {js|ⓘ|js} </S> </span>
+              <span> {js|ⓘ|js}->restr </span>
             </Rimble.Tooltip>
           </strong>
         </small>
         <br />
         {switch (optMonthlyPledgeEth) {
-         | Some(monthlyPledgeEth) => <S> {monthlyPledgeEth ++ " ETH"} </S>
+         | Some(monthlyPledgeEth) =>
+           {
+             monthlyPledgeEth ++ " ETH";
+           }
+           ->restr
          | None => <Rimble.Loader />
          }}
         <br />
         <small>
           {switch (optMonthlyPledgeUsd) {
            | Some(monthlyPledgeUsd) =>
-             <S> {"(" ++ monthlyPledgeUsd ++ " USD)"} </S>
+             {
+               "(" ++ monthlyPledgeUsd ++ " USD)";
+             }
+             ->restr
            | None => React.null
            }}
         </small>
@@ -606,11 +625,11 @@ module AnimalInfoStats = {
       <p>
         <small>
           <strong>
-            <S> "Current Patron: " </S>
+            "Current Patron: "->restr
             <Rimble.Tooltip
               message={j|This is the $userIdType of the current owner|j}
               placement="top">
-              <span> <S> {js|ⓘ|js} </S> </span>
+              <span> {js|ⓘ|js}->restr </span>
             </Rimble.Tooltip>
           </strong>
         </small>
@@ -626,63 +645,83 @@ module AnimalInfoStats = {
       <p>
         <small>
           <strong>
-            <S> "Available Deposit: " </S>
+            "Available Deposit: "->restr
             <Rimble.Tooltip
               message="This is the amount the owner has deposited to pay their monthly contribution"
               placement="top">
-              <span> <S> {js|ⓘ|js} </S> </span>
+              <span> {js|ⓘ|js}->restr </span>
             </Rimble.Tooltip>
           </strong>
         </small>
         <br />
-        <S> {depositAvailableToWithdrawEth ++ " ETH"} </S>
+        {{
+           depositAvailableToWithdrawEth ++ " ETH";
+         }
+         ->restr}
         <br />
         <small>
-          <S> {"(" ++ depositAvailableToWithdrawUsd ++ " USD)"} </S>
+          {{
+             "(" ++ depositAvailableToWithdrawUsd ++ " USD)";
+           }
+           ->restr}
         </small>
       </p>
       <p>
         <small>
           <strong>
-            <S> {animalName ++ "'s Patronage: "} </S>
+            {{
+               animalName ++ "'s Patronage: ";
+             }
+             ->restr}
             <Rimble.Tooltip
               message={
                 "This is the total contribution that has been raised thanks to the wildcard, "
                 ++ animalName
               }
               placement="top">
-              <span> <S> {js|ⓘ|js} </S> </span>
+              <span> {js|ⓘ|js}->restr </span>
             </Rimble.Tooltip>
           </strong>
         </small>
         <br />
-        <S> {totalPatronage ++ " ETH"} </S>
+        {{
+           totalPatronage ++ " ETH";
+         }
+         ->restr}
         <br />
-        <small> <S> {"(" ++ totalPatronageUsd ++ " USD)"} </S> </small>
+        <small>
+          {{
+             "(" ++ totalPatronageUsd ++ " USD)";
+           }
+           ->restr}
+        </small>
       </p>
       {switch (definiteTime) {
        | Date(date) =>
          <p>
            <small>
              <strong>
-               <S> "Foreclosure date: " </S>
+               "Foreclosure date: "->restr
                <Rimble.Tooltip
                  message={
                    "This is the date the deposit will run out and the animal and the current owner will lose ownership of "
                    ++ animalName
                  }
                  placement="top">
-                 <span> <S> {js|ⓘ|js} </S> </span>
+                 <span> {js|ⓘ|js}->restr </span>
                </Rimble.Tooltip>
              </strong>
            </small>
            <br />
-           <S> {MomentRe.Moment.format("LLLL", date)} </S>
+           {{
+              MomentRe.Moment.format("LLLL", date);
+            }
+            ->restr}
            <br />
            <small>
-             <S> "( " </S>
+             "( "->restr
              <CountDown endDateMoment=date />
-             <S> ")" </S>
+             ")"->restr
            </small>
          </p>
        | Loading => React.null
@@ -693,16 +732,16 @@ module AnimalInfoStats = {
          <p>
            <small>
              <strong>
-               <S> "Days Held: " </S>
+               "Days Held: "->restr
                <Rimble.Tooltip
                  message={j|This is the amount of time $animalName has been held. It was acquired on the $timeAquiredString.|j}
                  placement="top">
-                 <span> <S> {js|ⓘ|js} </S> </span>
+                 <span> {js|ⓘ|js}->restr </span>
                </Rimble.Tooltip>
              </strong>
            </small>
            <br />
-           <S> daysHeldFloat->Js.Float.toFixed </S>
+           {daysHeldFloat->Js.Float.toFixed->restr}
            <br />
          </p>;
        | None => React.null
@@ -832,7 +871,7 @@ let make = () => {
              />
              <UpdatePrice.Transaction animal />
            </div>
-         | _ =>
+         | NoExtraState =>
            switch (optAnimalForDetails) {
            | Some(animal) => <AnimalInfo animal />
            | None => <DefaultLeftPanel />

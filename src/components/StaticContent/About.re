@@ -1,19 +1,18 @@
-open Components;
+open Globals;
 
 [@react.component]
 let make = () => {
   <Rimble.Box className=Styles.horizantalBlueTile>
     <p className=Styles.explainerMediumText>
-      <span className=Styles.boldExplainerText> <S> "Wildcards" </S> </span>
-      <S> " is an idea born out of the " </S>
-      <a href="https://ethcapetown.com/"> <S> "#ETHCapeTown2019" </S> </a>
-      <S> " hackathon which saw team Wildcards as overall " </S>
+      <span className=Styles.boldExplainerText> "Wildcards"->restr </span>
+      " is an idea born out of the "->restr
+      <a href="https://ethcapetown.com/"> "#ETHCapeTown2019"->restr </a>
+      " hackathon which saw team Wildcards as overall "->restr
       <a href="https://devpost.com/software/ethcapetown_wildcards">
-        <S> "winners" </S>
+        "winners"->restr
       </a>
-      <S>
-        ". The focus of the project is raising funds for endangered animals."
-      </S>
+      ". The focus of the project is raising funds for endangered animals."
+      ->restr
     </p>
   </Rimble.Box>;
 };

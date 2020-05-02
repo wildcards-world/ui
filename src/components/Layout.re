@@ -1,4 +1,4 @@
-open Components;
+open Globals;
 
 // TODO: there must be a better way of importing images in reason react...
 let betaBanner = [%bs.raw {|require('../img/beta-banner.png')|}];
@@ -82,10 +82,9 @@ module Header = {
               {isHome
                  ? <div className=Styles.navListItemToggle>
                      <span className=Styles.someMarginRight>
-                       <S>
-                         {usedtranslationModeContext->translationModeCrypto
-                            ? "EXPERT MODE" : "DEFAULT MODE"}
-                       </S>
+                       {usedtranslationModeContext->translationModeCrypto
+                          ? "EXPERT MODE" : "DEFAULT MODE"}
+                       ->restr
                      </span>
                      <ReactTranslate.Switch
                        onChange={
@@ -117,7 +116,7 @@ module Header = {
                        ReactEvent.Mouse.preventDefault(event);
                        clearAndPush("#");
                      }}>
-                     <S> "HOME" </S>
+                     "HOME"->restr
                    </a>}
               <a
                 className=Styles.navListText
@@ -125,14 +124,14 @@ module Header = {
                   ReactEvent.Mouse.preventDefault(event);
                   clearAndPush({j|/#leaderboards/monthly-contribution|j});
                 }}>
-                <S> "LEADERBOARDS" </S>
+                "LEADERBOARDS"->restr
               </a>
               <a
                 className=Styles.navListText
                 target="_blank"
                 rel="noopener noreferrer"
                 href="https://blog.wildcards.world/">
-                <S> "BLOG" </S>
+                "BLOG"->restr
               </a>
               {isExplorer && !isDetails
                  ? React.null
@@ -142,7 +141,7 @@ module Header = {
                        clearAndPush("#explorer");
                      }}
                      className=Styles.whiteText>
-                     <S> "VIEW WILDCARDS" </S>
+                     "VIEW WILDCARDS"->restr
                    </Rimble.Button>}
             </li>
             <li className=Styles.navListItem> <Web3Connect /> </li>

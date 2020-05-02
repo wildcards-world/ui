@@ -3,7 +3,7 @@ let raisingHandsEmoji = [%bs.raw
 ];
 
 module FinalNote = {
-  open Components;
+  open Globals;
   open Rimble;
 
   [@react.component]
@@ -22,7 +22,7 @@ module FinalNote = {
             </Box>
             <Box className=Styles.finalNoteContent>
               <Heading className=Styles.whiteText>
-                <S> "Wildcards is currently under active development." </S>
+                "Wildcards is currently under active development."->restr
               </Heading>
               <br />
               <a
@@ -31,7 +31,7 @@ module FinalNote = {
                 target="_blank"
                 rel="noopener noreferrer">
                 <span className=Styles.linkPillText>
-                  <S> "Watch presentation at the EthCapeTown hackathon." </S>
+                  "Watch presentation at the EthCapeTown hackathon."->restr
                 </span>
               </a>
             </Box>

@@ -1,4 +1,4 @@
-open Components;
+open Globals;
 
 let uesPrice = animal => {
   let optPriceWei = QlHooks.usePrice(animal); //->Web3Utils.fromWeiBNToEth;
@@ -36,12 +36,20 @@ let make = (~animal: Animal.t) => {
   | Some((priceEth, optPriceUsd)) =>
     <React.Fragment>
       <p className={Styles.noMarginTop ++ " " ++ Styles.noMarginBottom}>
-        <S> {priceEth ++ " ETH"} </S>
+        {{
+           priceEth ++ " ETH";
+         }
+         ->restr}
       </p>
       {switch (optPriceUsd) {
        | Some(priceUsd) =>
          <p className=Styles.noMarginTop>
-           <small> <S> {"(" ++ priceUsd ++ " USD)"} </S> </small>
+           <small>
+             {{
+                "(" ++ priceUsd ++ " USD)";
+              }
+              ->restr}
+           </small>
          </p>
        | None => React.null
        }}

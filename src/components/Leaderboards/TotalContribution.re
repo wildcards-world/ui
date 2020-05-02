@@ -45,7 +45,9 @@ let useLoadMostContributedData = () => {
       dailyContributions,
     );
     Some(dailyContributions);
-  | _ => None
+  | Error(_)
+  | Loading
+  | NoData => None
   };
 };
 

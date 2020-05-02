@@ -1,4 +1,3 @@
-open Components;
 open Rimble;
 open Globals;
 open React;
@@ -167,7 +166,7 @@ let make = () => {
         className=Styles.floatingSignupBoxInner>
         <Rimble.Box width=[|1.|]>
           <Rimble.Card>
-            <Heading> <S> "Frequently Asked Questions (FAQs)" </S> </Heading>
+            <Heading> "Frequently Asked Questions (FAQs)"->restr </Heading>
             <div className=accordionSection>
               {Array.mapWithIndex(content, (index, {title, content}) =>
                  <FaqItem

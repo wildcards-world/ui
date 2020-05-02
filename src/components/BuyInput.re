@@ -39,12 +39,12 @@ let make =
 
   let (depositSlider, setDepositSlider) = React.useState(_ => newPrice);
 
-  React.useEffect1(
+  React.useEffect2(
     () => {
       setDepositSlider(_ => deposit);
       None;
     },
-    [|deposit|],
+    (deposit, setDepositSlider),
   );
 
   let (debouncedSetDeposit, _, _) =
