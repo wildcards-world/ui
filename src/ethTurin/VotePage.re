@@ -19,7 +19,6 @@ let darwinAnimalDoctorsImg = [%bs.raw
   {|require('../img/conservation-partners/darwin-animal-doctors.svg')|}
 ];
 
-// Use TODO
 type conservationPartnerType = {
   name: string,
   image: string,
@@ -65,12 +64,12 @@ type currentVote = {
 type voteStep =
   | DefaultView // sub-states can either be loading data, ready, or user is not eligible to vote
   | SelectedOrganisationToVote(organisationIdentifier, currentVote)
+  | ProcessTransaction
   | ViewResults;
 
 module ApproveLoyaltyTokens = {
   [@react.component]
   let make = () => {
-    // let currentUser = RootProvider.useCurrentUser();
     let (approveLoyaltyTokens, transactionStatus) =
       AnimalActions.useApproveLoyaltyTokens();
     let etherScanUrl = RootProvider.useEtherscanUrl();
@@ -102,74 +101,6 @@ module ApproveLoyaltyTokens = {
     </div>;
   };
 };
-/*
- http://localhost:3000/#ethturin-quadratic-voting
- http://localhost:3000/#user/<your-eth-address>
-
- --
- */
-
-// // TODO: Delete this, only for testing purposes.
-// module TestSubmitVote = {
-//   [@react.component]
-//   let make = (~voteValue, ~conservationVoted, ~executeImmediately=false) => {
-//     Js.log2(voteValue, conservationVoted);
-//     let conservationId =
-//       switch (conservationVoted) {
-//       | "The Wild Tomorrow Fund" => "0"
-//       | "The Great Whale Conservancy" => "1"
-//       | "La Senda Verde" => "2"
-//       | "Darwin Animal Doctors"
-//       | _ => "3"
-//       };
-
-//     Js.log3("conservationVoted", "voteValue", "tokensUsedValue");
-//     // Js.log3(voteValue, conservationVoted, conservationId);
-//     let votesBn =
-//       voteValue->Int.toString->BN.new_->BN.mulGet(. BN.new_("1000000000"));
-//     Js.log3(
-//       conservationId,
-//       votesBn->BN.toStringGet(.),
-//       votesBn->BN.sqrGet(.)->BN.toStringGet(.),
-//     );
-
-//     let (voteForProject, transactionStatus) =
-//       AnimalActions.useVoteForProject(conservationId);
-//     let etherScanUrl = RootProvider.useEtherscanUrl();
-
-//     if (executeImmediately) {
-//       voteForProject(votesBn);
-//       ();
-//     } else {
-//       ();
-//     };
-
-//     <div>
-//       {switch (transactionStatus) {
-//        | UnInitialised =>
-//          <p>
-//            <a onClick={_ => {voteForProject(votesBn)}}>
-//              "Test a random vote"->restr
-//            </a>
-//          </p>
-//        | Created => <p> "Transaction Created"->restr </p>
-//        | SignedAndSubmitted(txHash) =>
-//          <p>
-//            "Processing: "->restr
-//            <a
-//              target="_blank"
-//              rel="noopener noreferrer"
-//              href={"https://" ++ etherScanUrl ++ "/tx/" ++ txHash}>
-//              "view transaction"->restr
-//            </a>
-//          </p>
-//        | Declined => <p> "Transaction denied"->restr </p>
-//        | Complete(_txResult) => <p> "You have voted for a project"->restr </p>
-//        | Failed => <p> "Transaction failed"->restr </p>
-//        }}
-//     </div>;
-//   };
-// };
 
 [@react.component]
 let make = () => {
@@ -178,18 +109,10 @@ let make = () => {
   let networkIdOpt = RootProvider.useNetworkId();
 
   let (voteStep, setVoteStep) = React.useState(() => 0);
-  let (voteValue, setVoteValue) = React.useState(() => 1);
-  // let (wildTomorrowLead, _setWildTomorrowLead) = React.useState(() => 25);
-  // let (laSendaVerdeLead, _setLaSendaVerde) = React.useState(() => 25);
-  // let (whaleConservancyLead, _setWhaleConservancy) = React.useState(() => 25);
-  // let (darwinAnimalLead, _setDarwinAnimalLead) = React.useState(() => 25);
   let (conservationVotedArrayIndex, setConservationVotedArrayIndex) =
     React.useState(() => 0);
 
   let nextVoteStep = () => setVoteStep(voteStep => voteStep + 1);
-
-  // Js.log2("current vote step", voteStep);
-  // Js.log2("current vote value", voteValue);
 
   let selectConservation = conservationArrayIndex => {
     setConservationVotedArrayIndex(conservationArrayIndex);
@@ -197,44 +120,21 @@ let make = () => {
   };
 
   let selectVote: int => unit =
-    votes =>
-      if (votes == (-1)) {
-        nextVoteStep();
-      } else {
-        Js.log("VOTE SELECTED");
-        setVoteValue(_ => votes);
-        let conservationVotedContractIndex =
-          conservationPartners->Array.getUnsafe(conservationVotedArrayIndex).
-            index;
-        Js.log2(votes, conservationVotedArrayIndex);
-        // let conservationId =
-        //   switch (conservationVoted) {
-        //   | "The Wild Tomorrow Fund" => "0"
-        //   | "The Great Whale Conservancy" => "1"
-        //   | "La Senda Verde" => "2"
-        //   | "Darwin Animal Doctors"
-        //   | _ => "3"
-        //   };
-
-        Js.log3(
-          votes,
-          conservationVotedArrayIndex,
-          conservationVotedContractIndex,
-        );
-        let votesBn =
-          votes->Int.toString->BN.new_->BN.mulGet(. BN.new_("1000000000"));
-        voteForProject(conservationVotedArrayIndex->string_of_int, votesBn);
-
-        // nextVoteStep();
-        nextVoteStep();
-      };
-  let selectVoteFloat: float => unit =
     votes => {
-      Js.log2("VOTE SELECTED - custom!", votes);
       let conservationVotedContractIndex =
         conservationPartners->Array.getUnsafe(conservationVotedArrayIndex).
           index;
-      Js.log2(votes, conservationVotedContractIndex);
+      let votesBn =
+        votes->Int.toString->BN.new_->BN.mulGet(. BN.new_("1000000000"));
+      voteForProject(conservationVotedContractIndex->string_of_int, votesBn);
+
+      nextVoteStep();
+    };
+  let selectVoteFloat: float => unit =
+    votes => {
+      let conservationVotedContractIndex =
+        conservationPartners->Array.getUnsafe(conservationVotedArrayIndex).
+          index;
 
       let votesBn =
         (votes *. 1000000000.)->int_of_float->Int.toString->BN.new_;
@@ -244,15 +144,8 @@ let make = () => {
 
   let resetVoting = () => {
     setVoteStep(_ => 0);
-    setVoteValue(_ => 1);
     setConservationVotedArrayIndex(_ => 0);
   };
-
-  // let makeVote: _ => unit =
-  //   () => {
-  //     nextVoteStep();
-  //   };
-
   let notGoerliNetworkWarning = networkId =>
     switch (networkId) {
     // TODO: this should only show if the user hasn't approved yet.
@@ -305,18 +198,6 @@ let make = () => {
     | None => [||]
     };
 
-  Js.log2(voteValue, conservationVotedArrayIndex);
-
-  Js.log3("conservationVoted", "voteValue", "tokensUsedValue");
-  // Js.log3(voteValue, conservationVoted, conservationId);
-  // let votesBn =
-  //   voteValue->Int.toString->BN.new_->BN.mulGet(. BN.new_("1000000000"));
-  // Js.log3(
-  //   conservationId,
-  //   votesBn->BN.toStringGet(.),
-  //   votesBn->BN.sqrGet(.)->BN.toStringGet(.),
-  // );
-
   let etherScanUrl = RootProvider.useEtherscanUrl();
 
   let txStateDisplay =
@@ -350,10 +231,8 @@ let make = () => {
       balance->Web3Utils.fromWeiBNToEthPrecision(~digits=3)->Float.fromString
     )
     |||| 0.;
-  // ->Web3Utils.fromWeiBNToEthPrecision(~digits=3)
-  // ->Float.fromString
-  // |||| (0., () => ());
 
+  // TODO: This gets the value from the graph rather - use this in the future rather than querying the chain.
   // let totalLoyaltyTokensOpt =
   //   QlHooks.useTotalLoyaltyToken(userAddressLowerCase);
   // let redeemedLoyaltyTokenBalance: float =
@@ -363,7 +242,6 @@ let make = () => {
   //     ->Float.fromString
   //   )
   //   |||| 0.;
-  // let redeemedLoyaltyTokenBalance: float = 500.0;
 
   let cannotVote: bool =
     currentlyOwnedTokens->Array.length <= 0
@@ -515,5 +393,4 @@ let make = () => {
       </Rimble.Flex>
     </Rimble.Box>
   </Rimble.Box>;
-  // <TestSubmitVote voteValue=1 conservationVoted="La Senda Verde" />
 };

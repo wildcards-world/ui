@@ -60,7 +60,6 @@ let make =
         ->restr
       </Rimble.Heading>
       <p> {("Failure reason: " ++ message)->restr} </p>
-      // <WildcardsLoader />
       children
     </React.Fragment>
   | AnimalActions.Failed =>

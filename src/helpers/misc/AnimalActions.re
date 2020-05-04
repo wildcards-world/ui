@@ -231,6 +231,9 @@ type transactionState =
   | UnInitialised
   | Created
   | SignedAndSubmitted(txHash)
+  // TODO: get the error message when it is declined.
+  //      4001 - means the transaction was declined by the signer
+  //      -32000 - means the transaction is always failing (exceeds gas allowance)
   | Declined(string)
   | Complete(txResult)
   | Failed;
