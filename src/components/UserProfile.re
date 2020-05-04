@@ -51,7 +51,7 @@ module ClaimLoyaltyTokenButtons = {
         | UnInitialised
         | Created
         | SignedAndSubmitted(_)
-        | Declined
+        | Declined(_)
         | Failed => ()
         };
         None;
@@ -89,7 +89,8 @@ module ClaimLoyaltyTokenButtons = {
                "view transaction"->restr
              </a>
            </p>
-         | Declined => <p> "Transaction denied"->restr </p>
+         | Declined(message) =>
+           <p> {("Submitting transaction failed: " ++ message)->restr} </p>
          | Complete(_txResult) =>
            <p>
              "Tokens claimed (please reload the page, this will be improved soon)"

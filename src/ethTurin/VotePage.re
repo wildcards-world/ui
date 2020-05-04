@@ -70,11 +70,9 @@ type voteStep =
 module ApproveLoyaltyTokens = {
   [@react.component]
   let make = () => {
-    let currentUser = RootProvider.useCurrentUser();
+    // let currentUser = RootProvider.useCurrentUser();
     let (approveLoyaltyTokens, transactionStatus) =
-      AnimalActions.useApproveLoyaltyTokens(
-        currentUser |||| "USER NOT LOGGED IN",
-      );
+      AnimalActions.useApproveLoyaltyTokens();
     let etherScanUrl = RootProvider.useEtherscanUrl();
 
     <div>
@@ -96,7 +94,8 @@ module ApproveLoyaltyTokens = {
              "view transaction"->restr
            </a>
          </p>
-       | Declined => <p> "Transaction denied"->restr </p>
+       | Declined(message) =>
+         <p> {("Submitting transaction failed: " ++ message)->restr} </p>
        | Complete(_txResult) => <p> "You are now ready to vote :)"->restr </p>
        | Failed => <p> "Transaction failed"->restr </p>
        }}
@@ -335,7 +334,8 @@ let make = () => {
              "view transaction"->restr
            </a>
          </p>
-       | Declined => <p> "Transaction denied"->restr </p>
+       | Declined(message) =>
+         <p> {("Submitting transaction failed: " ++ message)->restr} </p>
        | Complete(_txResult) => <p> "You have voted for a project"->restr </p>
        | Failed => <p> "Transaction failed"->restr </p>
        }}

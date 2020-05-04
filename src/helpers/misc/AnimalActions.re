@@ -231,7 +231,7 @@ type transactionState =
   | UnInitialised
   | Created
   | SignedAndSubmitted(txHash)
-  | Declined
+  | Declined(string)
   | Complete(txResult)
   | Failed;
 
@@ -272,7 +272,9 @@ let useBuy = animal => {
           });
           ();
         });
-        buyPromise->Promise.getError(error => {Js.log(error.message)});
+        buyPromise->Promise.getError(error => {
+          setTxState(_ => Declined(error.message))
+        });
         ();
       | None => ()
       };
@@ -313,7 +315,7 @@ let useRedeemLoyaltyTokens = (animalId: string) => {
         ();
       });
       claimLoyaltyTokenPromise->Promise.getError(error => {
-        Js.log(error.message)
+        setTxState(_ => Declined(error.message))
       });
       ();
     | None => ()
@@ -323,17 +325,15 @@ let useRedeemLoyaltyTokens = (animalId: string) => {
   (buyFunction, txState);
 };
 
-let useApproveLoyaltyTokens = (address: Web3.ethAddress) => {
+let useApproveLoyaltyTokens = () => {
   let (txState, setTxState) = React.useState(() => UnInitialised);
   let optSteward = useLoyaltyTokenContract();
   let buyFunction = () => {
-    Js.log(address);
     let value = parseUnits(. "0", 0);
 
     setTxState(_ => Created);
     switch (optSteward) {
     | Some(steward) =>
-      Js.log(steward);
       let claimLoyaltyTokenPromise =
         steward.approve(.
           voteContractGoerli,
@@ -348,8 +348,7 @@ let useApproveLoyaltyTokens = (address: Web3.ethAddress) => {
         setTxState(_ => SignedAndSubmitted(tx.hash));
         let txMinedPromise = tx.wait(.)->Promise.Js.toResult;
         txMinedPromise->Promise.getOk(txOutcome => {
-          Js.log(txOutcome);
-          setTxState(_ => Complete(txOutcome));
+          setTxState(_ => Complete(txOutcome))
         });
         txMinedPromise->Promise.getError(error => {
           setTxState(_ => Failed);
@@ -358,7 +357,7 @@ let useApproveLoyaltyTokens = (address: Web3.ethAddress) => {
         ();
       });
       claimLoyaltyTokenPromise->Promise.getError(error => {
-        Js.log(error.message)
+        setTxState(_ => Declined(error.message))
       });
       ();
     | None => ()
@@ -410,7 +409,7 @@ let useVoteForProject = () => {
         ();
       });
       claimLoyaltyTokenPromise->Promise.getError(error => {
-        Js.log(error.message)
+        setTxState(_ => Declined(error.message))
       });
       ();
     | None => ()
@@ -497,7 +496,7 @@ let useWithdrawDeposit = () => {
           ();
         });
         updateDepositPromise->Promise.getError(error => {
-          Js.log(error.message)
+          setTxState(_ => Declined(error.message))
         });
         ();
       | None => ()
@@ -571,7 +570,7 @@ let useChangePrice = animal => {
           ();
         });
         updatePricePromise->Promise.getError(error => {
-          Js.log(error.message)
+          setTxState(_ => Declined(error.message))
         });
         ();
       | None => ()
