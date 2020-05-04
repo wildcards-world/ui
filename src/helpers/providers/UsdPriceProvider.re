@@ -1,4 +1,3 @@
-open Async;
 open Globals;
 
 type usdPrice = {usdPrice: option(float)};

@@ -345,7 +345,7 @@ let getStoryParagraphs = animal =>
   | Vitalik => [|
       "Original Gorilla",
       "Vitalik is the first ever animal launched on wildcards and therefore often termed an OG (Original Gorilla). The wildcards project was born at the #ETHCapeTown hackathon in May 2019 where Vitalik Buterin was one of the judges. We named Vitalik the Gorilla after Vitalik as a testament to the impact and innovation Vitalik Buterin has had on the blockchain ecosystem. Vitalik, if you are reading this, start saving some animals and buy me!",
-      "Funds raised by Vitalik, the first wildcard, flow toward the Wild Tomorrow Fund, our first conservation partner.",
+      "Funds raised by Vitalik, initially, will go to Wild Tomorrow Fund; however Vitalik doesn\'t represent a real gorilla, and funds for Vitalik may be distributed via another allocation mechanism in the future (DAO or otherwise).",
     |]
   | Simon => [|
       "Original Gorilla",

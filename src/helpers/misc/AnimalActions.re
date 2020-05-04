@@ -60,9 +60,11 @@ type voteContract = {
   // vote(uint256 proposalIdToVoteFor, uint256 amount, uint256 sqrt)
   vote: (. string, string, string, txOptions) => Promise.Js.t(tx, txError),
 };
+type ethersBnFormat;
+[@bs.send] external ethersBnToString: ethersBnFormat => string = "toString";
 type loyaltyTokenContract = {
   // approve(address to, uint256 tokenId)
-  balanceOf: (. string) => Js.Promise.t(string),
+  balanceOf: (. string) => Js.Promise.t(ethersBnFormat),
   approve:
     (. Web3.ethAddress, string, txOptions) => Promise.Js.t(tx, txError),
 };
@@ -517,7 +519,8 @@ let useUserLoyaltyTokenBalance = (address: Web3.ethAddress) => {
       | Some(steward) =>
         let _ = {
           let%Async balance = steward.balanceOf(. address);
-          setResult(_ => Some(BN.new_(balance)));
+          let balanceString = balance->ethersBnToString;
+          setResult(_ => Some(BN.new_(balanceString)));
           ()->async;
         };
         ();
