@@ -3,27 +3,31 @@ open Globals;
 [@react.component]
 let make =
     (
-      ~redeemedLoyaltyTokenBalance: float,
-      ~voteValue: int,
-      ~customVote: int => unit,
+      ~voteValue: float,
+      ~customVote: float => unit,
       ~makeVote: _ => unit,
+      ~maxVote: float,
     ) => {
   <div>
     <form>
       <input
-        value={voteValue->Int.toString}
-        type_="number"
+        value={voteValue->Float.toString}
+        // type_="number"
         min=0
-        max={redeemedLoyaltyTokenBalance->Float.toString}
-        onChange={event => customVote(ReactEvent.Form.target(event)##value)}
+        max={maxVote->Float.toString}
+        onChange={event => {
+          let voteString = ReactEvent.Form.target(event)##value;
+          let voteFloat = Float.fromString(voteString) |||| 0.;
+          customVote(voteFloat);
+        }}
       />
       <button onClick={_ => makeVote()}> "Vote"->restr </button>
     </form>
     <br />
     <small>
-      {voteValue->Int.toString->restr}
+      {voteValue->Float.toString->restr}
       " votes = "->restr
-      {(voteValue * voteValue)->Int.toString->restr}
+      {(voteValue *. voteValue)->Float.toString->restr}
       " loyalty tokens"->restr
     </small>
   </div>;

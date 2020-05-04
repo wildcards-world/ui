@@ -49,6 +49,19 @@ let darwinAnimalDoctorsImg = [%bs.raw
 //   },
 // |];
 
+// type reasonUneligeableToVote =
+//   | DontOwnAWildcard
+//   | EligeableToVote;
+type organisationIdentifier = int;
+type currentVote = {
+  vote: BN.bn,
+  maxPossibleVote: BN.bn // This should be calculated at the beginning
+};
+type voteStep =
+  | DefaultView // sub-states can either be loading data, ready, or user is not eligible to vote
+  | SelectedOrganisationToVote(organisationIdentifier, currentVote)
+  | ViewResults;
+
 module ApproveLoyaltyTokens = {
   [@react.component]
   let make = () => {
@@ -203,6 +216,25 @@ let make = () => {
         nextVoteStep();
         nextVoteStep();
       };
+  let selectVoteFloat: float => unit =
+    votes => {
+      Js.log("VOTE SELECTED");
+      // setVoteValue(_ => votes);
+      Js.log2(votes, conservationVoted);
+      let conservationId =
+        switch (conservationVoted) {
+        | "The Wild Tomorrow Fund" => "0"
+        | "The Great Whale Conservancy" => "1"
+        | "La Senda Verde" => "2"
+        | "Darwin Animal Doctors"
+        | _ => "3"
+        };
+
+      Js.log3(votes, conservationVoted, conservationId);
+      let votesBn =
+        (votes *. 1000000000.)->int_of_float->Int.toString->BN.new_;
+      voteForProject(conservationId, votesBn);
+    };
 
   let resetVoting = () => {
     setVoteStep(_ => 0);
@@ -210,10 +242,10 @@ let make = () => {
     setConservationVoted(_ => "");
   };
 
-  let makeVote: _ => unit =
-    () => {
-      nextVoteStep();
-    };
+  // let makeVote: _ => unit =
+  //   () => {
+  //     nextVoteStep();
+  //   };
 
   let notGoerliNetworkWarning = networkId =>
     switch (networkId) {
@@ -310,40 +342,35 @@ let make = () => {
        }}
     </div>;
 
-  // let redeemedLoyaltyTokenBalance =
-  //   AnimalActions.useUserLoyaltyTokenBalance(
-  //     currentUser |||| "0x0000000000000000000000000000000000000500",
-  //   )
-  //   ->Web3Utils.fromWeiBNToEthPrecision(~digits=3)
-  //   ->Float.fromString
-  //   |||| 0.;
-
-  let totalLoyaltyTokensOpt =
-    QlHooks.useTotalLoyaltyToken(userAddressLowerCase);
-  let redeemedLoyaltyTokenBalance: float =
-    totalLoyaltyTokensOpt->oFlatMap(((_, claimedLoyaltyTokens)) =>
-      claimedLoyaltyTokens
-      ->Web3Utils.fromWeiBNToEthPrecision(~digits=3)
-      ->Float.fromString
+  let (redeemedLoyaltyTokenBalanceBn, _resetLoyaltyTokenBalance) =
+    AnimalActions.useUserLoyaltyTokenBalance(
+      currentUser |||| "0x0000000000000000000000000000000000000500",
+    );
+  let redeemedLoyaltyTokenBalance =
+    redeemedLoyaltyTokenBalanceBn->oFlatMap(balance =>
+      balance->Web3Utils.fromWeiBNToEthPrecision(~digits=3)->Float.fromString
     )
     |||| 0.;
-  // let redeemedLoyaltyTokenBalance: float = 500.0;
+  // ->Web3Utils.fromWeiBNToEthPrecision(~digits=3)
+  // ->Float.fromString
+  // |||| (0., () => ());
 
-  let customVote: int => unit =
-    votes =>
-      if (votes < 0) {
-        setVoteValue(_ => 0);
-      } else if (votes * votes >= redeemedLoyaltyTokenBalance->Float.toInt) {
-        setVoteValue(_ =>
-          redeemedLoyaltyTokenBalance->Js.Math.sqrt->Float.toInt
-        );
-      } else {
-        setVoteValue(_ => votes);
-      };
+  // let totalLoyaltyTokensOpt =
+  //   QlHooks.useTotalLoyaltyToken(userAddressLowerCase);
+  // let redeemedLoyaltyTokenBalance: float =
+  //   totalLoyaltyTokensOpt->oFlatMap(((_, claimedLoyaltyTokens)) =>
+  //     claimedLoyaltyTokens
+  //     ->Web3Utils.fromWeiBNToEthPrecision(~digits=3)
+  //     ->Float.fromString
+  //   )
+  //   |||| 0.;
+  // let redeemedLoyaltyTokenBalance: float = 500.0;
 
   let cannotVote: bool =
     currentlyOwnedTokens->Array.length <= 0
     || notGoerliNetwork(networkIdOpt |||| (-1));
+
+  let maxVote = Js.Math.sqrt(redeemedLoyaltyTokenBalance);
 
   <Rimble.Box className=Styles.topBody>
     <Rimble.Box>
@@ -451,14 +478,13 @@ let make = () => {
                         }>
                         "Vote"->restr
                       </Rimble.Button>
-                    | 1 => <QVSelect selectVote redeemedLoyaltyTokenBalance />
-                    | 2 =>
-                      <CustomVote
-                        redeemedLoyaltyTokenBalance
-                        voteValue
-                        customVote
-                        makeVote
+                    | 1 =>
+                      <QVSelect
+                        selectVote
+                        makeCustomVote=selectVoteFloat
+                        maxVote
                       />
+                    // | 2 => <CustomVote maxVote voteValue customVote makeVote />
                     | 3 => txStateDisplay
                     | 4 =>
                       <p
@@ -506,14 +532,20 @@ let make = () => {
                         }>
                         "Vote"->restr
                       </Rimble.Button>
-                    | 1 => <QVSelect selectVote redeemedLoyaltyTokenBalance />
-                    | 2 =>
-                      <CustomVote
-                        redeemedLoyaltyTokenBalance
-                        voteValue
-                        customVote
-                        makeVote
+                    | 1 =>
+                      <QVSelect
+                        selectVote
+                        makeCustomVote=selectVoteFloat
+                        maxVote
                       />
+                    // <QVSelect selectVote redeemedLoyaltyTokenBalance />
+                    // | 2 =>
+                    //   <CustomVote
+                    //     redeemedLoyaltyTokenBalance
+                    //     voteValue
+                    //     customVote
+                    //     makeVote
+                    //   />
                     | 3 => txStateDisplay
                     | 4 =>
                       <p
@@ -558,14 +590,20 @@ let make = () => {
                         }>
                         "Vote"->restr
                       </Rimble.Button>
-                    | 1 => <QVSelect selectVote redeemedLoyaltyTokenBalance />
-                    | 2 =>
-                      <CustomVote
-                        redeemedLoyaltyTokenBalance
-                        voteValue
-                        customVote
-                        makeVote
+                    | 1 =>
+                      <QVSelect
+                        selectVote
+                        makeCustomVote=selectVoteFloat
+                        maxVote
                       />
+                    // <QVSelect selectVote redeemedLoyaltyTokenBalance />
+                    // | 2 =>
+                    //   <CustomVote
+                    //     redeemedLoyaltyTokenBalance
+                    //     voteValue
+                    //     customVote
+                    //     makeVote
+                    //   />
                     | 3 => txStateDisplay
                     | 4 =>
                       <p
@@ -611,14 +649,20 @@ let make = () => {
                         }>
                         "Vote"->restr
                       </Rimble.Button>
-                    | 1 => <QVSelect selectVote redeemedLoyaltyTokenBalance />
-                    | 2 =>
-                      <CustomVote
-                        redeemedLoyaltyTokenBalance
-                        voteValue
-                        customVote
-                        makeVote
+                    | 1 =>
+                      <QVSelect
+                        selectVote
+                        makeCustomVote=selectVoteFloat
+                        maxVote
                       />
+                    //<QVSelect selectVote redeemedLoyaltyTokenBalance />
+                    // | 2 =>
+                    //   <CustomVote
+                    //     redeemedLoyaltyTokenBalance
+                    //     voteValue
+                    //     customVote
+                    //     makeVote
+                    //   />
                     | 3 => txStateDisplay
                     | 4 =>
                       <p
