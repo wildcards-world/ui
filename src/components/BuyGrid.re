@@ -5,7 +5,7 @@ let backgroundStyle =
     style([
       paddingTop(rem(1.)),
       unsafe(
-        "background-image",
+        "backgroundImage",
         "linear-gradient(to top, #74C7D7 0%, white 100%)",
       ),
     ])
