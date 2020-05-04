@@ -1,7 +1,39 @@
 open Globals;
 
-// 10000
-// 100000000
+module CustomVote = {
+  [@react.component]
+  let make =
+      (
+        ~voteValue: float,
+        ~customVote: float => unit,
+        ~makeVote: float => unit,
+        ~maxVote: float,
+      ) => {
+    <div>
+      <form>
+        <input
+          value={voteValue->Float.toString}
+          // type_="number"
+          min=0
+          max={maxVote->Float.toString}
+          onChange={event => {
+            let voteString = ReactEvent.Form.target(event)##value;
+            let voteFloat = Float.fromString(voteString) |||| 0.;
+            customVote(voteFloat);
+          }}
+        />
+        <button onClick={_ => makeVote(voteValue)}> "Vote"->restr </button>
+      </form>
+      <br />
+      <small>
+        {voteValue->Float.toString->restr}
+        " votes = "->restr
+        {(voteValue *. voteValue)->Float.toString->restr}
+        " loyalty tokens"->restr
+      </small>
+    </div>;
+  };
+};
 [@react.component]
 let make =
     (
@@ -9,7 +41,6 @@ let make =
       ~makeCustomVote: float => unit,
       ~maxVote: float,
     ) => {
-  Js.log2("Max Vote", maxVote);
   let (voteValue, setVoteValue) = React.useState(_ => 0.);
   let customVote: float => unit =
     voteValue =>
@@ -30,21 +61,19 @@ let make =
            Js.log3(x, "<= maxVote", disabled);
            <Rimble.Button
              key={x->string_of_int} onClick={_ => selectVote(x)} disabled>
-             //  value={x->string_of_int}
-
-               {(
-                  {
-                    x;
-                  }->string_of_int
-                  ++ " Vote = "
-                  ++ {
-                       x * x;
-                     }
-                     ->string_of_int
-                  ++ " Loyalty Token"
-                )
-                ->restr}
-             </Rimble.Button>;
+             {(
+                {
+                  x;
+                }->string_of_int
+                ++ " Vote = "
+                ++ {
+                     x * x;
+                   }
+                   ->string_of_int
+                ++ " Loyalty Token"
+              )
+              ->restr}
+           </Rimble.Button>;
          }),
      )}
     <CustomVote maxVote voteValue customVote makeVote=makeCustomVote />

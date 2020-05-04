@@ -20,34 +20,39 @@ let darwinAnimalDoctorsImg = [%bs.raw
 ];
 
 // Use TODO
-// type conservationPartnerType = {
-//   name: string,
-//   image: string,
-//   link: string,
-// };
+type conservationPartnerType = {
+  name: string,
+  image: string,
+  link: string,
+  index: int,
+};
 
-// let conservationPartners: array(conservationPartnerType) = [|
-//   {
-//     name: "Wild Tomorrow Fund",
-//     image: wildTomorrowFundImg,
-//     link: "https://www.wildtomorrowfund.org/",
-//   },
-//   {
-//     name: "La Senda Verde",
-//     image: laSendaVerdeImg,
-//     link: "http://www.sendaverde.org/",
-//   },
-//   {
-//     name: "The Great Whale Conservancy",
-//     image: greatWhaleConservancyImg,
-//     link: "http://greatwhaleconservancy.org/",
-//   },
-//   {
-//     name: "Darwin Animal Doctors",
-//     image: darwinAnimalDoctorsImg,
-//     link: "http://darwinanimaldoctors.org/",
-//   },
-// |];
+let conservationPartners: array(conservationPartnerType) = [|
+  {
+    name: "Wild Tomorrow Fund",
+    image: wildTomorrowFundImg,
+    link: "https://www.wildtomorrowfund.org/",
+    index: 1,
+  },
+  {
+    name: "La Senda Verde",
+    image: laSendaVerdeImg,
+    link: "http://www.sendaverde.org/",
+    index: 2,
+  },
+  {
+    name: "The Great Whale Conservancy",
+    image: greatWhaleConservancyImg,
+    link: "http://greatwhaleconservancy.org/",
+    index: 3,
+  },
+  {
+    name: "Darwin Animal Doctors",
+    image: darwinAnimalDoctorsImg,
+    link: "http://darwinanimaldoctors.org/",
+    index: 4,
+  },
+|];
 
 // type reasonUneligeableToVote =
 //   | DontOwnAWildcard
@@ -175,19 +180,20 @@ let make = () => {
 
   let (voteStep, setVoteStep) = React.useState(() => 0);
   let (voteValue, setVoteValue) = React.useState(() => 1);
-  let (wildTomorrowLead, _setWildTomorrowLead) = React.useState(() => 25);
-  let (laSendaVerdeLead, _setLaSendaVerde) = React.useState(() => 25);
-  let (whaleConservancyLead, _setWhaleConservancy) = React.useState(() => 25);
-  let (darwinAnimalLead, _setDarwinAnimalLead) = React.useState(() => 25);
-  let (conservationVoted, setConservationVoted) = React.useState(() => "");
+  // let (wildTomorrowLead, _setWildTomorrowLead) = React.useState(() => 25);
+  // let (laSendaVerdeLead, _setLaSendaVerde) = React.useState(() => 25);
+  // let (whaleConservancyLead, _setWhaleConservancy) = React.useState(() => 25);
+  // let (darwinAnimalLead, _setDarwinAnimalLead) = React.useState(() => 25);
+  let (conservationVotedArrayIndex, setConservationVotedArrayIndex) =
+    React.useState(() => 0);
 
   let nextVoteStep = () => setVoteStep(voteStep => voteStep + 1);
 
   // Js.log2("current vote step", voteStep);
   // Js.log2("current vote value", voteValue);
 
-  let selectConservation = conservationName => {
-    setConservationVoted(conservationName);
+  let selectConservation = conservationArrayIndex => {
+    setConservationVotedArrayIndex(conservationArrayIndex);
     nextVoteStep();
   };
 
@@ -198,48 +204,49 @@ let make = () => {
       } else {
         Js.log("VOTE SELECTED");
         setVoteValue(_ => votes);
-        Js.log2(votes, conservationVoted);
-        let conservationId =
-          switch (conservationVoted) {
-          | "The Wild Tomorrow Fund" => "0"
-          | "The Great Whale Conservancy" => "1"
-          | "La Senda Verde" => "2"
-          | "Darwin Animal Doctors"
-          | _ => "3"
-          };
+        let conservationVotedContractIndex =
+          conservationPartners->Array.getUnsafe(conservationVotedArrayIndex).
+            index;
+        Js.log2(votes, conservationVotedArrayIndex);
+        // let conservationId =
+        //   switch (conservationVoted) {
+        //   | "The Wild Tomorrow Fund" => "0"
+        //   | "The Great Whale Conservancy" => "1"
+        //   | "La Senda Verde" => "2"
+        //   | "Darwin Animal Doctors"
+        //   | _ => "3"
+        //   };
 
-        Js.log3(votes, conservationVoted, conservationId);
+        Js.log3(
+          votes,
+          conservationVotedArrayIndex,
+          conservationVotedContractIndex,
+        );
         let votesBn =
           votes->Int.toString->BN.new_->BN.mulGet(. BN.new_("1000000000"));
-        voteForProject(conservationId, votesBn);
+        voteForProject(conservationVotedArrayIndex->string_of_int, votesBn);
 
-        nextVoteStep();
+        // nextVoteStep();
         nextVoteStep();
       };
   let selectVoteFloat: float => unit =
     votes => {
-      Js.log("VOTE SELECTED");
-      // setVoteValue(_ => votes);
-      Js.log2(votes, conservationVoted);
-      let conservationId =
-        switch (conservationVoted) {
-        | "The Wild Tomorrow Fund" => "0"
-        | "The Great Whale Conservancy" => "1"
-        | "La Senda Verde" => "2"
-        | "Darwin Animal Doctors"
-        | _ => "3"
-        };
+      Js.log2("VOTE SELECTED - custom!", votes);
+      let conservationVotedContractIndex =
+        conservationPartners->Array.getUnsafe(conservationVotedArrayIndex).
+          index;
+      Js.log2(votes, conservationVotedContractIndex);
 
-      Js.log3(votes, conservationVoted, conservationId);
       let votesBn =
         (votes *. 1000000000.)->int_of_float->Int.toString->BN.new_;
-      voteForProject(conservationId, votesBn);
+      voteForProject(conservationVotedContractIndex->string_of_int, votesBn);
+      nextVoteStep();
     };
 
   let resetVoting = () => {
     setVoteStep(_ => 0);
     setVoteValue(_ => 1);
-    setConservationVoted(_ => "");
+    setConservationVotedArrayIndex(_ => 0);
   };
 
   // let makeVote: _ => unit =
@@ -299,25 +306,17 @@ let make = () => {
     | None => [||]
     };
 
-  Js.log2(voteValue, conservationVoted);
-  let conservationId =
-    switch (conservationVoted) {
-    | "The Wild Tomorrow Fund" => "0"
-    | "The Great Whale Conservancy" => "1"
-    | "La Senda Verde" => "2"
-    | "Darwin Animal Doctors"
-    | _ => "3"
-    };
+  Js.log2(voteValue, conservationVotedArrayIndex);
 
   Js.log3("conservationVoted", "voteValue", "tokensUsedValue");
   // Js.log3(voteValue, conservationVoted, conservationId);
-  let votesBn =
-    voteValue->Int.toString->BN.new_->BN.mulGet(. BN.new_("1000000000"));
-  Js.log3(
-    conservationId,
-    votesBn->BN.toStringGet(.),
-    votesBn->BN.sqrGet(.)->BN.toStringGet(.),
-  );
+  // let votesBn =
+  //   voteValue->Int.toString->BN.new_->BN.mulGet(. BN.new_("1000000000"));
+  // Js.log3(
+  //   conservationId,
+  //   votesBn->BN.toStringGet(.),
+  //   votesBn->BN.sqrGet(.)->BN.toStringGet(.),
+  // );
 
   let etherScanUrl = RootProvider.useEtherscanUrl();
 
@@ -446,10 +445,47 @@ let make = () => {
              }}
           </small>
           <Rimble.Flex flexWrap="wrap" alignItems="center">
-            {conservationVoted == ""
-             || conservationVoted == "The Wild Tomorrow Fund"
-               ? <Rimble.Box width=[|1., 0.25|]>
-                   <a href="https://www.wildtomorrowfund.org/" target="_blank">
+            {switch (voteStep) {
+             | 0 =>
+               conservationPartners
+               ->Array.mapWithIndex((index, conservationPartner) =>
+                   <Rimble.Box width=[|1., 0.25|]>
+                     <a href={conservationPartner.link} target="_blank">
+                       <img
+                         className=Css.(
+                           style([
+                             display(`block),
+                             width(`percent(70.)),
+                             maxWidth(`px(800)),
+                             margin(auto),
+                           ])
+                         )
+                         src={conservationPartner.image}
+                       />
+                     </a>
+                     <Rimble.Button
+                       className=Css.(
+                         style([
+                           display(`block),
+                           margin(auto),
+                           width(`percent(90.)),
+                         ])
+                       )
+                       disabled=cannotVote
+                       onClick={_ => selectConservation(_ => index)}>
+                       "Vote"->restr
+                     </Rimble.Button>
+                   </Rimble.Box>
+                 )
+               ->React.array
+             | 1 =>
+               let selectedConservationPartner =
+                 conservationPartners->Array.getUnsafe(
+                   conservationVotedArrayIndex,
+                 );
+               <>
+                 <Rimble.Box width=[|1., 0.25|]>
+                   <a href={selectedConservationPartner.link} target="_blank">
                      <img
                        className=Css.(
                          style([
@@ -459,223 +495,21 @@ let make = () => {
                            margin(auto),
                          ])
                        )
-                       src=wildTomorrowFundImg
+                       src={selectedConservationPartner.image}
                      />
                    </a>
-                   {switch (voteStep) {
-                    | 0 =>
-                      <Rimble.Button
-                        className=Css.(
-                          style([
-                            display(`block),
-                            margin(auto),
-                            width(`percent(90.)),
-                          ])
-                        )
-                        disabled=cannotVote
-                        onClick={_ =>
-                          selectConservation(_ => "The Wild Tomorrow Fund")
-                        }>
-                        "Vote"->restr
-                      </Rimble.Button>
-                    | 1 =>
-                      <QVSelect
-                        selectVote
-                        makeCustomVote=selectVoteFloat
-                        maxVote
-                      />
-                    // | 2 => <CustomVote maxVote voteValue customVote makeVote />
-                    | 3 => txStateDisplay
-                    | 4 =>
-                      <p
-                        className=Css.(
-                          style([textAlign(center), color(teal)])
-                        )>
-                        {wildTomorrowLead->Int.toString->restr}
-                        "% of votes"->restr
-                      </p>
-                    | _ => React.null
-                    }}
                  </Rimble.Box>
-               : React.null}
-            {conservationVoted == ""
-             || conservationVoted == "The Great Whale Conservancy"
-               ? <Rimble.Box width=[|1., 0.25|]>
-                   <a href="http://greatwhaleconservancy.org/" target="_blank">
-                     <img
-                       className=Css.(
-                         style([
-                           display(`block),
-                           width(`percent(70.)),
-                           maxWidth(`px(800)),
-                           margin(auto),
-                         ])
-                       )
-                       src=greatWhaleConservancyImg
-                     />
-                   </a>
-                   {switch (voteStep) {
-                    | 0 =>
-                      <Rimble.Button
-                        className=Css.(
-                          style([
-                            display(`block),
-                            margin(auto),
-                            width(`percent(90.)),
-                          ])
-                        )
-                        disabled=cannotVote
-                        onClick={_ =>
-                          selectConservation(_ =>
-                            "The Great Whale Conservancy"
-                          )
-                        }>
-                        "Vote"->restr
-                      </Rimble.Button>
-                    | 1 =>
-                      <QVSelect
-                        selectVote
-                        makeCustomVote=selectVoteFloat
-                        maxVote
-                      />
-                    // <QVSelect selectVote redeemedLoyaltyTokenBalance />
-                    // | 2 =>
-                    //   <CustomVote
-                    //     redeemedLoyaltyTokenBalance
-                    //     voteValue
-                    //     customVote
-                    //     makeVote
-                    //   />
-                    | 3 => txStateDisplay
-                    | 4 =>
-                      <p
-                        className=Css.(
-                          style([textAlign(center), color(teal)])
-                        )>
-                        {whaleConservancyLead->Int.toString->restr}
-                        "% of votes"->restr
-                      </p>
-                    | _ => React.null
-                    }}
+                 <Rimble.Box width=[|1., 0.75|]>
+                   <QVSelect
+                     selectVote
+                     makeCustomVote=selectVoteFloat
+                     maxVote
+                   />
                  </Rimble.Box>
-               : React.null}
-            {conservationVoted == "" || conservationVoted == "La Senda Verde"
-               ? <Rimble.Box width=[|1., 0.25|]>
-                   <a href="http://www.sendaverde.org/" target="_blank">
-                     <img
-                       className=Css.(
-                         style([
-                           display(`block),
-                           width(`percent(70.)),
-                           maxWidth(`px(800)),
-                           margin(auto),
-                         ])
-                       )
-                       src=laSendaVerdeImg
-                     />
-                   </a>
-                   {switch (voteStep) {
-                    | 0 =>
-                      <Rimble.Button
-                        className=Css.(
-                          style([
-                            display(`block),
-                            margin(auto),
-                            width(`percent(90.)),
-                          ])
-                        )
-                        disabled=cannotVote
-                        onClick={_ =>
-                          selectConservation(_ => "La Senda Verde")
-                        }>
-                        "Vote"->restr
-                      </Rimble.Button>
-                    | 1 =>
-                      <QVSelect
-                        selectVote
-                        makeCustomVote=selectVoteFloat
-                        maxVote
-                      />
-                    // <QVSelect selectVote redeemedLoyaltyTokenBalance />
-                    // | 2 =>
-                    //   <CustomVote
-                    //     redeemedLoyaltyTokenBalance
-                    //     voteValue
-                    //     customVote
-                    //     makeVote
-                    //   />
-                    | 3 => txStateDisplay
-                    | 4 =>
-                      <p
-                        className=Css.(
-                          style([textAlign(center), color(teal)])
-                        )>
-                        {laSendaVerdeLead->Int.toString->restr}
-                        "% of votes"->restr
-                      </p>
-                    | _ => React.null
-                    }}
-                 </Rimble.Box>
-               : React.null}
-            {conservationVoted == ""
-             || conservationVoted == "Darwin Animal Doctors"
-               ? <Rimble.Box width=[|1., 0.25|]>
-                   <a href="http://darwinanimaldoctors.org/" target="_blank">
-                     <img
-                       className=Css.(
-                         style([
-                           display(`block),
-                           width(`percent(70.)),
-                           maxWidth(`px(800)),
-                           margin(auto),
-                         ])
-                       )
-                       src=darwinAnimalDoctorsImg
-                     />
-                   </a>
-                   {switch (voteStep) {
-                    | 0 =>
-                      <Rimble.Button
-                        className=Css.(
-                          style([
-                            display(`block),
-                            margin(auto),
-                            width(`percent(90.)),
-                          ])
-                        )
-                        disabled=cannotVote
-                        onClick={_ =>
-                          selectConservation(_ => "Darwin Animal Doctors")
-                        }>
-                        "Vote"->restr
-                      </Rimble.Button>
-                    | 1 =>
-                      <QVSelect
-                        selectVote
-                        makeCustomVote=selectVoteFloat
-                        maxVote
-                      />
-                    //<QVSelect selectVote redeemedLoyaltyTokenBalance />
-                    // | 2 =>
-                    //   <CustomVote
-                    //     redeemedLoyaltyTokenBalance
-                    //     voteValue
-                    //     customVote
-                    //     makeVote
-                    //   />
-                    | 3 => txStateDisplay
-                    | 4 =>
-                      <p
-                        className=Css.(
-                          style([textAlign(center), color(teal)])
-                        )>
-                        {darwinAnimalLead->Int.toString->restr}
-                        "% of votes"->restr
-                      </p>
-                    | _ => React.null
-                    }}
-                 </Rimble.Box>
-               : React.null}
+               </>;
+             | 2 => txStateDisplay
+             | _ => React.null
+             }}
           </Rimble.Flex>
         </Rimble.Box>
       </Rimble.Flex>
