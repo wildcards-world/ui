@@ -1,46 +1,21 @@
 open Globals;
 
-module CustomVote = {
-  [@react.component]
-  let make =
-      (
-        ~voteValue: float,
-        ~customVote: float => unit,
-        ~makeVote: float => unit,
-        ~maxVote: float,
-      ) => {
-    <div>
-      <form>
-        <input
-          value={voteValue->Float.toString}
-          // type_="number"
-          min=0
-          max={maxVote->Float.toString}
-          onChange={event => {
-            let voteString = ReactEvent.Form.target(event)##value;
-            let voteFloat = Float.fromString(voteString) |||| 0.;
-            customVote(voteFloat);
-          }}
-        />
-        <button onClick={_ => makeVote(voteValue)}> "Vote"->restr </button>
-      </form>
-      <br />
-      <small>
-        {voteValue->Float.toString->restr}
-        " votes = "->restr
-        {(voteValue *. voteValue)->Float.toString->restr}
-        " loyalty tokens"->restr
-      </small>
-    </div>;
-  };
-};
+// module CustomVote = {
+//   [@react.component]
+//   let make =
+//       (
+//         ~voteValue: float,
+//         ~customVote: float => unit,
+//         ~makeVote: float => unit,
+//         ~maxVote: float,
+//       ) => {
+//   };
+// };
+
+let hasDecimals = value => value -. value->Float.toInt->Float.fromInt > 0.;
+
 [@react.component]
-let make =
-    (
-      ~selectVote: int => unit,
-      ~makeCustomVote: float => unit,
-      ~maxVote: float,
-    ) => {
+let make = (~submitVoteFunction: float => unit, ~maxVote: float) => {
   let (voteValue, setVoteValue) = React.useState(_ => 0.);
   let customVote: float => unit =
     voteValue =>
@@ -55,27 +30,55 @@ let make =
       };
   <>
     {ReasonReact.array(
-       [|1, 2, 3, 4, 5|]
+       [|1., 2., 3., 4., 5.|]
        ->Array.map(x => {
-           let disabled = x->float_of_int >= maxVote;
+           let disabled = x >= maxVote;
            Js.log3(x, "<= maxVote", disabled);
            <Rimble.Button
-             key={x->string_of_int} onClick={_ => selectVote(x)} disabled>
+             key={x->Float.toString}
+             onClick={_ => submitVoteFunction(x)}
+             disabled>
              {(
                 {
                   x;
-                }->string_of_int
+                }->Float.toString
                 ++ " Vote = "
                 ++ {
-                     x * x;
+                     x *. x;
                    }
-                   ->string_of_int
+                   ->Float.toString
                 ++ " Loyalty Token"
               )
               ->restr}
            </Rimble.Button>;
          }),
      )}
-    <CustomVote maxVote voteValue customVote makeVote=makeCustomVote />
+    <div>
+      <form>
+        <input
+          value={
+            voteValue->Float.toString ++ (hasDecimals(voteValue) ? "" : ".0")
+          }
+          type_="number"
+          min=0
+          max={maxVote->Float.toString}
+          onChange={event => {
+            let voteString = ReactEvent.Form.target(event)##value;
+            let voteFloat = Float.fromString(voteString) |||| 0.;
+            customVote(voteFloat);
+          }}
+        />
+        <button onClick={_ => submitVoteFunction(voteValue)}>
+          "Vote"->restr
+        </button>
+      </form>
+      <br />
+      <small>
+        {voteValue->Float.toString->restr}
+        " votes = "->restr
+        {(voteValue *. voteValue)->Float.toString->restr}
+        " loyalty tokens"->restr
+      </small>
+    </div>
   </>;
 };

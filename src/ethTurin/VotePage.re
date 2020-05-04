@@ -56,20 +56,39 @@ let conservationPartners: array(conservationPartnerType) = [|
 // type reasonUneligeableToVote =
 //   | DontOwnAWildcard
 //   | EligeableToVote;
-type organisationIdentifier = int;
-type currentVote = {
-  vote: BN.bn,
-  maxPossibleVote: BN.bn // This should be calculated at the beginning
-};
+type organisationArrayIndex = int;
+// type currentVote = {
+//   vote: BN.bn,
+//   maxPossibleVote: BN.bn // This should be calculated at the beginning
+// };
 type voteStep =
   | DefaultView // sub-states can either be loading data, ready, or user is not eligible to vote
-  | SelectedOrganisationToVote(organisationIdentifier, currentVote)
+  | SelectedOrganisationToVote(organisationArrayIndex, float => unit)
+  // | SelectedOrganisationToVote(organisationArrayIndex, currentVote)
   | ProcessTransaction
   | ViewResults;
 
+module HackyComponentThatCallsAFunctionOnce = {
+  [@react.component]
+  let make = (~reloadFunction) => {
+    let (hasCalledFunction, setHasCalledFunction) =
+      React.useState(_ => false);
+    if (!hasCalledFunction) {
+      reloadFunction();
+      Js.log("called the reload function...");
+      setHasCalledFunction(_ => true);
+    } else {
+      Js.log("not calling the reload function");
+      ();
+    };
+
+    React.null;
+  };
+};
+
 module ApproveLoyaltyTokens = {
   [@react.component]
-  let make = () => {
+  let make = (~reloadFunction) => {
     let (approveLoyaltyTokens, transactionStatus) =
       AnimalActions.useApproveLoyaltyTokens();
     let etherScanUrl = RootProvider.useEtherscanUrl();
@@ -79,10 +98,13 @@ module ApproveLoyaltyTokens = {
        | UnInitialised =>
          <p>
            <a onClick={_ => {approveLoyaltyTokens()}}>
-             "Approve wildcards to spend your tokens"->restr
+             ">>Click here to enable wildcards vote with your tokens<<"->restr
            </a>
          </p>
-       | Created => <p> "Transaction Created"->restr </p>
+       | Created =>
+         <p>
+           "Transaction Created - please check the details and confirm."->restr
+         </p>
        | SignedAndSubmitted(txHash) =>
          <p>
            "Processing: "->restr
@@ -95,7 +117,11 @@ module ApproveLoyaltyTokens = {
          </p>
        | Declined(message) =>
          <p> {("Submitting transaction failed: " ++ message)->restr} </p>
-       | Complete(_txResult) => <p> "You are now ready to vote :)"->restr </p>
+       | Complete(_txResult) =>
+         <p>
+           <HackyComponentThatCallsAFunctionOnce reloadFunction />
+           "You are now ready to vote :)"->restr
+         </p>
        | Failed => <p> "Transaction failed"->restr </p>
        }}
     </div>;
@@ -104,52 +130,39 @@ module ApproveLoyaltyTokens = {
 
 [@react.component]
 let make = () => {
+  let (voteStep, setVoteStep) = React.useState(() => DefaultView);
+
   let (voteForProject, transactionStatus) = AnimalActions.useVoteForProject();
-
-  let networkIdOpt = RootProvider.useNetworkId();
-
-  let (voteStep, setVoteStep) = React.useState(() => 0);
-  let (conservationVotedArrayIndex, setConservationVotedArrayIndex) =
-    React.useState(() => 0);
-
-  let nextVoteStep = () => setVoteStep(voteStep => voteStep + 1);
-
   let selectConservation = conservationArrayIndex => {
-    setConservationVotedArrayIndex(conservationArrayIndex);
-    nextVoteStep();
+    let submitVoteFunction: float => unit =
+      votes => {
+        let conservationVotedContractIndex =
+          conservationPartners->Array.getUnsafe(conservationArrayIndex).index;
+
+        let numberOfVotes =
+          (votes *. 1000000000.)->int_of_float->Int.toString->BN.new_;
+
+        voteForProject(
+          conservationVotedContractIndex->string_of_int,
+          numberOfVotes,
+        );
+
+        setVoteStep(_ => ProcessTransaction);
+      };
+
+    setVoteStep(_ =>
+      SelectedOrganisationToVote(conservationArrayIndex, submitVoteFunction)
+    );
   };
-
-  let selectVote: int => unit =
-    votes => {
-      let conservationVotedContractIndex =
-        conservationPartners->Array.getUnsafe(conservationVotedArrayIndex).
-          index;
-      let votesBn =
-        votes->Int.toString->BN.new_->BN.mulGet(. BN.new_("1000000000"));
-      voteForProject(conservationVotedContractIndex->string_of_int, votesBn);
-
-      nextVoteStep();
-    };
-  let selectVoteFloat: float => unit =
-    votes => {
-      let conservationVotedContractIndex =
-        conservationPartners->Array.getUnsafe(conservationVotedArrayIndex).
-          index;
-
-      let votesBn =
-        (votes *. 1000000000.)->int_of_float->Int.toString->BN.new_;
-      voteForProject(conservationVotedContractIndex->string_of_int, votesBn);
-      nextVoteStep();
-    };
 
   let resetVoting = () => {
-    setVoteStep(_ => 0);
-    setConservationVotedArrayIndex(_ => 0);
+    setVoteStep(_ => DefaultView);
   };
+
+  let networkIdOpt = RootProvider.useNetworkId();
   let notGoerliNetworkWarning = networkId =>
     switch (networkId) {
-    // TODO: this should only show if the user hasn't approved yet.
-    | 5 => <ApproveLoyaltyTokens />
+    | 5 => React.null
     | _ =>
       <p className=Css.(style([color(red)]))>
         "Voting is only available on the Goerli test net right now but will be live once sufficient testing and coverage is accounted for"
@@ -160,9 +173,7 @@ let make = () => {
   let notGoerliNetwork = networkId => networkId != 5;
 
   let optCurrentPrice = PriceDisplay.uesPrice(Animal.Glen);
-
   let (_, _, ratio, _) = Animal.pledgeRate(Animal.Glen);
-
   let (optMonthlyPledgeEth, optMonthlyPledgeUsd) =
     switch (optCurrentPrice) {
     | Some((priceEth, optPriceUsd)) => (
@@ -183,7 +194,7 @@ let make = () => {
 
   let userAddressLowerCase =
     switch (currentUser) {
-    | Some(currentUser) => currentUser->Js.String.toLowerCase //TODO - check with zuck this cant be a 3box name name
+    | Some(currentUser) => currentUser->Js.String.toLowerCase
     | _ => "0x0000000000000000000000000000000000000000"
     };
 
@@ -223,14 +234,24 @@ let make = () => {
     </div>;
 
   let (redeemedLoyaltyTokenBalanceBn, _resetLoyaltyTokenBalance) =
-    AnimalActions.useUserLoyaltyTokenBalance(
-      currentUser |||| "0x0000000000000000000000000000000000000500",
-    );
+    AnimalActions.useUserLoyaltyTokenBalance(userAddressLowerCase);
   let redeemedLoyaltyTokenBalance =
     redeemedLoyaltyTokenBalanceBn->oFlatMap(balance =>
       balance->Web3Utils.fromWeiBNToEthPrecision(~digits=3)->Float.fromString
     )
     |||| 0.;
+
+  let (amountApproved, resetAmountApproved) =
+    AnimalActions.useVoteApprovedTokens(userAddressLowerCase);
+  Js.log("approved balance:");
+  Js.log((amountApproved |||| BN.new_("66666"))->BN.toStringGet(.));
+  let hasApprovedFullBalance =
+    amountApproved
+    |||| BN.new_("0")
+    |>| (
+      redeemedLoyaltyTokenBalanceBn |||| BN.new_("10000000000000000000000")
+    );
+  Js.log2("has enough approved?", hasApprovedFullBalance);
 
   // TODO: This gets the value from the graph rather - use this in the future rather than querying the chain.
   // let totalLoyaltyTokensOpt =
@@ -293,7 +314,7 @@ let make = () => {
           </p>
           <h3 className=Css.(style([textDecoration(`underline)]))>
             "Quadratic Voting    "->restr
-            {voteStep != 0
+            {voteStep != DefaultView
                ? <img
                    onClick={_ => resetVoting()}
                    src=refreshImg
@@ -324,7 +345,7 @@ let make = () => {
           </small>
           <Rimble.Flex flexWrap="wrap" alignItems="center">
             {switch (voteStep) {
-             | 0 =>
+             | DefaultView =>
                conservationPartners
                ->Array.mapWithIndex((index, conservationPartner) =>
                    <Rimble.Box width=[|1., 0.25|]>
@@ -350,13 +371,16 @@ let make = () => {
                          ])
                        )
                        disabled=cannotVote
-                       onClick={_ => selectConservation(_ => index)}>
+                       onClick={_ => selectConservation(index)}>
                        "Vote"->restr
                      </Rimble.Button>
                    </Rimble.Box>
                  )
                ->React.array
-             | 1 =>
+             | SelectedOrganisationToVote(
+                 conservationVotedArrayIndex,
+                 submitVoteFunction,
+               ) =>
                let selectedConservationPartner =
                  conservationPartners->Array.getUnsafe(
                    conservationVotedArrayIndex,
@@ -378,15 +402,15 @@ let make = () => {
                    </a>
                  </Rimble.Box>
                  <Rimble.Box width=[|1., 0.75|]>
-                   <QVSelect
-                     selectVote
-                     makeCustomVote=selectVoteFloat
-                     maxVote
-                   />
+                   {hasApprovedFullBalance
+                      ? <QVSelect submitVoteFunction maxVote />
+                      : <ApproveLoyaltyTokens
+                          reloadFunction=resetAmountApproved
+                        />}
                  </Rimble.Box>
                </>;
-             | 2 => txStateDisplay
-             | _ => React.null
+             | ProcessTransaction => txStateDisplay
+             | ViewResults => React.null
              }}
           </Rimble.Flex>
         </Rimble.Box>

@@ -17,8 +17,8 @@ let (|*|) = (a, b) => a->BN.mulGet(. b);
 let (|-|) = (a, b) => a->BN.subGet(. b);
 let (|/|) = (a, b) => a->BN.divGet(. b);
 let (|==|) = (a, b) => a->BN.eqGet(. b);
-let (|>|) = (a, b) => a->BN.ltGet(. b);
-let (|<|) = (a, b) => a->BN.gtGet(. b);
+let (|<|) = (a, b) => a->BN.ltGet(. b);
+let (|>|) = (a, b) => a->BN.gtGet(. b);
 
 let restr = React.string;
 let reactMapWithDefault:
