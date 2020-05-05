@@ -357,6 +357,12 @@ let useVoteForProject = () => {
     | Some(steward) =>
       // vote(uint256 proposalIdToVoteFor, uint256 amount, uint256 sqrt)
       // vote: (. string, string, string) => Promise.Js.t(tx, txError),
+      Js.log4(
+        "Voting:",
+        proposalId,
+        squareRoot->BN.sqrGet(.)->BN.toStringGet(.),
+        squareRoot->BN.toStringGet(.),
+      );
       let claimLoyaltyTokenPromise =
         steward.vote(.
           proposalId,

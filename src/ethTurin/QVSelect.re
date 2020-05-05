@@ -17,17 +17,33 @@ let hasDecimals = value => value -. value->Float.toInt->Float.fromInt > 0.;
 [@react.component]
 let make = (~submitVoteFunction: float => unit, ~maxVote: float) => {
   let (voteValue, setVoteValue) = React.useState(_ => 0.);
-  let customVote: float => unit =
-    voteValue =>
-      if (voteValue < 0.) {
-        // If negative set to 0
-        setVoteValue(_ => 0.);
-      } else if (voteValue >= maxVote) {
-        // If above max, set to max
-        setVoteValue(_ => maxVote);
-      } else {
-        setVoteValue(_ => voteValue);
+  let (voteText, setVoteText) = React.useState(_ => "0.5");
+  let customVote: string => unit =
+    voteValueString => {
+      let optVoteValue = Float.fromString(voteValueString);
+
+      switch (optVoteValue) {
+      | None =>
+        if (voteValueString == "") {
+          setVoteText(_ => voteValueString);
+        } else {
+          ();
+            // If the text doesn't parse as a float, don't save it
+        }
+      | Some(voteValue) =>
+        setVoteText(_ => voteValueString);
+        if (voteValue < 0.) {
+          // If negative set to 0
+          setVoteValue(_ => 0.);
+        } else if (voteValue >= maxVote) {
+          // If above max, set to max
+          setVoteValue(_ => maxVote);
+        } else {
+          setVoteValue(_ => voteValue);
+        };
       };
+    };
+
   <>
     {ReasonReact.array(
        [|1., 2., 3., 4., 5.|]
@@ -56,16 +72,13 @@ let make = (~submitVoteFunction: float => unit, ~maxVote: float) => {
     <div>
       <form>
         <input
-          value={
-            voteValue->Float.toString ++ (hasDecimals(voteValue) ? "" : ".0")
-          }
+          value=voteText
           type_="number"
           min=0
           max={maxVote->Float.toString}
           onChange={event => {
             let voteString = ReactEvent.Form.target(event)##value;
-            let voteFloat = Float.fromString(voteString) |||| 0.;
-            customVote(voteFloat);
+            customVote(voteString);
           }}
         />
         <button onClick={_ => submitVoteFunction(voteValue)}>

@@ -139,8 +139,17 @@ let make = () => {
         let conservationVotedContractIndex =
           conservationPartners->Array.getUnsafe(conservationArrayIndex).index;
 
+        // NOTE: if they vote with more than about 300000 there will be an overflow here...
         let numberOfVotes =
-          (votes *. 1000000000.)->int_of_float->Int.toString->BN.new_;
+          (votes *. 100000.)
+          ->int_of_float
+          ->Int.toString
+          ->BN.new_
+          ->BN.mulGet(. BN.new_("10000"));
+
+        Js.log("numberOfVotes");
+        Js.log(votes);
+        Js.log(numberOfVotes->BN.toStringGet(.));
 
         voteForProject(
           conservationVotedContractIndex->string_of_int,
