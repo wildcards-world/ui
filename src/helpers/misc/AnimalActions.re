@@ -130,7 +130,7 @@ let stewardAddressGoerli = "0x0C00CFE8EbB34fE7C31d4915a43Cde211e9F0F3B";
 let loyaltyTokenAddressMainnet = "0x773c75c2277eD3e402BDEfd28Ec3b51A3AfbD8a4";
 let loyaltyTokenAddressGoerli = "0xd7d8c42ab5b83aa3d4114e5297989dc27bdfb715";
 
-let voteContractMainnet = "TODO";
+// let voteContractMainnet = "TODO";
 let voteContractGoerli = "0x2F2D5f29dD364f11423deEadAbbca6cd4adF7392";
 
 let stewardAddressFromChainId =
@@ -145,7 +145,7 @@ let loyaltyTokenAddressFromChainId =
   | _ => None;
 let voteAddressFromChainId =
   fun
-  | 1 => Some(voteContractMainnet)
+  // | 1 => Some(voteContractMainnet)
   | 5 => Some(voteContractGoerli)
   | _ => None;
 

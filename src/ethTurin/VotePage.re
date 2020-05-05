@@ -340,8 +340,14 @@ let make = () => {
                    ->restr
                  </p>
                : <p>
-                   "Redeemed loyalty token balance: "->restr
-                   {redeemedLoyaltyTokenBalance->Float.toString->restr}
+                   {(
+                      "Redeemed loyalty token balance: "
+                      ++ {
+                        redeemedLoyaltyTokenBalance->Float.toString;
+                      }
+                      ++ " WLT"
+                    )
+                    ->restr}
                  </p>}
             {switch (networkIdOpt) {
              | Some(networkId) => notGoerliNetworkWarning(networkId)
