@@ -204,9 +204,13 @@ module UserDetails = {
       );
     };
 
-    // let totalLoyaltyTokensOpt = QlHooks.useTotalLoyaltyToken(userAddress);
+    // This is the value of tokens that are currently in the users account (IE their spendable balance)
     let (totalLoyaltyTokensOpt, updateFunction) =
       AnimalActions.useUserLoyaltyTokenBalance(userAddress);
+
+    // This is the value of ALL tokens that this address has ever claimed, or is able to claim (even if they have spent those tokens)!
+    let totalLoyaltyTokensAvailableAndClaimedOpt =
+      QlHooks.useTotalLoyaltyToken(userAddress);
 
     <div className=Css.(style([width(`percent(100.))]))>
       <Rimble.Flex flexWrap="wrap" alignItems="start">
@@ -252,13 +256,19 @@ module UserDetails = {
              ? <>
                  <small>
                    <p>
-                     "Claimed Loyalty Token Balance: "->restr
-                     {totalLoyaltyTokensOpt->Option.mapWithDefault(
-                        "Loading"->restr, claimedLoyaltyTokens => {
-                        claimedLoyaltyTokens
-                        ->Web3Utils.fromWeiBNToEthPrecision(~digits=3)
-                        ->restr
-                      })}
+                     {(
+                        "Claimed Loyalty Token Balance: "
+                        ++ {
+                          totalLoyaltyTokensOpt->Option.mapWithDefault(
+                            "Loading", claimedLoyaltyTokens => {
+                            claimedLoyaltyTokens->Web3Utils.fromWeiBNToEthPrecision(
+                              ~digits=6,
+                            )
+                          });
+                        }
+                        ++ " WLT"
+                      )
+                      ->restr}
                    </p>
                  </small>
                  {switch (currentlyOwnedTokens) {
@@ -277,13 +287,19 @@ module UserDetails = {
                </>
              : <small>
                  <p>
-                   "Loyalty Token Balance: "->restr
-                   {totalLoyaltyTokensOpt->Option.mapWithDefault(
-                      "Loading"->restr, totalLoyaltyTokens => {
-                      totalLoyaltyTokens
-                      ->Web3Utils.fromWeiBNToEthPrecision(~digits=3)
-                      ->restr
-                    })}
+                   {(
+                      "Loyalty Token Balance Generated: "
+                      ++ {
+                        totalLoyaltyTokensAvailableAndClaimedOpt->Option.mapWithDefault(
+                          "Loading", ((totalLoyaltyTokens, _)) => {
+                          totalLoyaltyTokens->Web3Utils.fromWeiBNToEthPrecision(
+                            ~digits=5,
+                          )
+                        });
+                      }
+                      ++ " WLT"
+                    )
+                    ->restr}
                  </p>
                </small>}
         </Rimble.Box>
