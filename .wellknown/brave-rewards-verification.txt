@@ -1,4 +1,0 @@
-This is a Brave Rewards publisher verification file.
-
-Domain: wildcards.world
-Token: 7cce6c6fb39af853b659e21554f3e4f8516c18d47a5fb5770a93b2859e9a1815
