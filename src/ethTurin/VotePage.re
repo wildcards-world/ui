@@ -75,10 +75,8 @@ module HackyComponentThatCallsAFunctionOnce = {
       React.useState(_ => false);
     if (!hasCalledFunction) {
       reloadFunction();
-      Js.log("called the reload function...");
       setHasCalledFunction(_ => true);
     } else {
-      Js.log("not calling the reload function");
       ();
     };
 
@@ -146,10 +144,6 @@ let make = () => {
           ->Int.toString
           ->BN.new_
           ->BN.mulGet(. BN.new_("10000"));
-
-        Js.log("numberOfVotes");
-        Js.log(votes);
-        Js.log(numberOfVotes->BN.toStringGet(.));
 
         voteForProject(
           conservationVotedContractIndex->string_of_int,
@@ -252,15 +246,12 @@ let make = () => {
 
   let (amountApproved, resetAmountApproved) =
     AnimalActions.useVoteApprovedTokens(userAddressLowerCase);
-  Js.log("approved balance:");
-  Js.log((amountApproved |||| BN.new_("66666"))->BN.toStringGet(.));
   let hasApprovedFullBalance =
     amountApproved
     |||| BN.new_("0")
     |>| (
       redeemedLoyaltyTokenBalanceBn |||| BN.new_("10000000000000000000000")
     );
-  Js.log2("has enough approved?", hasApprovedFullBalance);
 
   // TODO: This gets the value from the graph rather - use this in the future rather than querying the chain.
   // let totalLoyaltyTokensOpt =

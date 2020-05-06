@@ -61,6 +61,7 @@ type ethersBnFormat;
 type voteContract = {
   // vote(uint256 proposalIdToVoteFor, uint256 amount, uint256 sqrt)
   vote: (. string, string, string, txOptions) => Promise.Js.t(tx, txError),
+  distributeFunds: (. txOptions) => Promise.Js.t(tx, txError),
   proposalIteration: unit => Js.Promise.t(ethersBnFormat),
   proposalDeadline: unit => Js.Promise.t(ethersBnFormat),
   proposalVotes: (. string, string) => Js.Promise.t(ethersBnFormat), // iteration -> proposalId -> num votes
@@ -131,7 +132,8 @@ let loyaltyTokenAddressMainnet = "0x773c75c2277eD3e402BDEfd28Ec3b51A3AfbD8a4";
 let loyaltyTokenAddressGoerli = "0xd7d8c42ab5b83aa3d4114e5297989dc27bdfb715";
 
 // let voteContractMainnet = "TODO";
-let voteContractGoerli = "0x2F2D5f29dD364f11423deEadAbbca6cd4adF7392";
+// let voteContractGoerli = "0x2F2D5f29dD364f11423deEadAbbca6cd4adF7392";
+let voteContractGoerli = "0xfDb9F176feD59e127e675FF24dA91f3a3BCB41aA";
 
 let stewardAddressFromChainId =
   fun
@@ -355,14 +357,16 @@ let useVoteForProject = () => {
     setTxState(_ => Created);
     switch (optSteward) {
     | Some(steward) =>
-      // vote(uint256 proposalIdToVoteFor, uint256 amount, uint256 sqrt)
-      // vote: (. string, string, string) => Promise.Js.t(tx, txError),
-      Js.log4(
-        "Voting:",
+      Js.log("!!Voting - start!!");
+      Js.log(
+        "<Proposal ID>, <loyalty tokens to use>, <number of votes (ie the square root)>",
+      );
+      Js.log3(
         proposalId,
         squareRoot->BN.sqrGet(.)->BN.toStringGet(.),
         squareRoot->BN.toStringGet(.),
       );
+      Js.log("!!Voting - end!!");
       let claimLoyaltyTokenPromise =
         steward.vote(.
           proposalId,
@@ -373,6 +377,45 @@ let useVoteForProject = () => {
             value: value,
           },
         )
+        ->Promise.Js.toResult;
+      claimLoyaltyTokenPromise->Promise.getOk(tx => {
+        setTxState(_ => SignedAndSubmitted(tx.hash));
+        let txMinedPromise = tx.wait(.)->Promise.Js.toResult;
+        txMinedPromise->Promise.getOk(txOutcome => {
+          Js.log(txOutcome);
+          setTxState(_ => Complete(txOutcome));
+        });
+        txMinedPromise->Promise.getError(error => {
+          setTxState(_ => Failed);
+          Js.log(error);
+        });
+        ();
+      });
+      claimLoyaltyTokenPromise->Promise.getError(error => {
+        setTxState(_ => Declined(error.message))
+      });
+      ();
+    | None => ()
+    };
+  };
+
+  (buyFunction, txState);
+};
+
+let useIncreaseVoteIteration = () => {
+  let (txState, setTxState) = React.useState(() => UnInitialised);
+  let optSteward = useVoteContract();
+  let buyFunction = () => {
+    let value = parseUnits(. "0", 0);
+
+    setTxState(_ => Created);
+    switch (optSteward) {
+    | Some(voteContract) =>
+      let claimLoyaltyTokenPromise =
+        voteContract.distributeFunds(. {
+          // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
+          value: value,
+        })
         ->Promise.Js.toResult;
       claimLoyaltyTokenPromise->Promise.getOk(tx => {
         setTxState(_ => SignedAndSubmitted(tx.hash));
@@ -527,7 +570,7 @@ let useVoteApprovedTokens = (owner: Web3.ethAddress) => {
           let voteContractAddress =
             networkId->voteAddressFromChainId
             |||| "0x0000000000000000000000000000000000000500";
-          Js.log3("getting the allowance", owner, voteContractAddress);
+          // Js.log3("getting the allowance", owner, voteContractAddress);
           let%Async allowance =
             loyaltyToken.allowance(. owner, voteContractAddress);
           let allowanceString = allowance->ethersBnToString;

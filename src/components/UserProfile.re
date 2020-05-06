@@ -13,6 +13,12 @@ let centreAlignOnMobile =
 // TODO:: check that the address is valid:
 // Something like this maybe? https://docs.ethers.io/ethers.js/html/api-utils.html
 module Token = {
+
+
+
+
+
+
   [@react.component]
   let make = (~tokenId) => {
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();

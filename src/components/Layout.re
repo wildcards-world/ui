@@ -173,6 +173,7 @@ let make = () => {
       <UsdPriceProvider>
         {switch (urlState) {
          | VotePage => <VotePage />
+         | IncreaseVoteIteration => <IncreaseIterationPage />
          | Explorer(animalPageState) =>
            switch (animalPageState) {
            | DetailView(animalCarousel, _) =>
