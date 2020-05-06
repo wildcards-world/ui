@@ -133,7 +133,7 @@ let loyaltyTokenAddressGoerli = "0xd7d8c42ab5b83aa3d4114e5297989dc27bdfb715";
 
 // let voteContractMainnet = "TODO";
 // let voteContractGoerli = "0x2F2D5f29dD364f11423deEadAbbca6cd4adF7392";
-let voteContractGoerli = "0xfDb9F176feD59e127e675FF24dA91f3a3BCB41aA";
+let voteContractGoerli = "0x797A3bd81aD500482968F7B3267c23a94aBEEA02";
 
 let stewardAddressFromChainId =
   fun

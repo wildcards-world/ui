@@ -165,12 +165,22 @@ let make = () => {
   let networkIdOpt = RootProvider.useNetworkId();
   let notGoerliNetworkWarning = networkId =>
     switch (networkId) {
-    | 5 => React.null
+    | Some(5) => React.null
     | _ =>
-      <p className=Css.(style([color(red)]))>
-        "Voting is only available on the Goerli test net right now but will be live once sufficient testing and coverage is accounted for"
-        ->restr
-      </p>
+      <>
+        <h4 className=Css.(style([color(red)]))>
+          "Voting is currently only available on the Goerli testnet right."
+          ->restr
+        </h4>
+        <h2 className=Css.(style([color(red)]))>
+          "Launching in: "->restr
+          <CountDown
+            endDateMoment={MomentRe.momentUtcDefaultFormat(
+              "2020-05-08T08:00:00",
+            )}
+          />
+        </h2>
+      </>
     };
 
   let notGoerliNetwork = networkId => networkId != 5;
@@ -340,14 +350,7 @@ let make = () => {
                     )
                     ->restr}
                  </p>}
-            {switch (networkIdOpt) {
-             | Some(networkId) => notGoerliNetworkWarning(networkId)
-             | _ =>
-               <p className=Css.(style([color(red)]))>
-                 "Voting is only available on the Goerli testnet right now but will be live once sufficient testing and coverage is accounted for"
-                 ->restr
-               </p>
-             }}
+            {notGoerliNetworkWarning(networkIdOpt)}
           </small>
           <Rimble.Flex flexWrap="wrap" alignItems="center">
             {switch (voteStep) {

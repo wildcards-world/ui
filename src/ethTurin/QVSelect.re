@@ -37,7 +37,6 @@ let make = (~submitVoteFunction: float => unit, ~maxVote: float) => {
        [|1., 2., 3., 4., 5.|]
        ->Array.map(x => {
            let disabled = x >= maxVote;
-           Js.log3(x, "<= maxVote", disabled);
            <Rimble.Box width=[|1., 0.32|]>
              <Rimble.Button
                className=Css.(
