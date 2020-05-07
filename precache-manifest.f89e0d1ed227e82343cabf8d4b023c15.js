@@ -1,79 +1,79 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "248c50c8e1b13a31b3bfc87afb49bb3a",
+    "revision": "e998f52aee2940cc6b2dae6cea5f0dad",
     "url": "./index.html"
   },
   {
-    "revision": "a74ebbadbdb73735a0f2",
+    "revision": "5e33fccc8cd81f3aae05",
     "url": "./static/css/3.90ed8ad9.chunk.css"
   },
   {
-    "revision": "3cd53a7015de12d7db04",
+    "revision": "b50da4a149260b322424",
     "url": "./static/css/main.c4212292.chunk.css"
   },
   {
-    "revision": "bdc6ed96b4879f00d728",
-    "url": "./static/js/2.89a2029c.chunk.js"
+    "revision": "f090113d74520fa96d28",
+    "url": "./static/js/2.e949d6f5.chunk.js"
   },
   {
     "revision": "df2b10fb8df06acc246281871ab5caaa",
-    "url": "./static/js/2.89a2029c.chunk.js.LICENSE.txt"
+    "url": "./static/js/2.e949d6f5.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "a74ebbadbdb73735a0f2",
-    "url": "./static/js/3.d630efc0.chunk.js"
+    "revision": "5e33fccc8cd81f3aae05",
+    "url": "./static/js/3.d75d62c3.chunk.js"
   },
   {
     "revision": "586bf99ebaf67fe5fadf78d7b8c5d7e1",
-    "url": "./static/js/3.d630efc0.chunk.js.LICENSE.txt"
+    "url": "./static/js/3.d75d62c3.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "08bec234312692154b51",
-    "url": "./static/js/4.425c8969.chunk.js"
+    "revision": "853a034d400083b62007",
+    "url": "./static/js/4.0ad36a66.chunk.js"
   },
   {
-    "revision": "11c1cc9e0389e6b4d65b",
-    "url": "./static/js/5.c323f4d8.chunk.js"
+    "revision": "485edfefc6ab4200c919",
+    "url": "./static/js/5.1011f3d1.chunk.js"
   },
   {
     "revision": "c0a1a1106c8c21169c619f52bc1a58b9",
-    "url": "./static/js/5.c323f4d8.chunk.js.LICENSE.txt"
+    "url": "./static/js/5.1011f3d1.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "e0d2ddc0bf012cb5cb8e",
-    "url": "./static/js/6.1832c5e0.chunk.js"
+    "revision": "3b80fecc1078ec9fa94c",
+    "url": "./static/js/6.a1171a86.chunk.js"
   },
   {
     "revision": "d828d064fd611903189974745a0859f2",
-    "url": "./static/js/6.1832c5e0.chunk.js.LICENSE.txt"
+    "url": "./static/js/6.a1171a86.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "7eda5a259cb4eaac83e4",
-    "url": "./static/js/7.60af1f15.chunk.js"
+    "revision": "a6fb307aa55093972bb1",
+    "url": "./static/js/7.b0dc6437.chunk.js"
   },
   {
     "revision": "091da06c11faa4786ff98801cf526ad7",
-    "url": "./static/js/7.60af1f15.chunk.js.LICENSE.txt"
+    "url": "./static/js/7.b0dc6437.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "3b2fab42563906bb646d",
-    "url": "./static/js/8.5f9186ee.chunk.js"
+    "revision": "b9cbe87f9f22e285c2c8",
+    "url": "./static/js/8.9d4c9119.chunk.js"
   },
   {
     "revision": "88e5053053539c8b4a53480943cb0e08",
-    "url": "./static/js/8.5f9186ee.chunk.js.LICENSE.txt"
+    "url": "./static/js/8.9d4c9119.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "5e6c848e215fe50a69b3",
-    "url": "./static/js/9.63a963e5.chunk.js"
+    "revision": "bd72b19885bb8e246148",
+    "url": "./static/js/9.5fcef7d5.chunk.js"
   },
   {
-    "revision": "3cd53a7015de12d7db04",
-    "url": "./static/js/main.638bf0d7.chunk.js"
+    "revision": "b50da4a149260b322424",
+    "url": "./static/js/main.cdc01d27.chunk.js"
   },
   {
-    "revision": "f00ae21eead3988266f9",
-    "url": "./static/js/runtime-main.ed4d6650.js"
+    "revision": "acbe00ad241389601cfc",
+    "url": "./static/js/runtime-main.e1e15ef3.js"
   },
   {
     "revision": "8d8c017f17920ceaeb5449a83ec47c6b",
@@ -188,10 +188,6 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "./static/media/WildTomorrowFund.ced75740.png"
   },
   {
-    "revision": "d3a6b5a2f103fb4247ba0d8e1d619c38",
-    "url": "./static/media/YourConservation.d3a6b5a2.png"
-  },
-  {
     "revision": "7297632cc0126499b21c5fedecff9846",
     "url": "./static/media/beta-banner.7297632c.png"
   },
@@ -200,12 +196,20 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "./static/media/catstevenstheocelotCropped.ed12747f.png"
   },
   {
+    "revision": "58a78d04024b8486e7879c49b57004a1",
+    "url": "./static/media/cointelegraph.58a78d04.svg"
+  },
+  {
     "revision": "a007f30c357dbf3178dea98ca9328d73",
     "url": "./static/media/cvlabszug.a007f30c.jpg"
   },
   {
     "revision": "c6e59804edf5c6bff11e5d66f57e94b0",
     "url": "./static/media/darwin-animal-doctors.c6e59804.svg"
+  },
+  {
+    "revision": "a762710c418b3956d1a9a47b941cd851",
+    "url": "./static/media/decrypt.a762710c.svg"
   },
   {
     "revision": "6809bf3884f917fac6c1ecc9f3359d43",
@@ -234,6 +238,14 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "cf7c89eca2f647ebbdd13c54a7546b8b",
     "url": "./static/media/great-whale-conservancy-small.cf7c89ec.png"
+  },
+  {
+    "revision": "31357629784ffcf7dc6ce8dd62ef89d6",
+    "url": "./static/media/great-whale-conservancy.31357629.png"
+  },
+  {
+    "revision": "8e5b6498e9491ac103b24bbe17a4f590",
+    "url": "./static/media/hackernoon.8e5b6498.svg"
   },
   {
     "revision": "28738cf6e8a6d36015ae224b10e000d0",
@@ -270,6 +282,14 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "41f76406f2e9781b0692a21ed6eae327",
     "url": "./static/media/torus.41f76406.svg"
+  },
+  {
+    "revision": "47f741ff3887114c67168a4b8a4eb97f",
+    "url": "./static/media/ubisoft.47f741ff.svg"
+  },
+  {
+    "revision": "7ac6ab9cbb5accfccbc0685395fc3c7a",
+    "url": "./static/media/ventureburn.7ac6ab9c.svg"
   },
   {
     "revision": "959b3945e3c98525dbcb9ebee076de9b",
