@@ -92,7 +92,7 @@ module HackyComponentThatReloadsOnTimeout = {
     let (hasCalledFunction, setHasCalledFunction) =
       React.useState(_ => false);
 
-    React.useEffect3(
+    React.useEffect4(
       () => {
         let timeout =
           Js.Global.setTimeout(
@@ -107,7 +107,7 @@ module HackyComponentThatReloadsOnTimeout = {
           );
         Some(() => Js.Global.clearTimeout(timeout));
       },
-      (reloadFunction, hasCalledFunction, setHasCalledFunction),
+      (reloadFunction, hasCalledFunction, setHasCalledFunction, timeoutTime),
     );
 
     React.null;
@@ -582,7 +582,7 @@ let make = () => {
                               because technically users can still vote here.
                               Should the vote buttons be disabled in the UI?
                           */;
-                          // TODO: when the voting interval is over, it should re-request every few seconds to update the page if it does come back.
+           // TODO: when the voting interval is over, it should re-request every few seconds to update the page if it does come back.
            | None => React.null
            }}
         </Rimble.Box>

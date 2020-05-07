@@ -61,12 +61,17 @@ module Streak = {
 module DisplayAfterDate = {
   [@react.component]
   let make = (~endDateMoment, ~beforeComponent, ~afterComponent) => {
-    let isBeforeDate = () =>
-      MomentRe.diff(endDateMoment, MomentRe.momentNow(), `seconds) > 0.;
+    let isBeforeDate =
+      React.useCallback1(
+        () =>
+          MomentRe.diff(endDateMoment, MomentRe.momentNow(), `seconds) > 0.,
+        [|endDateMoment|],
+      );
 
     let (beforeDate, setIsBeforeDate) = React.useState(() => isBeforeDate());
     React.useEffect2(
       () => {
+        Js.log("this was called!!!");
         let timeout =
           Js.Global.setTimeout(
             () => setIsBeforeDate(_ => isBeforeDate()),
