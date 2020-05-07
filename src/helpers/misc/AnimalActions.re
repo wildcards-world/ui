@@ -650,7 +650,7 @@ let useHasUserVotedForProposalIteration = (iteration, userAddress, projectId) =>
 
   let optVoteContract = useVoteContract();
 
-  React.useEffect5(
+  React.useEffect6(
     () => {
       switch (optVoteContract) {
       | Some(voteContract) =>
@@ -669,7 +669,7 @@ let useHasUserVotedForProposalIteration = (iteration, userAddress, projectId) =>
       };
       None;
     },
-    (counter, setResult, optVoteContract, iteration, projectId),
+    (counter, setResult, optVoteContract, iteration, projectId, userAddress),
   );
 
   (result, () => setCounter(_ => counter + 1));

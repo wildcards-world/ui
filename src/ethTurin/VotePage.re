@@ -213,7 +213,7 @@ module VoteResults = {
              />
            )
          ->React.array}
-      </Rimble.Flex>;
+      </Rimble.Flex>
     | None => <p> "loading total"->restr </p>
     };
   };
