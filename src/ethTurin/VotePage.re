@@ -332,52 +332,6 @@ let make = () => {
   };
 
   let networkIdOpt = RootProvider.useNetworkId();
-  let notGoerliNetworkWarning = networkId =>
-    switch (networkId) {
-    | Some(5) => React.null
-    | Some(1) =>
-      let launchTime = MomentRe.momentUtcDefaultFormat("2020-05-08T08:00:00");
-      let isBeforeDate =
-        MomentRe.diff(launchTime, MomentRe.momentNow(), `seconds) > 0.;
-      isBeforeDate
-        ? <>
-            <h4 className=Css.(style([color(red)]))>
-              "Voting is currently only available on the Goerli testnet right."
-              ->restr
-            </h4>
-            <h2 className=Css.(style([color(red)]))>
-              "Launching in: "->restr
-              <CountDown endDateMoment=launchTime />
-            </h2>
-          </>
-        : React.null;
-    | _ =>
-      <>
-        <h4 className=Css.(style([color(red)]))>
-          "We only support mainnet and goerli testnet."->restr
-        </h4>
-      </>
-    };
-
-  let notGoerliNetwork = networkId => networkId != 5;
-
-  let optCurrentPrice = PriceDisplay.uesPrice(Animal.Glen);
-  let (_, _, ratio, _) = Animal.pledgeRate(Animal.Glen);
-  let (optMonthlyPledgeEth, optMonthlyPledgeUsd) =
-    switch (optCurrentPrice) {
-    | Some((priceEth, optPriceUsd)) => (
-        Some(
-          Js.Float.toString(
-            Belt.Float.fromString(priceEth)->Accounting.defaultZeroF *. ratio,
-          ),
-        ),
-        switch (optPriceUsd) {
-        | Some(_priceUsd) => None
-        | None => None
-        },
-      )
-    | None => (None, None)
-    };
 
   let currentUser = RootProvider.useCurrentUser();
 
@@ -396,6 +350,73 @@ let make = () => {
       ->oMap(patron => patron##tokens->Array.map(token => token##id))
       ->setDefault([||])
     | None => [||]
+    };
+
+  let isProviderSelucted = RootProvider.useIsProviderSelected();
+
+  let (cannotVote, incorrectNetworkWarning) = {
+    let cannotVote: bool = currentlyOwnedTokens->Array.length <= 0;
+
+    switch (isProviderSelucted) {
+    | false => (
+        false,
+        <>
+          <h4 className=Css.(style([color(red)]))>
+            "You need to be logged in to vote"->restr
+          </h4>
+        </>,
+      )
+    | true =>
+      switch (networkIdOpt) {
+      | Some(5) => (cannotVote, React.null)
+      | Some(1) =>
+        let launchTime =
+          MomentRe.momentUtcDefaultFormat("2020-05-08T08:00:00");
+        let isBeforeDate =
+          MomentRe.diff(launchTime, MomentRe.momentNow(), `seconds) > 0.;
+        isBeforeDate
+          ? (
+            true,
+            <>
+              <h4 className=Css.(style([color(red)]))>
+                "Voting is currently only available on the Goerli testnet right."
+                ->restr
+              </h4>
+              <h2 className=Css.(style([color(red)]))>
+                "Launching in: "->restr
+                <CountDown endDateMoment=launchTime />
+              </h2>
+            </>,
+          )
+          : (cannotVote, React.null);
+      | _ => (
+          true,
+          <>
+            <h4 className=Css.(style([color(red)]))>
+              "We only support mainnet and goerli testnet."->restr
+            </h4>
+          </>,
+        )
+      }
+    };
+  };
+
+  let optCurrentPrice = PriceDisplay.uesPrice(Animal.Glen);
+  let (_, _, ratio, _) = Animal.pledgeRate(Animal.Glen);
+  let (optMonthlyPledgeEth, optMonthlyPledgeUsd) =
+    switch (optCurrentPrice) {
+    | Some((priceEth, optPriceUsd)) => (
+        Some(
+          Js.Float.toString(
+            Belt.Float.fromString(priceEth)->Accounting.defaultZeroF *. ratio,
+          ),
+        ),
+        switch (optPriceUsd) {
+        | Some(_priceUsd) => None
+        | None => None
+        },
+      )
+    | None => (None, None)
     };
 
   let etherScanUrl = RootProvider.useEtherscanUrl();
@@ -474,10 +495,6 @@ let make = () => {
   //   )
   //   |||| 0.;
 
-  let cannotVote: bool =
-    currentlyOwnedTokens->Array.length <= 0
-    || notGoerliNetwork(networkIdOpt |||| (-1));
-
   <Rimble.Box className=Styles.topBody>
     <Rimble.Box>
       <Rimble.Flex flexWrap="wrap">
@@ -554,7 +571,7 @@ let make = () => {
                  | None => <Rimble.Loader />
                  };
                }}
-            {notGoerliNetworkWarning(networkIdOpt)}
+            incorrectNetworkWarning
           </small>
           <Rimble.Flex flexWrap="wrap" alignItems="center">
             {switch (voteStep) {
