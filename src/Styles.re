@@ -207,7 +207,7 @@ let explainerLargeText =
     fontSize(rem(2.)),
     color(`hex("486269")),
     padding2(~v=em(0.), ~h=em(6.)),
-    margin2(~v=em(1.), ~h=auto),
+    margin2(~v=em(0.), ~h=auto),
     maxWidth(px(1200)),
     media(
       "(max-width: 760px)",
