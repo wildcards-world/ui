@@ -68,6 +68,7 @@ type voteStep =
   | ProcessTransaction
   | ViewResults;
 
+// TODO: this shouldn't be done using a component, it should be done with a 'useEffect'
 module HackyComponentThatCallsAFunctionOnce = {
   [@react.component]
   let make = (~reloadFunction) => {
@@ -84,6 +85,7 @@ module HackyComponentThatCallsAFunctionOnce = {
   };
 };
 
+// TODO: this shouldn't be done using a component, it should be done with a 'useEffect'
 module HackyComponentThatReloadsOnTimeout = {
   [@react.component]
   let make = (~reloadFunction: unit => unit, ~timeoutTime) => {
@@ -170,21 +172,25 @@ module OrganisationVoteResult = {
         currentIteration,
         conservationPartner.index->string_of_int,
       );
+
     let displayText =
       switch (proposal1Votes) {
       | Some(proposalVotes) =>
         (
           (
-            (proposalVotes |*| BN.new_("10000") |/| totalVotes)
-            ->BN.toStringGet(.)
-            ->Float.fromString
-            |||| 0.
+            (
+              (proposalVotes |*| BN.new_("10000") |/| totalVotes)
+              ->BN.toStringGet(.)
+              ->Float.fromString
+              |||| 0.
+            )
+            /. 100.
           )
-          /. 100.
+          ->Float.toString
+          ++ "%"
         )
-        ->Float.toString
-        ++ "%"
-      | None => "loading"
+        ->restr
+      | None => <Rimble.Loader />
       };
     let numberOfVotes =
       switch (proposal1Votes) {
@@ -210,7 +216,7 @@ module OrganisationVoteResult = {
           src={conservationPartner.image}
         />
       </a>
-      <p> displayText->restr </p>
+      <p> displayText </p>
       <p> numberOfVotes->restr </p>
     </Rimble.Box>;
   };
@@ -222,22 +228,43 @@ module VoteResults = {
     // TODO: add a reload on timeout (incase this value doesn't load first time)
     let (totalVotes, _reload) = AnimalActions.useTotalVotes();
     let currentIteration = currentIteration->string_of_int;
+    let (currentWinner, _reload) = AnimalActions.useCurrentWinner();
 
-    switch (totalVotes) {
-    | Some(totalVotes) =>
-      <Rimble.Flex flexWrap="wrap" alignItems="center">
-        {conservationPartners
-         ->Array.map(conservationPartner =>
-             <OrganisationVoteResult
-               currentIteration
-               totalVotes
-               conservationPartner
-             />
-           )
-         ->React.array}
-      </Rimble.Flex>
-    | None => <p> "loading total"->restr </p>
-    };
+    <>
+      {switch (totalVotes) {
+       | Some(totalVotes) =>
+         <Rimble.Flex flexWrap="wrap" alignItems="center">
+           {conservationPartners
+            ->Array.map(conservationPartner =>
+                <OrganisationVoteResult
+                  currentIteration
+                  totalVotes
+                  conservationPartner
+                />
+              )
+            ->React.array}
+         </Rimble.Flex>
+       | None => <p> <Rimble.Loader /> "loading current standings"->restr </p>
+       }}
+      {switch (currentWinner) {
+       | Some(currentWinner) =>
+         Js.log(currentWinner);
+         //  <h2> "currentWinner->string_of_int"->restr </h2>
+         <p className=Css.(style([fontSize(em(2.))]))>
+           <strong>
+             {(
+                conservationPartners[currentWinner - 1]
+                <$> (partner => partner.name)
+                |||| "Unknown"
+              )
+              ->restr}
+           </strong>
+           " is currently winning"->restr
+         </p>;
+       //  <h2> {currentWinner->string_of_int->restr} </h2>
+       | None => React.null
+       }}
+    </>;
   };
 };
 
@@ -343,6 +370,9 @@ let make = () => {
 
   let patronQueryOpt = QlHooks.usePatronQuery(userAddressLowerCase);
 
+  let (optProposalDeadline, _reloadProposalDeadline) =
+    AnimalActions.useProposalDeadline();
+
   let currentlyOwnedTokens =
     switch (patronQueryOpt) {
     | Some(patronQueryResult) =>
@@ -403,6 +433,7 @@ let make = () => {
 
   let optCurrentPrice = PriceDisplay.uesPrice(Animal.Glen);
   let (_, _, ratio, _) = Animal.pledgeRate(Animal.Glen);
+  // TODO: investigate why the USD price doesn't load here.
   let (optMonthlyPledgeEth, optMonthlyPledgeUsd) =
     switch (optCurrentPrice) {
     | Some((priceEth, optPriceUsd)) => (
@@ -524,6 +555,36 @@ let make = () => {
                }}
             </small>
           </p>
+          <br />
+          <br />
+          <br />
+          {switch (optProposalDeadline) {
+           | Some(proposalDeadline) =>
+             let proposalDeadlineMoment =
+               proposalDeadline->MomentRe.momentWithUnix;
+             let isBeforeDate =
+               MomentRe.diff(
+                 proposalDeadlineMoment,
+                 MomentRe.momentNow(),
+                 `seconds,
+               )
+               > 0.;
+             isBeforeDate
+               ? <>
+                   <h4> "Winner will be paid out in:"->restr </h4>
+                   <CountDown endDateMoment=proposalDeadlineMoment />
+                 </>
+               : <h4>
+                   "This voting cycle is over, the winner will be paid out shortly."
+                   ->restr
+                 </h4> /* TODO:
+                          this should say who the winner is. But in general we need think about the flow of this,
+                              because technically users can still vote here.
+                              Should the vote buttons be disabled in the UI?
+                          */;
+                          // TODO: when the voting interval is over, it should re-request every few seconds to update the page if it does come back.
+           | None => React.null
+           }}
         </Rimble.Box>
         <Rimble.Box width=[|1., 1., 0.7|]>
           <h3 className=Css.(style([textDecoration(`underline)]))>

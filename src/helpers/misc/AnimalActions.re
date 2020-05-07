@@ -63,6 +63,7 @@ type voteContract = {
   vote: (. string, string, string, txOptions) => Promise.Js.t(tx, txError),
   distributeFunds: (. txOptions) => Promise.Js.t(tx, txError),
   proposalIteration: (. unit) => Js.Promise.t(ethersBnFormat),
+  currentWinner: (. unit) => Js.Promise.t(ethersBnFormat),
   proposalDeadline: (. unit) => Js.Promise.t(ethersBnFormat),
   proposalVotes: (. string, string) => Js.Promise.t(ethersBnFormat), // iteration -> proposalId -> num votes
   hasUserVotedForProposalIteration:
@@ -603,6 +604,33 @@ let useCurrentIteration = () => {
           let%Async currentIteration = voteContract.proposalIteration(.);
           let currentIterationString = currentIteration->ethersBnToString;
           setResult(_ => currentIterationString->Int.fromString);
+          ()->async;
+        };
+        ();
+      | None => ()
+      };
+      None;
+    },
+    (counter, setResult, optVoteContract),
+  );
+
+  (result, () => setCounter(_ => counter + 1));
+};
+
+let useCurrentWinner = () => {
+  let (result, setResult) = React.useState(() => None);
+  let (counter, setCounter) = React.useState(() => 0);
+
+  let optVoteContract = useVoteContract();
+
+  React.useEffect3(
+    () => {
+      switch (optVoteContract) {
+      | Some(voteContract) =>
+        let _ = {
+          let%Async currentWinnerBn = voteContract.currentWinner(.);
+          let currentWinnerString = currentWinnerBn->ethersBnToString;
+          setResult(_ => currentWinnerString->Int.fromString);
           ()->async;
         };
         ();
