@@ -487,8 +487,8 @@ let isLaunched: t => launchStatus =
     | Apthapi
     | Nonhlanhla
     | Aruma
+    | Glen
     | Llajuita => Launched
-    | Glen => LaunchDate(glenLaunchDate)
     };
 
 let hasGovernance: t => bool =
