@@ -186,9 +186,9 @@ let make = () => {
            | NormalView =>
              <React.Fragment>
                <AnimalFocusDetails animalCarousel=None />
-               <CustomerBenefit />
+               <FeaturedIn />
                <HomepageLeaderBoard />
-               <About />
+               <CustomerBenefit />
                <HowItWorks />
                <EmailSignup />
                <FAQs />
