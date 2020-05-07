@@ -84,6 +84,34 @@ module HackyComponentThatCallsAFunctionOnce = {
   };
 };
 
+module HackyComponentThatReloadsOnTimeout = {
+  [@react.component]
+  let make = (~reloadFunction: unit => unit, ~timeoutTime) => {
+    let (hasCalledFunction, setHasCalledFunction) =
+      React.useState(_ => false);
+
+    React.useEffect3(
+      () => {
+        let timeout =
+          Js.Global.setTimeout(
+            () =>
+              if (!hasCalledFunction) {
+                reloadFunction();
+                setHasCalledFunction(_ => true);
+              } else {
+                ();
+              },
+            timeoutTime,
+          );
+        Some(() => Js.Global.clearTimeout(timeout));
+      },
+      (reloadFunction, hasCalledFunction, setHasCalledFunction),
+    );
+
+    React.null;
+  };
+};
+
 module OrganisationVote = {
   [@react.component]
   let make =
@@ -95,7 +123,8 @@ module OrganisationVote = {
         ~index,
         ~currentUser,
       ) => {
-    let (hasVotedForProposal1Votes, _reload) =
+    // TODO: add a reload on timeout if this doesn't load
+    let (hasVotedForProposal1Votes, _reloadHasVoted) =
       AnimalActions.useHasUserVotedForProposalIteration(
         currentIteration->string_of_int,
         currentUser,
@@ -135,15 +164,7 @@ module OrganisationVote = {
 module OrganisationVoteResult = {
   [@react.component]
   let make = (~conservationPartner, ~currentIteration, ~totalVotes) => {
-    // ~cannotVote,
-    // ~selectConservation,
-    // ~currentUser,
-    // let (hasVotedForProposal1Votes, _reload) =
-    //   AnimalActions.useHasUserVotedForProposalIteration(
-    //     currentIteration->string_of_int,
-    //     currentUser,
-    //     conservationPartner.index->string_of_int,
-    //   );
+    // TODO: add a reload on timeout (incase this value doesn't load first time)
     let (proposal1Votes, _reload) =
       AnimalActions.useProposalVotes(
         currentIteration,
@@ -198,6 +219,7 @@ module OrganisationVoteResult = {
 module VoteResults = {
   [@react.component]
   let make = (~currentIteration) => {
+    // TODO: add a reload on timeout (incase this value doesn't load first time)
     let (totalVotes, _reload) = AnimalActions.useTotalVotes();
     let currentIteration = currentIteration->string_of_int;
 
@@ -380,14 +402,13 @@ let make = () => {
 
   let (redeemedLoyaltyTokenBalanceBn, resetLoyaltyTokenBalance) =
     AnimalActions.useUserLoyaltyTokenBalance(userAddressLowerCase);
-  let (optCurrentIteration, _resetLoyaltyTokenBalance) =
+  let (optCurrentIteration, reloadCurrentIteration) =
     AnimalActions.useCurrentIteration();
 
-  let redeemedLoyaltyTokenBalance =
+  let redeemedLoyaltyTokenBalanceOpt =
     redeemedLoyaltyTokenBalanceBn->oFlatMap(balance =>
       balance->Web3Utils.fromWeiBNToEthPrecision(~digits=3)->Float.fromString
-    )
-    |||| 0.;
+    );
 
   let txStateDisplay =
     <div>
@@ -435,12 +456,12 @@ let make = () => {
 
   let (amountApproved, resetAmountApproved) =
     AnimalActions.useVoteApprovedTokens(userAddressLowerCase);
-  let hasApprovedFullBalance =
-    amountApproved
-    |||| BN.new_("0")
-    |>| (
-      redeemedLoyaltyTokenBalanceBn |||| BN.new_("10000000000000000000000")
-    );
+  // let hasApprovedFullBalance =
+  //   amountApproved
+  //   |||| BN.new_("0")
+  //   |>| (
+  //     redeemedLoyaltyTokenBalanceBn |||| BN.new_("10000000000000000000000")
+  //   );
 
   // TODO: This gets the value from the graph rather - use this in the future rather than querying the chain.
   // let totalLoyaltyTokensOpt =
@@ -456,8 +477,6 @@ let make = () => {
   let cannotVote: bool =
     currentlyOwnedTokens->Array.length <= 0
     || notGoerliNetwork(networkIdOpt |||| (-1));
-
-  let maxVote = Js.Math.sqrt(redeemedLoyaltyTokenBalance);
 
   <Rimble.Box className=Styles.topBody>
     <Rimble.Box>
@@ -519,16 +538,22 @@ let make = () => {
                    "You can only vote if you are the owner of a wildcard"
                    ->restr
                  </p>
-               : <p>
-                   {(
-                      "Redeemed loyalty token balance: "
-                      ++ {
-                        redeemedLoyaltyTokenBalance->Float.toString;
-                      }
-                      ++ " WLT"
-                    )
-                    ->restr}
-                 </p>}
+               : {
+                 switch (redeemedLoyaltyTokenBalanceOpt) {
+                 | Some(redeemedLoyaltyTokenBalance) =>
+                   <p>
+                     {(
+                        "Redeemed loyalty token balance: "
+                        ++ {
+                          redeemedLoyaltyTokenBalance->Float.toString;
+                        }
+                        ++ " WLT"
+                      )
+                      ->restr}
+                   </p>
+                 | None => <Rimble.Loader />
+                 };
+               }}
             {notGoerliNetworkWarning(networkIdOpt)}
           </small>
           <Rimble.Flex flexWrap="wrap" alignItems="center">
@@ -548,7 +573,16 @@ let make = () => {
                      />
                    )
                  ->React.array
-               | None => <p> "loading vote data"->restr </p>
+               | None =>
+                 <>
+                   <HackyComponentThatReloadsOnTimeout
+                     // If the loyalty token balance or the amountApproved are still not loaded after 1 second, attempt to reload them.
+                     reloadFunction=reloadCurrentIteration
+                     timeoutTime=1000
+                   />
+                   <Rimble.Loader />
+                   <p> "loading vote data"->restr </p>
+                 </>
                }
              | SelectedOrganisationToVote(
                  conservationVotedArrayIndex,
@@ -575,17 +609,50 @@ let make = () => {
                    </a>
                  </Rimble.Box>
                  <Rimble.Box width=[|1., 0.75|]>
-                   {hasApprovedFullBalance
-                      ? <QVSelect submitVoteFunction maxVote />
-                      : <ApproveLoyaltyTokens
-                          reloadFunction=resetAmountApproved
-                        />}
+                   {switch (amountApproved, redeemedLoyaltyTokenBalanceBn) {
+                    | (
+                        Some(amountApproved),
+                        Some(redeemedLoyaltyTokenBalanceBn),
+                      ) =>
+                      let hasApprovedFullBalance =
+                        amountApproved |>| redeemedLoyaltyTokenBalanceBn;
+                      hasApprovedFullBalance
+                        ? {
+                          switch (redeemedLoyaltyTokenBalanceOpt) {
+                          | Some(redeemedLoyaltyTokenBalance) =>
+                            let maxVote =
+                              Js.Math.sqrt(redeemedLoyaltyTokenBalance);
+                            <QVSelect submitVoteFunction maxVote />;
+                          | None =>
+                            <>
+                              <Rimble.Loader />
+                              <p> "Loading your balance"->restr </p>
+                            </>
+                          };
+                        }
+                        : <ApproveLoyaltyTokens
+                            reloadFunction=resetAmountApproved
+                          />;
+                    | _ =>
+                      <>
+                        <HackyComponentThatReloadsOnTimeout
+                          // If the loyalty token balance or the amountApproved are still not loaded after 1 second, attempt to reload them.
+                          reloadFunction={() => {
+                            resetLoyaltyTokenBalance();
+                            resetAmountApproved();
+                          }}
+                          timeoutTime=1000
+                        />
+                        <Rimble.Loader />
+                      </>
+                    }}
                  </Rimble.Box>
                </>;
              | ProcessTransaction => txStateDisplay
              | ViewResults =>
                switch (optCurrentIteration) {
                | Some(currentIteration) => <VoteResults currentIteration />
+               // NOTE: it is logically impossible that this is null here since it needs to be defined to go through the previous steps.
                | None => <p> "loading vote data"->restr </p>
                }
              }}
