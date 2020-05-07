@@ -5,7 +5,8 @@ import UbisoftLogo from "../../img/logos/Ubisoft.png";
 import EthCapeTownLogo from "../../img/logos/EthCapeTown.png";
 import CVLabsLogo from "../../img/logos/cvlabszug.jpg";
 import WildTomorrowFundLogo from "../../img/logos/WildTomorrowFund.png";
-import YourConservationLogo from "../../img/logos/YourConservation.png";
+import DarwinAnimalDoctorsLogo from "../../img/conservation-partners/darwin-animal-doctors.svg";
+import TheGreatWhaleConservancyLogo from "../../img/conservation-partners/great-whale-conservancy.png";
 import SendaVerde from "../../img/logos/SendaVerde.png";
 
 const styles = {
@@ -30,7 +31,7 @@ const Partners = () => (
       className={infoBackground}
       px={50}
     >
-      <Box mt={70} mb={70} width={[1, 1, 0.26]} color="black">
+      <Box mt={70} mb={70} width={[1, 1, 0.2]} color="black">
         <Card style={styles.card}>
           <a href="https://www.ubisoft.com/en-us/company/start-ups/station-f.aspx">
             <img src={UbisoftLogo} alt="ubisoft" style={styles.logo} />
@@ -40,7 +41,7 @@ const Partners = () => (
           </a>
         </Card>
       </Box>
-      <Box mt={70} mb={70} width={[1, 1, 0.26]} color="black">
+      <Box mt={70} mb={70} width={[1, 1, 0.2]} color="black">
         <Card style={styles.card}>
           <a href="https://ethcapetown.com/">
             <img
@@ -54,7 +55,7 @@ const Partners = () => (
           </a>
         </Card>
       </Box>
-      <Box mt={70} mb={70} width={[1, 1, 0.26]} color="black">
+      <Box mt={70} mb={70} width={[1, 1, 0.2]} color="black">
         <Card style={styles.card}>
           <a href="https://cvvc.com/index.php">
             <img src={CVLabsLogo} alt="cv-labs" style={styles.logo} />
@@ -80,15 +81,15 @@ const Partners = () => (
       alignItems={"stretch"}
       px={50}
     >
-      <Box mt={30} mb={70} width={[1, 1, 0.26]} color="black">
+      <Box mt={30} mb={70} width={[1, 1, 0.2]} color="black">
         <Card style={styles.card}>
           <a href="http://www.sendaverde.org/">
             <img src={SendaVerde} alt="senda-verde" style={styles.logo} />
-            <Text style={styles.center}>Senda Verde</Text>
+            {/* <Text style={styles.center}>Senda Verde</Text> */}
           </a>
         </Card>
       </Box>
-      <Box mt={30} mb={70} width={[1, 1, 0.26]} color="black">
+      <Box mt={30} mb={70} width={[1, 1, 0.2]} color="black">
         <Card style={styles.card}>
           <a href="https://wildtomorrowfund.org">
             <img
@@ -96,15 +97,27 @@ const Partners = () => (
               alt="wildtomorrowfund"
               style={styles.logo}
             />
-            <Text style={styles.center}>Wild Tomorrow Fund</Text>
+            {/* <Text style={styles.center}>Wild Tomorrow Fund</Text> */}
           </a>
         </Card>
       </Box>
-      <Box mt={30} mb={70} width={[1, 1, 0.26]} color="black">
+      <Box mt={30} mb={70} width={[1, 1, 0.22]} color="black">
         <Card style={styles.card}>
-          <a href="mailto:denham@wildcards.world">
-            <img src={YourConservationLogo} alt="you" style={styles.logo} />
-            <Text style={styles.center}>You?</Text>
+          <a href="http://darwinanimaldoctors.org/">
+            <img src={DarwinAnimalDoctorsLogo} alt="you" style={styles.logo} />
+            {/* <Text style={styles.center}>Darwin Animal Doctors</Text> */}
+          </a>
+        </Card>
+      </Box>
+      <Box mt={30} mb={70} width={[1, 1, 0.22]} color="black">
+        <Card style={styles.card}>
+          <a href="http://greatwhaleconservancy.org/">
+            <img
+              src={TheGreatWhaleConservancyLogo}
+              alt="you"
+              style={styles.logo}
+            />
+            {/* <Text style={styles.center}>The Great Whale Conservancy</Text> */}
           </a>
         </Card>
       </Box>
