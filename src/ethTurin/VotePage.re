@@ -84,6 +84,55 @@ module HackyComponentThatCallsAFunctionOnce = {
   };
 };
 
+module OrganisationVote = {
+  [@react.component]
+  let make =
+      (
+        ~currentIteration,
+        ~conservationPartner,
+        ~cannotVote,
+        ~selectConservation,
+        ~index,
+        ~currentUser,
+      ) => {
+    let (hasVotedForProposal1Votes, _reload) =
+      AnimalActions.useHasUserVotedForProposalIteration(
+        currentIteration->string_of_int,
+        currentUser,
+        conservationPartner.index->string_of_int,
+      );
+
+    <Rimble.Box width=[|1., 0.25|]>
+      <a href={conservationPartner.link} target="_blank">
+        <img
+          className=Css.(
+            style([
+              display(`block),
+              width(`percent(70.)),
+              maxWidth(`px(800)),
+              margin(auto),
+            ])
+          )
+          src={conservationPartner.image}
+        />
+      </a>
+      <Rimble.Button
+        className=Css.(
+          style([display(`block), margin(auto), width(`percent(90.))])
+        )
+        disabled={hasVotedForProposal1Votes |||| false || cannotVote}
+        onClick={_ => selectConservation(index)}>
+        {(
+           hasVotedForProposal1Votes
+           >>= (hasVoted => hasVoted ? Some("Cannot Vote Twice") : None)
+           |||| "Vote"
+         )
+         ->restr}
+      </Rimble.Button>
+    </Rimble.Box>;
+  };
+};
+
 module ApproveLoyaltyTokens = {
   [@react.component]
   let make = (~reloadFunction) => {
@@ -166,6 +215,7 @@ let make = () => {
   let notGoerliNetworkWarning = networkId =>
     switch (networkId) {
     | Some(5) => React.null
+    | Some(1) => React.null
     | _ =>
       <>
         <h4 className=Css.(style([color(red)]))>
@@ -241,13 +291,33 @@ let make = () => {
          </p>
        | Declined(message) =>
          <p> {("Submitting transaction failed: " ++ message)->restr} </p>
-       | Complete(_txResult) => <p> "You have voted for a project"->restr </p>
+       | Complete(_txResult) =>
+         <>
+           <p> "You have voted for a project"->restr </p>
+           <Rimble.Button
+             className=Css.(
+               style([
+                 display(`block),
+                 margin(auto),
+                 width(`percent(90.)),
+               ])
+             )
+             onClick={_ => setVoteStep(_ => ViewResults)}>
+             "View Results"->restr
+           </Rimble.Button>
+         </>
        | Failed => <p> "Transaction failed"->restr </p>
        }}
     </div>;
 
   let (redeemedLoyaltyTokenBalanceBn, _resetLoyaltyTokenBalance) =
     AnimalActions.useUserLoyaltyTokenBalance(userAddressLowerCase);
+  let (optCurrentIteration, _resetLoyaltyTokenBalance) =
+    AnimalActions.useCurrentIteration();
+  // let (hasVotedForProposal1Votes, _reload) =
+  //   AnimalActions.useHasUserVotedForProposalIteration();
+  // let (proposal1Votes, _reload) = AnimalActions.useProposalVotes();
+
   let redeemedLoyaltyTokenBalance =
     redeemedLoyaltyTokenBalanceBn->oFlatMap(balance =>
       balance->Web3Utils.fromWeiBNToEthPrecision(~digits=3)->Float.fromString
@@ -355,37 +425,22 @@ let make = () => {
           <Rimble.Flex flexWrap="wrap" alignItems="center">
             {switch (voteStep) {
              | DefaultView =>
-               conservationPartners
-               ->Array.mapWithIndex((index, conservationPartner) =>
-                   <Rimble.Box width=[|1., 0.25|]>
-                     <a href={conservationPartner.link} target="_blank">
-                       <img
-                         className=Css.(
-                           style([
-                             display(`block),
-                             width(`percent(70.)),
-                             maxWidth(`px(800)),
-                             margin(auto),
-                           ])
-                         )
-                         src={conservationPartner.image}
-                       />
-                     </a>
-                     <Rimble.Button
-                       className=Css.(
-                         style([
-                           display(`block),
-                           margin(auto),
-                           width(`percent(90.)),
-                         ])
-                       )
-                       disabled=cannotVote
-                       onClick={_ => selectConservation(index)}>
-                       "Vote"->restr
-                     </Rimble.Button>
-                   </Rimble.Box>
-                 )
-               ->React.array
+               switch (optCurrentIteration) {
+               | Some(currentIteration) =>
+                 conservationPartners
+                 ->Array.mapWithIndex((index, conservationPartner) =>
+                     <OrganisationVote
+                       currentUser=userAddressLowerCase
+                       currentIteration
+                       conservationPartner
+                       cannotVote
+                       index
+                       selectConservation
+                     />
+                   )
+                 ->React.array
+               | None => <p> "loading vote data"->restr </p>
+               }
              | SelectedOrganisationToVote(
                  conservationVotedArrayIndex,
                  submitVoteFunction,
@@ -419,7 +474,7 @@ let make = () => {
                  </Rimble.Box>
                </>;
              | ProcessTransaction => txStateDisplay
-             | ViewResults => React.null
+             | ViewResults => <p> "The results"->restr </p>
              }}
           </Rimble.Flex>
         </Rimble.Box>

@@ -62,10 +62,12 @@ type voteContract = {
   // vote(uint256 proposalIdToVoteFor, uint256 amount, uint256 sqrt)
   vote: (. string, string, string, txOptions) => Promise.Js.t(tx, txError),
   distributeFunds: (. txOptions) => Promise.Js.t(tx, txError),
-  proposalIteration: unit => Js.Promise.t(ethersBnFormat),
-  proposalDeadline: unit => Js.Promise.t(ethersBnFormat),
+  proposalIteration: (. unit) => Js.Promise.t(ethersBnFormat),
+  proposalDeadline: (. unit) => Js.Promise.t(ethersBnFormat),
   proposalVotes: (. string, string) => Js.Promise.t(ethersBnFormat), // iteration -> proposalId -> num votes
-  totalVotes: unit => Js.Promise.t(ethersBnFormat),
+  hasUserVotedForProposalIteration:
+    (. string, string, string) => Js.Promise.t(bool), // iteration -> proposalId -> num votes
+  totalVotes: (. unit) => Js.Promise.t(ethersBnFormat),
 };
 type loyaltyTokenContract = {
   // approve(address to, uint256 tokenId)
@@ -131,8 +133,7 @@ let stewardAddressGoerli = "0x0C00CFE8EbB34fE7C31d4915a43Cde211e9F0F3B";
 let loyaltyTokenAddressMainnet = "0x773c75c2277eD3e402BDEfd28Ec3b51A3AfbD8a4";
 let loyaltyTokenAddressGoerli = "0xd7d8c42ab5b83aa3d4114e5297989dc27bdfb715";
 
-// let voteContractMainnet = "TODO";
-// let voteContractGoerli = "0x2F2D5f29dD364f11423deEadAbbca6cd4adF7392";
+let voteContractMainnet = "0x03e051b7e42480Cc9D54F1caB525D2Fea2cF4d83";
 let voteContractGoerli = "0x316C5f8867B21923db8A0Bd6890A6BFE0Ab6F9d2";
 
 let stewardAddressFromChainId =
@@ -147,7 +148,7 @@ let loyaltyTokenAddressFromChainId =
   | _ => None;
 let voteAddressFromChainId =
   fun
-  // | 1 => Some(voteContractMainnet)
+  | 1 => Some(voteContractMainnet)
   | 5 => Some(voteContractGoerli)
   | _ => None;
 
@@ -599,7 +600,7 @@ let useCurrentIteration = () => {
       switch (optVoteContract) {
       | Some(voteContract) =>
         let _ = {
-          let%Async currentIteration = voteContract.proposalIteration();
+          let%Async currentIteration = voteContract.proposalIteration(.);
           let currentIterationString = currentIteration->ethersBnToString;
           setResult(_ => currentIterationString->Int.fromString);
           ()->async;
@@ -642,6 +643,37 @@ let useProposalVotes = (iteration, projectId) => {
 
   (result, () => setCounter(_ => counter + 1));
 };
+
+let useHasUserVotedForProposalIteration = (iteration, userAddress, projectId) => {
+  let (result, setResult) = React.useState(() => None);
+  let (counter, setCounter) = React.useState(() => 0);
+
+  let optVoteContract = useVoteContract();
+
+  React.useEffect5(
+    () => {
+      switch (optVoteContract) {
+      | Some(voteContract) =>
+        let _ = {
+          let%Async hasVotedForProposal =
+            voteContract.hasUserVotedForProposalIteration(.
+              iteration,
+              userAddress,
+              projectId,
+            );
+          setResult(_ => Some(hasVotedForProposal));
+          ()->async;
+        };
+        ();
+      | None => ()
+      };
+      None;
+    },
+    (counter, setResult, optVoteContract, iteration, projectId),
+  );
+
+  (result, () => setCounter(_ => counter + 1));
+};
 // totalVotes: unit => Js.Promise.t(ethersBnFormat),
 let useTotalVotes = () => {
   let (result, setResult) = React.useState(() => None);
@@ -654,7 +686,7 @@ let useTotalVotes = () => {
       switch (optVoteContract) {
       | Some(voteContract) =>
         let _ = {
-          let%Async totalVotes = voteContract.totalVotes();
+          let%Async totalVotes = voteContract.totalVotes(.);
           let totalVotesString = totalVotes->ethersBnToString;
           setResult(_ => Some(totalVotesString->BN.new_));
           ()->async;
@@ -681,7 +713,7 @@ let useProposalDeadline = () => {
       switch (optSteward) {
       | Some(steward) =>
         let _ = {
-          let%Async currentIteration = steward.proposalDeadline();
+          let%Async currentIteration = steward.proposalDeadline(.);
           let currentIterationString = currentIteration->ethersBnToString;
           setResult(_ => currentIterationString->Int.fromString);
           ()->async;
