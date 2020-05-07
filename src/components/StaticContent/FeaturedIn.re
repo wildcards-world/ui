@@ -1,0 +1,62 @@
+open Globals;
+
+type featuredMediaItemType = {
+  imagePath: string,
+  link: string,
+};
+
+let featuredMediaContent: array(featuredMediaItemType) = [|
+  {
+    imagePath: [%bs.raw {|require('../../img/featured-media/hackernoon.svg')|}],
+    link: "https://hackernoon.com/connecting-the-dots-between-blockchain-and-sustainability-6ncc3234",
+  },
+  {
+    imagePath: [%bs.raw {|require('../../img/featured-media/ubisoft.svg')|}],
+    link: "https://news.ubisoft.com/en-us/article/0fbsdbsFNL5T0vTDkx924/how-the-ubisoft-entrepreneurs-lab-empowers-communities",
+  },
+  {
+    imagePath: [%bs.raw {|require('../../img/featured-media/decrypt.svg')|}],
+    link: "https://decrypt.co/10561/ubisoft-picks-eight-blockchain-startups-for-entrepreneur-lab",
+  },
+  {
+    imagePath: [%bs.raw
+      {|require('../../img/featured-media/ventureburn.svg')|}
+    ],
+    link: "https://ventureburn.com/2020/01/sa-crypto-startup-wildcards-cv-vc-investment/",
+  },
+  {
+    imagePath: [%bs.raw
+      {|require('../../img/featured-media/cointelegraph.svg')|}
+    ],
+    link: "https://cointelegraph.com/news/wildcards-purports-to-save-endangered-species-with-technical-first-for-ethereum",
+  },
+|];
+
+let featuredItemImgStyle =
+  Css.(
+    style([width(`percent(80.)), minWidth(`px(30)), padding(`rem(1.))])
+  );
+
+let featuredContainerStyles =
+  Css.(style([maxWidth(px(1200)), margin(auto)]));
+
+[@react.component]
+let make = () =>
+  <Rimble.Box className=Styles.horizantalBlueTile>
+    <p className=Styles.explainerLargeText> "Featured in "->restr </p>
+    <Rimble.Flex
+      alignItems="center"
+      justifyContent="center"
+      flexWrap="wrap"
+      className=featuredContainerStyles>
+      {ReasonReact.array(
+         featuredMediaContent->Array.map(x =>
+           <Rimble.Box p=2 mb=2 width=[|0.5, 0.5, 0.2|]>
+             <a href={x.link}>
+               <img src={x.imagePath} className=featuredItemImgStyle />
+             </a>
+           </Rimble.Box>
+         ),
+       )}
+    </Rimble.Flex>
+  </Rimble.Box>;
