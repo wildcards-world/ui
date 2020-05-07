@@ -20,6 +20,15 @@ let (|==|) = (a, b) => a->BN.eqGet(. b);
 let (|<|) = (a, b) => a->BN.ltGet(. b);
 let (|>|) = (a, b) => a->BN.gtGet(. b);
 
+// Float
+let toFixedWithPrecisionNoTrailingZeros = (number: float, ~digits) => {
+  number
+  ->Js.Float.toFixedWithPrecision(~digits)
+  ->float_of_string
+  ->Float.toString;
+};
+
+// React components
 let restr = React.string;
 let reactMapWithDefault:
   (option('a), React.element, 'a => React.element) => React.element =

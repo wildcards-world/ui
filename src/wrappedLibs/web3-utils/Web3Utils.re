@@ -1,3 +1,5 @@
+open Globals;
+
 [@bs.module "web3-utils"]
 external fromWei: (string, string) => string = "fromWei";
 
@@ -15,6 +17,6 @@ let fromWeiBNToEthPrecision = (value, ~digits) =>
   ->fromWeiBNToEth
   ->Belt.Float.fromString
   ->Belt.Option.mapWithDefault(0., a => a)
-  ->Js.Float.toFixedWithPrecision(~digits);
+  ->toFixedWithPrecisionNoTrailingZeros(~digits);
 
 let toWeiFromEth = value => toWei(value, "ether");

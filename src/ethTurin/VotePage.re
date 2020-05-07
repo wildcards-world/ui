@@ -229,25 +229,36 @@ module ApproveLoyaltyTokens = {
     <div>
       {switch (transactionStatus) {
        | UnInitialised =>
-         <p>
-           <a onClick={_ => {approveLoyaltyTokens()}}>
-             ">>Click here to enable wildcards vote with your tokens<<"->restr
-           </a>
-         </p>
+         <>
+           <Rimble.Loader />
+           <p>
+             <a onClick={_ => {approveLoyaltyTokens()}}>
+               ">>Click here to enable wildcards vote with your tokens<<"
+               ->restr
+             </a>
+           </p>
+         </>
        | Created =>
-         <p>
-           "Transaction Created - please check the details and confirm."->restr
-         </p>
+         <>
+           <Rimble.Loader />
+           <p>
+             "Transaction Created - please check the details and confirm."
+             ->restr
+           </p>
+         </>
        | SignedAndSubmitted(txHash) =>
-         <p>
-           "Processing: "->restr
-           <a
-             target="_blank"
-             rel="noopener noreferrer"
-             href={"https://" ++ etherScanUrl ++ "/tx/" ++ txHash}>
-             "view transaction"->restr
-           </a>
-         </p>
+         <>
+           <Rimble.Loader />
+           <p>
+             "Processing: "->restr
+             <a
+               target="_blank"
+               rel="noopener noreferrer"
+               href={"https://" ++ etherScanUrl ++ "/tx/" ++ txHash}>
+               "view transaction"->restr
+             </a>
+           </p>
+         </>
        | Declined(message) =>
          <p> {("Submitting transaction failed: " ++ message)->restr} </p>
        | Complete(_txResult) =>
@@ -302,21 +313,27 @@ let make = () => {
   let notGoerliNetworkWarning = networkId =>
     switch (networkId) {
     | Some(5) => React.null
-    // | Some(1) => React.null
+    | Some(1) =>
+      let launchTime = MomentRe.momentUtcDefaultFormat("2020-05-08T08:00:00");
+      let isBeforeDate =
+        MomentRe.diff(launchTime, MomentRe.momentNow(), `seconds) > 0.;
+      isBeforeDate
+        ? <>
+            <h4 className=Css.(style([color(red)]))>
+              "Voting is currently only available on the Goerli testnet right."
+              ->restr
+            </h4>
+            <h2 className=Css.(style([color(red)]))>
+              "Launching in: "->restr
+              <CountDown endDateMoment=launchTime />
+            </h2>
+          </>
+        : React.null;
     | _ =>
       <>
         <h4 className=Css.(style([color(red)]))>
-          "Voting is currently only available on the Goerli testnet right."
-          ->restr
+          "We only support mainnet and goerli testnet."->restr
         </h4>
-        <h2 className=Css.(style([color(red)]))>
-          "Launching in: "->restr
-          <CountDown
-            endDateMoment={MomentRe.momentUtcDefaultFormat(
-              "2020-05-08T08:00:00",
-            )}
-          />
-        </h2>
       </>
     };
 
@@ -361,25 +378,44 @@ let make = () => {
 
   let etherScanUrl = RootProvider.useEtherscanUrl();
 
+  let (redeemedLoyaltyTokenBalanceBn, resetLoyaltyTokenBalance) =
+    AnimalActions.useUserLoyaltyTokenBalance(userAddressLowerCase);
+  let (optCurrentIteration, _resetLoyaltyTokenBalance) =
+    AnimalActions.useCurrentIteration();
+
+  let redeemedLoyaltyTokenBalance =
+    redeemedLoyaltyTokenBalanceBn->oFlatMap(balance =>
+      balance->Web3Utils.fromWeiBNToEthPrecision(~digits=3)->Float.fromString
+    )
+    |||| 0.;
+
   let txStateDisplay =
     <div>
       {switch (transactionStatus) {
-       | UnInitialised => <p> "startingTransaction"->restr </p>
-       | Created => <p> "Transaction Created"->restr </p>
+       | UnInitialised =>
+         <> <Rimble.Loader /> <p> "Starting Transaction"->restr </p> </>
+       | Created =>
+         <> <Rimble.Loader /> <p> "Transaction Created"->restr </p> </>
        | SignedAndSubmitted(txHash) =>
-         <p>
-           "Processing: "->restr
-           <a
-             target="_blank"
-             rel="noopener noreferrer"
-             href={"https://" ++ etherScanUrl ++ "/tx/" ++ txHash}>
-             "view transaction"->restr
-           </a>
-         </p>
+         <>
+           <Rimble.Loader />
+           <p>
+             "Processing: "->restr
+             <a
+               target="_blank"
+               rel="noopener noreferrer"
+               href={"https://" ++ etherScanUrl ++ "/tx/" ++ txHash}>
+               "view transaction"->restr
+             </a>
+           </p>
+         </>
        | Declined(message) =>
          <p> {("Submitting transaction failed: " ++ message)->restr} </p>
        | Complete(_txResult) =>
          <>
+           <HackyComponentThatCallsAFunctionOnce
+             reloadFunction=resetLoyaltyTokenBalance
+           />
            <p> "You have voted for a project"->restr </p>
            <Rimble.Button
              className=Css.(
@@ -396,17 +432,6 @@ let make = () => {
        | Failed => <p> "Transaction failed"->restr </p>
        }}
     </div>;
-
-  let (redeemedLoyaltyTokenBalanceBn, _resetLoyaltyTokenBalance) =
-    AnimalActions.useUserLoyaltyTokenBalance(userAddressLowerCase);
-  let (optCurrentIteration, _resetLoyaltyTokenBalance) =
-    AnimalActions.useCurrentIteration();
-
-  let redeemedLoyaltyTokenBalance =
-    redeemedLoyaltyTokenBalanceBn->oFlatMap(balance =>
-      balance->Web3Utils.fromWeiBNToEthPrecision(~digits=3)->Float.fromString
-    )
-    |||| 0.;
 
   let (amountApproved, resetAmountApproved) =
     AnimalActions.useVoteApprovedTokens(userAddressLowerCase);

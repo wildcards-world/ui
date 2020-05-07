@@ -25,6 +25,9 @@ let make = (~submitVoteFunction: float => unit, ~maxVote: float) => {
           setVoteValue(_ => 0.);
         } else if (voteValue >= maxVote) {
           // If above max, set to max
+          setVoteText(_
+            // "MAX VOTE"
+            => maxVote->toFixedWithPrecisionNoTrailingZeros(~digits=9));
           setVoteValue(_ => maxVote);
         } else {
           setVoteValue(_ => voteValue);
@@ -99,7 +102,8 @@ let make = (~submitVoteFunction: float => unit, ~maxVote: float) => {
              }
              ++ " votes = "
              ++ {
-               (voteValue *. voteValue)->Float.toString;
+               (voteValue *. voteValue)
+               ->toFixedWithPrecisionNoTrailingZeros(~digits=3);
              }
              ++ " WLT"
            )

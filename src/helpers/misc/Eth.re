@@ -1,3 +1,5 @@
+open Globals;
+
 type t = BN.bn;
 
 [@bs.deriving jsConverter]
@@ -29,7 +31,7 @@ let get = (value, unit) => {
   | Eth(unit) => fromWei(value, unit->ethUnitToJs)
   | Usd(conversion, digits) =>
     (fromWei(value, `ether->ethUnitToJs)->Js.Float.fromString *. conversion)
-    ->Js.Float.toFixedWithPrecision(~digits)
+    ->toFixedWithPrecisionNoTrailingZeros(~digits)
   };
 };
 

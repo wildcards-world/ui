@@ -539,7 +539,8 @@ module AnimalInfoStats = {
       QlHooks.useRemainingDepositEth(currentPatron)
       ->mapd(("Loading", "Loading"), a =>
           (
-            a->Eth.get(Eth.Eth(`ether)),
+            (a->Eth.get(Eth.Eth(`ether))->Float.fromString |||| 0.0)
+            ->toFixedWithPrecisionNoTrailingZeros(~digits=9),
             currentUsdEthPrice->mapd("Loading", usdEthRate =>
               a->Eth.get(Eth.Usd(usdEthRate, 2))
             ),
@@ -550,7 +551,8 @@ module AnimalInfoStats = {
       QlHooks.useAmountRaisedToken(animal)
       ->mapd(("Loading", "Loading"), a =>
           (
-            a->Eth.get(Eth.Eth(`ether)),
+            (a->Eth.get(Eth.Eth(`ether))->Float.fromString |||| 0.0)
+            ->toFixedWithPrecisionNoTrailingZeros(~digits=9),
             currentUsdEthPrice->mapd("Loading", usdEthRate =>
               a->Eth.get(Eth.Usd(usdEthRate, 2))
             ),
@@ -566,9 +568,10 @@ module AnimalInfoStats = {
       switch (optCurrentPrice) {
       | Some((priceEth, optPriceUsd)) => (
           Some(
-            Js.Float.toString(
+            toFixedWithPrecisionNoTrailingZeros(
               Belt.Float.fromString(priceEth)->Accounting.defaultZeroF
               *. ratio,
+              ~digits=4,
             ),
           ),
           switch (optPriceUsd) {

@@ -192,7 +192,7 @@ module UserDetails = {
             optUsdPrice
             <$> (
               currentUsdEthPrice =>
-                Js.Float.toFixedWithPrecision(
+                toFixedWithPrecisionNoTrailingZeros(
                   Float.fromString(monthlyContributionEth)
                   ->Option.mapWithDefault(0., a => a)
                   *. currentUsdEthPrice,

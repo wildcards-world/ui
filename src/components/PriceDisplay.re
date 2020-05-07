@@ -13,7 +13,7 @@ let uesPrice = animal => {
     let optTotaPatronageUsd =
       optCurrentUsdEthPrice->Belt.Option.flatMap(currentUsdEthPrice =>
         Some(
-          Js.Float.toFixedWithPrecision(
+          toFixedWithPrecisionNoTrailingZeros(
             Belt.Float.fromString(totalPatronageEth)
             ->Belt.Option.mapWithDefault(0., a => a)
             *. currentUsdEthPrice,

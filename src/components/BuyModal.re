@@ -78,17 +78,17 @@ module Transaction = {
     let getMax = [%bs.raw {| (first, second) => Math.max(first,second) |}];
     let currentPriceFloatWithMinimum = getMax(. currentPriceFloat, 0.005);
     let defaultPriceValue =
-      Js.Float.toFixedWithPrecision(
+      toFixedWithPrecisionNoTrailingZeros(
         currentPriceFloatWithMinimum *. 1.5,
         ~digits=2,
       );
     let defaultMonthlyPatronage =
-      Js.Float.toFixedWithPrecision(
+      toFixedWithPrecisionNoTrailingZeros(
         currentPriceFloatWithMinimum *. 1.5 *. ratio,
         ~digits=3,
       );
     // let priceSliderInitialMax =
-    //   Js.Float.toFixedWithPrecision(
+    //   WithPrecision(
     //     currentPriceFloatWithMinimum *. 3.,
     //     ~digits=3,
     //   );
