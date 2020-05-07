@@ -674,6 +674,7 @@ let useHasUserVotedForProposalIteration = (iteration, userAddress, projectId) =>
 
   (result, () => setCounter(_ => counter + 1));
 };
+
 // totalVotes: unit => Js.Promise.t(ethersBnFormat),
 let useTotalVotes = () => {
   let (result, setResult) = React.useState(() => None);

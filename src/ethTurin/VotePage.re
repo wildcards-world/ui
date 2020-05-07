@@ -120,7 +120,7 @@ module OrganisationVote = {
         className=Css.(
           style([display(`block), margin(auto), width(`percent(90.))])
         )
-        disabled={hasVotedForProposal1Votes |||| false || cannotVote}
+        disabled={hasVotedForProposal1Votes |||| true || cannotVote}
         onClick={_ => selectConservation(index)}>
         {(
            hasVotedForProposal1Votes
@@ -130,6 +130,92 @@ module OrganisationVote = {
          ->restr}
       </Rimble.Button>
     </Rimble.Box>;
+  };
+};
+module OrganisationVoteResult = {
+  [@react.component]
+  let make = (~conservationPartner, ~currentIteration, ~totalVotes) => {
+    // ~cannotVote,
+    // ~selectConservation,
+    // ~currentUser,
+    // let (hasVotedForProposal1Votes, _reload) =
+    //   AnimalActions.useHasUserVotedForProposalIteration(
+    //     currentIteration->string_of_int,
+    //     currentUser,
+    //     conservationPartner.index->string_of_int,
+    //   );
+    let (proposal1Votes, _reload) =
+      AnimalActions.useProposalVotes(
+        currentIteration,
+        conservationPartner.index->string_of_int,
+      );
+    let displayText =
+      switch (proposal1Votes) {
+      | Some(proposalVotes) =>
+        (
+          (
+            (proposalVotes |*| BN.new_("10000") |/| totalVotes)
+            ->BN.toStringGet(.)
+            ->Float.fromString
+            |||| 0.
+          )
+          /. 100.
+        )
+        ->Float.toString
+        ++ "%"
+      | None => "loading"
+      };
+    let numberOfVotes =
+      switch (proposal1Votes) {
+      | Some(proposalVotes) =>
+        "with "
+        ++ (proposalVotes |*| BN.new_("1000000000"))
+           ->Web3Utils.fromWeiBNToEthPrecision(~digits=2)
+        ++ " votes in total"
+      | None => ""
+      };
+
+    <Rimble.Box width=[|1., 0.25|]>
+      <a href={conservationPartner.link} target="_blank">
+        <img
+          className=Css.(
+            style([
+              display(`block),
+              width(`percent(70.)),
+              maxWidth(`px(800)),
+              margin(auto),
+            ])
+          )
+          src={conservationPartner.image}
+        />
+      </a>
+      <p> displayText->restr </p>
+      <p> numberOfVotes->restr </p>
+    </Rimble.Box>;
+  };
+};
+
+module VoteResults = {
+  [@react.component]
+  let make = (~currentIteration) => {
+    let (totalVotes, _reload) = AnimalActions.useTotalVotes();
+    let currentIteration = currentIteration->string_of_int;
+
+    switch (totalVotes) {
+    | Some(totalVotes) =>
+      <Rimble.Flex flexWrap="wrap" alignItems="center">
+        {conservationPartners
+         ->Array.map(conservationPartner =>
+             <OrganisationVoteResult
+               currentIteration
+               totalVotes
+               conservationPartner
+             />
+           )
+         ->React.array}
+      </Rimble.Flex>;
+    | None => <p> "loading total"->restr </p>
+    };
   };
 };
 
@@ -178,6 +264,7 @@ module ApproveLoyaltyTokens = {
 [@react.component]
 let make = () => {
   let (voteStep, setVoteStep) = React.useState(() => DefaultView);
+  // let (voteStep, setVoteStep) = React.useState(() => ViewResults);
 
   let (voteForProject, transactionStatus) = AnimalActions.useVoteForProject();
   let selectConservation = conservationArrayIndex => {
@@ -215,7 +302,7 @@ let make = () => {
   let notGoerliNetworkWarning = networkId =>
     switch (networkId) {
     | Some(5) => React.null
-    | Some(1) => React.null
+    // | Some(1) => React.null
     | _ =>
       <>
         <h4 className=Css.(style([color(red)]))>
@@ -314,9 +401,6 @@ let make = () => {
     AnimalActions.useUserLoyaltyTokenBalance(userAddressLowerCase);
   let (optCurrentIteration, _resetLoyaltyTokenBalance) =
     AnimalActions.useCurrentIteration();
-  // let (hasVotedForProposal1Votes, _reload) =
-  //   AnimalActions.useHasUserVotedForProposalIteration();
-  // let (proposal1Votes, _reload) = AnimalActions.useProposalVotes();
 
   let redeemedLoyaltyTokenBalance =
     redeemedLoyaltyTokenBalanceBn->oFlatMap(balance =>
@@ -474,7 +558,11 @@ let make = () => {
                  </Rimble.Box>
                </>;
              | ProcessTransaction => txStateDisplay
-             | ViewResults => <p> "The results"->restr </p>
+             | ViewResults =>
+               switch (optCurrentIteration) {
+               | Some(currentIteration) => <VoteResults currentIteration />
+               | None => <p> "loading vote data"->restr </p>
+               }
              }}
           </Rimble.Flex>
         </Rimble.Box>
