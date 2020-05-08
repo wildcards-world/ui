@@ -310,16 +310,23 @@ let useRedeemLoyaltyTokens = (animalId: string) => {
 
 let useApproveLoyaltyTokens = () => {
   let (txState, setTxState) = React.useState(() => UnInitialised);
-  let optSteward = useLoyaltyTokenContract();
+  let optLoyaltyTokens = useLoyaltyTokenContract();
+  let optNetworkId = RootProvider.useWeb3React().chainId;
+
   let buyFunction = () => {
     let value = parseUnits(. "0", 0);
 
     setTxState(_ => Created);
-    switch (optSteward) {
-    | Some(steward) =>
+
+    switch (optLoyaltyTokens, optNetworkId) {
+    | (Some(steward), Some(networkId)) =>
+      let voteContractAddress =
+        networkId->voteAddressFromChainId
+        |||| "0x0000000000000000000000000000000000000500";
+
       let claimLoyaltyTokenPromise =
         steward.approve(.
-          voteContractGoerli,
+          voteContractAddress,
           "100000000000000000000000",
           {
             // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
@@ -343,7 +350,7 @@ let useApproveLoyaltyTokens = () => {
         setTxState(_ => Declined(error.message))
       });
       ();
-    | None => ()
+    | _ => ()
     };
   };
 
