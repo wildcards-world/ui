@@ -1,4 +1,4 @@
-open Belt.Option;
+open Globals;
 
 // This function returns a prefix based on the page state. Now it is a boolean, in the future it may be more complicated.
 let getPagePrefix = isExplorer => isExplorer ? "explorer/" : "";
@@ -15,7 +15,7 @@ let handleMouseEvent = (action, event) => {
 let onlyUpdateValueIfPositiveFloat = (currentValue, updateFunction, value) => {
   let (newValue, didUpdate: bool) =
     // IF the new number isn't a float, don't update.
-    switch (Belt.Float.fromString(value)) {
+    switch (Float.fromString(value)) {
     | Some(valueFloat) =>
       // IF the new number isn't positive, don't update.
       if (valueFloat >= 0.) {
@@ -39,7 +39,7 @@ let onlyUpdateValueIfInRangeFloat =
     (min, max, currentValue, updateFunction, value) => {
   let (newValue, didUpdate: bool) =
     // IF the new number isn't a float, don't update.
-    switch (Belt.Float.fromString(value)) {
+    switch (Float.fromString(value)) {
     | Some(valueFloat) =>
       // IF the new number isn't positive, don't update.
       if (valueFloat >= min && valueFloat <= max) {
@@ -62,14 +62,16 @@ let onlyUpdateValueIfInRangeFloat =
 let onlyUpdateIfPositiveFloat = (currentValue, updateFunction, event) => {
   ReactEvent.Form.preventDefault(event);
 
-  let value = ReactEvent.Form.target(event)##value->getWithDefault("");
+  let value =
+    ReactEvent.Form.target(event)##value->Option.getWithDefault("");
   onlyUpdateValueIfPositiveFloat(currentValue, updateFunction, value);
 };
 
 let onlyUpdateIfInRangeFloat = (min, max, currentValue, updateFunction, event) => {
   ReactEvent.Form.preventDefault(event);
 
-  let value = ReactEvent.Form.target(event)##value->getWithDefault("");
+  let value =
+    ReactEvent.Form.target(event)##value->Option.getWithDefault("");
   onlyUpdateValueIfInRangeFloat(
     min,
     max,

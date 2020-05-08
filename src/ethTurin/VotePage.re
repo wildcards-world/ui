@@ -378,7 +378,7 @@ let make = () => {
     | Some(patronQueryResult) =>
       patronQueryResult##patron
       ->oMap(patron => patron##tokens->Array.map(token => token##id))
-      ->setDefault([||])
+      |||| [||]
     | None => [||]
     };
 
@@ -438,8 +438,9 @@ let make = () => {
     switch (optCurrentPrice) {
     | Some((priceEth, optPriceUsd)) => (
         Some(
-          Js.Float.toString(
-            Belt.Float.fromString(priceEth)->Accounting.defaultZeroF *. ratio,
+          toFixedWithPrecisionNoTrailingZeros(
+            Float.fromString(priceEth)->Accounting.defaultZeroF *. ratio,
+            ~digits=5,
           ),
         ),
         switch (optPriceUsd) {
@@ -489,7 +490,7 @@ let make = () => {
            <HackyComponentThatCallsAFunctionOnce
              reloadFunction=resetLoyaltyTokenBalance
            />
-           <p> "You have voted for a project"->restr </p>
+           <p> "Congratulations for voting"->restr </p>
            <Rimble.Button
              className=Css.(
                style([
@@ -499,7 +500,7 @@ let make = () => {
                ])
              )
              onClick={_ => setVoteStep(_ => ViewResults)}>
-             "View Results"->restr
+             "Reveal Rankings"->restr
            </Rimble.Button>
          </>
        | Failed => <p> "Transaction failed"->restr </p>

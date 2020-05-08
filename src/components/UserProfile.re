@@ -130,14 +130,14 @@ module UserDetails = {
         ? [||]
         : patronQueryResult##patron
           ->oMap(patron => patron##tokens->Array.map(token => token##id))
-          ->setDefault([||]);
+          |||| [||];
 
     let allPreviouslyOwnedTokens =
       patronQueryResult##patron
       ->oMap(patron =>
           patron##previouslyOwnedTokens->Array.map(token => token##id)
         )
-      ->setDefault([||]);
+      |||| [||];
 
     let uniquePreviouslyOwnedTokens =
       isForeclosed

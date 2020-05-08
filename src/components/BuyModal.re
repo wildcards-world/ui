@@ -88,7 +88,7 @@ module Transaction = {
         ~digits=3,
       );
     // let priceSliderInitialMax =
-    //   WithPrecision(
+    //   toFixedWithPrecisionNoTrailingZeros(
     //     currentPriceFloatWithMinimum *. 3.,
     //     ~digits=3,
     //   );

@@ -8,9 +8,7 @@ let (<$>) = oMap;
 let oFlatMap = Belt.Option.flatMap;
 let (>>=) = oFlatMap;
 let mapd = Option.mapWithDefault;
-let setDefault = (optionalValue, default) =>
-  Option.mapWithDefault(optionalValue, default, b => b);
-let (||||) = setDefault;
+let (||||) = Option.getWithDefault;
 
 let (|+|) = (a, b) => a->BN.addGet(. b);
 let (|*|) = (a, b) => a->BN.mulGet(. b);

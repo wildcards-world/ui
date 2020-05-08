@@ -4,8 +4,11 @@ let hasDecimals = value => value -. value->Float.toInt->Float.fromInt > 0.;
 
 [@react.component]
 let make = (~submitVoteFunction: float => unit, ~maxVote: float) => {
-  let (voteValue, setVoteValue) = React.useState(_ => 0.5);
-  let (voteText, setVoteText) = React.useState(_ => "0.5");
+  let (voteValue, setVoteValue) = React.useState(_ => maxVote);
+  let (voteText, setVoteText) =
+    React.useState(_ =>
+      maxVote->toFixedWithPrecisionNoTrailingZeros(~digits=9)
+    );
   let customVote: string => unit =
     voteValueString => {
       let optVoteValue = Float.fromString(voteValueString);
@@ -98,7 +101,7 @@ let make = (~submitVoteFunction: float => unit, ~maxVote: float) => {
           )>
           {(
              {
-               voteValue->Float.toString;
+               voteValue->toFixedWithPrecisionNoTrailingZeros(~digits=9);
              }
              ++ " votes = "
              ++ {

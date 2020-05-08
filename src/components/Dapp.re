@@ -577,8 +577,7 @@ module AnimalInfoStats = {
       | Some((priceEth, optPriceUsd)) => (
           Some(
             toFixedWithPrecisionNoTrailingZeros(
-              Belt.Float.fromString(priceEth)->Accounting.defaultZeroF
-              *. ratio,
+              Float.fromString(priceEth)->Accounting.defaultZeroF *. ratio,
               ~digits=4,
             ),
           ),

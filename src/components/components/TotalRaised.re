@@ -1,5 +1,5 @@
 open UsdPriceProvider;
-open Belt.Option;
+open Globals;
 
 module TotalRaisedEtherCountup = {
   [@bs.module "./TotalRaisedEtherCountup.js"] [@react.component]
@@ -12,8 +12,8 @@ type patronageRaised =
 
 let uesTotalPatronage = () => {
   let optTotalPatronageWei = QlHooks.useAmountRaised(); //->Web3Utils.fromWeiBNToEth;
-  let optCurrentUsdEthPrice = useUsdPrice(); //->mapWithDefault(0., a => a);
-  // let optCurrentUsdEthPrice = Some(0.5); //->mapWithDefault(0., a => a);
+  let optCurrentUsdEthPrice = useUsdPrice(); //->mapd(0., a => a);
+  // let optCurrentUsdEthPrice = Some(0.5); //->mapd(0., a => a);
 
   switch (optTotalPatronageWei) {
   | Some(totalPatronageWei) =>
@@ -24,8 +24,7 @@ let uesTotalPatronage = () => {
       optCurrentUsdEthPrice->Belt.Option.flatMap(currentUsdEthPrice =>
         Some(
           Js.Float.toFixedWithPrecision(
-            Belt.Float.fromString(totalPatronageEth)
-            ->mapWithDefault(0., a => a)
+            Float.fromString(totalPatronageEth)->mapd(0., a => a)
             *. currentUsdEthPrice,
             ~digits=2,
           ),

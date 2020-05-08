@@ -50,7 +50,7 @@
   },
   "scripts": {
     "start": "npm run re:build && react-scripts start",
-    "build-js-only": "GENERATE_SOURCEMAP=false EXTEND_ESLINT=true react-scripts build --verbose",
+    "build-js-only": "EXTEND_ESLINT=true react-scripts build --verbose",
     "build": "npm run re:build && npm run build-js-only",
     "test": "react-scripts test",
     "lint": "eslint src",

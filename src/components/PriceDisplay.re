@@ -11,11 +11,10 @@ let uesPrice = animal => {
       totalPatronageWei->BN.toStringGet(.)->Web3Utils.fromWeiToEth;
 
     let optTotaPatronageUsd =
-      optCurrentUsdEthPrice->Belt.Option.flatMap(currentUsdEthPrice =>
+      optCurrentUsdEthPrice->oFlatMap(currentUsdEthPrice =>
         Some(
           toFixedWithPrecisionNoTrailingZeros(
-            Belt.Float.fromString(totalPatronageEth)
-            ->Belt.Option.mapWithDefault(0., a => a)
+            Float.fromString(totalPatronageEth)->mapd(0., a => a)
             *. currentUsdEthPrice,
             ~digits=2,
           ),
