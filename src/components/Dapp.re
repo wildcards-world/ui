@@ -1,8 +1,8 @@
 open Globals;
 
 // Load styles for the carousel and react-tabs
-[%bs.raw {|require('@wildcards/react-carousel/lib/style.css')|}];
-[%bs.raw {|require('react-tabs/style/react-tabs.css')|}];
+// [%bs.raw {|require('@wildcards/react-carousel/lib/style.css')|}];
+// [%bs.raw {|require('react-tabs/style/react-tabs.css')|}];
 
 let flameImg = [%bs.raw {|require('../img/streak-flame.png')|}];
 

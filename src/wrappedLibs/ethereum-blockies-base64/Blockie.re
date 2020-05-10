@@ -1,2 +1,2 @@
-[@bs.module "ethereum-blockies-base64"]
+[@bs.module "./blockie-default.js"]
 external makeBlockie: (. string) => string = "default";

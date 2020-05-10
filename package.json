@@ -6,6 +6,7 @@
     "3box": "^1.18.1",
     "@ahrefs/bs-emotion": "^1.0.1",
     "@apollo/react-hooks": "^3.1.5",
+    "@apollo/react-ssr": "^3.1.5",
     "@baransu/graphql_ppx_re": "^0.7.1",
     "@davesnx/styled-ppx": "^0.9.0",
     "@polkadot/util": "^2.8.1",
@@ -32,7 +33,10 @@
     "ethereum-blockies-base64": "^1.0.2",
     "ethers": "^4.0.47",
     "get_in_ppx": "^2.0.1",
+    "isomorphic-unfetch": "^3.0.0",
+    "isomorphic-ws": "^4.0.1",
     "moment": "^2.24.0",
+    "next": "^9.3.6",
     "node-sass": "^4.14.0",
     "react": "^16.13.1",
     "react-countup": "^4.3.3",
@@ -46,9 +50,14 @@
     "reason-react": "^0.7.1",
     "rimble-ui": "^0.14.0",
     "styled-components": "^5.1.0",
-    "use-debounce": "^3.4.1"
+    "use-debounce": "^3.4.1",
+    "ws": "^7.3.0"
   },
   "scripts": {
+    "dev-experimental": "node --experimental-modules ./node_modules/next/dist/bin/next",
+    "dev": "next",
+    "nextbuild": "next build",
+    "next-start": "next start",
     "start": "npm run re:build && react-scripts start",
     "build-js-only": "EXTEND_ESLINT=true react-scripts build --verbose",
     "build": "npm run re:build && npm run build-js-only",
@@ -81,7 +90,10 @@
   },
   "devDependencies": {
     "@glennsl/bs-jest": "^0.5.1",
+    "babel-plugin-graphql-tag": "^2.5.0",
+    "babel-preset-react-app": "^9.1.2",
     "bs-let": "^0.1.16",
+    "file-loader": "^6.0.0",
     "gh-pages": "^2.2.0",
     "gql-tools": "0.0.15"
   },

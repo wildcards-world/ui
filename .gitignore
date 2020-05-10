@@ -43,3 +43,8 @@ react-carousel
 
 # since we are using yarn instead of npm now.
 package-lock.json
+
+# next.js
+/.next/
+/out/
+!public/
