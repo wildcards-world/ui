@@ -208,27 +208,27 @@ let getNextPrev = animal =>
 
 let getImage = animal =>
   switch (animal) {
-  | Vitalik => "/img/animals/gorilla1"
-  | Simon => "/img/animals/gorilla2"
-  | Andy => "/img/animals/gorilla3"
-  | Pancho => "/img/animals/PanchoTheTortoiseCropped"
-  | Llajuita => "/img/animals/LlajuitaTheDeerCropped"
+  | Vitalik => "/img/animals/gorilla1.png"
+  | Simon => "/img/animals/gorilla2.png"
+  | Andy => "/img/animals/gorilla3.png"
+  | Pancho => "/img/animals/PanchoTheTortoiseCropped.png"
+  | Llajuita => "/img/animals/LlajuitaTheDeerCropped.png"
   // | Espumita =>
   //   %bs.raw
-  //   {|require('../../img/animals/EspumitaThePuma2Cropped"
-  | Cubai => "/img/animals/CubaiTheJaguarCropped"
-  | CatStevens => "/img/animals/catstevenstheocelotCropped"
-  | Aruma => "/img/animals/ArumaTheAndeanBearCropped"
-  | Apthapi => "/img/animals/ApthapiTheTapirCropped"
-  | Verano => "/img/animals/VeranoTheMackawCropped"
-  | Nonhlanhla => "/img/animals/EditedHyena"
-  | Isisa => "/img/animals/editedHyena3"
-  | Dlala => "/img/animals/EditedHyena2"
-  | Glen => "/img/animals/Glen"
+  //   {|require('../../img/animals/EspumitaThePuma2Cropped.png"
+  | Cubai => "/img/animals/CubaiTheJaguarCropped.png"
+  | CatStevens => "/img/animals/catstevenstheocelotCropped.png"
+  | Aruma => "/img/animals/ArumaTheAndeanBearCropped.png"
+  | Apthapi => "/img/animals/ApthapiTheTapirCropped.png"
+  | Verano => "/img/animals/VeranoTheMackawCropped.png"
+  | Nonhlanhla => "/img/animals/EditedHyena.png"
+  | Isisa => "/img/animals/editedHyena3.png"
+  | Dlala => "/img/animals/EditedHyena2.png"
+  | Glen => "/img/animals/Glen.png"
   // | Ajayu
   // | Mijungla
   // | Tarkus
-  | _ => "/img/animals/comingsoon"
+  | _ => "/img/animals/comingsoon.png"
   };
 
 // let getAlternateImage: t => array(string) = // TODO: I want to turn this into an array in the future, show a carousel of images instead.
@@ -239,27 +239,27 @@ let getAlternateImage: t => option(string) =
     | Andy
     | Glen
     | Vitalik => None
-    | Verano => Some("/img/animals/Verano")
-    | Pancho => Some("/img/animals/Pancho")
-    | Llajuita => Some("/img/animals/Llajuita")
+    | Verano => Some("/img/animals/Verano.jpg")
+    | Pancho => Some("/img/animals/Pancho.jpg")
+    | Llajuita => Some("/img/animals/Llajuita.jpg")
     // | Espumita =>
-    //   Some("/img/animals/Espumita"])
-    | Cubai => Some("/img/animals/Cubai")
-    | CatStevens => Some("/img/animals/CatStevens")
-    | Aruma => Some("/img/animals/Aruma")
-    | Apthapi => Some("/img/animals/Apthapi")
-    | Nonhlanhla => Some("/img/animals/Nonhlanhla")
-    | Isisa => Some("/img/animals/Isisa")
-    | Dlala => Some("/img/animals/Dlala")
+    //   Some("/img/animals/Espumita.jpg"])
+    | Cubai => Some("/img/animals/Cubai.jpg")
+    | CatStevens => Some("/img/animals/CatStevens.jpg")
+    | Aruma => Some("/img/animals/Aruma.jpg")
+    | Apthapi => Some("/img/animals/Apthapi.jpg")
+    | Nonhlanhla => Some("/img/animals/Nonhlanhla.jpg")
+    | Isisa => Some("/img/animals/Isisa.jpg")
+    | Dlala => Some("/img/animals/Dlala.jpg")
     // | Ajayu =>
     //   %bs.raw
-    //   {|require('../../img/animals/comingsoon"
+    //   {|require('../../img/animals/comingsoon.png"
     // | Mijungla =>
     //   %bs.raw
-    //   {|require('../../img/animals/comingsoon"
+    //   {|require('../../img/animals/comingsoon.png"
     // | Tarkus =>
     //   %bs.raw
-    //   {|require('../../img/animals/comingsoon"
+    //   {|require('../../img/animals/comingsoon.png"
     | _ => None
     };
 
@@ -268,17 +268,17 @@ let getOrgBadgeImage: t => string =
     switch (animal) {
     | Simon
     | Andy
-    | Vitalik => "/img/badges/OGBadge"
+    | Vitalik => "/img/badges/OGBadge.png"
     | Pancho
     | Llajuita
     | Cubai
     | CatStevens
     | Aruma
     | Apthapi
-    | Verano => "/img/badges/SendaVerdeBadge"
+    | Verano => "/img/badges/SendaVerdeBadge.png"
     | Nonhlanhla
     | Isisa
-    | Dlala => "/img/badges/WildTomorrowBadge"
+    | Dlala => "/img/badges/WildTomorrowBadge.png"
     | Glen => "/img/badges/EthTurin.svg"
     // | Espumita
     // | Ajayu

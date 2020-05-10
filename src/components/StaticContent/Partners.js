@@ -1,13 +1,15 @@
 import React from "react";
 import { Flex, Box, Card, Text } from "rimble-ui";
 import { infoBackground } from "../../Styles.bs";
-import UbisoftLogo from "../../img/logos/Ubisoft.png";
-import EthCapeTownLogo from "../../img/logos/EthCapeTown.png";
-import CVLabsLogo from "../../img/logos/cvlabszug.jpg";
-import WildTomorrowFundLogo from "../../img/logos/WildTomorrowFund.png";
-import DarwinAnimalDoctorsLogo from "../../img/conservation-partners/darwin-animal-doctors.svg";
-import TheGreatWhaleConservancyLogo from "../../img/conservation-partners/great-whale-conservancy.png";
-import SendaVerde from "../../img/logos/SendaVerde.png";
+const UbisoftLogo = "/img/logos/Ubisoft.png";
+const EthCapeTownLogo = "/img/logos/EthCapeTown.png";
+const CVLabsLogo = "/img/logos/cvlabszug.jpg";
+const WildTomorrowFundLogo = "/img/logos/WildTomorrowFund.png";
+const DarwinAnimalDoctorsLogo =
+  "/img/conservation-partners/darwin-animal-doctors.svg";
+const TheGreatWhaleConservancyLogo =
+  "/img/conservation-partners/great-whale-conservancy.png";
+const SendaVerde = "/img/logos/SendaVerde.png";
 
 const styles = {
   logo: {
