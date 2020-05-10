@@ -208,57 +208,27 @@ let getNextPrev = animal =>
 
 let getImage = animal =>
   switch (animal) {
-  | Vitalik =>
-    %bs.raw
-    {|require('../../img/animals/gorilla1.png')|}
-  | Simon =>
-    %bs.raw
-    {|require('../../img/animals/gorilla2.png')|}
-  | Andy =>
-    %bs.raw
-    {|require('../../img/animals/gorilla3.png')|}
-  | Pancho =>
-    %bs.raw
-    {|require('../../img/animals/PanchoTheTortoiseCropped.png')|}
-  | Llajuita =>
-    %bs.raw
-    {|require('../../img/animals/LlajuitaTheDeerCropped.png')|}
+  | Vitalik => "/img/animals/gorilla1"
+  | Simon => "/img/animals/gorilla2"
+  | Andy => "/img/animals/gorilla3"
+  | Pancho => "/img/animals/PanchoTheTortoiseCropped"
+  | Llajuita => "/img/animals/LlajuitaTheDeerCropped"
   // | Espumita =>
   //   %bs.raw
-  //   {|require('../../img/animals/EspumitaThePuma2Cropped.png')|}
-  | Cubai =>
-    %bs.raw
-    {|require('../../img/animals/CubaiTheJaguarCropped.png')|}
-  | CatStevens =>
-    %bs.raw
-    {|require('../../img/animals/catstevenstheocelotCropped.png')|}
-  | Aruma =>
-    %bs.raw
-    {|require('../../img/animals/ArumaTheAndeanBearCropped.png')|}
-  | Apthapi =>
-    %bs.raw
-    {|require('../../img/animals/ApthapiTheTapirCropped.png')|}
-  | Verano =>
-    %bs.raw
-    {|require('../../img/animals/VeranoTheMackawCropped.png')|}
-  | Nonhlanhla =>
-    %bs.raw
-    {|require('../../img/animals/EditedHyena.png')|}
-  | Isisa =>
-    %bs.raw
-    {|require('../../img/animals/editedHyena3.png')|}
-  | Dlala =>
-    %bs.raw
-    {|require('../../img/animals/EditedHyena2.png')|}
-  | Glen =>
-    %bs.raw
-    {|require('../../img/animals/Glen.png')|}
+  //   {|require('../../img/animals/EspumitaThePuma2Cropped"
+  | Cubai => "/img/animals/CubaiTheJaguarCropped"
+  | CatStevens => "/img/animals/catstevenstheocelotCropped"
+  | Aruma => "/img/animals/ArumaTheAndeanBearCropped"
+  | Apthapi => "/img/animals/ApthapiTheTapirCropped"
+  | Verano => "/img/animals/VeranoTheMackawCropped"
+  | Nonhlanhla => "/img/animals/EditedHyena"
+  | Isisa => "/img/animals/editedHyena3"
+  | Dlala => "/img/animals/EditedHyena2"
+  | Glen => "/img/animals/Glen"
   // | Ajayu
   // | Mijungla
   // | Tarkus
-  | _ =>
-    %bs.raw
-    {|require('../../img/animals/comingsoon.png')|}
+  | _ => "/img/animals/comingsoon"
   };
 
 // let getAlternateImage: t => array(string) = // TODO: I want to turn this into an array in the future, show a carousel of images instead.
@@ -269,42 +239,27 @@ let getAlternateImage: t => option(string) =
     | Andy
     | Glen
     | Vitalik => None
-    | Verano => Some([%bs.raw {|require('../../img/animals/Verano.jpg')|}])
-    | Pancho => Some([%bs.raw {|require('../../img/animals/Pancho.jpg')|}])
-    | Llajuita =>
-      Some([%bs.raw {|require('../../img/animals/Llajuita.jpg')|}])
+    | Verano => Some("/img/animals/Verano")
+    | Pancho => Some("/img/animals/Pancho")
+    | Llajuita => Some("/img/animals/Llajuita")
     // | Espumita =>
-    //   Some([%bs.raw {|require('../../img/animals/Espumita.jpg')|}])
-    | Cubai =>
-      %bs.raw
-      {|require('../../img/animals/Cubai.jpg')|}
-    | CatStevens =>
-      %bs.raw
-      {|require('../../img/animals/CatStevens.jpg')|}
-    | Aruma =>
-      %bs.raw
-      {|require('../../img/animals/Aruma.jpg')|}
-    | Apthapi =>
-      %bs.raw
-      {|require('../../img/animals/Apthapi.jpg')|}
-    | Nonhlanhla =>
-      %bs.raw
-      {|require('../../img/animals/Nonhlanhla.jpg')|}
-    | Isisa =>
-      %bs.raw
-      {|require('../../img/animals/Isisa.jpg')|}
-    | Dlala =>
-      %bs.raw
-      {|require('../../img/animals/Dlala.jpg')|}
+    //   Some("/img/animals/Espumita"])
+    | Cubai => Some("/img/animals/Cubai")
+    | CatStevens => Some("/img/animals/CatStevens")
+    | Aruma => Some("/img/animals/Aruma")
+    | Apthapi => Some("/img/animals/Apthapi")
+    | Nonhlanhla => Some("/img/animals/Nonhlanhla")
+    | Isisa => Some("/img/animals/Isisa")
+    | Dlala => Some("/img/animals/Dlala")
     // | Ajayu =>
     //   %bs.raw
-    //   {|require('../../img/animals/comingsoon.png')|}
+    //   {|require('../../img/animals/comingsoon"
     // | Mijungla =>
     //   %bs.raw
-    //   {|require('../../img/animals/comingsoon.png')|}
+    //   {|require('../../img/animals/comingsoon"
     // | Tarkus =>
     //   %bs.raw
-    //   {|require('../../img/animals/comingsoon.png')|}
+    //   {|require('../../img/animals/comingsoon"
     | _ => None
     };
 
@@ -313,26 +268,18 @@ let getOrgBadgeImage: t => string =
     switch (animal) {
     | Simon
     | Andy
-    | Vitalik =>
-      %bs.raw
-      {|require('../../img/badges/OGBadge.png')|}
+    | Vitalik => "/img/badges/OGBadge"
     | Pancho
     | Llajuita
     | Cubai
     | CatStevens
     | Aruma
     | Apthapi
-    | Verano =>
-      %bs.raw
-      {|require('../../img/badges/SendaVerdeBadge.png')|}
+    | Verano => "/img/badges/SendaVerdeBadge"
     | Nonhlanhla
     | Isisa
-    | Dlala =>
-      %bs.raw
-      {|require('../../img/badges/WildTomorrowBadge.png')|}
-    | Glen =>
-      %bs.raw
-      {|require('../../img/badges/EthTurin.svg')|}
+    | Dlala => "/img/badges/WildTomorrowBadge"
+    | Glen => "/img/badges/EthTurin.svg"
     // | Espumita
     // | Ajayu
     // | Mijungla

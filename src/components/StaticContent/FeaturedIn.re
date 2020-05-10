@@ -7,27 +7,23 @@ type featuredMediaItemType = {
 
 let featuredMediaContent: array(featuredMediaItemType) = [|
   {
-    imagePath: [%bs.raw {|require('../../img/featured-media/hackernoon.svg')|}],
+    imagePath: "/img/featured-media/hackernoon.svg",
     link: "https://hackernoon.com/connecting-the-dots-between-blockchain-and-sustainability-6ncc3234",
   },
   {
-    imagePath: [%bs.raw {|require('../../img/featured-media/ubisoft.svg')|}],
+    imagePath: "/img/featured-media/ubisoft.svg",
     link: "https://news.ubisoft.com/en-us/article/0fbsdbsFNL5T0vTDkx924/how-the-ubisoft-entrepreneurs-lab-empowers-communities",
   },
   {
-    imagePath: [%bs.raw {|require('../../img/featured-media/decrypt.svg')|}],
+    imagePath: "/img/featured-media/decrypt.svg",
     link: "https://decrypt.co/10561/ubisoft-picks-eight-blockchain-startups-for-entrepreneur-lab",
   },
   {
-    imagePath: [%bs.raw
-      {|require('../../img/featured-media/ventureburn.svg')|}
-    ],
+    imagePath: "/img/featured-media/ventureburn.svg",
     link: "https://ventureburn.com/2020/01/sa-crypto-startup-wildcards-cv-vc-investment/",
   },
   {
-    imagePath: [%bs.raw
-      {|require('../../img/featured-media/cointelegraph.svg')|}
-    ],
+    imagePath: "/img/featured-media/cointelegraph.svg",
     link: "https://cointelegraph.com/news/wildcards-purports-to-save-endangered-species-with-technical-first-for-ethereum",
   },
 |];

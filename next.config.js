@@ -21,7 +21,7 @@ module.exports = {
     // };
     // return config;
     const { module = {} } = config;
-    return {
+    const newConfig = {
       ...config,
       module: {
         ...module,
@@ -38,6 +38,7 @@ module.exports = {
         ],
       },
     };
+    return newConfig;
   },
   webpackDevMiddleware: (config) => {
     // Perform customizations to webpack dev middleware config

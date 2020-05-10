@@ -1,7 +1,7 @@
 open Globals;
 
 // TODO: there must be a better way of importing images in reason react...
-let betaBanner = [%bs.raw {|require('../img/beta-banner.png')|}];
+let betaBanner = "/img/beta-banner.png";
 
 module AnimalFocusDetails = {
   [@react.component]

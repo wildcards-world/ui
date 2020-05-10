@@ -4,7 +4,7 @@ open Globals;
 // [%bs.raw {|require('@wildcards/react-carousel/lib/style.css')|}];
 // [%bs.raw {|require('react-tabs/style/react-tabs.css')|}];
 
-let flameImg = [%bs.raw {|require('../img/streak-flame.png')|}];
+let flameImg = "/img/streak-flame.png";
 
 // TODO: there must be a better way of importing images in reason react...
 module ShareSocial = {

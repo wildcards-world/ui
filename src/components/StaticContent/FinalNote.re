@@ -1,6 +1,4 @@
-let raisingHandsEmoji = [%bs.raw
-  {|require('../../img/emoji/raising_hands.png')|}
-];
+let raisingHandsEmoji = "/img/emoji/raising_hands.png";
 
 module FinalNote = {
   open Globals;
