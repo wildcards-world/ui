@@ -13,6 +13,7 @@ type urlState =
   | Leaderboards(leaderBoard)
   // | Unknown
   | Home(animalPageState)
+  | IncreaseVoteIteration
   | VotePage;
 
 let useUrlState = () => {
@@ -53,6 +54,7 @@ let useUrlState = () => {
           ),
         );
       | [|"ethturin-quadratic-voting"|] => VotePage
+      | [|"increase-iteration"|] => IncreaseVoteIteration
       | urlArray =>
         switch (
           Belt.Array.get(urlArray, 0)->Belt.Option.mapWithDefault("", a => a)
@@ -114,6 +116,7 @@ let getAnimalFormAnimalPageState: animalPageState => option(Animal.t) =
     | DetailView(_, optAnimal) => optAnimal
     | _ => None
     };
+
 let useAnimalForDetails = () => {
   let urlState = useUrlState();
 

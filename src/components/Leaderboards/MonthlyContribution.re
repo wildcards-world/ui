@@ -3,6 +3,7 @@
 // - Move to components
 
 open Css;
+open Globals;
 
 let flameImg = [%bs.raw {|require('../../img/streak-flame.png')|}];
 let goldTrophyImg = [%bs.raw {|require('../../img/icons/gold-trophy.png')|}];
@@ -118,48 +119,50 @@ let make = (~numberOfLeaders) => {
         {switch (topContributorsOpt) {
          | Some(topContributors) =>
            ReasonReact.array(
-             Array.mapi(
+             topContributors->Array.mapWithIndex(
                (index, (contributor, amount)) => {
-                 <tr className={rankingColor(index)}>
-                   <td>
-                     <span className=centerFlame>
-                       {index == 0
-                          ? <img className=trophyImg src=goldTrophyImg />
-                          : index == 1
-                              ? <img
-                                  className=trophyImg
-                                  src=silverTrophyImg
-                                />
-                              : index == 2
-                                  ? <img
-                                      className=trophyImg
-                                      src=bronzeTrophyImg
-                                    />
-                                  : <div className=trophyImg />}
-                       <p className=rankText>
-                         <strong>
-                           "#"->React.string
-                           {(index + 1)->string_of_int->React.string}
-                         </strong>
-                       </p>
-                     </span>
-                   </td>
-                   <td> <ContributorName contributor /> </td>
-                   //  <td>
-                   //    <span className=centerFlame>
-                   //      <img className=flameImgLeaderboard src=flameImg />
-                   //      <p className=streakTextLeaderboard>
-                   //        <strong> "1"->React.string </strong>
-                   //      </p>
-                   //    </span>
-                   //  </td>
-                   <td className=rankMetric>
-                     {(amount ++ " ETH")->React.string}
-                   </td>
-                 </tr>
-               },
-               topContributors,
-             ),
+               let amountRaisedFloat = amount->Float.fromString |||| 0.;
+
+               amountRaisedFloat < 0.0000001
+                 ? React.null
+                 : <tr className={rankingColor(index)}>
+                     <td>
+                       <span className=centerFlame>
+                         {index == 0
+                            ? <img className=trophyImg src=goldTrophyImg />
+                            : index == 1
+                                ? <img
+                                    className=trophyImg
+                                    src=silverTrophyImg
+                                  />
+                                : index == 2
+                                    ? <img
+                                        className=trophyImg
+                                        src=bronzeTrophyImg
+                                      />
+                                    : <div className=trophyImg />}
+                         <p className=rankText>
+                           <strong>
+                             "#"->React.string
+                             {(index + 1)->string_of_int->React.string}
+                           </strong>
+                         </p>
+                       </span>
+                     </td>
+                     <td> <ContributorName contributor /> </td>
+                     //  <td>
+                     //    <span className=centerFlame>
+                     //      <img className=flameImgLeaderboard src=flameImg />
+                     //      <p className=streakTextLeaderboard>
+                     //        <strong> "1"->React.string </strong>
+                     //      </p>
+                     //    </span>
+                     //  </td>
+                     <td className=rankMetric>
+                       {(amount ++ " ETH")->React.string}
+                     </td>
+                   </tr>;
+             }),
            )
          | None => React.null
          }}

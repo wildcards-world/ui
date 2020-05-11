@@ -10,17 +10,14 @@ let backgroundStyle =
       ),
     ])
   );
-module Heading = [%styled.h1 {|
-  padding-top: 5rem;
-  text-align: center;
-|}];
+let headingStyle = Css.(style([paddingTop(rem(5.)), textAlign(`center)]));
 
 [@react.component]
 let make = () => {
   let isGqlLoaded = QlStateManager.useIsInitialized();
 
   <div className=backgroundStyle>
-    <div> <Heading> "Wildcards Kingdom"->restr </Heading> </div>
+    <div> <h1 className=headingStyle> "Wildcards Kingdom"->restr </h1> </div>
     <Rimble.Flex
       flexWrap="wrap" justifyContent="space-around" alignItems="stretch" px=50>
       {Animal.orderedArray

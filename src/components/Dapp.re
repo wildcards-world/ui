@@ -61,18 +61,26 @@ module Streak = {
 module DisplayAfterDate = {
   [@react.component]
   let make = (~endDateMoment, ~beforeComponent, ~afterComponent) => {
-    let isBeforeDate = () =>
-      MomentRe.diff(endDateMoment, MomentRe.momentNow(), `seconds) > 0.;
+    let isBeforeDate =
+      React.useCallback1(
+        () =>
+          MomentRe.diff(endDateMoment, MomentRe.momentNow(), `seconds) > 0.,
+        [|endDateMoment|],
+      );
 
     let (beforeDate, setIsBeforeDate) = React.useState(() => isBeforeDate());
-    React.useEffect(() => {
-      let _timout =
-        Js.Global.setTimeout(
-          () => setIsBeforeDate(_ => isBeforeDate()),
-          1500,
-        );
-      None;
-    });
+    React.useEffect2(
+      () => {
+        Js.log("this was called!!!");
+        let timeout =
+          Js.Global.setTimeout(
+            () => setIsBeforeDate(_ => isBeforeDate()),
+            1500,
+          );
+        Some(() => Js.Global.clearTimeout(timeout));
+      },
+      (setIsBeforeDate, isBeforeDate),
+    );
 
     beforeDate
       ? {
@@ -539,7 +547,8 @@ module AnimalInfoStats = {
       QlHooks.useRemainingDepositEth(currentPatron)
       ->mapd(("Loading", "Loading"), a =>
           (
-            a->Eth.get(Eth.Eth(`ether)),
+            (a->Eth.get(Eth.Eth(`ether))->Float.fromString |||| 0.0)
+            ->toFixedWithPrecisionNoTrailingZeros(~digits=9),
             currentUsdEthPrice->mapd("Loading", usdEthRate =>
               a->Eth.get(Eth.Usd(usdEthRate, 2))
             ),
@@ -550,7 +559,8 @@ module AnimalInfoStats = {
       QlHooks.useAmountRaisedToken(animal)
       ->mapd(("Loading", "Loading"), a =>
           (
-            a->Eth.get(Eth.Eth(`ether)),
+            (a->Eth.get(Eth.Eth(`ether))->Float.fromString |||| 0.0)
+            ->toFixedWithPrecisionNoTrailingZeros(~digits=9),
             currentUsdEthPrice->mapd("Loading", usdEthRate =>
               a->Eth.get(Eth.Usd(usdEthRate, 2))
             ),
@@ -566,9 +576,9 @@ module AnimalInfoStats = {
       switch (optCurrentPrice) {
       | Some((priceEth, optPriceUsd)) => (
           Some(
-            Js.Float.toString(
-              Belt.Float.fromString(priceEth)->Accounting.defaultZeroF
-              *. ratio,
+            toFixedWithPrecisionNoTrailingZeros(
+              Float.fromString(priceEth)->Accounting.defaultZeroF *. ratio,
+              ~digits=4,
             ),
           ),
           switch (optPriceUsd) {

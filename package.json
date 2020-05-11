@@ -50,7 +50,8 @@
   },
   "scripts": {
     "start": "npm run re:build && react-scripts start",
-    "build": "npm run re:build && EXTEND_ESLINT=true react-scripts build",
+    "build-js-only": "EXTEND_ESLINT=true react-scripts build --verbose",
+    "build": "npm run re:build && npm run build-js-only",
     "test": "react-scripts test",
     "lint": "eslint src",
     "re:build": "bsb -make-world -clean-world",
