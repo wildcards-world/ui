@@ -1,4 +1,4 @@
 {
   "presets": ["next/babel", "react-app"],
-  "plugins": ["graphql-tag"]
+  "plugins": ["graphql-tag", ["styled-components", { "ssr": true }]]
 }
