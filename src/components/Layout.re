@@ -165,7 +165,10 @@ let make = () => {
 
   <div className=Styles.app>
     <div className=Css.(style([minHeight(vh(88.))]))>
-      <Announcement />
+      <Announcement
+        nextReleasedAnimals=[|Animal.Espumita, Animal.Ucok|]
+        announcementBannerColor="AEE79A"
+      />
       <div className=Css.(style([position(relative)]))>
         <img src=betaBanner className=Styles.betaBanner />
       </div>
