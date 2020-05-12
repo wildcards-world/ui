@@ -1,4 +1,6 @@
 [%bs.raw {|require("./custom.css")|}];
+[%bs.raw {|require("@wildcards/react-carousel/lib/style.css")|}];
+[%bs.raw {|require("react-tabs/style/react-tabs.css")|}];
 
 module Router = {
   [@react.component]

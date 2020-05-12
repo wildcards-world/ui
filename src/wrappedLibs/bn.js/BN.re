@@ -13,7 +13,8 @@ type bn = {
   toString: (. unit) => string,
 };
 
-[@bs.new] [@bs.module "bn.js"] external new_: string => bn = "default";
+[@bs.new] [@bs.module "./bn-default.js"]
+external new_: string => bn = "default";
 
 [@bs.module "@polkadot/util"] external bnSqrt: (. bn) => bn = "bnSqrt";
 

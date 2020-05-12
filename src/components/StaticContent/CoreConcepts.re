@@ -1,6 +1,4 @@
-let gorillaOnVine = [%bs.raw
-  {|require('../../img/wildcardsimages/gorilla-on-vine.png')|}
-];
+let gorillaOnVine = "/img/wildcardsimages/gorilla-on-vine.png";
 
 open Globals;
 open Rimble;

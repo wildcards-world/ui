@@ -2,9 +2,7 @@
 /* Open the Css module, so we can access the style properties below without prefixing them with Css. */
 open Css;
 
-let backgroundImageGorilla = [%bs.raw
-  {|require("../src/img/wildcardsimages/wild-jungle-background.png")|}
-];
+let backgroundImageGorilla = "/img/wildcardsimages/wild-jungle-background.png";
 
 global(
   "body",
@@ -418,7 +416,7 @@ let carousel =
   style([
     position(`relative),
     width(`percent(150.)),
-    left(`percent(-15.)),
+    left(`percent(-25.)),
   ]);
 
 let invisibleGorilla = style([display(`none)]);
