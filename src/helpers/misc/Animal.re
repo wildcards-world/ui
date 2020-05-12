@@ -220,9 +220,7 @@ let getImage = animal =>
   | Andy => "/img/animals/gorilla3.png"
   | Pancho => "/img/animals/PanchoTheTortoiseCropped.png"
   | Llajuita => "/img/animals/LlajuitaTheDeerCropped.png"
-  // | Espumita =>
-  //   %bs.raw
-  //   {|require('../../img/animals/EspumitaThePuma2Cropped.png"
+  | Espumita => "/img/animals/EspumitaThePuma2Cropped.png"
   | Cubai => "/img/animals/CubaiTheJaguarCropped.png"
   | CatStevens => "/img/animals/catstevenstheocelotCropped.png"
   | Aruma => "/img/animals/ArumaTheAndeanBearCropped.png"
@@ -251,8 +249,7 @@ let getAlternateImage: t => option(string) =
     | Verano => Some("/img/animals/Verano.jpg")
     | Pancho => Some("/img/animals/Pancho.jpg")
     | Llajuita => Some("/img/animals/Llajuita.jpg")
-    // | Espumita =>
-    //   Some("/img/animals/Espumita.jpg"])
+    | Espumita => Some("/img/animals/Espumita.jpg")
     | Cubai => Some("/img/animals/Cubai.jpg")
     | CatStevens => Some("/img/animals/CatStevens.jpg")
     | Aruma => Some("/img/animals/Aruma.jpg")
