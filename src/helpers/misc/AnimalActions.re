@@ -56,14 +56,25 @@ type stewardContract = {
   changePrice:
     (. tokenIdString, parsedUnits, txOptions) => Promise.Js.t(tx, txError),
 };
+type ethersBnFormat;
+[@bs.send] external ethersBnToString: ethersBnFormat => string = "toString";
 type voteContract = {
   // vote(uint256 proposalIdToVoteFor, uint256 amount, uint256 sqrt)
   vote: (. string, string, string, txOptions) => Promise.Js.t(tx, txError),
+  distributeFunds: (. txOptions) => Promise.Js.t(tx, txError),
+  proposalIteration: (. unit) => Js.Promise.t(ethersBnFormat),
+  currentWinner: (. unit) => Js.Promise.t(ethersBnFormat),
+  proposalDeadline: (. unit) => Js.Promise.t(ethersBnFormat),
+  proposalVotes: (. string, string) => Js.Promise.t(ethersBnFormat), // iteration -> proposalId -> num votes
+  hasUserVotedForProposalIteration:
+    (. string, string, string) => Js.Promise.t(bool), // iteration -> proposalId -> num votes
+  totalVotes: (. unit) => Js.Promise.t(ethersBnFormat),
 };
 type loyaltyTokenContract = {
   // approve(address to, uint256 tokenId)
-  balanceOf: (. string) => Js.Promise.t(string),
-  // balanceOf: (. string) => Js.Promise.t(BN.bn),
+  allowance:
+    (. Web3.ethAddress, Web3.ethAddress) => Js.Promise.t(ethersBnFormat),
+  balanceOf: (. Web3.ethAddress) => Js.Promise.t(ethersBnFormat),
   approve:
     (. Web3.ethAddress, string, txOptions) => Promise.Js.t(tx, txError),
 };
@@ -117,103 +128,82 @@ let getVotingContract = (stewardAddress, library, account) => {
   );
 };
 
+let stewardAddressMainnet = "0x6D47CF86F6A490c6410fC082Fd1Ad29CF61492d0";
+let stewardAddressGoerli = "0x0C00CFE8EbB34fE7C31d4915a43Cde211e9F0F3B";
+
+let loyaltyTokenAddressMainnet = "0x773c75c2277eD3e402BDEfd28Ec3b51A3AfbD8a4";
 let loyaltyTokenAddressGoerli = "0xd7d8c42ab5b83aa3d4114e5297989dc27bdfb715";
-let voteContractGoerli = "0x2F2D5f29dD364f11423deEadAbbca6cd4adF7392";
+
+let voteContractMainnet = "0x03e051b7e42480Cc9D54F1caB525D2Fea2cF4d83";
+let voteContractGoerli = "0x316C5f8867B21923db8A0Bd6890A6BFE0Ab6F9d2";
+
+let stewardAddressFromChainId =
+  fun
+  | 1 => Some(stewardAddressMainnet)
+  | 5 => Some(stewardAddressGoerli)
+  | _ => None;
+let loyaltyTokenAddressFromChainId =
+  fun
+  | 1 => Some(loyaltyTokenAddressMainnet)
+  | 5 => Some(loyaltyTokenAddressGoerli)
+  | _ => None;
+let voteAddressFromChainId =
+  fun
+  | 1 => Some(voteContractMainnet)
+  | 5 => Some(voteContractGoerli)
+  | _ => None;
 
 let useStewardContract = () => {
   let context = RootProvider.useWeb3React();
 
-  let optNetworkId = context.chainId;
-
   React.useMemo3(
     () => {
-      switch (context.library) {
-      | Some(library) =>
-        switch (optNetworkId) {
-        | Some(networkId) =>
-          switch (networkId) {
-          | 1 =>
-            Some(
-              getExchangeContract(
-                "0x6D47CF86F6A490c6410fC082Fd1Ad29CF61492d0",
-                library,
-                context.account,
-              ),
-            )
-          | 5 =>
-            Some(
-              getExchangeContract(
-                "0x0C00CFE8EbB34fE7C31d4915a43Cde211e9F0F3B",
-                library,
-                context.account,
-              ),
-            )
-          | _ => None
-          }
-        | None => None
-        }
-      | None => None
+      switch (context.library, context.chainId) {
+      | (Some(library), Some(chainId)) =>
+        chainId
+        ->stewardAddressFromChainId
+        ->oMap(getExchangeContract(_, library, context.account))
+
+      | _ => None
       }
     },
-    (context.library, context.account, optNetworkId),
+    (context.library, context.account, context.chainId),
   );
 };
 
 let useLoyaltyTokenContract = () => {
   let context = RootProvider.useWeb3React();
 
-  let optNetworkId = context.chainId;
-
   React.useMemo3(
     () => {
-      switch (context.library) {
-      | Some(library) =>
-        switch (optNetworkId) {
-        | Some(networkId) =>
-          switch (networkId) {
-          | 5 =>
-            Some(
-              getLoyaltyTokenContract(
-                loyaltyTokenAddressGoerli,
-                library,
-                context.account,
-              ),
-            )
-          | _ => None
-          }
-        | None => None
-        }
-      | None => None
+      switch (context.library, context.chainId) {
+      | (Some(library), Some(chainId)) =>
+        chainId
+        ->loyaltyTokenAddressFromChainId
+        ->oMap(getLoyaltyTokenContract(_, library, context.account))
+
+      | _ => None
       }
     },
-    (context.library, context.account, optNetworkId),
+    (context.library, context.account, context.chainId),
   );
 };
 
 let useVoteContract = () => {
   let context = RootProvider.useWeb3React();
 
-  let optNetworkId = context.chainId;
-
   React.useMemo3(
     () => {
-      switch (context.library) {
-      | Some(library) =>
-        switch (optNetworkId) {
-        | Some(networkId) =>
-          switch (networkId) {
-          | 5 =>
-            Some(
-              getVotingContract(voteContractGoerli, library, context.account),
-            )
-          | _ => None
-          }
-        | None => None
-        }
-      | None => None
+      switch (context.library, context.chainId) {
+      | (Some(library), Some(chainId)) =>
+        chainId
+        ->voteAddressFromChainId
+        ->oMap(getVotingContract(_, library, context.account))
+
+      | _ => None
       }
     },
-    (context.library, context.account, optNetworkId),
+    (context.library, context.account, context.chainId),
   );
 };
 
@@ -221,7 +211,10 @@ type transactionState =
   | UnInitialised
   | Created
   | SignedAndSubmitted(txHash)
-  | Declined
+  // TODO: get the error message when it is declined.
+  //      4001 - means the transaction was declined by the signer
+  //      -32000 - means the transaction is always failing (exceeds gas allowance)
+  | Declined(string)
   | Complete(txResult)
   | Failed;
 
@@ -262,7 +255,9 @@ let useBuy = animal => {
           });
           ();
         });
-        buyPromise->Promise.getError(error => {Js.log(error.message)});
+        buyPromise->Promise.getError(error => {
+          setTxState(_ => Declined(error.message))
+        });
         ();
       | None => ()
       };
@@ -303,7 +298,7 @@ let useRedeemLoyaltyTokens = (animalId: string) => {
         ();
       });
       claimLoyaltyTokenPromise->Promise.getError(error => {
-        Js.log(error.message)
+        setTxState(_ => Declined(error.message))
       });
       ();
     | None => ()
@@ -313,20 +308,25 @@ let useRedeemLoyaltyTokens = (animalId: string) => {
   (buyFunction, txState);
 };
 
-let useApproveLoyaltyTokens = (address: Web3.ethAddress) => {
+let useApproveLoyaltyTokens = () => {
   let (txState, setTxState) = React.useState(() => UnInitialised);
-  let optSteward = useLoyaltyTokenContract();
+  let optLoyaltyTokens = useLoyaltyTokenContract();
+  let optNetworkId = RootProvider.useWeb3React().chainId;
+
   let buyFunction = () => {
-    Js.log(address);
     let value = parseUnits(. "0", 0);
 
     setTxState(_ => Created);
-    switch (optSteward) {
-    | Some(steward) =>
-      Js.log(steward);
+
+    switch (optLoyaltyTokens, optNetworkId) {
+    | (Some(steward), Some(networkId)) =>
+      let voteContractAddress =
+        networkId->voteAddressFromChainId
+        |||| "0x0000000000000000000000000000000000000500";
+
       let claimLoyaltyTokenPromise =
         steward.approve(.
-          voteContractGoerli,
+          voteContractAddress,
           "100000000000000000000000",
           {
             // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
@@ -338,8 +338,7 @@ let useApproveLoyaltyTokens = (address: Web3.ethAddress) => {
         setTxState(_ => SignedAndSubmitted(tx.hash));
         let txMinedPromise = tx.wait(.)->Promise.Js.toResult;
         txMinedPromise->Promise.getOk(txOutcome => {
-          Js.log(txOutcome);
-          setTxState(_ => Complete(txOutcome));
+          setTxState(_ => Complete(txOutcome))
         });
         txMinedPromise->Promise.getError(error => {
           setTxState(_ => Failed);
@@ -348,10 +347,10 @@ let useApproveLoyaltyTokens = (address: Web3.ethAddress) => {
         ();
       });
       claimLoyaltyTokenPromise->Promise.getError(error => {
-        Js.log(error.message)
+        setTxState(_ => Declined(error.message))
       });
       ();
-    | None => ()
+    | _ => ()
     };
   };
 
@@ -367,14 +366,16 @@ let useVoteForProject = () => {
     setTxState(_ => Created);
     switch (optSteward) {
     | Some(steward) =>
-      Js.log(steward);
+      Js.log("!!Voting - start!!");
+      Js.log(
+        "<Proposal ID>, <loyalty tokens to use>, <number of votes (ie the square root)>",
+      );
       Js.log3(
         proposalId,
         squareRoot->BN.sqrGet(.)->BN.toStringGet(.),
         squareRoot->BN.toStringGet(.),
       );
-      // vote(uint256 proposalIdToVoteFor, uint256 amount, uint256 sqrt)
-      // vote: (. string, string, string) => Promise.Js.t(tx, txError),
+      Js.log("!!Voting - end!!");
       let claimLoyaltyTokenPromise =
         steward.vote(.
           proposalId,
@@ -400,7 +401,46 @@ let useVoteForProject = () => {
         ();
       });
       claimLoyaltyTokenPromise->Promise.getError(error => {
-        Js.log(error.message)
+        setTxState(_ => Declined(error.message))
+      });
+      ();
+    | None => ()
+    };
+  };
+
+  (buyFunction, txState);
+};
+
+let useIncreaseVoteIteration = () => {
+  let (txState, setTxState) = React.useState(() => UnInitialised);
+  let optSteward = useVoteContract();
+  let buyFunction = () => {
+    let value = parseUnits(. "0", 0);
+
+    setTxState(_ => Created);
+    switch (optSteward) {
+    | Some(voteContract) =>
+      let claimLoyaltyTokenPromise =
+        voteContract.distributeFunds(. {
+          // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
+          value: value,
+        })
+        ->Promise.Js.toResult;
+      claimLoyaltyTokenPromise->Promise.getOk(tx => {
+        setTxState(_ => SignedAndSubmitted(tx.hash));
+        let txMinedPromise = tx.wait(.)->Promise.Js.toResult;
+        txMinedPromise->Promise.getOk(txOutcome => {
+          Js.log(txOutcome);
+          setTxState(_ => Complete(txOutcome));
+        });
+        txMinedPromise->Promise.getError(error => {
+          setTxState(_ => Failed);
+          Js.log(error);
+        });
+        ();
+      });
+      claimLoyaltyTokenPromise->Promise.getError(error => {
+        setTxState(_ => Declined(error.message))
       });
       ();
     | None => ()
@@ -487,7 +527,7 @@ let useWithdrawDeposit = () => {
           ();
         });
         updateDepositPromise->Promise.getError(error => {
-          Js.log(error.message)
+          setTxState(_ => Declined(error.message))
         });
         ();
       | None => ()
@@ -498,24 +538,233 @@ let useWithdrawDeposit = () => {
 };
 
 let useUserLoyaltyTokenBalance = (address: Web3.ethAddress) => {
-  let (result, _setResult) = React.useState(() => BN.new_("0"));
+  let (result, setResult) = React.useState(() => None);
+  let (counter, setCounter) = React.useState(() => 0);
 
   let optSteward = useLoyaltyTokenContract();
 
-  switch (optSteward) {
-  | Some(steward) =>
-    let _somePromise = {
-      let%Async balance = steward.balanceOf(. address);
-      Js.log("balance = " ++ balance);
-      _setResult(_ => BN.new_(balance));
-      ()->async;
-    };
-    ();
-  | None => ()
-  };
+  React.useEffect4(
+    () => {
+      switch (optSteward) {
+      | Some(steward) =>
+        let _ = {
+          let%Async balance = steward.balanceOf(. address);
+          let balanceString = balance->ethersBnToString;
+          setResult(_ => Some(BN.new_(balanceString)));
+          ()->async;
+        };
+        ();
+      | None => ()
+      };
+      None;
+    },
+    (counter, setResult, optSteward, address),
+  );
 
-  result;
+  (result, () => setCounter(_ => counter + 1));
 };
+
+let useVoteApprovedTokens = (owner: Web3.ethAddress) => {
+  let (result, setResult) = React.useState(() => None);
+  let (counter, setCounter) = React.useState(() => 0);
+
+  let optLoyaltyTokens = useLoyaltyTokenContract();
+  let optNetworkId = RootProvider.useWeb3React().chainId;
+
+  React.useEffect5(
+    () => {
+      switch (optLoyaltyTokens, optNetworkId) {
+      | (Some(loyaltyToken), Some(networkId)) =>
+        let _ = {
+          let voteContractAddress =
+            networkId->voteAddressFromChainId
+            |||| "0x0000000000000000000000000000000000000500";
+          // Js.log3("getting the allowance", owner, voteContractAddress);
+          let%Async allowance =
+            loyaltyToken.allowance(. owner, voteContractAddress);
+          let allowanceString = allowance->ethersBnToString;
+          setResult(_ => Some(BN.new_(allowanceString)));
+          ()->async;
+        };
+        ();
+      | _ => ()
+      };
+      None;
+    },
+    (counter, setResult, optLoyaltyTokens, owner, optNetworkId),
+  );
+
+  (result, () => setCounter(_ => counter + 1));
+};
+
+let useCurrentIteration = () => {
+  let (result, setResult) = React.useState(() => None);
+  let (counter, setCounter) = React.useState(() => 0);
+
+  let optVoteContract = useVoteContract();
+
+  React.useEffect3(
+    () => {
+      switch (optVoteContract) {
+      | Some(voteContract) =>
+        let _ = {
+          let%Async currentIteration = voteContract.proposalIteration(.);
+          let currentIterationString = currentIteration->ethersBnToString;
+          setResult(_ => currentIterationString->Int.fromString);
+          ()->async;
+        };
+        ();
+      | None => ()
+      };
+      None;
+    },
+    (counter, setResult, optVoteContract),
+  );
+
+  (result, () => setCounter(_ => counter + 1));
+};
+
+let useCurrentWinner = () => {
+  let (result, setResult) = React.useState(() => None);
+  let (counter, setCounter) = React.useState(() => 0);
+
+  let optVoteContract = useVoteContract();
+
+  React.useEffect3(
+    () => {
+      switch (optVoteContract) {
+      | Some(voteContract) =>
+        let _ = {
+          let%Async currentWinnerBn = voteContract.currentWinner(.);
+          let currentWinnerString = currentWinnerBn->ethersBnToString;
+          setResult(_ => currentWinnerString->Int.fromString);
+          ()->async;
+        };
+        ();
+      | None => ()
+      };
+      None;
+    },
+    (counter, setResult, optVoteContract),
+  );
+
+  (result, () => setCounter(_ => counter + 1));
+};
+
+let useProposalVotes = (iteration, projectId) => {
+  let (result, setResult) = React.useState(() => None);
+  let (counter, setCounter) = React.useState(() => 0);
+
+  let optVoteContract = useVoteContract();
+
+  React.useEffect5(
+    () => {
+      switch (optVoteContract) {
+      | Some(voteContract) =>
+        let _ = {
+          let%Async proposalVotes =
+            voteContract.proposalVotes(. iteration, projectId);
+          let propsalVotesString = proposalVotes->ethersBnToString;
+          setResult(_ => Some(propsalVotesString->BN.new_));
+          ()->async;
+        };
+        ();
+      | None => ()
+      };
+      None;
+    },
+    (counter, setResult, optVoteContract, iteration, projectId),
+  );
+
+  (result, () => setCounter(_ => counter + 1));
+};
+
+let useHasUserVotedForProposalIteration = (iteration, userAddress, projectId) => {
+  let (result, setResult) = React.useState(() => None);
+  let (counter, setCounter) = React.useState(() => 0);
+
+  let optVoteContract = useVoteContract();
+
+  React.useEffect6(
+    () => {
+      switch (optVoteContract) {
+      | Some(voteContract) =>
+        let _ = {
+          let%Async hasVotedForProposal =
+            voteContract.hasUserVotedForProposalIteration(.
+              iteration,
+              userAddress,
+              projectId,
+            );
+          setResult(_ => Some(hasVotedForProposal));
+          ()->async;
+        };
+        ();
+      | None => ()
+      };
+      None;
+    },
+    (counter, setResult, optVoteContract, iteration, projectId, userAddress),
+  );
+
+  (result, () => setCounter(_ => counter + 1));
+};
+
+// totalVotes: unit => Js.Promise.t(ethersBnFormat),
+let useTotalVotes = () => {
+  let (result, setResult) = React.useState(() => None);
+  let (counter, setCounter) = React.useState(() => 0);
+
+  let optVoteContract = useVoteContract();
+
+  React.useEffect3(
+    () => {
+      switch (optVoteContract) {
+      | Some(voteContract) =>
+        let _ = {
+          let%Async totalVotes = voteContract.totalVotes(.);
+          let totalVotesString = totalVotes->ethersBnToString;
+          setResult(_ => Some(totalVotesString->BN.new_));
+          ()->async;
+        };
+        ();
+      | None => ()
+      };
+      None;
+    },
+    (counter, setResult, optVoteContract),
+  );
+
+  (result, () => setCounter(_ => counter + 1));
+};
+
+let useProposalDeadline = () => {
+  let (result, setResult) = React.useState(() => None);
+  let (counter, setCounter) = React.useState(() => 0);
+
+  let optSteward = useVoteContract();
+
+  React.useEffect3(
+    () => {
+      switch (optSteward) {
+      | Some(steward) =>
+        let _ = {
+          let%Async currentIteration = steward.proposalDeadline(.);
+          let currentIterationString = currentIteration->ethersBnToString;
+          setResult(_ => currentIterationString->Int.fromString);
+          ()->async;
+        };
+        ();
+      | None => ()
+      };
+      None;
+    },
+    (counter, setResult, optSteward),
+  );
+
+  (result, () => setCounter(_ => counter + 1));
+};
+
 let useChangePrice = animal => {
   let animalId = Animal.getId(animal);
   let (txState, setTxState) = React.useState(() => UnInitialised);
@@ -554,7 +803,7 @@ let useChangePrice = animal => {
           ();
         });
         updatePricePromise->Promise.getError(error => {
-          Js.log(error.message)
+          setTxState(_ => Declined(error.message))
         });
         ();
       | None => ()

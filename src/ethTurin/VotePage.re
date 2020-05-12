@@ -19,225 +19,428 @@ let darwinAnimalDoctorsImg = [%bs.raw
   {|require('../img/conservation-partners/darwin-animal-doctors.svg')|}
 ];
 
-// Use TODO
-// type conservationPartnerType = {
-//   name: string,
-//   image: string,
-//   link: string,
-// };
+type conservationPartnerType = {
+  name: string,
+  image: string,
+  link: string,
+  index: int,
+};
 
-// let conservationPartners: array(conservationPartnerType) = [|
-//   {
-//     name: "Wild Tomorrow Fund",
-//     image: wildTomorrowFundImg,
-//     link: "https://www.wildtomorrowfund.org/",
-//   },
-//   {
-//     name: "La Senda Verde",
-//     image: laSendaVerdeImg,
-//     link: "http://www.sendaverde.org/",
-//   },
-//   {
-//     name: "The Great Whale Conservancy",
-//     image: greatWhaleConservancyImg,
-//     link: "http://greatwhaleconservancy.org/",
-//   },
-//   {
-//     name: "Darwin Animal Doctors",
-//     image: darwinAnimalDoctorsImg,
-//     link: "http://darwinanimaldoctors.org/",
-//   },
-// |];
+let conservationPartners: array(conservationPartnerType) = [|
+  {
+    name: "Wild Tomorrow Fund",
+    image: wildTomorrowFundImg,
+    link: "https://www.wildtomorrowfund.org/",
+    index: 1,
+  },
+  {
+    name: "La Senda Verde",
+    image: laSendaVerdeImg,
+    link: "http://www.sendaverde.org/",
+    index: 2,
+  },
+  {
+    name: "The Great Whale Conservancy",
+    image: greatWhaleConservancyImg,
+    link: "http://greatwhaleconservancy.org/",
+    index: 3,
+  },
+  {
+    name: "Darwin Animal Doctors",
+    image: darwinAnimalDoctorsImg,
+    link: "http://darwinanimaldoctors.org/",
+    index: 4,
+  },
+|];
+
+// type reasonUneligeableToVote =
+//   | DontOwnAWildcard
+//   | EligeableToVote;
+type organisationArrayIndex = int;
+// type currentVote = {
+//   vote: BN.bn,
+//   maxPossibleVote: BN.bn // This should be calculated at the beginning
+// };
+type voteStep =
+  | DefaultView // sub-states can either be loading data, ready, or user is not eligible to vote
+  | SelectedOrganisationToVote(organisationArrayIndex, float => unit)
+  // | SelectedOrganisationToVote(organisationArrayIndex, currentVote)
+  | ProcessTransaction
+  | ViewResults;
+
+// TODO: this shouldn't be done using a component, it should be done with a 'useEffect'
+module HackyComponentThatCallsAFunctionOnce = {
+  [@react.component]
+  let make = (~reloadFunction) => {
+    let (hasCalledFunction, setHasCalledFunction) =
+      React.useState(_ => false);
+    if (!hasCalledFunction) {
+      reloadFunction();
+      setHasCalledFunction(_ => true);
+    } else {
+      ();
+    };
+
+    React.null;
+  };
+};
+
+// TODO: this shouldn't be done using a component, it should be done with a 'useEffect'
+module HackyComponentThatReloadsOnTimeout = {
+  [@react.component]
+  let make = (~reloadFunction: unit => unit, ~timeoutTime) => {
+    let (hasCalledFunction, setHasCalledFunction) =
+      React.useState(_ => false);
+
+    React.useEffect4(
+      () => {
+        let timeout =
+          Js.Global.setTimeout(
+            () =>
+              if (!hasCalledFunction) {
+                reloadFunction();
+                setHasCalledFunction(_ => true);
+              } else {
+                ();
+              },
+            timeoutTime,
+          );
+        Some(() => Js.Global.clearTimeout(timeout));
+      },
+      (reloadFunction, hasCalledFunction, setHasCalledFunction, timeoutTime),
+    );
+
+    React.null;
+  };
+};
+
+module OrganisationVote = {
+  [@react.component]
+  let make =
+      (
+        ~currentIteration,
+        ~conservationPartner,
+        ~cannotVote,
+        ~selectConservation,
+        ~index,
+        ~currentUser,
+      ) => {
+    // TODO: add a reload on timeout if this doesn't load
+    let (hasVotedForProposal1Votes, _reloadHasVoted) =
+      AnimalActions.useHasUserVotedForProposalIteration(
+        currentIteration->string_of_int,
+        currentUser,
+        conservationPartner.index->string_of_int,
+      );
+
+    <Rimble.Box width=[|1., 0.25|]>
+      <a href={conservationPartner.link} target="_blank">
+        <img
+          className=Css.(
+            style([
+              display(`block),
+              width(`percent(70.)),
+              maxWidth(`px(800)),
+              margin(auto),
+            ])
+          )
+          src={conservationPartner.image}
+        />
+      </a>
+      <Rimble.Button
+        className=Css.(
+          style([display(`block), margin(auto), width(`percent(90.))])
+        )
+        disabled={hasVotedForProposal1Votes |||| true || cannotVote}
+        onClick={_ => selectConservation(index)}>
+        {(
+           hasVotedForProposal1Votes
+           >>= (hasVoted => hasVoted ? Some("Cannot Vote Twice") : None)
+           |||| "Vote"
+         )
+         ->restr}
+      </Rimble.Button>
+    </Rimble.Box>;
+  };
+};
+module OrganisationVoteResult = {
+  [@react.component]
+  let make = (~conservationPartner, ~currentIteration, ~totalVotes) => {
+    // TODO: add a reload on timeout (incase this value doesn't load first time)
+    let (proposal1Votes, _reload) =
+      AnimalActions.useProposalVotes(
+        currentIteration,
+        conservationPartner.index->string_of_int,
+      );
+
+    let displayText =
+      switch (proposal1Votes) {
+      | Some(proposalVotes) =>
+        (
+          (
+            (
+              (proposalVotes |*| BN.new_("10000") |/| totalVotes)
+              ->BN.toStringGet(.)
+              ->Float.fromString
+              |||| 0.
+            )
+            /. 100.
+          )
+          ->Float.toString
+          ++ "%"
+        )
+        ->restr
+      | None => <Rimble.Loader />
+      };
+    let numberOfVotes =
+      switch (proposal1Votes) {
+      | Some(proposalVotes) =>
+        "with "
+        ++ (proposalVotes |*| BN.new_("1000000000"))
+           ->Web3Utils.fromWeiBNToEthPrecision(~digits=2)
+        ++ " votes in total"
+      | None => ""
+      };
+
+    <Rimble.Box width=[|1., 0.25|]>
+      <a href={conservationPartner.link} target="_blank">
+        <img
+          className=Css.(
+            style([
+              display(`block),
+              width(`percent(70.)),
+              maxWidth(`px(800)),
+              margin(auto),
+            ])
+          )
+          src={conservationPartner.image}
+        />
+      </a>
+      <p> displayText </p>
+      <p> numberOfVotes->restr </p>
+    </Rimble.Box>;
+  };
+};
+
+module VoteResults = {
+  [@react.component]
+  let make = (~currentIteration) => {
+    // TODO: add a reload on timeout (incase this value doesn't load first time)
+    let (totalVotes, _reload) = AnimalActions.useTotalVotes();
+    let currentIteration = currentIteration->string_of_int;
+    let (currentWinner, _reload) = AnimalActions.useCurrentWinner();
+
+    <>
+      {switch (totalVotes) {
+       | Some(totalVotes) =>
+         <Rimble.Flex flexWrap="wrap" alignItems="center">
+           {conservationPartners
+            ->Array.map(conservationPartner =>
+                <OrganisationVoteResult
+                  currentIteration
+                  totalVotes
+                  conservationPartner
+                />
+              )
+            ->React.array}
+         </Rimble.Flex>
+       | None => <p> <Rimble.Loader /> "loading current standings"->restr </p>
+       }}
+      {switch (currentWinner) {
+       | Some(currentWinner) =>
+         Js.log(currentWinner);
+         //  <h2> "currentWinner->string_of_int"->restr </h2>
+         <p className=Css.(style([fontSize(em(2.))]))>
+           <strong>
+             {(
+                conservationPartners[currentWinner - 1]
+                <$> (partner => partner.name)
+                |||| "Unknown"
+              )
+              ->restr}
+           </strong>
+           " is currently winning"->restr
+         </p>;
+       //  <h2> {currentWinner->string_of_int->restr} </h2>
+       | None => React.null
+       }}
+    </>;
+  };
+};
 
 module ApproveLoyaltyTokens = {
   [@react.component]
-  let make = () => {
-    let currentUser = RootProvider.useCurrentUser();
+  let make = (~reloadFunction) => {
     let (approveLoyaltyTokens, transactionStatus) =
-      AnimalActions.useApproveLoyaltyTokens(
-        currentUser |||| "USER NOT LOGGED IN",
-      );
+      AnimalActions.useApproveLoyaltyTokens();
     let etherScanUrl = RootProvider.useEtherscanUrl();
 
     <div>
       {switch (transactionStatus) {
        | UnInitialised =>
-         <p>
-           <a onClick={_ => {approveLoyaltyTokens()}}>
-             "Approve wildcards to spend your tokens"->restr
-           </a>
-         </p>
-       | Created => <p> "Transaction Created"->restr </p>
+         <>
+           <Rimble.Loader />
+           <p>
+             <a onClick={_ => {approveLoyaltyTokens()}}>
+               ">>Click here to enable wildcards vote with your tokens<<"
+               ->restr
+             </a>
+           </p>
+         </>
+       | Created =>
+         <>
+           <Rimble.Loader />
+           <p>
+             "Transaction Created - please check the details and confirm."
+             ->restr
+           </p>
+         </>
        | SignedAndSubmitted(txHash) =>
+         <>
+           <Rimble.Loader />
+           <p>
+             "Processing: "->restr
+             <a
+               target="_blank"
+               rel="noopener noreferrer"
+               href={"https://" ++ etherScanUrl ++ "/tx/" ++ txHash}>
+               "view transaction"->restr
+             </a>
+           </p>
+         </>
+       | Declined(message) =>
+         <p> {("Submitting transaction failed: " ++ message)->restr} </p>
+       | Complete(_txResult) =>
          <p>
-           "Processing: "->restr
-           <a
-             target="_blank"
-             rel="noopener noreferrer"
-             href={"https://" ++ etherScanUrl ++ "/tx/" ++ txHash}>
-             "view transaction"->restr
-           </a>
+           <HackyComponentThatCallsAFunctionOnce reloadFunction />
+           "You are now ready to vote :)"->restr
          </p>
-       | Declined => <p> "Transaction denied"->restr </p>
-       | Complete(_txResult) => <p> "You are now ready to vote :)"->restr </p>
        | Failed => <p> "Transaction failed"->restr </p>
        }}
     </div>;
   };
 };
-/*
- http://localhost:3000/#ethturin-quadratic-voting
- http://localhost:3000/#user/<your-eth-address>
-
- --
- */
-
-// // TODO: Delete this, only for testing purposes.
-// module TestSubmitVote = {
-//   [@react.component]
-//   let make = (~voteValue, ~conservationVoted, ~executeImmediately=false) => {
-//     Js.log2(voteValue, conservationVoted);
-//     let conservationId =
-//       switch (conservationVoted) {
-//       | "The Wild Tomorrow Fund" => "0"
-//       | "The Great Whale Conservancy" => "1"
-//       | "La Senda Verde" => "2"
-//       | "Darwin Animal Doctors"
-//       | _ => "3"
-//       };
-
-//     Js.log3("conservationVoted", "voteValue", "tokensUsedValue");
-//     // Js.log3(voteValue, conservationVoted, conservationId);
-//     let votesBn =
-//       voteValue->Int.toString->BN.new_->BN.mulGet(. BN.new_("1000000000"));
-//     Js.log3(
-//       conservationId,
-//       votesBn->BN.toStringGet(.),
-//       votesBn->BN.sqrGet(.)->BN.toStringGet(.),
-//     );
-
-//     let (voteForProject, transactionStatus) =
-//       AnimalActions.useVoteForProject(conservationId);
-//     let etherScanUrl = RootProvider.useEtherscanUrl();
-
-//     if (executeImmediately) {
-//       voteForProject(votesBn);
-//       ();
-//     } else {
-//       ();
-//     };
-
-//     <div>
-//       {switch (transactionStatus) {
-//        | UnInitialised =>
-//          <p>
-//            <a onClick={_ => {voteForProject(votesBn)}}>
-//              "Test a random vote"->restr
-//            </a>
-//          </p>
-//        | Created => <p> "Transaction Created"->restr </p>
-//        | SignedAndSubmitted(txHash) =>
-//          <p>
-//            "Processing: "->restr
-//            <a
-//              target="_blank"
-//              rel="noopener noreferrer"
-//              href={"https://" ++ etherScanUrl ++ "/tx/" ++ txHash}>
-//              "view transaction"->restr
-//            </a>
-//          </p>
-//        | Declined => <p> "Transaction denied"->restr </p>
-//        | Complete(_txResult) => <p> "You have voted for a project"->restr </p>
-//        | Failed => <p> "Transaction failed"->restr </p>
-//        }}
-//     </div>;
-//   };
-// };
 
 [@react.component]
 let make = () => {
+  let (voteStep, setVoteStep) = React.useState(() => DefaultView);
+  // let (voteStep, setVoteStep) = React.useState(() => ViewResults);
+
   let (voteForProject, transactionStatus) = AnimalActions.useVoteForProject();
+  let selectConservation = conservationArrayIndex => {
+    let submitVoteFunction: float => unit =
+      votes => {
+        let conservationVotedContractIndex =
+          conservationPartners->Array.getUnsafe(conservationArrayIndex).index;
+
+        // NOTE: if they vote with more than about 300000 there will be an overflow here...
+        let numberOfVotes =
+          (votes *. 100000.)
+          ->int_of_float
+          ->Int.toString
+          ->BN.new_
+          ->BN.mulGet(. BN.new_("10000"));
+
+        voteForProject(
+          conservationVotedContractIndex->string_of_int,
+          numberOfVotes,
+        );
+
+        setVoteStep(_ => ProcessTransaction);
+      };
+
+    setVoteStep(_ =>
+      SelectedOrganisationToVote(conservationArrayIndex, submitVoteFunction)
+    );
+  };
+
+  let resetVoting = () => {
+    setVoteStep(_ => DefaultView);
+  };
 
   let networkIdOpt = RootProvider.useNetworkId();
 
-  let (voteStep, setVoteStep) = React.useState(() => 0);
-  let (voteValue, setVoteValue) = React.useState(() => 1);
-  let (wildTomorrowLead, _setWildTomorrowLead) = React.useState(() => 25);
-  let (laSendaVerdeLead, _setLaSendaVerde) = React.useState(() => 25);
-  let (whaleConservancyLead, _setWhaleConservancy) = React.useState(() => 25);
-  let (darwinAnimalLead, _setDarwinAnimalLead) = React.useState(() => 25);
-  let (conservationVoted, setConservationVoted) = React.useState(() => "");
+  let currentUser = RootProvider.useCurrentUser();
 
-  let nextVoteStep = () => setVoteStep(voteStep => voteStep + 1);
-
-  // Js.log2("current vote step", voteStep);
-  // Js.log2("current vote value", voteValue);
-
-  let selectConservation = conservationName => {
-    setConservationVoted(conservationName);
-    nextVoteStep();
-  };
-
-  let selectVote: int => unit =
-    votes =>
-      if (votes == (-1)) {
-        nextVoteStep();
-      } else {
-        Js.log("VOTE SELECTED");
-        setVoteValue(_ => votes);
-        Js.log2(votes, conservationVoted);
-        let conservationId =
-          switch (conservationVoted) {
-          | "The Wild Tomorrow Fund" => "0"
-          | "The Great Whale Conservancy" => "1"
-          | "La Senda Verde" => "2"
-          | "Darwin Animal Doctors"
-          | _ => "3"
-          };
-
-        Js.log3(votes, conservationVoted, conservationId);
-        let votesBn =
-          votes->Int.toString->BN.new_->BN.mulGet(. BN.new_("1000000000"));
-        voteForProject(conservationId, votesBn);
-
-        nextVoteStep();
-        nextVoteStep();
-      };
-
-  let resetVoting = () => {
-    setVoteStep(_ => 0);
-    setVoteValue(_ => 1);
-    setConservationVoted(_ => "");
-  };
-
-  let makeVote: _ => unit =
-    () => {
-      nextVoteStep();
+  let userAddressLowerCase =
+    switch (currentUser) {
+    | Some(currentUser) => currentUser->Js.String.toLowerCase
+    | _ => "0x0000000000000000000000000000000000000000"
     };
 
-  let notGoerliNetworkWarning = networkId =>
-    switch (networkId) {
-    // TODO: this should only show if the user hasn't approved yet.
-    | 5 => <ApproveLoyaltyTokens />
-    | _ =>
-      <p className=Css.(style([color(red)]))>
-        "Voting is only available on the Goerli test net right now but will be live once sufficient testing and coverage is accounted for"
-        ->restr
-      </p>
+  let patronQueryOpt = QlHooks.usePatronQuery(userAddressLowerCase);
+
+  let (optProposalDeadline, _reloadProposalDeadline) =
+    AnimalActions.useProposalDeadline();
+
+  let currentlyOwnedTokens =
+    switch (patronQueryOpt) {
+    | Some(patronQueryResult) =>
+      patronQueryResult##patron
+      ->oMap(patron => patron##tokens->Array.map(token => token##id))
+      |||| [||]
+    | None => [||]
     };
 
-  let notGoerliNetwork = networkId => networkId != 5;
+  let isProviderSelucted = RootProvider.useIsProviderSelected();
+
+  let (cannotVote, incorrectNetworkWarning) = {
+    let cannotVote: bool = currentlyOwnedTokens->Array.length <= 0;
+
+    switch (isProviderSelucted) {
+    | false => (
+        false,
+        <>
+          <h4 className=Css.(style([color(red)]))>
+            "You need to be logged in to vote"->restr
+          </h4>
+        </>,
+      )
+    | true =>
+      switch (networkIdOpt) {
+      | Some(5) => (cannotVote, React.null)
+      | Some(1) =>
+        let launchTime =
+          MomentRe.momentUtcDefaultFormat("2020-05-08T08:00:00");
+        let isBeforeDate =
+          MomentRe.diff(launchTime, MomentRe.momentNow(), `seconds) > 0.;
+        isBeforeDate
+          ? (
+            true,
+            <>
+              <h4 className=Css.(style([color(red)]))>
+                "Voting is currently only available on the Goerli testnet right."
+                ->restr
+              </h4>
+              <h2 className=Css.(style([color(red)]))>
+                "Launching in: "->restr
+                <CountDown endDateMoment=launchTime />
+              </h2>
+            </>,
+          )
+          : (cannotVote, React.null);
+      | _ => (
+          true,
+          <>
+            <h4 className=Css.(style([color(red)]))>
+              "We only support mainnet and goerli testnet."->restr
+            </h4>
+          </>,
+        )
+      }
+    };
+  };
 
   let optCurrentPrice = PriceDisplay.uesPrice(Animal.Glen);
-
   let (_, _, ratio, _) = Animal.pledgeRate(Animal.Glen);
-
+  // TODO: investigate why the USD price doesn't load here.
   let (optMonthlyPledgeEth, optMonthlyPledgeUsd) =
     switch (optCurrentPrice) {
     | Some((priceEth, optPriceUsd)) => (
         Some(
-          Js.Float.toString(
-            Belt.Float.fromString(priceEth)->Accounting.defaultZeroF *. ratio,
+          toFixedWithPrecisionNoTrailingZeros(
+            Float.fromString(priceEth)->Accounting.defaultZeroF *. ratio,
+            ~digits=5,
           ),
         ),
         switch (optPriceUsd) {
@@ -248,102 +451,81 @@ let make = () => {
     | None => (None, None)
     };
 
-  let currentUser = RootProvider.useCurrentUser();
-
-  let userAddressLowerCase =
-    switch (currentUser) {
-    | Some(currentUser) => currentUser->Js.String.toLowerCase //TODO - check with zuck this cant be a 3box name name
-    | _ => "0x0000000000000000000000000000000000000000"
-    };
-
-  let patronQueryOpt = QlHooks.usePatronQuery(userAddressLowerCase);
-
-  let currentlyOwnedTokens =
-    switch (patronQueryOpt) {
-    | Some(patronQueryResult) =>
-      patronQueryResult##patron
-      ->oMap(patron => patron##tokens->Array.map(token => token##id))
-      ->setDefault([||])
-    | None => [||]
-    };
-
-  Js.log2(voteValue, conservationVoted);
-  let conservationId =
-    switch (conservationVoted) {
-    | "The Wild Tomorrow Fund" => "0"
-    | "The Great Whale Conservancy" => "1"
-    | "La Senda Verde" => "2"
-    | "Darwin Animal Doctors"
-    | _ => "3"
-    };
-
-  Js.log3("conservationVoted", "voteValue", "tokensUsedValue");
-  // Js.log3(voteValue, conservationVoted, conservationId);
-  let votesBn =
-    voteValue->Int.toString->BN.new_->BN.mulGet(. BN.new_("1000000000"));
-  Js.log3(
-    conservationId,
-    votesBn->BN.toStringGet(.),
-    votesBn->BN.sqrGet(.)->BN.toStringGet(.),
-  );
-
   let etherScanUrl = RootProvider.useEtherscanUrl();
+
+  let (redeemedLoyaltyTokenBalanceBn, resetLoyaltyTokenBalance) =
+    AnimalActions.useUserLoyaltyTokenBalance(userAddressLowerCase);
+  let (optCurrentIteration, reloadCurrentIteration) =
+    AnimalActions.useCurrentIteration();
+
+  let redeemedLoyaltyTokenBalanceOpt =
+    redeemedLoyaltyTokenBalanceBn->oFlatMap(balance =>
+      balance->Web3Utils.fromWeiBNToEthPrecision(~digits=3)->Float.fromString
+    );
 
   let txStateDisplay =
     <div>
       {switch (transactionStatus) {
-       | UnInitialised => <p> "startingTransaction"->restr </p>
-       | Created => <p> "Transaction Created"->restr </p>
+       | UnInitialised =>
+         <> <Rimble.Loader /> <p> "Starting Transaction"->restr </p> </>
+       | Created =>
+         <> <Rimble.Loader /> <p> "Transaction Created"->restr </p> </>
        | SignedAndSubmitted(txHash) =>
-         <p>
-           "Processing: "->restr
-           <a
-             target="_blank"
-             rel="noopener noreferrer"
-             href={"https://" ++ etherScanUrl ++ "/tx/" ++ txHash}>
-             "view transaction"->restr
-           </a>
-         </p>
-       | Declined => <p> "Transaction denied"->restr </p>
-       | Complete(_txResult) => <p> "You have voted for a project"->restr </p>
+         <>
+           <Rimble.Loader />
+           <p>
+             "Processing: "->restr
+             <a
+               target="_blank"
+               rel="noopener noreferrer"
+               href={"https://" ++ etherScanUrl ++ "/tx/" ++ txHash}>
+               "view transaction"->restr
+             </a>
+           </p>
+         </>
+       | Declined(message) =>
+         <p> {("Submitting transaction failed: " ++ message)->restr} </p>
+       | Complete(_txResult) =>
+         <>
+           <HackyComponentThatCallsAFunctionOnce
+             reloadFunction=resetLoyaltyTokenBalance
+           />
+           <p> "Congratulations for voting"->restr </p>
+           <Rimble.Button
+             className=Css.(
+               style([
+                 display(`block),
+                 margin(auto),
+                 width(`percent(90.)),
+               ])
+             )
+             onClick={_ => setVoteStep(_ => ViewResults)}>
+             "Reveal Rankings"->restr
+           </Rimble.Button>
+         </>
        | Failed => <p> "Transaction failed"->restr </p>
        }}
     </div>;
 
-  // let redeemedLoyaltyTokenBalance =
-  //   AnimalActions.useUserLoyaltyTokenBalance(
-  //     currentUser |||| "0x0000000000000000000000000000000000000500",
+  let (amountApproved, resetAmountApproved) =
+    AnimalActions.useVoteApprovedTokens(userAddressLowerCase);
+  // let hasApprovedFullBalance =
+  //   amountApproved
+  //   |||| BN.new_("0")
+  //   |>| (
+  //     redeemedLoyaltyTokenBalanceBn |||| BN.new_("10000000000000000000000")
+  //   );
+
+  // TODO: This gets the value from the graph rather - use this in the future rather than querying the chain.
+  // let totalLoyaltyTokensOpt =
+  //   QlHooks.useTotalLoyaltyToken(userAddressLowerCase);
+  // let redeemedLoyaltyTokenBalance: float =
+  //   totalLoyaltyTokensOpt->oFlatMap(((_, claimedLoyaltyTokens)) =>
+  //     claimedLoyaltyTokens
+  //     ->Web3Utils.fromWeiBNToEthPrecision(~digits=3)
+  //     ->Float.fromString
   //   )
-  //   ->Web3Utils.fromWeiBNToEthPrecision(~digits=3)
-  //   ->Float.fromString
   //   |||| 0.;
-
-  let totalLoyaltyTokensOpt =
-    QlHooks.useTotalLoyaltyToken(userAddressLowerCase);
-  let redeemedLoyaltyTokenBalance: float =
-    totalLoyaltyTokensOpt->oFlatMap(((_, claimedLoyaltyTokens)) =>
-      claimedLoyaltyTokens
-      ->Web3Utils.fromWeiBNToEthPrecision(~digits=3)
-      ->Float.fromString
-    )
-    |||| 0.;
-  // let redeemedLoyaltyTokenBalance: float = 500.0;
-
-  let customVote: int => unit =
-    votes =>
-      if (votes < 0) {
-        setVoteValue(_ => 0);
-      } else if (votes * votes >= redeemedLoyaltyTokenBalance->Float.toInt) {
-        setVoteValue(_ =>
-          redeemedLoyaltyTokenBalance->Js.Math.sqrt->Float.toInt
-        );
-      } else {
-        setVoteValue(_ => votes);
-      };
-
-  let cannotVote: bool =
-    currentlyOwnedTokens->Array.length <= 0
-    || notGoerliNetwork(networkIdOpt |||| (-1));
 
   <Rimble.Box className=Styles.topBody>
     <Rimble.Box>
@@ -374,6 +556,36 @@ let make = () => {
                }}
             </small>
           </p>
+          <br />
+          <br />
+          <br />
+          {switch (optProposalDeadline) {
+           | Some(proposalDeadline) =>
+             let proposalDeadlineMoment =
+               proposalDeadline->MomentRe.momentWithUnix;
+             let isBeforeDate =
+               MomentRe.diff(
+                 proposalDeadlineMoment,
+                 MomentRe.momentNow(),
+                 `seconds,
+               )
+               > 0.;
+             isBeforeDate
+               ? <>
+                   <h4> "Winner will be paid out in:"->restr </h4>
+                   <CountDown endDateMoment=proposalDeadlineMoment />
+                 </>
+               : <h4>
+                   "This voting cycle is over, the winner will be paid out shortly."
+                   ->restr
+                 </h4> /* TODO:
+                          this should say who the winner is. But in general we need think about the flow of this,
+                              because technically users can still vote here.
+                              Should the vote buttons be disabled in the UI?
+                          */;
+           // TODO: when the voting interval is over, it should re-request every few seconds to update the page if it does come back.
+           | None => React.null
+           }}
         </Rimble.Box>
         <Rimble.Box width=[|1., 1., 0.7|]>
           <h3 className=Css.(style([textDecoration(`underline)]))>
@@ -389,7 +601,7 @@ let make = () => {
           </p>
           <h3 className=Css.(style([textDecoration(`underline)]))>
             "Quadratic Voting    "->restr
-            {voteStep != 0
+            {voteStep != DefaultView
                ? <img
                    onClick={_ => resetVoting()}
                    src=refreshImg
@@ -405,24 +617,63 @@ let make = () => {
                    "You can only vote if you are the owner of a wildcard"
                    ->restr
                  </p>
-               : <p>
-                   "Redeemed loyalty token balance: "->restr
-                   {redeemedLoyaltyTokenBalance->Float.toString->restr}
-                 </p>}
-            {switch (networkIdOpt) {
-             | Some(networkId) => notGoerliNetworkWarning(networkId)
-             | _ =>
-               <p className=Css.(style([color(red)]))>
-                 "Voting is only available on the Goerli testnet right now but will be live once sufficient testing and coverage is accounted for"
-                 ->restr
-               </p>
-             }}
+               : {
+                 switch (redeemedLoyaltyTokenBalanceOpt) {
+                 | Some(redeemedLoyaltyTokenBalance) =>
+                   <p>
+                     {(
+                        "Redeemed loyalty token balance: "
+                        ++ {
+                          redeemedLoyaltyTokenBalance->Float.toString;
+                        }
+                        ++ " WLT"
+                      )
+                      ->restr}
+                   </p>
+                 | None => <Rimble.Loader />
+                 };
+               }}
+            incorrectNetworkWarning
           </small>
           <Rimble.Flex flexWrap="wrap" alignItems="center">
-            {conservationVoted == ""
-             || conservationVoted == "The Wild Tomorrow Fund"
-               ? <Rimble.Box width=[|1., 0.25|]>
-                   <a href="https://www.wildtomorrowfund.org/" target="_blank">
+            {switch (voteStep) {
+             | DefaultView =>
+               switch (optCurrentIteration) {
+               | Some(currentIteration) =>
+                 conservationPartners
+                 ->Array.mapWithIndex((index, conservationPartner) =>
+                     <OrganisationVote
+                       currentUser=userAddressLowerCase
+                       currentIteration
+                       conservationPartner
+                       cannotVote
+                       index
+                       selectConservation
+                     />
+                   )
+                 ->React.array
+               | None =>
+                 <>
+                   <HackyComponentThatReloadsOnTimeout
+                     // If the loyalty token balance or the amountApproved are still not loaded after 1 second, attempt to reload them.
+                     reloadFunction=reloadCurrentIteration
+                     timeoutTime=1000
+                   />
+                   <Rimble.Loader />
+                   <p> "loading vote data"->restr </p>
+                 </>
+               }
+             | SelectedOrganisationToVote(
+                 conservationVotedArrayIndex,
+                 submitVoteFunction,
+               ) =>
+               let selectedConservationPartner =
+                 conservationPartners->Array.getUnsafe(
+                   conservationVotedArrayIndex,
+                 );
+               <>
+                 <Rimble.Box width=[|1., 0.25|]>
+                   <a href={selectedConservationPartner.link} target="_blank">
                      <img
                        className=Css.(
                          style([
@@ -432,210 +683,61 @@ let make = () => {
                            margin(auto),
                          ])
                        )
-                       src=wildTomorrowFundImg
+                       src={selectedConservationPartner.image}
                      />
                    </a>
-                   {switch (voteStep) {
-                    | 0 =>
-                      <Rimble.Button
-                        className=Css.(
-                          style([
-                            display(`block),
-                            margin(auto),
-                            width(`percent(90.)),
-                          ])
-                        )
-                        disabled=cannotVote
-                        onClick={_ =>
-                          selectConservation(_ => "The Wild Tomorrow Fund")
-                        }>
-                        "Vote"->restr
-                      </Rimble.Button>
-                    | 1 => <QVSelect selectVote redeemedLoyaltyTokenBalance />
-                    | 2 =>
-                      <CustomVote
-                        redeemedLoyaltyTokenBalance
-                        voteValue
-                        customVote
-                        makeVote
-                      />
-                    | 3 => txStateDisplay
-                    | 4 =>
-                      <p
-                        className=Css.(
-                          style([textAlign(center), color(teal)])
-                        )>
-                        {wildTomorrowLead->Int.toString->restr}
-                        "% of votes"->restr
-                      </p>
-                    | _ => React.null
+                 </Rimble.Box>
+                 <Rimble.Box width=[|1., 0.75|]>
+                   {switch (amountApproved, redeemedLoyaltyTokenBalanceBn) {
+                    | (
+                        Some(amountApproved),
+                        Some(redeemedLoyaltyTokenBalanceBn),
+                      ) =>
+                      let hasApprovedFullBalance =
+                        amountApproved |>| redeemedLoyaltyTokenBalanceBn;
+                      hasApprovedFullBalance
+                        ? {
+                          switch (redeemedLoyaltyTokenBalanceOpt) {
+                          | Some(redeemedLoyaltyTokenBalance) =>
+                            let maxVote =
+                              Js.Math.sqrt(redeemedLoyaltyTokenBalance);
+                            <QVSelect submitVoteFunction maxVote />;
+                          | None =>
+                            <>
+                              <Rimble.Loader />
+                              <p> "Loading your balance"->restr </p>
+                            </>
+                          };
+                        }
+                        : <ApproveLoyaltyTokens
+                            reloadFunction=resetAmountApproved
+                          />;
+                    | _ =>
+                      <>
+                        <HackyComponentThatReloadsOnTimeout
+                          // If the loyalty token balance or the amountApproved are still not loaded after 1 second, attempt to reload them.
+                          reloadFunction={() => {
+                            resetLoyaltyTokenBalance();
+                            resetAmountApproved();
+                          }}
+                          timeoutTime=1000
+                        />
+                        <Rimble.Loader />
+                      </>
                     }}
                  </Rimble.Box>
-               : React.null}
-            {conservationVoted == ""
-             || conservationVoted == "The Great Whale Conservancy"
-               ? <Rimble.Box width=[|1., 0.25|]>
-                   <a href="http://greatwhaleconservancy.org/" target="_blank">
-                     <img
-                       className=Css.(
-                         style([
-                           display(`block),
-                           width(`percent(70.)),
-                           maxWidth(`px(800)),
-                           margin(auto),
-                         ])
-                       )
-                       src=greatWhaleConservancyImg
-                     />
-                   </a>
-                   {switch (voteStep) {
-                    | 0 =>
-                      <Rimble.Button
-                        className=Css.(
-                          style([
-                            display(`block),
-                            margin(auto),
-                            width(`percent(90.)),
-                          ])
-                        )
-                        disabled=cannotVote
-                        onClick={_ =>
-                          selectConservation(_ =>
-                            "The Great Whale Conservancy"
-                          )
-                        }>
-                        "Vote"->restr
-                      </Rimble.Button>
-                    | 1 => <QVSelect selectVote redeemedLoyaltyTokenBalance />
-                    | 2 =>
-                      <CustomVote
-                        redeemedLoyaltyTokenBalance
-                        voteValue
-                        customVote
-                        makeVote
-                      />
-                    | 3 => txStateDisplay
-                    | 4 =>
-                      <p
-                        className=Css.(
-                          style([textAlign(center), color(teal)])
-                        )>
-                        {whaleConservancyLead->Int.toString->restr}
-                        "% of votes"->restr
-                      </p>
-                    | _ => React.null
-                    }}
-                 </Rimble.Box>
-               : React.null}
-            {conservationVoted == "" || conservationVoted == "La Senda Verde"
-               ? <Rimble.Box width=[|1., 0.25|]>
-                   <a href="http://www.sendaverde.org/" target="_blank">
-                     <img
-                       className=Css.(
-                         style([
-                           display(`block),
-                           width(`percent(70.)),
-                           maxWidth(`px(800)),
-                           margin(auto),
-                         ])
-                       )
-                       src=laSendaVerdeImg
-                     />
-                   </a>
-                   {switch (voteStep) {
-                    | 0 =>
-                      <Rimble.Button
-                        className=Css.(
-                          style([
-                            display(`block),
-                            margin(auto),
-                            width(`percent(90.)),
-                          ])
-                        )
-                        disabled=cannotVote
-                        onClick={_ =>
-                          selectConservation(_ => "La Senda Verde")
-                        }>
-                        "Vote"->restr
-                      </Rimble.Button>
-                    | 1 => <QVSelect selectVote redeemedLoyaltyTokenBalance />
-                    | 2 =>
-                      <CustomVote
-                        redeemedLoyaltyTokenBalance
-                        voteValue
-                        customVote
-                        makeVote
-                      />
-                    | 3 => txStateDisplay
-                    | 4 =>
-                      <p
-                        className=Css.(
-                          style([textAlign(center), color(teal)])
-                        )>
-                        {laSendaVerdeLead->Int.toString->restr}
-                        "% of votes"->restr
-                      </p>
-                    | _ => React.null
-                    }}
-                 </Rimble.Box>
-               : React.null}
-            {conservationVoted == ""
-             || conservationVoted == "Darwin Animal Doctors"
-               ? <Rimble.Box width=[|1., 0.25|]>
-                   <a href="http://darwinanimaldoctors.org/" target="_blank">
-                     <img
-                       className=Css.(
-                         style([
-                           display(`block),
-                           width(`percent(70.)),
-                           maxWidth(`px(800)),
-                           margin(auto),
-                         ])
-                       )
-                       src=darwinAnimalDoctorsImg
-                     />
-                   </a>
-                   {switch (voteStep) {
-                    | 0 =>
-                      <Rimble.Button
-                        className=Css.(
-                          style([
-                            display(`block),
-                            margin(auto),
-                            width(`percent(90.)),
-                          ])
-                        )
-                        disabled=cannotVote
-                        onClick={_ =>
-                          selectConservation(_ => "Darwin Animal Doctors")
-                        }>
-                        "Vote"->restr
-                      </Rimble.Button>
-                    | 1 => <QVSelect selectVote redeemedLoyaltyTokenBalance />
-                    | 2 =>
-                      <CustomVote
-                        redeemedLoyaltyTokenBalance
-                        voteValue
-                        customVote
-                        makeVote
-                      />
-                    | 3 => txStateDisplay
-                    | 4 =>
-                      <p
-                        className=Css.(
-                          style([textAlign(center), color(teal)])
-                        )>
-                        {darwinAnimalLead->Int.toString->restr}
-                        "% of votes"->restr
-                      </p>
-                    | _ => React.null
-                    }}
-                 </Rimble.Box>
-               : React.null}
+               </>;
+             | ProcessTransaction => txStateDisplay
+             | ViewResults =>
+               switch (optCurrentIteration) {
+               | Some(currentIteration) => <VoteResults currentIteration />
+               // NOTE: it is logically impossible that this is null here since it needs to be defined to go through the previous steps.
+               | None => <p> "loading vote data"->restr </p>
+               }
+             }}
           </Rimble.Flex>
         </Rimble.Box>
       </Rimble.Flex>
     </Rimble.Box>
   </Rimble.Box>;
-  // <TestSubmitVote voteValue=1 conservationVoted="La Senda Verde" />
 };

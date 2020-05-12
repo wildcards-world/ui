@@ -1,5 +1,3 @@
-open Belt;
-
 [@react.component]
 let make = () => {
   let connectWeb3 = RootProvider.useConnectWeb3();
@@ -10,7 +8,7 @@ let make = () => {
     switch (networkId) {
     | 1 => {j|MAINNET\xa0|j}->React.string
     | 5 => {j|GOERLI\xa0|j}->React.string
-    | _ => {j|Unknown Network\xa0|j}->React.string
+    | _ => {j|Unknown\xa0|j}->React.string
     };
 
   let web3Button =

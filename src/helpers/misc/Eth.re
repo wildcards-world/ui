@@ -1,3 +1,5 @@
+open Globals;
+
 type t = BN.bn;
 
 [@bs.deriving jsConverter]
@@ -29,7 +31,7 @@ let get = (value, unit) => {
   | Eth(unit) => fromWei(value, unit->ethUnitToJs)
   | Usd(conversion, digits) =>
     (fromWei(value, `ether->ethUnitToJs)->Js.Float.fromString *. conversion)
-    ->Js.Float.toFixedWithPrecision(~digits)
+    ->toFixedWithPrecisionNoTrailingZeros(~digits)
   };
 };
 
@@ -48,7 +50,7 @@ let makeFromInt: int => t = tokenId => tokenId->Belt.Int.toString->BN.new_;
 
 let makeFromEthStr: string => option(t) =
   eth =>
-    Belt.Float.fromString(eth)
+    Float.fromString(eth)
     ->Belt.Option.flatMap(ethFloat =>
         Some(BN.new_(toWei(Belt.Float.toString(ethFloat), "ether")))
       );

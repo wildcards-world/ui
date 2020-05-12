@@ -1,10 +1,3 @@
-module S = {
-  [@react.component]
-  let make = (~children: string) => {
-    React.string(children);
-  };
-};
-
 module HoverToggle = {
   [@bs.module "./HoverToggle.js"] [@react.component]
   external make:

@@ -1,28 +1,7 @@
+open Globals;
+open ReasonApolloHooks;
+
 external cast: Js.Json.t => QlHooks.SubWildcardQuery.t = "%identity";
-
-// NOTE: keeping this code here since it might be easier in the future to cast the json from the query into an object to work with (eg removing the Options etc)
-/*
- type owner = {
-   address: string,
-   id: string,
- };
- type wildcard = {
-   id: string,
-   animal: string,
-   owner,
-   // patronageNumeratorPriceScaled:
-   // price: { id: "0xdd7cdb3c31f4d98b98dd0f8c6f478cb960a6960a20516c8d03bd0cd6c8bf8662", price: "8000000000000000" }
-   // timeAcquired: "1577699799"
-   // timeCollected: "1577699799"
-   // totalCollected: "493551596974884"
- };
- type buyEvent = {token: wildcard};
- type eventCounter = {buyEvents: array(buyEvent)};
- type globalQlState = {eventCounter};
- external unsafeCastToWildcardObject: Js.Json.t => wildcard = "%identity";
- */
-
-type gqlState = {isLoaded: bool};
 
 module RootContext = {
   let context = React.createContext(false);
@@ -40,8 +19,7 @@ let useIsInitialized: unit => bool =
 
 [@react.component]
 let make = (~children) => {
-  let result = QlHooks.useBuySubscriptionData();
-  // let lastEvent = React.useState(() => );
+  let result = QlHooks.useStateChangeSubscriptionData();
 
   let initialDataLoad = QlHooks.useInitialDataLoad();
   let hasLoadedInitialData =
@@ -51,63 +29,161 @@ let make = (~children) => {
     };
 
   <RootContext value=hasLoadedInitialData>
-    {hasLoadedInitialData
-       ? result->Belt.Option.mapWithDefault(React.null, result =>
-           <ApolloConsumer>
-             ...{client => {
-               let latestBuyEvent =
-                 result##eventCounter
-                 ->Belt.Option.flatMap(eventCounter => eventCounter##buyEvents)
-                 ->Belt.Option.flatMap(buyEvents =>
-                     buyEvents->Belt.Array.get(0)
-                   );
-               //  let filterByNameQuery = QlHooks.InitialLoad.make();
-               switch (latestBuyEvent) {
-               | None => React.null
-               | Some(buyEvent) =>
-                 let filterByNameQuery =
-                   QlHooks.SubWildcardQuery.make(
-                     ~tokenId=buyEvent##token##id,
+    {result->Belt.Option.mapWithDefault(React.null, result =>
+       <ApolloConsumer>
+         ...{client => {
+           let stateChanges = result##stateChanges->Array.getUnsafe(0);
+           let changedWildcards = stateChanges##wildcardChanges;
+           let changedPatrons = stateChanges##patronChanges;
+
+           let _ =
+             changedWildcards->Array.map(wildcard => {
+               let query =
+                 QlHooks.SubWildcardQuery.make(~tokenId=wildcard##id, ());
+               let readQueryOptions =
+                 ApolloHooks.toQueryObj(query)->Obj.magic;
+               module SubWildcardQueryReadQuery =
+                 ApolloClient.ReadQuery(QlHooks.SubWildcardQuery);
+               module SubWildcardQueryWriteQuery =
+                 ApolloClient.WriteQuery(QlHooks.SubWildcardQuery);
+               switch (
+                 SubWildcardQueryReadQuery.readQuery(client, readQueryOptions)
+               ) {
+               | exception _ => ()
+               | cachedResponse =>
+                 switch (cachedResponse |> Js.Nullable.toOption) {
+                 | None => ()
+                 | Some(cachedWildcard) =>
+                   let setupWildcardForCache = [%raw
+                     {|
+                           (wildcardData, cachedWildcard) =>{
+                             return {
+                               wildcard: {
+                                 typename: "Wildcard",
+                                 ...wildcardData,
+                                 ...cachedWildcard.wildcard
+                               }
+                             }
+                           }
+                           |}
+                   ];
+                   SubWildcardQueryWriteQuery.make(
+                     ~client,
+                     ~variables=query##variables,
+                     ~data=setupWildcardForCache(. wildcard, cachedWildcard),
                      (),
                    );
-                 let readQueryOptions: ApolloClient.ReadQuery(WildCards.QlHooks.SubWildcardQuery).readQueryOptions = {
-                   query: ApolloClient.gql(. filterByNameQuery##query),
-                   variables:
-                     Js.Nullable.fromOption(
-                       Some(filterByNameQuery##variables),
-                     ),
-                 };
-                 module WildcardsNameFilterReadQuery =
-                   ApolloClient.ReadQuery(QlHooks.SubWildcardQuery);
-                 module WildcardsNameFilterWriteQuery =
-                   ApolloClient.WriteQuery(QlHooks.SubWildcardQuery);
-                 switch (
-                   WildcardsNameFilterReadQuery.readQuery(
-                     client,
-                     readQueryOptions,
-                   )
-                 ) {
-                 | exception _ => ()
-                 | cachedResponse =>
-                   switch (cachedResponse |> Js.Nullable.toOption) {
-                   | None => ()
-                   | Some(cachedWildcards) =>
-                     let wildcards = cast(cachedWildcards);
-
-                     WildcardsNameFilterWriteQuery.make(
-                       ~client,
-                       ~variables=filterByNameQuery##variables,
-                       ~data=wildcards,
-                       (),
-                     );
-                   }
-                 };
-                 React.null;
+                 }
                };
-             }}
-           </ApolloConsumer>
-         )
-       : React.null}
+             });
+
+           changedPatrons
+           ->Array.map(patron => {
+               let patronQuery =
+                 QlHooks.LoadPatron.make(~patronId=patron##id, ());
+               let readQueryOptions =
+                 ApolloHooks.toQueryObj(patronQuery)->Obj.magic;
+               module LoadPatronReadQuery =
+                 ApolloClient.ReadQuery(QlHooks.LoadPatron);
+               module LoadPatronWriteQuery =
+                 ApolloClient.WriteQuery(QlHooks.LoadPatron);
+               switch (
+                 LoadPatronReadQuery.readQuery(client, readQueryOptions)
+               ) {
+               | exception _ => ()
+               | cachedResponse =>
+                 switch (cachedResponse |> Js.Nullable.toOption) {
+                 | None => ()
+                 | Some(cachedPatron) =>
+                   Js.log3("Cached Patron", cachedPatron, patron);
+                   let setupPatronForCache = [%raw
+                     {|
+                           (patronData, cachedPatron) =>{
+                             return {
+                               patron: {
+                                 typename: "Patron",
+                                 ...patronData,
+                                 ...cachedPatron.patron
+                               }
+                             }
+                           }
+                           |}
+                   ];
+                   LoadPatronWriteQuery.make(
+                     ~client,
+                     ~variables=patronQuery##variables,
+                     ~data=setupPatronForCache(. patron, cachedPatron),
+                     (),
+                   );
+                 }
+               };
+
+               let queryNew =
+                 QlHooks.LoadPatronNewNoDecode.make(~patronId=patron##id, ());
+               module LoadPatronNewQuery =
+                 ReasonApollo.CreateQuery(QlHooks.LoadPatronNewNoDecode);
+               module LoadPatronNewWriteQuery =
+                 ApolloClient.WriteQuery(QlHooks.LoadPatronNew);
+
+               <LoadPatronNewQuery
+                 variables=queryNew##variables fetchPolicy="network-only">
+                 ...{({result, _}) => {
+                   switch (result) {
+                   | Loading
+                   | Error(_) => React.null
+                   | Data(response) =>
+                     let filterByNameQuery =
+                       QlHooks.LoadPatronNew.make(~patronId=patron##id, ());
+                     let readQueryOptions =
+                       ApolloHooks.toQueryObj(filterByNameQuery)->Obj.magic;
+                     module LoadPatronNewReadQuery =
+                       ApolloClient.ReadQuery(QlHooks.LoadPatronNew);
+                     module LoadPatronNewWriteQuery =
+                       ApolloClient.WriteQuery(QlHooks.LoadPatronNew);
+                     switch (
+                       LoadPatronNewReadQuery.readQuery(
+                         client,
+                         readQueryOptions,
+                       )
+                     ) {
+                     | exception _ => ()
+                     | cachedResponse =>
+                       switch (cachedResponse |> Js.Nullable.toOption) {
+                       | None => ()
+                       | Some(cachedPatron) =>
+                         let setupNewPatronForCache = [%raw
+                           {|
+                         (newPatronData, previousPatron) =>{
+                           let newPatron = newPatronData.newPatron;
+                           let prevPatron = previousPatron.newPatron;
+                           return {
+                             newPatron: {
+                               typename: "NewPatron",
+                               ...prevPatron,
+                               ...newPatron,
+                             }
+                           }
+                         }
+                         |}
+                         ];
+                         LoadPatronNewWriteQuery.make(
+                           ~client,
+                           ~variables=filterByNameQuery##variables,
+                           ~data=
+                             setupNewPatronForCache(. response, cachedPatron),
+                           (),
+                         );
+                       }
+                     };
+                     React.null;
+                   }
+                 }}
+               </LoadPatronNewQuery>;
+             })
+           ->React.array;
+         }}
+       </ApolloConsumer>
+     )}
     children
   </RootContext>;
 };

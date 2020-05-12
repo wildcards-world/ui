@@ -4,8 +4,10 @@
   "private": true,
   "dependencies": {
     "3box": "^1.18.1",
+    "@ahrefs/bs-emotion": "^1.0.1",
     "@apollo/react-hooks": "^3.1.5",
     "@baransu/graphql_ppx_re": "^0.7.1",
+    "@davesnx/styled-ppx": "^0.9.0",
     "@polkadot/util": "^2.8.1",
     "@web3-react/core": "^6.0.9",
     "@web3-react/fortmatic-connector": "^6.0.9",
@@ -16,15 +18,15 @@
     "@web3-react/walletconnect-connector": "^6.0.9",
     "@wildcards/react-carousel": "^1.10.28-working1",
     "@wildcards/react-social-icons": "^4.1.0",
-    "@wildcards/reason-apollo": "^0.18.3",
-    "@wildcards/reason-apollo-hooks": "^6.0.2",
+    "@wildcards/reason-apollo": "0.20.0-latest1",
+    "@wildcards/reason-apollo-hooks": "6.0.1-latest1",
     "bluebird": "^3.7.2",
     "bn.js": "^5.1.1",
     "bs-css": "^12.2.0",
     "bs-css-emotion": "^1.2.0",
     "bs-fetch": "^0.5.2",
     "bs-moment": "^0.4.5",
-    "bs-platform": "7.3.1",
+    "bs-platform": "^7.2.2",
     "bs-webapi": "^0.15.9",
     "decco": "^1.2.0",
     "ethereum-blockies-base64": "^1.0.2",
@@ -48,7 +50,8 @@
   },
   "scripts": {
     "start": "npm run re:build && react-scripts start",
-    "build": "npm run re:build && EXTEND_ESLINT=true react-scripts build",
+    "build-js-only": "EXTEND_ESLINT=true react-scripts build --verbose",
+    "build": "npm run re:build && npm run build-js-only",
     "test": "react-scripts test",
     "lint": "eslint src",
     "re:build": "bsb -make-world -clean-world",
@@ -56,7 +59,8 @@
     "deploy": "npm run build && gh-pages -d dist --remote JasoonS",
     "cra:deploy": "npm run re:build && npm run cra:build && gh-pages -d build --remote JasoonS",
     "generate-ppx-schema": "gqlschema https://api.thegraph.com/subgraphs/name/wild-cards/wildcards -i -o graphql_schema.json",
-    "generate-ppx-schema-goerli": "gqlschema https://api.thegraph.com/subgraphs/name/wild-cards/wildcards-goerli -i -o graphql_schema.json"
+    "generate-ppx-schema-goerli": "gqlschema https://api.thegraph.com/subgraphs/name/wild-cards/wildcards-goerli -i -o graphql_schema.json",
+    "generate-ppx-schema-local": "gqlschema http://127.0.0.1:8080/v1/graphql -i -o graphql_schema.json"
   },
   "jest": {
     "transformIgnorePatterns": [

@@ -2,7 +2,7 @@ let gorillaOnVine = [%bs.raw
   {|require('../../img/wildcardsimages/gorilla-on-vine.png')|}
 ];
 
-open Components;
+open Globals;
 open Rimble;
 
 module CoreConcepts = {
@@ -23,39 +23,58 @@ module CoreConcepts = {
           <Box width=[|1., 1., 0.59|] className=Styles.infoCardContainer>
             <Card className=Styles.infoCardStyles>
               <Heading className=Styles.centerText _as="h2" fontSize=5>
-                <S> "Core Concepts" </S>
+                "Core Concepts"->restr
               </Heading>
               <br />
               <hr />
               <br />
-              <Heading _as="h3"> <S> {translation(. "nft")} </S> </Heading>
-              <br />
-              <Text>
-                <S> "A " </S>
-                <strong> <S> {translation(. "nft")} </S> </strong>
-                <S> {translation(. "whatIsANFT")} </S>
-              </Text>
-              <br />
-              <Heading _as="h3"> <S> "Always for Sale" </S> </Heading>
-              <br />
-              <Text>
-                <S>
-                  "When an asset is bought a new selling price is stipulated by the buyer. Assets are "
-                </S>
-                <strong> <S> "Always for Sale" </S> </strong>
-                <S> ", forever!" </S>
-              </Text>
-              <br />
               <Heading _as="h3">
-                <S> {translation(. "harbergerTax")} </S>
+                {{
+                   translation(. "nft");
+                 }
+                 ->restr}
               </Heading>
               <br />
               <Text>
-                <S> "The owner of an asset pays a " </S>
-                <strong> <S> {translation(. "harbergerTax")} </S> </strong>
-                <S>
-                  "  which is a percentage of the selling price they stipulate."
-                </S>
+                "A "->restr
+                <strong>
+                  {{
+                     translation(. "nft");
+                   }
+                   ->restr}
+                </strong>
+                {{
+                   translation(. "whatIsANFT");
+                 }
+                 ->restr}
+              </Text>
+              <br />
+              <Heading _as="h3"> "Always for Sale"->restr </Heading>
+              <br />
+              <Text>
+                "When an asset is bought a new selling price is stipulated by the buyer. Assets are "
+                ->restr
+                <strong> "Always for Sale"->restr </strong>
+                ", forever!"->restr
+              </Text>
+              <br />
+              <Heading _as="h3">
+                {{
+                   translation(. "harbergerTax");
+                 }
+                 ->restr}
+              </Heading>
+              <br />
+              <Text>
+                "The owner of an asset pays a "->restr
+                <strong>
+                  {{
+                     translation(. "harbergerTax");
+                   }
+                   ->restr}
+                </strong>
+                "  which is a percentage of the selling price they stipulate."
+                ->restr
               </Text>
             </Card>
           </Box>

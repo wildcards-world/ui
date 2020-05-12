@@ -34,7 +34,7 @@ module Token = {
 
 module ClaimLoyaltyTokenButtons = {
   [@react.component]
-  let make = (~id) => {
+  let make = (~id, ~refreshLoyaltyTokenBalance) => {
     let (redeemLoyaltyTokens, transactionStatus) =
       AnimalActions.useRedeemLoyaltyTokens(id);
     let balanceAvailableOnToken =
@@ -43,6 +43,21 @@ module ClaimLoyaltyTokenButtons = {
       );
     let tokenName = id->Animal.getNameFromId;
     let etherScanUrl = RootProvider.useEtherscanUrl();
+
+    React.useEffect2(
+      () => {
+        switch (transactionStatus) {
+        | Complete(_) => refreshLoyaltyTokenBalance()
+        | UnInitialised
+        | Created
+        | SignedAndSubmitted(_)
+        | Declined(_)
+        | Failed => ()
+        };
+        None;
+      },
+      (transactionStatus, refreshLoyaltyTokenBalance),
+    );
 
     switch (balanceAvailableOnToken) {
     | None => React.null
@@ -55,7 +70,7 @@ module ClaimLoyaltyTokenButtons = {
                {(
                   "redeem "
                   ++ balanceAvailableOnToken->Web3Utils.fromWeiBNToEthPrecision(
-                       ~digits=3,
+                       ~digits=5,
                      )
                   ++ " tokens for "
                   ++ tokenName
@@ -74,7 +89,8 @@ module ClaimLoyaltyTokenButtons = {
                "view transaction"->restr
              </a>
            </p>
-         | Declined => <p> "Transaction denied"->restr </p>
+         | Declined(message) =>
+           <p> {("Submitting transaction failed: " ++ message)->restr} </p>
          | Complete(_txResult) =>
            <p>
              "Tokens claimed (please reload the page, this will be improved soon)"
@@ -114,14 +130,14 @@ module UserDetails = {
         ? [||]
         : patronQueryResult##patron
           ->oMap(patron => patron##tokens->Array.map(token => token##id))
-          ->setDefault([||]);
+          |||| [||];
 
     let allPreviouslyOwnedTokens =
       patronQueryResult##patron
       ->oMap(patron =>
           patron##previouslyOwnedTokens->Array.map(token => token##id)
         )
-      ->setDefault([||]);
+      |||| [||];
 
     let uniquePreviouslyOwnedTokens =
       isForeclosed
@@ -176,7 +192,7 @@ module UserDetails = {
             optUsdPrice
             <$> (
               currentUsdEthPrice =>
-                Js.Float.toFixedWithPrecision(
+                toFixedWithPrecisionNoTrailingZeros(
                   Float.fromString(monthlyContributionEth)
                   ->Option.mapWithDefault(0., a => a)
                   *. currentUsdEthPrice,
@@ -188,7 +204,13 @@ module UserDetails = {
       );
     };
 
-    let totalLoyaltyTokensOpt = QlHooks.useTotalLoyaltyToken(userAddress);
+    // This is the value of tokens that are currently in the users account (IE their spendable balance)
+    let (totalLoyaltyTokensOpt, updateFunction) =
+      AnimalActions.useUserLoyaltyTokenBalance(userAddress);
+
+    // This is the value of ALL tokens that this address has ever claimed, or is able to claim (even if they have spent those tokens)!
+    let totalLoyaltyTokensAvailableAndClaimedOpt =
+      QlHooks.useTotalLoyaltyToken(userAddress);
 
     <div className=Css.(style([width(`percent(100.))]))>
       <Rimble.Flex flexWrap="wrap" alignItems="start">
@@ -234,33 +256,50 @@ module UserDetails = {
              ? <>
                  <small>
                    <p>
-                     "Claimed Loyalty Token Balance: "->restr
-                     {totalLoyaltyTokensOpt->Option.mapWithDefault(
-                        "Loading"->restr, ((_, claimedLoyaltyTokens)) => {
-                        claimedLoyaltyTokens
-                        ->Web3Utils.fromWeiBNToEthPrecision(~digits=3)
-                        ->restr
-                      })}
+                     {(
+                        "Claimed Loyalty Token Balance: "
+                        ++ {
+                          totalLoyaltyTokensOpt->Option.mapWithDefault(
+                            "Loading", claimedLoyaltyTokens => {
+                            claimedLoyaltyTokens->Web3Utils.fromWeiBNToEthPrecision(
+                              ~digits=6,
+                            )
+                          });
+                        }
+                        ++ " WLT"
+                      )
+                      ->restr}
                    </p>
                  </small>
                  {switch (currentlyOwnedTokens) {
                   | [||] => React.null
                   | currentlyOwnedTokens =>
                     currentlyOwnedTokens
-                    ->Array.map(id => <ClaimLoyaltyTokenButtons id />)
+                    ->Array.map(id =>
+                        <ClaimLoyaltyTokenButtons
+                          id
+                          refreshLoyaltyTokenBalance=updateFunction
+                        />
+                      )
                     ->React.array
                   }}
                  <a href="/#ethturin-quadratic-voting"> "vote"->restr </a>
                </>
              : <small>
                  <p>
-                   "Loyalty Token Balance: "->restr
-                   {totalLoyaltyTokensOpt->Option.mapWithDefault(
-                      "Loading"->restr, ((totalLoyaltyTokens, _)) => {
-                      totalLoyaltyTokens
-                      ->Web3Utils.fromWeiBNToEthPrecision(~digits=3)
-                      ->restr
-                    })}
+                   {(
+                      "Loyalty Token Balance Generated: "
+                      ++ {
+                        totalLoyaltyTokensAvailableAndClaimedOpt->Option.mapWithDefault(
+                          "Loading", ((totalLoyaltyTokens, _)) => {
+                          totalLoyaltyTokens->Web3Utils.fromWeiBNToEthPrecision(
+                            ~digits=5,
+                          )
+                        });
+                      }
+                      ++ " WLT"
+                    )
+                    ->restr}
                  </p>
                </small>}
         </Rimble.Box>

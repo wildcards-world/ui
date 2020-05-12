@@ -2,7 +2,7 @@ let gorillaOnVine = [%bs.raw
   {|require('../../img/wildcardsimages/hanging-gorilla-from-vine.png')|}
 ];
 
-open Components;
+open Globals;
 open Rimble;
 
 module YoutubeVid = {
@@ -24,7 +24,7 @@ let make = () => {
             <Rimble.Button
               className=Styles.centerItemsMargin
               onClick={_ => setModalOpen(_ => true)}>
-              <S> "Click here for a simple text explanation" </S>
+              "Click here for a simple text explanation"->restr
             </Rimble.Button>
           </Rimble.Box>
           <Rimble.Modal isOpen=isModalOpen>
@@ -41,41 +41,36 @@ let make = () => {
                 onClick={_ => setModalOpen(_ => false)}
               />
               <Heading className=Styles.centerText>
-                <S> "How it works" </S>
+                "How it works"->restr
               </Heading>
               <br />
               <hr />
               <Text>
-                <S>
-                  "You can become the guardian of a wildcard by simply clicking buy on any of the listed wildcards. Wildcards are "
-                </S>
-                <strong> <S> "always for sale" </S> </strong>
-                <S>
-                  " since anyone can purchase them at anytime for their current sale price. When someone purchases a wildcard, they are required to immediately set a sale price for that wildcard. This ensures wildcards are "
-                </S>
-                <strong> <S> "always for sale" </S> </strong>
+                "You can become the guardian of a wildcard by simply clicking buy on any of the listed wildcards. Wildcards are "
+                ->restr
+                <strong> "always for sale"->restr </strong>
+                " since anyone can purchase them at anytime for their current sale price. When someone purchases a wildcard, they are required to immediately set a sale price for that wildcard. This ensures wildcards are "
+                ->restr
+                <strong> "always for sale"->restr </strong>
               </Text>
               <br />
               <Text>
-                <S> "As the gaurdian of a wildcard, you pay a " </S>
-                <strong> <S> "Harberger tax" </S> </strong>
-                <S>
-                  " (percentage based fee) on your newly set sale price. This fee goes towards supporting wildlife conservation. "
-                </S>
+                "As the gaurdian of a wildcard, you pay a "->restr
+                <strong> "Harberger tax"->restr </strong>
+                " (percentage based fee) on your newly set sale price. This fee goes towards supporting wildlife conservation. "
+                ->restr
               </Text>
               <br />
               <Text>
-                <strong> <S> "Here's where it gets interesting." </S> </strong>
-                <S>
-                  " When someone purchases your wildcard from you, you will receive the sale price you set for that wildcard. Depending on what sale price you set and the harberger tax you have already paid, you may make a profit. The only constant is that the conservation organisation will continually receive funding based on the current selling price of each wildcard."
-                </S>
+                <strong> "Here's where it gets interesting."->restr </strong>
+                " When someone purchases your wildcard from you, you will receive the sale price you set for that wildcard. Depending on what sale price you set and the harberger tax you have already paid, you may make a profit. The only constant is that the conservation organisation will continually receive funding based on the current selling price of each wildcard."
+                ->restr
               </Text>
               <br />
               <Text>
                 <span className=Styles.redDisclaimer>
-                  <S>
-                    "The first wildcard we released, Vitalik, has a 2.5% Harberger tax rate per month. Other wildcards have different harberger tax rates ranging from 2.5% to 100% per month."
-                  </S>
+                  "The first wildcard we released, Vitalik, has a 2.5% Harberger tax rate per month. Other wildcards have different harberger tax rates ranging from 2.5% to 100% per month."
+                  ->restr
                 </span>
               </Text>
             </Rimble.Card>

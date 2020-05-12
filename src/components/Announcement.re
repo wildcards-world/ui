@@ -2,7 +2,8 @@ open Globals;
 open Css;
 
 [@react.component]
-let make = () => {
+let make =
+    (~nextReleasedAnimals: array(Animal.t), ~announcementBannerColor: string) => {
   let announcement: 'displayType => string =
     displayVal =>
       style([
@@ -10,7 +11,7 @@ let make = () => {
         position(relative),
         padding2(~v=rem(0.4), ~h=rem(1.)),
         color(white),
-        backgroundColor(hex("DBC0FF")),
+        backgroundColor(hex(announcementBannerColor)),
         textAlign(`center),
         zIndex(2),
         fontSize(px(18)),
@@ -18,38 +19,60 @@ let make = () => {
         letterSpacing(px(2)),
       ]);
 
-  let linkToGlen =
+  let linkToAnimal =
     style([
       color(white),
       textDecoration(underline),
       selector(":visited", [color(hex("ffffff"))]),
-      selector(":hover", [important(color(hex("8200FF")))]),
+      selector(":hover", [important(color(hex("6CAD3D")))]),
     ]);
 
-  let glensLaunchDate = Animal.glenLaunchDate;
+  let nextLaunchDate = Animal.nextLaunchDate;
 
   let isLaunched =
-    MomentRe.diff(glensLaunchDate, MomentRe.momentNow(), `seconds) < 0.;
+    MomentRe.diff(nextLaunchDate, MomentRe.momentNow(), `seconds) < 0.;
 
   let closeButton = style([position(absolute), right(px(10))]);
 
   let (showAnnouncement, setShowAnnouncement) = React.useState(() => `block);
+  let numberOfAnimalsToLaunch = nextReleasedAnimals->Array.length;
+  Js.log2("number of new animals", numberOfAnimalsToLaunch);
+  let isPlural = numberOfAnimalsToLaunch > 1;
   <div className={announcement(showAnnouncement)}>
+    {(
+       "New Wildcard"
+       ++ {
+         isPlural ? "s" : "";
+       }
+       ++ " "
+     )
+     ->restr}
+    {React.array(
+       nextReleasedAnimals->Array.mapWithIndex((index, animal) => {
+         let name = Animal.getName(animal);
+         <>
+           <a href={"/#details/" ++ name} className=linkToAnimal>
+             name->restr
+           </a>
+           {
+             index == numberOfAnimalsToLaunch - 1
+               ? " " : index == numberOfAnimalsToLaunch - 2 ? " and " : ", ";
+           }
+           ->restr
+         </>;
+       }),
+     )}
     {isLaunched
-       ? <>
-           "New Wildcard "->restr
-           <a href="/#details/Glen" className=linkToGlen>
-             "Glen The Dragon"->restr
-           </a>
-           " has just been launched "->restr
-         </>
+       ? (
+           {
+             isPlural ? "have" : "has";
+           }
+           ++ " just been launched!"
+         )
+         ->restr
        : <>
-           "New Wildcard "->restr
-           <a href="/#details/Glen" className=linkToGlen>
-             "Glen The Dragon"->restr
-           </a>
-           " Coming in "->restr
-           <CountDown endDateMoment=glensLaunchDate displayUnits=true />
+           "coming in "->restr
+           <CountDown endDateMoment=nextLaunchDate displayUnits=true />
            "!"->restr
          </>}
     <span className=closeButton onClick={_ => setShowAnnouncement(_ => `none)}>

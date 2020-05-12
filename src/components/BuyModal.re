@@ -1,28 +1,5 @@
-// open Providers.RootProvider;
-open Belt;
+open Globals;
 open Accounting;
-
-module BuyInput = {
-  [@bs.module "./BuyModelInput"] [@react.component]
-  external make:
-    (
-      ~onSubmitBuy: unit => unit=?,
-      ~setNewPrice: string => unit=?,
-      ~newPrice: string=?,
-      ~depositTimeInSeconds: int,
-      ~setDeposit: string => unit=?,
-      ~maxAvailableDeposit: string,
-      ~priceSliderInitialMax: string=?,
-      ~deposit: string=?,
-      ~patronage: string=?,
-      ~updatePatronage: string => unit=?,
-      ~animalName: string,
-      ~depositForAYear: string
-    ) =>
-    // ~depositError: option(string)=?
-    React.element =
-    "default";
-};
 
 let calcPricePerSecond = (price, numerator, denominator) => {
   let priceBn = BN.new_(price);
@@ -76,12 +53,13 @@ module Transaction = {
         a
       );
 
-    let (numerator, denominator, ratio, ratioInverse) =
+    let (numerator, denominator, ratio, _ratioInverse) =
       Animal.pledgeRate(animal);
     let currentPriceWei =
       switch (QlHooks.usePrice(animal)) {
       | Price(price) => price
-      | _ => BN.new_("0")
+      | Loading
+      | Foreclosed => BN.new_("0")
       };
 
     let animalName = Animal.getName(animal);
@@ -100,20 +78,20 @@ module Transaction = {
     let getMax = [%bs.raw {| (first, second) => Math.max(first,second) |}];
     let currentPriceFloatWithMinimum = getMax(. currentPriceFloat, 0.005);
     let defaultPriceValue =
-      Js.Float.toFixedWithPrecision(
+      toFixedWithPrecisionNoTrailingZeros(
         currentPriceFloatWithMinimum *. 1.5,
         ~digits=2,
       );
     let defaultMonthlyPatronage =
-      Js.Float.toFixedWithPrecision(
+      toFixedWithPrecisionNoTrailingZeros(
         currentPriceFloatWithMinimum *. 1.5 *. ratio,
         ~digits=3,
       );
-    let priceSliderInitialMax =
-      Js.Float.toFixedWithPrecision(
-        currentPriceFloatWithMinimum *. 3.,
-        ~digits=3,
-      );
+    // let priceSliderInitialMax =
+    //   toFixedWithPrecisionNoTrailingZeros(
+    //     currentPriceFloatWithMinimum *. 3.,
+    //     ~digits=3,
+    //   );
     let defaultPriceWei = defaultPriceValue->Web3Utils.toWeiFromEth;
     let depositForAYear =
       calcRequiredDepositForTime(
@@ -179,32 +157,32 @@ module Transaction = {
       };
     };
 
-    let updatePatronage = value => {
-      let (value, didUpdate) =
-        InputHelp.onlyUpdateValueIfPositiveFloat(
-          patronage,
-          setPatronage,
-          value,
-        );
-      if (didUpdate) {
-        let price =
-          Js.Float.toString(
-            Float.fromString(value)->defaultZeroF *. ratioInverse,
-          );
-        setInitialPrice(_ => price);
+    // let updatePatronage = value => {
+    //   let (value, didUpdate) =
+    //     InputHelp.onlyUpdateValueIfPositiveFloat(
+    //       patronage,
+    //       setPatronage,
+    //       value,
+    //     );
+    //   if (didUpdate) {
+    //     let price =
+    //       Js.Float.toString(
+    //         Float.fromString(value)->defaultZeroF *. ratioInverse,
+    //       );
+    //     setInitialPrice(_ => price);
 
-        let timeInSeconds =
-          calculateDepositDuration(
-            deposit->Web3Utils.toWeiFromEth,
-            price->Web3Utils.toWeiFromEth,
-            numerator,
-            denominator,
-          );
-        setDepositTimeInSeconds(_ => timeInSeconds);
-      } else {
-        ();
-      };
-    };
+    //     let timeInSeconds =
+    //       calculateDepositDuration(
+    //         deposit->Web3Utils.toWeiFromEth,
+    //         price->Web3Utils.toWeiFromEth,
+    //         numerator,
+    //         denominator,
+    //       );
+    //     setDepositTimeInSeconds(_ => timeInSeconds);
+    //   } else {
+    //     ();
+    //   };
+    // };
     let setDeposit = value => {
       let (value, didUpdate) =
         InputHelp.onlyUpdateValueIfInRangeFloat(
@@ -239,11 +217,11 @@ module Transaction = {
              depositTimeInSeconds
              setDeposit
              patronage
-             updatePatronage
-             priceSliderInitialMax
-             maxAvailableDeposit
              animalName
-             depositForAYear
+             //  priceSliderInitialMax
+             //  depositForAYear
+             maxAvailableDeposit
+             //  updatePatronage
            />
          : <Rimble.Box>
              <p className=Styles.textOnlyModalText>

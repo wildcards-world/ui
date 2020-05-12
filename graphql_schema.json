@@ -3019,59 +3019,86 @@
               }
             },
             {
+              "args": [
+                {
+                  "defaultValue": "0",
+                  "description": null,
+                  "name": "skip",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": "100",
+                  "description": null,
+                  "name": "first",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "orderBy",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "VoteStatus_orderBy",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "orderDirection",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "OrderDirection",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "where",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "VoteStatus_filter",
+                    "ofType": null
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "projectVotes",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "VoteStatus",
+                      "ofType": null
+                    }
+                  }
+                }
+              }
+            },
+            {
               "args": [],
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
               "name": "totalVotes",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "BigInt",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "winningProposal",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "BigInt",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "fundsDistributed",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "BigInt",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "winningVotes",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -3193,6 +3220,78 @@
             {
               "defaultValue": null,
               "description": null,
+              "name": "projectVotes",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "projectVotes_not",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "projectVotes_contains",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "projectVotes_not_contains",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
               "name": "totalVotes",
               "type": {
                 "kind": "SCALAR",
@@ -3285,294 +3384,6 @@
                   }
                 }
               }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "winningProposal",
-              "type": {
-                "kind": "SCALAR",
-                "name": "BigInt",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "winningProposal_not",
-              "type": {
-                "kind": "SCALAR",
-                "name": "BigInt",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "winningProposal_gt",
-              "type": {
-                "kind": "SCALAR",
-                "name": "BigInt",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "winningProposal_lt",
-              "type": {
-                "kind": "SCALAR",
-                "name": "BigInt",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "winningProposal_gte",
-              "type": {
-                "kind": "SCALAR",
-                "name": "BigInt",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "winningProposal_lte",
-              "type": {
-                "kind": "SCALAR",
-                "name": "BigInt",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "winningProposal_in",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "BigInt",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "winningProposal_not_in",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "BigInt",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "fundsDistributed",
-              "type": {
-                "kind": "SCALAR",
-                "name": "BigInt",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "fundsDistributed_not",
-              "type": {
-                "kind": "SCALAR",
-                "name": "BigInt",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "fundsDistributed_gt",
-              "type": {
-                "kind": "SCALAR",
-                "name": "BigInt",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "fundsDistributed_lt",
-              "type": {
-                "kind": "SCALAR",
-                "name": "BigInt",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "fundsDistributed_gte",
-              "type": {
-                "kind": "SCALAR",
-                "name": "BigInt",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "fundsDistributed_lte",
-              "type": {
-                "kind": "SCALAR",
-                "name": "BigInt",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "fundsDistributed_in",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "BigInt",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "fundsDistributed_not_in",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "BigInt",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "winningVotes",
-              "type": {
-                "kind": "SCALAR",
-                "name": "BigInt",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "winningVotes_not",
-              "type": {
-                "kind": "SCALAR",
-                "name": "BigInt",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "winningVotes_gt",
-              "type": {
-                "kind": "SCALAR",
-                "name": "BigInt",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "winningVotes_lt",
-              "type": {
-                "kind": "SCALAR",
-                "name": "BigInt",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "winningVotes_gte",
-              "type": {
-                "kind": "SCALAR",
-                "name": "BigInt",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "winningVotes_lte",
-              "type": {
-                "kind": "SCALAR",
-                "name": "BigInt",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "winningVotes_in",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "BigInt",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "winningVotes_not_in",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "BigInt",
-                    "ofType": null
-                  }
-                }
-              }
             }
           ],
           "interfaces": null,
@@ -3593,25 +3404,13 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "projectVotes"
+            },
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "totalVotes"
-            },
-            {
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "winningProposal"
-            },
-            {
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "fundsDistributed"
-            },
-            {
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "winningVotes"
             }
           ],
           "fields": null,
@@ -9052,9 +8851,13 @@
                   "kind": "LIST",
                   "name": null,
                   "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Patron",
-                    "ofType": null
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "Patron",
+                      "ofType": null
+                    }
                   }
                 }
               }
@@ -9115,7 +8918,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "wildcardChange",
+              "name": "wildcardChanges",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -9123,9 +8926,13 @@
                   "kind": "LIST",
                   "name": null,
                   "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Wildcard",
-                    "ofType": null
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "Wildcard",
+                      "ofType": null
+                    }
                   }
                 }
               }
@@ -9481,7 +9288,7 @@
             {
               "defaultValue": null,
               "description": null,
-              "name": "wildcardChange",
+              "name": "wildcardChanges",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -9499,7 +9306,7 @@
             {
               "defaultValue": null,
               "description": null,
-              "name": "wildcardChange_not",
+              "name": "wildcardChanges_not",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -9517,7 +9324,7 @@
             {
               "defaultValue": null,
               "description": null,
-              "name": "wildcardChange_contains",
+              "name": "wildcardChanges_contains",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -9535,7 +9342,7 @@
             {
               "defaultValue": null,
               "description": null,
-              "name": "wildcardChange_not_contains",
+              "name": "wildcardChanges_not_contains",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -9587,7 +9394,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "wildcardChange"
+              "name": "wildcardChanges"
             }
           ],
           "fields": null,
@@ -11802,7 +11609,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "currentIteration",
+              "name": "cerruntIteration",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -11924,7 +11731,7 @@
             {
               "defaultValue": null,
               "description": null,
-              "name": "currentIteration",
+              "name": "cerruntIteration",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -11934,7 +11741,7 @@
             {
               "defaultValue": null,
               "description": null,
-              "name": "currentIteration_not",
+              "name": "cerruntIteration_not",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -11944,7 +11751,7 @@
             {
               "defaultValue": null,
               "description": null,
-              "name": "currentIteration_gt",
+              "name": "cerruntIteration_gt",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -11954,7 +11761,7 @@
             {
               "defaultValue": null,
               "description": null,
-              "name": "currentIteration_lt",
+              "name": "cerruntIteration_lt",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -11964,7 +11771,7 @@
             {
               "defaultValue": null,
               "description": null,
-              "name": "currentIteration_gte",
+              "name": "cerruntIteration_gte",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -11974,7 +11781,7 @@
             {
               "defaultValue": null,
               "description": null,
-              "name": "currentIteration_lte",
+              "name": "cerruntIteration_lte",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -11984,7 +11791,7 @@
             {
               "defaultValue": null,
               "description": null,
-              "name": "currentIteration_in",
+              "name": "cerruntIteration_in",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -12002,7 +11809,7 @@
             {
               "defaultValue": null,
               "description": null,
-              "name": "currentIteration_not_in",
+              "name": "cerruntIteration_not_in",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -12020,7 +11827,7 @@
             {
               "defaultValue": null,
               "description": null,
-              "name": "currentIteration_contains",
+              "name": "cerruntIteration_contains",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -12030,7 +11837,7 @@
             {
               "defaultValue": null,
               "description": null,
-              "name": "currentIteration_not_contains",
+              "name": "cerruntIteration_not_contains",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -12040,7 +11847,7 @@
             {
               "defaultValue": null,
               "description": null,
-              "name": "currentIteration_starts_with",
+              "name": "cerruntIteration_starts_with",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -12050,7 +11857,7 @@
             {
               "defaultValue": null,
               "description": null,
-              "name": "currentIteration_not_starts_with",
+              "name": "cerruntIteration_not_starts_with",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -12060,7 +11867,7 @@
             {
               "defaultValue": null,
               "description": null,
-              "name": "currentIteration_ends_with",
+              "name": "cerruntIteration_ends_with",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -12070,7 +11877,7 @@
             {
               "defaultValue": null,
               "description": null,
-              "name": "currentIteration_not_ends_with",
+              "name": "cerruntIteration_not_ends_with",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -12096,7 +11903,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "currentIteration"
+              "name": "cerruntIteration"
             }
           ],
           "fields": null,

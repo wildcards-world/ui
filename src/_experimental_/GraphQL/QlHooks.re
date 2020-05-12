@@ -75,6 +75,7 @@ module InitialLoad = [%graphql
   |}
 ];
 
+// TODO: remove this function, it was an interesting but failed experiment.
 let useInitialDataLoad = () => {
   let (simple, _full) =
     ApolloHooks.useQuery(
@@ -113,37 +114,80 @@ module SubWildcardQuery = [%graphql
     }
   |}
 ];
-module SubBuyEvents = [%graphql
+// NOTE: If multiple transactions happen in the same block they may get missed, maybe one day that will be a problem for us ;)
+module SubStateChangeEvents = [%graphql
   {|
     subscription {
-      eventCounter(id: 1) {
+      stateChanges(first: 1, orderBy: timestamp, orderDirection: desc) {
         id
-        buyEventCount
-          buyEvents(first: 5, orderBy: timestamp, orderDirection: desc) {
+        timestamp
+        txEventList
+        wildcardChanges {
           id
-          token {
+          tokenId
+          timeAcquired
+          totalCollected
+          patronageNumeratorPriceScaled
+          timeCollected
+          price {
             id
-            # NOTE: no need to decode these values, this is only for updating the cache.
-            animal: tokenId #@bsDecoder(fn: "tokenIdToAnimal")
-            timeAcquired #@bsDecoder(fn: "decodeMoment")
-            totalCollected #@bsDecoder(fn: "decodePrice")
-            patronageNumeratorPriceScaled #@bsDecoder(fn: "decodeBN")
-            timeCollected #@bsDecoder(fn: "decodeBN")
-            # timeCollected @bsDecoder(fn: "decodeMoment")
-            price {
-              id
-              price #@bsDecoder(fn: "decodePrice")
-            }
-            owner {
-              address #@bsDecoder(fn: "decodeAddress")
-              id
-            }
+            price
           }
+          owner {
+            address
+            id
+          }
+        }
+        patronChanges {
+          id
+          address
+          lastUpdated
+          # lastUpdated @bsDecoder(fn: "decodeMoment")
+          previouslyOwnedTokens {
+            id
+          }
+          tokens {
+            id
+          }
+          availableDeposit
+          patronTokenCostScaledNumerator
+          foreclosureTime
         }
       }
     }
   |}
 ];
+// module SubBuyEvents = [%graphql
+//   {|
+//     subscription {
+//       eventCounter(id: 1) {
+//         id
+//         buyEventCount
+//           buyEvents(first: 5, orderBy: timestamp, orderDirection: desc) {
+//           id
+//           token {
+//             id
+//             # NOTE: no need to decode these values, this is only for updating the cache.
+//             animal: tokenId #@bsDecoder(fn: "tokenIdToAnimal")
+//             timeAcquired #@bsDecoder(fn: "decodeMoment")
+//             totalCollected #@bsDecoder(fn: "decodePrice")
+//             patronageNumeratorPriceScaled #@bsDecoder(fn: "decodeBN")
+//             timeCollected #@bsDecoder(fn: "decodeBN")
+//             # timeCollected @bsDecoder(fn: "decodeMoment")
+//             price {
+//               id
+//               price #@bsDecoder(fn: "decodePrice")
+//             }
+//             owner {
+//               address #@bsDecoder(fn: "decodeAddress")
+//               id
+//             }
+//           }
+//         }
+//       }
+//     }
+//   |}
+// ];
 
 module LoadPatron = [%graphql
   {|
@@ -177,9 +221,19 @@ module LoadPatronNew = [%graphql
         lastUpdated @bsDecoder(fn: "decodeBN")
         totalLoyaltyTokens @bsDecoder(fn: "decodeBN")
         totalLoyaltyTokensIncludingUnRedeemed @bsDecoder(fn: "decodeBN")
-        tokens {
-          id
-        }
+      }
+    }
+  |}
+];
+module LoadPatronNewNoDecode = [%graphql
+  {|
+    query ($patronId: String!) {
+      patronNew(id: $patronId) {
+        id
+        address
+        lastUpdated
+        totalLoyaltyTokens
+        totalLoyaltyTokensIncludingUnRedeemed
       }
     }
   |}
@@ -215,7 +269,32 @@ type graphqlDataLoad('a) =
   | NoData
   | Data('a);
 
-[@bs.deriving abstract]
+let subscriptionResultOptionMap = (result, mapping) =>
+  switch (result) {
+  | ApolloHooks.Subscription.Data(response) => response->mapping->Some
+  | ApolloHooks.Subscription.Error(_)
+  | ApolloHooks.Subscription.Loading
+  | ApolloHooks.Subscription.NoData => None
+  };
+let subscriptionResultToOption = result =>
+  subscriptionResultOptionMap(result, a => a);
+
+let queryResultOptionMap = (result, mapping) =>
+  switch (result) {
+  | ApolloHooks.Query.Data(response) => response->mapping->Some
+  | ApolloHooks.Query.Error(_)
+  | ApolloHooks.Query.Loading
+  | ApolloHooks.Query.NoData => None
+  };
+let queryResultOptionFlatMap = (result, mapping) =>
+  switch (result) {
+  | ApolloHooks.Query.Data(response) => response->mapping
+  | ApolloHooks.Query.Error(_)
+  | ApolloHooks.Query.Loading
+  | ApolloHooks.Query.NoData => None
+  };
+let queryResultToOption = result => queryResultOptionMap(result, a => a);
+
 type data = {tokenId: string};
 
 let useWildcardQuery = animal =>
@@ -224,17 +303,26 @@ let useWildcardQuery = animal =>
       SubWildcardQuery.make(~tokenId=Animal.getId(animal), ())##variables,
     SubWildcardQuery.definition,
   );
-let useBuySubscription = () =>
+// let useBuySubscription = () =>
+//   ApolloHooks.useSubscription(
+//     ~variables=SubBuyEvents.make()##variables,
+//     SubBuyEvents.definition,
+//   );
+let useStateChangeSubscription = () =>
   ApolloHooks.useSubscription(
-    ~variables=SubBuyEvents.make()##variables,
-    SubBuyEvents.definition,
+    ~variables=SubStateChangeEvents.make()##variables,
+    SubStateChangeEvents.definition,
   );
-let useBuySubscriptionData = () => {
-  let (simple, _) = useBuySubscription();
-  switch (simple) {
-  | Data(response) => Some(response)
-  | _ => None
-  };
+// let useBuySubscriptionData = () => {
+//   let (simple, _) = useBuySubscription();
+//   switch (simple) {
+//   | Data(response) => Some(response)
+//   | _ => None
+//   };
+// };
+let useStateChangeSubscriptionData = () => {
+  let (simple, _) = useStateChangeSubscription();
+  subscriptionResultToOption(simple);
 };
 
 let useLoadTopContributors = numberOfLeaders =>
@@ -244,8 +332,8 @@ let useLoadTopContributors = numberOfLeaders =>
   );
 let useLoadTopContributorsData = numberOfLeaders => {
   let (simple, _) = useLoadTopContributors(numberOfLeaders);
-  switch (simple) {
-  | Data(largestContributors) =>
+
+  let getLargestContributors = largestContributors => {
     let monthlyContributions =
       largestContributors##patrons
       |> Js.Array.map(patron => {
@@ -259,20 +347,20 @@ let useLoadTopContributorsData = numberOfLeaders => {
              ->Web3Utils.fromWeiBNToEthPrecision(~digits=4);
            (patron##id, monthlyContribution);
          });
-    Some(monthlyContributions);
-  | _ => None
+    monthlyContributions;
   };
+
+  simple->subscriptionResultOptionMap(getLargestContributors);
 };
 
 let usePatron: Animal.t => option(string) =
   animal => {
     let (simple, _) = useWildcardQuery(animal);
-    switch (simple) {
-    | Data(response) =>
+    let getAddress = response =>
       response##wildcard
-      ->Belt.Option.flatMap(wildcard => Some(wildcard##owner##address))
-    | _ => None
-    };
+      ->Belt.Option.flatMap(wildcard => Some(wildcard##owner##address));
+
+    simple->queryResultOptionFlatMap(getAddress);
   };
 
 let useIsAnimalOwened = ownedAnimal => {
@@ -288,21 +376,16 @@ let useIsAnimalOwened = ownedAnimal => {
   == currentPatron->Js.String.toLocaleLowerCase;
 };
 
-let useTimeAcquired: Animal.t => graphqlDataLoad(MomentRe.Moment.t) =
+let useTimeAcquired: Animal.t => option(MomentRe.Moment.t) =
   animal => {
     let (simple, _) = useWildcardQuery(animal);
-    switch (simple) {
-    | Loading => Loading
-    | Error(error) => Error(error)
-    | NoData => Loading
-    | Data(response) =>
-      Data(
-        response##wildcard
-        ->Belt.Option.mapWithDefault(MomentRe.momentNow(), wildcard
-            // wildcard
-            => wildcard##timeAcquired),
-      )
-    };
+    let getTimeAquired = response =>
+      response##wildcard
+      ->Belt.Option.mapWithDefault(MomentRe.momentNow(), wildcard
+          // wildcard
+          => wildcard##timeAcquired);
+
+    simple->queryResultOptionMap(getTimeAquired);
   };
 
 let useQueryPatron = patron =>
@@ -319,52 +402,40 @@ let useQueryPatronNew = patron =>
 let useForeclosureTime: string => option(MomentRe.Moment.t) =
   patron => {
     let (simple, _) = useQueryPatron(patron);
-    switch (simple) {
-    | Data(response) =>
-      response##patron
-      ->Belt.Option.flatMap(patron => Some(patron##foreclosureTime))
-    | _ => None
-    };
+    let getForclosureTime = response =>
+      response##patron->Belt.Option.map(patron => patron##foreclosureTime);
+
+    simple->queryResultOptionFlatMap(getForclosureTime);
   };
 let usePatronQuery = patron => {
   let (simple, _) = useQueryPatron(patron);
-  switch (simple) {
-  | Data(response) => Some(response)
-  | _ => None
-  };
+
+  simple->queryResultToOption;
 };
-let useTimeAcquiredWithDefault = (animal, default: MomentRe.Moment.t) => {
-  switch (useTimeAcquired(animal)) {
-  | Data(moment) => moment
-  | _ => default
-  };
-};
+let useTimeAcquiredWithDefault = (animal, default: MomentRe.Moment.t) =>
+  useTimeAcquired(animal) |||| default;
 
 let useDaysHeld = animal =>
-  switch (useTimeAcquired(animal)) {
-  | Data(moment) =>
-    Some((MomentRe.diff(MomentRe.momentNow(), moment, `days), moment))
-  | _ => None
-  };
-let useTotalCollectedOrDue: unit => graphqlDataLoad((BN.bn, BN.bn, BN.bn)) =
+  useTimeAcquired(animal)
+  ->oMap(moment =>
+      (MomentRe.diff(MomentRe.momentNow(), moment, `days), moment)
+    );
+
+let useTotalCollectedOrDue: unit => option((BN.bn, BN.bn, BN.bn)) =
   () => {
     let (simple, _) =
       ApolloHooks.useQuery(SubTotalRaisedOrDueQuery.definition);
-
-    switch (simple) {
-    | Loading => Loading
-    | Error(error) => Error(error)
-    | NoData => Loading
-    | Data(response) =>
+    let getTotalCollected = response =>
       response##global
-      ->Belt.Option.mapWithDefault(Loading, global =>
-          Data((
+      ->oMap(global =>
+          (
             global##totalCollectedOrDueAccurate,
             global##timeLastCollected,
             global##totalTokenCostScaledNumeratorAccurate,
-          ))
-        )
-    };
+          )
+        );
+
+    simple->queryResultOptionFlatMap(getTotalCollected);
   };
 
 let getCurrentTimestamp = () =>
@@ -374,59 +445,60 @@ let useCurrentTime = () => {
   let (currentTime, setTimeLeft) =
     React.useState(() => getCurrentTimestamp());
 
-  React.useEffect(() => {
-    let interval =
-      Js.Global.setInterval(
-        () => {setTimeLeft(_ => {getCurrentTimestamp()})},
-        2000,
-      );
-    Some(() => Js.Global.clearInterval(interval));
-  });
+  React.useEffect1(
+    () => {
+      let interval =
+        Js.Global.setInterval(
+          () => {setTimeLeft(_ => {getCurrentTimestamp()})},
+          2000,
+        );
+      Some(() => Js.Global.clearInterval(interval));
+    },
+    [|setTimeLeft|],
+  );
   currentTime;
 };
 
 let useAmountRaised = () => {
   let currentTimestamp = useCurrentTime();
 
-  switch (useTotalCollectedOrDue()) {
-  | Data((
-      amountCollectedOrDue,
-      timeCalculated,
-      totalTokenCostScaledNumeratorAccurate,
-    )) =>
-    let timeElapsed = BN.new_(currentTimestamp)->BN.subGet(. timeCalculated);
+  useTotalCollectedOrDue()
+  ->oMap(
+      (
+        (
+          amountCollectedOrDue,
+          timeCalculated,
+          totalTokenCostScaledNumeratorAccurate,
+        ),
+      ) => {
+      let timeElapsed =
+        BN.new_(currentTimestamp)->BN.subGet(. timeCalculated);
 
-    let amountRaisedSinceLastCollection =
-      totalTokenCostScaledNumeratorAccurate
-      ->BN.mulGet(. timeElapsed)
-      ->BN.divGet(.
-          // BN.new_("1000000000000")->BN.mulGet(. BN.new_("31536000")),
-          BN.new_("31536000000000000000"),
-        );
-    Some(amountCollectedOrDue->BN.addGet(. amountRaisedSinceLastCollection));
-  | _ => None
-  };
+      let amountRaisedSinceLastCollection =
+        totalTokenCostScaledNumeratorAccurate
+        ->BN.mulGet(. timeElapsed)
+        ->BN.divGet(.
+            // BN.new_("1000000000000")->BN.mulGet(. BN.new_("31536000")),
+            BN.new_("31536000000000000000"),
+          );
+      amountCollectedOrDue->BN.addGet(. amountRaisedSinceLastCollection);
+    });
 };
 
 let useTotalCollectedToken: Animal.t => option((Eth.t, BN.bn, BN.bn)) =
   animal => {
     let (simple, _) = useWildcardQuery(animal);
-
-    switch (simple) {
-    | Data(response) =>
+    let getTotalCollectedData = response =>
       response##wildcard
-      ->Belt.Option.flatMap(wc =>
-          Some((
+      ->oMap(wc =>
+          (
             wc##totalCollected,
             wc##timeCollected,
             wc##patronageNumeratorPriceScaled,
-          ))
-        )
-    // | Loading
-    // | Error(_error)
-    // | NoData => None
-    | _ => None
-    };
+          )
+        );
+
+    simple->queryResultOptionFlatMap(getTotalCollectedData);
   };
 type patronLoyaltyTokenDetails = {
   currentLoyaltyTokens: Eth.t,
@@ -458,7 +530,7 @@ let usePatronLoyaltyTokenDetails:
     // | Loading
     // | Error(_error)
     // | NoData => None
-    | _ => None
+    | (_, _) => None
     };
   };
 
@@ -499,13 +571,6 @@ let useTimeSinceTokenWasLastSettled: Animal.t => option(BN.bn) =
       let timeElapsed =
         BN.new_(currentTimestamp)->BN.subGet(. timeCalculated);
 
-      Js.log4(
-        "time elapsed",
-        currentTimestamp,
-        "-",
-        timeCalculated->BN.toStringGet(.),
-      );
-      Js.log2("=", timeElapsed->BN.toStringGet(.));
       Some(timeElapsed);
     | None => None
     };
@@ -516,16 +581,8 @@ let useUnredeemedLoyaltyTokenDueFromWildcard: Animal.t => option(Eth.t) =
     switch (useTimeSinceTokenWasLastSettled(animal)) {
     | Some(timeSinceTokenWasLastSettled) =>
       let totalLoyaltyTokensPerSecondPerAnimal = BN.new_("11574074074074");
-      Js.log2(
-        "time since last settled",
-        timeSinceTokenWasLastSettled->BN.toStringGet(.),
-      );
       let totalLoyaltyTokensForAllAnimals =
         timeSinceTokenWasLastSettled |*| totalLoyaltyTokensPerSecondPerAnimal;
-      Js.log2(
-        "totalLoyaltyTokens",
-        timeSinceTokenWasLastSettled->BN.toStringGet(.),
-      );
       Some(totalLoyaltyTokensForAllAnimals);
     | None => None
     };
@@ -561,18 +618,17 @@ let useRemainingDeposit: string => option((Eth.t, BN.bn, BN.bn)) =
   patron => {
     let (simple, _) = useQueryPatron(patron);
 
-    switch (simple) {
-    | Data(response) =>
+    let getRemainingDepositData = response =>
       response##patron
-      ->Belt.Option.flatMap(wc =>
-          Some((
+      ->oMap(wc =>
+          (
             wc##availableDeposit,
             wc##lastUpdated,
             wc##patronTokenCostScaledNumerator,
-          ))
-        )
-    | _ => None
-    };
+          )
+        );
+
+    simple->queryResultOptionFlatMap(getRemainingDepositData);
   };
 
 // TODO:: Take min of total deposit and amount raised

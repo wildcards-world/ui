@@ -1,4 +1,3 @@
-// TODO: remove the "NoAnimal" option, it makes the code messy for no reason. Rather use an `option` if there might not be a animal.
 type t =
   | Andy
   | Glen
@@ -9,7 +8,7 @@ type t =
   | Pancho
   // | Mijungla
   | Llajuita
-  // | Espumita
+  | Espumita
   | Cubai
   | CatStevens
   | Aruma
@@ -17,7 +16,8 @@ type t =
   // | Ajayu
   | Isisa
   | Dlala
-  | Nonhlanhla;
+  | Nonhlanhla
+  | Ucok;
 
 let orderedArray = [|
   Apthapi,
@@ -35,9 +35,10 @@ let orderedArray = [|
   Andy,
   // Mijungla,
   Llajuita,
-  // Espumita,
+  Espumita,
   CatStevens,
   Isisa,
+  Ucok,
 |];
 
 let getId: t => string =
@@ -51,12 +52,13 @@ let getId: t => string =
     | Cubai => "5"
     | Llajuita => "6"
     | Pancho => "7"
-    // | espumita => Some("8")
+    | Espumita => "8"
     | Verano => "9"
     | Nonhlanhla => "10"
     | Dlala => "11"
     | Isisa => "12"
     | Glen => "13"
+    | Ucok => "14"
     // | Vitalik => Some("42") // We don't show an ID for vitalik since using legacy contract still.
     // | Tarkus
     // | Mijungla
@@ -75,16 +77,17 @@ let getTokenId: t => TokenId.t =
     | Cubai => TokenId.makeFromInt(5)
     | Llajuita => TokenId.makeFromInt(6)
     | Pancho => TokenId.makeFromInt(7)
+    | Espumita => TokenId.makeFromInt(8)
     | Verano => TokenId.makeFromInt(9)
     | Nonhlanhla => TokenId.makeFromInt(10)
     | Dlala => TokenId.makeFromInt(11)
     | Isisa => TokenId.makeFromInt(12)
     | Glen => TokenId.makeFromInt(13)
+    | Ucok => TokenId.makeFromInt(14)
     | Vitalik => TokenId.makeFromInt(42)
-    // | Espumita => Some(TokenId.makeFromInt(8))
-    // | Tarkus => Some(TokenId.makeFromInt(13))
-    // | Mijungla => Some(TokenId.makeFromInt(14))
-    // | Ajayu => Some(TokenId.makeFromInt(15))
+    // | Tarkus => Some(TokenId.makeFromInt(14))
+    // | Mijungla => Some(TokenId.makeFromInt(15))
+    // | Ajayu => Some(TokenId.makeFromInt(16))
     // | Tarkus
     // | Mijungla
     // | Ajayu
@@ -107,6 +110,7 @@ let getNameFromId: string => string =
     | "11" => "Dlala"
     | "12" => "Isisa"
     | "13" => "Glen"
+    | "14" => "Ucok"
     | "42" => "Vitalik"
     | _ => "Unknown"
     };
@@ -122,7 +126,7 @@ let getName: t => string =
     | Pancho => "Pancho"
     // | Mijungla => "Mijungla"
     | Llajuita => "Llajuita"
-    // | Espumita => "Espumita"
+    | Espumita => "Espumita"
     | Cubai => "Cubai"
     | CatStevens => "CatStevens" // removing the space since no time to fix bug
     | Aruma => "Aruma"
@@ -131,6 +135,7 @@ let getName: t => string =
     | Nonhlanhla => "Nonhlanhla"
     | Isisa => "Isisa"
     | Dlala => "Dlala"
+    | Ucok => "Ucok"
     | Glen => "Glen"
     };
 
@@ -146,7 +151,7 @@ let getAnimal: string => option(t) =
     | "pancho" => Some(Pancho)
     // | "mijungla" => Some(Mijungla)
     | "llajuita" => Some(Llajuita)
-    // | "espumita" => Some(Espumita)
+    | "espumita" => Some(Espumita)
     | "cubai" => Some(Cubai)
     | "catstevens" => Some(CatStevens)
     | "aruma" => Some(Aruma)
@@ -156,6 +161,7 @@ let getAnimal: string => option(t) =
     | "isisa" => Some(Isisa)
     | "nonhlanhla" => Some(Nonhlanhla)
     | "glen" => Some(Glen)
+    | "ucok" => Some(Ucok)
     | _ => None
     };
   };
@@ -173,12 +179,13 @@ let getAnimalFromId: string => option(t) =
     | "5" => Some(Cubai)
     | "6" => Some(Llajuita)
     | "7" => Some(Pancho)
-    // | "8" => Some(Espumita)
+    | "8" => Some(Espumita)
     | "9" => Some(Verano)
     | "10" => Some(Nonhlanhla)
     | "11" => Some(Dlala)
     | "12" => Some(Isisa)
     | "13" => Some(Glen)
+    | "14" => Some(Ucok)
     | _ => None
     };
   };
@@ -192,18 +199,18 @@ let getNextPrev = animal =>
   // | Tarkus => (Pancho, Verano)
   | Pancho => (Llajuita, Verano)
   // | Mijungla => (Llajuita, Pancho)
-  | Llajuita => (Cubai, Pancho)
-  // | Espumita => (Cubai, Llajuita)
-  | Cubai => (CatStevens, Llajuita)
+  | Llajuita => (Espumita, Pancho)
+  | Espumita => (Cubai, Llajuita)
+  | Cubai => (CatStevens, Espumita)
   | CatStevens => (Aruma, Cubai)
   | Aruma => (Apthapi, CatStevens)
   | Apthapi => (Nonhlanhla, Aruma)
   // | Ajayu => (Nonhlanhla, Apthapi)
   | Nonhlanhla => (Isisa, Apthapi)
   | Isisa => (Glen, Nonhlanhla)
-  | Glen => (Dlala, Isisa)
-  | Dlala => (Simon, Glen)
-  | _ => (Simon, Vitalik)
+  | Glen => (Ucok, Isisa)
+  | Ucok => (Dlala, Glen)
+  | Dlala => (Simon, Ucok)
   };
 
 let getImage = animal =>
@@ -223,9 +230,9 @@ let getImage = animal =>
   | Llajuita =>
     %bs.raw
     {|require('../../img/animals/LlajuitaTheDeerCropped.png')|}
-  // | Espumita =>
-  //   %bs.raw
-  //   {|require('../../img/animals/EspumitaThePuma2Cropped.png')|}
+  | Espumita =>
+    %bs.raw
+    {|require('../../img/animals/EspumitaThePuma2Cropped.png')|}
   | Cubai =>
     %bs.raw
     {|require('../../img/animals/CubaiTheJaguarCropped.png')|}
@@ -253,6 +260,9 @@ let getImage = animal =>
   | Glen =>
     %bs.raw
     {|require('../../img/animals/Glen.png')|}
+  | Ucok =>
+    %bs.raw
+    {|require('../../img/animals/Ucok.png')|}
   // | Ajayu
   // | Mijungla
   // | Tarkus
@@ -273,8 +283,8 @@ let getAlternateImage: t => option(string) =
     | Pancho => Some([%bs.raw {|require('../../img/animals/Pancho.jpg')|}])
     | Llajuita =>
       Some([%bs.raw {|require('../../img/animals/Llajuita.jpg')|}])
-    // | Espumita =>
-    //   Some([%bs.raw {|require('../../img/animals/Espumita.jpg')|}])
+    | Espumita =>
+      Some([%bs.raw {|require('../../img/animals/Espumita.jpg')|}])
     | Cubai =>
       %bs.raw
       {|require('../../img/animals/Cubai.jpg')|}
@@ -296,6 +306,9 @@ let getAlternateImage: t => option(string) =
     | Dlala =>
       %bs.raw
       {|require('../../img/animals/Dlala.jpg')|}
+    | Ucok =>
+      %bs.raw
+      {|require('../../img/animals/Ucokreal.jpg')|}
     // | Ajayu =>
     //   %bs.raw
     //   {|require('../../img/animals/comingsoon.png')|}
@@ -322,6 +335,7 @@ let getOrgBadgeImage: t => string =
     | CatStevens
     | Aruma
     | Apthapi
+    | Espumita
     | Verano =>
       %bs.raw
       {|require('../../img/badges/SendaVerdeBadge.png')|}
@@ -333,7 +347,9 @@ let getOrgBadgeImage: t => string =
     | Glen =>
       %bs.raw
       {|require('../../img/badges/EthTurin.svg')|}
-    // | Espumita
+    | Ucok =>
+      %bs.raw
+      {|require('../../img/badges/DarwinAnimalDoctors.svg')|}
     // | Ajayu
     // | Mijungla
     // | Tarkus
@@ -345,7 +361,7 @@ let getStoryParagraphs = animal =>
   | Vitalik => [|
       "Original Gorilla",
       "Vitalik is the first ever animal launched on wildcards and therefore often termed an OG (Original Gorilla). The wildcards project was born at the #ETHCapeTown hackathon in May 2019 where Vitalik Buterin was one of the judges. We named Vitalik the Gorilla after Vitalik as a testament to the impact and innovation Vitalik Buterin has had on the blockchain ecosystem. Vitalik, if you are reading this, start saving some animals and buy me!",
-      "Funds raised by Vitalik, the first wildcard, flow toward the Wild Tomorrow Fund, our first conservation partner.",
+      "Funds raised by Vitalik, initially, will go to Wild Tomorrow Fund; however Vitalik doesn\'t represent a real gorilla, and funds for Vitalik may be distributed via another allocation mechanism in the future (DAO or otherwise).",
     |]
   | Simon => [|
       "Original Gorilla",
@@ -381,12 +397,12 @@ let getStoryParagraphs = animal =>
       "Llajuita arrived at La Senda Verde with 8-10 months of age along with Apthapi the Tapir, which has the same age. They come from a confiscation performed by the Forestry and Environment Police (POFOMA) in Palos Blancos, North of La Paz. Both mammals are large and require a lot of space. They are also both foragers and get along well.",
       "They lived in a small enclosure until Senda Verde was able to build a larger one for them. The new enclosure has a pool since Tapirs need to swim. For both foraging mammals Senda Verde has alfalfa growing in the enclosure. Sadly in the dry season this alfalfa dries out and runs scarce and Senda Verde has trouble staying to date with these forager's diets.",
     |]
-  // | Espumita => [|
-  //     "Espumita has been with La Senda Verde for just over two years. She came as a small kitten from the authorities in La Paz who had confiscated her from a poacher. At the time La Senda Verde didn't have anywhere suitable to accommodate her and as a small kitten she spent her first few months in the clinic. La Senda Verde raised funds and built her a management cage whilst she was still growing. Then, at the beginning of 2017 they completed her full sized enclosure with high platforms, on a hill so she can get to higher ground and with a den at the top that she loves to sit in and watch out from.",
-  //     "Espumita has always been quite a shy and easily stressed cat but loves her new home. In December Espumita had unfortunately been under stress and was pacing a lot due to recent construction works going on close to her enclosure. Unfortunately, Espumita also wasn't eating very well and had lost condition. Eight weeks ago, la Senda Verde sedated her and a visiting group of vets studying ultrasonography came and performed an ultrasound on her and we were able to give her a thorough check. It was found that she likely had some mild hepatic lipidosis (a form of liver disease) which was also contributing to her loss of appetite.",
-  //     "Along with one of the sanctuary staff members, Vicky from Senda Verde started to add in extra enrichment every day for Espumita and slightly change the time and way in which she was fed. Luckily, at this time the construction was also finished. Over the next eight weeks there was an amazing transformation! Espumita started to eat normally, gain weight and is noticeably more relaxed and confident. She comes down to greet the staff from la Senda Verde every time they go for enrichment or cleaning and feeding (which she never did before) and Senda Verde hasn't seen her do any pacing that she was doing before.",
-  //     "She absolutely loves cardboard boxes of any shape or size! La Senda Verde started off with relaxing smells such as chamomile flowers and lavender in cardboard boxes. They have also been using feathers which she loves. She is still a huge fan of lavender and will roll in it and will then often have a mad ten minutes running all over her enclosure with the box and up on her platforms having so much fun.",
-  //   |]
+  | Espumita => [|
+      "Espumita has been with La Senda Verde for just over two years. She came as a small kitten from the authorities in La Paz who had confiscated her from a poacher. At the time La Senda Verde didn't have anywhere suitable to accommodate her and as a small kitten she spent her first few months in the clinic. La Senda Verde raised funds and built her a management cage whilst she was still growing. Then, at the beginning of 2017 they completed her full sized enclosure with high platforms, on a hill so she can get to higher ground and with a den at the top that she loves to sit in and watch out from.",
+      "Espumita has always been quite a shy and easily stressed cat but loves her new home. In December Espumita had unfortunately been under stress and was pacing a lot due to recent construction works going on close to her enclosure. Unfortunately, Espumita also wasn't eating very well and had lost condition. Eight weeks ago, la Senda Verde sedated her and a visiting group of vets studying ultrasonography came and performed an ultrasound on her and we were able to give her a thorough check. It was found that she likely had some mild hepatic lipidosis (a form of liver disease) which was also contributing to her loss of appetite.",
+      "Along with one of the sanctuary staff members, Vicky from Senda Verde started to add in extra enrichment every day for Espumita and slightly change the time and way in which she was fed. Luckily, at this time the construction was also finished. Over the next eight weeks there was an amazing transformation! Espumita started to eat normally, gain weight and is noticeably more relaxed and confident. She comes down to greet the staff from la Senda Verde every time they go for enrichment or cleaning and feeding (which she never did before) and Senda Verde hasn't seen her do any pacing that she was doing before.",
+      "She absolutely loves cardboard boxes of any shape or size! La Senda Verde started off with relaxing smells such as chamomile flowers and lavender in cardboard boxes. They have also been using feathers which she loves. She is still a huge fan of lavender and will roll in it and will then often have a mad ten minutes running all over her enclosure with the box and up on her platforms having so much fun.",
+    |]
   | Cubai => [|
       "Cubai is a 15 year old Jaguar that in 2017 was relocated from a private property in the Yungas region to the La Paz Zoo. The animal was in good hands, but his advanced age mixed with the cold weather and the high altitude of La Paz, were beginning to affect his health, he needed a lower place to live in.",
       "It was then that the authorities asked Senda Verde if they could receive him. In face of the urgency they decided to do so and make him part of their family. Cubai arrived on the 20th of November and at the beginning was being kept in a small, temporary enclosure, while la senda verde gathered funds to build him a proper enclosure.",
@@ -416,6 +432,9 @@ let getStoryParagraphs = animal =>
   | Dlala => [|
       "Dlala is a young male spotted hyena, currently about 13 months old. At this age he has recently grown large enough to leave the safety of his clan's den and is out exploring the world within their territory. Too young to breed, his current existence is more about learning and interacting with his new environment; in Zulu his name means \"play\".",
     |]
+  | Ucok => [|
+      "Ucok is a baby sun bear who was taken way too young from his mom, and sold into wildlife trafficking. However, Darwin Animal Doctors local partner team, the Indonesian Species Conservation Program (ISCP) rescued him from the black market. Ucok is now being rehabilitated at the BKSDA - the Indonesian wildlife authority. Ucok is understandably often quite sad, because he misses his mom. But, he regularly overcomes his sadness to be an extremely curious and inquisitive boy and he loves to test his rehab team's boundaries! He is quite mischievous, which tells us he's a smart boy!",
+    |]
   | Glen => [|
       "It was a tough and trying time in Turin, Italy. A pandemic had taken over the land and the villagers were facing hardships. Unexpectedly nature was prospering, the villagers were in hiding and the flora and fauna of the region was reclaiming its land. Most unexpectedly the dragon returned, which for a long time was believed to be extinct. Glen the Dragon of Turin emerged from the Alps just North of the city. One of the last of his kind.",
       "Glen is a unique Wildcard that is named after Glen Weyl the author of Radical Markets. He was developed during the ETHTurin hackathon. The funds raised by Glen go to the conservation voted by the community. Owners of wildcards can vote using their loyalty tokens using quadratic voting to vote which conservation should receive the funds raised for that month.",
@@ -437,7 +456,7 @@ let getStoryParagraphs = animal =>
 let pledgeRate = animal => {
   // TODO: get this from the blockchain / graph - bad hardcoding it here!
   switch (animal) {
-  | Vitalik => ("3", "10", 0.025, 40.)
+  | Vitalik => ("3", "10", 0.025, 40.) // 30% per year (2.5% per month)
   | Glen => ("6", "10", 0.05, 20.)
   | Apthapi
   | Pancho => ("12", "10", 0.1, 10.)
@@ -449,7 +468,8 @@ let pledgeRate = animal => {
   | Llajuita
   | Dlala => ("24", "10", 0.2, 5.)
   | Cubai
-  // | Espumita
+  | Espumita
+  | Ucok
   | Isisa => ("60", "10", 0.5, 2.)
   | Verano => ("120", "10", 1., 1.)
   };
@@ -471,7 +491,8 @@ type launchStatus =
   | Launched
   | LaunchDate(MomentRe.Moment.t);
 
-let glenLaunchDate = MomentRe.momentUtcDefaultFormat("2020-05-06T17:00:00");
+let nextLaunchDate = MomentRe.momentUtcDefaultFormat("2020-05-14T17:00:00");
+
 let isLaunched: t => launchStatus =
   anAnimal =>
     switch (anAnimal) {
@@ -487,8 +508,10 @@ let isLaunched: t => launchStatus =
     | Apthapi
     | Nonhlanhla
     | Aruma
+    | Glen
     | Llajuita => Launched
-    | Glen => LaunchDate(glenLaunchDate)
+    | Ucok
+    | Espumita => LaunchDate(nextLaunchDate)
     };
 
 let hasGovernance: t => bool =
@@ -506,6 +529,8 @@ let hasGovernance: t => bool =
     | Apthapi
     | Nonhlanhla
     | Aruma
+    | Espumita
+    | Ucok
     | Llajuita => false
     | Glen => true
     };

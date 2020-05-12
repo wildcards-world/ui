@@ -1,4 +1,4 @@
-open Components;
+open Globals;
 
 let uesPrice = animal => {
   let optPriceWei = QlHooks.usePrice(animal); //->Web3Utils.fromWeiBNToEth;
@@ -11,11 +11,10 @@ let uesPrice = animal => {
       totalPatronageWei->BN.toStringGet(.)->Web3Utils.fromWeiToEth;
 
     let optTotaPatronageUsd =
-      optCurrentUsdEthPrice->Belt.Option.flatMap(currentUsdEthPrice =>
+      optCurrentUsdEthPrice->oFlatMap(currentUsdEthPrice =>
         Some(
-          Js.Float.toFixedWithPrecision(
-            Belt.Float.fromString(totalPatronageEth)
-            ->Belt.Option.mapWithDefault(0., a => a)
+          toFixedWithPrecisionNoTrailingZeros(
+            Float.fromString(totalPatronageEth)->mapd(0., a => a)
             *. currentUsdEthPrice,
             ~digits=2,
           ),
@@ -36,12 +35,20 @@ let make = (~animal: Animal.t) => {
   | Some((priceEth, optPriceUsd)) =>
     <React.Fragment>
       <p className={Styles.noMarginTop ++ " " ++ Styles.noMarginBottom}>
-        <S> {priceEth ++ " ETH"} </S>
+        {{
+           priceEth ++ " ETH";
+         }
+         ->restr}
       </p>
       {switch (optPriceUsd) {
        | Some(priceUsd) =>
          <p className=Styles.noMarginTop>
-           <small> <S> {"(" ++ priceUsd ++ " USD)"} </S> </small>
+           <small>
+             {{
+                "(" ++ priceUsd ++ " USD)";
+              }
+              ->restr}
+           </small>
          </p>
        | None => React.null
        }}

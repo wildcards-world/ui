@@ -2,7 +2,7 @@ let gorillaOnVine = [%bs.raw
   {|require('../../img/wildcardsimages/gorilla-on-vine.png')|}
 ];
 
-open Components;
+open Globals;
 open Rimble;
 
 [@react.component]
@@ -15,9 +15,9 @@ let make = () =>
         className=Styles.floatingSignupBoxInner>
         <Box className=Styles.emailTextBox width=[|1., 1., 0.4|]>
           <p className=Styles.emailSignupHeader>
-            <strong> <S> "Want to stay in the loop?" </S> </strong>
+            <strong> "Want to stay in the loop?"->restr </strong>
           </p>
-          <span> <S> "Sign up for our newsletter" </S> </span>
+          <span> "Sign up for our newsletter"->restr </span>
           <br />
           <br />
         </Box>
@@ -39,7 +39,7 @@ let make = () =>
                 />
               </Box>
               <Box width=[|1., 0.4|] className=Styles.inputElements>
-                <Button width=1.> <S> "Submit" </S> </Button>
+                <Button width=1.> "Submit"->restr </Button>
               </Box>
             </Flex>
           </Rimble.Form>

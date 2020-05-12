@@ -1,13 +1,7 @@
-open Components;
+open Globals;
 
 // TODO: there must be a better way of importing images in reason react...
 let betaBanner = [%bs.raw {|require('../img/beta-banner.png')|}];
-
-module BuyGrid = {
-  [@bs.module "./BuyGrid.js"] [@react.component]
-  external make: (~animalArray: array(unit => React.element)) => React.element =
-    "default";
-};
 
 module AnimalFocusDetails = {
   [@react.component]
@@ -88,10 +82,9 @@ module Header = {
               {isHome
                  ? <div className=Styles.navListItemToggle>
                      <span className=Styles.someMarginRight>
-                       <S>
-                         {usedtranslationModeContext->translationModeCrypto
-                            ? "EXPERT MODE" : "DEFAULT MODE"}
-                       </S>
+                       {usedtranslationModeContext->translationModeCrypto
+                          ? "EXPERT MODE" : "DEFAULT MODE"}
+                       ->restr
                      </span>
                      <ReactTranslate.Switch
                        onChange={
@@ -123,7 +116,7 @@ module Header = {
                        ReactEvent.Mouse.preventDefault(event);
                        clearAndPush("#");
                      }}>
-                     <S> "HOME" </S>
+                     "HOME"->restr
                    </a>}
               <a
                 className=Styles.navListText
@@ -131,14 +124,14 @@ module Header = {
                   ReactEvent.Mouse.preventDefault(event);
                   clearAndPush({j|/#leaderboards/monthly-contribution|j});
                 }}>
-                <S> "LEADERBOARDS" </S>
+                "LEADERBOARDS"->restr
               </a>
               <a
                 className=Styles.navListText
                 target="_blank"
                 rel="noopener noreferrer"
                 href="https://blog.wildcards.world/">
-                <S> "BLOG" </S>
+                "BLOG"->restr
               </a>
               {isExplorer && !isDetails
                  ? React.null
@@ -148,7 +141,7 @@ module Header = {
                        clearAndPush("#explorer");
                      }}
                      className=Styles.whiteText>
-                     <S> "VIEW WILDCARDS" </S>
+                     "VIEW WILDCARDS"->restr
                    </Rimble.Button>}
             </li>
             <li className=Styles.navListItem> <Web3Connect /> </li>
@@ -172,7 +165,10 @@ let make = () => {
 
   <div className=Styles.app>
     <div className=Css.(style([minHeight(vh(88.))]))>
-      <Announcement />
+      <Announcement
+        nextReleasedAnimals=[|Animal.Espumita, Animal.Ucok|]
+        announcementBannerColor="AEE79A"
+      />
       <div className=Css.(style([position(relative)]))>
         <img src=betaBanner className=Styles.betaBanner />
       </div>
@@ -180,18 +176,12 @@ let make = () => {
       <UsdPriceProvider>
         {switch (urlState) {
          | VotePage => <VotePage />
+         | IncreaseVoteIteration => <IncreaseIterationPage />
          | Explorer(animalPageState) =>
            switch (animalPageState) {
            | DetailView(animalCarousel, _) =>
              <AnimalFocusDetails animalCarousel />
-           | NormalView =>
-             <BuyGrid
-               animalArray={
-                 Animal.orderedArray->Belt.Array.map((animal, ()) =>
-                   <Dapp.CarouselAnimal animal isGqlLoaded=true scalar=1. />
-                 )
-               }
-             />
+           | NormalView => <BuyGrid />
            }
          | Home(animalPageState) =>
            switch (animalPageState) {
@@ -200,9 +190,9 @@ let make = () => {
            | NormalView =>
              <React.Fragment>
                <AnimalFocusDetails animalCarousel=None />
-               <CustomerBenefit />
+               <FeaturedIn />
                <HomepageLeaderBoard />
-               <About />
+               <CustomerBenefit />
                <HowItWorks />
                <EmailSignup />
                <FAQs />
