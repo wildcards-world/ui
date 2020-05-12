@@ -1,4 +1,4 @@
-require("../src/custom.css");
+// require("../src/custom.css");
 require("@wildcards/react-carousel/lib/style.css");
 require("react-tabs/style/react-tabs.css");
 

@@ -47,14 +47,11 @@ let make = () =>
       className=featuredContainerStyles>
       {ReasonReact.array(
          featuredMediaContent->Array.map(x =>
-           <div
-             className=Css.(
-               style([width(`percent(20.)), padding(em(2.))])
-             )>
+           <Rimble.Box p=2 mb=2 width=[|0.5, 0.5, 0.2|]>
              <a href={x.link}>
                <img src={x.imagePath} className=featuredItemImgStyle />
              </a>
-           </div>
+           </Rimble.Box>
          ),
        )}
     </Rimble.Flex>

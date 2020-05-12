@@ -416,7 +416,7 @@ let carousel =
   style([
     position(`relative),
     width(`percent(150.)),
-    left(`percent(-15.)),
+    left(`percent(-25.)),
   ]);
 
 let invisibleGorilla = style([display(`none)]);
