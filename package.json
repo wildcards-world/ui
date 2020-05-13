@@ -25,7 +25,7 @@
     "bs-css-emotion": "^1.2.0",
     "bs-fetch": "^0.5.2",
     "bs-moment": "^0.4.5",
-    "bs-platform": "^7.2.2",
+    "bs-platform": "^7.3.2",
     "bs-webapi": "^0.15.9",
     "decco": "^1.2.0",
     "emotion-server": "^10.0.27",
@@ -87,9 +87,11 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.9.6",
     "@glennsl/bs-jest": "^0.5.1",
     "babel-plugin-graphql-tag": "^2.5.0",
     "babel-plugin-styled-components": "^1.10.7",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babel-preset-react-app": "^9.1.2",
     "bs-let": "^0.1.16",
     "file-loader": "^6.0.0",
