@@ -1,4 +1,9 @@
 {
   "presets": ["next/babel", "react-app"],
-  "plugins": ["graphql-tag", ["styled-components", { "ssr": true }]]
+  "plugins": [
+    ["styled-components", { "ssr": true }],
+    "@babel/plugin-proposal-class-properties",
+    "transform-es2015-modules-commonjs",
+    "dynamic-import-node"
+  ]
 }
