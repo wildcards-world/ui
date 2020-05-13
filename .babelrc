@@ -1,12 +1,9 @@
 {
-  "presets": [
-    "@babel/preset-env"
-  ],
+  "presets": ["next/babel", "react-app"],
   "plugins": [
-    "@babel/transform-runtime",
+    ["styled-components", { "ssr": true }],
     "@babel/plugin-proposal-class-properties",
     "transform-es2015-modules-commonjs",
     "dynamic-import-node"
-  ],
-  "ignore": []
+  ]
 }

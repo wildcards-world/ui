@@ -12,6 +12,7 @@
   ],
   "package-specs": [
     {
+      // "module": "commonjs",
       "module": "es6",
       "in-source": true
     }
@@ -31,17 +32,10 @@
     "reason-react",
     "@wildcards/reason-apollo",
     "@wildcards/reason-apollo-hooks",
-    "@glennsl/bs-jest",
-    "@ahrefs/bs-emotion"
+    "@glennsl/bs-jest"
   ],
   "bs-dev-dependencies": [],
-  "ppx-flags": [
-    "@baransu/graphql_ppx_re/ppx",
-    "bs-let/ppx",
-    "decco/ppx",
-    "get_in_ppx/ppx",
-    "@davesnx/styled-ppx/styled-ppx"
-  ],
+  "ppx-flags": ["@baransu/graphql_ppx_re/ppx", "bs-let/ppx", "decco/ppx"],
   // referenc: https://dev.to/yawaramin/ocaml-reasonml-best-practice-warnings-and-errors-4mkm
   // TODO: when you get time, go through and remove "-40-42-4-11-12-32-33" fixing the issues as you go.
   "warnings": {

@@ -1,10 +1,10 @@
 open Globals;
 
 // Load styles for the carousel and react-tabs
-[%bs.raw {|require('@wildcards/react-carousel/lib/style.css')|}];
-[%bs.raw {|require('react-tabs/style/react-tabs.css')|}];
+// [%bs.raw {|require('@wildcards/react-carousel/lib/style.css')|}];
+// [%bs.raw {|require('react-tabs/style/react-tabs.css')|}];
 
-let flameImg = [%bs.raw {|require('../img/streak-flame.png')|}];
+let flameImg = "/img/streak-flame.png";
 
 // TODO: there must be a better way of importing images in reason react...
 module ShareSocial = {
@@ -760,6 +760,46 @@ module AnimalInfoStats = {
   };
 };
 
+module UnlaunchedAnimalInfo = {
+  [@react.component]
+  let make = (~endDateMoment, ~animal) => {
+    let animalName = Animal.getName(animal);
+
+    let (_, _, ratio, _) = Animal.pledgeRate(animal);
+    let monthlyRate = Js.Float.toString(ratio *. 100.);
+
+    <DisplayAfterDate
+      endDateMoment
+      afterComponent={<AnimalInfoStats animal />}
+      beforeComponent={
+        <React.Fragment>
+          <h2> "This animal will launch in:"->React.string </h2>
+          <CountDown endDateMoment />
+          <br />
+          <br />
+          <br />
+          <small>
+            <strong>
+              "Monthly Pledge Rate:"->restr
+              <Rimble.Tooltip
+                message={
+                  "This is the monthly percentage contribution of "
+                  ++ animalName
+                  ++ "'s sale price that will go towards conservation of endangered animals. This is deducted continuously from the deposit and paid by the owner of the animal"
+                }
+                placement="top">
+                <span> {js|ⓘ|js}->restr </span>
+              </Rimble.Tooltip>
+            </strong>
+          </small>
+          <br />
+          {(monthlyRate ++ " %")->restr}
+        </React.Fragment>
+      }
+    />;
+  };
+};
+
 module AnimalInfo = {
   [@react.component]
   let make = (~animal: Animal.t) => {
@@ -792,16 +832,7 @@ module AnimalInfo = {
           {switch (animal->Animal.isLaunched) {
            | Launched => <AnimalInfoStats animal />
            | LaunchDate(endDateMoment) =>
-             <DisplayAfterDate
-               endDateMoment
-               afterComponent={<AnimalInfoStats animal />}
-               beforeComponent={
-                 <React.Fragment>
-                   <h2> "This animal will launch in:"->React.string </h2>
-                   <CountDown endDateMoment />
-                 </React.Fragment>
-               }
-             />
+             <UnlaunchedAnimalInfo endDateMoment animal />
            }}
         </ReactTabs.TabPanel>
       </ReactTabs>

@@ -1,7 +1,7 @@
 open Globals;
 
 // TODO: there must be a better way of importing images in reason react...
-let betaBanner = [%bs.raw {|require('../img/beta-banner.png')|}];
+let betaBanner = "/img/beta-banner.png";
 
 module AnimalFocusDetails = {
   [@react.component]
@@ -9,10 +9,10 @@ module AnimalFocusDetails = {
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
     let isExplorer = Router.useIsExplorer();
     <Rimble.Flex flexWrap="wrap" alignItems="center" className=Styles.topBody>
-      {switch (animalCarousel) {
-       | None => React.null
-       | Some((_, previousAnimal)) =>
-         <Rimble.Box p=1 width=[|0.05, 0.05, 0.05|]>
+      <div className=Css.(style([width(`percent(5.))]))>
+        {switch (animalCarousel) {
+         | None => React.null
+         | Some((_, previousAnimal)) =>
            <span
              className={Styles.carouselArrow(true, ~absolutePosition=false)}
              onClick={InputHelp.handleMouseEvent(() =>
@@ -25,20 +25,27 @@ module AnimalFocusDetails = {
              )}>
              {js|◄|js}->React.string
            </span>
-         </Rimble.Box>
-       }}
-      <Rimble.Box
-        width={
-          animalCarousel->Belt.Option.mapWithDefault([|1.|], _ => [|0.9|])
-        }>
+         }}
+      </div>
+      <div
+        className=Css.(
+          style([
+            width(`percent(90.)),
+            // style([width(`percent(animalCarousel->mapd(100., _ => 90.)))])
+          ])
+        )>
         <Dapp />
-      </Rimble.Box>
-      {switch (animalCarousel) {
-       | None => React.null
-       | Some((nextAnimal, _)) =>
-         <Rimble.Box p=1 width=[|0.05, 0.05, 0.05|]>
+      </div>
+      <div className=Css.(style([width(`percent(5.))]))>
+        {switch (animalCarousel) {
+         | None => React.null
+         | Some((nextAnimal, _)) =>
            <span
-             className={Styles.carouselArrow(false, ~absolutePosition=false)}
+             className={
+               Styles.carouselArrow(false, ~absolutePosition=false)
+               ++ " "
+               ++ Css.(style([width(`percent(3.))]))
+             }
              onClick={InputHelp.handleMouseEvent(() =>
                clearAndPush(
                  "#"
@@ -49,8 +56,8 @@ module AnimalFocusDetails = {
              )}>
              {js|►|js}->React.string
            </span>
-         </Rimble.Box>
-       }}
+         }}
+      </div>
     </Rimble.Flex>;
   };
 };
@@ -165,7 +172,10 @@ let make = () => {
 
   <div className=Styles.app>
     <div className=Css.(style([minHeight(vh(88.))]))>
-      <Announcement />
+      <Announcement
+        nextReleasedAnimals=[|Animal.Espumita, Animal.Ucok|]
+        announcementBannerColor="AEE79A"
+      />
       <div className=Css.(style([position(relative)]))>
         <img src=betaBanner className=Styles.betaBanner />
       </div>

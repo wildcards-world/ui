@@ -1,23 +1,15 @@
 open Globals;
 
-let dragonImg = [%bs.raw {|require('../img/animals/Glen.svg')|}];
-let refreshImg = [%bs.raw {|require('../img/icons/refresh.svg')|}];
+let dragonImg = "/img/animals/Glen.svg";
+let refreshImg = "/img/icons/refresh.svg";
 
-let wildTomorrowFundImg = [%bs.raw
-  {|require('../img/conservation-partners/wild-tomorrow-fund.png')|}
-];
+let wildTomorrowFundImg = "/img/conservation-partners/wild-tomorrow-fund.png";
 
-let laSendaVerdeImg = [%bs.raw
-  {|require('../img/conservation-partners/senda-verde.png')|}
-];
+let laSendaVerdeImg = "/img/conservation-partners/senda-verde.png";
 
-let greatWhaleConservancyImg = [%bs.raw
-  {|require('../img/conservation-partners/great-whale-conservancy-small.png')|}
-];
+let greatWhaleConservancyImg = "/img/conservation-partners/great-whale-conservancy-small.png";
 
-let darwinAnimalDoctorsImg = [%bs.raw
-  {|require('../img/conservation-partners/darwin-animal-doctors.svg')|}
-];
+let darwinAnimalDoctorsImg = "/img/conservation-partners/darwin-animal-doctors.svg";
 
 type conservationPartnerType = {
   name: string,

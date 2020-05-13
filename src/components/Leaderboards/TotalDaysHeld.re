@@ -50,14 +50,10 @@ let useLoadMostDaysHeldData = () => {
 
 open Css;
 
-let flameImg = [%bs.raw {|require('../../img/streak-flame.png')|}];
-let goldTrophyImg = [%bs.raw {|require('../../img/icons/gold-trophy.png')|}];
-let silverTrophyImg = [%bs.raw
-  {|require('../../img/icons/silver-trophy.png')|}
-];
-let bronzeTrophyImg = [%bs.raw
-  {|require('../../img/icons/bronze-trophy.png')|}
-];
+let flameImg = "/img/streak-flame.png";
+let goldTrophyImg = "/img/icons/gold-trophy.png";
+let silverTrophyImg = "/img/icons/silver-trophy.png";
+let bronzeTrophyImg = "/img/icons/bronze-trophy.png";
 
 let leaderboardTable =
   style([
