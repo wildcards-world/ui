@@ -173,7 +173,6 @@ let make = () => {
   let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
   let isExplorer = Router.useIsExplorer();
   let isDetails = Router.useIsDetails();
-  Js.log4("is explorer", isExplorer, "is details", isDetails);
   let isHome = Router.useIsHome();
   open ReactTranslate;
   let usedtranslationModeContext = useTranslationModeContext();
@@ -187,7 +186,6 @@ let make = () => {
       <div className=Css.(style([position(relative)]))>
         <img src=betaBanner className=Styles.betaBanner />
       </div>
-      // <Header />
       <Header
         navItems=[|
           {
@@ -262,9 +260,7 @@ let make = () => {
               </a>,
           },
           {
-            shouldDisplay:
-              {Js.log2("the thing to display", !isExplorer || isDetails);
-               !isExplorer || isDetails},
+            shouldDisplay: !isExplorer || isDetails,
             shouldDisplayMobile: !isExplorer || isDetails,
             component: (closeModal, _) =>
               <div>
@@ -282,12 +278,13 @@ let make = () => {
           {
             shouldDisplay: true,
             shouldDisplayMobile: true,
-            component: (_, _) => <Web3Connect />,
+            component: (clickAction, _) => <Web3Connect clickAction />,
           },
           {
             shouldDisplay: true,
             shouldDisplayMobile: true,
-            component: (_, _) => <ProfileIcon />,
+            component: (clickAction, isMobile) =>
+              <ProfileIcon clickAction isMobile />,
           },
         |]
       />

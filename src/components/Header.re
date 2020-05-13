@@ -47,24 +47,24 @@ let floatingMenu = shouldDisplay =>
   Css.(
     style([
       position(`fixed),
-      top(vh(10.)),
+      top(px(0)),
       left(px(0)),
       width(`percent(100.)),
-      height(vh(82.)),
+      height(vh(100.)),
       visibility(shouldDisplay ? `visible : `hidden),
-      backgroundColor(rgba(255, 255, 255, shouldDisplay ? 0.9 : 0.)),
+      backgroundColor(rgba(255, 255, 255, shouldDisplay ? 0.5 : 0.)),
       display(`flex),
       alignItems(`center),
       justifyContent(`center),
       overflow(`hidden),
-      zIndex(10000),
+      zIndex(1000),
       transition(~duration=600, ~delay=0, ~timingFunction=ease, "all"),
       selector(
         ".zoom-in-effect",
         [
-          background(rgba(249, 244, 241, 0.8)),
-          width(vw(150.)),
-          height(vh(150.)),
+          background(rgba(107, 173, 62, 0.3)),
+          width(vw(100.)),
+          height(vh(100.)),
           borderRadius(`percent(50.)),
           border(px(1), `solid, Styles.wildCardGreen),
           display(`flex),
@@ -78,12 +78,11 @@ let floatingMenu = shouldDisplay =>
     ])
   );
 
-let hamburgerSvg = (~clickAction) =>
+let hamburgerSvg = () =>
   <svg
-    onClick=clickAction
     className=Css.(
       style([
-        zIndex(1000),
+        zIndex(1001),
         transition(
           ~duration=500,
           ~delay=0,
@@ -103,13 +102,12 @@ let hamburgerSvg = (~clickAction) =>
     />
   </svg>;
 
-let closeSvg = (~clickAction) =>
+let closeSvg = () =>
   <svg
-    onClick=clickAction
     height="32px"
     className=Css.(
       style([
-        zIndex(1000),
+        zIndex(1002),
         transition(
           ~duration=500,
           ~delay=0,
@@ -204,7 +202,7 @@ let make = (~navItems: array(navItem)) => {
                       Js.log("I WAS PRESSED");
                       setIsOpen(_ => false);
                     },
-                    isOpen,
+                    isMobile,
                   )}
                </li>
              : React.null
@@ -222,7 +220,7 @@ let make = (~navItems: array(navItem)) => {
         <a
           className={Cn.make([
             Styles.clickableLink,
-            Css.(style([marginLeft(`px(80))])),
+            Css.(style([marginLeft(`px(80)), zIndex(1001)])),
           ])}
           onClick={event => {
             ReactEvent.Mouse.preventDefault(event);
@@ -236,14 +234,24 @@ let make = (~navItems: array(navItem)) => {
           {menuItems(false)}
         </nav>
         <nav className={Cn.make([headerNav, hambergerMenu])}>
-          {isOpen
-             ? <> {closeSvg(~clickAction=_ => setIsOpen(_ => false))} </>
-             : {
-               hamburgerSvg(~clickAction=_ => {
-                 Js.log("try open the hamburgur");
-                 setIsOpen(_ => true);
-               });
-             }}
+          <div
+            className=Css.(
+              style([
+                zIndex(1010),
+                // NOTE: this needs to have absolute position so that it appears on top of the 'fixed' positioned overlay.
+                position(`absolute),
+                top(px(0)),
+                right(px(0)),
+                padding(px(30)),
+              ])
+            )
+            onClick={_ => setIsOpen(isOpen => !isOpen)}>
+            {isOpen
+               ? <> {closeSvg()} </>
+               : {
+                 hamburgerSvg();
+               }}
+          </div>
           <div className={floatingMenu(isOpen)}>
             <div className="zoom-in-effect"> {menuItems(true)} </div>
           </div>

@@ -20,7 +20,8 @@ let make = () => {
         "(Not sure where to go from here? "->React.string
         <a
           href="https://blog.wildcards.world/how-to-buy-a-wildcard-web3-ethereum/"
-          target="_blank" rel="noopener noreferrer">
+          target="_blank"
+          rel="noopener noreferrer">
           <span className=Styles.colorGreen>
             "Read our guide"->React.string
           </span>
@@ -33,7 +34,7 @@ let make = () => {
         style([
           display(`grid),
           gridTemplateColumns([
-            `repeat((`autoFit, `minmax((px(250), fr(0.6))))),
+            `repeat((`autoFit, `minmax((px(176), fr(0.6))))),
           ]),
           maxWidth(px(800)),
         ])
@@ -60,7 +61,7 @@ let make = () => {
                    borderRadius(px(12)),
                    hover([backgroundColor(rgba(195, 195, 195, 0.14))]),
                    transition(
-                     ~duration=500,
+                     ~duration=200,
                      ~delay=0,
                      ~timingFunction=easeInOut,
                      "background-color",
