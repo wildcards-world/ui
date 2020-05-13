@@ -10,6 +10,8 @@ global(
     margin(`px(0)),
     fontFamily(`custom("Lato, Helvetica, sans-serif")),
     overflowX(hidden),
+    width(`percent(100.)),
+    position(`relative),
   ],
 );
 global("a", [color(hex("303030")), textDecoration(none)]);

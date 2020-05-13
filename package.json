@@ -53,7 +53,7 @@
   "scripts": {
     "dev-experimental": "node --experimental-modules ./node_modules/next/dist/bin/next",
     "dev": "next",
-    "nextbuild": "npm run re:build && rm ./public/index.html && next build",
+    "nextbuild": "npm i next@9.3.6 && npm run re:build && rm ./public/index.html && next build",
     "next-start": "next start",
     "start": "npm run re:build && react-scripts start",
     "build-js-only": "EXTEND_ESLINT=true react-scripts build --verbose",

@@ -42,35 +42,46 @@ let make = () => {
 
   switch (totalPatronageRaised) {
   | Loaded(totalRaised, optTotaPatronageUsd) =>
-    <p>
-      <small>
-        <span className={Styles.totalRaisedText(1.5)}>
-          {React.string("Wildcards has currently raised ")}
-        </span>
-        <br />
-        <span className={Styles.totalRaisedText(4.)}>
-          <TotalRaisedEtherCountup totalRaised />
-          <strong> {React.string(" ETH ")} </strong>
-        </span>
-        <br />
-        {switch (optTotaPatronageUsd) {
-         | Some(totalPatronageUsd) =>
-           <React.Fragment>
-             <span className={Styles.totalRaisedText(2.5)}>
-               {React.string("(")}
-               {React.string(totalPatronageUsd)}
-               <strong> {React.string(" USD")} </strong>
-               {React.string(")")}
-             </span>
-             <br />
-             <span className={Styles.totalRaisedText(1.5)}>
-               {React.string(" for conservation.")}
-             </span>
-           </React.Fragment>
-         | None => React.null
-         }}
-      </small>
-    </p>
+    <div
+      className=Css.(
+        style([
+          // These styles make the total raised counter always display in the centre.
+          display(`flex),
+          alignItems(`center),
+          justifyContent(`center),
+          flexDirection(`column),
+        ])
+      )>
+      <p className=Css.(style([display(`table)]))>
+        <small>
+          <span className={Styles.totalRaisedText(1.5)}>
+            {React.string("Wildcards has currently raised ")}
+          </span>
+          <br />
+          <span className={Styles.totalRaisedText(4.)}>
+            <TotalRaisedEtherCountup totalRaised />
+            <strong> {React.string(" ETH ")} </strong>
+          </span>
+          <br />
+          {switch (optTotaPatronageUsd) {
+           | Some(totalPatronageUsd) =>
+             <React.Fragment>
+               <span className={Styles.totalRaisedText(2.5)}>
+                 {React.string("(")}
+                 {React.string(totalPatronageUsd)}
+                 <strong> {React.string(" USD")} </strong>
+                 {React.string(")")}
+               </span>
+               <br />
+               <span className={Styles.totalRaisedText(1.5)}>
+                 {React.string(" for conservation.")}
+               </span>
+             </React.Fragment>
+           | None => React.null
+           }}
+        </small>
+      </p>
+    </div>
   | Loading => <Rimble.Loader />
   };
 };
