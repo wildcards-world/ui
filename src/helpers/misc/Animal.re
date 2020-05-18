@@ -17,6 +17,7 @@ type t =
   | Isisa
   | Dlala
   | Nonhlanhla
+  | Tarkus
   | Ucok;
 
 let orderedArray = [|
@@ -38,6 +39,7 @@ let orderedArray = [|
   Espumita,
   CatStevens,
   Isisa,
+  Tarkus,
   Ucok,
 |];
 
@@ -59,6 +61,7 @@ let getId: t => string =
     | Isisa => "12"
     | Glen => "13"
     | Ucok => "14"
+    | Tarkus => "15"
     // | Vitalik => Some("42") // We don't show an ID for vitalik since using legacy contract still.
     // | Tarkus
     // | Mijungla
@@ -85,7 +88,7 @@ let getTokenId: t => TokenId.t =
     | Glen => TokenId.makeFromInt(13)
     | Ucok => TokenId.makeFromInt(14)
     | Vitalik => TokenId.makeFromInt(42)
-    // | Tarkus => Some(TokenId.makeFromInt(14))
+    | Tarkus => TokenId.makeFromInt(15)
     // | Mijungla => Some(TokenId.makeFromInt(15))
     // | Ajayu => Some(TokenId.makeFromInt(16))
     // | Tarkus
@@ -111,6 +114,7 @@ let getNameFromId: string => string =
     | "12" => "Isisa"
     | "13" => "Glen"
     | "14" => "Ucok"
+    | "15" => "Tarkus"
     | "42" => "Vitalik"
     | _ => "Unknown"
     };
@@ -137,6 +141,7 @@ let getName: t => string =
     | Dlala => "Dlala"
     | Ucok => "Ucok"
     | Glen => "Glen"
+    | Tarkus => "Tarkus"
     };
 
 let getAnimal: string => option(t) =
@@ -162,6 +167,7 @@ let getAnimal: string => option(t) =
     | "nonhlanhla" => Some(Nonhlanhla)
     | "glen" => Some(Glen)
     | "ucok" => Some(Ucok)
+    | "tarkus" => Some(Tarkus)
     | _ => None
     };
   };
@@ -186,6 +192,7 @@ let getAnimalFromId: string => option(t) =
     | "12" => Some(Isisa)
     | "13" => Some(Glen)
     | "14" => Some(Ucok)
+    | "15" => Some(Tarkus)
     | _ => None
     };
   };
@@ -209,8 +216,9 @@ let getNextPrev = animal =>
   | Nonhlanhla => (Isisa, Apthapi)
   | Isisa => (Glen, Nonhlanhla)
   | Glen => (Ucok, Isisa)
-  | Ucok => (Dlala, Glen)
-  | Dlala => (Simon, Ucok)
+  | Ucok => (Tarkus, Glen)
+  | Tarkus => (Dlala, Ucok)
+  | Dlala => (Simon, Tarkus)
   };
 
 let getImage = animal =>
@@ -231,6 +239,7 @@ let getImage = animal =>
   | Dlala => "/img/animals/EditedHyena2.png"
   | Glen => "/img/animals/Glen.png"
   | Ucok => "/img/animals/Ucok.png"
+  | Tarkus => "/img/animals/Tarkus.png"
   // | Ajayu
   // | Mijungla
   // | Tarkus
@@ -257,6 +266,7 @@ let getAlternateImage: t => option(string) =
     | Nonhlanhla => Some("/img/animals/Nonhlanhla.jpg")
     | Isisa => Some("/img/animals/Isisa.jpg")
     | Dlala => Some("/img/animals/Dlala.jpg")
+    | Tarkus => Some("/img/animals/TarkusReal.jpg")
     | _ => None
     };
 
@@ -273,6 +283,7 @@ let getOrgBadgeImage: t => string =
     | Aruma
     | Apthapi
     | Espumita
+    | Tarkus
     | Verano => "/img/badges/SendaVerdeBadge.png"
     | Nonhlanhla
     | Isisa
@@ -307,11 +318,11 @@ let getStoryParagraphs = animal =>
       "In countries like the United States, Blue-and-Yellow Macaws are raised as pets and a legal pet market exists for them. This is not the case in Bolivia however. There are absolutely no regulations on the matter and all pet parrots and macaws come from the illegal market. This means that they were stolen when chicks from their nests and went through a lot of suffering being transported illegally in hide-outs where they can barely breathe. Once with their final owners, their life is not always the best. Most parrot and macaw owners in Bolivia have no knowledge on the dietary and life requirements for these animals and they normally survive in very precarious conditions. Many of them are kept in La Paz, where low temperatures and high altitude are far from the suitable environment they need.",
       "When macaws like Verano arrive to La Senda Verde, they normally do so with their plumage deteriorated and with signs of psychological trauma. They go through a long recovery phase until they can be finally released into our new large aviaries, where they receive all the attention they need.",
     |]
-  // | Tarkus => [|
-  //     "Tarkus was found on the roadside by a trucker in a section between Sucre and Tarija where Andean bears are known to exist. A female bear got scared by the truck and run with the two cubs. The smallest one got a bit behind. The trucker decided to stop, capture the cub and take him to his house, where he kept the him for more than two weeks. Later he called the environmental authorities in the City of Tarija to turn him in. Capturing the cub is never a good idea, it is virtually condemning him to a life in captivity for he will never be able to learn the abilities to survive in the wild his mother would have taught him. If he would have been left alone, the mother would have come back for him later.",
-  //     "Tarkus stayed in Tarija for three weeks while the formal requirements were fulfilled. National authorities advised he should be sent to La Senda Verde, where there is a place for the cub, but also the experience of raising bear cubs with appropriate diet and management. He has been placed in a 6x5x6 enclosure just for him, and he has been getting well habituated to the refuge and the caretakers.",
-  //     "Tarkus has adapted well to the refuge and loves to play with the ball and in the water.",
-  //   |]
+  | Tarkus => [|
+      "Tarkus was found on the roadside by a trucker in a section between Sucre and Tarija where Andean bears are known to exist. A female bear got scared by the truck and ran with the two cubs. The smallest one fell a bit behind. The trucker decided to stop, capture the cub and take him to his house, where he kept him for more than two weeks. Later he called the environmental authorities in the City of Tarija to turn him in. Capturing the cub is never a good idea, it is virtually condemning him to a life in captivity for he will never be able to learn the abilities to survive in the wild his mother would have taught him. If he would have been left alone, the mother would have come back for him later.",
+      "Tarkus stayed in Tarija for three weeks while the formal requirements were fulfilled. National authorities advised he should be sent to La Senda Verde, where there is a place for the cub, but also the experience of raising bear cubs with appropriate diet and management. He has been placed in a 6x5x6 enclosure, just for him, and he has been getting used to the refuge and the caretakers.",
+      "Tarkus has adapted well to the refuge and loves to play with the ball and in the water.",
+    |]
   | Pancho => [|
       "Pancho is a large tortoise that was rescued before he was going to be cooked. He had spent by then a long time as a pet and that can be seen by the deformations on his shell, which show mistreatment and poor feeding habits.",
       "Pancho is one of the many tortoises that have similar stories and that arrive in large numbers to La Senda Verde. Tortoises are easy to catch in the rainforest and for that reason many of them are often taken to be sold as pets.",
@@ -395,6 +406,7 @@ let pledgeRate = animal => {
   | CatStevens
   | Nonhlanhla
   | Llajuita
+  | Tarkus
   | Dlala => ("24", "10", 0.2, 5.)
   | Cubai
   | Espumita
@@ -420,7 +432,7 @@ type launchStatus =
   | Launched
   | LaunchDate(MomentRe.Moment.t);
 
-let nextLaunchDate = MomentRe.momentUtcDefaultFormat("2020-05-14T12:00:00");
+let nextLaunchDate = MomentRe.momentUtcDefaultFormat("2020-05-21T17:00:00");
 
 let isLaunched: t => launchStatus =
   anAnimal =>
@@ -438,9 +450,10 @@ let isLaunched: t => launchStatus =
     | Nonhlanhla
     | Aruma
     | Glen
-    | Llajuita => Launched
+    | Espumita
     | Ucok
-    | Espumita => LaunchDate(nextLaunchDate)
+    | Llajuita => Launched
+    | Tarkus => LaunchDate(nextLaunchDate)
     };
 
 let hasGovernance: t => bool =
@@ -460,6 +473,7 @@ let hasGovernance: t => bool =
     | Aruma
     | Espumita
     | Ucok
+    | Tarkus
     | Llajuita => false
     | Glen => true
     };
