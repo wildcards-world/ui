@@ -317,7 +317,9 @@ let make = () => {
          | User(userAddress) => <UserProfile userAddress />
          | Leaderboards(leaderboardType) =>
            <Rimble.Flex
-             flexWrap="wrap" alignItems="center" className=Styles.topBody>
+             flexWrap="wrap"
+             alignItems="center"
+             className=Css.(style([padding(em(2.))]))>
              <LeaderBoards leaderboardType />
            </Rimble.Flex>
          }}

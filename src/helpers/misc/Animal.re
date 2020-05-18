@@ -420,7 +420,7 @@ type launchStatus =
   | Launched
   | LaunchDate(MomentRe.Moment.t);
 
-let nextLaunchDate = MomentRe.momentUtcDefaultFormat("2020-05-14T17:00:00");
+let nextLaunchDate = MomentRe.momentUtcDefaultFormat("2020-05-14T12:00:00");
 
 let isLaunched: t => launchStatus =
   anAnimal =>
