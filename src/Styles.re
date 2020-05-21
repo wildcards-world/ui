@@ -10,6 +10,8 @@ global(
     margin(`px(0)),
     fontFamily(`custom("Lato, Helvetica, sans-serif")),
     overflowX(hidden),
+    width(`percent(100.)),
+    position(`relative),
   ],
 );
 global("a", [color(hex("303030")), textDecoration(none)]);
@@ -46,7 +48,6 @@ let topBody =
     // alignItems(center),
     media("(max-width: 831px)", [textAlign(center)]),
     // flexWrap(`wrap),
-    paddingTop(px(120)),
     paddingLeft(px(15)),
     paddingRight(px(15)),
     // paddingBottom(px(120)),
@@ -330,64 +331,6 @@ let linkPillBox =
   ]);
 let linkPillText =
   style([margin(px(10)), marginBottom(px(1)), color(hex("fff"))]);
-
-let footer = style([backgroundColor(hex("303030")), height(vh(12.))]);
-
-let footerWrapper =
-  style([
-    margin(auto),
-    maxWidth(px(1080)),
-    display(`flex),
-    justifyContent(spaceBetween),
-    alignItems(center),
-    flexWrap(`wrap),
-    height(`percent(100.)),
-  ]);
-
-let footerText =
-  style([marginTop(auto), marginBottom(auto), color(hex("919797"))]);
-
-let footerLink =
-  style([textDecoration(none), important(color(hex("919797")))]);
-
-let footerSocialButtons =
-  style([
-    padding(px(0)),
-    marginRight(em(6.)), // This is needed to cater for the 'crisp' chat help.
-    listStyle(`none, `inside, `none),
-    display(`flex),
-    justifyContent(center),
-    alignItems(center),
-    flexWrap(wrap),
-  ]);
-
-let footerSocialButton =
-  style([
-    padding(px(0)),
-    margin(px(0)),
-    // listStyle(`none, `inside, `none),
-    display(`flex),
-    justifyContent(flexEnd),
-    alignItems(center),
-    flexWrap(wrap),
-  ]);
-
-let footerSocailButtonLink =
-  style([
-    maxWidth(px(32)),
-    maxHeight(px(32)),
-    // hover([
-    //   filter([`grayscale(0.)]),
-    //   transition(~duration=2000, ~delay=0, ~timingFunction=ease, "all"),
-    // ]),
-    // transition(~duration=2000, ~delay=0, ~timingFunction=ease, "opacity"),
-    // // -webkit-transition: opacity .2s ease,box-shadow .2s ease,-webkit-transform .2s ease;
-    // // transition: opacity .2s ease,box-shadow .2s ease,-webkit-transform .2s ease;
-    // // transition: opacity .2s ease,transform .2s ease,box-shadow .2s ease;
-    // transition: opacity .2s ease,transform .2s ease,box-shadow .2s ease,-webkit-transform .2s ease;
-  ]);
-
-let infoModal = style([padding(rem(2.)), borderRadius(px(5))]);
 
 let betaBanner =
   style([

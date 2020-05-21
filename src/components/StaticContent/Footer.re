@@ -3,17 +3,78 @@ let privacy_policy_link = "https://wildcards.world/privacy_policy.html";
 let terms_and_conditions_link = "https://wildcards.world/terms_and_conditions.html";
 
 open Globals;
-open Rimble;
+
+let footer =
+  Css.(
+    style([
+      backgroundColor(hex("303030")),
+      height(vh(12.)),
+      media("(max-width: 831px)", [height(vh(20.))]),
+    ])
+  );
+
+let footerWrapper =
+  Css.(
+    style([
+      margin(auto),
+      maxWidth(px(1080)),
+      display(`flex),
+      justifyContent(spaceAround),
+      alignItems(center),
+      flexWrap(`wrap),
+      height(`percent(100.)),
+    ])
+  );
+
+let footerText =
+  Css.(
+    style([
+      marginTop(auto),
+      marginBottom(auto),
+      color(hex("919797")),
+      media(
+        "(max-width: 831px)",
+        [width(`percent(100.)), textAlign(`center)],
+      ),
+    ])
+  );
+
+let footerLink =
+  Css.(style([textDecoration(none), important(color(hex("919797")))]));
+
+let footerSocialButtons =
+  Css.(
+    style([
+      padding(px(0)),
+      media(
+        "(min-width: 831px)",
+        [
+          marginRight(em(6.)) // This is needed to cater for the 'crisp' chat help.
+        ],
+      ),
+      listStyle(`none, `inside, `none),
+      display(`flex),
+      justifyContent(center),
+      alignItems(center),
+      flexWrap(wrap),
+      media("(max-width: 831px)", [width(`percent(100.))]),
+    ])
+  );
+
+let footerSocialButton = Css.(style([]));
+
+let footerSocailButtonLink =
+  Css.(style([maxWidth(px(32)), maxHeight(px(32))]));
 
 [@react.component]
 let make = () =>
-  <Box className=Styles.footer>
-    <div className=Styles.footerWrapper>
-      <div className=Styles.footerText>
+  <Rimble.Box className=footer>
+    <div className=footerWrapper>
+      <div className=footerText>
         <div>
           {js|©|js}->restr
           <a
-            className=Styles.footerLink
+            className=footerLink
             target="_blank"
             rel="noopener noreferrer"
             href="https://wildcards.world">
@@ -21,35 +82,35 @@ let make = () =>
           </a>
         </div>
       </div>
-      <div className=Styles.footerText>
+      <div className=footerText>
         <a
-          className=Styles.footerLink
+          className=footerLink
           target="_blank"
           rel="noopener noreferrer"
           href=transparency_link>
           "Transparency"->restr
         </a>
       </div>
-      <div className=Styles.footerText>
+      <div className=footerText>
         <a
-          className=Styles.footerLink
+          className=footerLink
           target="_blank"
           rel="noopener noreferrer"
           href=privacy_policy_link>
           "Privacy Policy"->restr
         </a>
       </div>
-      <div className=Styles.footerText>
+      <div className=footerText>
         <a
-          className=Styles.footerLink
+          className=footerLink
           target="_blank"
           rel="noopener noreferrer"
           href=terms_and_conditions_link>
           "Terms and Conditions"->restr
         </a>
       </div>
-      <ul className=Styles.footerSocialButtons>
-        <li className=Styles.footerSocialButton>
+      <ul className=footerSocialButtons>
+        <li className=footerSocialButton>
           <SocialButtons
             url="https://twitter.com/wildcards_world"
             bgColor="transparent"
@@ -57,12 +118,12 @@ let make = () =>
             target="_blank"
             rel="noopener noreferrer"
             network="twitter"
-            className=Styles.footerSocailButtonLink
+            className=footerSocailButtonLink
           />
         </li>
-        <li className=Styles.footerSocialButton>
+        <li className=footerSocialButton>
           <SocialButtons
-            className=Styles.footerSocailButtonLink
+            className=footerSocailButtonLink
             url="https://www.facebook.com/wildcardscrypto"
             bgColor="transparent"
             target="_blank"
@@ -71,9 +132,9 @@ let make = () =>
             fgColor="#aaa"
           />
         </li>
-        <li className=Styles.footerSocialButton>
+        <li className=footerSocialButton>
           <SocialButtons
-            className=Styles.footerSocailButtonLink
+            className=footerSocailButtonLink
             url="https://t.me/wildcardsworld"
             bgColor="transparent"
             target="_blank"
@@ -84,4 +145,4 @@ let make = () =>
         </li>
       </ul>
     </div>
-  </Box>;
+  </Rimble.Box>;

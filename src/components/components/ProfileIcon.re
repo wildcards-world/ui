@@ -1,7 +1,7 @@
 open Globals;
 
 [@react.component]
-let make = () => {
+let make = (~clickAction=() => (), ~isMobile=false) => {
   let currentUser = RootProvider.useCurrentUser();
   let networkIdOpt = RootProvider.useNetworkId();
 
@@ -38,23 +38,45 @@ let make = () => {
     | (Some(_), Some(_)) => displayNameStr
     };
 
+  let profileIcon =
+    <img
+      className=Css.(
+        style([
+          borderRadius(`percent(50.)),
+          width(`px(40)),
+          height(`px(40)),
+          marginLeft(`px(10)),
+        ])
+      )
+      src=profileImage
+    />;
+
+  let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+
   switch (networkIdOpt) {
   | None => React.null
   | Some(_) =>
-    <Rimble.Tooltip message placement="bottom">
-      <a href={"/#user/" ++ userAddressLowerCase}>
-        <img
-          className=Css.(
-            style([
-              borderRadius(`percent(50.)),
-              width(`px(40)),
-              height(`px(40)),
-              marginLeft(`px(10)),
-            ])
-          )
-          src=profileImage
-        />
-      </a>
-    </Rimble.Tooltip>
+    isMobile
+      ? <div
+          onClick={_ => {
+            clickAction();
+            clearAndPush("#user/" ++ userAddressLowerCase);
+          }}
+          className=Css.(style([display(`flex), flexDirection(`row)]))>
+          <div>
+            <p> <strong> "View Your Profile:"->restr </strong> </p>
+            <p> message->restr </p>
+          </div>
+          profileIcon
+        </div>
+      : <Rimble.Tooltip message placement="bottom">
+          <div
+            onClick={_ => {
+              clickAction();
+              clearAndPush("#user/" ++ userAddressLowerCase);
+            }}>
+            profileIcon
+          </div>
+        </Rimble.Tooltip>
   };
 };

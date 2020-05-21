@@ -36,7 +36,6 @@ let make =
 
   let (showAnnouncement, setShowAnnouncement) = React.useState(() => `block);
   let numberOfAnimalsToLaunch = nextReleasedAnimals->Array.length;
-  Js.log2("number of new animals", numberOfAnimalsToLaunch);
   let isPlural = numberOfAnimalsToLaunch > 1;
   <div className={announcement(showAnnouncement)}>
     {(

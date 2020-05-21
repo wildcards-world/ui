@@ -30,6 +30,7 @@
     "reason-loadable",
     "reason-promise",
     "reason-react",
+    "re-classnames",
     "@wildcards/reason-apollo",
     "@wildcards/reason-apollo-hooks",
     "@glennsl/bs-jest"

@@ -62,7 +62,7 @@ module AnimalFocusDetails = {
   };
 };
 
-module Header = {
+module HeaderOld = {
   [@react.component]
   let make = () => {
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
@@ -170,6 +170,13 @@ let make = () => {
   // ReactDOMRe.Ref.domRef(ref);
   /*ref={ReactDOMRe.Ref.domRef(ref)}*/
 
+  let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+  let isExplorer = Router.useIsExplorer();
+  let isDetails = Router.useIsDetails();
+  let isHome = Router.useIsHome();
+  open ReactTranslate;
+  let usedtranslationModeContext = useTranslationModeContext();
+
   <div className=Styles.app>
     <div className=Css.(style([minHeight(vh(88.))]))>
       <Announcement
@@ -181,7 +188,108 @@ let make = () => {
       <div className=Css.(style([position(relative)]))>
         <img src=betaBanner className=Styles.betaBanner />
       </div>
-      <Header />
+      <Header
+        navItems=[|
+          {
+            shouldDisplay: isHome,
+            shouldDisplayMobile: false,
+            component: (_, _) =>
+              <div className=Styles.navListItemToggle>
+                <span className=Styles.someMarginRight>
+                  (
+                    usedtranslationModeContext->translationModeCrypto
+                      ? "EXPERT MODE" : "DEFAULT MODE"
+                  )
+                  ->restr
+                </span>
+                <ReactTranslate.Switch
+                  onChange={
+                    usedtranslationModeContext->settranslationModeCrypto
+                  }
+                  checked={usedtranslationModeContext->translationModeCrypto}
+                  height=16
+                  handleDiameter=18
+                  width=30
+                  onColor="#6BAD3D"
+                  onHandleColor="#346D4C"
+                  offHandleColor="#cccccc"
+                  uncheckedIcon=false
+                  checkedIcon=false
+                  className=Styles.translationSwitch
+                />
+              </div>,
+          },
+          {
+            shouldDisplay: !isHome,
+            shouldDisplayMobile: !isHome,
+            component: (closeModal, _) =>
+              <a
+                className=Styles.navListText
+                href=""
+                onClick={event => {
+                  closeModal();
+                  ReactEvent.Mouse.preventDefault(event);
+                  clearAndPush("#");
+                }}>
+                "HOME"->restr
+              </a>,
+          },
+          {
+            shouldDisplay: true,
+            shouldDisplayMobile: true,
+            component: (closeModal, _) =>
+              <a
+                className=Styles.navListText
+                onClick={event => {
+                  closeModal();
+                  ReactEvent.Mouse.preventDefault(event);
+                  clearAndPush({j|/#leaderboards/monthly-contribution|j});
+                }}>
+                "LEADERBOARDS"->restr
+              </a>,
+          },
+          {
+            shouldDisplay: true,
+            shouldDisplayMobile: true,
+            component: (closeModal, _) =>
+              <a
+                className=Styles.navListText
+                target="_blank"
+                onClick={_ => closeModal()}
+                rel="noopener noreferrer"
+                href="https://blog.wildcards.world/">
+                "BLOG"->restr
+              </a>,
+          },
+          {
+            shouldDisplay: !isExplorer || isDetails,
+            shouldDisplayMobile: !isExplorer || isDetails,
+            component: (closeModal, _) =>
+              <div>
+                <Rimble.Button
+                  onClick={event => {
+                    closeModal();
+                    ReactEvent.Form.preventDefault(event);
+                    clearAndPush("#explorer");
+                  }}
+                  className=Styles.whiteText>
+                  "VIEW WILDCARDS"->restr
+                </Rimble.Button>
+              </div>,
+          },
+          {
+            shouldDisplay: true,
+            shouldDisplayMobile: true,
+            component: (clickAction, _) => <Web3Connect clickAction />,
+          },
+          {
+            shouldDisplay: true,
+            shouldDisplayMobile: true,
+            component: (clickAction, isMobile) =>
+              <ProfileIcon clickAction isMobile />,
+          },
+        |]
+      />
       <UsdPriceProvider>
         {switch (urlState) {
          | VotePage => <VotePage />
@@ -211,7 +319,9 @@ let make = () => {
          | User(userAddress) => <UserProfile userAddress />
          | Leaderboards(leaderboardType) =>
            <Rimble.Flex
-             flexWrap="wrap" alignItems="center" className=Styles.topBody>
+             flexWrap="wrap"
+             alignItems="center"
+             className=Css.(style([padding(em(2.))]))>
              <LeaderBoards leaderboardType />
            </Rimble.Flex>
          }}

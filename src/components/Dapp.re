@@ -71,7 +71,6 @@ module DisplayAfterDate = {
     let (beforeDate, setIsBeforeDate) = React.useState(() => isBeforeDate());
     React.useEffect2(
       () => {
-        Js.log("this was called!!!");
         let timeout =
           Js.Global.setTimeout(
             () => setIsBeforeDate(_ => isBeforeDate()),
@@ -920,7 +919,12 @@ let make = () => {
          }}
       </React.Fragment>
     </Rimble.Box>
-    <Rimble.Box p=1 width=[|1., 1., 0.5|]>
+    <Rimble.Box
+      p=1
+      className=Css.(
+        style([media("(max-width: 831px)", [overflow(`hidden)])])
+      )
+      width=[|1., 1., 0.5|]>
       <DefaultLook isGqlLoaded />
     </Rimble.Box>
   </Rimble.Flex>;

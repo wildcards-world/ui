@@ -8,6 +8,16 @@ module YoutubeVid = {
   external make: unit => React.element = "default";
 };
 
+let infoModalStyle =
+  Css.(
+    style([
+      padding(rem(3.)),
+      borderRadius(px(5)),
+      width(px(640)),
+      maxWidth(`vw(100.)),
+    ])
+  );
+
 [@react.component]
 let make = () => {
   let (isModalOpen, setModalOpen) = React.useState(() => false);
@@ -26,8 +36,7 @@ let make = () => {
             </Rimble.Button>
           </Rimble.Box>
           <Rimble.Modal isOpen=isModalOpen>
-            <Rimble.Card
-              className=Styles.infoModal width={Rimble.AnyStr("640px")} p=0>
+            <Rimble.Card className=infoModalStyle>
               <Rimble.Button.Text
                 icononly=true
                 icon="Close"
