@@ -18,7 +18,8 @@ type t =
   | Dlala
   | Nonhlanhla
   | Tarkus
-  | Ucok;
+  | Ucok
+  | Hook;
 
 let orderedArray = [|
   Apthapi,
@@ -41,6 +42,7 @@ let orderedArray = [|
   Isisa,
   Tarkus,
   Ucok,
+  Hook,
 |];
 
 let getId: t => string =
@@ -62,6 +64,7 @@ let getId: t => string =
     | Glen => "13"
     | Ucok => "14"
     | Tarkus => "15"
+    | Hook => "16"
     // | Vitalik => Some("42") // We don't show an ID for vitalik since using legacy contract still.
     // | Tarkus
     // | Mijungla
@@ -89,6 +92,7 @@ let getTokenId: t => TokenId.t =
     | Ucok => TokenId.makeFromInt(14)
     | Vitalik => TokenId.makeFromInt(42)
     | Tarkus => TokenId.makeFromInt(15)
+    | Hook => TokenId.makeFromInt(16)
     // | Mijungla => Some(TokenId.makeFromInt(15))
     // | Ajayu => Some(TokenId.makeFromInt(16))
     // | Tarkus
@@ -115,6 +119,7 @@ let getNameFromId: string => string =
     | "13" => "Glen"
     | "14" => "Ucok"
     | "15" => "Tarkus"
+    | "16" => "Hook"
     | "42" => "Vitalik"
     | _ => "Unknown"
     };
@@ -142,6 +147,7 @@ let getName: t => string =
     | Ucok => "Ucok"
     | Glen => "Glen"
     | Tarkus => "Tarkus"
+    | Hook => "Hook"
     };
 
 let getAnimal: string => option(t) =
@@ -168,6 +174,7 @@ let getAnimal: string => option(t) =
     | "glen" => Some(Glen)
     | "ucok" => Some(Ucok)
     | "tarkus" => Some(Tarkus)
+    | "hook" => Some(Hook)
     | _ => None
     };
   };
@@ -193,6 +200,7 @@ let getAnimalFromId: string => option(t) =
     | "13" => Some(Glen)
     | "14" => Some(Ucok)
     | "15" => Some(Tarkus)
+    | "16" => Some(Hook)
     | _ => None
     };
   };
@@ -215,8 +223,9 @@ let getNextPrev = animal =>
   // | Ajayu => (Nonhlanhla, Apthapi)
   | Nonhlanhla => (Isisa, Apthapi)
   | Isisa => (Glen, Nonhlanhla)
-  | Glen => (Ucok, Isisa)
-  | Ucok => (Tarkus, Glen)
+  | Glen => (Hook, Isisa)
+  | Hook => (Ucok, Glen)
+  | Ucok => (Tarkus, Hook)
   | Tarkus => (Dlala, Ucok)
   | Dlala => (Simon, Tarkus)
   };
@@ -240,6 +249,7 @@ let getImage = animal =>
   | Glen => "/img/animals/Glen.png"
   | Ucok => "/img/animals/Ucok.png"
   | Tarkus => "/img/animals/Tarkus.png"
+  | Hook => "/img/animals/Hook.png"
   // | Ajayu
   // | Mijungla
   // | Tarkus
@@ -267,6 +277,7 @@ let getAlternateImage: t => option(string) =
     | Isisa => Some("/img/animals/Isisa.jpg")
     | Dlala => Some("/img/animals/Dlala.jpg")
     | Tarkus => Some("/img/animals/TarkusReal.jpg")
+    | Hook => Some("/img/animals/HookReal.jpg")
     | _ => None
     };
 
@@ -290,6 +301,7 @@ let getOrgBadgeImage: t => string =
     | Dlala => "/img/badges/WildTomorrowBadge.png"
     | Glen => "/img/badges/EthTurin.svg"
     | Ucok => "/img/badges/DarwinAnimalDoctors.svg"
+    | Hook => "/img/badges/GreatWhaleConservancy.png"
     // | Ajayu
     // | Mijungla
     // | Tarkus
@@ -379,6 +391,11 @@ let getStoryParagraphs = animal =>
       "It was a tough and trying time in Turin, Italy. A pandemic had taken over the land and the villagers were facing hardships. Unexpectedly nature was prospering, the villagers were in hiding and the flora and fauna of the region was reclaiming its land. Most unexpectedly the dragon returned, which for a long time was believed to be extinct. Glen the Dragon of Turin emerged from the Alps just North of the city. One of the last of his kind.",
       "Glen is a unique Wildcard that is named after Glen Weyl the author of Radical Markets. He was developed during the ETHTurin hackathon. The funds raised by Glen go to the conservation voted by the community. Owners of wildcards can vote using their loyalty tokens using quadratic voting to vote which conservation should receive the funds raised for that month.",
     |]
+  | Hook => [|
+      "Hook is a male blue whale that the Great Whale Conservancy has been keeping track of for a long time,close to 40 years. They have seen and photographically identified Hook for the past 6 years in the row which is a record siting for the Great Whale Conservancy. Hook has quite a dark pigmentation for a blue whale and often has a large number of remoras attached to his body underneath the dorsal fin.",
+      "Hook is often one of the first whales to arrive at the Sea of Cortez feeding grounds in the Great Whale Conservancies working area in the general vicinity of Loreto, Baja California. He is one of the finest examples of 'habitat preference' coming back to the same part of the sea for many years in a row and a significant number over the past 38 years.",
+      "Artwork by BruceTheGoose",
+    |]
   };
 
 // [@bs.module "./animaltx.js"]
@@ -407,6 +424,7 @@ let pledgeRate = animal => {
   | Nonhlanhla
   | Llajuita
   | Tarkus
+  | Hook
   | Dlala => ("24", "10", 0.2, 5.)
   | Cubai
   | Espumita
@@ -432,7 +450,7 @@ type launchStatus =
   | Launched
   | LaunchDate(MomentRe.Moment.t);
 
-let nextLaunchDate = MomentRe.momentUtcDefaultFormat("2020-05-21T17:00:00");
+let nextLaunchDate = MomentRe.momentUtcDefaultFormat("2020-05-28T17:00:00");
 
 let isLaunched: t => launchStatus =
   anAnimal =>
@@ -452,8 +470,9 @@ let isLaunched: t => launchStatus =
     | Glen
     | Espumita
     | Ucok
+    | Tarkus
     | Llajuita => Launched
-    | Tarkus => LaunchDate(nextLaunchDate)
+    | Hook => LaunchDate(nextLaunchDate)
     };
 
 let hasGovernance: t => bool =
@@ -474,6 +493,7 @@ let hasGovernance: t => bool =
     | Espumita
     | Ucok
     | Tarkus
+    | Hook
     | Llajuita => false
     | Glen => true
     };
