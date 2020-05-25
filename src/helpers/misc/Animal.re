@@ -394,7 +394,7 @@ let getStoryParagraphs = animal =>
   | Hook => [|
       "Hook is a male blue whale that the Great Whale Conservancy has been keeping track of for a long time,close to 40 years. They have seen and photographically identified Hook for the past 6 years in the row which is a record siting for the Great Whale Conservancy. Hook has quite a dark pigmentation for a blue whale and often has a large number of remoras attached to his body underneath the dorsal fin.",
       "Hook is often one of the first whales to arrive at the Sea of Cortez feeding grounds in the Great Whale Conservancies working area in the general vicinity of Loreto, Baja California. He is one of the finest examples of 'habitat preference' coming back to the same part of the sea for many years in a row and a significant number over the past 38 years.",
-      "Artwork by Bruce the Goose",
+      "Artwork by BruceTheGoose",
     |]
   };
 
