@@ -4,16 +4,15 @@ type t =
   | Vitalik
   | Simon
   | Verano
-  // | Tarkus
   | Pancho
-  // | Mijungla
+  | Mijungla
   | Llajuita
   | Espumita
   | Cubai
   | CatStevens
   | Aruma
   | Apthapi
-  // | Ajayu
+  | Ajayu
   | Isisa
   | Dlala
   | Nonhlanhla
@@ -25,6 +24,7 @@ let orderedArray = [|
   Apthapi,
   // Ajayu,
   Vitalik,
+  Mijungla,
   Nonhlanhla,
   Cubai,
   Glen,
@@ -32,10 +32,8 @@ let orderedArray = [|
   Dlala,
   Aruma,
   Verano,
-  // Tarkus,
   Pancho,
   Andy,
-  // Mijungla,
   Llajuita,
   Espumita,
   CatStevens,
@@ -65,10 +63,8 @@ let getId: t => string =
     | Ucok => "14"
     | Tarkus => "15"
     | Hook => "16"
-    // | Vitalik => Some("42") // We don't show an ID for vitalik since using legacy contract still.
-    // | Tarkus
-    // | Mijungla
-    // | Ajayu
+    | Mijungla => "17"
+    | Ajayu => "18" // NOTE: THIS MAY CHANGE!
     | Vitalik => "42"
     };
 
@@ -93,11 +89,8 @@ let getTokenId: t => TokenId.t =
     | Vitalik => TokenId.makeFromInt(42)
     | Tarkus => TokenId.makeFromInt(15)
     | Hook => TokenId.makeFromInt(16)
-    // | Mijungla => Some(TokenId.makeFromInt(15))
-    // | Ajayu => Some(TokenId.makeFromInt(16))
-    // | Tarkus
-    // | Mijungla
-    // | Ajayu
+    | Mijungla => TokenId.makeFromInt(17)
+    | Ajayu => TokenId.makeFromInt(18)
     };
 
 let getNameFromId: string => string =
@@ -120,6 +113,8 @@ let getNameFromId: string => string =
     | "14" => "Ucok"
     | "15" => "Tarkus"
     | "16" => "Hook"
+    | "17" => "Mijungla"
+    | "18" => "Ajayu"
     | "42" => "Vitalik"
     | _ => "Unknown"
     };
@@ -131,16 +126,15 @@ let getName: t => string =
     | Simon => "Simon"
     | Andy => "Andy"
     | Verano => "Verano"
-    // | Tarkus => "Tarkus"
     | Pancho => "Pancho"
-    // | Mijungla => "Mijungla"
+    | Mijungla => "Mijungla"
     | Llajuita => "Llajuita"
     | Espumita => "Espumita"
     | Cubai => "Cubai"
     | CatStevens => "CatStevens" // removing the space since no time to fix bug
     | Aruma => "Aruma"
     | Apthapi => "Apthapi"
-    // | Ajayu => "Ajayu"
+    | Ajayu => "Ajayu"
     | Nonhlanhla => "Nonhlanhla"
     | Isisa => "Isisa"
     | Dlala => "Dlala"
@@ -158,22 +152,21 @@ let getAnimal: string => option(t) =
     | "simon" => Some(Simon)
     | "andy" => Some(Andy)
     | "verano" => Some(Verano)
-    // | "tarkus" => Some(Tarkus)
+    | "tarkus" => Some(Tarkus)
     | "pancho" => Some(Pancho)
-    // | "mijungla" => Some(Mijungla)
+    | "mijungla" => Some(Mijungla)
     | "llajuita" => Some(Llajuita)
     | "espumita" => Some(Espumita)
     | "cubai" => Some(Cubai)
     | "catstevens" => Some(CatStevens)
     | "aruma" => Some(Aruma)
     | "apthapi" => Some(Apthapi)
-    // | "ajayu" => Some(Ajayu)
+    | "ajayu" => Some(Ajayu)
     | "dlala" => Some(Dlala)
     | "isisa" => Some(Isisa)
     | "nonhlanhla" => Some(Nonhlanhla)
     | "glen" => Some(Glen)
     | "ucok" => Some(Ucok)
-    | "tarkus" => Some(Tarkus)
     | "hook" => Some(Hook)
     | _ => None
     };
@@ -201,6 +194,8 @@ let getAnimalFromId: string => option(t) =
     | "14" => Some(Ucok)
     | "15" => Some(Tarkus)
     | "16" => Some(Hook)
+    | "17" => Some(Mijungla)
+    | "18" => Some(Ajayu)
     | _ => None
     };
   };
@@ -211,16 +206,14 @@ let getNextPrev = animal =>
   | Vitalik => (Andy, Simon)
   | Andy => (Verano, Vitalik)
   | Verano => (Pancho, Andy)
-  // | Tarkus => (Pancho, Verano)
-  | Pancho => (Llajuita, Verano)
-  // | Mijungla => (Llajuita, Pancho)
-  | Llajuita => (Espumita, Pancho)
+  | Pancho => (Mijungla, Verano)
+  | Mijungla => (Llajuita, Pancho)
+  | Llajuita => (Espumita, Mijungla)
   | Espumita => (Cubai, Llajuita)
   | Cubai => (CatStevens, Espumita)
   | CatStevens => (Aruma, Cubai)
   | Aruma => (Apthapi, CatStevens)
   | Apthapi => (Nonhlanhla, Aruma)
-  // | Ajayu => (Nonhlanhla, Apthapi)
   | Nonhlanhla => (Isisa, Apthapi)
   | Isisa => (Glen, Nonhlanhla)
   | Glen => (Hook, Isisa)
@@ -228,6 +221,7 @@ let getNextPrev = animal =>
   | Ucok => (Tarkus, Hook)
   | Tarkus => (Dlala, Ucok)
   | Dlala => (Simon, Tarkus)
+  | Ajayu => (Ajayu, Ajayu) // Ajayu isn't launched yet
   };
 
 let getImage = animal =>
@@ -250,10 +244,8 @@ let getImage = animal =>
   | Ucok => "/img/animals/Ucok.png"
   | Tarkus => "/img/animals/Tarkus.png"
   | Hook => "/img/animals/Hook.png"
-  // | Ajayu
-  // | Mijungla
-  // | Tarkus
-  | _ => "/img/animals/comingsoon.png"
+  | Ajayu => "/img/animals/Ajayu.png"
+  | Mijungla => "/img/animals/Mijungla.png"
   };
 
 // let getAlternateImage: t => array(string) = // TODO: I want to turn this into an array in the future, show a carousel of images instead.
@@ -278,7 +270,8 @@ let getAlternateImage: t => option(string) =
     | Dlala => Some("/img/animals/Dlala.jpg")
     | Tarkus => Some("/img/animals/TarkusReal.jpg")
     | Hook => Some("/img/animals/HookReal.jpg")
-    | _ => None
+    | Mijungla => Some("/img/animals/MijunglaReal.png")
+    | Ajayu => Some("/img/animals/AjayuReal.jpeg")
     };
 
 let getOrgBadgeImage: t => string =
@@ -295,6 +288,8 @@ let getOrgBadgeImage: t => string =
     | Apthapi
     | Espumita
     | Tarkus
+    | Ajayu
+    | Mijungla
     | Verano => "/img/badges/SendaVerdeBadge.png"
     | Nonhlanhla
     | Isisa
@@ -302,9 +297,6 @@ let getOrgBadgeImage: t => string =
     | Glen => "/img/badges/EthTurin.svg"
     | Ucok => "/img/badges/DarwinAnimalDoctors.svg"
     | Hook => "/img/badges/GreatWhaleConservancy.png"
-    // | Ajayu
-    // | Mijungla
-    // | Tarkus
     // | _ => None
     };
 
@@ -339,12 +331,12 @@ let getStoryParagraphs = animal =>
       "Pancho is a large tortoise that was rescued before he was going to be cooked. He had spent by then a long time as a pet and that can be seen by the deformations on his shell, which show mistreatment and poor feeding habits.",
       "Pancho is one of the many tortoises that have similar stories and that arrive in large numbers to La Senda Verde. Tortoises are easy to catch in the rainforest and for that reason many of them are often taken to be sold as pets.",
     |]
-  // | Mijungla => [|
-  //     "Mijungla arrived December 13th to La Senda Verde to be the second jaguar to live in the animal refuge. She was picked up from a family in the town of Palos Blancos, located in a low tropical rainforest area where the Amazon meets the Andes.",
-  //     "The family has a cattle ranch, and one of the cowboys in the ranch had found her in a very bad state of health laying in the forest, with a wound in her head, full of skin parasites and parts of her body without skin. They picked her up and started rehabilitating her. First they fed her the wrong food, then they realised they needed to feed her meat. It was until she arrived with us that she was able to drink cat milk, for she was so small she really needed it.",
-  //     "The cub was partially rehabilitated by the family but still had some difficulties when she arrived at Senda Verde. She couldn't walk very well and her stomach was swollen. Just like the Andean Bear cub Tarkus that arrived around the same time Mijungla did, this Jaguar cub spent very little time with her mother, which affects them greatly both psychologically and physiologically. Senda Verde monitors very closely both cub's digestion since they could get sick because of the fact that they did not get enough milk from their mothers.",
-  //     "When arrived, Mijungla was three months old and weighted 3.2 kilograms.",
-  //   |]
+  | Mijungla => [|
+      "Mijungla arrived December 13th to La Senda Verde to be the second jaguar to live in the animal refuge. She was picked up from a family in the town of Palos Blancos, located in a low tropical rainforest area where the Amazon meets the Andes.",
+      "The family has a cattle ranch, and one of the cowboys in the ranch had found her in a very bad state of health laying in the forest, with a wound in her head, full of skin parasites and parts of her body without skin. They picked her up and started rehabilitating her. First they fed her the wrong food, then they realised they needed to feed her meat. It was until she arrived with us that she was able to drink cat milk, for she was so small she really needed it.",
+      "The cub was partially rehabilitated by the family but still had some difficulties when she arrived at Senda Verde. She couldn't walk very well and her stomach was swollen. Just like the Andean Bear cub Tarkus that arrived around the same time Mijungla did, this Jaguar cub spent very little time with her mother, which affects them greatly both psychologically and physiologically. Senda Verde monitors very closely both cub's digestion since they could get sick since they did not get enough milk from their mothers.",
+      "When he arrived, Mijungla was three months old and weighted 3.2 kilograms.",
+    |]
   | Llajuita => [|
       "Llajuita arrived at La Senda Verde with 8-10 months of age along with Apthapi the Tapir, which has the same age. They come from a confiscation performed by the Forestry and Environment Police (POFOMA) in Palos Blancos, North of La Paz. Both mammals are large and require a lot of space. They are also both foragers and get along well.",
       "They lived in a small enclosure until Senda Verde was able to build a larger one for them. The new enclosure has a pool since Tapirs need to swim. For both foraging mammals Senda Verde has alfalfa growing in the enclosure. Sadly in the dry season this alfalfa dries out and runs scarce and Senda Verde has trouble staying to date with these forager's diets.",
@@ -371,10 +363,10 @@ let getStoryParagraphs = animal =>
   | Apthapi => [|
       "Apthapi arrived at La Senda Verde with 8-10 months of age along with a female deer of the same age. They came from a confiscation performed by the Forestry and Environment Police (POFOMA) in Palos Blancos, North of La Paz. The tapir is the largest mammal in South America. They are known to be the \'gardeners of the forest\' because they are nutrient recyclers. They are also excellent swimmers.",
     |]
-  // | Ajayu => [|
-  //     "Ajayu was saved by the police in Cochabamba from being brutally beaten to death by a local nearby community in 2016. He arrived in La Paz and La Senda Verde took care of his treatments. He received several surgeries, one to save his left eye and one to save his jaw from a severe infection. He stopped eating for days and had to be force fed. It was a struggle to save him, but with time he got better and is now weighing 100 kilograms.",
-  //     "As a result from this brutal story was that la Senda Verde has become more involved in trying to change legislation in Bolivia to protect this species and avoid stories like this one from happening again. They are now working alongside biologist Ximena Velez-Liendo to present a law project that will be called the Ajayu law, named after this bear. Ajayu means spirit in Aymara language.",
-  //   |]
+  | Ajayu => [|
+      "Ajayu was saved by the police in Cochabamba from being brutally beaten to death by a local nearby community in 2016. He arrived in La Paz and La Senda Verde took care of his treatments. He received several surgeries, one to save his left eye and one to save his jaw from a severe infection. He stopped eating for days and had to be force fed. It was a struggle to save him, but with time he got better and now weighs 100 kilograms.",
+      "As a result from this brutal story was that la Senda Verde has become more involved in trying to change legislation in Bolivia to protect this species and avoid stories like this one from happening again. They are now working alongside biologist Ximena Velez-Liendo to present a law project that will be called the Ajayu law, named after this bear. Ajayu means spirit in Aymara language.",
+    |]
   | Nonhlanhla => [|
       "Nonhlanhla is an 11 year old female spotted hyena who lives in the forests and grasslands of central Zululand, South Africa. Though spotted hyenas can be difficult to see in this area, Nonhlanhla is a particularly great breeder in her clan having cubs regularly, meaning she is seen often at the den site nursing her young. In an area where spotted hyenas are persecuted and there is evidence for their decline, her name in Zulu, appropriately means \"luck\".",
     |]
@@ -426,6 +418,8 @@ let pledgeRate = animal => {
   | Tarkus
   | Hook
   | Dlala => ("24", "10", 0.2, 5.)
+  | Mijungla
+  | Ajayu
   | Cubai
   | Espumita
   | Ucok
@@ -450,7 +444,7 @@ type launchStatus =
   | Launched
   | LaunchDate(MomentRe.Moment.t);
 
-let nextLaunchDate = MomentRe.momentUtcDefaultFormat("2020-05-28T17:00:00");
+let nextLaunchDate = MomentRe.momentUtcDefaultFormat("2020-06-04T17:00:00");
 
 let isLaunched: t => launchStatus =
   anAnimal =>
@@ -471,8 +465,10 @@ let isLaunched: t => launchStatus =
     | Espumita
     | Ucok
     | Tarkus
+    | Hook
     | Llajuita => Launched
-    | Hook => LaunchDate(nextLaunchDate)
+    | Mijungla
+    | Ajayu => LaunchDate(nextLaunchDate)
     };
 
 let hasGovernance: t => bool =
@@ -493,6 +489,8 @@ let hasGovernance: t => bool =
     | Espumita
     | Ucok
     | Tarkus
+    | Mijungla
+    | Ajayu
     | Hook
     | Llajuita => false
     | Glen => true
