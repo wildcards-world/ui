@@ -44,8 +44,8 @@ let httpLink = networkId =>
   ApolloLinks.createHttpLink(
     ~uri=
       switch (networkId) {
-      | 5 => "https://api.thegraph.com/subgraphs/name/wild-cards/wildcards-goerli"
-      | _ => "https://api.thegraph.com/subgraphs/name/wild-cards/wildcards"
+      | 5 => "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli"
+      | _ => "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards"
       },
     (),
   );
@@ -54,8 +54,8 @@ let wsLink = networkId =>
   ApolloLinks.webSocketLink({
     uri:
       switch (networkId) {
-      | 5 => "wss://api.thegraph.com/subgraphs/name/wild-cards/wildcards-goerli"
-      | _ => "wss://api.thegraph.com/subgraphs/name/wild-cards/wildcards"
+      | 5 => "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli"
+      | _ => "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards"
       },
     options: {
       reconnect: true,
