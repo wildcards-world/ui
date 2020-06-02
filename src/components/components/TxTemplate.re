@@ -2,13 +2,13 @@ open Globals;
 
 [@react.component]
 let make =
-    (~children: React.element, ~txState: AnimalActions.transactionState) => {
+    (~children: React.element, ~txState: ContractActions.transactionState) => {
   let etherscanUrl = RootProvider.useEtherscanUrl();
   let clearNonUrlState = RootProvider.useClearNonUrlState();
 
   switch (txState) {
-  | AnimalActions.UnInitialised => children
-  | AnimalActions.Created =>
+  | ContractActions.UnInitialised => children
+  | ContractActions.Created =>
     <React.Fragment>
       <Rimble.Heading>
         "Processing Transaction "->restr
@@ -18,7 +18,7 @@ let make =
       <Rimble.Loader className=Styles.centerItems size="80px" />
     </React.Fragment>
   // TODO: make it show the link to the tx on etherscan.io!
-  | AnimalActions.SignedAndSubmitted(txHash) =>
+  | ContractActions.SignedAndSubmitted(txHash) =>
     <React.Fragment>
       <Rimble.Heading>
         "Processing Transaction "->restr
@@ -34,7 +34,7 @@ let make =
       </Rimble.Text>
       <Rimble.Loader className=Styles.centerItems size="80px" />
     </React.Fragment>
-  | AnimalActions.Complete(result) =>
+  | ContractActions.Complete(result) =>
     let txHash = result.transactionHash;
     <React.Fragment>
       <Rimble.Heading>
@@ -53,7 +53,7 @@ let make =
         "Back to view animal"->restr
       </Rimble.Button>
     </React.Fragment>;
-  | AnimalActions.Declined(message) =>
+  | ContractActions.Declined(message) =>
     <React.Fragment>
       <Rimble.Heading>
         "The transaction was declined by signing device, please try again."
@@ -62,7 +62,7 @@ let make =
       <p> {("Failure reason: " ++ message)->restr} </p>
       children
     </React.Fragment>
-  | AnimalActions.Failed =>
+  | ContractActions.Failed =>
     <React.Fragment>
       <Rimble.Heading>
         "The transaction failed."->restr

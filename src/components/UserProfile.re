@@ -36,10 +36,10 @@ module ClaimLoyaltyTokenButtons = {
   [@react.component]
   let make = (~id, ~refreshLoyaltyTokenBalance) => {
     let (redeemLoyaltyTokens, transactionStatus) =
-      AnimalActions.useRedeemLoyaltyTokens(id);
+      ContractActions.useRedeemLoyaltyTokens(id);
     let balanceAvailableOnToken =
       QlHooks.useUnredeemedLoyaltyTokenDueFromWildcard(
-        id->Animal.getAnimalFromId |||| Andy /* NOTE: this is bad code, giving this a default value of Andy... Just being lazy */,
+        id->TokenId.makeWithDefault(0),
       );
     let tokenName = id->Animal.getNameFromId;
     let etherScanUrl = RootProvider.useEtherscanUrl();
@@ -206,7 +206,7 @@ module UserDetails = {
 
     // This is the value of tokens that are currently in the users account (IE their spendable balance)
     let (totalLoyaltyTokensOpt, updateFunction) =
-      AnimalActions.useUserLoyaltyTokenBalance(userAddress);
+      ContractActions.useUserLoyaltyTokenBalance(userAddress);
 
     // This is the value of ALL tokens that this address has ever claimed, or is able to claim (even if they have spent those tokens)!
     let totalLoyaltyTokensAvailableAndClaimedOpt =

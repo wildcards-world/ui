@@ -13,7 +13,7 @@ module ShareSocial = {
 };
 module EditButton = {
   [@react.component]
-  let make = (~animal: Animal.t) => {
+  let make = (~animal: TokenId.t) => {
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
     let isExplorer = Router.useIsExplorer();
 
@@ -34,7 +34,7 @@ module EditButton = {
 
 module Streak = {
   [@react.component]
-  let make = (~animal: Animal.t) => {
+  let make = (~animal: TokenId.t) => {
     let animalName = Animal.getName(animal);
 
     let daysHeld = QlHooks.useDaysHeld(animal);
@@ -93,7 +93,7 @@ module DisplayAfterDate = {
 
 module BasicAnimalDisplay = {
   [@react.component]
-  let make = (~animal: Animal.t) => {
+  let make = (~animal: TokenId.t) => {
     let owned = animal->QlHooks.useIsAnimalOwened;
     let currentPatron = QlHooks.usePatron(animal) |||| "Loading";
     let displayName = UserProvider.useDisplayName(currentPatron);
@@ -128,7 +128,7 @@ module AnimalOnLandingPage = {
   [@react.component]
   let make =
       (
-        ~animal,
+        ~animal: TokenId.t,
         ~scalar: float=1.,
         ~enlargement: float=1.,
         ~optionEndDateMoment: option(MomentRe.Moment.t),
@@ -225,7 +225,8 @@ module AnimalOnLandingPage = {
 
 module CarouselAnimal = {
   [@react.component]
-  let make = (~animal, ~scalar, ~enlargement: float=1., ~isGqlLoaded) => {
+  let make =
+      (~animal: TokenId.t, ~scalar, ~enlargement: float=1., ~isGqlLoaded) => {
     let isLaunched = animal->Animal.isLaunched;
 
     let makeAnimalOnLandingPage = optionEndDateMoment =>
@@ -359,7 +360,7 @@ module AnimalActionsOnDetailsPage = {
     if (owned) {
       <React.Fragment>
         <PriceDisplay animal />
-        <UpdatePrice animal />
+        <UpdatePrice tokenId=animal />
         <br />
         <UpdateDeposit />
         <br />
@@ -388,20 +389,12 @@ module AnimalActionsOnDetailsPage = {
 
 module DetailsView = {
   [@react.component]
-  let make = (~animalStr) => {
-    let optionAnimal = Animal.getAnimal(animalStr);
-
+  let make = (~optionAnimal: option(TokenId.t)) => {
     switch (optionAnimal) {
     | None =>
       <div>
         <h1>
-          {React.string(
-             "We are unable to find a animal by the name of \""
-             ++ {
-               animalStr->Js.Global.decodeURI;
-             }
-             ++ "\" in our system.",
-           )}
+          {React.string("We are unable to find that animal in our system.")}
         </h1>
         <p> "Please check the spelling and try again."->restr </p>
       </div>
@@ -467,7 +460,8 @@ module DefaultLook = {
       {switch (Js.String.split("/", url.hash)) {
        | [|"details", animalStr|]
        | [|"explorer", "details", animalStr|]
-       | [|"explorer", "details", animalStr, ""|] => <DetailsView animalStr />
+       | [|"explorer", "details", animalStr, ""|] =>
+         <DetailsView optionAnimal={TokenId.make(animalStr)} />
        | _ =>
          <React.Fragment>
            <AnimalCarousel isGqlLoaded />
@@ -524,7 +518,7 @@ type maybeDate =
 
 module AnimalInfoStats = {
   [@react.component]
-  let make = (~animal: Animal.t) => {
+  let make = (~animal: TokenId.t) => {
     let animalName = Animal.getName(animal);
 
     let daysHeld = QlHooks.useDaysHeld(animal);
@@ -567,9 +561,9 @@ module AnimalInfoStats = {
         );
     let foreclosureTime = QlHooks.useForeclosureTime(currentPatron);
     let definiteTime = foreclosureTime->mapd(Loading, a => Date(a));
-    let (_, _, ratio, _) = Animal.pledgeRate(animal);
+    let ratio = QlHooks.usePledgeRate(animal);
 
-    let optCurrentPrice = PriceDisplay.uesPrice(animal);
+    let optCurrentPrice = PriceDisplay.usePrice(animal);
 
     let (optMonthlyPledgeEth, optMonthlyPledgeUsd) =
       switch (optCurrentPrice) {
@@ -761,10 +755,10 @@ module AnimalInfoStats = {
 
 module UnlaunchedAnimalInfo = {
   [@react.component]
-  let make = (~endDateMoment, ~animal) => {
+  let make = (~endDateMoment, ~animal: TokenId.t) => {
     let animalName = Animal.getName(animal);
 
-    let (_, _, ratio, _) = Animal.pledgeRate(animal);
+    let ratio = QlHooks.usePledgeRate(animal);
     let monthlyRate = Js.Float.toString(ratio *. 100.);
 
     <DisplayAfterDate
@@ -801,7 +795,7 @@ module UnlaunchedAnimalInfo = {
 
 module AnimalInfo = {
   [@react.component]
-  let make = (~animal: Animal.t) => {
+  let make = (~animal: TokenId.t) => {
     // TODO: the ethereum address is really terribly displayed. But the default in Rimble UI includes a QR code scanner (which is really ugly).
     // https://rimble.consensys.design/components/rimble-ui/EthAddress#props
     // https://github.com/ConsenSys/rimble-ui/blob/dd470f00374a05c860b558a2cb9317861e4a0d89/src/EthAddress/index.js (maybe make a PR here with some changes)
@@ -819,7 +813,7 @@ module AnimalInfo = {
                  <p key={i->string_of_int}> paragraphText->React.string </p>
                ),
            )}
-          {animal == Animal.Glen
+          {animal == TokenId.fromStringUnsafe("13")
              ? <a href="/#ethturin-quadratic-voting">
                  <span className=Css.(style([color(hex("72c7d7"))]))>
                    "Vote for your favourite conservation"->restr
@@ -829,7 +823,7 @@ module AnimalInfo = {
         </ReactTabs.TabPanel>
         <ReactTabs.TabPanel>
           {switch (animal->Animal.isLaunched) {
-           | Launched => <AnimalInfoStats animal />
+           | Launched => <Info tokenId=animal />
            | LaunchDate(endDateMoment) =>
              <UnlaunchedAnimalInfo endDateMoment animal />
            }}
@@ -865,7 +859,7 @@ let make = () => {
                m=1
                onClick={_ => clearNonUrlState()}
              />
-             <BuyModal.Transaction animal />
+             <Buy tokenId=animal />
            </div>
          | UserVerificationScreen =>
            <div className=Css.(style([position(`relative)]))>
@@ -895,7 +889,7 @@ let make = () => {
                m=1
                onClick={_ => clearNonUrlState()}
              />
-             <UpdateDeposit.Transaction />
+             <UpdateDeposit />
            </div>
          | UpdatePriceScreen(animal) =>
            <div className=Css.(style([position(`relative)]))>
@@ -909,7 +903,7 @@ let make = () => {
                m=1
                onClick={_ => clearNonUrlState()}
              />
-             <UpdatePrice.Transaction animal />
+             <UpdatePrice tokenId=animal />
            </div>
          | NoExtraState =>
            switch (optAnimalForDetails) {

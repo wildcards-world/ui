@@ -119,7 +119,7 @@ module OrganisationVote = {
       ) => {
     // TODO: add a reload on timeout if this doesn't load
     let (hasVotedForProposal1Votes, _reloadHasVoted) =
-      AnimalActions.useHasUserVotedForProposalIteration(
+      ContractActions.useHasUserVotedForProposalIteration(
         currentIteration->string_of_int,
         currentUser,
         conservationPartner.index->string_of_int,
@@ -160,7 +160,7 @@ module OrganisationVoteResult = {
   let make = (~conservationPartner, ~currentIteration, ~totalVotes) => {
     // TODO: add a reload on timeout (incase this value doesn't load first time)
     let (proposal1Votes, _reload) =
-      AnimalActions.useProposalVotes(
+      ContractActions.useProposalVotes(
         currentIteration,
         conservationPartner.index->string_of_int,
       );
@@ -218,9 +218,9 @@ module VoteResults = {
   [@react.component]
   let make = (~currentIteration) => {
     // TODO: add a reload on timeout (incase this value doesn't load first time)
-    let (totalVotes, _reload) = AnimalActions.useTotalVotes();
+    let (totalVotes, _reload) = ContractActions.useTotalVotes();
     let currentIteration = currentIteration->string_of_int;
-    let (currentWinner, _reload) = AnimalActions.useCurrentWinner();
+    let (currentWinner, _reload) = ContractActions.useCurrentWinner();
 
     <>
       {switch (totalVotes) {
@@ -264,7 +264,7 @@ module ApproveLoyaltyTokens = {
   [@react.component]
   let make = (~reloadFunction) => {
     let (approveLoyaltyTokens, transactionStatus) =
-      AnimalActions.useApproveLoyaltyTokens();
+      ContractActions.useApproveLoyaltyTokens();
     let etherScanUrl = RootProvider.useEtherscanUrl();
 
     <div>
@@ -318,7 +318,8 @@ let make = () => {
   let (voteStep, setVoteStep) = React.useState(() => DefaultView);
   // let (voteStep, setVoteStep) = React.useState(() => ViewResults);
 
-  let (voteForProject, transactionStatus) = AnimalActions.useVoteForProject();
+  let (voteForProject, transactionStatus) =
+    ContractActions.useVoteForProject();
   let selectConservation = conservationArrayIndex => {
     let submitVoteFunction: float => unit =
       votes => {
@@ -363,7 +364,7 @@ let make = () => {
   let patronQueryOpt = QlHooks.usePatronQuery(userAddressLowerCase);
 
   let (optProposalDeadline, _reloadProposalDeadline) =
-    AnimalActions.useProposalDeadline();
+    ContractActions.useProposalDeadline();
 
   let currentlyOwnedTokens =
     switch (patronQueryOpt) {
@@ -423,8 +424,9 @@ let make = () => {
     };
   };
 
-  let optCurrentPrice = PriceDisplay.uesPrice(Animal.Glen);
-  let (_, _, ratio, _) = Animal.pledgeRate(Animal.Glen);
+  let glen = TokenId.makeFromInt(13);
+  let optCurrentPrice = PriceDisplay.usePrice(glen);
+  let (_, _, ratio, _) = QlHooks.usePledgeRateDetailed(glen);
   // TODO: investigate why the USD price doesn't load here.
   let (optMonthlyPledgeEth, optMonthlyPledgeUsd) =
     switch (optCurrentPrice) {
@@ -446,9 +448,9 @@ let make = () => {
   let etherScanUrl = RootProvider.useEtherscanUrl();
 
   let (redeemedLoyaltyTokenBalanceBn, resetLoyaltyTokenBalance) =
-    AnimalActions.useUserLoyaltyTokenBalance(userAddressLowerCase);
+    ContractActions.useUserLoyaltyTokenBalance(userAddressLowerCase);
   let (optCurrentIteration, reloadCurrentIteration) =
-    AnimalActions.useCurrentIteration();
+    ContractActions.useCurrentIteration();
 
   let redeemedLoyaltyTokenBalanceOpt =
     redeemedLoyaltyTokenBalanceBn->oFlatMap(balance =>
@@ -500,7 +502,7 @@ let make = () => {
     </div>;
 
   let (amountApproved, resetAmountApproved) =
-    AnimalActions.useVoteApprovedTokens(userAddressLowerCase);
+    ContractActions.useVoteApprovedTokens(userAddressLowerCase);
   // let hasApprovedFullBalance =
   //   amountApproved
   //   |||| BN.new_("0")

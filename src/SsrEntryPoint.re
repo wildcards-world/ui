@@ -22,6 +22,17 @@ module ApolloProvider = {
     </ReasonApollo.Provider>;
   };
 };
+// TODO: SSR doesn't work correctly here, need to use the external apollo client
 [@react.component]
 let make = () =>
-  <RootProvider> <QlStateManager> <Router /> </QlStateManager> </RootProvider>;
+  <WildcardsProvider
+    getGraphEndpoint={() => {
+      let networkId =
+        RootProvider.useNetworkId()->Belt.Option.mapWithDefault(1, a => a);
+      switch (networkId) {
+      | 5 => "goerli.api.wildcards.world/v1/graphql"
+      | _ => "api.wildcards.world/v1/graphql"
+      };
+    }}>
+    <Router />
+  </WildcardsProvider>;

@@ -1,6 +1,6 @@
-type previousNextAnimal = option((Animal.t, Animal.t));
+type previousNextAnimal = option((TokenId.t, TokenId.t));
 type animalPageState =
-  | DetailView(previousNextAnimal, option(Animal.t))
+  | DetailView(previousNextAnimal, option(TokenId.t))
   | NormalView;
 type leaderBoard =
   | TotalContribution
@@ -110,7 +110,7 @@ let useIsHome = () => {
     [|urlState|],
   );
 };
-let getAnimalFormAnimalPageState: animalPageState => option(Animal.t) =
+let getAnimalFormAnimalPageState: animalPageState => option(TokenId.t) =
   animalPageState =>
     switch (animalPageState) {
     | DetailView(_, optAnimal) => optAnimal

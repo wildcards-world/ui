@@ -3,7 +3,7 @@ open Jest;
 describe("Expect", () =>
   Expect.(
     testAll(
-      "isStringInteger",
+      "isPositiveStringInteger",
       [
         ("003", true),
         ("302", true),
@@ -14,7 +14,7 @@ describe("Expect", () =>
         ("", false),
       ],
       ((num, result)) =>
-      expect(Helper.isStringInteger(num)) |> toBe(result)
+      expect(Helper.isPositiveStringInteger(num)) |> toBe(result)
     )
   )
 );

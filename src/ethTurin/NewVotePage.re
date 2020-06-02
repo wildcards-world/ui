@@ -24,7 +24,7 @@
     let make = () => {
       let currentUser = RootProvider.useCurrentUser();
       let (approveLoyaltyTokens, transactionStatus) =
-        AnimalActions.useApproveLoyaltyTokens(
+        ContractActions.useApproveLoyaltyTokens(
           currentUser |||| "USER NOT LOGGED IN",
         );
       let etherScanUrl = RootProvider.useEtherscanUrl();
@@ -87,7 +87,7 @@
   //     );
 
   //     let (voteForProject, transactionStatus) =
-  //       AnimalActions.useVoteForProject(conservationId);
+  //       ContractActions.useVoteForProject(conservationId);
   //     let etherScanUrl = RootProvider.useEtherscanUrl();
 
   //     if (executeImmediately) {
@@ -138,7 +138,7 @@
 
   [@react.component]
   let make = () => {
-    let (voteForProject, transactionStatus) = AnimalActions.useVoteForProject();
+    let (voteForProject, transactionStatus) = ContractActions.useVoteForProject();
 
     let networkIdOpt = RootProvider.useNetworkId();
 
@@ -293,7 +293,7 @@
       </div>;
 
     // let redeemedLoyaltyTokenBalance =
-    //   AnimalActions.useUserLoyaltyTokenBalance(
+    //   ContractActions.useUserLoyaltyTokenBalance(
     //     currentUser |||| "0x0000000000000000000000000000000000000500",
     //   )
     //   ->Web3Utils.fromWeiBNToEthPrecision(~digits=3)

@@ -3,7 +3,7 @@ open Globals;
 [@react.component]
 let make = () => {
   let (increaseIteration, _increaseIterationTxState) =
-    AnimalActions.useIncreaseVoteIteration();
+    ContractActions.useIncreaseVoteIteration();
   <Rimble.Box className=Styles.topBody>
     <Rimble.Box>
       <Rimble.Button onClick={_ => {increaseIteration()}}>

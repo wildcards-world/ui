@@ -3,7 +3,10 @@ open Css;
 
 [@react.component]
 let make =
-    (~nextReleasedAnimals: array(Animal.t), ~announcementBannerColor: string) => {
+    (
+      ~nextReleasedAnimals: array(TokenId.t),
+      ~announcementBannerColor: string,
+    ) => {
   let announcement: 'displayType => string =
     displayVal =>
       style([
