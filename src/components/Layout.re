@@ -62,104 +62,6 @@ module AnimalFocusDetails = {
   };
 };
 
-module HeaderOld = {
-  [@react.component]
-  let make = () => {
-    let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
-    let isExplorer = Router.useIsExplorer();
-    let isDetails = Router.useIsDetails();
-    let isHome = Router.useIsHome();
-    open ReactTranslate;
-    let usedtranslationModeContext = useTranslationModeContext();
-    <header className=Styles.header>
-      <nav className=Styles.nav>
-        <div className=Styles.navBox>
-          <a
-            className=Styles.clickableLink
-            onClick={event => {
-              ReactEvent.Mouse.preventDefault(event);
-              clearAndPush("#");
-            }}>
-            <div className=Styles.headerLogo>
-              <WildcardsLogo maxWidth="258px" />
-            </div>
-          </a>
-          <ul className=Styles.navList>
-            <li className=Styles.navListItem>
-              {isHome
-                 ? <div className=Styles.navListItemToggle>
-                     <span className=Styles.someMarginRight>
-                       {usedtranslationModeContext->translationModeCrypto
-                          ? "EXPERT MODE" : "DEFAULT MODE"}
-                       ->restr
-                     </span>
-                     <ReactTranslate.Switch
-                       onChange={
-                         usedtranslationModeContext->settranslationModeCrypto
-                       }
-                       checked={
-                         usedtranslationModeContext->translationModeCrypto
-                       }
-                       height=16
-                       handleDiameter=18
-                       width=30
-                       onColor="#6BAD3D"
-                       onHandleColor="#346D4C"
-                       offHandleColor="#cccccc"
-                       uncheckedIcon=false
-                       checkedIcon=false
-                       className=Styles.translationSwitch
-                     />
-                   </div>
-                 : React.null}
-            </li>
-            <li className=Styles.navListItem>
-              {isHome
-                 ? React.null
-                 : <a
-                     className=Styles.navListText
-                     href=""
-                     onClick={event => {
-                       ReactEvent.Mouse.preventDefault(event);
-                       clearAndPush("#");
-                     }}>
-                     "HOME"->restr
-                   </a>}
-              <a
-                className=Styles.navListText
-                onClick={event => {
-                  ReactEvent.Mouse.preventDefault(event);
-                  clearAndPush({j|/#leaderboards/monthly-contribution|j});
-                }}>
-                "LEADERBOARDS"->restr
-              </a>
-              <a
-                className=Styles.navListText
-                target="_blank"
-                rel="noopener noreferrer"
-                href="https://blog.wildcards.world/">
-                "BLOG"->restr
-              </a>
-              {isExplorer && !isDetails
-                 ? React.null
-                 : <Rimble.Button
-                     onClick={event => {
-                       ReactEvent.Form.preventDefault(event);
-                       clearAndPush("#explorer");
-                     }}
-                     className=Styles.whiteText>
-                     "VIEW WILDCARDS"->restr
-                   </Rimble.Button>}
-            </li>
-            <li className=Styles.navListItem> <Web3Connect /> </li>
-            <li className=Styles.navListItem> <ProfileIcon /> </li>
-          </ul>
-        </div>
-      </nav>
-    </header>;
-  };
-};
-
 [@react.component]
 let make = () => {
   let urlState = Router.useUrlState();
@@ -174,8 +76,7 @@ let make = () => {
   let isExplorer = Router.useIsExplorer();
   let isDetails = Router.useIsDetails();
   let isHome = Router.useIsHome();
-  open ReactTranslate;
-  let usedtranslationModeContext = useTranslationModeContext();
+  let translationModeContext = ReactTranslate.useTranslationModeContext();
 
   <div className=Styles.app>
     <div className=Css.(style([minHeight(vh(88.))]))>
@@ -199,22 +100,20 @@ let make = () => {
               <div className=Styles.navListItemToggle>
                 <span className=Styles.someMarginRight>
                   (
-                    usedtranslationModeContext->translationModeCrypto
+                    translationModeContext.translationModeCrypto
                       ? "EXPERT MODE" : "DEFAULT MODE"
                   )
                   ->restr
                 </span>
                 <ReactTranslate.Switch
-                  onChange={
-                    usedtranslationModeContext->settranslationModeCrypto
-                  }
-                  checked={usedtranslationModeContext->translationModeCrypto}
+                  onChange={translationModeContext.setTranslationModeCrypto}
+                  checked={translationModeContext.translationModeCrypto}
                   height=16
                   handleDiameter=18
                   width=30
-                  onColor="#6BAD3D"
+                  onColor="#6BAD3F"
                   onHandleColor="#346D4C"
-                  offHandleColor="#cccccc"
+                  offHandleColor="#aaaaaa"
                   uncheckedIcon=false
                   checkedIcon=false
                   className=Styles.translationSwitch
@@ -292,42 +191,40 @@ let make = () => {
           },
         |]
       />
-      <UsdPriceProvider>
-        {switch (urlState) {
-         | VotePage => <VotePage />
-         | IncreaseVoteIteration => <IncreaseIterationPage />
-         | Explorer(animalPageState) =>
-           switch (animalPageState) {
-           | DetailView(animalCarousel, _) =>
-             <AnimalFocusDetails animalCarousel />
-           | NormalView => <BuyGrid />
-           }
-         | Home(animalPageState) =>
-           switch (animalPageState) {
-           | DetailView(animalCarousel, _) =>
-             <AnimalFocusDetails animalCarousel />
-           | NormalView =>
-             <React.Fragment>
-               <AnimalFocusDetails animalCarousel=None />
-               <FeaturedIn />
-               <HomepageLeaderBoard />
-               <CustomerBenefit />
-               <HowItWorks />
-               <EmailSignup />
-               <FAQs />
-               <StaticContent.Partners />
-             </React.Fragment>
-           }
-         | User(userAddress) => <UserProfile userAddress />
-         | Leaderboards(leaderboardType) =>
-           <Rimble.Flex
-             flexWrap="wrap"
-             alignItems="center"
-             className=Css.(style([padding(em(2.))]))>
-             <LeaderBoards leaderboardType />
-           </Rimble.Flex>
-         }}
-      </UsdPriceProvider>
+      {switch (urlState) {
+       | VotePage => <VotePage />
+       | IncreaseVoteIteration => <IncreaseIterationPage />
+       | Explorer(animalPageState) =>
+         switch (animalPageState) {
+         | DetailView(animalCarousel, _) =>
+           <AnimalFocusDetails animalCarousel />
+         | NormalView => <BuyGrid />
+         }
+       | Home(animalPageState) =>
+         switch (animalPageState) {
+         | DetailView(animalCarousel, _) =>
+           <AnimalFocusDetails animalCarousel />
+         | NormalView =>
+           <React.Fragment>
+             <AnimalFocusDetails animalCarousel=None />
+             <FeaturedIn />
+             <HomepageLeaderBoard />
+             <CustomerBenefit />
+             <HowItWorks />
+             <EmailSignup />
+             <FAQs />
+             <StaticContent.Partners />
+           </React.Fragment>
+         }
+       | User(userAddress) => <UserProfile userAddress />
+       | Leaderboards(leaderboardType) =>
+         <Rimble.Flex
+           flexWrap="wrap"
+           alignItems="center"
+           className=Css.(style([padding(em(2.))]))>
+           <LeaderBoards leaderboardType />
+         </Rimble.Flex>
+       }}
     </div>
     <Footer />
   </div>;

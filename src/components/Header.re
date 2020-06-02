@@ -199,7 +199,6 @@ let make = (~navItems: array(navItem)) => {
                  )>
                  {component(
                     () => {
-                      Js.log("I WAS PRESSED");
                       setIsOpen(_ => false);
                     },
                     isMobile,

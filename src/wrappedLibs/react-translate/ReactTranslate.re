@@ -21,11 +21,10 @@ module Switch = {
     "default";
 };
 
-[@bs.deriving {abstract: light}]
 type translationModeContext = {
   translationMode: string,
   translationModeCrypto: bool,
-  settranslationModeCrypto: bool => unit,
+  setTranslationModeCrypto: bool => unit,
 };
 [@bs.module "../../helpers/providers/TranslationProvider"]
 external useTranslationModeContext: unit => translationModeContext =

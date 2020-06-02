@@ -5,15 +5,18 @@ import translations from "../translations/translations";
 export const TranslationContext = createContext("");
 
 export const TranslationProvider = ({ children }) => {
-  const [translationModeCrypto, settranslationModeCrypto] = useState(false);
+  const [translationModeCrypto, setTranslationModeCrypto] = useState(false);
+  console.log("translationModeCrypto");
+  console.log(translationModeCrypto);
+  console.log(setTranslationModeCrypto);
 
   return (
     <TranslatorProvider translations={translations}>
       <TranslationContext.Provider
         value={{
           translationModeCrypto,
-          settranslationModeCrypto,
-          translationMode: translationModeCrypto ? "crypto" : "muggle"
+          setTranslationModeCrypto,
+          translationMode: translationModeCrypto ? "crypto" : "muggle",
         }}
       >
         {children}

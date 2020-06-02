@@ -477,10 +477,9 @@ module DefaultLook = {
 module DefaultLeftPanel = {
   [@react.component]
   let make = () => {
-    open ReactTranslate;
-    let usedtranslationModeContext = useTranslationModeContext();
+    let translationModeContext = ReactTranslate.useTranslationModeContext();
     let translation =
-      useTranslate(. usedtranslationModeContext->translationMode);
+      ReactTranslate.useTranslate(. translationModeContext.translationMode);
     <React.Fragment>
       <h1 className=Styles.heading>
         <span className=Styles.colorBlue>

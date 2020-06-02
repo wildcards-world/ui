@@ -6,10 +6,12 @@ open Rimble;
 module CoreConcepts = {
   [@react.component]
   let make = () => {
-    open ReactTranslate;
-    let usedtranslationModeContext = useTranslationModeContext();
+    let usedtranslationModeContext =
+      ReactTranslate.useTranslationModeContext();
     let translation =
-      useTranslate(. usedtranslationModeContext->translationMode);
+      ReactTranslate.useTranslate(.
+        usedtranslationModeContext.translationMode,
+      );
 
     <Box className=Styles.infoBackground>
       <Flex flexWrap="wrap">
