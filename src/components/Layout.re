@@ -105,7 +105,7 @@ let make = () => {
                   )
                   ->restr
                 </span>
-                <ReactTranslate.Switch
+                <ReactSwitch
                   onChange={translationModeContext.setTranslationModeCrypto}
                   checked={translationModeContext.translationModeCrypto}
                   height=16

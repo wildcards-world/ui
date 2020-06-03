@@ -7,7 +7,7 @@ module Router = {
     switch (url.path) {
     // | ["new-data"] => <QlHooks />
     | [_] => <p> {React.string("Unknown page")} </p>
-    | _ => <TranslationProvider> <Layout /> </TranslationProvider>
+    | _ => <ReactTranslate> <Layout /> </ReactTranslate>
     };
   };
 };
