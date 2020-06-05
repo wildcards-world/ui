@@ -9,7 +9,9 @@ const DarwinAnimalDoctorsLogo =
   "/img/conservation-partners/darwin-animal-doctors.svg";
 const TheGreatWhaleConservancyLogo =
   "/img/conservation-partners/great-whale-conservancy.png";
-const SendaVerde = "/img/logos/SendaVerde.png";
+const SendaVerdeLogo = "/img/logos/SendaVerde.png";
+const BdiLogo = "/img/conservation-partners/bdi.svg";
+const PangolinAficaLogo = "/img/conservation-partners/pangolin-africa.svg";
 
 const styles = {
   logo: {
@@ -73,7 +75,8 @@ const Partners = () => (
       justifyContent={"space-around"}
       alignItems={"stretch"}
       px={50}
-      mt={30}
+      pt={50}
+      style={{ backgroundColor: "#73C8D7" }}
     >
       <h1>Conservation Partners</h1>
     </Flex>
@@ -81,17 +84,18 @@ const Partners = () => (
       flexWrap={"wrap"}
       justifyContent={"space-around"}
       alignItems={"stretch"}
+      style={{ backgroundColor: "#73C8D7" }}
       px={50}
     >
-      <Box mt={30} mb={70} width={[1, 1, 0.2]} color="black">
+      <Box mt={30} mb={70} width={[1, 1, 0.3]} color="black">
         <Card style={styles.card}>
           <a href="http://www.sendaverde.org/">
-            <img src={SendaVerde} alt="senda-verde" style={styles.logo} />
+            <img src={SendaVerdeLogo} alt="senda-verde" style={styles.logo} />
             {/* <Text style={styles.center}>Senda Verde</Text> */}
           </a>
         </Card>
       </Box>
-      <Box mt={30} mb={70} width={[1, 1, 0.2]} color="black">
+      <Box mt={30} mb={70} width={[1, 1, 0.3]} color="black">
         <Card style={styles.card}>
           <a href="https://wildtomorrowfund.org">
             <img
@@ -103,20 +107,48 @@ const Partners = () => (
           </a>
         </Card>
       </Box>
-      <Box mt={30} mb={70} width={[1, 1, 0.22]} color="black">
+      <Box mt={30} mb={70} width={[1, 1, 0.3]} color="black">
         <Card style={styles.card}>
           <a href="http://darwinanimaldoctors.org/">
-            <img src={DarwinAnimalDoctorsLogo} alt="you" style={styles.logo} />
+            <img
+              src={DarwinAnimalDoctorsLogo}
+              alt="darwin animal doctors"
+              style={styles.logo}
+            />
             {/* <Text style={styles.center}>Darwin Animal Doctors</Text> */}
           </a>
         </Card>
       </Box>
-      <Box mt={30} mb={70} width={[1, 1, 0.22]} color="black">
+      <Box mt={30} mb={70} width={[1, 1, 0.3]} color="black">
         <Card style={styles.card}>
           <a href="http://greatwhaleconservancy.org/">
             <img
               src={TheGreatWhaleConservancyLogo}
-              alt="you"
+              alt="the great whale conservancy"
+              style={styles.logo}
+            />
+            {/* <Text style={styles.center}>The Great Whale Conservancy</Text> */}
+          </a>
+        </Card>
+      </Box>
+      <Box mt={30} mb={70} width={[1, 1, 0.3]} color="black">
+        <Card style={styles.card}>
+          <a href="http://thebdi.org/">
+            <img
+              src={BdiLogo}
+              alt="Biodiversity and Development Institute"
+              style={styles.logo}
+            />
+            {/* <Text style={styles.center}>The Great Whale Conservancy</Text> */}
+          </a>
+        </Card>
+      </Box>
+      <Box mt={30} mb={70} width={[1, 1, 0.3]} color="black">
+        <Card style={styles.card}>
+          <a href="http://pangolin.africa/">
+            <img
+              src={PangolinAficaLogo}
+              alt="Pangolin Africa"
               style={styles.logo}
             />
             {/* <Text style={styles.center}>The Great Whale Conservancy</Text> */}
