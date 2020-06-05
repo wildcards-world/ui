@@ -153,8 +153,10 @@ let subHeading = style([fontSize(em(1.8)), fontWeight(`num(200))]);
 
 let wildCardGreen = rgb(107, 173, 62);
 let wildCardBlue = rgb(114, 199, 215);
+let wildCardGrey = rgb(100, 100, 100);
 let colorGreen = style([color(wildCardGreen)]);
 let colorBlue = style([color(wildCardBlue)]);
+let colorGrey = style([color(wildCardGrey)]);
 
 let animalBox = style([marginRight(`percent(12.))]);
 

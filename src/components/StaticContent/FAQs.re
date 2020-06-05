@@ -5,7 +5,13 @@ open React;
 // FAQ Styles
 
 let faqExplainerText =
-  Css.(style([paddingTop(`px(10)), lineHeight(`rem(1.6))]));
+  Css.(
+    style([
+      paddingTop(`px(10)),
+      paddingBottom(`px(10)),
+      lineHeight(`rem(1.6)),
+    ])
+  );
 
 let accordionContent =
   Css.(
@@ -78,7 +84,7 @@ module FaqItem = {
         style={inlineStyle(~maxHeight=height, ())}>
         <div>
           <div className=faqExplainerText>
-            <Text className=Styles.colorGreen> content </Text>
+            <Text className=Styles.colorGrey> content </Text>
           </div>
         </div>
       </div>
