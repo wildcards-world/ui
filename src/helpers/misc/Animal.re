@@ -22,7 +22,7 @@ type t =
 
 let orderedArray = [|
   Apthapi,
-  // Ajayu,
+  Ajayu,
   Vitalik,
   Mijungla,
   Nonhlanhla,
@@ -64,7 +64,7 @@ let getId: t => string =
     | Tarkus => "15"
     | Hook => "16"
     | Mijungla => "17"
-    | Ajayu => "18" // NOTE: THIS MAY CHANGE!
+    | Ajayu => "18"
     | Vitalik => "42"
     };
 
@@ -131,7 +131,7 @@ let getName: t => string =
     | Llajuita => "Llajuita"
     | Espumita => "Espumita"
     | Cubai => "Cubai"
-    | CatStevens => "CatStevens" // removing the space since no time to fix bug
+    | CatStevens => "CatStevens"
     | Aruma => "Aruma"
     | Apthapi => "Apthapi"
     | Ajayu => "Ajayu"
@@ -203,8 +203,9 @@ let getAnimalFromId: string => option(t) =
 let getNextPrev = animal =>
   switch (animal) {
   | Simon => (Vitalik, Dlala)
-  | Vitalik => (Andy, Simon)
-  | Andy => (Verano, Vitalik)
+  | Vitalik => (Ajayu, Simon)
+  | Ajayu => (Andy, Vitalik)
+  | Andy => (Verano, Ajayu)
   | Verano => (Pancho, Andy)
   | Pancho => (Mijungla, Verano)
   | Mijungla => (Llajuita, Pancho)
@@ -221,7 +222,6 @@ let getNextPrev = animal =>
   | Ucok => (Tarkus, Hook)
   | Tarkus => (Dlala, Ucok)
   | Dlala => (Simon, Tarkus)
-  | Ajayu => (Ajayu, Ajayu) // Ajayu isn't launched yet
   };
 
 let getImage = animal =>
@@ -271,7 +271,7 @@ let getAlternateImage: t => option(string) =
     | Tarkus => Some("/img/animals/TarkusReal.jpg")
     | Hook => Some("/img/animals/HookReal.jpg")
     | Mijungla => Some("/img/animals/MijunglaReal.png")
-    | Ajayu => Some("/img/animals/AjayuReal.jpeg")
+    | Ajayu => Some("/img/animals/AjayuReal.jpg")
     };
 
 let getOrgBadgeImage: t => string =
@@ -365,7 +365,7 @@ let getStoryParagraphs = animal =>
     |]
   | Ajayu => [|
       "Ajayu was saved by the police in Cochabamba from being brutally beaten to death by a local nearby community in 2016. He arrived in La Paz and La Senda Verde took care of his treatments. He received several surgeries, one to save his left eye and one to save his jaw from a severe infection. He stopped eating for days and had to be force fed. It was a struggle to save him, but with time he got better and now weighs 100 kilograms.",
-      "As a result from this brutal story was that la Senda Verde has become more involved in trying to change legislation in Bolivia to protect this species and avoid stories like this one from happening again. They are now working alongside biologist Ximena Velez-Liendo to present a law project that will be called the Ajayu law, named after this bear. Ajayu means spirit in Aymara language.",
+      "As a result of this brutality, la Senda Verde is more involved in trying to change legislation in Bolivia to protect this species and prevent stories like this from happening again. They are now working alongside biologist Ximena Velez-Liendo to present a law project that will be called the Ajayu law, named after this bear. Ajayu means spirit in Aymara language.",
     |]
   | Nonhlanhla => [|
       "Nonhlanhla is an 11 year old female spotted hyena who lives in the forests and grasslands of central Zululand, South Africa. Though spotted hyenas can be difficult to see in this area, Nonhlanhla is a particularly great breeder in her clan having cubs regularly, meaning she is seen often at the den site nursing her young. In an area where spotted hyenas are persecuted and there is evidence for their decline, her name in Zulu, appropriately means \"luck\".",
@@ -444,7 +444,7 @@ type launchStatus =
   | Launched
   | LaunchDate(MomentRe.Moment.t);
 
-let nextLaunchDate = MomentRe.momentUtcDefaultFormat("2020-06-04T17:00:00");
+let nextLaunchDate = MomentRe.momentUtcDefaultFormat("2020-06-11T17:00:00");
 
 let isLaunched: t => launchStatus =
   anAnimal =>
@@ -466,8 +466,8 @@ let isLaunched: t => launchStatus =
     | Ucok
     | Tarkus
     | Hook
-    | Llajuita => Launched
     | Mijungla
+    | Llajuita => Launched
     | Ajayu => LaunchDate(nextLaunchDate)
     };
 
