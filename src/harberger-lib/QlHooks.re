@@ -117,6 +117,17 @@ module SubWildcardQuery = [%graphql
        }
      |}
 ];
+
+module WildcardDataQuery = [%graphql
+  {|
+    query ($tokenId: String!) {
+      wildcardData_by_pk(id: $tokenId) {
+        name
+        description
+      }
+    }
+  |}
+];
 // NOTE: If multiple transactions happen in the same block they may get missed, maybe one day that will be a problem for us ;)
 module SubStateChangeEvents = [%graphql
   {|
@@ -306,6 +317,13 @@ let useWildcardQuery = tokenId =>
       SubWildcardQuery.make(~tokenId=tokenId->TokenId.toString, ())##variables,
     SubWildcardQuery.definition,
   );
+
+let useWildcardDataQuery = tokenId =>
+  ApolloHooks.useQuery(
+    ~variables=
+      WildcardDataQuery.make(~tokenId=tokenId->TokenId.toString, ())##variables,
+    WildcardDataQuery.definition,
+  );
 // let useBuySubscription = () =>
 //   ApolloHooks.useSubscription(
 //     ~variables=SubBuyEvents.make()##variables,
@@ -326,6 +344,21 @@ let useStateChangeSubscription = () =>
 let useStateChangeSubscriptionData = () => {
   let (simple, _) = useStateChangeSubscription();
   subscriptionResultToOption(simple);
+};
+
+[@decco.decode]
+type animalDescription = array(string);
+let useWildcardData = tokenId => {
+  let (simple, _) = useWildcardDataQuery(tokenId);
+  queryResultOptionMap(simple, a =>
+    a##wildcardData_by_pk
+    ->oMap(b =>
+        b##description
+        ->animalDescription_decode
+        ->Belt.Result.getWithDefault([||])
+      )
+    |||| [||]
+  );
 };
 let useLoadTopContributors = numberOfLeaders =>
   ApolloHooks.useSubscription(

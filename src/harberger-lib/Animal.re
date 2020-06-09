@@ -1,24 +1,24 @@
-type t =
-  | Andy
-  | Glen
-  | Vitalik
-  | Simon
-  | Verano
-  // | Tarkus
-  | Pancho
-  // | Mijungla
-  | Llajuita
-  | Espumita
-  | Cubai
-  | CatStevens
-  | Aruma
-  | Apthapi
-  // | Ajayu
-  | Isisa
-  | Dlala
-  | Nonhlanhla
-  | Tarkus
-  | Ucok;
+// type t =
+//   | Andy
+//   | Glen
+//   | Vitalik
+//   | Simon
+//   | Verano
+//   // | Tarkus
+//   | Pancho
+//   // | Mijungla
+//   | Llajuita
+//   | Espumita
+//   | Cubai
+//   | CatStevens
+//   | Aruma
+//   | Apthapi
+//   // | Ajayu
+//   | Isisa
+//   | Dlala
+//   | Nonhlanhla
+//   | Tarkus
+//   | Ucok;
 
 let orderedArray = [|
   TokenId.fromStringUnsafe("0"),
@@ -54,58 +54,58 @@ let orderedArray = [|
   // Ucok,
 |];
 
-let getId: t => string =
-  anAnimal =>
-    switch (anAnimal) {
-    | Simon => "0"
-    | Andy => "1"
-    | Apthapi => "2"
-    | Aruma => "3"
-    | CatStevens => "4"
-    | Cubai => "5"
-    | Llajuita => "6"
-    | Pancho => "7"
-    | Espumita => "8"
-    | Verano => "9"
-    | Nonhlanhla => "10"
-    | Dlala => "11"
-    | Isisa => "12"
-    | Glen => "13"
-    | Ucok => "14"
-    | Tarkus => "15"
-    // | Vitalik => Some("42") // We don't show an ID for vitalik since using legacy contract still.
-    // | Tarkus
-    // | Mijungla
-    // | Ajayu
-    | Vitalik => "42"
-    };
+// let getId: t => string =
+//   anAnimal =>
+//     switch (anAnimal) {
+//     | Simon => "0"
+//     | Andy => "1"
+//     | Apthapi => "2"
+//     | Aruma => "3"
+//     | CatStevens => "4"
+//     | Cubai => "5"
+//     | Llajuita => "6"
+//     | Pancho => "7"
+//     | Espumita => "8"
+//     | Verano => "9"
+//     | Nonhlanhla => "10"
+//     | Dlala => "11"
+//     | Isisa => "12"
+//     | Glen => "13"
+//     | Ucok => "14"
+//     | Tarkus => "15"
+//     // | Vitalik => Some("42") // We don't show an ID for vitalik since using legacy contract still.
+//     // | Tarkus
+//     // | Mijungla
+//     // | Ajayu
+//     | Vitalik => "42"
+//     };
 
-let getTokenId: t => TokenId.t =
-  anAnimal =>
-    switch (anAnimal) {
-    | Simon => TokenId.makeFromInt(0)
-    | Andy => TokenId.makeFromInt(1)
-    | Apthapi => TokenId.makeFromInt(2)
-    | Aruma => TokenId.makeFromInt(3)
-    | CatStevens => TokenId.makeFromInt(4)
-    | Cubai => TokenId.makeFromInt(5)
-    | Llajuita => TokenId.makeFromInt(6)
-    | Pancho => TokenId.makeFromInt(7)
-    | Espumita => TokenId.makeFromInt(8)
-    | Verano => TokenId.makeFromInt(9)
-    | Nonhlanhla => TokenId.makeFromInt(10)
-    | Dlala => TokenId.makeFromInt(11)
-    | Isisa => TokenId.makeFromInt(12)
-    | Glen => TokenId.makeFromInt(13)
-    | Ucok => TokenId.makeFromInt(14)
-    | Vitalik => TokenId.makeFromInt(42)
-    | Tarkus => TokenId.makeFromInt(15)
-    // | Mijungla => Some(TokenId.makeFromInt(15))
-    // | Ajayu => Some(TokenId.makeFromInt(16))
-    // | Tarkus
-    // | Mijungla
-    // | Ajayu
-    };
+// let getTokenId: t => TokenId.t =
+//   anAnimal =>
+//     switch (anAnimal) {
+//     | Simon => TokenId.makeFromInt(0)
+//     | Andy => TokenId.makeFromInt(1)
+//     | Apthapi => TokenId.makeFromInt(2)
+//     | Aruma => TokenId.makeFromInt(3)
+//     | CatStevens => TokenId.makeFromInt(4)
+//     | Cubai => TokenId.makeFromInt(5)
+//     | Llajuita => TokenId.makeFromInt(6)
+//     | Pancho => TokenId.makeFromInt(7)
+//     | Espumita => TokenId.makeFromInt(8)
+//     | Verano => TokenId.makeFromInt(9)
+//     | Nonhlanhla => TokenId.makeFromInt(10)
+//     | Dlala => TokenId.makeFromInt(11)
+//     | Isisa => TokenId.makeFromInt(12)
+//     | Glen => TokenId.makeFromInt(13)
+//     | Ucok => TokenId.makeFromInt(14)
+//     | Vitalik => TokenId.makeFromInt(42)
+//     | Tarkus => TokenId.makeFromInt(15)
+//     // | Mijungla => Some(TokenId.makeFromInt(15))
+//     // | Ajayu => Some(TokenId.makeFromInt(16))
+//     // | Tarkus
+//     // | Mijungla
+//     // | Ajayu
+//     };
 
 let getNameFromId: string => string =
   animalId =>
@@ -184,30 +184,30 @@ let getAnimal: string => option(TokenId.t) =
 //   };
 // };
 
-// TODO: deprecate this method, we should use TokenId.t everywhere instead.
-let getAnimalFromId: string => option(t) =
-  animalId => {
-    switch (animalId) {
-    | "42" => Some(Vitalik)
-    | "0" => Some(Simon)
-    | "1" => Some(Andy)
-    | "2" => Some(Apthapi)
-    | "3" => Some(Aruma)
-    | "4" => Some(CatStevens)
-    | "5" => Some(Cubai)
-    | "6" => Some(Llajuita)
-    | "7" => Some(Pancho)
-    | "8" => Some(Espumita)
-    | "9" => Some(Verano)
-    | "10" => Some(Nonhlanhla)
-    | "11" => Some(Dlala)
-    | "12" => Some(Isisa)
-    | "13" => Some(Glen)
-    | "14" => Some(Ucok)
-    | "15" => Some(Tarkus)
-    | _ => None
-    };
-  };
+// // TODO: deprecate this method, we should use TokenId.t everywhere instead.
+// let getAnimalFromId: string => option(t) =
+//   animalId => {
+//     switch (animalId) {
+//     | "42" => Some(Vitalik)
+//     | "0" => Some(Simon)
+//     | "1" => Some(Andy)
+//     | "2" => Some(Apthapi)
+//     | "3" => Some(Aruma)
+//     | "4" => Some(CatStevens)
+//     | "5" => Some(Cubai)
+//     | "6" => Some(Llajuita)
+//     | "7" => Some(Pancho)
+//     | "8" => Some(Espumita)
+//     | "9" => Some(Verano)
+//     | "10" => Some(Nonhlanhla)
+//     | "11" => Some(Dlala)
+//     | "12" => Some(Isisa)
+//     | "13" => Some(Glen)
+//     | "14" => Some(Ucok)
+//     | "15" => Some(Tarkus)
+//     | _ => None
+//     };
+//   };
 
 let getNextPrev = _animal => (
   TokenId.makeFromInt(0),
@@ -311,11 +311,6 @@ let getOrgBadgeImage: TokenId.t => string =
 // // | _ => None
 // };
 
-let getStoryParagraphs = _animal => [|
-  "Original Gorilla",
-  "Vitalik is the first ever animal launched on wildcards and therefore often termed an OG (Original Gorilla). The wildcards project was born at the #ETHCapeTown hackathon in May 2019 where Vitalik Buterin was one of the judges. We named Vitalik the Gorilla after Vitalik as a testament to the impact and innovation Vitalik Buterin has had on the blockchain ecosystem. Vitalik, if you are reading this, start saving some animals and buy me!",
-  "Funds raised by Vitalik, initially, will go to Wild Tomorrow Fund; however Vitalik doesn\'t represent a real gorilla, and funds for Vitalik may be distributed via another allocation mechanism in the future (DAO or otherwise).",
-|];
 // switch (animal) {
 // | Vitalik => [|
 //     "Original Gorilla",
@@ -450,24 +445,24 @@ let isLaunched: TokenId.t => launchStatus = _anAnimal => Launched;
 // | Tarkus => LaunchDate(nextLaunchDate)
 // };
 
-let hasGovernance: t => bool =
-  anAnimal =>
-    switch (anAnimal) {
-    | Simon
-    | Andy
-    | Vitalik
-    | Cubai
-    | Dlala
-    | CatStevens
-    | Verano
-    | Pancho
-    | Isisa
-    | Apthapi
-    | Nonhlanhla
-    | Aruma
-    | Espumita
-    | Ucok
-    | Tarkus
-    | Llajuita => false
-    | Glen => true
-    };
+// let hasGovernance: t => bool =
+//   anAnimal =>
+//     switch (anAnimal) {
+//     | Simon
+//     | Andy
+//     | Vitalik
+//     | Cubai
+//     | Dlala
+//     | CatStevens
+//     | Verano
+//     | Pancho
+//     | Isisa
+//     | Apthapi
+//     | Nonhlanhla
+//     | Aruma
+//     | Espumita
+//     | Ucok
+//     | Tarkus
+//     | Llajuita => false
+//     | Glen => true
+//     };

@@ -795,6 +795,8 @@ module UnlaunchedAnimalInfo = {
 module AnimalInfo = {
   [@react.component]
   let make = (~animal: TokenId.t) => {
+    let animalDescription =
+      QlHooks.useWildcardData(animal) |||| [|"Loading"|];
     // TODO: the ethereum address is really terribly displayed. But the default in Rimble UI includes a QR code scanner (which is really ugly).
     // https://rimble.consensys.design/components/rimble-ui/EthAddress#props
     // https://github.com/ConsenSys/rimble-ui/blob/dd470f00374a05c860b558a2cb9317861e4a0d89/src/EthAddress/index.js (maybe make a PR here with some changes)
@@ -807,12 +809,12 @@ module AnimalInfo = {
         <ReactTabs.TabPanel>
           <h2> "Story"->React.string </h2>
           {ReasonReact.array(
-             Animal.getStoryParagraphs(animal)
-             ->Array.mapWithIndex((i, paragraphText) =>
-                 <p key={i->string_of_int}> paragraphText->React.string </p>
-               ),
+             animalDescription->Array.mapWithIndex((i, paragraphText) =>
+               <p key={i->string_of_int}> paragraphText->React.string </p>
+             ),
            )}
-          {animal == TokenId.fromStringUnsafe("13")
+          {let isGlen = animal == TokenId.fromStringUnsafe("13");
+           isGlen
              ? <a href="/#ethturin-quadratic-voting">
                  <span className=Css.(style([color(hex("72c7d7"))]))>
                    "Vote for your favourite conservation"->restr
@@ -820,6 +822,7 @@ module AnimalInfo = {
                </a>
              : React.null}
         </ReactTabs.TabPanel>
+        // [@warning "-102"]
         <ReactTabs.TabPanel>
           {switch (animal->Animal.isLaunched) {
            | Launched => <Info tokenId=animal />

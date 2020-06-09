@@ -22,11 +22,7 @@ module Token = {
       <img
         className=Css.(style([maxWidth(vh(12.))]))
         onClick={_e => clearAndPush("/#details/" ++ animal)}
-        src={
-          tokenId
-          ->Animal.getAnimalFromId
-          ->Option.mapWithDefault("", a => Animal.getImage(a))
-        }
+        src={tokenId->Animal.getImage}
       />
     </div>;
   };
