@@ -74,7 +74,11 @@ let useIsExplorer = () => {
     () =>
       switch (urlState) {
       | Explorer(_) => true
-      | _ => false
+      | User(_)
+      | Leaderboards(_)
+      | Home(_)
+      | IncreaseVoteIteration
+      | VotePage => false
       },
     [|urlState|],
   );
@@ -83,7 +87,7 @@ let isDetailsAnimalPage: animalPageState => bool =
   animalPageState =>
     switch (animalPageState) {
     | DetailView(_) => true
-    | _ => false
+    | NormalView => false
     };
 let useIsDetails = () => {
   let urlState = useUrlState();
@@ -93,7 +97,10 @@ let useIsDetails = () => {
       switch (urlState) {
       | Explorer(inside) => isDetailsAnimalPage(inside)
       | Home(inside) => isDetailsAnimalPage(inside)
-      | _ => false
+      | User(_)
+      | Leaderboards(_)
+      | IncreaseVoteIteration
+      | VotePage => false
       },
     [|urlState|],
   );
@@ -105,7 +112,11 @@ let useIsHome = () => {
     () =>
       switch (urlState) {
       | Home(_) => true
-      | _ => false
+      | User(_)
+      | Explorer(_)
+      | Leaderboards(_)
+      | IncreaseVoteIteration
+      | VotePage => false
       },
     [|urlState|],
   );
@@ -113,8 +124,11 @@ let useIsHome = () => {
 let getAnimalFormAnimalPageState: animalPageState => option(TokenId.t) =
   animalPageState =>
     switch (animalPageState) {
-    | DetailView(_, optAnimal) => optAnimal
-    | _ => None
+    | DetailView(_, optAnimal) =>
+      Js.log("THE ANIMALLLL");
+      Js.log(optAnimal);
+      optAnimal;
+    | NormalView => None
     };
 
 let useAnimalForDetails = () => {
@@ -128,7 +142,10 @@ let useAnimalForDetails = () => {
       | Home(animalPageState) =>
         getAnimalFormAnimalPageState(animalPageState)
       // | DetailView(_, optAnimal) => optAnimal
-      | _ => None
+      | User(_)
+      | Leaderboards(_)
+      | IncreaseVoteIteration
+      | VotePage => None
       },
     [|urlState|],
   );

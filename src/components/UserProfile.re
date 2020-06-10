@@ -16,12 +16,13 @@ module Token = {
   [@react.component]
   let make = (~tokenId) => {
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
-    let animal = Animal.getNameFromId(tokenId);
 
     <div>
       <img
         className=Css.(style([maxWidth(vh(12.))]))
-        onClick={_e => clearAndPush("/#details/" ++ animal)}
+        onClick={_e =>
+          clearAndPush("/#details/" ++ tokenId->TokenId.toString)
+        }
         src={tokenId->Animal.getImage}
       />
     </div>;
@@ -333,7 +334,10 @@ module UserDetails = {
                <Rimble.Flex flexWrap="wrap" className=centreAlignOnMobile>
                  {ReasonReact.array(
                     currentlyOwnedTokens->Array.mapWithIndex((i, tokenId) =>
-                      <Token key={i->string_of_int} tokenId />
+                      <Token
+                        key={i->string_of_int}
+                        tokenId={TokenId.fromStringUnsafe(tokenId)}
+                      />
                     ),
                   )}
                </Rimble.Flex>
@@ -353,7 +357,10 @@ module UserDetails = {
                  {ReasonReact.array(
                     uniquePreviouslyOwnedTokens->Array.mapWithIndex(
                       (i, tokenId) =>
-                      <Token key={i->string_of_int} tokenId />
+                      <Token
+                        key={i->string_of_int}
+                        tokenId={TokenId.fromStringUnsafe(tokenId)}
+                      />
                     ),
                   )}
                </Rimble.Flex>

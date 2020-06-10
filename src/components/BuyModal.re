@@ -1,6 +1,3 @@
-open Globals;
-open Accounting;
-
 [@react.component]
 let make = (~animal: TokenId.t, ~isExplorer: bool=false) => {
   let currentPriceWei = QlHooks.usePrice(animal);

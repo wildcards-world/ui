@@ -3,7 +3,6 @@ external make: (~children: React.element) => React.element =
   "UserInfoProvider";
 
 open Globals;
-open Belt;
 
 type threeBoxImageData = {
   [@bs.as "@type"]
@@ -90,7 +89,8 @@ let useIsUserValidated: string => bool =
   ethAddress =>
     switch (useDisplayName(ethAddress)) {
     | TwitterHandle(_) => true
-    | _ => false
+    | ThreeBoxName(_)
+    | EthAddress(_) => false
     };
 
 let displayNameToString = displayName => {

@@ -577,25 +577,28 @@ let usePatronLoyaltyTokenDetails:
     let (responseNewPatron, _) = useQueryPatronNew(address);
     let (response, _) = useQueryPatron(address);
 
-    switch (responseNewPatron, response) {
-    | (Data(dataNewPatron), Data(dataPatron)) =>
-      switch (dataNewPatron##patronNew, dataPatron##patron) {
-      | (Some(newPatron), Some(patron)) =>
-        Some({
-          currentLoyaltyTokens: newPatron##totalLoyaltyTokens,
-          currentLoyaltyTokensIncludingUnredeemed:
-            newPatron##totalLoyaltyTokensIncludingUnRedeemed,
-          lastCollected: newPatron##lastUpdated,
-          numberOfAnimalsOwned:
-            BN.new_(patron##tokens->Obj.magic->Array.length->string_of_int),
-        })
-      | _ => None
+    [@ocaml.warning "-4"]
+    (
+      switch (responseNewPatron, response) {
+      | (Data(dataNewPatron), Data(dataPatron)) =>
+        switch (dataNewPatron##patronNew, dataPatron##patron) {
+        | (Some(newPatron), Some(patron)) =>
+          Some({
+            currentLoyaltyTokens: newPatron##totalLoyaltyTokens,
+            currentLoyaltyTokensIncludingUnredeemed:
+              newPatron##totalLoyaltyTokensIncludingUnRedeemed,
+            lastCollected: newPatron##lastUpdated,
+            numberOfAnimalsOwned:
+              BN.new_(patron##tokens->Obj.magic->Array.length->string_of_int),
+          })
+        | _ => None
+        }
+      // | Loading
+      // | Error(_error)
+      // | NoData => None
+      | (_, _) => None
       }
-    // | Loading
-    // | Error(_error)
-    // | NoData => None
-    | (_, _) => None
-    };
+    );
   };
 
 // TODO:: Take min of total deposit and amount raised
@@ -744,7 +747,9 @@ let usePrice: TokenId.t => animalPrice =
         }
       | None => Foreclosed // I'm not sure if this is the correct thing to put here... If the availableDeposit is undefined, it could mean the token belongs to the steward and is foreclosed, or it could mean it
       };
-    | _ => Loading
+    | Error(_)
+    | Loading
+    | NoData => Loading
     };
   };
 

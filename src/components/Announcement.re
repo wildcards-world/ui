@@ -53,7 +53,9 @@ let make =
        nextReleasedAnimals->Array.mapWithIndex((index, animal) => {
          let name = Animal.getName(animal);
          <>
-           <a href={"/#details/" ++ name} className=linkToAnimal>
+           <a
+             href={"/#details/" ++ animal->TokenId.toString}
+             className=linkToAnimal>
              name->restr
            </a>
            {

@@ -47,7 +47,11 @@ let rec reducer = (prevState, action) =>
     let newState = {...prevState, ethState: Connected(address, optBalance)};
     switch (prevState.nonUrlState) {
     | LoginScreen(followOnAction) => reducer(newState, followOnAction)
-    | _ => newState
+    | UserVerificationScreen
+    | UpdateDepositScreen
+    | UpdatePriceScreen(_)
+    | BuyScreen(_)
+    | NoExtraState => newState
     };
   | GoToWeb3Connect(action) =>
     switch (prevState.ethState) {

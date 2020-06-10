@@ -16,5 +16,6 @@ module Lazy: T = {
     ReLoadable.lazy_(() => DynamicImport.import("./ThreeBoxUpdate.bs.js"));
   /* All bindings in the original component have to be added here (`makeProps` is external, so no need). */
   /* Shallowing them here removes invalid access to undefined[1], undefined[n] in the resulting output. */
+  [@ocaml.warning "-32"]
   let default = make;
 };

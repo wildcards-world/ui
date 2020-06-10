@@ -30,6 +30,7 @@ let make = () =>
                   name="EMAIL"
                   width=1.
                   onChange={(e: ReactEvent.Form.t) =>
+                    [@ocaml.warning "-20"]
                     ReactEvent.Form.target(e)##parentNode##classList##add(
                       "was-validated",
                     )

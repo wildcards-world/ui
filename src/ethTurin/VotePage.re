@@ -529,7 +529,7 @@ let make = () => {
             className=Css.(style([maxWidth(`px(800)), margin(auto)]))
             src=dragonImg
           />
-          <a href="/#details/Glen">
+          <a href="/#details/13">
             <h3 className=Css.(style([textAlign(`center)]))>
               "Glen the Dragon from Turin"->restr
             </h3>

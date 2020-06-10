@@ -74,8 +74,8 @@ let make = (~tokenId: TokenId.t) => {
 
   let currentPriceEth = Web3Utils.fromWeiBNToEth(currentPriceWei);
   let currentPriceFloat = Float.fromString(currentPriceEth)->defaultZeroF;
-  let getMax = [%bs.raw {| (first, second) => Math.max(first,second) |}];
-  let currentPriceFloatWithMinimum = getMax(. currentPriceFloat, 0.005);
+  let currentPriceFloatWithMinimum =
+    Js.Math.max_float(currentPriceFloat, 0.005);
   let defaultPriceValue =
     toFixedWithPrecisionNoTrailingZeros(
       currentPriceFloatWithMinimum *. 1.5,

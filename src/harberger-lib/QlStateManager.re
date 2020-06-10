@@ -54,7 +54,30 @@ let make = (~children) => {
                  switch (cachedResponse |> Js.Nullable.toOption) {
                  | None => ()
                  | Some(cachedWildcard) =>
-                   let setupWildcardForCache = [%raw
+                   let setupWildcardForCache:
+                     (
+                       . {
+                           .
+                           "id": string,
+                           "owner": {
+                             .
+                             "address": Js.Json.t,
+                             "id": string,
+                           },
+                           "patronageNumeratorPriceScaled": Js.Json.t,
+                           "price": {
+                             .
+                             "id": string,
+                             "price": Js.Json.t,
+                           },
+                           "timeAcquired": Js.Json.t,
+                           "timeCollected": Js.Json.t,
+                           "tokenId": Js.Json.t,
+                           "totalCollected": Js.Json.t,
+                         },
+                       Js.Json.t
+                     ) =>
+                     QlHooks.SubWildcardQuery.t = [%raw
                      {|
                            (wildcardData, cachedWildcard) =>{
                              return {
@@ -96,7 +119,23 @@ let make = (~children) => {
                  | None => ()
                  | Some(cachedPatron) =>
                    Js.log3("Cached Patron", cachedPatron, patron);
-                   let setupPatronForCache = [%raw
+                   let setupPatronForCache:
+                     (
+                       . {
+                           .
+                           "address": Js.Json.t,
+                           "availableDeposit": Js.Json.t,
+                           "foreclosureTime": Js.Json.t,
+                           "id": string,
+                           "lastUpdated": Js.Json.t,
+                           "patronTokenCostScaledNumerator": Js.Json.t,
+                           "previouslyOwnedTokens":
+                             Js.Array.t({. "id": string}),
+                           "tokens": Js.Array.t({. "id": string}),
+                         },
+                       Js.Json.t
+                     ) =>
+                     QlHooks.LoadPatron.t = [%raw
                      {|
                            (patronData, cachedPatron) =>{
                              return {
@@ -151,7 +190,9 @@ let make = (~children) => {
                        switch (cachedResponse |> Js.Nullable.toOption) {
                        | None => ()
                        | Some(cachedPatron) =>
-                         let setupNewPatronForCache = [%raw
+                         let setupNewPatronForCache:
+                           (. QlHooks.LoadPatronNewNoDecode.t, Js.Json.t) =>
+                           QlHooks.LoadPatronNew.t = [%raw
                            {|
                          (newPatronData, previousPatron) =>{
                            let newPatron = newPatronData.newPatron;

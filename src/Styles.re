@@ -1,5 +1,6 @@
 // module Styles = {
 /* Open the Css module, so we can access the style properties below without prefixing them with Css. */
+[@ocaml.warning "-44"]
 open Css;
 
 let backgroundImageGorilla = "/img/wildcardsimages/wild-jungle-background.png";
@@ -178,7 +179,7 @@ let headerImg = (enlargement, scalar) =>
     position(`relative),
     zIndex(1),
     maxHeight(px(500)),
-    maxWidth(`percent(100. *. enlargement)),
+    width(`percent(100. *. enlargement)),
     left(`percent((-50.) *. (enlargement -. 1.))),
     transform(scale(scalar, scalar)),
     textAlign(center),

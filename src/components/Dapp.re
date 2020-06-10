@@ -24,7 +24,7 @@ module EditButton = {
           "#"
           ++ InputHelp.getPagePrefix(isExplorer)
           ++ "details/"
-          ++ animal->Animal.getName->Js.Global.encodeURI,
+          ++ animal->TokenId.toString,
         );
       }}>
       {React.string("Edit")}
@@ -203,7 +203,7 @@ module AnimalOnLandingPage = {
               "#"
               ++ InputHelp.getPagePrefix(isExplorer)
               ++ "details/"
-              ++ name->Js.Global.encodeURI,
+              ++ animal->TokenId.toString,
             );
           }}>
           imageHoverSwitcher
@@ -263,7 +263,7 @@ module AnimalCarousel = {
         value=carouselIndex
         animationSpeed=1000
         infinite=true
-        autoPlay=5000
+        autoPlay=500000
         arrowLeft={
           <span
             className={Styles.carouselArrow(true)}
@@ -390,6 +390,8 @@ module AnimalActionsOnDetailsPage = {
 module DetailsView = {
   [@react.component]
   let make = (~optionAnimal: option(TokenId.t)) => {
+    [%log.info "optionAnimal"; ("a", optionAnimal)];
+
     switch (optionAnimal) {
     | None =>
       <div>
@@ -461,7 +463,9 @@ module DefaultLook = {
        | [|"details", animalStr|]
        | [|"explorer", "details", animalStr|]
        | [|"explorer", "details", animalStr, ""|] =>
-         <DetailsView optionAnimal={TokenId.make(animalStr)} />
+         [%log.info "the animalString"; ("a", animalStr)];
+
+         <DetailsView optionAnimal={TokenId.make(animalStr)} />;
        | _ =>
          <React.Fragment>
            <AnimalCarousel isGqlLoaded />
@@ -795,6 +799,8 @@ module UnlaunchedAnimalInfo = {
 module AnimalInfo = {
   [@react.component]
   let make = (~animal: TokenId.t) => {
+    Js.log("animal");
+    Js.log(animal);
     let animalDescription =
       QlHooks.useWildcardData(animal) |||| [|"Loading"|];
     // TODO: the ethereum address is really terribly displayed. But the default in Rimble UI includes a QR code scanner (which is really ugly).
@@ -813,7 +819,7 @@ module AnimalInfo = {
                <p key={i->string_of_int}> paragraphText->React.string </p>
              ),
            )}
-          {let isGlen = animal == TokenId.fromStringUnsafe("13");
+          {let isGlen = animal->TokenId.toString == "13";
            isGlen
              ? <a href="/#ethturin-quadratic-voting">
                  <span className=Css.(style([color(hex("72c7d7"))]))>

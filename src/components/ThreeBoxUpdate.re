@@ -145,16 +145,19 @@ module ProfileDetails = {
                     Promise.all2(namePromise, descriptionPromise)
                     ->Promise.get(a => {
                         let (nameSet, descriptionSet) = a;
-                        switch (nameSet, descriptionSet) {
-                        | (Ok (), Ok ()) =>
-                          reloadUser(true);
-                          setThreeBoxState(_ => DefaultView(Saved));
-                        | _ =>
-                          setThreeBoxState(_ => DefaultView(FailedToSave))
-                        };
+                        [@ocaml.warning "-4"]
+                        (
+                          switch (nameSet, descriptionSet) {
+                          | (Ok (), Ok ()) =>
+                            reloadUser(true);
+                            setThreeBoxState(_ => DefaultView(Saved));
+                          | _ =>
+                            setThreeBoxState(_ => DefaultView(FailedToSave))
+                          }
+                        );
                       });
                     SyncedBox(threeBoxInstance);
-                  | _ => Load3BoxError
+                  | Error(_) => Load3BoxError
                   };
                 setThreeBoxState(_ => state);
               });
@@ -312,7 +315,7 @@ module TwitterVerification = {
                   let state =
                     switch (isBoxLoaded) {
                     | Ok(_finishedBoxSync) => SyncedBox(threeBoxInstance)
-                    | _ => Load3BoxError
+                    | Error(_) => Load3BoxError
                     };
                   setThreeBoxState(_ => state);
                 });
@@ -345,7 +348,7 @@ module TwitterVerification = {
                         threeBoxInstance.public.remove(. "proof_twitter");
                       reloadUser(true);
                       SyncedBox(threeBoxInstance);
-                    | _ => Load3BoxError
+                    | Error(_) => Load3BoxError
                     };
                   setThreeBoxState(_ => state);
                 });
@@ -389,7 +392,10 @@ module TwitterVerification = {
                        setTwitterVerificationStep(_ => Uninitialized);
                      });
                    ();
-                 | _ => ()
+                 | DefaultView(_)
+                 | Loading3Box
+                 | Load3BoxError
+                 | LoggedIn(_, _) => ()
                  }
                | _ => ()
                };
@@ -466,7 +472,12 @@ module TwitterVerification = {
                }}>
                "NEXT"->React.string
              </Rimble.Button>
-           | _ =>
+           | DefaultView(_)
+           | Loading3Box
+           | Load3BoxError
+           | LoggedIn(_, _)
+           | SyncedBoxWithSpace(_, _)
+           | SyncedSpace(_, _) =>
              <p> "waiting to sync 3box before continuing"->React.string </p>
            }}
         </React.Fragment>;

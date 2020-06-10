@@ -3,15 +3,8 @@ let isPositiveStringInteger = str => {
 
   // NOTE: This allows leading 0s (which seams to not be a problem for web3 or truffle)
   //       This doesn't check if the number is smaller than 2^256 which is the largest integer ethereum can handle
-  let f = [%bs.re "/^([0-9]\d+)$/"];
-  //   let test = [%bs.raw
-  //     {|
-  //  function (value) {
-  //    console.log(`The type of ${value} is:`, typeof value)
-  //  }
-  // |}
-  //   ];
-  //   let _ = test(. str);
+  let f = [%bs.re "/^([0-9]\d*)$/"];
+
   Js.Re.test_(f, str);
 };
 

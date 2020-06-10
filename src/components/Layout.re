@@ -20,7 +20,7 @@ module AnimalFocusDetails = {
                  "#"
                  ++ InputHelp.getPagePrefix(isExplorer)
                  ++ "details/"
-                 ++ previousAnimal->Animal.getName->Js.Global.encodeURI,
+                 ++ previousAnimal->TokenId.toString,
                )
              )}>
              {js|◄|js}->React.string
@@ -51,7 +51,7 @@ module AnimalFocusDetails = {
                  "#"
                  ++ InputHelp.getPagePrefix(isExplorer)
                  ++ "details/"
-                 ++ nextAnimal->Animal.getName->Js.Global.encodeURI,
+                 ++ nextAnimal->TokenId.toString,
                )
              )}>
              {js|►|js}->React.string
