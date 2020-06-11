@@ -124,6 +124,7 @@ module WildcardDataQuery = [%graphql
       wildcardData_by_pk(id: $tokenId) {
         name
         description
+        organisationId
       }
     }
   |}
@@ -348,7 +349,7 @@ let useStateChangeSubscriptionData = () => {
 
 [@decco.decode]
 type animalDescription = array(string);
-let useWildcardData = tokenId => {
+let useWildcardDescription = tokenId => {
   let (simple, _) = useWildcardDataQuery(tokenId);
   queryResultOptionMap(simple, a =>
     a##wildcardData_by_pk
@@ -358,6 +359,19 @@ let useWildcardData = tokenId => {
         ->Belt.Result.getWithDefault([||])
       )
     |||| [||]
+  );
+};
+
+let useWildcardName = tokenId => {
+  let (simple, _) = useWildcardDataQuery(tokenId);
+  queryResultOptionMap(simple, a =>
+    a##wildcardData_by_pk->oMap(b => b##name) |||| "Unknown"
+  );
+};
+let useWildcardOrgId = tokenId => {
+  let (simple, _) = useWildcardDataQuery(tokenId);
+  queryResultOptionMap(simple, a =>
+    a##wildcardData_by_pk->oMap(b => b##organisationId) |||| "Unknown"
   );
 };
 let useLoadTopContributors = numberOfLeaders =>

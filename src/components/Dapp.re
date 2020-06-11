@@ -35,7 +35,7 @@ module EditButton = {
 module Streak = {
   [@react.component]
   let make = (~animal: TokenId.t) => {
-    let animalName = Animal.getName(animal);
+    let animalName = QlHooks.useWildcardName(animal) |||| "Loading";
 
     let daysHeld = QlHooks.useDaysHeld(animal);
 
@@ -134,11 +134,11 @@ module AnimalOnLandingPage = {
         ~optionEndDateMoment: option(MomentRe.Moment.t),
         ~isGqlLoaded,
       ) => {
-    let name = Animal.getName(animal);
+    let name = QlHooks.useWildcardName(animal) |||| "Loading";
     let isExplorer = Router.useIsExplorer();
 
     let optAlternateImage = Animal.getAlternateImage(animal);
-    let orgBadge = Animal.getOrgBadgeImage(animal);
+    let orgBadge = Animal.useGetOrgBadgeImage(animal);
 
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
@@ -404,7 +404,7 @@ module DetailsView = {
       let normalImage = animal =>
         <img className=Styles.ownedAnimalImg src={Animal.getImage(animal)} />;
       let optAlternateImage = Animal.getAlternateImage(animal);
-      let orgBadge = Animal.getOrgBadgeImage(animal);
+      let orgBadge = Animal.useGetOrgBadgeImage(animal);
 
       let isLaunched = animal->Animal.isLaunched;
 
@@ -443,7 +443,7 @@ module DetailsView = {
          }}
         <h2>
           {{
-             Animal.getName(animal);
+             QlHooks.useWildcardName(animal) |||| "Loading";
            }
            ->restr}
         </h2>
@@ -522,7 +522,7 @@ type maybeDate =
 module AnimalInfoStats = {
   [@react.component]
   let make = (~animal: TokenId.t) => {
-    let animalName = Animal.getName(animal);
+    let animalName = QlHooks.useWildcardName(animal) |||| "Loading";
 
     let daysHeld = QlHooks.useDaysHeld(animal);
 
@@ -759,7 +759,7 @@ module AnimalInfoStats = {
 module UnlaunchedAnimalInfo = {
   [@react.component]
   let make = (~endDateMoment, ~animal: TokenId.t) => {
-    let animalName = Animal.getName(animal);
+    let animalName = QlHooks.useWildcardName(animal) |||| "Loading";
 
     let ratio = QlHooks.usePledgeRate(animal);
     let monthlyRate = Js.Float.toString(ratio *. 100.);
@@ -802,7 +802,7 @@ module AnimalInfo = {
     Js.log("animal");
     Js.log(animal);
     let animalDescription =
-      QlHooks.useWildcardData(animal) |||| [|"Loading"|];
+      QlHooks.useWildcardDescription(animal) |||| [|"Loading"|];
     // TODO: the ethereum address is really terribly displayed. But the default in Rimble UI includes a QR code scanner (which is really ugly).
     // https://rimble.consensys.design/components/rimble-ui/EthAddress#props
     // https://github.com/ConsenSys/rimble-ui/blob/dd470f00374a05c860b558a2cb9317861e4a0d89/src/EthAddress/index.js (maybe make a PR here with some changes)

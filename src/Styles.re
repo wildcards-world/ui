@@ -367,7 +367,10 @@ let invisibleGorilla = style([display(`none)]);
 
 let fadeOut = targetOpacity =>
   style(
-    [transition(~duration=2000, ~delay=0, ~timingFunction=ease, "opacity")]
+    [
+      width(`percent(100.)),
+      transition(~duration=2000, ~delay=0, ~timingFunction=ease, "opacity"),
+    ]
     ->List.append([opacity(targetOpacity)]),
   );
 
