@@ -14,12 +14,12 @@ let centreAlignOnMobile =
 // Something like this maybe? https://docs.ethers.io/ethers.js/html/api-utils.html
 module Token = {
   [@react.component]
-  let make = (~tokenId) => {
+  let make = (~tokenId: TokenId.t) => {
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
-    <div>
+    <div className=Css.(style([width(vh(12.))]))>
       <img
-        className=Css.(style([maxWidth(vh(12.))]))
+        className=Css.(style([width(`percent(100.))]))
         onClick={_e =>
           clearAndPush("/#details/" ++ tokenId->TokenId.toString)
         }
@@ -356,12 +356,12 @@ module UserDetails = {
                <Rimble.Flex flexWrap="wrap" className=centreAlignOnMobile>
                  {ReasonReact.array(
                     uniquePreviouslyOwnedTokens->Array.mapWithIndex(
-                      (i, tokenId) =>
+                      (i, tokenId) => {
                       <Token
                         key={i->string_of_int}
                         tokenId={TokenId.fromStringUnsafe(tokenId)}
                       />
-                    ),
+                    }),
                   )}
                </Rimble.Flex>
              </React.Fragment>

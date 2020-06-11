@@ -51,7 +51,7 @@ let make =
      ->restr}
     {React.array(
        nextReleasedAnimals->Array.mapWithIndex((index, animal) => {
-         let name = Animal.getName(animal);
+         let name = QlHooks.useWildcardName(animal) |||| "Loading";
          <>
            <a
              href={"/#details/" ++ animal->TokenId.toString}
