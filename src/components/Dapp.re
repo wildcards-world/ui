@@ -137,7 +137,6 @@ module AnimalOnLandingPage = {
     let name = Animal.getName(animal);
     let isExplorer = Router.useIsExplorer();
 
-    let optAlternateImage = Animal.getAlternateImage(animal);
     let orgBadge = Animal.getOrgBadgeImage(animal);
 
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
@@ -172,27 +171,6 @@ module AnimalOnLandingPage = {
       </React.Fragment>;
     };
 
-    let imageHoverSwitcher = {
-      switch (optAlternateImage) {
-      | None => componentWithoutImg(normalImage, ~hideBadges=false)
-      | Some(alternateImage) =>
-        <Components.HoverToggle
-          _ComponentNoHover={componentWithoutImg(
-            normalImage,
-            ~hideBadges=false,
-          )}
-          _ComponentHover={componentWithoutImg(
-            () =>
-              <img
-                className={Styles.headerImg(enlargement, scalar)}
-                src=alternateImage
-              />,
-            ~hideBadges=true,
-          )}
-        />
-      };
-    };
-
     <Rimble.Box className=Styles.centerText>
       <div className=Styles.positionRelative>
         <a
@@ -206,7 +184,7 @@ module AnimalOnLandingPage = {
               ++ name->Js.Global.encodeURI,
             );
           }}>
-          imageHoverSwitcher
+          {componentWithoutImg(normalImage, ~hideBadges=false)}
           <div> <h2> {React.string(name)} </h2> </div>
         </a>
       </div>
@@ -408,7 +386,6 @@ module DetailsView = {
     | Some(animal) =>
       let normalImage = animal =>
         <img className=Styles.ownedAnimalImg src={Animal.getImage(animal)} />;
-      let optAlternateImage = Animal.getAlternateImage(animal);
       let orgBadge = Animal.getOrgBadgeImage(animal);
 
       let isLaunched = animal->Animal.isLaunched;
@@ -436,16 +413,7 @@ module DetailsView = {
         </div>;
 
       <React.Fragment>
-        {switch (optAlternateImage) {
-         | None => displayAnimal(() => normalImage(animal))
-         | Some(alternateImage) =>
-           <Components.HoverToggle
-             _ComponentHover={
-               <img className=Styles.ownedAnimalImg src=alternateImage />
-             }
-             _ComponentNoHover={displayAnimal(() => normalImage(animal))}
-           />
-         }}
+        {displayAnimal(() => normalImage(animal))}
         <h2>
           {{
              Animal.getName(animal);
@@ -802,6 +770,7 @@ module UnlaunchedAnimalInfo = {
 module AnimalInfo = {
   [@react.component]
   let make = (~animal: Animal.t) => {
+    let optAnimalMedia = animal->Animal.getAlternateImage;
     // TODO: the ethereum address is really terribly displayed. But the default in Rimble UI includes a QR code scanner (which is really ugly).
     // https://rimble.consensys.design/components/rimble-ui/EthAddress#props
     // https://github.com/ConsenSys/rimble-ui/blob/dd470f00374a05c860b558a2cb9317861e4a0d89/src/EthAddress/index.js (maybe make a PR here with some changes)
@@ -810,6 +779,9 @@ module AnimalInfo = {
         <ReactTabs.TabList>
           <ReactTabs.Tab> "Story"->React.string </ReactTabs.Tab>
           <ReactTabs.Tab> "Details"->React.string </ReactTabs.Tab>
+          {optAnimalMedia->mapd(React.null, _ =>
+             <ReactTabs.Tab> "Media"->React.string </ReactTabs.Tab>
+           )}
         </ReactTabs.TabList>
         <ReactTabs.TabPanel>
           <h2> "Story"->React.string </h2>
@@ -833,6 +805,14 @@ module AnimalInfo = {
            | LaunchDate(endDateMoment) =>
              <UnlaunchedAnimalInfo endDateMoment animal />
            }}
+        </ReactTabs.TabPanel>
+        <ReactTabs.TabPanel>
+          {optAnimalMedia->mapd(React.null, media =>
+             <img
+               className=Css.(style([width(`percent(100.))]))
+               src=media
+             />
+           )}
         </ReactTabs.TabPanel>
       </ReactTabs>
     </Rimble.Box>;
