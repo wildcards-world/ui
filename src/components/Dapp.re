@@ -820,7 +820,7 @@ module AnimalInfo = {
                ),
            )}
           {animal == Animal.Glen
-             ? <a href="/#ethturin-quadratic-voting">
+             ? <a href="/#dao">
                  <span className=Css.(style([color(hex("72c7d7"))]))>
                    "Vote for your favourite conservation"->restr
                  </span>

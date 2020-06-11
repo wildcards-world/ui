@@ -257,6 +257,20 @@ let make = () => {
             component: (closeModal, _) =>
               <a
                 className=Styles.navListText
+                onClick={event => {
+                  closeModal();
+                  ReactEvent.Mouse.preventDefault(event);
+                  clearAndPush({j|/#dao|j});
+                }}>
+                "DAO"->restr
+              </a>,
+          },
+          {
+            shouldDisplay: true,
+            shouldDisplayMobile: true,
+            component: (closeModal, _) =>
+              <a
+                className=Styles.navListText
                 target="_blank"
                 onClick={_ => closeModal()}
                 rel="noopener noreferrer"
