@@ -53,7 +53,7 @@ let useUrlState = () => {
             optionAnimal,
           ),
         );
-      | [|"ethturin-quadratic-voting"|] => VotePage
+      | [|"dao"|] => VotePage
       | [|"increase-iteration"|] => IncreaseVoteIteration
       | urlArray =>
         switch (
