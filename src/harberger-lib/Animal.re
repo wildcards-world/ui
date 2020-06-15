@@ -148,10 +148,20 @@ let useGetOrgBadgeImage: TokenId.t => string =
     switch (org) {
     | "sendaverde" => "/img/badges/SendaVerdeBadge.png"
     | "wildtomorrow" => "/img/badges/WildTomorrowBadge.png"
-    | "wildcards" => "/img/badges/OGBadge.png"
+    | "wildcards" => "/img/logos/wildcards-logo.svg" // TODO: find cropped version of this logo
     | "darwinanimaldoctors" => "/img/badges/DarwinAnimalDoctors.svg"
     | "greatwhaleconservancy" => "/img/badges/great-whale-conservancy-small.png"
     | _ => "/img/badges/OGBage.png"
+    };
+  };
+// TODO: this will come from the backend too. But it will be any alternative badge for the UI
+let useGetAltBadge: TokenId.t => option(string) =
+  animal => {
+    switch (animal->TokenId.toString) {
+    | "0"
+    | "1"
+    | "42" => Some("/img/badges/OGBage.png")
+    | _ => None
     };
   };
 type launchStatus =

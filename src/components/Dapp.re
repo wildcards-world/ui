@@ -799,6 +799,8 @@ module UnlaunchedAnimalInfo = {
 module AnimalInfo = {
   [@react.component]
   let make = (~animal: TokenId.t) => {
+    let animalsQuery = QlHooks.useHomeAnimalsQuery();
+    Js.log2("animals - info", animalsQuery);
     Js.log("animal");
     Js.log(animal);
     let animalDescription =
@@ -848,6 +850,8 @@ let make = () => {
   let clearNonUrlState = RootProvider.useClearNonUrlState();
   let isDetailView = Router.useIsDetails();
   let optAnimalForDetails = Router.useAnimalForDetails();
+  let animalsQuery = QlHooks.useHomeAnimalsQuery();
+  Js.log2("animals", animalsQuery);
 
   <Rimble.Flex
     flexWrap={isDetailView ? "wrap-reverse" : "wrap"} alignItems="start">

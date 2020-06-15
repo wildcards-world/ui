@@ -122,9 +122,27 @@ module WildcardDataQuery = [%graphql
   {|
     query ($tokenId: String!) {
       wildcardData_by_pk(id: $tokenId) {
+        id
         name
         description
         organisationId
+      }
+    }
+  |}
+];
+module HomeAnimalsQuery = [%graphql
+  {|
+    query {
+      homeAnimals {
+        id
+        next
+        prev
+        wildcardData {
+          description
+          id
+          name
+          organisationId
+        }
       }
     }
   |}
@@ -325,6 +343,8 @@ let useWildcardDataQuery = tokenId =>
       WildcardDataQuery.make(~tokenId=tokenId->TokenId.toString, ())##variables,
     WildcardDataQuery.definition,
   );
+let useHomeAnimalsQuery = () =>
+  ApolloHooks.useQuery(HomeAnimalsQuery.definition);
 // let useBuySubscription = () =>
 //   ApolloHooks.useSubscription(
 //     ~variables=SubBuyEvents.make()##variables,

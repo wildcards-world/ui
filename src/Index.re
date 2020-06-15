@@ -12,6 +12,18 @@ module Router = {
   };
 };
 
+[@bs.val] external mainnetApi: string = "process.env.REACT_APP_MAINNET_BE";
+Js.log(mainnetApi);
+Js.log(mainnetApi);
+Js.log(mainnetApi);
+Js.log(mainnetApi);
+Js.log(mainnetApi);
+Js.log(mainnetApi);
+Js.log(mainnetApi);
+Js.log(mainnetApi);
+Js.log(mainnetApi);
+[@bs.val] external goerliApi: string = "process.env.REACT_APP_GOERLI_BE";
+
 ReactDOMRe.renderToElementWithId(
   // stewardAbi
   // stewardContractAddress="0x4bE0Eab8f41c8109AA134509086Cbcb18b10C0fB"
@@ -20,8 +32,8 @@ ReactDOMRe.renderToElementWithId(
       let networkId =
         RootProvider.useNetworkId()->Belt.Option.mapWithDefault(1, a => a);
       switch (networkId) {
-      | 5 => "goerli.api.wildcards.world/v1/graphql"
-      | _ => "api.wildcards.world/v1/graphql"
+      | 5 => goerliApi
+      | _ => mainnetApi
       };
     }}>
     <UsdPriceProvider> <Router /> </UsdPriceProvider>
