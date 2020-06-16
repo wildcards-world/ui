@@ -176,7 +176,6 @@ let getAnimal: string => option(t) =
 let getAnimalFromId: string => option(t) =
   animalId => {
     switch (animalId) {
-    | "42" => Some(Vitalik)
     | "0" => Some(Simon)
     | "1" => Some(Andy)
     | "2" => Some(Apthapi)
@@ -196,6 +195,7 @@ let getAnimalFromId: string => option(t) =
     | "16" => Some(Hook)
     | "17" => Some(Mijungla)
     | "18" => Some(Ajayu)
+    | "42" => Some(Vitalik)
     | _ => None
     };
   };
@@ -224,29 +224,30 @@ let getNextPrev = animal =>
   | Dlala => (Simon, Tarkus)
   };
 
-let getImage = animal =>
+let getImage = animal => {
   switch (animal) {
-  | Vitalik => "/img/animals/gorilla1.png"
-  | Simon => "/img/animals/gorilla2.png"
-  | Andy => "/img/animals/gorilla3.png"
-  | Pancho => "/img/animals/PanchoTheTortoiseCropped.png"
-  | Llajuita => "/img/animals/LlajuitaTheDeerCropped.png"
-  | Espumita => "/img/animals/EspumitaThePuma2Cropped.png"
-  | Cubai => "/img/animals/CubaiTheJaguarCropped.png"
-  | CatStevens => "/img/animals/catstevenstheocelotCropped.png"
-  | Aruma => "/img/animals/ArumaTheAndeanBearCropped.png"
-  | Apthapi => "/img/animals/ApthapiTheTapirCropped.png"
-  | Verano => "/img/animals/VeranoTheMackawCropped.png"
-  | Nonhlanhla => "/img/animals/EditedHyena.png"
-  | Isisa => "/img/animals/editedHyena3.png"
-  | Dlala => "/img/animals/EditedHyena2.png"
-  | Glen => "/img/animals/Glen.png"
-  | Ucok => "/img/animals/Ucok.png"
-  | Tarkus => "/img/animals/Tarkus.png"
-  | Hook => "/img/animals/Hook.png"
-  | Ajayu => "/img/animals/Ajayu.png"
-  | Mijungla => "/img/animals/Mijungla.png"
+  | Simon => "https://dd2wadt5nc0o7.cloudfront.net/0-simon.svg"
+  | Andy => "https://dd2wadt5nc0o7.cloudfront.net/1-andy.svg"
+  | Apthapi => "https://dd2wadt5nc0o7.cloudfront.net/2-apthapi.svg"
+  | Aruma => "https://dd2wadt5nc0o7.cloudfront.net/3-aruma.svg"
+  | CatStevens => "https://dd2wadt5nc0o7.cloudfront.net/4-catstevens.svg"
+  | Cubai => "https://dd2wadt5nc0o7.cloudfront.net/5-cubai.svg"
+  | Llajuita => "https://dd2wadt5nc0o7.cloudfront.net/6-llajuita.svg"
+  | Pancho => "https://dd2wadt5nc0o7.cloudfront.net/7-pancho.svg"
+  | Espumita => "https://dd2wadt5nc0o7.cloudfront.net/8-espumita.svg"
+  | Verano => "https://dd2wadt5nc0o7.cloudfront.net/9-verano.svg"
+  | Nonhlanhla => "https://dd2wadt5nc0o7.cloudfront.net/10-nonhlanhla.svg"
+  | Dlala => "https://dd2wadt5nc0o7.cloudfront.net/11-dlala.svg"
+  | Isisa => "https://dd2wadt5nc0o7.cloudfront.net/12-isisa.svg"
+  | Glen => "https://dd2wadt5nc0o7.cloudfront.net/13-glen.svg"
+  | Ucok => "https://dd2wadt5nc0o7.cloudfront.net/14-ucok.svg"
+  | Tarkus => "https://dd2wadt5nc0o7.cloudfront.net/15-tarkus.svg"
+  | Hook => "https://dd2wadt5nc0o7.cloudfront.net/16-hook.jpg"
+  | Mijungla => "https://dd2wadt5nc0o7.cloudfront.net/17-mijungla.svg"
+  | Ajayu => "https://dd2wadt5nc0o7.cloudfront.net/18-ajayu.svg"
+  | Vitalik => "https://dd2wadt5nc0o7.cloudfront.net/42-vitalik.svg"
   };
+};
 
 // let getAlternateImage: t => array(string) = // TODO: I want to turn this into an array in the future, show a carousel of images instead.
 let getAlternateImage: t => option(string) =

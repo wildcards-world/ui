@@ -48,9 +48,9 @@ let decodeAddress: Js.Json.t => string =
 module InitialLoad = [%graphql
   {|
     query {
-      wildcards(first: 14) {
+      wildcards(first: 22) {
         id
-        animal: tokenId @bsDecoder(fn: "tokenIdToAnimal")
+        tokenId @bsDecoder(fn: "tokenIdToAnimal")
         owner {
           address
           id
@@ -96,7 +96,7 @@ module SubWildcardQuery = [%graphql
     query ($tokenId: String!) {
       wildcard(id: $tokenId) {
         id
-        animal: tokenId @bsDecoder(fn: "tokenIdToAnimal")
+        tokenId @bsDecoder(fn: "tokenIdToAnimal")
         timeAcquired @bsDecoder(fn: "decodeMoment")
         totalCollected @bsDecoder(fn: "decodePrice")
         patronageNumeratorPriceScaled @bsDecoder(fn: "decodeBN")
