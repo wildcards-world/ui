@@ -12,6 +12,12 @@ const TheGreatWhaleConservancyLogo =
 const SendaVerdeLogo = "/img/logos/SendaVerde.png";
 const BdiLogo = "/img/conservation-partners/bdi.svg";
 const PangolinAficaLogo = "/img/conservation-partners/pangolin-africa.svg";
+const careForWild =
+  "https://dd2wadt5nc0o7.cloudfront.net/conservations/care-for-wild.svg";
+const lemurConservationNetwork =
+  "https://dd2wadt5nc0o7.cloudfront.net/conservations/lemur-conservation-network.svg";
+const sharkSpotters =
+  "https://dd2wadt5nc0o7.cloudfront.net/conservations/shark-spotters.svg";
 
 const styles = {
   logo: {
@@ -151,6 +157,34 @@ const Partners = () => (
               alt="Pangolin Africa"
               style={styles.logo}
             />
+            {/* <Text style={styles.center}>The Great Whale Conservancy</Text> */}
+          </a>
+        </Card>
+      </Box>
+      <Box mt={30} mb={70} width={[1, 1, 0.3]} color="black">
+        <Card style={styles.card}>
+          <a href="https://www.lemurconservationnetwork.org/">
+            <img
+              src={lemurConservationNetwork}
+              alt="Lemur Conservation Network"
+              style={styles.logo}
+            />
+            {/* <Text style={styles.center}>The Great Whale Conservancy</Text> */}
+          </a>
+        </Card>
+      </Box>
+      <Box mt={30} mb={70} width={[1, 1, 0.3]} color="black">
+        <Card style={styles.card}>
+          <a href="https://sharkspotters.org.za/">
+            <img src={sharkSpotters} alt="Shark Spotters" style={styles.logo} />
+            {/* <Text style={styles.center}>The Great Whale Conservancy</Text> */}
+          </a>
+        </Card>
+      </Box>
+      <Box mt={30} mb={70} width={[1, 1, 0.3]} color="black">
+        <Card style={styles.card}>
+          <a href="https://www.careforwild.co.za">
+            <img src={careForWild} alt="Care for Wild" style={styles.logo} />
             {/* <Text style={styles.center}>The Great Whale Conservancy</Text> */}
           </a>
         </Card>

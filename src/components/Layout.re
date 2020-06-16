@@ -180,9 +180,10 @@ let make = () => {
   <div className=Styles.app>
     <div className=Css.(style([minHeight(vh(88.))]))>
       <Announcement
-        nextReleasedAnimals=[|Animal.Ajayu|]
+        nextReleasedAnimals=[|Animal.Arthur|]
         // announcementBannerColor="FFCD47" //next color
-        announcementBannerColor="DE4C38"
+        announcementBannerColor="0624a6"
+        //DE4C38
         //f49229
         //2493AD
         //72D6B5
