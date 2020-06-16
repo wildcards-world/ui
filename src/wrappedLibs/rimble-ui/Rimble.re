@@ -55,6 +55,7 @@ module Tooltip = {
       ~placement: string=?,
       ~className: string=?,
       ~children: React.element,
+      ~offset: string=?,
       ~onClick: ReactEvent.Form.t => unit=?
     ) =>
     React.element =

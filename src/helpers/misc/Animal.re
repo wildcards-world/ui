@@ -18,6 +18,7 @@ type t =
   | Nonhlanhla
   | Tarkus
   | Ucok
+  | Arthur
   | Hook;
 
 let orderedArray = [|
@@ -38,6 +39,7 @@ let orderedArray = [|
   Espumita,
   CatStevens,
   Isisa,
+  Arthur,
   Tarkus,
   Ucok,
   Hook,
@@ -65,6 +67,7 @@ let getId: t => string =
     | Hook => "16"
     | Mijungla => "17"
     | Ajayu => "18"
+    | Arthur => "19"
     | Vitalik => "42"
     };
 
@@ -91,6 +94,7 @@ let getTokenId: t => TokenId.t =
     | Hook => TokenId.makeFromInt(16)
     | Mijungla => TokenId.makeFromInt(17)
     | Ajayu => TokenId.makeFromInt(18)
+    | Arthur => TokenId.makeFromInt(19)
     };
 
 let getNameFromId: string => string =
@@ -115,6 +119,7 @@ let getNameFromId: string => string =
     | "16" => "Hook"
     | "17" => "Mijungla"
     | "18" => "Ajayu"
+    | "19" => "Arthur"
     | "42" => "Vitalik"
     | _ => "Unknown"
     };
@@ -141,6 +146,7 @@ let getName: t => string =
     | Ucok => "Ucok"
     | Glen => "Glen"
     | Tarkus => "Tarkus"
+    | Arthur => "Arthur"
     | Hook => "Hook"
     };
 
@@ -168,6 +174,7 @@ let getAnimal: string => option(t) =
     | "glen" => Some(Glen)
     | "ucok" => Some(Ucok)
     | "hook" => Some(Hook)
+    | "arthur" => Some(Arthur)
     | _ => None
     };
   };
@@ -195,6 +202,7 @@ let getAnimalFromId: string => option(t) =
     | "16" => Some(Hook)
     | "17" => Some(Mijungla)
     | "18" => Some(Ajayu)
+    | "19" => Some(Arthur)
     | "42" => Some(Vitalik)
     | _ => None
     };
@@ -203,8 +211,9 @@ let getAnimalFromId: string => option(t) =
 let getNextPrev = animal =>
   switch (animal) {
   | Simon => (Vitalik, Dlala)
-  | Vitalik => (Ajayu, Simon)
-  | Ajayu => (Andy, Vitalik)
+  | Vitalik => (Arthur, Simon)
+  | Arthur => (Ajayu, Vitalik)
+  | Ajayu => (Andy, Arthur)
   | Andy => (Verano, Ajayu)
   | Verano => (Pancho, Andy)
   | Pancho => (Mijungla, Verano)
@@ -245,6 +254,7 @@ let getImage = animal => {
   | Hook => "https://dd2wadt5nc0o7.cloudfront.net/16-hook.jpg"
   | Mijungla => "https://dd2wadt5nc0o7.cloudfront.net/17-mijungla.svg"
   | Ajayu => "https://dd2wadt5nc0o7.cloudfront.net/18-ajayu.svg"
+  | Arthur => "https://dd2wadt5nc0o7.cloudfront.net/19-arthur-updated.svg"
   | Vitalik => "https://dd2wadt5nc0o7.cloudfront.net/42-vitalik.svg"
   };
 };
@@ -257,6 +267,8 @@ let getAlternateImage: t => option(string) =
     | Andy
     | Glen
     | Vitalik => None
+    | Arthur =>
+      Some("https://dd2wadt5nc0o7.cloudfront.net/19-arthur-real.jpg")
     | Ucok => Some("/img/animals/Ucokreal.jpg")
     | Verano => Some("/img/animals/Verano.jpg")
     | Pancho => Some("/img/animals/Pancho.jpg")
@@ -297,12 +309,25 @@ let getOrgBadgeImage: t => string =
     | Dlala => "/img/badges/WildTomorrowBadge.png"
     | Glen => "/img/badges/EthTurin.svg"
     | Ucok => "/img/badges/DarwinAnimalDoctors.svg"
-    | Hook => "/img/badges/GreatWhaleConservancy.png"
+    | Hook => "https://dd2wadt5nc0o7.cloudfront.net/conservations/great-whale-conservancy.png"
+    | Arthur => "https://dd2wadt5nc0o7.cloudfront.net/conservations/care-for-wild.svg"
     // | _ => None
     };
 
 let getStoryParagraphs = animal =>
   switch (animal) {
+  | Arthur => [|
+      "In the early hours of Sunday, the 20th May, the SANParks Section Ranger received a radio call from field rangers alerting him that a gunshot had been heard in the Skukuza section of the Kruger National Park. Helicopter support was deployed and soon after a deceased white rhino cow with a live calf was located.  Both horns had been removed from the cow and the calf had serious injuries to his back and right foot. Veterinarian Peter Buss stabilised the calf before it was transported by helicopter to Care for Wild Rhino Sanctuary.",
+      "At approximately 12:50 Care for Wild received notice that an injured calf was being airlifted to them and that they should be ready within ten minutes. They were. The small yet dedicated team at Care for Wild are on standby 24/7 and have strict protocols and procedures in place so that they are always ready to receive a rhino calf.",
+      "This particular calf weighed in at just 80kgs. He was not dehydrated as he had drunk from his mother that same morning before she was killed. As he was still sedated, his wounds which were caused by a machete, were scrubbed cleaned and bandaged.",
+      "He had a cut to his right front toenail which split the nail down to the nailbed, and a 4-inch gash on his back that cut through cartilage very close to his spine. It was instinctive for him to try and stay close to his mother to protect her, and the poachers with no sympathy or hesitation whatsoever lashed out at him so that they could finish their heinous crime of taking his mother’s horn as quickly as possible.",
+      "Petronel Nieuwoudt, the Founder of Care for Wild Rhino Sanctuary, put in an urgent call to Dr. Nolene du Plessis, (Plastic Surgeon) and explained the situation. Dr. du Plessis came out to the sanctuary immediately to stitch the deep wound in his back closed.",
+      "Just hours after his arrival and while still on the drip, he took his first bottle of milk! The jubilation felt by the staff was indescribable as this is a huge step in the extensive rehabilitation process. He continues to drink his milk and enjoy his grass as he grows day by day.",
+      "He has been given the regal and brave name of Arthur, a name that suits his determination and spirit to survive.",
+      "For months, his wounds were treated every 3-5 days, with the support of various veterinarians, surgeons, and wound care specialists. We are happy to say that Arthur’s wound have now completely healed, and only the scars remain.",
+      "Arthur has also made many friends at Care for Wild Rhino Sanctuary. These include orphan rhino Summer (his best and most loyal friend), K9 puppy in training Looney, his boma-mates Sophia, Kayla-Milan and Sparkle, as well as some of the older orphans Fern, Rubybelle, Rose-Petal, Khanya, and Zac. Arthur enjoys his daily walks and naps on the grass lawns of Care for Wild Rhino Sanctuary, together with Summer and the rest of his crash.",
+      "It is truly a blessing to have little Arthur, The Brave, enjoying his new life, despite the horror he has experienced so early in his fragile life. Care for Wild Rhino Sanctuary would like to thank everyone involved in Arthur’s rescue, his wound and general care. The love and support Arthur has received has made an amazing difference in this little orphaned rhino’s life. Thank you.",
+    |]
   | Vitalik => [|
       "Original Gorilla",
       "Vitalik is the first ever animal launched on wildcards and therefore often termed an OG (Original Gorilla). The wildcards project was born at the #ETHCapeTown hackathon in May 2019 where Vitalik Buterin was one of the judges. We named Vitalik the Gorilla after Vitalik as a testament to the impact and innovation Vitalik Buterin has had on the blockchain ecosystem. Vitalik, if you are reading this, start saving some animals and buy me!",
@@ -418,6 +443,7 @@ let pledgeRate = animal => {
   | Llajuita
   | Tarkus
   | Hook
+  | Arthur
   | Dlala => ("24", "10", 0.2, 5.)
   | Mijungla
   | Ajayu
@@ -445,7 +471,7 @@ type launchStatus =
   | Launched
   | LaunchDate(MomentRe.Moment.t);
 
-let nextLaunchDate = MomentRe.momentUtcDefaultFormat("2020-06-11T17:00:00");
+let nextLaunchDate = MomentRe.momentUtcDefaultFormat("2020-06-18T17:00:00");
 
 let isLaunched: t => launchStatus =
   anAnimal =>
@@ -468,8 +494,9 @@ let isLaunched: t => launchStatus =
     | Tarkus
     | Hook
     | Mijungla
+    | Ajayu
     | Llajuita => Launched
-    | Ajayu => LaunchDate(nextLaunchDate)
+    | Arthur => LaunchDate(nextLaunchDate)
     };
 
 let hasGovernance: t => bool =
@@ -493,6 +520,7 @@ let hasGovernance: t => bool =
     | Mijungla
     | Ajayu
     | Hook
+    | Arthur
     | Llajuita => false
     | Glen => true
     };
