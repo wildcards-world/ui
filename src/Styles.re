@@ -180,7 +180,7 @@ let headerImg = (enlargement, scalar) =>
     position(`relative),
     zIndex(1),
     maxHeight(px(500)),
-    maxWidth(`percent(100. *. enlargement)),
+    width(`percent(100. *. enlargement)),
     left(`percent((-50.) *. (enlargement -. 1.))),
     transform(scale(scalar, scalar)),
     textAlign(center),
@@ -368,7 +368,10 @@ let invisibleGorilla = style([display(`none)]);
 
 let fadeOut = targetOpacity =>
   style(
-    [transition(~duration=2000, ~delay=0, ~timingFunction=ease, "opacity")]
+    [
+      width(`percent(100.)),
+      transition(~duration=2000, ~delay=0, ~timingFunction=ease, "opacity"),
+    ]
     ->List.append([opacity(targetOpacity)]),
   );
 

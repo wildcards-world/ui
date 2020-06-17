@@ -44,15 +44,17 @@ module Streak = {
       let numDaysStr = daysHeldFloat->Js.Float.toFixed;
 
       <Rimble.Tooltip
-        message={j|$animalName has been held for $numDaysStr days by the same owner.|j}
-        placement="top">
-        <div className=Styles.positionRelative>
-          <img className=Styles.flameImg src=flameImg />
-          <p className=Styles.streakText>
-            <strong> {React.string(numDaysStr)} </strong>
-          </p>
-        </div>
-      </Rimble.Tooltip>;
+        className=Css.(style([width(`em(20.))]))
+        message={j|$animalName has been held for $numDaysStr days by the same owner.|j}>
+        // placement="bottom"
+
+          <div className=Styles.positionRelative>
+            <img className=Styles.flameImg src=flameImg />
+            <p className=Styles.streakText>
+              <strong> {React.string(numDaysStr)} </strong>
+            </p>
+          </div>
+        </Rimble.Tooltip>;
     | None => React.null
     };
   };
@@ -785,12 +787,15 @@ module AnimalInfo = {
         </ReactTabs.TabList>
         <ReactTabs.TabPanel>
           <h2> "Story"->React.string </h2>
-          {ReasonReact.array(
-             Animal.getStoryParagraphs(animal)
-             ->Array.mapWithIndex((i, paragraphText) =>
-                 <p key={i->string_of_int}> paragraphText->React.string </p>
-               ),
-           )}
+          <div
+            className=Css.(style([maxHeight(`em(26.)), overflow(`scroll)]))>
+            {ReasonReact.array(
+               Animal.getStoryParagraphs(animal)
+               ->Array.mapWithIndex((i, paragraphText) =>
+                   <p key={i->string_of_int}> paragraphText->React.string </p>
+                 ),
+             )}
+          </div>
           {animal == Animal.Glen
              ? <a href="/#dao">
                  <span className=Css.(style([color(hex("72c7d7"))]))>
