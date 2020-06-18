@@ -310,7 +310,7 @@ let getOrgBadgeImage: t => string =
     | Glen => "/img/badges/EthTurin.svg"
     | Ucok => "/img/badges/DarwinAnimalDoctors.svg"
     | Hook => "https://dd2wadt5nc0o7.cloudfront.net/conservations/great-whale-conservancy.png"
-    | Arthur => "https://dd2wadt5nc0o7.cloudfront.net/conservations/care-for-wild.svg"
+    | Arthur => "https://dd2wadt5nc0o7.cloudfront.net/conservations/care-for-wild-non-profit.svg"
     // | _ => None
     };
 

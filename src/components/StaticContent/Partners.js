@@ -13,7 +13,7 @@ const SendaVerdeLogo = "/img/logos/SendaVerde.png";
 const BdiLogo = "/img/conservation-partners/bdi.svg";
 const PangolinAficaLogo = "/img/conservation-partners/pangolin-africa.svg";
 const careForWild =
-  "https://dd2wadt5nc0o7.cloudfront.net/conservations/care-for-wild.svg";
+  "https://dd2wadt5nc0o7.cloudfront.net/conservations/care-for-wild-non-profit.svg";
 const lemurConservationNetwork =
   "https://dd2wadt5nc0o7.cloudfront.net/conservations/lemur-conservation-network.svg";
 const sharkSpotters =
