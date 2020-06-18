@@ -18,9 +18,9 @@ module Token = {
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
     let animal = Animal.getNameFromId(tokenId);
 
-    <div>
+    <div className=Css.(style([width(vh(12.))]))>
       <img
-        className=Css.(style([maxWidth(vh(12.))]))
+        className=Css.(style([width(`percent(100.))]))
         onClick={_e => clearAndPush("/#details/" ++ animal)}
         src={
           tokenId
