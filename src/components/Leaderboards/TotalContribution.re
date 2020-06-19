@@ -3,7 +3,7 @@ open ReasonApolloHooks;
 module LoadMostContributed = [%graphql
   {|
     query {
-      patronNews(first: 20, orderBy: totalContributed, orderDirection: desc, where: {id_not: "0x6d47cf86f6a490c6410fc082fd1ad29cf61492d0"}) {
+      patronNews(first: 30, orderBy: totalContributed, orderDirection: desc, where: {id_not: "0x6d47cf86f6a490c6410fc082fd1ad29cf61492d0"}) {
         id
         patronTokenCostScaledNumerator  @bsDecoder(fn: "QlHooks.decodeBN")
         totalContributed @bsDecoder(fn: "QlHooks.decodeBN")

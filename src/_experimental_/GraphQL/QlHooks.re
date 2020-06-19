@@ -242,7 +242,7 @@ module LoadPatronNewNoDecode = [%graphql
 module LoadTopContributors = [%graphql
   {|
     query ($numberOfLeaders: Int!) {
-      patrons(first: $numberOfLeaders, orderBy: patronTokenCostScaledNumerator, orderDirection: desc) {
+      patrons(first: $numberOfLeaders, orderBy: patronTokenCostScaledNumerator, orderDirection: desc, where: {id_not: "NO_OWNER"}) {
         id
         patronTokenCostScaledNumerator  @bsDecoder(fn: "decodeBN")
       }
