@@ -366,6 +366,36 @@ let useStateChangeSubscriptionData = () => {
   let (simple, _) = useStateChangeSubscription();
   subscriptionResultToOption(simple);
 };
+let useHomePageAnimalsData = () => {
+  let (simple, _) = useHomeAnimalsQuery();
+  queryResultToOption(simple);
+};
+// type wildcardData = {
+//   description: string,
+//   id: string,
+//   name: string,
+//   organisationId: string,
+// };
+type homePageAnimal = {
+  id: TokenId.t,
+  prev: TokenId.t,
+  next: TokenId.t,
+  // wildcardData,
+};
+let useHomePageAnimalArray = () => {
+  useHomePageAnimalsData()
+  ->oMap(homeAnimals =>
+      homeAnimals##homeAnimals
+      ->Array.map(animal =>
+          {
+            id: TokenId.fromStringUnsafe(animal##id),
+            prev: TokenId.fromStringUnsafe(animal##id),
+            next: TokenId.fromStringUnsafe(animal##id),
+          }
+        )
+    )
+  |||| [||];
+};
 
 [@decco.decode]
 type animalDescription = array(string);

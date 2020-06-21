@@ -51,7 +51,9 @@ let getNameFromId: string => string =
     | "42" => "Vitalik"
     | _ => "Unknown"
     };
-
+// http://localhost:3000/#details/15
+// http://localhost:3000/#details/simon
+// http://localhost:3000/#details/tarkus
 let lookupAnimalIdFromName = id =>
   switch (id) {
   | "simon" => Some(TokenId.fromStringUnsafe("0"))

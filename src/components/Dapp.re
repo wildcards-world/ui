@@ -253,7 +253,9 @@ module AnimalCarousel = {
   [@react.component]
   let make = (~isGqlLoaded) => {
     let (carouselIndex, setCarouselIndex) = React.useState(() => 17);
-    let numItems = Animal.orderedArray->Array.length;
+    let homePageAnimals = QlHooks.useHomePageAnimalArray();
+    let numItems = homePageAnimals->Array.length;
+    // let numItems = Animal.orderedArray->Array.length;
 
     <Rimble.Box className=Styles.positionRelative>
       <Carousel
@@ -289,7 +291,7 @@ module AnimalCarousel = {
         arrows=true
         onChange={test => setCarouselIndex(_ => test)}>
         {ReasonReact.array(
-           Animal.orderedArray->Array.mapWithIndex((index, animal) => {
+           homePageAnimals->Array.mapWithIndex((index, animalInfo) => {
              let (opacity, scalar) =
                switch (index) {
                | x when x == carouselIndex mod numItems => (1., 1.0)
@@ -315,7 +317,12 @@ module AnimalCarousel = {
                };
 
              <div className={Styles.fadeOut(opacity)}>
-               <CarouselAnimal animal isGqlLoaded scalar enlargement=1.5 />
+               <CarouselAnimal
+                 animal={animalInfo.id}
+                 isGqlLoaded
+                 scalar
+                 enlargement=1.5
+               />
              </div>;
            }),
          )}
