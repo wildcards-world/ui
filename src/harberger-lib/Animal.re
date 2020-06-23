@@ -156,6 +156,17 @@ let useGetOrgBadgeImage: TokenId.t => string =
     | _ => "/img/badges/OGBage.png"
     };
   };
+let useGetOrgImage: string => string =
+  org =>
+    switch (org) {
+    | "sendaverde" => "/img/badges/SendaVerdeBadge.png"
+    | "wildtomorrow" => "/img/badges/WildTomorrowBadge.png"
+    | "wildcards" => "/img/logos/wildcards-logo.svg" // TODO: find cropped version of this logo
+    | "darwinanimaldoctors" => "/img/badges/DarwinAnimalDoctors.svg"
+    | "greatwhaleconservancy" => "/img/badges/great-whale-conservancy-small.png"
+    | _ => "/img/badges/OGBage.png"
+    };
+
 // TODO: this will come from the backend too. But it will be any alternative badge for the UI
 let useGetAltBadge: TokenId.t => option(string) =
   animal => {

@@ -9,6 +9,7 @@ type leaderBoard =
   | MonthlyContribution;
 type urlState =
   | User(Web3.ethAddress)
+  | Org(string)
   | Explorer(animalPageState)
   | Leaderboards(leaderBoard)
   // | Unknown
@@ -20,9 +21,11 @@ let useUrlState = () => {
   let url = ReasonReactRouter.useUrl();
 
   React.useMemo1(
-    () =>
+    () => {
+      Js.log(Js.String.split("/", url.hash));
       switch (Js.String.split("/", url.hash)) {
       | [|"user", address|] => User(address->Js.String.toLowerCase)
+      | [|"org", orgId|] => Org(orgId->Js.String.toLowerCase)
       | [|"leaderboards", leaderboardType|] =>
         switch (leaderboardType) {
         | "monthly-contribution" => Leaderboards(MonthlyContribution)
@@ -63,7 +66,8 @@ let useUrlState = () => {
         | _ => Home(NormalView)
         // | _ => Unknown
         }
-      },
+      };
+    },
     [|url.hash|],
   );
 };
@@ -77,6 +81,7 @@ let useIsExplorer = () => {
       | User(_)
       | Leaderboards(_)
       | Home(_)
+      | Org(_)
       | IncreaseVoteIteration
       | VotePage => false
       },
@@ -98,6 +103,7 @@ let useIsDetails = () => {
       | Explorer(inside) => isDetailsAnimalPage(inside)
       | Home(inside) => isDetailsAnimalPage(inside)
       | User(_)
+      | Org(_)
       | Leaderboards(_)
       | IncreaseVoteIteration
       | VotePage => false
@@ -113,6 +119,7 @@ let useIsHome = () => {
       switch (urlState) {
       | Home(_) => true
       | User(_)
+      | Org(_)
       | Explorer(_)
       | Leaderboards(_)
       | IncreaseVoteIteration
@@ -143,6 +150,7 @@ let useAnimalForDetails = () => {
         getAnimalFormAnimalPageState(animalPageState)
       // | DetailView(_, optAnimal) => optAnimal
       | User(_)
+      | Org(_)
       | Leaderboards(_)
       | IncreaseVoteIteration
       | VotePage => None

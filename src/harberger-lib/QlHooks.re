@@ -272,6 +272,21 @@ module LoadPatronNewNoDecode = [%graphql
      |}
 ];
 
+module LoadOrganisationData = [%graphql
+  {|
+      query ($orgId: String!) {
+        organisations_by_pk(id: $orgId) {
+          description
+          name
+          website
+          wildcard {
+            id
+          }
+        }
+      }
+     |}
+];
+
 module LoadTopContributors = [%graphql
   {|
        query ($numberOfLeaders: Int!) {
@@ -355,6 +370,12 @@ let useStateChangeSubscription = () =>
     ~variables=SubStateChangeEvents.make()##variables,
     SubStateChangeEvents.definition,
   );
+
+let useLoadOrganisationQuery = orgId =>
+  ApolloHooks.useQuery(
+    ~variables=LoadOrganisationData.make(~orgId, ())##variables,
+    LoadOrganisationData.definition,
+  );
 // let useBuySubscriptionData = () => {
 //   let (simple, _) = useBuySubscription();
 //   switch (simple) {
@@ -365,6 +386,10 @@ let useStateChangeSubscription = () =>
 let useStateChangeSubscriptionData = () => {
   let (simple, _) = useStateChangeSubscription();
   subscriptionResultToOption(simple);
+};
+let useLoadOrganisationData = orgId => {
+  let (simple, _) = useLoadOrganisationQuery(orgId);
+  queryResultToOption(simple);
 };
 let useHomePageAnimalsData = () => {
   let (simple, _) = useHomeAnimalsQuery();
@@ -686,6 +711,7 @@ let useAmountRaisedToken: TokenId.t => option(Eth.t) =
             // BN.new_("1000000000000")->BN.mulGet(. BN.new_("31536000")),
             BN.new_("31536000000000000000"),
           );
+
       Some(
         amountCollectedOrDue->BN.addGet(. amountRaisedSinceLastCollection),
       );

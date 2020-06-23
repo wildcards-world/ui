@@ -191,7 +191,8 @@ let make = () => {
           },
         |]
       />
-      {switch (urlState) {
+      {Js.log2("urlState", urlState);
+       switch (urlState) {
        | VotePage => <VotePage />
        | IncreaseVoteIteration => <IncreaseIterationPage />
        | Explorer(animalPageState) =>
@@ -217,6 +218,7 @@ let make = () => {
            </React.Fragment>
          }
        | User(userAddress) => <UserProfile userAddress />
+       | Org(orgId) => <OrgProfile orgId />
        | Leaderboards(leaderboardType) =>
          <Rimble.Flex
            flexWrap="wrap"
