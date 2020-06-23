@@ -42,6 +42,8 @@ let decodeBN: Js.Json.t => BN.bn =
     ->Belt.Option.mapWithDefault("0", a => a) /*trusting that gql will be reliable here*/
     ->BN.new_;
 
+let toTokenId: string => TokenId.t = Obj.magic;
+
 // TODO: make a real address string
 let decodeAddress: Js.Json.t => string =
   address =>
@@ -272,6 +274,21 @@ module LoadPatronNewNoDecode = [%graphql
      |}
 ];
 
+module LoadTokenDataArray = [%graphql
+  {|
+        query ($orgArray: [String!]!) {
+          wildcards (where: {id_in: $orgArray}) {
+            # totalCollected
+            # patronageNumeratorPriceScaled
+            # timeCollected
+            id
+            totalCollected @bsDecoder(fn: "decodePrice")
+            patronageNumeratorPriceScaled @bsDecoder(fn: "decodeBN")
+            timeCollected @bsDecoder(fn: "decodeBN")
+          }
+        }
+     |}
+];
 module LoadOrganisationData = [%graphql
   {|
       query ($orgId: String!) {
@@ -280,7 +297,7 @@ module LoadOrganisationData = [%graphql
           name
           website
           wildcard {
-            id
+            id @bsDecoder(fn: "toTokenId")
           }
         }
       }
@@ -350,6 +367,16 @@ let useWildcardQuery = tokenId =>
     ~variables=
       SubWildcardQuery.make(~tokenId=tokenId->TokenId.toString, ())##variables,
     SubWildcardQuery.definition,
+  );
+
+let useLoadTokenDataArrayQuery = tokenIdArray =>
+  ApolloHooks.useQuery(
+    ~variables=
+      LoadTokenDataArray.make(
+        ~orgArray=tokenIdArray->Array.map(id => id->TokenId.toString),
+        (),
+      )##variables,
+    LoadTokenDataArray.definition,
   );
 
 let useWildcardDataQuery = tokenId =>
@@ -621,6 +648,22 @@ let useTotalCollectedToken: TokenId.t => option((Eth.t, BN.bn, BN.bn)) =
     simple->queryResultOptionFlatMap(getTotalCollectedData);
   };
 
+let useTotalCollectedTokenArray = animalArray => {
+  let (simple, _) = useLoadTokenDataArrayQuery(animalArray);
+  // let getTotalCollectedData = response =>
+  //   response##wildcard
+  //   ->oMap(wc =>
+  //       (
+  //         wc##totalCollected,
+  //         wc##timeCollected,
+  //         wc##patronageNumeratorPriceScaled,
+  //       )
+  //     );
+  Js.log(simple);
+  // simple;
+  simple->queryResultToOption;
+};
+
 let usePatronageNumerator = (tokenId: TokenId.t) => {
   let (simple, _) = useWildcardQuery(tokenId);
   let patronageNumerator = response =>
@@ -715,6 +758,48 @@ let useAmountRaisedToken: TokenId.t => option(Eth.t) =
       Some(
         amountCollectedOrDue->BN.addGet(. amountRaisedSinceLastCollection),
       );
+    | None => None
+    };
+  };
+let calculateTotalRaised =
+    (
+      currentTimestamp,
+      (amountCollectedOrDue, timeCalculated, patronageNumeratorPriceScaled),
+    ) => {
+  let timeElapsed = BN.new_(currentTimestamp)->BN.subGet(. timeCalculated);
+
+  let amountRaisedSinceLastCollection =
+    patronageNumeratorPriceScaled
+    ->BN.mulGet(. timeElapsed)
+    ->BN.divGet(.
+        // BN.new_("1000000000000")->BN.mulGet(. BN.new_("31536000")),
+        BN.new_("31536000000000000000"),
+      );
+
+  amountCollectedOrDue->BN.addGet(. amountRaisedSinceLastCollection);
+};
+let useTotalRaisedAnimalGroup: array(TokenId.t) => option(Eth.t) =
+  animals => {
+    let currentTimestamp = useCurrentTime();
+
+    let details = useTotalCollectedTokenArray(animals);
+    // let detailsArray = details##wildcards;
+    switch (details) {
+    | Some(detailsArray) =>
+      Some(
+        detailsArray##wildcards
+        ->Array.reduce(BN.new_("0"), (acc, animalDetails) =>
+            calculateTotalRaised(
+              currentTimestamp,
+              (
+                animalDetails##totalCollected,
+                animalDetails##timeCollected,
+                animalDetails##patronageNumeratorPriceScaled,
+              ),
+            )
+            |+| acc
+          ),
+      )
     | None => None
     };
   };
