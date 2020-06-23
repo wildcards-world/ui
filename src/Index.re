@@ -13,27 +13,24 @@ module Router = {
 };
 
 [@bs.val] external mainnetApi: string = "process.env.REACT_APP_MAINNET_BE";
-Js.log(mainnetApi);
-Js.log(mainnetApi);
-Js.log(mainnetApi);
-Js.log(mainnetApi);
-Js.log(mainnetApi);
-Js.log(mainnetApi);
-Js.log(mainnetApi);
-Js.log(mainnetApi);
-Js.log(mainnetApi);
 [@bs.val] external goerliApi: string = "process.env.REACT_APP_GOERLI_BE";
 
 ReactDOMRe.renderToElementWithId(
   // stewardAbi
   // stewardContractAddress="0x4bE0Eab8f41c8109AA134509086Cbcb18b10C0fB"
   <WildcardsProvider
-    getGraphEndpoint={() => {
+    getGraphEndpoints={() => {
       let networkId =
         RootProvider.useNetworkId()->Belt.Option.mapWithDefault(1, a => a);
       switch (networkId) {
-      | 5 => goerliApi
-      | _ => mainnetApi
+      | 5 => (
+          goerliApi,
+          "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards",
+        )
+      | _ => (
+          mainnetApi,
+          "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
+        )
       };
     }}>
     <UsdPriceProvider> <Router /> </UsdPriceProvider>

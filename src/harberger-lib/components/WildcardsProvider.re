@@ -2,15 +2,15 @@
 [@react.component]
 let make =
     (
-      ~getGraphEndpoint,
+      ~getGraphEndpoints,
       ~children,
       ~stewardContractAddress: option(Web3.ethAddress)=?,
       ~stewardAbi: option(Web3.abi)=?,
     ) => {
   let client =
     React.useMemo1(
-      () => Client.instance(~getGraphEndpoint),
-      [|getGraphEndpoint|],
+      () => Client.instance(~getGraphEndpoints),
+      [|getGraphEndpoints|],
     );
 
   <RootProvider stewardContractAddress stewardAbi>

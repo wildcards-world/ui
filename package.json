@@ -58,7 +58,7 @@
     "nextbuild": "npm i next@9.3.6 && npm run re:build && rm ./public/index.html && next build",
     "next-start": "next start",
     "start": "npm run re:build && react-scripts start",
-    "build-js-only": "EXTEND_ESLINT=true react-scripts build --verbose",
+    "build-js-only": "EXTEND_ESLINT=true REACT_APP_MAINNET_BE=https://api.wildcards.world/v1/graphql REACT_APP_GOERLI_BE=https://api.wildcards.world/v1/graphql react-scripts build --verbose",
     "build": "npm run re:build && npm run build-js-only",
     "test": "react-scripts test",
     "lint": "eslint src",
