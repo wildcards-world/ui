@@ -19,14 +19,24 @@ ReactDOMRe.renderToElementWithId(
   // stewardAbi
   // stewardContractAddress="0x4bE0Eab8f41c8109AA134509086Cbcb18b10C0fB"
   <WildcardsProvider
-    getGraphEndpoints={() => {
-      let networkId =
-        RootProvider.useNetworkId()->Belt.Option.mapWithDefault(1, a => a);
+    getGraphEndpoints={(networkId, ()) => {
+      Js.log("GETTING ENDPOINTSSSS");
+      Js.log("GETTING ENDPOINTSSSS");
+      Js.log("GETTING ENDPOINTSSSS");
+      Js.log("GETTING ENDPOINTSSSS");
+      Js.log("GETTING ENDPOINTSSSS");
+      Js.log(networkId);
+      Js.log(networkId);
+      Js.log(networkId);
+      Js.log(networkId);
+      Js.log(networkId);
       switch (networkId) {
-      | 5 => (
+      | 5 =>
+        Js.log2("USING GOERLI API!!!", goerliApi);
+        (
           goerliApi,
           "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards",
-        )
+        );
       | _ => (
           mainnetApi,
           "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",

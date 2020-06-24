@@ -52,7 +52,7 @@ let decodeAddress: Js.Json.t => string =
 module InitialLoad = [%graphql
   {|
        query {
-         wildcards(first: 14) {
+         wildcards(first: 30) {
            id
            animal: tokenId @bsDecoder(fn: "tokenIdToAnimal")
            owner {
@@ -306,13 +306,13 @@ module LoadOrganisationData = [%graphql
 
 module LoadTopContributors = [%graphql
   {|
-       query ($numberOfLeaders: Int!) {
-         patrons(first: $numberOfLeaders, orderBy: patronTokenCostScaledNumerator, orderDirection: desc) {
-           id
-           patronTokenCostScaledNumerator  @bsDecoder(fn: "decodeBN")
-         }
-       }
-     |}
+      query ($numberOfLeaders: Int!) {
+        patrons(first: $numberOfLeaders, orderBy: patronTokenCostScaledNumerator, orderDirection: desc, where: {id_not: "NO_OWNER"}) {
+          id
+          patronTokenCostScaledNumerator  @bsDecoder(fn: "decodeBN")
+        }
+      }
+  |}
 ];
 
 module SubTotalRaisedOrDueQuery = [%graphql

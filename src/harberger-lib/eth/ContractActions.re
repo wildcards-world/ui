@@ -44,14 +44,15 @@ type txOptions = {value: parsedUnits};
 type tokenIdString = string;
 type estimateBuy = {
   buy:
+    // (. string, parsedUnits, txOptions) =>
     (. string, parsedUnits, parsedUnits, txOptions) =>
     Promise.Js.t(string, string),
 };
 type stewardContract = {
   estimate: estimateBuy,
   buy:
-    (. tokenIdString, parsedUnits, parsedUnits, txOptions) =>
-    Promise.Js.t(tx, txError),
+    // (. tokenIdString, parsedUnits, parsedUnits, txOptions) =>
+    (. tokenIdString, parsedUnits, txOptions) => Promise.Js.t(tx, txError),
   depositWei: (. txOptions) => Promise.Js.t(tx, txError),
   withdrawDeposit: (. parsedUnits, txOptions) => Promise.Js.t(tx, txError),
   _collectPatronage:
@@ -245,11 +246,11 @@ let useBuy = (animal: TokenId.t) => {
   let optSteward = useStewardContract();
 
   (
-    (newPrice, deposit, value: string) => {
+    (newPrice, _deposit, value: string) => {
       let newPriceEncoded = parseUnits(. newPrice, 18);
 
       let value = parseUnits(. value, 0);
-      let depositEncoded = parseUnits(. deposit, 18);
+      // let depositEncoded = parseUnits(. deposit, 18);
 
       setTxState(_ => Created);
       switch (optSteward) {
@@ -258,7 +259,7 @@ let useBuy = (animal: TokenId.t) => {
           steward.buy(.
             animalId,
             newPriceEncoded,
-            depositEncoded,
+            // depositEncoded,
             {
               // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
               value: value,

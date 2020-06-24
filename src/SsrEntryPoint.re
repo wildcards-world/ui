@@ -30,9 +30,7 @@ module ApolloProvider = {
 [@react.component]
 let make = () =>
   <WildcardsProvider
-    getGraphEndpoints={() => {
-      let networkId =
-        RootProvider.useNetworkId()->Belt.Option.mapWithDefault(1, a => a);
+    getGraphEndpoints={(networkId, ()) => {
       switch (networkId) {
       | 5 => (
           goerliApi,
@@ -42,7 +40,7 @@ let make = () =>
           mainnetApi,
           "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
         )
-      };
+      }
     }}>
     <Router />
   </WildcardsProvider>;

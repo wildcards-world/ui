@@ -909,11 +909,6 @@
           "internalType": "uint256",
           "name": "_newPrice",
           "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_deposit",
-          "type": "uint256"
         }
       ],
       "name": "buy",

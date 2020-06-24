@@ -81,12 +81,15 @@ let make = () => {
   <div className=Styles.app>
     <div className=Css.(style([minHeight(vh(88.))]))>
       <Announcement
-        nextReleasedAnimals=[|TokenId.makeFromInt(16)|]
-        announcementBannerColor="f49229"
-        //2493AD
-        //2493AD
-        //72D6B5
-        //AEE79A
+        nextReleasedAnimals=[|TokenId.makeFromInt(21)|]
+        announcementBannerColor="D6564B"
+        // announcementBannerColor="FFCD47" //next color
+        // 0624a6 - Arthur
+        // DE4C38
+        // f49229
+        // 2493AD
+        // 72D6B5
+        // AEE79A
       />
       <div className=Css.(style([position(relative)]))>
         <img src=betaBanner className=Styles.betaBanner />
@@ -147,6 +150,20 @@ let make = () => {
                   clearAndPush({j|/#leaderboards/monthly-contribution|j});
                 }}>
                 "LEADERBOARDS"->restr
+              </a>,
+          },
+          {
+            shouldDisplay: true,
+            shouldDisplayMobile: true,
+            component: (closeModal, _) =>
+              <a
+                className=Styles.navListText
+                onClick={event => {
+                  closeModal();
+                  ReactEvent.Mouse.preventDefault(event);
+                  clearAndPush({j|/#dao|j});
+                }}>
+                "DAO"->restr
               </a>,
           },
           {

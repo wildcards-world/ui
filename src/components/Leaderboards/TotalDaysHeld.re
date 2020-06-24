@@ -3,7 +3,7 @@ open ReasonApolloHooks;
 module LoadMostDaysHeld = [%graphql
   {|
     query {
-      patronNews(first: 20, orderBy: totalTimeHeld, orderDirection: desc) {
+      patronNews(first: 20, orderBy: totalTimeHeld, orderDirection: desc,  where: {id_not: "NO_OWNER"}) {
         id
         totalTimeHeld @bsDecoder(fn: "QlHooks.decodeBN")
         tokens{
