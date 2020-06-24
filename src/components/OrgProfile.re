@@ -3,6 +3,11 @@ open Globals;
 [@decco.decode]
 type orgDescriptionArray = array(string);
 
+module YoutubeVid = {
+  [@bs.module "./StaticContent//YoutubeVideo.js"] [@react.component]
+  external make: (~videoCode: string) => React.element = "default";
+};
+
 module OrgPage = {
   [@react.component]
   let make = (~orgData, ~orgId) => {
@@ -12,8 +17,7 @@ module OrgPage = {
     let orgAnimalsArray = orgAnimals->Array.map(animal => animal##id);
     let currentUsdEthPrice = UsdPriceProvider.useUsdPrice();
     let totalCollected = QlHooks.useTotalRaisedAnimalGroup(orgAnimalsArray);
-    // let totalCollectedString =
-    //   totalCollected->oMap(a => a->BN.toStringGet(.)) |||| "Loading";
+
     let (totalPatronage, totalPatronageUsd) =
       totalCollected->mapd(("Loading", "Loading"), a =>
         (
@@ -26,44 +30,89 @@ module OrgPage = {
       );
     let orgWebsite = orgData##website;
     let orgImage = Animal.useGetOrgImage(orgId);
-    //  let orgName = data##name;
+
     <div>
-      <p> "profile"->restr </p>
-      <img src=orgImage />
-      <p> orgName->restr </p>
-      {switch (orgDescription) {
-       | Ok(descriptionArray) =>
-         ReasonReact.array(
-           descriptionArray->Array.mapWithIndex((i, paragraphText) =>
-             <p key={i->string_of_int}> paragraphText->React.string </p>
-           ),
-         )
-       | Error(_) => <p> "ok"->restr </p>
-       }}
-      <p> "totalRaised:"->restr </p>
-      <p> {(totalPatronage ++ "ETH")->restr} </p>
-      <p> {(totalPatronageUsd ++ "USD")->restr} </p>
-      <a href=orgWebsite> "Website"->restr </a>
-      {switch (orgAnimals) {
-       | [||] => React.null
-       | uniquePreviouslyOwnedTokens =>
-         <React.Fragment>
-           <Rimble.Heading>
-             "Organisations animals"->React.string
-           </Rimble.Heading>
-           <Rimble.Flex
-             flexWrap="wrap" className=UserProfile.centreAlignOnMobile>
-             {ReasonReact.array(
-                uniquePreviouslyOwnedTokens->Array.mapWithIndex((i, animal) => {
-                  <UserProfile.Token
-                    key={i->string_of_int}
-                    tokenId={animal##id}
-                  />
-                }),
-              )}
-           </Rimble.Flex>
-         </React.Fragment>
-       }}
+      <div className=Css.(style([width(`percent(100.))]))>
+        <Rimble.Flex flexWrap="wrap" alignItems="start">
+          <Rimble.Box
+            p=1
+            width=[|1., 1., 0.3333|]
+            className=Css.(style([textAlign(`center)]))>
+            <img
+              className=Css.(
+                style([
+                  // borderRadius(`percent(100.)),
+                  width(`vh(25.)),
+                  height(`vh(25.)),
+                  objectFit(`cover),
+                ])
+              )
+              src=orgImage
+            />
+            <br />
+            <a
+              className={Cn.make([
+                Styles.navListText,
+                Css.(style([fontSize(em(3.))])),
+              ])}
+              target="_blank"
+              rel="noopener noreferrer"
+              href=orgWebsite>
+              orgName->restr
+            </a>
+            <br />
+            {switch (orgDescription) {
+             | Ok(descriptionArray) =>
+               ReasonReact.array(
+                 descriptionArray->Array.mapWithIndex((i, paragraphText) =>
+                   <p key={i->string_of_int}> paragraphText->React.string </p>
+                 ),
+               )
+             | Error(_) => <p> "ok"->restr </p>
+             }}
+            // {optTwitter->reactMap(twitterHandle =>
+            //    <a
+            //      className=Styles.navListText
+            //      target="_blank"
+            //      rel="noopener noreferrer"
+            //      href={"https://twitter.com/" ++ twitterHandle}>
+            //      {("@" ++ twitterHandle)->restr}
+            //    </a>
+            //  )}
+            <br />
+          </Rimble.Box>
+          <Rimble.Box p=1 width=[|1., 1., 0.3333|]>
+            <YoutubeVid videoCode="y5er2RXg3C8" />
+            <h2> "Monthly Contribution"->restr </h2>
+            <p> {(totalPatronage ++ "ETH")->restr} </p>
+            <p> {(totalPatronageUsd ++ "USD")->restr} </p>
+          </Rimble.Box>
+          <Rimble.Box p=1 width=[|1., 1., 0.3333|]>
+            <h2> "Monthly Contribution"->restr </h2>
+            {switch (orgAnimals) {
+             | [||] => React.null
+             | uniquePreviouslyOwnedTokens =>
+               <React.Fragment>
+                 <Rimble.Heading>
+                   "Organisations animals"->React.string
+                 </Rimble.Heading>
+                 <Rimble.Flex
+                   flexWrap="wrap" className=UserProfile.centreAlignOnMobile>
+                   {ReasonReact.array(
+                      uniquePreviouslyOwnedTokens->Array.mapWithIndex(
+                        (i, animal) => {
+                        <UserProfile.Token
+                          key={i->string_of_int}
+                          tokenId={animal##id}
+                        />
+                      }),
+                    )}
+                 </Rimble.Flex>
+               </React.Fragment>
+             }}
+          </Rimble.Box>
+        </Rimble.Flex>
+      </div>
     </div>;
   };
 };
@@ -74,17 +123,6 @@ let make = (~orgId: string) => {
 
   Js.log(orgData);
 
-  // let (totalPatronage, totalPatronageUsd) =
-  //   QlHooks.useAmountRaisedToken(animal)
-  //   ->mapd(("Loading", "Loading"), a =>
-  //       (
-  //         (a->Eth.get(Eth.Eth(`ether))->Float.fromString |||| 0.0)
-  //         ->toFixedWithPrecisionNoTrailingZeros(~digits=9),
-  //         currentUsdEthPrice->mapd("Loading", usdEthRate =>
-  //           a->Eth.get(Eth.Usd(usdEthRate, 2))
-  //         ),
-  //       )
-  //     );
   <Rimble.Flex flexWrap="wrap" alignItems="center" className=Styles.topBody>
     {switch (orgData) {
      | Some(data) =>
@@ -101,7 +139,7 @@ let make = (~orgId: string) => {
      | None =>
        <div>
          <Rimble.Heading>
-           "Loading user profile:"->React.string
+           "Loading Organisation Profile"->React.string
          </Rimble.Heading>
          <Rimble.Loader />
        </div>

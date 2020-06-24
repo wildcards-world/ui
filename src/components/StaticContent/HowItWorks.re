@@ -5,7 +5,7 @@ open Rimble;
 
 module YoutubeVid = {
   [@bs.module "./YoutubeVideo.js"] [@react.component]
-  external make: unit => React.element = "default";
+  external make: (~videoCode: string) => React.element = "default";
 };
 
 let infoModalStyle =
@@ -26,7 +26,7 @@ let make = () => {
     <Rimble.Flex flexWrap="wrap">
       <Rimble.Box width=[|1., 1., 0.59|] className=Styles.infoCardContainer>
         <Rimble.Card className=Styles.infoCardStyles>
-          <YoutubeVid />
+          <YoutubeVid videoCode="n7GBm6ruVaQ" />
           <br />
           <Rimble.Box width=[|1.|]>
             <Rimble.Button
