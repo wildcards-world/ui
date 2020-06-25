@@ -95,6 +95,17 @@ let useInitialDataLoad = () => {
   };
 };
 
+let useAnimalList = () => {
+  let allData = useInitialDataLoad();
+  React.useMemo1(
+    () => {
+      allData->oMap(data => data##wildcards->Array.map(wc => wc##animal))
+      |||| [||]
+    },
+    [|allData|],
+  );
+};
+
 module SubWildcardQuery = [%graphql
   {|
        query ($tokenId: String!) {
@@ -434,7 +445,7 @@ type homePageAnimal = {
   next: TokenId.t,
   // wildcardData,
 };
-let useHomePageAnimalArray = () => {
+let useHomePageAnimalArrayOpt = () => {
   useHomePageAnimalsData()
   ->oMap(homeAnimals =>
       homeAnimals##homeAnimals
@@ -445,8 +456,33 @@ let useHomePageAnimalArray = () => {
             next: TokenId.fromStringUnsafe(animal##id),
           }
         )
-    )
-  |||| [||];
+    );
+};
+let useHomePageAnimalArray = () => {
+  useHomePageAnimalArrayOpt() |||| [||];
+};
+let useDetailsPageNextPrevious = (currentToken: TokenId.t) => {
+  let homepageAnimalData = useHomePageAnimalArray();
+  let defaultValue = {
+    id: TokenId.fromStringUnsafe("2"),
+    next: TokenId.fromStringUnsafe("1"),
+    prev: TokenId.fromStringUnsafe("0"),
+  };
+  let forwardNextLookup =
+    React.useMemo1(
+      () =>
+        homepageAnimalData->Array.reduce(
+          Js.Dict.empty(),
+          (dict, item) => {
+            dict->Js.Dict.set(item.id->TokenId.toString, item);
+            dict;
+          },
+        ),
+      [|homepageAnimalData|],
+    );
+
+  forwardNextLookup->Js.Dict.get(currentToken->TokenId.toString)
+  |||| defaultValue;
 };
 
 [@decco.decode]

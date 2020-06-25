@@ -40,6 +40,8 @@ module Button = {
         ~position: string,
         ~top: int,
         ~right: int,
+        ~height: string=?,
+        ~size: string=?,
         ~m: int
       ) =>
       React.element =

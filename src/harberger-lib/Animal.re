@@ -1,28 +1,5 @@
 open Globals;
 
-let orderedArray = [|
-  TokenId.fromStringUnsafe("0"),
-  TokenId.fromStringUnsafe("1"),
-  TokenId.fromStringUnsafe("2"),
-  TokenId.fromStringUnsafe("3"),
-  TokenId.fromStringUnsafe("4"),
-  TokenId.fromStringUnsafe("5"),
-  TokenId.fromStringUnsafe("6"),
-  TokenId.fromStringUnsafe("7"),
-  TokenId.fromStringUnsafe("8"),
-  TokenId.fromStringUnsafe("9"),
-  TokenId.fromStringUnsafe("10"),
-  TokenId.fromStringUnsafe("11"),
-  TokenId.fromStringUnsafe("12"),
-  TokenId.fromStringUnsafe("13"),
-  TokenId.fromStringUnsafe("14"),
-  TokenId.fromStringUnsafe("15"),
-  TokenId.fromStringUnsafe("16"),
-  TokenId.fromStringUnsafe("17"),
-  TokenId.fromStringUnsafe("18"),
-  TokenId.fromStringUnsafe("42"),
-|];
-
 let useGetName: TokenId.t => option(string) =
   tokenId => QlHooks.useWildcardName(tokenId);
 
@@ -80,11 +57,6 @@ let getAnimal: string => option(TokenId.t) =
   animal =>
     TokenId.make(animal)
     ->mapd(lookupAnimalIdFromName(animal), a => Some(a));
-
-let getNextPrev = _animal => (
-  TokenId.makeFromInt(0),
-  TokenId.makeFromInt(1),
-);
 
 // TODO: Move to the backend!
 let getImage = animal => {
