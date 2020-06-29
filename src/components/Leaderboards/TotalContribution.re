@@ -119,7 +119,7 @@ module ContributorsRow = {
       );
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
-    <tr className={rankingColor(index)}>
+    <tr key=contributor className={rankingColor(index)}>
       <td>
         <span className=centerFlame>
           {index == 0
@@ -171,7 +171,7 @@ module ContributorsRow = {
 module MostContributed = {
   [@react.component]
   let make = (~highestContributors) => {
-    ReasonReact.array(
+    React.array(
       Array.mapi(
         (index, (contributor, amount)) => {
           <ContributorsRow
@@ -188,7 +188,6 @@ module MostContributed = {
 
 [@react.component]
 let make = (~numberOfLeaders) => {
-  Js.log(numberOfLeaders);
   let highestContributorsOpt = useLoadMostContributedData();
 
   <div>

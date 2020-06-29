@@ -686,17 +686,6 @@ let useTotalCollectedToken: TokenId.t => option((Eth.t, BN.bn, BN.bn)) =
 
 let useTotalCollectedTokenArray = animalArray => {
   let (simple, _) = useLoadTokenDataArrayQuery(animalArray);
-  // let getTotalCollectedData = response =>
-  //   response##wildcard
-  //   ->oMap(wc =>
-  //       (
-  //         wc##totalCollected,
-  //         wc##timeCollected,
-  //         wc##patronageNumeratorPriceScaled,
-  //       )
-  //     );
-  Js.log(simple);
-  // simple;
   simple->queryResultToOption;
 };
 

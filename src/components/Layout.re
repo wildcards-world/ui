@@ -228,8 +228,7 @@ let make = () => {
           },
         |]
       />
-      {Js.log2("urlState", urlState);
-       switch (urlState) {
+      {switch (urlState) {
        | VotePage => <VotePage />
        | IncreaseVoteIteration => <IncreaseIterationPage />
        | Explorer(animalPageState) =>

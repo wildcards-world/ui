@@ -68,8 +68,6 @@ let make = (~children) => {
   let (translationModeCrypto, setTranslationModeCrypto) =
     React.useState(_ => false);
 
-  Js.log2(translationModeCrypto, setTranslationModeCrypto);
-
   <TranslatorProvider translations=cryptoMuggleTranslations>
     <TranslationContext
       value={

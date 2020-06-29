@@ -63,7 +63,7 @@ module OrgPage = {
             <br />
             {switch (orgDescription) {
              | Ok(descriptionArray) =>
-               ReasonReact.array(
+               React.array(
                  descriptionArray->Array.mapWithIndex((i, paragraphText) =>
                    <p key={i->string_of_int}> paragraphText->React.string </p>
                  ),
@@ -98,11 +98,10 @@ module OrgPage = {
                  </Rimble.Heading>
                  <Rimble.Flex
                    flexWrap="wrap" className=UserProfile.centreAlignOnMobile>
-                   {ReasonReact.array(
-                      uniquePreviouslyOwnedTokens->Array.mapWithIndex(
-                        (i, animal) => {
+                   {React.array(
+                      uniquePreviouslyOwnedTokens->Array.map(animal => {
                         <UserProfile.Token
-                          key={i->string_of_int}
+                          key={animal##id->TokenId.toString}
                           tokenId={animal##id}
                         />
                       }),
@@ -120,8 +119,6 @@ module OrgPage = {
 [@react.component]
 let make = (~orgId: string) => {
   let orgData = QlHooks.useLoadOrganisationData(orgId);
-
-  Js.log(orgData);
 
   <Rimble.Flex flexWrap="wrap" alignItems="center" className=Styles.topBody>
     {switch (orgData) {

@@ -41,8 +41,9 @@ let make = () => {
         ])
       )>
       {connectors
-       ->Belt.Array.map(connector =>
+       ->Belt.Array.mapWithIndex((index, connector) =>
            <div
+             key={index->string_of_int}
              onClick={_e => activateConnector(connector.connector)}
              className=Css.(
                style([
@@ -105,7 +106,7 @@ let make = () => {
              </div>
            </div>
          )
-       ->ReasonReact.array}
+       ->React.array}
     </div>
   </div>;
 };

@@ -22,9 +22,12 @@ let make = () => {
     <Rimble.Flex
       flexWrap="wrap" justifyContent="space-around" alignItems="stretch" px=50>
       {allAnimals
-       ->Array.mapWithIndex((i, animal) =>
+       ->Array.map(animal =>
            <Rimble.Box
-             key={i->string_of_int} fontSize=4 p=3 width=[|1., 1., 0.3|]>
+             key={animal->TokenId.toString}
+             fontSize=4
+             p=3
+             width=[|1., 1., 0.3|]>
              <Rimble.Card>
                <Dapp.CarouselAnimal animal isGqlLoaded scalar=1. />
              </Rimble.Card>

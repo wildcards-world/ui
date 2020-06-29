@@ -49,8 +49,8 @@ let make = () => {
     "darwinanimaldoctors",
   |];
 
-  let orgBox = content =>
-    <Rimble.Box mt=20 mb=20 width=[|0.45, 0.45, 0.18|] color="black">
+  let orgBox = (content, ~key) =>
+    <Rimble.Box key mt=20 mb=20 width=[|0.45, 0.45, 0.18|] color="black">
       content
     </Rimble.Box>;
 
@@ -72,13 +72,15 @@ let make = () => {
       pb=50
       px=50>
       {conservationPartners
-       ->Array.map(conservationId => orgBox(<OrgDetails conservationId />))
+       ->Array.map(conservationId =>
+           orgBox(<OrgDetails conservationId />, ~key=conservationId)
+         )
        ->React.array}
       // These empty org boxes keep positioning in a uniform grid
-      {orgBox(React.null)}
-      {orgBox(React.null)}
-      {orgBox(React.null)}
-      {orgBox(React.null)}
+      {orgBox(React.null, ~key="a")}
+      {orgBox(React.null, ~key="b")}
+      {orgBox(React.null, ~key="c")}
+      {orgBox(React.null, ~key="d")}
     </Rimble.Flex>
     <Rimble.Flex
       flexWrap="wrap"

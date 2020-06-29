@@ -45,9 +45,10 @@ let make = () =>
       justifyContent="center"
       flexWrap="wrap"
       className=featuredContainerStyles>
-      {ReasonReact.array(
-         featuredMediaContent->Array.map(x =>
-           <Rimble.Box p=2 mb=2 width=[|0.5, 0.5, 0.2|]>
+      {React.array(
+         featuredMediaContent->Array.mapWithIndex((index, x) =>
+           <Rimble.Box
+             key={index->string_of_int} p=2 mb=2 width=[|0.5, 0.5, 0.2|]>
              <a href={x.link}>
                <img src={x.imagePath} className=featuredItemImgStyle />
              </a>

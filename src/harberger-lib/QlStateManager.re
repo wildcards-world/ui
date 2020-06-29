@@ -118,7 +118,6 @@ let make = (~children) => {
                  switch (cachedResponse |> Js.Nullable.toOption) {
                  | None => ()
                  | Some(cachedPatron) =>
-                   Js.log3("Cached Patron", cachedPatron, patron);
                    let setupPatronForCache:
                      (
                        . {
@@ -165,7 +164,9 @@ let make = (~children) => {
                  ApolloClient.WriteQuery(QlHooks.LoadPatronNew);
 
                <LoadPatronNewQuery
-                 variables=queryNew##variables fetchPolicy="network-only">
+                 key=patron##id
+                 variables=queryNew##variables
+                 fetchPolicy="network-only">
                  ...{({result, _}) => {
                    switch (result) {
                    | Loading

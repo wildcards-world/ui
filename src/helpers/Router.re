@@ -22,7 +22,6 @@ let useUrlState = () => {
 
   React.useMemo1(
     () => {
-      Js.log(Js.String.split("/", url.hash));
       switch (Js.String.split("/", url.hash)) {
       | [|"user", address|] => User(address->Js.String.toLowerCase)
       | [|"org", orgId|] => Org(orgId->Js.String.toLowerCase)
@@ -52,7 +51,7 @@ let useUrlState = () => {
         | _ => Home(NormalView)
         // | _ => Unknown
         }
-      };
+      }
     },
     [|url.hash|],
   );

@@ -187,7 +187,6 @@ module AnimalOnLandingPage = {
           className=Styles.clickableLink
           onClick={event => {
             ReactEvent.Mouse.preventDefault(event);
-            Js.log("CLICKED OUTER IMAGE!!!");
             clearAndPush(
               "#"
               ++ InputHelp.getPagePrefix(isExplorer)
@@ -279,7 +278,7 @@ module AnimalCarousel = {
         }
         arrows=true
         onChange={test => setCarouselIndex(_ => test)}>
-        {ReasonReact.array(
+        {React.array(
            homePageAnimals->Array.mapWithIndex((index, animalInfo) => {
              let (opacity, scalar) =
                switch (index) {
@@ -305,7 +304,9 @@ module AnimalCarousel = {
                | _ => (0., 0.6)
                };
 
-             <div className={Styles.fadeOut(opacity)}>
+             <div
+               key={animalInfo.id->TokenId.toString}
+               className={Styles.fadeOut(opacity)}>
                <CarouselAnimal
                  animal={animalInfo.id}
                  isGqlLoaded
@@ -819,7 +820,7 @@ module AnimalInfo = {
           <h2> "Story"->React.string </h2>
           <div
             className=Css.(style([maxHeight(`em(26.)), overflow(`scroll)]))>
-            {ReasonReact.array(
+            {React.array(
                animalDescription->Array.mapWithIndex((i, paragraphText) =>
                  <p key={i->string_of_int}> paragraphText->React.string </p>
                ),
@@ -862,8 +863,6 @@ let make = () => {
   let clearNonUrlState = RootProvider.useClearNonUrlState();
   let isDetailView = Router.useIsDetails();
   let optAnimalForDetails = Router.useAnimalForDetails();
-  let animalsQuery = QlHooks.useHomeAnimalsQuery();
-  Js.log2("animals...?", animalsQuery);
 
   <Rimble.Flex
     flexWrap={isDetailView ? "wrap-reverse" : "wrap"} alignItems="start">

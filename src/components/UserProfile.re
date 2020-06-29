@@ -275,6 +275,7 @@ module UserDetails = {
                     ->Array.map(id =>
                         <ClaimLoyaltyTokenButtons
                           id
+                          key=id
                           refreshLoyaltyTokenBalance=updateFunction
                         />
                       )
@@ -332,10 +333,10 @@ module UserDetails = {
                  "Currently owned tokens"->React.string
                </Rimble.Heading>
                <Rimble.Flex flexWrap="wrap" className=centreAlignOnMobile>
-                 {ReasonReact.array(
-                    currentlyOwnedTokens->Array.mapWithIndex((i, tokenId) =>
+                 {React.array(
+                    currentlyOwnedTokens->Array.map(tokenId =>
                       <Token
-                        key={i->string_of_int}
+                        key=tokenId
                         tokenId={TokenId.fromStringUnsafe(tokenId)}
                       />
                     ),
@@ -354,11 +355,10 @@ module UserDetails = {
                  "Previously owned tokens"->React.string
                </Rimble.Heading>
                <Rimble.Flex flexWrap="wrap" className=centreAlignOnMobile>
-                 {ReasonReact.array(
-                    uniquePreviouslyOwnedTokens->Array.mapWithIndex(
-                      (i, tokenId) => {
+                 {React.array(
+                    uniquePreviouslyOwnedTokens->Array.map(tokenId => {
                       <Token
-                        key={i->string_of_int}
+                        key=tokenId
                         tokenId={TokenId.fromStringUnsafe(tokenId)}
                       />
                     }),

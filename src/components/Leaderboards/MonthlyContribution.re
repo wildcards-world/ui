@@ -114,14 +114,14 @@ let make = (~numberOfLeaders) => {
       <tbody>
         {switch (topContributorsOpt) {
          | Some(topContributors) =>
-           ReasonReact.array(
+           React.array(
              topContributors->Array.mapWithIndex(
                (index, (contributor, amount)) => {
                let amountRaisedFloat = amount->Float.fromString |||| 0.;
 
                amountRaisedFloat < 0.0000001
                  ? React.null
-                 : <tr className={rankingColor(index)}>
+                 : <tr key=contributor className={rankingColor(index)}>
                      <td>
                        <span className=centerFlame>
                          {index == 0

@@ -39,11 +39,11 @@ let make = (~submitVoteFunction: float => unit, ~maxVote: float) => {
     };
 
   <Rimble.Flex flexWrap="wrap" alignItems="space-between">
-    {ReasonReact.array(
+    {React.array(
        [|1., 2., 3., 4., 5.|]
        ->Array.map(x => {
            let disabled = x >= maxVote;
-           <Rimble.Box width=[|1., 0.32|]>
+           <Rimble.Box key={x->Js.Float.toString} width=[|1., 0.32|]>
              <Rimble.Button
                className=Css.(
                  style([width(`percent(90.)), margin(`percent(5.))])
