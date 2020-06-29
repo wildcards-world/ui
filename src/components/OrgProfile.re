@@ -89,7 +89,6 @@ module OrgPage = {
               <p> {(totalPatronageUsd ++ "USD")->restr} </p>
             </Rimble.Box>
           <Rimble.Box p=1 width=[|1., 1., 0.3333|]>
-            <h2> "Monthly Contribution"->restr </h2>
             {switch (orgAnimals) {
              | [||] => React.null
              | uniquePreviouslyOwnedTokens =>

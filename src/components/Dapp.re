@@ -141,7 +141,7 @@ module AnimalOnLandingPage = {
     let isExplorer = Router.useIsExplorer();
 
     let orgBadge = Animal.useGetOrgBadgeImage(animal);
-    let orgId = "wildtomorrow";
+    let orgId = QlHooks.useWildcardOrgId(animal) |||| "";
 
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
@@ -171,12 +171,7 @@ module AnimalOnLandingPage = {
                 onClick={e => {
                   ReactEvent.Mouse.stopPropagation(e);
                   ReactEvent.Mouse.preventDefault(e);
-                  clearAndPush(
-                    "#"
-                    ++ InputHelp.getPagePrefix(isExplorer)
-                    ++ "org/"
-                    ++ orgId,
-                  );
+                  clearAndPush("#org/" ++ orgId);
                 }}
                 className=Styles.overlayBadgeImg>
                 <img className=Styles.flameImg src=orgBadge />
@@ -388,6 +383,59 @@ module AnimalActionsOnDetailsPage = {
   };
 };
 
+module DetailsViewAnimal = {
+  [@react.component]
+  let make = (~animal: TokenId.t) => {
+    let orgId = QlHooks.useWildcardOrgId(animal) |||| "";
+
+    let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+
+    let normalImage = animal =>
+      <img className=Styles.ownedAnimalImg src={Animal.getImage(animal)} />;
+    // let optAlternateImage = Animal.getAlternateImage(animal);
+    let orgBadge = Animal.useGetOrgBadgeImage(animal);
+
+    let isLaunched = animal->Animal.isLaunched;
+
+    let displayAnimal = animalImage =>
+      <div className=Styles.positionRelative>
+        {animalImage()}
+        {switch (isLaunched) {
+         | Animal.Launched =>
+           <div className=Styles.overlayFlameImg> <Streak animal /> </div>
+         | Animal.LaunchDate(endDateMoment) =>
+           <DisplayAfterDate
+             endDateMoment
+             afterComponent={
+               <div className=Styles.overlayFlameImg> <Streak animal /> </div>
+             }
+             beforeComponent=React.null
+           />
+         }}
+        {<div
+           onClick={e => {
+             ReactEvent.Mouse.stopPropagation(e);
+             ReactEvent.Mouse.preventDefault(e);
+             clearAndPush("#org/" ++ orgId);
+           }}
+           className=Styles.overlayBadgeImg>
+           <img className=Styles.flameImg src=orgBadge />
+         </div>}
+      </div>;
+
+    <React.Fragment>
+      {displayAnimal(() => normalImage(animal))}
+      <h2>
+        {{
+           QlHooks.useWildcardName(animal) |||| "Loading";
+         }
+         ->restr}
+      </h2>
+      <AnimalActionsOnDetailsPage animal />
+    </React.Fragment>;
+  };
+};
+
 module DetailsView = {
   [@react.component]
   let make = (~optionAnimal: option(TokenId.t)) => {
@@ -401,46 +449,7 @@ module DetailsView = {
         </h1>
         <p> "Please check the spelling and try again."->restr </p>
       </div>
-    | Some(animal) =>
-      let normalImage = animal =>
-        <img className=Styles.ownedAnimalImg src={Animal.getImage(animal)} />;
-      // let optAlternateImage = Animal.getAlternateImage(animal);
-      let orgBadge = Animal.useGetOrgBadgeImage(animal);
-
-      let isLaunched = animal->Animal.isLaunched;
-
-      let displayAnimal = animalImage =>
-        <div className=Styles.positionRelative>
-          {animalImage()}
-          {switch (isLaunched) {
-           | Animal.Launched =>
-             <div className=Styles.overlayFlameImg> <Streak animal /> </div>
-           | Animal.LaunchDate(endDateMoment) =>
-             <DisplayAfterDate
-               endDateMoment
-               afterComponent={
-                 <div className=Styles.overlayFlameImg>
-                   <Streak animal />
-                 </div>
-               }
-               beforeComponent=React.null
-             />
-           }}
-          {<div className=Styles.overlayBadgeImg>
-             <img className=Styles.flameImg src=orgBadge />
-           </div>}
-        </div>;
-
-      <React.Fragment>
-        {displayAnimal(() => normalImage(animal))}
-        <h2>
-          {{
-             QlHooks.useWildcardName(animal) |||| "Loading";
-           }
-           ->restr}
-        </h2>
-        <AnimalActionsOnDetailsPage animal />
-      </React.Fragment>;
+    | Some(animal) => <DetailsViewAnimal animal />
     };
   };
 };
