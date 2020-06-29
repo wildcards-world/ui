@@ -82,11 +82,12 @@ module OrgPage = {
             <br />
           </Rimble.Box>
           <Rimble.Box p=1 width=[|1., 1., 0.3333|]>
-            <YoutubeVid videoCode="y5er2RXg3C8" />
-            <h2> "Monthly Contribution"->restr </h2>
-            <p> {(totalPatronage ++ "ETH")->restr} </p>
-            <p> {(totalPatronageUsd ++ "USD")->restr} </p>
-          </Rimble.Box>
+            // <YoutubeVid videoCode="y5er2RXg3C8" />
+
+              <h2> "Monthly Contribution"->restr </h2>
+              <p> {(totalPatronage ++ "ETH")->restr} </p>
+              <p> {(totalPatronageUsd ++ "USD")->restr} </p>
+            </Rimble.Box>
           <Rimble.Box p=1 width=[|1., 1., 0.3333|]>
             <h2> "Monthly Contribution"->restr </h2>
             {switch (orgAnimals) {

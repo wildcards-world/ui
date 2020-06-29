@@ -141,6 +141,7 @@ module AnimalOnLandingPage = {
     let isExplorer = Router.useIsExplorer();
 
     let orgBadge = Animal.useGetOrgBadgeImage(animal);
+    let orgId = "wildtomorrow";
 
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
@@ -166,7 +167,18 @@ module AnimalOnLandingPage = {
                     </div>
                   }
                 : React.null}
-             {<div className=Styles.overlayBadgeImg>
+             {<div
+                onClick={e => {
+                  ReactEvent.Mouse.stopPropagation(e);
+                  ReactEvent.Mouse.preventDefault(e);
+                  clearAndPush(
+                    "#"
+                    ++ InputHelp.getPagePrefix(isExplorer)
+                    ++ "org/"
+                    ++ orgId,
+                  );
+                }}
+                className=Styles.overlayBadgeImg>
                 <img className=Styles.flameImg src=orgBadge />
               </div>}
            </React.Fragment>;
@@ -180,6 +192,7 @@ module AnimalOnLandingPage = {
           className=Styles.clickableLink
           onClick={event => {
             ReactEvent.Mouse.preventDefault(event);
+            Js.log("CLICKED OUTER IMAGE!!!");
             clearAndPush(
               "#"
               ++ InputHelp.getPagePrefix(isExplorer)

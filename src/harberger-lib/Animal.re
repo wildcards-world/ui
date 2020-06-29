@@ -25,6 +25,9 @@ let getNameFromId: string => string =
     | "16" => "Hook"
     | "17" => "Mijungla"
     | "18" => "Ajayu"
+    | "19" => "Arthur"
+    | "20" => "Abo"
+    | "21" => "Whacky Cappy"
     | "42" => "Vitalik"
     | _ => "Unknown"
     };
@@ -80,6 +83,10 @@ let getImage = animal => {
   | "16" => "https://dd2wadt5nc0o7.cloudfront.net/16-hook.jpg"
   | "17" => "https://dd2wadt5nc0o7.cloudfront.net/17-mijungla.svg"
   | "18" => "https://dd2wadt5nc0o7.cloudfront.net/18-ajayu.svg"
+  | "19" => "https://dd2wadt5nc0o7.cloudfront.net/19-arthur.svg"
+  // | "20" => "https://dd2wadt5nc0o7.cloudfront.net/20-abo.svg" // the cdn cache hadn't cleared yet...
+  | "20" => "https://wildcards-image-cdn.s3-eu-west-1.amazonaws.com/20-abo.svg"
+  | "21" => "https://dd2wadt5nc0o7.cloudfront.net/21-whackycappy.svg"
   | "42" => "https://dd2wadt5nc0o7.cloudfront.net/42-vitalik.svg"
   | _ => "./img/animals/comingsoon.png"
   };
@@ -108,6 +115,12 @@ let getAlternateImage: TokenId.t => option(string) =
     | "17" =>
       Some("https://dd2wadt5nc0o7.cloudfront.net/17-mijungla-real.jpg")
     | "18" => Some("https://dd2wadt5nc0o7.cloudfront.net/18-ajayu-real.jpg")
+    | "19" => Some("https://dd2wadt5nc0o7.cloudfront.net/19-arthur-real.jpg")
+    | "20" =>
+      // https://dd2wadt5nc0o7.cloudfront.net/animals/abo-real.jpg
+      Some("https://dd2wadt5nc0o7.cloudfront.net/animals/abo-real.jpg")
+    | "21" =>
+      Some("https://dd2wadt5nc0o7.cloudfront.net/animals/21-ajayu-real.jpg")
     | "13"
     | "0"
     | "1"
@@ -115,29 +128,43 @@ let getAlternateImage: TokenId.t => option(string) =
     | _ => None
     };
 
-// TODO: move this to the server!
-let useGetOrgBadgeImage: TokenId.t => string =
-  animal => {
-    let org = QlHooks.useWildcardOrgId(animal) |||| "";
-    switch (org) {
-    | "sendaverde" => "/img/badges/SendaVerdeBadge.png"
-    | "wildtomorrow" => "/img/badges/WildTomorrowBadge.png"
-    | "wildcards" => "/img/logos/wildcards-logo.svg" // TODO: find cropped version of this logo
-    | "darwinanimaldoctors" => "/img/badges/DarwinAnimalDoctors.svg"
-    | "greatwhaleconservancy" => "/img/badges/great-whale-conservancy-small.png"
-    | _ => "/img/badges/OGBage.png"
-    };
-  };
 let useGetOrgImage: string => string =
   org =>
     switch (org) {
+    | "pangolinafrica" => "/img/conservation-partners/pangolin-africa.svg"
+    | "sharkspotters" => "https://dd2wadt5nc0o7.cloudfront.net/conservations/shark-spotters.svg"
+    | "lemurconservationnetwork" => "https://dd2wadt5nc0o7.cloudfront.net/conservations/lemur-conservation-network.svg"
+    | "bdi" => "https://dd2wadt5nc0o7.cloudfront.net/conservations/bdi.svg"
+    | "careforwild" => "https://dd2wadt5nc0o7.cloudfront.net/conservations/care-for-wild-non-profit.svg"
+    | "greatwhaleconservancy" => "https://dd2wadt5nc0o7.cloudfront.net/conservations/great-whale-conservancy.png"
+    | "sendaverde" => "/img/logos/SendaVerde.png"
+    | "wildtomorrow" => "/img/logos/WildTomorrowFund.png"
+    | "wildcards" => "/img/logos/wildcards-logo.svg"
+    | "darwinanimaldoctors" => "/img/badges/DarwinAnimalDoctors.svg"
+    | _ => "/img/badges/OGBage.png"
+    };
+
+let useGetOrgBadge: string => string =
+  org =>
+    switch (org) {
+    | "pangolinafrica"
+    | "sharkspotters"
+    | "lemurconservationnetwork"
+    | "bdi" => "https://dd2wadt5nc0o7.cloudfront.net/conservations/bdi.svg"
+    | "careforwild" => "https://dd2wadt5nc0o7.cloudfront.net/conservations/care-for-wild-non-profit.svg"
+    | "greatwhaleconservancy" => "https://dd2wadt5nc0o7.cloudfront.net/conservations/great-whale-conservancy.png"
     | "sendaverde" => "/img/badges/SendaVerdeBadge.png"
     | "wildtomorrow" => "/img/badges/WildTomorrowBadge.png"
     | "wildcards" => "/img/logos/wildcards-logo.svg" // TODO: find cropped version of this logo
     | "darwinanimaldoctors" => "/img/badges/DarwinAnimalDoctors.svg"
-    | "greatwhaleconservancy" => "/img/badges/great-whale-conservancy-small.png"
     | _ => "/img/badges/OGBage.png"
     };
+
+let useGetOrgBadgeImage: TokenId.t => string =
+  animal => {
+    let org = QlHooks.useWildcardOrgId(animal) |||| "";
+    useGetOrgBadge(org);
+  };
 
 // TODO: this will come from the backend too. But it will be any alternative badge for the UI
 let useGetAltBadge: TokenId.t => option(string) =
@@ -153,6 +180,11 @@ type launchStatus =
   | Launched
   | LaunchDate(MomentRe.Moment.t);
 
-let nextLaunchDate = MomentRe.momentUtcDefaultFormat("2020-05-21T17:00:00");
+let nextLaunchDate = MomentRe.momentUtcDefaultFormat("2020-07-02T17:00:00");
 
-let isLaunched: TokenId.t => launchStatus = _anAnimal => Launched;
+let isLaunched: TokenId.t => launchStatus =
+  animal =>
+    switch (animal->TokenId.toString) {
+    | "21" => LaunchDate(nextLaunchDate)
+    | _ => Launched
+    };

@@ -105,7 +105,24 @@ let overlayImg = (topPosition, leftPosition) =>
     minHeight(px(50)),
   ]);
 let overlayFlameImg = overlayImg(30., 0.);
-let overlayBadgeImg = overlayImg(60., 70.);
+let prettyTransparent = rgba(255, 255, 255, 0.5);
+let overlayBadgeImg =
+  Cn.make([
+    overlayImg(60., 70.),
+    style([
+      borderRadius(`percent(100.)),
+      hover([
+        filter([`saturate(150.), `brightness(110.)]),
+        overflow(visible),
+        backgroundColor(prettyTransparent),
+        boxShadow(
+          Shadow.box(~blur=px(20), ~spread=px(20), prettyTransparent),
+        ),
+        transform(scale(1.3, 1.3)),
+        transition(~duration=100, ~delay=0, ~timingFunction=ease, "all"),
+      ]),
+    ]),
+  ]);
 
 let streakText =
   style([
