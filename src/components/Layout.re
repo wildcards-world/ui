@@ -254,7 +254,7 @@ let make = () => {
              <HowItWorks />
              <EmailSignup />
              <FAQs />
-             <StaticContent.Partners />
+             <Partners />
            </React.Fragment>
          }
        | User(userAddress) => <UserProfile userAddress />
