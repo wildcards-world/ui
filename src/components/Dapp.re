@@ -761,38 +761,43 @@ module AnimalInfoStats = {
 module UnlaunchedAnimalInfo = {
   [@react.component]
   let make = (~endDateMoment, ~animal: TokenId.t) => {
-    let animalName = QlHooks.useWildcardName(animal) |||| "Loading";
+    let _animalName = QlHooks.useWildcardName(animal) |||| "Loading";
 
     let ratio = QlHooks.usePledgeRate(animal);
-    let monthlyRate = Js.Float.toString(ratio *. 100.);
+    let _monthlyRate = Js.Float.toString(ratio *. 100.);
 
     <DisplayAfterDate
       endDateMoment
       afterComponent={<AnimalInfoStats animal />}
       beforeComponent={
         <React.Fragment>
-          <h2> "This animal will launch in:"->React.string </h2>
-          <CountDown endDateMoment />
-          <br />
-          <br />
-          <br />
-          <small>
-            <strong>
-              "Monthly Pledge Rate:"->restr
-              <Rimble.Tooltip
-                message={
-                  "This is the monthly percentage contribution of "
-                  ++ animalName
-                  ++ "'s sale price that will go towards conservation of endangered animals. This is deducted continuously from the deposit and paid by the owner of the animal"
-                }
-                placement="top">
-                <span> {js|ⓘ|js}->restr </span>
-              </Rimble.Tooltip>
-            </strong>
-          </small>
-          <br />
-          {(monthlyRate ++ " %")->restr}
-        </React.Fragment>
+
+            <h2> "This animal will launch in:"->React.string </h2>
+            <CountDown endDateMoment />
+            <br />
+            <br />
+            <br />
+            <p>
+              "The harberger tax rate will be revealed after launch."->restr
+            </p>
+          </React.Fragment>
+          //// TODO: add this back after  launch
+          // <small>
+          //   <strong>
+          //     "Monthly Pledge Rate:"->restr
+          //     <Rimble.Tooltip
+          //       message={
+          //         "This is the monthly percentage contribution of "
+          //         ++ animalName
+          //         ++ "'s sale price that will go towards conservation of endangered animals. This is deducted continuously from the deposit and paid by the owner of the animal"
+          //       }
+          //       placement="top">
+          //       <span> {js|ⓘ|js}->restr </span>
+          //     </Rimble.Tooltip>
+          //   </strong>
+          // </small>
+          // <br />
+          // {(monthlyRate ++ " %")->restr}
       }
     />;
   };

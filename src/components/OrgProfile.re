@@ -84,7 +84,7 @@ module OrgPage = {
           <Rimble.Box p=1 width=[|1., 1., 0.3333|]>
             // <YoutubeVid videoCode="y5er2RXg3C8" />
 
-              <h2> "Monthly Contribution"->restr </h2>
+              <h2> "Total Rasied"->restr </h2>
               <p> {(totalPatronage ++ "ETH")->restr} </p>
               <p> {(totalPatronageUsd ++ "USD")->restr} </p>
             </Rimble.Box>

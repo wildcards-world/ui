@@ -11,6 +11,9 @@ module AnimalFocusDetails = {
       QlHooks.useDetailsPageNextPrevious(
         currentAnimal |||| TokenId.fromStringUnsafe("0"),
       );
+    Js.log("animalDetails");
+    Js.log(animalDetails);
+
     <div
       className={Cn.make([
         Styles.topBody,

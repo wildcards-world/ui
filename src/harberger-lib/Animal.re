@@ -120,7 +120,9 @@ let getAlternateImage: TokenId.t => option(string) =
       // https://dd2wadt5nc0o7.cloudfront.net/animals/abo-real.jpg
       Some("https://dd2wadt5nc0o7.cloudfront.net/animals/abo-real.jpg")
     | "21" =>
-      Some("https://dd2wadt5nc0o7.cloudfront.net/animals/21-ajayu-real.jpg")
+      Some(
+        "https://dd2wadt5nc0o7.cloudfront.net/animals/21-whackycappy-real.jpg",
+      )
     | "13"
     | "0"
     | "1"
@@ -140,7 +142,7 @@ let useGetOrgImage: string => string =
     | "sendaverde" => "/img/logos/SendaVerde.png"
     | "wildtomorrow" => "/img/logos/WildTomorrowFund.png"
     | "wildcards" => "/img/logos/wildcards-logo.svg"
-    | "darwinanimaldoctors" => "/img/badges/DarwinAnimalDoctors.svg"
+    | "darwinanimaldoctors" => "/img/conservation-partners/darwin-animal-doctors.svg"
     | _ => "/img/badges/OGBage.png"
     };
 

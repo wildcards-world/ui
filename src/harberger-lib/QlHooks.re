@@ -452,8 +452,8 @@ let useHomePageAnimalArrayOpt = () => {
       ->Array.map(animal =>
           {
             id: TokenId.fromStringUnsafe(animal##id),
-            prev: TokenId.fromStringUnsafe(animal##id),
-            next: TokenId.fromStringUnsafe(animal##id),
+            prev: TokenId.fromStringUnsafe(animal##prev),
+            next: TokenId.fromStringUnsafe(animal##next),
           }
         )
     );
@@ -474,6 +474,8 @@ let useDetailsPageNextPrevious = (currentToken: TokenId.t) => {
         homepageAnimalData->Array.reduce(
           Js.Dict.empty(),
           (dict, item) => {
+            Js.log("setting the item");
+            Js.log(item);
             dict->Js.Dict.set(item.id->TokenId.toString, item);
             dict;
           },
