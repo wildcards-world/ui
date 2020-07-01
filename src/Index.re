@@ -21,16 +21,22 @@ external goerliApi: option(string) = "process.env.REACT_APP_GOERLI_BE";
 ReactDOMRe.renderToElementWithId(
   <WildcardsProvider
     getGraphEndpoints={(networkId, ()) => {
-      switch (networkId) {
-      | 5 => (
-          goerliApi |||| "https://goerli.api.wildcards.world/v1/graphq",
-          "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
-        )
-      | _ => (
-          mainnetApi |||| "https://api.wildcards.world/v1/graphql",
-          "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards",
-        )
-      }
+      Js.log2("YOU ARE USING net ID:", networkId);
+      Js.log2("mainnetApi", mainnetApi);
+      Js.log2("goerliApi", goerliApi);
+      let endpoints =
+        switch (networkId) {
+        | 5 => (
+            goerliApi |||| "https://goerli.api.wildcards.world/v1/graphq",
+            "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
+          )
+        | _ => (
+            mainnetApi |||| "https://api.wildcards.world/v1/graphql",
+            "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards",
+          )
+        };
+      Js.log(endpoints);
+      endpoints;
     }}>
     <UsdPriceProvider> <Router /> </UsdPriceProvider>
   </WildcardsProvider>,
