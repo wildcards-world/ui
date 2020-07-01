@@ -1,28 +1,5 @@
 open Globals;
 
-let orderedArray = [|
-  TokenId.fromStringUnsafe("0"),
-  TokenId.fromStringUnsafe("1"),
-  TokenId.fromStringUnsafe("2"),
-  TokenId.fromStringUnsafe("3"),
-  TokenId.fromStringUnsafe("4"),
-  TokenId.fromStringUnsafe("5"),
-  TokenId.fromStringUnsafe("6"),
-  TokenId.fromStringUnsafe("7"),
-  TokenId.fromStringUnsafe("8"),
-  TokenId.fromStringUnsafe("9"),
-  TokenId.fromStringUnsafe("10"),
-  TokenId.fromStringUnsafe("11"),
-  TokenId.fromStringUnsafe("12"),
-  TokenId.fromStringUnsafe("13"),
-  TokenId.fromStringUnsafe("14"),
-  TokenId.fromStringUnsafe("15"),
-  TokenId.fromStringUnsafe("16"),
-  TokenId.fromStringUnsafe("17"),
-  TokenId.fromStringUnsafe("18"),
-  TokenId.fromStringUnsafe("42"),
-|];
-
 let useGetName: TokenId.t => option(string) =
   tokenId => QlHooks.useWildcardName(tokenId);
 
@@ -48,6 +25,9 @@ let getNameFromId: string => string =
     | "16" => "Hook"
     | "17" => "Mijungla"
     | "18" => "Ajayu"
+    | "19" => "Arthur"
+    | "20" => "Abo"
+    | "21" => "Whacky Cappy"
     | "42" => "Vitalik"
     | _ => "Unknown"
     };
@@ -81,11 +61,6 @@ let getAnimal: string => option(TokenId.t) =
     TokenId.make(animal)
     ->mapd(lookupAnimalIdFromName(animal), a => Some(a));
 
-let getNextPrev = _animal => (
-  TokenId.makeFromInt(0),
-  TokenId.makeFromInt(1),
-);
-
 // TODO: Move to the backend!
 let getImage = animal => {
   switch (animal->TokenId.toString) {
@@ -108,6 +83,10 @@ let getImage = animal => {
   | "16" => "https://dd2wadt5nc0o7.cloudfront.net/16-hook.jpg"
   | "17" => "https://dd2wadt5nc0o7.cloudfront.net/17-mijungla.svg"
   | "18" => "https://dd2wadt5nc0o7.cloudfront.net/18-ajayu.svg"
+  | "19" => "https://dd2wadt5nc0o7.cloudfront.net/19-arthur.svg"
+  // | "20" => "https://dd2wadt5nc0o7.cloudfront.net/20-abo.svg" // the cdn cache hadn't cleared yet...
+  | "20" => "https://wildcards-image-cdn.s3-eu-west-1.amazonaws.com/20-abo.svg"
+  | "21" => "https://dd2wadt5nc0o7.cloudfront.net/21-whackycappy.svg"
   | "42" => "https://dd2wadt5nc0o7.cloudfront.net/42-vitalik.svg"
   | _ => "./img/animals/comingsoon.png"
   };
@@ -136,6 +115,14 @@ let getAlternateImage: TokenId.t => option(string) =
     | "17" =>
       Some("https://dd2wadt5nc0o7.cloudfront.net/17-mijungla-real.jpg")
     | "18" => Some("https://dd2wadt5nc0o7.cloudfront.net/18-ajayu-real.jpg")
+    | "19" => Some("https://dd2wadt5nc0o7.cloudfront.net/19-arthur-real.jpg")
+    | "20" =>
+      // https://dd2wadt5nc0o7.cloudfront.net/animals/abo-real.jpg
+      Some("https://dd2wadt5nc0o7.cloudfront.net/animals/abo-real.jpg")
+    | "21" =>
+      Some(
+        "https://dd2wadt5nc0o7.cloudfront.net/animals/21-whackycappy-real.jpg",
+      )
     | "13"
     | "0"
     | "1"
@@ -143,19 +130,44 @@ let getAlternateImage: TokenId.t => option(string) =
     | _ => None
     };
 
-// TODO: move this to the server!
-let useGetOrgBadgeImage: TokenId.t => string =
-  animal => {
-    let org = QlHooks.useWildcardOrgId(animal) |||| "";
+let useGetOrgImage: string => string =
+  org =>
     switch (org) {
+    | "pangolinafrica" => "/img/conservation-partners/pangolin-africa.svg"
+    | "sharkspotters" => "https://dd2wadt5nc0o7.cloudfront.net/conservations/shark-spotters.svg"
+    | "lemurconservationnetwork" => "https://dd2wadt5nc0o7.cloudfront.net/conservations/lemur-conservation-network.svg"
+    | "bdi" => "https://dd2wadt5nc0o7.cloudfront.net/conservations/bdi.svg"
+    | "careforwild" => "https://dd2wadt5nc0o7.cloudfront.net/conservations/care-for-wild-non-profit.svg"
+    | "greatwhaleconservancy" => "https://dd2wadt5nc0o7.cloudfront.net/conservations/great-whale-conservancy.png"
+    | "sendaverde" => "/img/logos/SendaVerde.png"
+    | "wildtomorrow" => "/img/logos/WildTomorrowFund.png"
+    | "wildcards" => "/img/logos/wildcards-logo.svg"
+    | "darwinanimaldoctors" => "/img/conservation-partners/darwin-animal-doctors.svg"
+    | _ => "/img/badges/OGBage.png"
+    };
+
+let useGetOrgBadge: string => string =
+  org =>
+    switch (org) {
+    | "pangolinafrica"
+    | "sharkspotters"
+    | "lemurconservationnetwork"
+    | "bdi" => "https://dd2wadt5nc0o7.cloudfront.net/conservations/bdi.svg"
+    | "careforwild" => "https://dd2wadt5nc0o7.cloudfront.net/conservations/care-for-wild-non-profit.svg"
+    | "greatwhaleconservancy" => "https://dd2wadt5nc0o7.cloudfront.net/conservations/great-whale-conservancy.png"
     | "sendaverde" => "/img/badges/SendaVerdeBadge.png"
     | "wildtomorrow" => "/img/badges/WildTomorrowBadge.png"
     | "wildcards" => "/img/logos/wildcards-logo.svg" // TODO: find cropped version of this logo
     | "darwinanimaldoctors" => "/img/badges/DarwinAnimalDoctors.svg"
-    | "greatwhaleconservancy" => "/img/badges/great-whale-conservancy-small.png"
     | _ => "/img/badges/OGBage.png"
     };
+
+let useGetOrgBadgeImage: TokenId.t => string =
+  animal => {
+    let org = QlHooks.useWildcardOrgId(animal) |||| "";
+    useGetOrgBadge(org);
   };
+
 // TODO: this will come from the backend too. But it will be any alternative badge for the UI
 let useGetAltBadge: TokenId.t => option(string) =
   animal => {
@@ -170,6 +182,11 @@ type launchStatus =
   | Launched
   | LaunchDate(MomentRe.Moment.t);
 
-let nextLaunchDate = MomentRe.momentUtcDefaultFormat("2020-05-21T17:00:00");
+let nextLaunchDate = MomentRe.momentUtcDefaultFormat("2020-07-02T17:00:00");
 
-let isLaunched: TokenId.t => launchStatus = _anAnimal => Launched;
+let isLaunched: TokenId.t => launchStatus =
+  animal =>
+    switch (animal->TokenId.toString) {
+    | "21" => LaunchDate(nextLaunchDate)
+    | _ => Launched
+    };

@@ -229,6 +229,7 @@ module VoteResults = {
            {conservationPartners
             ->Array.map(conservationPartner =>
                 <OrganisationVoteResult
+                  key={conservationPartner.name}
                   currentIteration
                   totalVotes
                   conservationPartner
@@ -240,8 +241,6 @@ module VoteResults = {
        }}
       {switch (currentWinner) {
        | Some(currentWinner) =>
-         Js.log(currentWinner);
-         //  <h2> "currentWinner->string_of_int"->restr </h2>
          <p className=Css.(style([fontSize(em(2.))]))>
            <strong>
              {(
@@ -252,7 +251,7 @@ module VoteResults = {
               ->restr}
            </strong>
            " is currently winning"->restr
-         </p>;
+         </p>
        //  <h2> {currentWinner->string_of_int->restr} </h2>
        | None => React.null
        }}
@@ -643,6 +642,7 @@ let make = () => {
                        cannotVote
                        index
                        selectConservation
+                       key={conservationPartner.name}
                      />
                    )
                  ->React.array

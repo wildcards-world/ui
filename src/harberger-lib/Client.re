@@ -119,7 +119,7 @@ let wsLink = (~uri) =>
   });
 
 /* based on test, execute left or right */
-let webSocketHttpLink = (~uribase) =>
+let webSocketHttpLink = (~uri, ~subscriptions) =>
   ApolloLinks.split(
     operation => {
       let operationDefition =
@@ -127,15 +127,15 @@ let webSocketHttpLink = (~uribase) =>
       operationDefition.kind == "OperationDefinition"
       && operationDefition.operation == "subscription";
     },
-    wsLink(~uri="wss://" ++ uribase),
-    httpLink(~uri="http://" ++ uribase),
+    wsLink(~uri=subscriptions),
+    httpLink(~uri),
   );
 
-let instance = (~getGraphEndpoint) => {
-  let graphEndpoint = getGraphEndpoint();
+let instance = (~getGraphEndpoints) => {
+  let (graphEndpoint, subscriptions) = getGraphEndpoints();
 
   ReasonApollo.createApolloClient(
-    ~link=webSocketHttpLink(~uribase=graphEndpoint),
+    ~link=webSocketHttpLink(~uri=graphEndpoint, ~subscriptions),
     ~cache=inMemoryCache(),
     (),
   );

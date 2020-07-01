@@ -52,18 +52,16 @@ let make =
     {React.array(
        nextReleasedAnimals->Array.mapWithIndex((index, animal) => {
          let name = QlHooks.useWildcardName(animal) |||| "Loading";
-         <>
+         <span key={animal->TokenId.toString}>
            <a
              href={"/#details/" ++ animal->TokenId.toString}
              className=linkToAnimal>
              name->restr
            </a>
-           {
-             index == numberOfAnimalsToLaunch - 1
-               ? " " : index == numberOfAnimalsToLaunch - 2 ? " and " : ", ";
-           }
+           {index == numberOfAnimalsToLaunch - 1
+              ? " " : index == numberOfAnimalsToLaunch - 2 ? " and " : ", "}
            ->restr
-         </>;
+         </span>;
        }),
      )}
     {isLaunched

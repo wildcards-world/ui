@@ -22,17 +22,25 @@ module ApolloProvider = {
     </ReasonApollo.Provider>;
   };
 };
+
+[@bs.val] external mainnetApi: string = "process.env.REACT_APP_MAINNET_BE";
+[@bs.val] external goerliApi: string = "process.env.REACT_APP_GOERLI_BE";
+
 // TODO: SSR doesn't work correctly here, need to use the external apollo client
 [@react.component]
 let make = () =>
   <WildcardsProvider
-    getGraphEndpoint={() => {
-      let networkId =
-        RootProvider.useNetworkId()->Belt.Option.mapWithDefault(1, a => a);
+    getGraphEndpoints={(networkId, ()) => {
       switch (networkId) {
-      | 5 => "goerli.api.wildcards.world/v1/graphql"
-      | _ => "api.wildcards.world/v1/graphql"
-      };
+      | 5 => (
+          goerliApi,
+          "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards",
+        )
+      | _ => (
+          mainnetApi,
+          "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
+        )
+      }
     }}>
     <Router />
   </WildcardsProvider>;

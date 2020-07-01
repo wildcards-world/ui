@@ -15,12 +15,12 @@ const styles = {
     height: "100%",
   },
 };
-export default () => (
+export default ({ videoCode }) => (
   <div style={styles.vidContainer}>
     <iframe
       title="wildcards-explainer"
       style={styles.video}
-      src="https://www.youtube.com/embed/n7GBm6ruVaQ"
+      src={"https://www.youtube.com/embed/" + videoCode}
       frameBorder="0"
       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
       allowFullScreen

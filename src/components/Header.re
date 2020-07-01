@@ -153,10 +153,11 @@ let make = (~navItems: array(navItem)) => {
           : Styles.navList
       }>
       {{
-         navItems->Array.map(
-           ({shouldDisplay, shouldDisplayMobile, component}) => {
+         navItems->Array.mapWithIndex(
+           (index, {shouldDisplay, shouldDisplayMobile, component}) => {
            shouldDisplay && !isMobile || shouldDisplayMobile && isMobile
              ? <li
+                 key={index->string_of_int}
                  className=Cn.(
                    make([
                      ifTrue(navItemStyles, isMobile),
@@ -197,12 +198,7 @@ let make = (~navItems: array(navItem)) => {
                      ),
                    ])
                  )>
-                 {component(
-                    () => {
-                      setIsOpen(_ => false);
-                    },
-                    isMobile,
-                  )}
+                 {component(() => {setIsOpen(_ => false)}, isMobile)}
                </li>
              : React.null
          });

@@ -3,7 +3,7 @@ open ReasonApolloHooks;
 module LoadMostDaysHeld = [%graphql
   {|
     query {
-      patronNews(first: 20, orderBy: totalTimeHeld, orderDirection: desc) {
+      patronNews(first: 20, orderBy: totalTimeHeld, orderDirection: desc,  where: {id_not: "NO_OWNER"}) {
         id
         totalTimeHeld @bsDecoder(fn: "QlHooks.decodeBN")
         tokens{
@@ -116,7 +116,7 @@ module ContributorsRow = {
       );
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
-    <tr className={rankingColor(index)}>
+    <tr key=contributor className={rankingColor(index)}>
       <td>
         <span className=centerFlame>
           {index == 0
@@ -168,7 +168,7 @@ module ContributorsRow = {
 module MostDaysHeld = {
   [@react.component]
   let make = (~mostDaysHeld) => {
-    ReasonReact.array(
+    React.array(
       Array.mapi(
         (index, (contributor, amount)) => {
           <ContributorsRow
@@ -189,7 +189,6 @@ module MostDaysHeld = {
 
 [@react.component]
 let make = (~numberOfLeaders) => {
-  // Js.log(numberOfLeaders);
   let mostDaysHeldOpt = useLoadMostDaysHeldData();
 
   <div>

@@ -3,7 +3,7 @@
 [@ocaml.warning "-44"]
 open Css;
 
-let backgroundImageGorilla = "/img/wildcardsimages/wild-jungle-background.png";
+let backgroundImageGorilla = "/img/wildcardsimages/wild-jungle-background.jpg";
 
 global(
   "body",
@@ -105,7 +105,24 @@ let overlayImg = (topPosition, leftPosition) =>
     minHeight(px(50)),
   ]);
 let overlayFlameImg = overlayImg(30., 0.);
-let overlayBadgeImg = overlayImg(60., 70.);
+let prettyTransparent = rgba(255, 255, 255, 0.5);
+let overlayBadgeImg =
+  Cn.make([
+    overlayImg(60., 70.),
+    style([
+      borderRadius(`percent(100.)),
+      hover([
+        filter([`saturate(150.), `brightness(110.)]),
+        overflow(visible),
+        backgroundColor(prettyTransparent),
+        boxShadow(
+          Shadow.box(~blur=px(20), ~spread=px(20), prettyTransparent),
+        ),
+        transform(scale(1.3, 1.3)),
+        transition(~duration=100, ~delay=0, ~timingFunction=ease, "all"),
+      ]),
+    ]),
+  ]);
 
 let streakText =
   style([
@@ -154,8 +171,10 @@ let subHeading = style([fontSize(em(1.8)), fontWeight(`num(200))]);
 
 let wildCardGreen = rgb(107, 173, 62);
 let wildCardBlue = rgb(114, 199, 215);
+let wildCardGrey = rgb(100, 100, 100);
 let colorGreen = style([color(wildCardGreen)]);
 let colorBlue = style([color(wildCardBlue)]);
+let colorGrey = style([color(wildCardGrey)]);
 
 let animalBox = style([marginRight(`percent(12.))]);
 
@@ -263,27 +282,12 @@ let floatingSignupBox =
   style([
     maxWidth(px(900)),
     margin2(~v=em(0.), ~h=auto),
-    backgroundColor(`hex("fff")),
+    // backgroundColor(`hex("fff")),
     // boxShadow10(px(0), px(2), px(4), px(0), `rgba((136,144,195,0.2)), px(0), px(5), px(15), px(0), `rgba((37,44,97,0.15)))
   ]);
-let floatingSignupBoxInner =
-  style([
-    margin2(~v=em(3.), ~h=auto),
-    // padding2(~v=em(3.), ~h=em(3.)),
-    padding(em(3.)),
-  ]);
-let emailSignupHeader =
-  style([
-    fontSize(px(24)),
-    // padding2(~v=em(3.), ~h=em(3.)),
-    // padding(em(3.)),
-  ]);
-let emailTextBox =
-  style(
-    [] // padding(`auto),
-    // padding2(~v=auto, ~h=auto),
-    // padding(em(3.)),
-  );
+let floatingSignupBoxInner = style([padding(em(3.))]);
+let emailSignupHeader = style([fontSize(px(24))]);
+let emailTextBox = style([]);
 
 let inputElements = style([padding(em(0.1))]);
 

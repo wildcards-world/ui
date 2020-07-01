@@ -3,7 +3,7 @@ open ReasonApolloHooks;
 module LoadMostContributed = [%graphql
   {|
     query {
-      patronNews(first: 20, orderBy: totalContributed, orderDirection: desc, where: {id_not: "0x6d47cf86f6a490c6410fc082fd1ad29cf61492d0"}) {
+      patronNews(first: 30, orderBy: totalContributed, orderDirection: desc, where: {id_not: "0x6d47cf86f6a490c6410fc082fd1ad29cf61492d0"}) {
         id
         patronTokenCostScaledNumerator  @bsDecoder(fn: "QlHooks.decodeBN")
         totalContributed @bsDecoder(fn: "QlHooks.decodeBN")
@@ -119,7 +119,7 @@ module ContributorsRow = {
       );
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
-    <tr className={rankingColor(index)}>
+    <tr key=contributor className={rankingColor(index)}>
       <td>
         <span className=centerFlame>
           {index == 0
@@ -171,7 +171,7 @@ module ContributorsRow = {
 module MostContributed = {
   [@react.component]
   let make = (~highestContributors) => {
-    ReasonReact.array(
+    React.array(
       Array.mapi(
         (index, (contributor, amount)) => {
           <ContributorsRow
@@ -188,7 +188,6 @@ module MostContributed = {
 
 [@react.component]
 let make = (~numberOfLeaders) => {
-  Js.log(numberOfLeaders);
   let highestContributorsOpt = useLoadMostContributedData();
 
   <div>

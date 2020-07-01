@@ -40,6 +40,8 @@ module Button = {
         ~position: string,
         ~top: int,
         ~right: int,
+        ~height: string=?,
+        ~size: string=?,
         ~m: int
       ) =>
       React.element =
@@ -55,6 +57,7 @@ module Tooltip = {
       ~placement: string=?,
       ~className: string=?,
       ~children: React.element,
+      ~offset: string=?,
       ~onClick: ReactEvent.Form.t => unit=?
     ) =>
     React.element =
@@ -143,6 +146,7 @@ module Box = {
       ~p: int=?,
       ~m: int=?,
       ~mb: int=?,
+      ~mt: int=?,
       ~fontSize: int=?,
       ~children: React.element,
       ~width: array(float)=?,
@@ -186,6 +190,8 @@ module Flex = {
       ~alignItems: string=?,
       ~justifyContent: string=?,
       ~px: int=?,
+      ~pb: int=?,
+      ~pt: int=?,
       ~className: string=?
     ) =>
     React.element =

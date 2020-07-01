@@ -42,6 +42,8 @@ let decodeBN: Js.Json.t => BN.bn =
     ->Belt.Option.mapWithDefault("0", a => a) /*trusting that gql will be reliable here*/
     ->BN.new_;
 
+let toTokenId: string => TokenId.t = Obj.magic;
+
 // TODO: make a real address string
 let decodeAddress: Js.Json.t => string =
   address =>
@@ -50,7 +52,7 @@ let decodeAddress: Js.Json.t => string =
 module InitialLoad = [%graphql
   {|
        query {
-         wildcards(first: 14) {
+         wildcards(first: 30) {
            id
            animal: tokenId @bsDecoder(fn: "tokenIdToAnimal")
            owner {
@@ -91,6 +93,17 @@ let useInitialDataLoad = () => {
   | NoData
   | Error(_) => None
   };
+};
+
+let useAnimalList = () => {
+  let allData = useInitialDataLoad();
+  React.useMemo1(
+    () => {
+      allData->oMap(data => data##wildcards->Array.map(wc => wc##animal))
+      |||| [||]
+    },
+    [|allData|],
+  );
 };
 
 module SubWildcardQuery = [%graphql
@@ -272,15 +285,45 @@ module LoadPatronNewNoDecode = [%graphql
      |}
 ];
 
+module LoadTokenDataArray = [%graphql
+  {|
+        query ($orgArray: [String!]!) {
+          wildcards (where: {id_in: $orgArray}) {
+            # totalCollected
+            # patronageNumeratorPriceScaled
+            # timeCollected
+            id
+            totalCollected @bsDecoder(fn: "decodePrice")
+            patronageNumeratorPriceScaled @bsDecoder(fn: "decodeBN")
+            timeCollected @bsDecoder(fn: "decodeBN")
+          }
+        }
+     |}
+];
+module LoadOrganisationData = [%graphql
+  {|
+      query ($orgId: String!) {
+        organisations_by_pk(id: $orgId) {
+          description
+          name
+          website
+          wildcard {
+            id @bsDecoder(fn: "toTokenId")
+          }
+        }
+      }
+     |}
+];
+
 module LoadTopContributors = [%graphql
   {|
-       query ($numberOfLeaders: Int!) {
-         patrons(first: $numberOfLeaders, orderBy: patronTokenCostScaledNumerator, orderDirection: desc) {
-           id
-           patronTokenCostScaledNumerator  @bsDecoder(fn: "decodeBN")
-         }
-       }
-     |}
+      query ($numberOfLeaders: Int!) {
+        patrons(first: $numberOfLeaders, orderBy: patronTokenCostScaledNumerator, orderDirection: desc, where: {id_not: "NO_OWNER"}) {
+          id
+          patronTokenCostScaledNumerator  @bsDecoder(fn: "decodeBN")
+        }
+      }
+  |}
 ];
 
 module SubTotalRaisedOrDueQuery = [%graphql
@@ -337,6 +380,16 @@ let useWildcardQuery = tokenId =>
     SubWildcardQuery.definition,
   );
 
+let useLoadTokenDataArrayQuery = tokenIdArray =>
+  ApolloHooks.useQuery(
+    ~variables=
+      LoadTokenDataArray.make(
+        ~orgArray=tokenIdArray->Array.map(id => id->TokenId.toString),
+        (),
+      )##variables,
+    LoadTokenDataArray.definition,
+  );
+
 let useWildcardDataQuery = tokenId =>
   ApolloHooks.useQuery(
     ~variables=
@@ -355,6 +408,12 @@ let useStateChangeSubscription = () =>
     ~variables=SubStateChangeEvents.make()##variables,
     SubStateChangeEvents.definition,
   );
+
+let useLoadOrganisationQuery = orgId =>
+  ApolloHooks.useQuery(
+    ~variables=LoadOrganisationData.make(~orgId, ())##variables,
+    LoadOrganisationData.definition,
+  );
 // let useBuySubscriptionData = () => {
 //   let (simple, _) = useBuySubscription();
 //   switch (simple) {
@@ -365,6 +424,10 @@ let useStateChangeSubscription = () =>
 let useStateChangeSubscriptionData = () => {
   let (simple, _) = useStateChangeSubscription();
   subscriptionResultToOption(simple);
+};
+let useLoadOrganisationData = orgId => {
+  let (simple, _) = useLoadOrganisationQuery(orgId);
+  queryResultToOption(simple);
 };
 let useHomePageAnimalsData = () => {
   let (simple, _) = useHomeAnimalsQuery();
@@ -382,19 +445,46 @@ type homePageAnimal = {
   next: TokenId.t,
   // wildcardData,
 };
-let useHomePageAnimalArray = () => {
+let useHomePageAnimalArrayOpt = () => {
   useHomePageAnimalsData()
   ->oMap(homeAnimals =>
       homeAnimals##homeAnimals
       ->Array.map(animal =>
           {
             id: TokenId.fromStringUnsafe(animal##id),
-            prev: TokenId.fromStringUnsafe(animal##id),
-            next: TokenId.fromStringUnsafe(animal##id),
+            prev: TokenId.fromStringUnsafe(animal##prev),
+            next: TokenId.fromStringUnsafe(animal##next),
           }
         )
-    )
-  |||| [||];
+    );
+};
+let useHomePageAnimalArray = () => {
+  useHomePageAnimalArrayOpt() |||| [||];
+};
+let useDetailsPageNextPrevious = (currentToken: TokenId.t) => {
+  let homepageAnimalData = useHomePageAnimalArray();
+  let defaultValue = {
+    id: TokenId.fromStringUnsafe("2"),
+    next: TokenId.fromStringUnsafe("1"),
+    prev: TokenId.fromStringUnsafe("0"),
+  };
+  let forwardNextLookup =
+    React.useMemo1(
+      () =>
+        homepageAnimalData->Array.reduce(
+          Js.Dict.empty(),
+          (dict, item) => {
+            Js.log("setting the item");
+            Js.log(item);
+            dict->Js.Dict.set(item.id->TokenId.toString, item);
+            dict;
+          },
+        ),
+      [|homepageAnimalData|],
+    );
+
+  forwardNextLookup->Js.Dict.get(currentToken->TokenId.toString)
+  |||| defaultValue;
 };
 
 [@decco.decode]
@@ -596,6 +686,11 @@ let useTotalCollectedToken: TokenId.t => option((Eth.t, BN.bn, BN.bn)) =
     simple->queryResultOptionFlatMap(getTotalCollectedData);
   };
 
+let useTotalCollectedTokenArray = animalArray => {
+  let (simple, _) = useLoadTokenDataArrayQuery(animalArray);
+  simple->queryResultToOption;
+};
+
 let usePatronageNumerator = (tokenId: TokenId.t) => {
   let (simple, _) = useWildcardQuery(tokenId);
   let patronageNumerator = response =>
@@ -686,9 +781,52 @@ let useAmountRaisedToken: TokenId.t => option(Eth.t) =
             // BN.new_("1000000000000")->BN.mulGet(. BN.new_("31536000")),
             BN.new_("31536000000000000000"),
           );
+
       Some(
         amountCollectedOrDue->BN.addGet(. amountRaisedSinceLastCollection),
       );
+    | None => None
+    };
+  };
+let calculateTotalRaised =
+    (
+      currentTimestamp,
+      (amountCollectedOrDue, timeCalculated, patronageNumeratorPriceScaled),
+    ) => {
+  let timeElapsed = BN.new_(currentTimestamp)->BN.subGet(. timeCalculated);
+
+  let amountRaisedSinceLastCollection =
+    patronageNumeratorPriceScaled
+    ->BN.mulGet(. timeElapsed)
+    ->BN.divGet(.
+        // BN.new_("1000000000000")->BN.mulGet(. BN.new_("31536000")),
+        BN.new_("31536000000000000000"),
+      );
+
+  amountCollectedOrDue->BN.addGet(. amountRaisedSinceLastCollection);
+};
+let useTotalRaisedAnimalGroup: array(TokenId.t) => option(Eth.t) =
+  animals => {
+    let currentTimestamp = useCurrentTime();
+
+    let details = useTotalCollectedTokenArray(animals);
+    // let detailsArray = details##wildcards;
+    switch (details) {
+    | Some(detailsArray) =>
+      Some(
+        detailsArray##wildcards
+        ->Array.reduce(BN.new_("0"), (acc, animalDetails) =>
+            calculateTotalRaised(
+              currentTimestamp,
+              (
+                animalDetails##totalCollected,
+                animalDetails##timeCollected,
+                animalDetails##patronageNumeratorPriceScaled,
+              ),
+            )
+            |+| acc
+          ),
+      )
     | None => None
     };
   };
