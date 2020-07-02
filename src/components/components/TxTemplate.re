@@ -2,7 +2,11 @@ open Globals;
 
 [@react.component]
 let make =
-    (~children: React.element, ~txState: ContractActions.transactionState) => {
+    (
+      ~children: React.element,
+      ~txState: ContractActions.transactionState,
+      ~closeButtonText: string,
+    ) => {
   let etherscanUrl = RootProvider.useEtherscanUrl();
   let clearNonUrlState = RootProvider.useClearNonUrlState();
 
@@ -50,7 +54,7 @@ let make =
         </a>
       </Rimble.Text>
       <Rimble.Button onClick={_e => clearNonUrlState()}>
-        "Back to view animal"->restr
+        closeButtonText->restr
       </Rimble.Button>
     </React.Fragment>;
   | ContractActions.Declined(message) =>

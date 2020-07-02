@@ -917,7 +917,7 @@ let make = () => {
                m=1
                onClick={_ => clearNonUrlState()}
              />
-             <UpdateDeposit />
+             <UpdateDeposit closeButtonText="Back to view Animal" />
            </div>
          | UpdatePriceScreen(animal) =>
            <div className=Css.(style([position(`relative)]))>
