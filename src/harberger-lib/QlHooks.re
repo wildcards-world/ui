@@ -924,6 +924,7 @@ type animalPrice =
   | Foreclosed
   | Price(Eth.t)
   | Loading;
+
 let usePrice: TokenId.t => animalPrice =
   animal => {
     let (simple, _) = useWildcardQuery(animal);
@@ -963,3 +964,8 @@ let useIsForeclosed: Web3.ethAddress => bool =
       !availableDeposit->BN.gtGet(. BN.new_("0"))
     });
   };
+
+// _auctionStartPrice.sub(
+//                     (_auctionStartPrice.sub(auctionEndPrice))
+//                         .mul(now.sub(tokenAuctionBeginTimestamp[tokenId]))
+//                         .div(auctionLength)

@@ -51,8 +51,8 @@ type estimateBuy = {
 type stewardContract = {
   estimate: estimateBuy,
   buy:
-    // (. tokenIdString, parsedUnits, parsedUnits, txOptions) =>
-    (. tokenIdString, parsedUnits, txOptions) => Promise.Js.t(tx, txError),
+    (. tokenIdString, parsedUnits, parsedUnits, string, txOptions) =>
+    Promise.Js.t(tx, txError),
   depositWei: (. txOptions) => Promise.Js.t(tx, txError),
   withdrawDeposit: (. parsedUnits, txOptions) => Promise.Js.t(tx, txError),
   _collectPatronage:
@@ -130,7 +130,7 @@ let getVotingContract = (stewardAddress, library, account) => {
   );
 };
 
-let stewardAddressMainnet = "0x6D47CF86F6A490c6410fC082Fd1Ad29CF61492d0";
+let stewardAddressMainnet = 1;
 let stewardAddressGoerli = "0x0C00CFE8EbB34fE7C31d4915a43Cde211e9F0F3B";
 
 let loyaltyTokenAddressMainnet = "0x773c75c2277eD3e402BDEfd28Ec3b51A3AfbD8a4";
@@ -246,20 +246,25 @@ let useBuy = (animal: TokenId.t) => {
   let optSteward = useStewardContract();
 
   (
-    (newPrice, _deposit, value: string) => {
+    (newPrice, deposit, value: string) => {
       let newPriceEncoded = parseUnits(. newPrice, 18);
 
       let value = parseUnits(. value, 0);
-      // let depositEncoded = parseUnits(. deposit, 18);
+      let depositEncoded = parseUnits(. deposit, 18);
 
       setTxState(_ => Created);
       switch (optSteward) {
       | Some(steward) =>
         let buyPromise =
+          // uint256 tokenId,
+          // uint256 _newPrice,
+          // uint256 _deposit,
+          // uint256 wildcardsPercentage
           steward.buy(.
             animalId,
             newPriceEncoded,
-            // depositEncoded,
+            depositEncoded,
+            "50000",
             {
               // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
               value: value,
