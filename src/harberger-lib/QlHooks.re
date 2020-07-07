@@ -959,7 +959,7 @@ let useIsForeclosed: Web3.ethAddress => bool =
   currentPatron => {
     let optAvailableDeposit = useRemainingDepositEth(currentPatron);
 
-    optAvailableDeposit->Option.mapWithDefault(true, availableDeposit =>
-      availableDeposit->BN.ltGet(. BN.new_("0"))
-    );
+    optAvailableDeposit->Option.mapWithDefault(true, availableDeposit => {
+      !availableDeposit->BN.gtGet(. BN.new_("0"))
+    });
   };

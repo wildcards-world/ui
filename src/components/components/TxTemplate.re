@@ -19,7 +19,9 @@ let make =
         <WildcardsLoader />
       </Rimble.Heading>
       <Rimble.Text> "Tx Created."->restr </Rimble.Text>
-      <Rimble.Loader className=Styles.centerItems size="80px" />
+      <Rimble.Flex justifyContent="center">
+        <Rimble.Loader size="80px" />
+      </Rimble.Flex>
     </React.Fragment>
   // TODO: make it show the link to the tx on etherscan.io!
   | ContractActions.SignedAndSubmitted(txHash) =>

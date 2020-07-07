@@ -345,8 +345,11 @@ module UserDetails = {
                     </small>}
                {if (isAddressCurrentUser) {
                   <React.Fragment>
-                    <br />
-                    <ActionButtons.UpdateDeposit />
+                    {if (isForeclosed) {
+                       React.null;
+                     } else {
+                       <> <br /> <ActionButtons.UpdateDeposit /> </>;
+                     }}
                     <br />
                     // {UserProvider.useIsUserValidated(currentAccount)
                     //    ? <ShareSocial /> : <Validate />}
