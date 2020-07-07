@@ -19,7 +19,7 @@ let getToDisplay = (label, value) =>
 
 [@gentype]
 [@react.component]
-let make = () => {
+let make = (~closeButtonText) => {
   let (depositChange, setDepositChange) = React.useState(() => "");
   let (isAddDeposit, setIsAddDeposit) = React.useState(() => true);
 
@@ -52,8 +52,8 @@ let make = () => {
   let updateIsAddDeposit = isDeposit => {
     setIsAddDeposit(_ => isDeposit);
   };
-  <TxTemplate txState=txDepositObject>
-    <TxTemplate txState=txWithdrawObject>
+  <TxTemplate txState=txDepositObject closeButtonText>
+    <TxTemplate txState=txWithdrawObject closeButtonText>
       <UpdateDepositInput
         depositChange
         updateDepositChange

@@ -207,7 +207,7 @@ let make = (~tokenId: TokenId.t) => {
     };
   };
 
-  <TxTemplate txState>
+  <TxTemplate txState closeButtonText="Back to view Animal">
     {isAbleToBuy
        ? <BuyInput
            onSubmitBuy

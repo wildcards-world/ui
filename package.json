@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "3box": "^1.18.1",
+    "3box": "^1.20.1",
     "@apollo/react-hooks": "^3.1.5",
     "@apollo/react-ssr": "^3.1.5",
     "@baransu/graphql_ppx_re": "^0.7.1",

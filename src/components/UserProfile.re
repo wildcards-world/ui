@@ -209,6 +209,9 @@ module UserDetails = {
     let totalLoyaltyTokensAvailableAndClaimedOpt =
       QlHooks.useTotalLoyaltyToken(userAddress);
 
+    let nonUrlState = RootProvider.useNonUrlState();
+    let clearNonUrlState = RootProvider.useClearNonUrlState();
+
     <div className=Css.(style([width(`percent(100.))]))>
       <Rimble.Flex flexWrap="wrap" alignItems="start">
         <Rimble.Box
@@ -227,79 +230,136 @@ module UserDetails = {
             src=image
           />
           <br />
-          {optName->reactMap(name => <h2> name->restr </h2>)}
-          {optTwitter->reactMap(twitterHandle =>
-             <a
-               className=Styles.navListText
-               target="_blank"
-               rel="noopener noreferrer"
-               href={"https://twitter.com/" ++ twitterHandle}>
-               {("@" ++ twitterHandle)->restr}
-             </a>
-           )}
-          <br />
-          {optDescription->reactMap(description => <p> description->restr </p>)}
-          <a
-            className=Styles.navListText
-            target="_blank"
-            rel="noopener noreferrer"
-            href={"https://" ++ etherScanUrl ++ "/address/" ++ userAddress}>
-            {Helper.elipsify(userAddress, 10)->restr}
-          </a>
-          <br />
-          // NOTE: the number of loyalty tokens of a user currently will always show.
-          //       We are thinking of making this "private" only to the current logged in user. To enable this remove the `|| true` from the line below
-          {isAddressCurrentUser
-             ? <>
-                 <small>
-                   <p>
-                     {(
-                        "Claimed Loyalty Token Balance: "
-                        ++ {
-                          totalLoyaltyTokensOpt->Option.mapWithDefault(
-                            "Loading", claimedLoyaltyTokens => {
-                            claimedLoyaltyTokens->Web3Utils.fromWeiBNToEthPrecision(
-                              ~digits=6,
-                            )
-                          });
-                        }
-                        ++ " WLT"
-                      )
-                      ->restr}
-                   </p>
-                 </small>
-                 {switch (currentlyOwnedTokens) {
-                  | [||] => React.null
-                  | currentlyOwnedTokens =>
-                    currentlyOwnedTokens
-                    ->Array.map(id =>
-                        <ClaimLoyaltyTokenButtons
-                          id
-                          key=id
-                          refreshLoyaltyTokenBalance=updateFunction
-                        />
-                      )
-                    ->React.array
-                  }}
-                 <a href="/#ethturin-quadratic-voting"> "vote"->restr </a>
-               </>
-             : <small>
-                 <p>
-                   {(
-                      "Loyalty Token Balance Generated: "
-                      ++ {
-                        totalLoyaltyTokensAvailableAndClaimedOpt->Option.mapWithDefault(
-                          "Loading", ((totalLoyaltyTokens, _)) => {
-                          totalLoyaltyTokens->Web3Utils.fromWeiBNToEthPrecision(
-                            ~digits=5,
-                          )
-                        });
-                      }
-                      ++ " WLT"
-                    )
-                    ->restr}
-                 </p>
-               </small>}
+          {switch (nonUrlState) {
+           | UserVerificationScreen =>
+             <div className=Css.(style([position(`relative)]))>
+               <Rimble.Button.Text
+                 icononly=true
+                 icon="Close"
+                 color="moon-gray"
+                 position="absolute"
+                 top=0
+                 right=0
+                 m=1
+                 onClick={_ => clearNonUrlState()}
+               />
+               <React.Suspense fallback={<Rimble.Loader />}>
+                 <LazyThreeBoxUpdate.Lazy />
+               </React.Suspense>
+             </div>
+           | UpdateDepositScreen =>
+             <div className=Css.(style([position(`relative)]))>
+               <Rimble.Button.Text
+                 icononly=true
+                 icon="Close"
+                 color="moon-gray"
+                 position="absolute"
+                 top=0
+                 right=0
+                 m=1
+                 onClick={_ => clearNonUrlState()}
+               />
+               <UpdateDeposit closeButtonText="Close" />
+             </div>
+           | LoginScreen(_)
+           | UpdatePriceScreen(_)
+           | BuyScreen(_)
+           | NoExtraState =>
+             <>
+               {optName->reactMap(name => <h2> name->restr </h2>)}
+               {optTwitter->reactMap(twitterHandle =>
+                  <a
+                    className=Styles.navListText
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={"https://twitter.com/" ++ twitterHandle}>
+                    {("@" ++ twitterHandle)->restr}
+                  </a>
+                )}
+               <br />
+               {optDescription->reactMap(description =>
+                  <p> description->restr </p>
+                )}
+               <a
+                 className=Styles.navListText
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 href={
+                   "https://" ++ etherScanUrl ++ "/address/" ++ userAddress
+                 }>
+                 {Helper.elipsify(userAddress, 10)->restr}
+               </a>
+               <br />
+               // NOTE: the number of loyalty tokens of a user currently will always show.
+               //       We are thinking of making this "private" only to the current logged in user. To enable this remove the `|| true` from the line below
+               {isAddressCurrentUser
+                  ? <>
+                      <small>
+                        <p>
+                          {(
+                             "Claimed Loyalty Token Balance: "
+                             ++ {
+                               totalLoyaltyTokensOpt->Option.mapWithDefault(
+                                 "Loading", claimedLoyaltyTokens => {
+                                 claimedLoyaltyTokens->Web3Utils.fromWeiBNToEthPrecision(
+                                   ~digits=6,
+                                 )
+                               });
+                             }
+                             ++ " WLT"
+                           )
+                           ->restr}
+                        </p>
+                      </small>
+                      {switch (currentlyOwnedTokens) {
+                       | [||] => React.null
+                       | currentlyOwnedTokens =>
+                         currentlyOwnedTokens
+                         ->Array.map(id =>
+                             <ClaimLoyaltyTokenButtons
+                               id
+                               key=id
+                               refreshLoyaltyTokenBalance=updateFunction
+                             />
+                           )
+                         ->React.array
+                       }}
+                      <a href="/#ethturin-quadratic-voting"> "vote"->restr </a>
+                    </>
+                  : <small>
+                      <p>
+                        {(
+                           "Loyalty Token Balance Generated: "
+                           ++ {
+                             totalLoyaltyTokensAvailableAndClaimedOpt->Option.mapWithDefault(
+                               "Loading", ((totalLoyaltyTokens, _)) => {
+                               totalLoyaltyTokens->Web3Utils.fromWeiBNToEthPrecision(
+                                 ~digits=5,
+                               )
+                             });
+                           }
+                           ++ " WLT"
+                         )
+                         ->restr}
+                      </p>
+                    </small>}
+               {if (isAddressCurrentUser) {
+                  <React.Fragment>
+                    {if (isForeclosed) {
+                       React.null;
+                     } else {
+                       <> <br /> <ActionButtons.UpdateDeposit /> </>;
+                     }}
+                    <br />
+                    // {UserProvider.useIsUserValidated(currentAccount)
+                    //    ? <ShareSocial /> : <Validate />}
+                    <Validate />
+                  </React.Fragment>;
+                } else {
+                  React.null;
+                }}
+             </>
+           }}
         </Rimble.Box>
         <Rimble.Box p=1 width=[|1., 1., 0.3333|]>
           <h2> "Monthly Contribution"->restr </h2>

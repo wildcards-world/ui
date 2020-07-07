@@ -2,7 +2,11 @@ open Globals;
 
 [@react.component]
 let make =
-    (~children: React.element, ~txState: ContractActions.transactionState) => {
+    (
+      ~children: React.element,
+      ~txState: ContractActions.transactionState,
+      ~closeButtonText: string,
+    ) => {
   let etherscanUrl = RootProvider.useEtherscanUrl();
   let clearNonUrlState = RootProvider.useClearNonUrlState();
 
@@ -15,7 +19,9 @@ let make =
         <WildcardsLoader />
       </Rimble.Heading>
       <Rimble.Text> "Tx Created."->restr </Rimble.Text>
-      <Rimble.Loader className=Styles.centerItems size="80px" />
+      <Rimble.Flex justifyContent="center">
+        <Rimble.Loader size="80px" />
+      </Rimble.Flex>
     </React.Fragment>
   // TODO: make it show the link to the tx on etherscan.io!
   | ContractActions.SignedAndSubmitted(txHash) =>
@@ -50,7 +56,7 @@ let make =
         </a>
       </Rimble.Text>
       <Rimble.Button onClick={_e => clearNonUrlState()}>
-        "Back to view animal"->restr
+        closeButtonText->restr
       </Rimble.Button>
     </React.Fragment>;
   | ContractActions.Declined(message) =>

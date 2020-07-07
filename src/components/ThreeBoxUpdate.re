@@ -571,9 +571,14 @@ module Main = {
              "to validate your identity on twitter."->React.string
            </Rimble.Text>
            <br />
-           <Rimble.Button onClick={_e => {setIsIntegarted3Box(_ => true)}}>
-             {React.string("Try Experimental 3box integration")}
-           </Rimble.Button>
+           <Rimble.Text>
+             <a onClick={_e => {setIsIntegarted3Box(_ => true)}}>
+               {React.string("Try our experimental 3box integration")}
+             </a>
+             {React.string(
+                " - but if in doubt go to the official 3box website.",
+              )}
+           </Rimble.Text>
          </React.Fragment>;
        }}
     </div>;

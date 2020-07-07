@@ -21,9 +21,7 @@ external goerliApi: option(string) = "process.env.REACT_APP_GOERLI_BE";
 ReactDOMRe.renderToElementWithId(
   <WildcardsProvider
     getGraphEndpoints={(networkId, ()) => {
-      Js.log2("YOU ARE USING net ID:", networkId);
-      Js.log2("mainnetApi", mainnetApi);
-      Js.log2("goerliApi", goerliApi);
+
       let endpoints =
         switch (networkId) {
         | 5 => (
