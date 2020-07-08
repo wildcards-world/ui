@@ -28,6 +28,7 @@ let getNameFromId: string => string =
     | "19" => "Arthur"
     | "20" => "Abo"
     | "21" => "Whacky Cappy"
+    | "22" => "Slice"
     | "42" => "Vitalik"
     | _ => "Unknown"
     };
@@ -84,9 +85,9 @@ let getImage = animal => {
   | "17" => "https://dd2wadt5nc0o7.cloudfront.net/17-mijungla.svg"
   | "18" => "https://dd2wadt5nc0o7.cloudfront.net/18-ajayu.svg"
   | "19" => "https://dd2wadt5nc0o7.cloudfront.net/19-arthur.svg"
-  // | "20" => "https://dd2wadt5nc0o7.cloudfront.net/20-abo.svg" // the cdn cache hadn't cleared yet...
-  | "20" => "https://wildcards-image-cdn.s3-eu-west-1.amazonaws.com/20-abo.svg"
+  | "20" => "https://dd2wadt5nc0o7.cloudfront.net/20-abo.svg"
   | "21" => "https://dd2wadt5nc0o7.cloudfront.net/21-whackycappy.svg"
+  | "22" => "https://dd2wadt5nc0o7.cloudfront.net/slice.svg"
   | "42" => "https://dd2wadt5nc0o7.cloudfront.net/42-vitalik.svg"
   | _ => "./img/animals/comingsoon.png"
   };
@@ -123,6 +124,8 @@ let getAlternateImage: TokenId.t => option(string) =
       Some(
         "https://dd2wadt5nc0o7.cloudfront.net/animals/21-whackycappy-real.jpg",
       )
+    | "22" =>
+      Some("https://dd2wadt5nc0o7.cloudfront.net/animals/slice-real.jpg")
     | "13"
     | "0"
     | "1"
@@ -182,11 +185,11 @@ type launchStatus =
   | Launched
   | LaunchDate(MomentRe.Moment.t);
 
-let nextLaunchDate = MomentRe.momentUtcDefaultFormat("2020-07-02T17:00:00");
+let nextLaunchDate = MomentRe.momentUtcDefaultFormat("2020-07-09T17:00:00");
 
 let isLaunched: TokenId.t => launchStatus =
   animal =>
     switch (animal->TokenId.toString) {
-    | "21" => LaunchDate(nextLaunchDate)
+    | "22" => LaunchDate(nextLaunchDate)
     | _ => Launched
     };
