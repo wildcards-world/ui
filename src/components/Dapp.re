@@ -93,6 +93,36 @@ module DisplayAfterDate = {
   };
 };
 
+module AuctionDetails = {
+  [@react.component]
+  let make = (~animal: TokenId.t) => {
+    Js.log(animal);
+
+    let auctionStartPrice = QlHooks.useAuctionStartPrice(animal);
+    let auctionEndPrice = QlHooks.useAuctionEndPrice(animal);
+    let auctioLength = QlHooks.useAuctioLength(animal);
+    let launchTime = QlHooks.useLaunchTime(animal);
+    let currentTime = QlHooks.useCurrentTime();
+
+    let currentPriceWei =
+      auctionStartPrice
+      |-| (
+        auctionStartPrice
+        |-| auctionEndPrice
+        |*| (BN.new_(currentTime) |-| launchTime)
+        |/| auctioLength
+      );
+
+    let currentPriceEth = currentPriceWei->Eth.fromWeiEth;
+    // TODO: fix the precision of this value: toFixedWithPrecisionNoTrailingZeros;
+
+    // ->BN.mul(. now.sub(tokenAuctionBeginTimestamp[tokenId]))
+    // .div(auctionLength)
+
+    <p> {("is on auction " ++ currentPriceEth)->React.string} </p>;
+  };
+};
+
 module BasicAnimalDisplay = {
   [@react.component]
   let make = (~animal: TokenId.t) => {
@@ -103,6 +133,8 @@ module BasicAnimalDisplay = {
     let displayNameStr = UserProvider.displayNameToString(displayName);
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
     let nonUrlRouting = RootProvider.useNonUrlState();
+
+    let isOnAuction = Animal.useIsOnAuction(animal);
 
     <React.Fragment>
       <PriceDisplay animal />
@@ -121,7 +153,10 @@ module BasicAnimalDisplay = {
        | BuyScreen(_) => React.null
        | LoginScreen(_)
        | NoExtraState =>
-         owned ? <EditButton animal /> : <ActionButtons.Buy animal />
+         owned
+           ? <EditButton animal />
+           : isOnAuction
+               ? <AuctionDetails animal /> : <ActionButtons.Buy animal />
        }}
     </React.Fragment>;
   };
@@ -143,6 +178,8 @@ module AnimalOnLandingPage = {
     let orgBadge = Animal.useGetOrgBadgeImage(animal);
     let orgId = QlHooks.useWildcardOrgId(animal) |||| "";
 
+    let currentPriceWei = QlHooks.usePrice(animal);
+
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
     let normalImage = () =>
@@ -162,9 +199,14 @@ module AnimalOnLandingPage = {
                 ? switch (optionEndDateMoment) {
                   | Some(_endDateMoment) => React.null
                   | None =>
-                    <div className=Styles.overlayFlameImg>
-                      <Streak animal />
-                    </div>
+                    switch (currentPriceWei) {
+                    | Price(_) =>
+                      <div className=Styles.overlayFlameImg>
+                        <Streak animal />
+                      </div>
+                    | Loading
+                    | Foreclosed => React.null
+                    }
                   }
                 : React.null}
              {<div
@@ -253,7 +295,7 @@ module AnimalCarousel = {
         value=carouselIndex
         animationSpeed=1000
         infinite=true
-        autoPlay=500000
+        autoPlay=5000
         arrowLeft={
           <span
             className={Styles.carouselArrow(true)}

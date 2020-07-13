@@ -130,7 +130,7 @@ let make = (~tokenId: TokenId.t) => {
       currentPriceWei
       ->BN.addGet(. BN.new_(Web3Utils.toWei(deposit, "ether")))
       ->BN.toStringGet(.);
-    buyFunc(newPrice, deposit, amountToSend);
+    buyFunc(newPrice, currentPriceWei->BN.toStringGet(.), amountToSend);
   };
 
   let setNewPrice = value => {

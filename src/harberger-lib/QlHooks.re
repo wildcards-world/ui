@@ -965,6 +965,30 @@ let useIsForeclosed: Web3.ethAddress => bool =
     });
   };
 
+let useAuctionStartPrice = (_tokenId: TokenId.t) => {
+  BN.new_(
+    "1000000000000000000" // auction starts at 1 eth
+  );
+};
+let useAuctionEndPrice = (_tokenId: TokenId.t) => {
+  BN.new_(
+    "20000000000000000" // auction ends at 0.02 eth
+  );
+};
+let useAuctioLength = (_tokenId: TokenId.t) => {
+  BN.new_(
+    "604800" // 1 week
+  );
+};
+let useLaunchTime = (_tokenId: TokenId.t) => {
+  MomentRe.momentUtcDefaultFormat("2020-07-09T17:00:00")
+  ->MomentRe.Moment.toUnix
+  ->string_of_int
+  ->BN.new_;
+};
+
+// let useTokenCurrentActionPrice = (tokenId: TokenId.t) => {
+// };
 // _auctionStartPrice.sub(
 //                     (_auctionStartPrice.sub(auctionEndPrice))
 //                         .mul(now.sub(tokenAuctionBeginTimestamp[tokenId]))

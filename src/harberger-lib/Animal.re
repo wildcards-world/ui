@@ -193,3 +193,10 @@ let isLaunched: TokenId.t => launchStatus =
     | "22" => LaunchDate(nextLaunchDate)
     | _ => Launched
     };
+
+let useIsOnAuction: TokenId.t => bool =
+  animal =>
+    switch (animal->TokenId.toString) {
+    | "22" => true
+    | _ => false
+    };
