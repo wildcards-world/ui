@@ -157,6 +157,7 @@ let useStewardAbi = () => {
 let defaultStewardAddressFromChainId =
   fun
   | 1 => Some(stewardAddressMainnet)
+  | 4 => Some(stewardAddressRinkeby)
   | 5 => Some(stewardAddressGoerli)
   | _ => None;
 let useStewardAddress = () => {
