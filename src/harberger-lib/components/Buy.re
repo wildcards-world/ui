@@ -46,7 +46,9 @@ let calcRequiredDepositForTime = (time, price, numerator, denominator) => {
 [@gentype]
 [@react.component]
 let make = (~tokenId: TokenId.t) => {
-  let (buyFunc, txState) = ContractActions.useBuy(tokenId);
+  let (buyFunc, txBuyState) = ContractActions.useBuy(tokenId);
+  let (buyFuncAuction, txBuyAuctionState) =
+    ContractActions.useBuyAuction(tokenId);
   let userBalance =
     Belt.Option.mapWithDefault(RootProvider.useEthBalance(), BN.new_("0"), a =>
       a
@@ -54,8 +56,9 @@ let make = (~tokenId: TokenId.t) => {
 
   let (numerator, denominator, ratio, _ratioInverse) =
     QlHooks.usePledgeRateDetailed(tokenId);
+  let priceStatus = QlHooks.usePrice(tokenId);
   let currentPriceWei =
-    switch (QlHooks.usePrice(tokenId)) {
+    switch (priceStatus) {
     | Price(price) => price
     | Loading
     | Foreclosed => BN.new_("0")
@@ -130,7 +133,17 @@ let make = (~tokenId: TokenId.t) => {
       currentPriceWei
       ->BN.addGet(. BN.new_(Web3Utils.toWei(deposit, "ether")))
       ->BN.toStringGet(.);
-    buyFunc(newPrice, currentPriceWei->BN.toStringGet(.), amountToSend);
+    switch (priceStatus) {
+    | Foreclosed
+    | Loading => buyFuncAuction(newPrice, "150000", amountToSend)
+    | Price(_) =>
+      buyFunc(
+        newPrice,
+        currentPriceWei->BN.toStringGet(.),
+        "150000",
+        amountToSend,
+      )
+    };
   };
 
   let setNewPrice = value => {
@@ -207,28 +220,30 @@ let make = (~tokenId: TokenId.t) => {
     };
   };
 
-  <TxTemplate txState closeButtonText="Back to view Animal">
-    {isAbleToBuy
-       ? <BuyInput
-           onSubmitBuy
-           setNewPrice
-           newPrice
-           deposit
-           depositTimeInSeconds
-           setDeposit
-           patronage
-           tokenIdName
-           //  priceSliderInitialMax
-           //  depositForAYear
-           maxAvailableDeposit
-           //  updatePatronage
-         />
-       : <Rimble.Box>
-           <p className=Styles.textOnlyModalText>
-             {React.string(
-                "You do not have enough ether to buy " ++ tokenIdName ++ ".",
-              )}
-           </p>
-         </Rimble.Box>}
+  <TxTemplate txState=txBuyAuctionState closeButtonText="Back to view Animal">
+    <TxTemplate txState=txBuyState closeButtonText="Back to view Animal">
+      {isAbleToBuy
+         ? <BuyInput
+             onSubmitBuy
+             setNewPrice
+             newPrice
+             deposit
+             depositTimeInSeconds
+             setDeposit
+             patronage
+             tokenIdName
+             //  priceSliderInitialMax
+             //  depositForAYear
+             maxAvailableDeposit
+             //  updatePatronage
+           />
+         : <Rimble.Box>
+             <p className=Styles.textOnlyModalText>
+               {React.string(
+                  "You do not have enough ether to buy " ++ tokenIdName ++ ".",
+                )}
+             </p>
+           </Rimble.Box>}
+    </TxTemplate>
   </TxTemplate>;
 };

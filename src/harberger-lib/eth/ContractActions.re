@@ -53,6 +53,9 @@ type stewardContract = {
   buy:
     (. tokenIdString, parsedUnits, parsedUnits, string, txOptions) =>
     Promise.Js.t(tx, txError),
+  buyAuction:
+    (. tokenIdString, parsedUnits, string, txOptions) =>
+    Promise.Js.t(tx, txError),
   depositWei: (. txOptions) => Promise.Js.t(tx, txError),
   withdrawDeposit: (. parsedUnits, txOptions) => Promise.Js.t(tx, txError),
   _collectPatronage:
@@ -132,7 +135,7 @@ let getVotingContract = (stewardAddress, library, account) => {
 
 let stewardAddressMainnet = "0x6D47CF86F6A490c6410fC082Fd1Ad29CF61492d0";
 let stewardAddressGoerli = "0x0C00CFE8EbB34fE7C31d4915a43Cde211e9F0F3B";
-let stewardAddressRinkeby = "0xdC43693cDCdB669C0df9E6a4d9c7a0854640DB4D";
+let stewardAddressRinkeby = "0x229Cb219F056A9097b2744594Bc37597380854E8";
 
 let loyaltyTokenAddressMainnet = "0x773c75c2277eD3e402BDEfd28Ec3b51A3AfbD8a4";
 let loyaltyTokenAddressGoerli = "0xd7d8c42ab5b83aa3d4114e5297989dc27bdfb715";
@@ -249,7 +252,7 @@ let useBuy = (animal: TokenId.t) => {
   let optSteward = useStewardContract();
 
   (
-    (newPrice, oldPrice, value: string) => {
+    (newPrice, oldPrice, wildcardsPercentage, value: string) => {
       let newPriceEncoded = parseUnits(. newPrice, 18);
 
       let value = parseUnits(. value, 0);
@@ -264,7 +267,58 @@ let useBuy = (animal: TokenId.t) => {
             newPriceEncoded,
             // oldPrice->Obj.magic,
             oldPriceParsed,
-            "50000",
+            wildcardsPercentage,
+            {
+              // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
+              value: value,
+            },
+          )
+          ->Promise.Js.toResult;
+        buyPromise->Promise.getOk(tx => {
+          setTxState(_ => SignedAndSubmitted(tx.hash));
+          let txMinedPromise = tx.wait(.)->Promise.Js.toResult;
+          txMinedPromise->Promise.getOk(txOutcome => {
+            Js.log(txOutcome);
+            setTxState(_ => Complete(txOutcome));
+          });
+          txMinedPromise->Promise.getError(error => {
+            setTxState(_ => Failed);
+            Js.log(error);
+          });
+          ();
+        });
+        buyPromise->Promise.getError(error => {
+          setTxState(_ => Declined(error.message))
+        });
+        ();
+      | None => ()
+      };
+    },
+    txState,
+  );
+};
+
+let useBuyAuction = (animal: TokenId.t) => {
+  let animalId = animal->TokenId.toString;
+  let (txState, setTxState) = React.useState(() => UnInitialised);
+
+  let optSteward = useStewardContract();
+
+  (
+    (newPrice, wildcardsPercentage, value: string) => {
+      let newPriceEncoded = parseUnits(. newPrice, 18);
+
+      let value = parseUnits(. value, 0);
+
+      setTxState(_ => Created);
+      switch (optSteward) {
+      | Some(steward) =>
+        // let buyPromise =
+        let buyPromise =
+          steward.buyAuction(.
+            animalId,
+            newPriceEncoded,
+            wildcardsPercentage,
             {
               // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
               value: value,
