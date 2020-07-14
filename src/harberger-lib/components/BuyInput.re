@@ -98,7 +98,7 @@ let make =
       </Rimble.Box>
       <Rimble.Box p=2 mb=2 width=[|1., 0.5|]>
         <Rimble.Tooltip
-          message="This is the monthly contribution that will go towards conservation of endangered tokenIds. This will be deducted continuously from your deposit"
+          message="This is the monthly contribution that will go towards conservation of at risk tokenIds. This will be deducted continuously from your deposit"
           placement="top">
           <Rimble.Text className=rightAlignText>
             "Your monthly contribution:"->restr

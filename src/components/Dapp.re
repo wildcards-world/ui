@@ -602,7 +602,7 @@ module AnimalInfoStats = {
               message={
                 "This is the monthly percentage contribution of "
                 ++ animalName
-                ++ "'s sale price that will go towards conservation of endangered animals. This is deducted continuously from the deposit and paid by the owner of the animal"
+                ++ "'s sale price that will go towards conservation of at risk animals. This is deducted continuously from the deposit and paid by the owner of the animal"
               }
               placement="top">
               <span> {js|ⓘ|js}->restr </span>
@@ -787,7 +787,7 @@ module UnlaunchedAnimalInfo = {
                 message={
                   "This is the monthly percentage contribution of "
                   ++ animalName
-                  ++ "'s sale price that will go towards conservation of endangered animals. This is deducted continuously from the deposit and paid by the owner of the animal"
+                  ++ "'s sale price that will go towards conservation of at risk animals. This is deducted continuously from the deposit and paid by the owner of the animal"
                 }
                 placement="top">
                 <span> {js|ⓘ|js}->restr </span>

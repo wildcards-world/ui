@@ -84,7 +84,7 @@ export default class MyDocument extends Document {
 
           <meta
             name="description"
-            content="Wildcards lets you support conservation, become a patron of endangered animals and even earn a profit since wildcards are always for sale."
+            content="Wildcards lets you support conservation, become a patron of at risk animals and even earn a profit since wildcards are always for sale."
           />
           <meta name="author" content="Wildcards" />
           <meta
@@ -98,11 +98,11 @@ export default class MyDocument extends Document {
           />
           <meta
             property="og:title"
-            content="Wildcards | Saving endangered animals"
+            content="Wildcards | Protecting at risk animals"
           />
           <meta
             property="og:description"
-            content="Wildcards lets you support conservation, become a patron of endangered animals and even earn a profit since wildcards are always for sale."
+            content="Wildcards lets you support conservation, become a patron of at risk animals and even earn a profit since wildcards are always for sale."
           />
           <meta
             property="og:image"
@@ -111,11 +111,11 @@ export default class MyDocument extends Document {
 
           <meta
             name="twitter:title"
-            content="Wildcards | Saving endangered animals"
+            content="Wildcards | Protecting at risk animals"
           />
           <meta
             name="twitter:description"
-            content="Wildcards lets you support conservation, become a patron of endangered animals and even earn a profit since wildcards are always for sale."
+            content="Wildcards lets you support conservation, become a patron of at risk animals and even earn a profit since wildcards are always for sale."
           />
           <meta
             name="twitter:image"
@@ -153,22 +153,22 @@ export default class MyDocument extends Document {
 // <link rel="icon" type="image/png" href="img/favicon-16x16.png" sizes="16x16" />
 
 // <meta name="description"
-//   content="Wildcards lets you support conservation, become a patron of endangered animals and even earn a profit since wildcards are always for sale.">
+//   content="Wildcards lets you support conservation, become a patron of at risk animals and even earn a profit since wildcards are always for sale.">
 // <meta name="author" content="Wildcards">
 // <meta name="keywords"
 //   content="Wildcards, Blockchain, digital assets, Non Fungible Tokens, Ethereum, Crypto Collectables, Conservation, Gorilla, Black Rhino, Endangered Animals, Harberger Tax, NFT, Always For Sale" />
 
-// <title>Wildcards | Saving endangered animals</title>
+// <title>Wildcards | Protecting at risk animals</title>
 
 // <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-// <meta property="og:title" content="Wildcards | Saving endangered animals">
+// <meta property="og:title" content="Wildcards | Protecting at risk animals">
 // <meta property="og:description"
-//   content="Wildcards lets you support conservation, become a patron of endangered animals and even earn a profit since wildcards are always for sale.">
+//   content="Wildcards lets you support conservation, become a patron of at risk animals and even earn a profit since wildcards are always for sale.">
 // <meta property="og:image" content="./assets/img/logos/wildcards.png">
 
-// <meta name="twitter:title" content="Wildcards | Saving endangered animals">
+// <meta name="twitter:title" content="Wildcards | Protecting at risk animals">
 // <meta name="twitter:description"
-//   content="Wildcards lets you support conservation, become a patron of endangered animals and even earn a profit since wildcards are always for sale.">
+//   content="Wildcards lets you support conservation, become a patron of at risk animals and even earn a profit since wildcards are always for sale.">
 // <meta name="twitter:image" content="./assets/img/logos/wildcards.png">
 // <meta name="twitter:card" content="./assets/img/logos/wildcards.png">
 
