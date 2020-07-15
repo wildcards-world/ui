@@ -29,6 +29,7 @@ let getNameFromId: string => string =
     | "20" => "Abo"
     | "21" => "Whacky Cappy"
     | "22" => "Slice"
+    | "23" => "Charles"
     | "42" => "Vitalik"
     | _ => "Unknown"
     };
@@ -88,6 +89,7 @@ let getImage = animal => {
   | "20" => "https://dd2wadt5nc0o7.cloudfront.net/20-abo.svg"
   | "21" => "https://dd2wadt5nc0o7.cloudfront.net/21-whackycappy.svg"
   | "22" => "https://dd2wadt5nc0o7.cloudfront.net/slice.svg"
+  | "23" => "https://dd2wadt5nc0o7.cloudfront.net/animals/curlew-sandpiper.svg"
   | "42" => "https://dd2wadt5nc0o7.cloudfront.net/42-vitalik.svg"
   | _ => "./img/animals/comingsoon.png"
   };
@@ -126,6 +128,8 @@ let getAlternateImage: TokenId.t => option(string) =
       )
     | "22" =>
       Some("https://dd2wadt5nc0o7.cloudfront.net/animals/slice-real.jpg")
+    | "23" =>
+      Some("https://dd2wadt5nc0o7.cloudfront.net/animals/charles-2-real.jpg")
     | "13"
     | "0"
     | "1"
@@ -185,11 +189,11 @@ type launchStatus =
   | Launched
   | LaunchDate(MomentRe.Moment.t);
 
-let nextLaunchDate = MomentRe.momentUtcDefaultFormat("2020-07-09T17:00:00");
+let nextLaunchDate = MomentRe.momentUtcDefaultFormat("2020-07-16T17:00:00");
 
 let isLaunched: TokenId.t => launchStatus =
   animal =>
     switch (animal->TokenId.toString) {
-    | "22" => LaunchDate(nextLaunchDate)
+    | "23" => LaunchDate(nextLaunchDate)
     | _ => Launched
     };
