@@ -776,26 +776,31 @@ module UnlaunchedAnimalInfo = {
           <br />
           <br />
           <br />
-          // <p>
-          //   "The monthly pledge rate will be revealed after launch."->restr
-          // </p>
-          // TODO: add this back after  launch
-          <small>
-            <strong>
-              "Monthly Pledge Rate:"->restr
-              <Rimble.Tooltip
-                message={
-                  "This is the monthly percentage contribution of "
-                  ++ animalName
-                  ++ "'s sale price that will go towards conservation of endangered animals. This is deducted continuously from the deposit and paid by the owner of the animal"
-                }
-                placement="top">
-                <span> {js|ⓘ|js}->restr </span>
-              </Rimble.Tooltip>
-            </strong>
-          </small>
-          <br />
-          {(monthlyRate ++ " %")->restr}
+          {if (ratio == 0.) {
+             <p>
+               "The monthly pledge rate will be revealed at launch."->restr
+             </p>;
+           } else {
+             <>
+               // TODO: add this back after  launch
+               <small>
+                 <strong>
+                   "Monthly Pledge Rate:"->restr
+                   <Rimble.Tooltip
+                     message={
+                       "This is the monthly percentage contribution of "
+                       ++ animalName
+                       ++ "'s sale price that will go towards conservation of endangered animals. This is deducted continuously from the deposit and paid by the owner of the animal"
+                     }
+                     placement="top">
+                     <span> {js|ⓘ|js}->restr </span>
+                   </Rimble.Tooltip>
+                 </strong>
+               </small>
+               <br />
+               {(monthlyRate ++ " %")->restr}
+             </>;
+           }}
         </React.Fragment>
       }
     />;
