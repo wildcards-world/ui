@@ -84,7 +84,7 @@ export default class MyDocument extends Document {
 
           <meta
             name="description"
-            content="Wildcards lets you support conservation, become a patron of at risk animals and even earn a profit since wildcards are always for sale."
+            content="Wildcards lets you support conservation, become a patron of wild animals and even earn a profit since wildcards are always for sale."
           />
           <meta name="author" content="Wildcards" />
           <meta
@@ -98,11 +98,11 @@ export default class MyDocument extends Document {
           />
           <meta
             property="og:title"
-            content="Wildcards | Protecting at risk animals"
+            content="Wildcards | Protecting wild animals"
           />
           <meta
             property="og:description"
-            content="Wildcards lets you support conservation, become a patron of at risk animals and even earn a profit since wildcards are always for sale."
+            content="Wildcards lets you support conservation, become a patron of wild animals and even earn a profit since wildcards are always for sale."
           />
           <meta
             property="og:image"
@@ -111,11 +111,11 @@ export default class MyDocument extends Document {
 
           <meta
             name="twitter:title"
-            content="Wildcards | Protecting at risk animals"
+            content="Wildcards | Protecting wild animals"
           />
           <meta
             name="twitter:description"
-            content="Wildcards lets you support conservation, become a patron of at risk animals and even earn a profit since wildcards are always for sale."
+            content="Wildcards lets you support conservation, become a patron of wild animals and even earn a profit since wildcards are always for sale."
           />
           <meta
             name="twitter:image"

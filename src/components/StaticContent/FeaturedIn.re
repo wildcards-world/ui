@@ -24,7 +24,7 @@ let featuredMediaContent: array(featuredMediaItemType) = [|
   },
   {
     imagePath: "/img/featured-media/cointelegraph.svg",
-    link: "https://cointelegraph.com/news/wildcards-purports-to-save-at risk-species-with-technical-first-for-ethereum",
+    link: "https://cointelegraph.com/news/wildcards-purports-to-save-endangered-species-with-technical-first-for-ethereum",
   },
 |];
 
