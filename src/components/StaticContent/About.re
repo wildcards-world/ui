@@ -11,8 +11,7 @@ let make = () => {
       <a href="https://devpost.com/software/ethcapetown_wildcards">
         "winners"->restr
       </a>
-      ". The focus of the project is raising funds for endangered animals."
-      ->restr
+      ". The focus of the project is raising funds for at risk animals."->restr
     </p>
   </Rimble.Box>;
 };
