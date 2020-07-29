@@ -92,6 +92,7 @@ let getImage = animal => {
   | "22" => "https://dd2wadt5nc0o7.cloudfront.net/slice.svg"
   | "23" => "https://dd2wadt5nc0o7.cloudfront.net/animals/curlew-sandpiper.svg"
   | "24" => "https://dd2wadt5nc0o7.cloudfront.net/star.svg"
+  | "25" => "https://dd2wadt5nc0o7.cloudfront.net/animals/temmincks-ground-pangolin.svg"
   | "42" => "https://dd2wadt5nc0o7.cloudfront.net/42-vitalik.svg"
   | _ => "./img/animals/comingsoon.png"
   };
@@ -133,6 +134,10 @@ let getAlternateImage: TokenId.t => option(string) =
     | "23" =>
       Some("https://dd2wadt5nc0o7.cloudfront.net/animals/charles-2-real.jpg")
     | "24" => Some("https://dd2wadt5nc0o7.cloudfront.net/animals/star.jpg")
+    | "25" =>
+      Some(
+        "https://dd2wadt5nc0o7.cloudfront.net/animals/pangolin/Helena+Atkinson.jpg",
+      )
     | "13"
     | "0"
     | "1"
@@ -143,7 +148,7 @@ let getAlternateImage: TokenId.t => option(string) =
 let useGetOrgImage: string => string =
   org =>
     switch (org) {
-    | "pangolinafrica" => "/img/conservation-partners/pangolin-africa.svg"
+    | "pangolinafrica" => "https://dd2wadt5nc0o7.cloudfront.net/img/conservation-partners/pangolin-africa.svg"
     | "sharkspotters" => "https://dd2wadt5nc0o7.cloudfront.net/conservations/shark-spotters.svg"
     | "lemurconservationnetwork" => "https://dd2wadt5nc0o7.cloudfront.net/conservations/lemur-conservation-network.svg"
     | "bdi" => "https://dd2wadt5nc0o7.cloudfront.net/conservations/bdi.svg"
@@ -159,7 +164,7 @@ let useGetOrgImage: string => string =
 let useGetOrgBadge: string => string =
   org =>
     switch (org) {
-    | "pangolinafrica"
+    | "pangolinafrica" => "https://dd2wadt5nc0o7.cloudfront.net/conservations/pangolin-africa.svg"
     | "sharkspotters"
     | "lemurconservationnetwork"
     | "bdi" => "https://dd2wadt5nc0o7.cloudfront.net/conservations/bdi.svg"
@@ -192,11 +197,11 @@ type launchStatus =
   | Launched
   | LaunchDate(MomentRe.Moment.t);
 
-let nextLaunchDate = MomentRe.momentUtcDefaultFormat("2020-07-23T17:00:00");
+let nextLaunchDate = MomentRe.momentUtcDefaultFormat("2020-07-30T17:00:00");
 
 let isLaunched: TokenId.t => launchStatus =
   animal =>
     switch (animal->TokenId.toString) {
-    | "24" => LaunchDate(nextLaunchDate)
+    | "25" => LaunchDate(nextLaunchDate)
     | _ => Launched
     };
