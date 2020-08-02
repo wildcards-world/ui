@@ -32,6 +32,7 @@
     "emotion-server": "^10.0.27",
     "ethereum-blockies-base64": "^1.0.2",
     "ethers": "^4.0.47",
+    "get-graphql-schema": "^2.1.2",
     "isomorphic-unfetch": "^3.0.0",
     "isomorphic-ws": "^4.0.1",
     "moment": "^2.24.0",
@@ -48,11 +49,13 @@
     "reason-promise": "^1.0.2",
     "reason-react": "^0.7.1",
     "rimble-ui": "^0.14.0",
+    "source-map-explorer": "^2.4.2",
     "styled-components": "^5.1.0",
     "use-debounce": "^3.4.1",
     "ws": "^7.3.0"
   },
   "scripts": {
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "dev-experimental": "node --experimental-modules ./node_modules/next/dist/bin/next",
     "dev": "next",
     "nextbuild": "npm i next@9.3.6 && npm run re:build && rm ./public/index.html && next build",
@@ -66,9 +69,9 @@
     "re:watch": "BS_LOG=* bsb -make-world -clean-world -w",
     "deploy": "npm run build && gh-pages -d dist --remote JasoonS",
     "cra:deploy": "npm run re:build && npm run cra:build && gh-pages -d build --remote JasoonS",
-    "generate-ppx-schema": "npx get-graphql-schema https://api.wildcards.world/v1/graphql -j >| graphql_schema.json",
-    "generate-ppx-schema-goerli": "gqlschema https://api.thegraph.com/subgraphs/name/wild-cards/wildcards-goerli -i -o graphql_schema.json",
-    "generate-ppx-schema-local": "gqlschema http://127.0.0.1:8080/v1/graphql -i -o graphql_schema.json"
+    "generate-ppx-schema": "get-graphql-schema https://api.wildcards.world/v1/graphql -j >| graphql_schema.json",
+    "generate-ppx-schema-goerli": "get-graphql-schema https://api.wildcards.world/v1/graphql -j >| graphql_schema.json",
+    "generate-ppx-schema-local": "get-graphql-schema https://api.wildcards.world/v1/graphql -j >| graphql_schema.json"
   },
   "jest": {
     "transformIgnorePatterns": [
@@ -95,8 +98,7 @@
     "babel-preset-react-app": "^9.1.2",
     "bs-let": "^0.1.16",
     "file-loader": "^6.0.0",
-    "gh-pages": "^2.2.0",
-    "gql-tools": "0.0.15"
+    "gh-pages": "^2.2.0"
   },
   "homepage": ".",
   "eslintConfig": {
