@@ -203,37 +203,6 @@ module SubStateChangeEvents = [%graphql
        }
      |}
 ];
-// module SubBuyEvents = [%graphql
-//   {|
-//     subscription {
-//       eventCounter(id: 1) {
-//         id
-//         buyEventCount
-//           buyEvents(first: 5, orderBy: timestamp, orderDirection: desc) {
-//           id
-//           token {
-//             id
-//             # NOTE: no need to decode these values, this is only for updating the cache.
-//             animal: tokenId #@bsDecoder(fn: "tokenIdToAnimal")
-//             timeAcquired #@bsDecoder(fn: "decodeMoment")
-//             totalCollected #@bsDecoder(fn: "decodePrice")
-//             patronageNumeratorPriceScaled #@bsDecoder(fn: "decodeBN")
-//             timeCollected #@bsDecoder(fn: "decodeBN")
-//             # timeCollected @bsDecoder(fn: "decodeMoment")
-//             price {
-//               id
-//               price #@bsDecoder(fn: "decodePrice")
-//             }
-//             owner {
-//               address #@bsDecoder(fn: "decodeAddress")
-//               id
-//             }
-//           }
-//         }
-//       }
-//     }
-//   |}
-// ];
 
 module LoadPatron = [%graphql
   {|
@@ -252,29 +221,34 @@ module LoadPatron = [%graphql
            availableDeposit  @bsDecoder(fn: "decodePrice")
            patronTokenCostScaledNumerator  @bsDecoder(fn: "decodeBN")
            foreclosureTime  @bsDecoder(fn: "decodeMoment")
+                   id
+                   address @bsDecoder(fn: "decodeAddress")
+                   lastUpdated @bsDecoder(fn: "decodeBN")
+                   totalLoyaltyTokens @bsDecoder(fn: "decodeBN")
+                   totalLoyaltyTokensIncludingUnRedeemed @bsDecoder(fn: "decodeBN")
          }
        }
      |}
 ];
 
 // NOTE: we currently have two patron objects while the graph is in a half updated state. When the graph is refactored these 'patron' queries will be merged into one.
-module LoadPatronNew = [%graphql
+// module LoadPatronNew = [%graphql
+//   {|
+//        query ($patronId: String!) {
+//          patronNew(id: $patronId) {
+//            id
+//            address @bsDecoder(fn: "decodeAddress")
+//            lastUpdated @bsDecoder(fn: "decodeBN")
+//            totalLoyaltyTokens @bsDecoder(fn: "decodeBN")
+//            totalLoyaltyTokensIncludingUnRedeemed @bsDecoder(fn: "decodeBN")
+//          }
+//        }
+//      |}
+// ];
+module LoadPatronNoDecode = [%graphql
   {|
        query ($patronId: String!) {
-         patronNew(id: $patronId) {
-           id
-           address @bsDecoder(fn: "decodeAddress")
-           lastUpdated @bsDecoder(fn: "decodeBN")
-           totalLoyaltyTokens @bsDecoder(fn: "decodeBN")
-           totalLoyaltyTokensIncludingUnRedeemed @bsDecoder(fn: "decodeBN")
-         }
-       }
-     |}
-];
-module LoadPatronNewNoDecode = [%graphql
-  {|
-       query ($patronId: String!) {
-         patronNew(id: $patronId) {
+         patron(id: $patronId) {
            id
            address
            lastUpdated
@@ -583,8 +557,8 @@ let useQueryPatron = patron =>
   );
 let useQueryPatronNew = patron =>
   ApolloHooks.useQuery(
-    ~variables=LoadPatronNew.make(~patronId=patron, ())##variables,
-    LoadPatronNew.definition,
+    ~variables=LoadPatron.make(~patronId=patron, ())##variables,
+    LoadPatron.definition,
   );
 
 let useForeclosureTime: string => option(MomentRe.Moment.t) =
@@ -733,20 +707,19 @@ let usePatronLoyaltyTokenDetails:
   Web3.ethAddress => option(patronLoyaltyTokenDetails) =
   address => {
     // NOTE: we are using both 'new patron' and 'patron' because the work on the graph is incomplete.
-    let (responseNewPatron, _) = useQueryPatronNew(address);
     let (response, _) = useQueryPatron(address);
 
     [@ocaml.warning "-4"]
     (
-      switch (responseNewPatron, response) {
-      | (Data(dataNewPatron), Data(dataPatron)) =>
-        switch (dataNewPatron##patronNew, dataPatron##patron) {
-        | (Some(newPatron), Some(patron)) =>
+      switch (response) {
+      | Data(dataPatron) =>
+        switch (dataPatron##patron) {
+        | Some(patron) =>
           Some({
-            currentLoyaltyTokens: newPatron##totalLoyaltyTokens,
+            currentLoyaltyTokens: patron##totalLoyaltyTokens,
             currentLoyaltyTokensIncludingUnredeemed:
-              newPatron##totalLoyaltyTokensIncludingUnRedeemed,
-            lastCollected: newPatron##lastUpdated,
+              patron##totalLoyaltyTokensIncludingUnRedeemed,
+            lastCollected: patron##lastUpdated,
             numberOfAnimalsOwned:
               BN.new_(patron##tokens->Obj.magic->Array.length->string_of_int),
           })
@@ -755,7 +728,7 @@ let usePatronLoyaltyTokenDetails:
       // | Loading
       // | Error(_error)
       // | NoData => None
-      | (_, _) => None
+      | _ => None
       }
     );
   };
