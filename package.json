@@ -67,8 +67,6 @@
     "lint": "eslint src",
     "re:build": "bsb -make-world -clean-world",
     "re:watch": "BS_LOG=* bsb -make-world -clean-world -w",
-    "deploy": "npm run build && gh-pages -d dist --remote JasoonS",
-    "cra:deploy": "npm run re:build && npm run cra:build && gh-pages -d build --remote JasoonS",
     "generate-ppx-schema": "get-graphql-schema https://api.wildcards.world/v1/graphql -j >| graphql_schema.json",
     "generate-ppx-schema-goerli": "get-graphql-schema https://api.wildcards.world/v1/graphql -j >| graphql_schema.json",
     "generate-ppx-schema-local": "get-graphql-schema https://api.wildcards.world/v1/graphql -j >| graphql_schema.json"
@@ -97,8 +95,7 @@
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babel-preset-react-app": "^9.1.2",
     "bs-let": "^0.1.16",
-    "file-loader": "^6.0.0",
-    "gh-pages": "^2.2.0"
+    "file-loader": "^6.0.0"
   },
   "homepage": ".",
   "eslintConfig": {

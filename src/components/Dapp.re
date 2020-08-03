@@ -96,8 +96,6 @@ module DisplayAfterDate = {
 module AuctionDetails = {
   [@react.component]
   let make = (~animal: TokenId.t) => {
-    Js.log(animal);
-
     let auctionStartPrice = QlHooks.useAuctionStartPrice(animal);
     let auctionEndPrice = QlHooks.useAuctionEndPrice(animal);
     let auctioLength = QlHooks.useAuctioLength(animal);
