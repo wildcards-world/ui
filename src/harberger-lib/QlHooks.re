@@ -139,6 +139,11 @@ module WildcardDataQuery = [%graphql
         name
         description
         organisationId
+        image
+        real_wc_photos {
+          image
+          photographer
+        }
       }
     }
   |}
@@ -284,6 +289,9 @@ module LoadOrganisationData = [%graphql
           wildcard {
             id @bsDecoder(fn: "toTokenId")
           }
+          logo
+          logo_badge
+          youtube_vid
         }
       }
      |}
@@ -403,6 +411,18 @@ let useLoadOrganisationData = orgId => {
   let (simple, _) = useLoadOrganisationQuery(orgId);
   queryResultToOption(simple);
 };
+let useLoadOrganisationLogo = orgId => {
+  let result = useLoadOrganisationData(orgId);
+  result
+  ->Option.flatMap(org => org##organisations_by_pk)
+  ->Option.map(org => org##logo);
+};
+let useLoadOrganisationLogoBadge = orgId => {
+  let result = useLoadOrganisationData(orgId);
+  result
+  ->Option.flatMap(org => org##organisations_by_pk)
+  ->Option.map(org => org##logo_badge |||| org##logo);
+};
 let useHomePageAnimalsData = () => {
   let (simple, _) = useHomeAnimalsQuery();
   queryResultToOption(simple);
@@ -480,6 +500,18 @@ let useWildcardName = tokenId => {
   let (simple, _) = useWildcardDataQuery(tokenId);
   queryResultOptionMap(simple, a =>
     a##wildcardData_by_pk->oMap(b => b##name) |||| "Unknown"
+  );
+};
+let useWildcardAvatar = tokenId => {
+  let (simple, _) = useWildcardDataQuery(tokenId);
+  queryResultOptionFlatMap(simple, a =>
+    a##wildcardData_by_pk->Option.flatMap(b => b##image)
+  );
+};
+let useRealImages = tokenId => {
+  let (simple, _) = useWildcardDataQuery(tokenId);
+  queryResultOptionFlatMap(simple, a =>
+    a##wildcardData_by_pk->Option.map(b => b##real_wc_photos)
   );
 };
 let useWildcardOrgId = tokenId => {
