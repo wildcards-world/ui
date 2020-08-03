@@ -28,16 +28,24 @@ module OrgPage = {
           ),
         )
       );
+
     let orgWebsite = orgData##website;
+    let optOrgYoutubeVid = orgData##youtube_vid;
     let orgImage = Animal.useGetOrgImage(orgId);
 
     <div>
       <div className=Css.(style([width(`percent(100.))]))>
-        <Rimble.Flex flexWrap="wrap" alignItems="start">
+        <Rimble.Flex
+          flexWrap="wrap" alignItems="start" alignContent="space-arround">
           <Rimble.Box
-            p=1
             width=[|1., 1., 0.3333|]
-            className=Css.(style([textAlign(`center)]))>
+            className=Css.(
+              style([
+                textAlign(`center),
+                alignSelf(center),
+                padding(em(2.)),
+              ])
+            )>
             <img
               className=Css.(
                 style([
@@ -61,15 +69,22 @@ module OrgPage = {
               orgName->restr
             </a>
             <br />
-            {switch (orgDescription) {
-             | Ok(descriptionArray) =>
-               React.array(
-                 descriptionArray->Array.mapWithIndex((i, paragraphText) =>
-                   <p key={i->string_of_int}> paragraphText->React.string </p>
-                 ),
-               )
-             | Error(_) => <p> "ok"->restr </p>
-             }}
+            <div
+              className=Css.(
+                style([maxHeight(`em(15.)), overflow(`scroll)])
+              )>
+              {switch (orgDescription) {
+               | Ok(descriptionArray) =>
+                 React.array(
+                   descriptionArray->Array.mapWithIndex((i, paragraphText) =>
+                     <p key={i->string_of_int}>
+                       paragraphText->React.string
+                     </p>
+                   ),
+                 )
+               | Error(_) => <p> "error loading description"->restr </p>
+               }}
+            </div>
             // {optTwitter->reactMap(twitterHandle =>
             //    <a
             //      className=Styles.navListText
@@ -81,16 +96,27 @@ module OrgPage = {
             //  )}
             <br />
           </Rimble.Box>
-          <Rimble.Box p=1 width=[|1., 1., 0.3333|]>
-            // <YoutubeVid videoCode="y5er2RXg3C8" />
-
-              <h2> "Total Rasied"->restr </h2>
-              <p> {(totalPatronage ++ "ETH")->restr} </p>
-              <p> {(totalPatronageUsd ++ "USD")->restr} </p>
-            </Rimble.Box>
-          <Rimble.Box p=1 width=[|1., 1., 0.3333|]>
+          <Rimble.Box
+            width=[|1., 1., 0.3333|]
+            className=Css.(style([alignSelf(center), padding(em(2.))]))>
+            {switch (optOrgYoutubeVid) {
+             | Some(videoCode) => <YoutubeVid videoCode />
+             | None => React.null
+             }}
+            <h2> "Total Rasied"->restr </h2>
+            {(totalPatronage ++ "ETH")->restr}
+            <br />
+            <small> {(totalPatronageUsd ++ "USD")->restr} </small>
+          </Rimble.Box>
+          <Rimble.Box
+            width=[|1., 1., 0.3333|]
+            className=Css.(style([alignSelf(center), padding(em(2.))]))>
             {switch (orgAnimals) {
-             | [||] => React.null
+             | [||] =>
+               <p>
+                 "This organisation doesn't have any wildcards yet"
+                 ->React.string
+               </p>
              | uniquePreviouslyOwnedTokens =>
                <React.Fragment>
                  <Rimble.Heading>
