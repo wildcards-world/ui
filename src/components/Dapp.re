@@ -93,6 +93,36 @@ module DisplayAfterDate = {
   };
 };
 
+module AuctionDetails = {
+  [@react.component]
+  let make = (~animal: TokenId.t) => {
+    Js.log(animal);
+
+    let auctionStartPrice = QlHooks.useAuctionStartPrice(animal);
+    let auctionEndPrice = QlHooks.useAuctionEndPrice(animal);
+    let auctioLength = QlHooks.useAuctioLength(animal);
+    let launchTime = QlHooks.useLaunchTime(animal);
+    let currentTime = QlHooks.useCurrentTime();
+
+    let currentPriceWei =
+      auctionStartPrice
+      |-| (
+        auctionStartPrice
+        |-| auctionEndPrice
+        |*| (BN.new_(currentTime) |-| launchTime)
+        |/| auctioLength
+      );
+
+    let currentPriceEth = currentPriceWei->Eth.fromWeiEth;
+    // TODO: fix the precision of this value: toFixedWithPrecisionNoTrailingZeros;
+
+    // ->BN.mul(. now.sub(tokenAuctionBeginTimestamp[tokenId]))
+    // .div(auctionLength)
+
+    <p> {("is on auction " ++ currentPriceEth)->React.string} </p>;
+  };
+};
+
 module BasicAnimalDisplay = {
   [@react.component]
   let make = (~animal: TokenId.t) => {
@@ -103,6 +133,8 @@ module BasicAnimalDisplay = {
     let displayNameStr = UserProvider.displayNameToString(displayName);
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
     let nonUrlRouting = RootProvider.useNonUrlState();
+
+    let isOnAuction = Animal.useIsOnAuction(animal);
 
     <React.Fragment>
       <PriceDisplay animal />
@@ -121,7 +153,10 @@ module BasicAnimalDisplay = {
        | BuyScreen(_) => React.null
        | LoginScreen(_)
        | NoExtraState =>
-         owned ? <EditButton animal /> : <ActionButtons.Buy animal />
+         owned
+           ? <EditButton animal />
+           : isOnAuction
+               ? <AuctionDetails animal /> : <ActionButtons.Buy animal />
        }}
     </React.Fragment>;
   };
@@ -143,13 +178,13 @@ module AnimalOnLandingPage = {
     let orgBadge = Animal.useGetOrgBadgeImage(animal);
     let orgId = QlHooks.useWildcardOrgId(animal) |||| "";
 
+    let currentPriceWei = QlHooks.usePrice(animal);
+
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+    let image = Animal.useAvatar(animal);
 
     let normalImage = () =>
-      <img
-        className={Styles.headerImg(enlargement, scalar)}
-        src={Animal.getImage(animal)}
-      />;
+      <img className={Styles.headerImg(enlargement, scalar)} src=image />;
 
     let componentWithoutImg = (img, ~hideBadges: bool) => {
       <React.Fragment>
@@ -162,9 +197,14 @@ module AnimalOnLandingPage = {
                 ? switch (optionEndDateMoment) {
                   | Some(_endDateMoment) => React.null
                   | None =>
-                    <div className=Styles.overlayFlameImg>
-                      <Streak animal />
-                    </div>
+                    switch (currentPriceWei) {
+                    | Price(_) =>
+                      <div className=Styles.overlayFlameImg>
+                        <Streak animal />
+                      </div>
+                    | Loading
+                    | Foreclosed => React.null
+                    }
                   }
                 : React.null}
              {<div
@@ -253,7 +293,7 @@ module AnimalCarousel = {
         value=carouselIndex
         animationSpeed=1000
         infinite=true
-        autoPlay=500000
+        autoPlay=5000
         arrowLeft={
           <span
             className={Styles.carouselArrow(true)}
@@ -391,8 +431,9 @@ module DetailsViewAnimal = {
 
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
-    let normalImage = animal =>
-      <img className=Styles.ownedAnimalImg src={Animal.getImage(animal)} />;
+    let image = Animal.useAvatar(animal);
+
+    let normalImage = () => <img className=Styles.ownedAnimalImg src=image />;
     // let optAlternateImage = Animal.getAlternateImage(animal);
     let orgBadge = Animal.useGetOrgBadgeImage(animal);
 
@@ -425,7 +466,7 @@ module DetailsViewAnimal = {
       </div>;
 
     <React.Fragment>
-      {displayAnimal(() => normalImage(animal))}
+      {displayAnimal(() => normalImage())}
       <h2>
         {{
            QlHooks.useWildcardName(animal) |||| "Loading";
@@ -812,7 +853,7 @@ module AnimalInfo = {
   let make = (~animal: TokenId.t) => {
     let animalDescription =
       QlHooks.useWildcardDescription(animal) |||| [|"Loading"|];
-    let optAnimalMedia = animal->Animal.getAlternateImage;
+    let optAnimalMedia = animal->Animal.useAlternateImage;
     // TODO: the ethereum address is really terribly displayed. But the default in Rimble UI includes a QR code scanner (which is really ugly).
     // https://rimble.consensys.design/components/rimble-ui/EthAddress#props
     // https://github.com/ConsenSys/rimble-ui/blob/dd470f00374a05c860b558a2cb9317861e4a0d89/src/EthAddress/index.js (maybe make a PR here with some changes)

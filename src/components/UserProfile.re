@@ -16,6 +16,7 @@ module Token = {
   [@react.component]
   let make = (~tokenId: TokenId.t) => {
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+    let image = Animal.useAvatar(tokenId);
 
     <div className=Css.(style([width(vh(12.))]))>
       <img
@@ -23,7 +24,7 @@ module Token = {
         onClick={_e =>
           clearAndPush("/#details/" ++ tokenId->TokenId.toString)
         }
-        src={tokenId->Animal.getImage}
+        src=image
       />
     </div>;
   };
@@ -38,7 +39,8 @@ module ClaimLoyaltyTokenButtons = {
       QlHooks.useUnredeemedLoyaltyTokenDueFromWildcard(
         id->TokenId.makeWithDefault(0),
       );
-    let tokenName = id->Animal.getNameFromId;
+    let tokenName =
+      id->TokenId.fromStringUnsafe->QlHooks.useWildcardName |||| "loading";
     let etherScanUrl = RootProvider.useEtherscanUrl();
 
     React.useEffect2(

@@ -18,11 +18,36 @@
         {
           "indexed": false,
           "internalType": "uint256",
-          "name": "tokenGenerationRate",
+          "name": "unixTimestampOfTokenAuctionStart",
           "type": "uint256"
         }
       ],
       "name": "AddToken",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "artist",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "artistCommission",
+          "type": "uint256"
+        }
+      ],
+      "name": "ArtistCommission",
       "type": "event"
     },
     {
@@ -53,12 +78,6 @@
     {
       "anonymous": false,
       "inputs": [
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        },
         {
           "indexed": true,
           "internalType": "address",
@@ -164,6 +183,50 @@
       "type": "event"
     },
     {
+      "anonymous": false,
+      "inputs": [],
+      "name": "UpgradeToV3",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "benefactor",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "withdrawAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "WithdrawBenefactorFunds",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "benefactor",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "withdrawAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "WithdrawBenefactorFundsWithSafetyDelay",
+      "type": "event"
+    },
+    {
       "constant": true,
       "inputs": [],
       "name": "admin",
@@ -184,9 +247,75 @@
       "name": "assetToken",
       "outputs": [
         {
-          "internalType": "contract ERC721Patronage",
+          "internalType": "contract ERC721Patronage_v1",
           "name": "",
           "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "auctionEndPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "auctionLength",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "auctionStartPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "benefactorCredit",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
         }
       ],
       "payable": false,
@@ -239,48 +368,6 @@
       "constant": true,
       "inputs": [
         {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "currentCollected",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "currentPatron",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
           "internalType": "address",
           "name": "",
           "type": "address"
@@ -301,12 +388,42 @@
     {
       "constant": true,
       "inputs": [],
+      "name": "globalTokenGenerationRate",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
       "name": "mintManager",
       "outputs": [
         {
-          "internalType": "contract MintManager",
+          "internalType": "contract MintManager_v2",
           "name": "",
           "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "patronageDenominator",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
         }
       ],
       "payable": false,
@@ -328,32 +445,6 @@
           "internalType": "uint256",
           "name": "",
           "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "name": "patrons",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
         }
       ],
       "payable": false,
@@ -393,7 +484,7 @@
       "name": "state",
       "outputs": [
         {
-          "internalType": "enum HarbergerSteward.StewardState",
+          "internalType": "enum WildcardSteward_v3.StewardState",
           "name": "",
           "type": "uint8"
         }
@@ -406,59 +497,12 @@
       "constant": true,
       "inputs": [
         {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "timeAcquired",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        },
-        {
           "internalType": "address",
           "name": "",
           "type": "address"
         }
       ],
-      "name": "timeHeld",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "timeLastCollected",
+      "name": "timeLastCollectedBenefactor",
       "outputs": [
         {
           "internalType": "uint256",
@@ -495,33 +539,12 @@
       "constant": true,
       "inputs": [
         {
-          "internalType": "uint256",
+          "internalType": "address",
           "name": "",
-          "type": "uint256"
+          "type": "address"
         }
       ],
-      "name": "tokenGenerationRate",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "totalCollected",
+      "name": "totalBenefactorTokenNumerator",
       "outputs": [
         {
           "internalType": "uint256",
@@ -555,10 +578,61 @@
       "type": "function"
     },
     {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "totalPatronTokenGenerationRate",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "withdrawCheckerAdmin",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "yearTimePatronagDenominator",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "constant": false,
       "inputs": [
         {
-          "internalType": "contract ERC721Patronage",
+          "internalType": "address",
           "name": "_assetToken",
           "type": "address"
         },
@@ -568,9 +642,29 @@
           "type": "address"
         },
         {
-          "internalType": "contract MintManager",
+          "internalType": "address",
           "name": "_mintManager",
           "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_withdrawCheckerAdmin",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_auctionStartPrice",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_auctionEndPrice",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_auctionLength",
+          "type": "uint256"
         }
       ],
       "name": "initialize",
@@ -598,12 +692,57 @@
           "type": "uint256[]"
         },
         {
+          "internalType": "address[]",
+          "name": "_artists",
+          "type": "address[]"
+        },
+        {
           "internalType": "uint256[]",
-          "name": "_tokenGenerationRate",
+          "name": "_artistCommission",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "_releaseDate",
           "type": "uint256[]"
         }
       ],
       "name": "listNewTokens",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "tokens",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "address",
+          "name": "_withdrawCheckerAdmin",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_auctionStartPrice",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_auctionEndPrice",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_auctionLength",
+          "type": "uint256"
+        }
+      ],
+      "name": "upgradeToV3",
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
@@ -634,6 +773,26 @@
       "inputs": [
         {
           "internalType": "address",
+          "name": "oldBenfactor",
+          "type": "address"
+        },
+        {
+          "internalType": "address payable",
+          "name": "_newReceivingBenefactor",
+          "type": "address"
+        }
+      ],
+      "name": "changeReceivingBenefactorDeposit",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "address",
           "name": "_admin",
           "type": "address"
         }
@@ -645,50 +804,68 @@
       "type": "function"
     },
     {
-      "constant": true,
+      "constant": false,
       "inputs": [
         {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
+          "internalType": "address",
+          "name": "_withdrawCheckerAdmin",
+          "type": "address"
         }
       ],
-      "name": "patronageOwed",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "patronageDue",
-          "type": "uint256"
-        }
-      ],
+      "name": "changeWithdrawCheckerAdmin",
+      "outputs": [],
       "payable": false,
-      "stateMutability": "view",
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
-      "constant": true,
+      "constant": false,
       "inputs": [
         {
           "internalType": "uint256",
           "name": "tokenId",
           "type": "uint256"
-        }
-      ],
-      "name": "patronageOwedWithTimestamp",
-      "outputs": [
+        },
+        {
+          "internalType": "address",
+          "name": "artistAddress",
+          "type": "address"
+        },
         {
           "internalType": "uint256",
-          "name": "patronageDue",
+          "name": "percentage",
+          "type": "uint256"
+        }
+      ],
+      "name": "changeArtistAddressAndCommission",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_auctionStartPrice",
           "type": "uint256"
         },
         {
           "internalType": "uint256",
-          "name": "timestamp",
+          "name": "_auctionEndPrice",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_auctionLength",
           "type": "uint256"
         }
       ],
+      "name": "changeAuctionParameters",
+      "outputs": [],
       "payable": false,
-      "stateMutability": "view",
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
@@ -717,20 +894,15 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "tokenPatron",
+          "name": "benefactor",
           "type": "address"
         }
       ],
-      "name": "patronageOwedPatronWithTimestamp",
+      "name": "patronageDueBenefactor",
       "outputs": [
         {
           "internalType": "uint256",
-          "name": "patronageDue",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "timestamp",
+          "name": "payoutDue",
           "type": "uint256"
         }
       ],
@@ -852,7 +1024,113 @@
           "type": "uint256"
         }
       ],
-      "name": "_collectPatronage",
+      "name": "_collectPatronageAndSettleBenefactor",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "benefactor",
+          "type": "address"
+        }
+      ],
+      "name": "_updateBenefactorBalance",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "address payable",
+          "name": "benefactor",
+          "type": "address"
+        }
+      ],
+      "name": "withdrawBenefactorFundsTo",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "benefactor",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "maxAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "expiry",
+          "type": "uint256"
+        }
+      ],
+      "name": "hasher",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "address payable",
+          "name": "benefactor",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "maxAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "expiry",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "hash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint8",
+          "name": "v",
+          "type": "uint8"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "r",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "s",
+          "type": "bytes32"
+        }
+      ],
+      "name": "withdrawBenefactorFundsToValidated",
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
@@ -868,7 +1146,13 @@
         }
       ],
       "name": "_collectPatronagePatron",
-      "outputs": [],
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "newTimeLastCollectedOnForeclosure",
+          "type": "uint256"
+        }
+      ],
       "payable": false,
       "stateMutability": "nonpayable",
       "type": "function"
@@ -909,9 +1193,44 @@
           "internalType": "uint256",
           "name": "_newPrice",
           "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "previousPrice",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "wildcardsPercentage",
+          "type": "uint256"
         }
       ],
       "name": "buy",
+      "outputs": [],
+      "payable": true,
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_newPrice",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "wildcardsPercentage",
+          "type": "uint256"
+        }
+      ],
+      "name": "buyAuction",
       "outputs": [],
       "payable": true,
       "stateMutability": "payable",
@@ -962,21 +1281,6 @@
       "constant": false,
       "inputs": [],
       "name": "withdrawBenefactorFunds",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address payable",
-          "name": "benefactor",
-          "type": "address"
-        }
-      ],
-      "name": "withdrawBenefactorFundsTo",
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",

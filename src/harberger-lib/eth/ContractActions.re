@@ -51,8 +51,11 @@ type estimateBuy = {
 type stewardContract = {
   estimate: estimateBuy,
   buy:
-    // (. tokenIdString, parsedUnits, parsedUnits, txOptions) =>
-    (. tokenIdString, parsedUnits, txOptions) => Promise.Js.t(tx, txError),
+    (. tokenIdString, parsedUnits, parsedUnits, string, txOptions) =>
+    Promise.Js.t(tx, txError),
+  buyAuction:
+    (. tokenIdString, parsedUnits, string, txOptions) =>
+    Promise.Js.t(tx, txError),
   depositWei: (. txOptions) => Promise.Js.t(tx, txError),
   withdrawDeposit: (. parsedUnits, txOptions) => Promise.Js.t(tx, txError),
   _collectPatronage:
@@ -132,12 +135,15 @@ let getVotingContract = (stewardAddress, library, account) => {
 
 let stewardAddressMainnet = "0x6D47CF86F6A490c6410fC082Fd1Ad29CF61492d0";
 let stewardAddressGoerli = "0x0C00CFE8EbB34fE7C31d4915a43Cde211e9F0F3B";
+let stewardAddressRinkeby = "0x229Cb219F056A9097b2744594Bc37597380854E8";
 
 let loyaltyTokenAddressMainnet = "0x773c75c2277eD3e402BDEfd28Ec3b51A3AfbD8a4";
 let loyaltyTokenAddressGoerli = "0xd7d8c42ab5b83aa3d4114e5297989dc27bdfb715";
+// let loyaltyTokenAddressRinkbey = "0xd7d8c42ab5b83aa3d4114e5297989dc27bdfb715";
 
 let voteContractMainnet = "0x03e051b7e42480Cc9D54F1caB525D2Fea2cF4d83";
 let voteContractGoerli = "0x316C5f8867B21923db8A0Bd6890A6BFE0Ab6F9d2";
+// let voteContractRinkeby = "0x316C5f8867B21923db8A0Bd6890A6BFE0Ab6F9d2";
 
 let useStewardAbi = () => {
   switch (RootProvider.useStewardAbi()) {
@@ -151,6 +157,7 @@ let useStewardAbi = () => {
 let defaultStewardAddressFromChainId =
   fun
   | 1 => Some(stewardAddressMainnet)
+  | 4 => Some(stewardAddressRinkeby)
   | 5 => Some(stewardAddressGoerli)
   | _ => None;
 let useStewardAddress = () => {
@@ -246,11 +253,11 @@ let useBuy = (animal: TokenId.t) => {
   let optSteward = useStewardContract();
 
   (
-    (newPrice, _deposit, value: string) => {
+    (newPrice, oldPrice, wildcardsPercentage, value: string) => {
       let newPriceEncoded = parseUnits(. newPrice, 18);
 
       let value = parseUnits(. value, 0);
-      // let depositEncoded = parseUnits(. deposit, 18);
+      let oldPriceParsed = parseUnits(. oldPrice, 0);
 
       setTxState(_ => Created);
       switch (optSteward) {
@@ -259,7 +266,60 @@ let useBuy = (animal: TokenId.t) => {
           steward.buy(.
             animalId,
             newPriceEncoded,
-            // depositEncoded,
+            // oldPrice->Obj.magic,
+            oldPriceParsed,
+            wildcardsPercentage,
+            {
+              // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
+              value: value,
+            },
+          )
+          ->Promise.Js.toResult;
+        buyPromise->Promise.getOk(tx => {
+          setTxState(_ => SignedAndSubmitted(tx.hash));
+          let txMinedPromise = tx.wait(.)->Promise.Js.toResult;
+          txMinedPromise->Promise.getOk(txOutcome => {
+            Js.log(txOutcome);
+            setTxState(_ => Complete(txOutcome));
+          });
+          txMinedPromise->Promise.getError(error => {
+            setTxState(_ => Failed);
+            Js.log(error);
+          });
+          ();
+        });
+        buyPromise->Promise.getError(error => {
+          setTxState(_ => Declined(error.message))
+        });
+        ();
+      | None => ()
+      };
+    },
+    txState,
+  );
+};
+
+let useBuyAuction = (animal: TokenId.t) => {
+  let animalId = animal->TokenId.toString;
+  let (txState, setTxState) = React.useState(() => UnInitialised);
+
+  let optSteward = useStewardContract();
+
+  (
+    (newPrice, wildcardsPercentage, value: string) => {
+      let newPriceEncoded = parseUnits(. newPrice, 18);
+
+      let value = parseUnits(. value, 0);
+
+      setTxState(_ => Created);
+      switch (optSteward) {
+      | Some(steward) =>
+        // let buyPromise =
+        let buyPromise =
+          steward.buyAuction(.
+            animalId,
+            newPriceEncoded,
+            wildcardsPercentage,
             {
               // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
               value: value,

@@ -46,7 +46,7 @@
   // TODO: when you get time, go through and remove "-40-42-4-11-12-32-33" fixing the issues as you go.
   "warnings": {
     "number": "+A",
-    "error": "+A-44"
+    "error": "+A-44-26"
   },
   "refmt": 3
 }
