@@ -181,12 +181,10 @@ module AnimalOnLandingPage = {
     let currentPriceWei = QlHooks.usePrice(animal);
 
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+    let image = Animal.useAvatar(animal);
 
     let normalImage = () =>
-      <img
-        className={Styles.headerImg(enlargement, scalar)}
-        src={Animal.getImage(animal)}
-      />;
+      <img className={Styles.headerImg(enlargement, scalar)} src=image />;
 
     let componentWithoutImg = (img, ~hideBadges: bool) => {
       <React.Fragment>
@@ -433,8 +431,9 @@ module DetailsViewAnimal = {
 
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
-    let normalImage = animal =>
-      <img className=Styles.ownedAnimalImg src={Animal.getImage(animal)} />;
+    let image = Animal.useAvatar(animal);
+
+    let normalImage = () => <img className=Styles.ownedAnimalImg src=image />;
     // let optAlternateImage = Animal.getAlternateImage(animal);
     let orgBadge = Animal.useGetOrgBadgeImage(animal);
 
@@ -467,7 +466,7 @@ module DetailsViewAnimal = {
       </div>;
 
     <React.Fragment>
-      {displayAnimal(() => normalImage(animal))}
+      {displayAnimal(() => normalImage())}
       <h2>
         {{
            QlHooks.useWildcardName(animal) |||| "Loading";
@@ -854,7 +853,7 @@ module AnimalInfo = {
   let make = (~animal: TokenId.t) => {
     let animalDescription =
       QlHooks.useWildcardDescription(animal) |||| [|"Loading"|];
-    let optAnimalMedia = animal->Animal.getAlternateImage;
+    let optAnimalMedia = animal->Animal.useAlternateImage;
     // TODO: the ethereum address is really terribly displayed. But the default in Rimble UI includes a QR code scanner (which is really ugly).
     // https://rimble.consensys.design/components/rimble-ui/EthAddress#props
     // https://github.com/ConsenSys/rimble-ui/blob/dd470f00374a05c860b558a2cb9317861e4a0d89/src/EthAddress/index.js (maybe make a PR here with some changes)
