@@ -34,7 +34,8 @@ ReactDOMRe.renderToElementWithId(
             "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
           )
         | _ => (
-            mainnetApi |||| "https://api.wildcards.world/v1/graphql",
+            mainnetApi |||| "http://34.65.171.221:7070",
+            // mainnetApi |||| "https://api.wildcards.world/v1/graphql",
             "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards",
           )
         };

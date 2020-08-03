@@ -188,6 +188,7 @@ module Flex = {
       ~flexWrap: string=?,
       ~flexDirection: string=?,
       ~alignItems: string=?,
+      ~alignContent: string=?,
       ~justifyContent: string=?,
       ~px: int=?,
       ~pb: int=?,

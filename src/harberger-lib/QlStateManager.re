@@ -157,11 +157,11 @@ let make = (~children) => {
                };
 
                let queryNew =
-                 QlHooks.LoadPatronNewNoDecode.make(~patronId=patron##id, ());
+                 QlHooks.LoadPatronNoDecode.make(~patronId=patron##id, ());
                module LoadPatronNewQuery =
-                 ReasonApollo.CreateQuery(QlHooks.LoadPatronNewNoDecode);
+                 ReasonApollo.CreateQuery(QlHooks.LoadPatronNoDecode);
                module LoadPatronNewWriteQuery =
-                 ApolloClient.WriteQuery(QlHooks.LoadPatronNew);
+                 ApolloClient.WriteQuery(QlHooks.LoadPatron);
 
                <LoadPatronNewQuery
                  key=patron##id
@@ -173,13 +173,13 @@ let make = (~children) => {
                    | Error(_) => React.null
                    | Data(response) =>
                      let filterByNameQuery =
-                       QlHooks.LoadPatronNew.make(~patronId=patron##id, ());
+                       QlHooks.LoadPatron.make(~patronId=patron##id, ());
                      let readQueryOptions =
                        ApolloHooks.toQueryObj(filterByNameQuery)->Obj.magic;
                      module LoadPatronNewReadQuery =
-                       ApolloClient.ReadQuery(QlHooks.LoadPatronNew);
+                       ApolloClient.ReadQuery(QlHooks.LoadPatron);
                      module LoadPatronNewWriteQuery =
-                       ApolloClient.WriteQuery(QlHooks.LoadPatronNew);
+                       ApolloClient.WriteQuery(QlHooks.LoadPatron);
                      switch (
                        LoadPatronNewReadQuery.readQuery(
                          client,
@@ -192,8 +192,8 @@ let make = (~children) => {
                        | None => ()
                        | Some(cachedPatron) =>
                          let setupNewPatronForCache:
-                           (. QlHooks.LoadPatronNewNoDecode.t, Js.Json.t) =>
-                           QlHooks.LoadPatronNew.t = [%raw
+                           (. QlHooks.LoadPatronNoDecode.t, Js.Json.t) =>
+                           QlHooks.LoadPatron.t = [%raw
                            {|
                          (newPatronData, previousPatron) =>{
                            let newPatron = newPatronData.newPatron;
