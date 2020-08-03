@@ -63,6 +63,12 @@ type stewardContract = {
   changePrice:
     (. tokenIdString, parsedUnits, txOptions) => Promise.Js.t(tx, txError),
 };
+[@bs.send]
+external buyOld:
+  (stewardContract, tokenIdString, parsedUnits, txOptions) =>
+  Promise.Js.t(tx, txError) =
+  "buy";
+
 type ethersBnFormat;
 [@bs.send] external ethersBnToString: ethersBnFormat => string = "toString";
 type voteContract = {
@@ -259,21 +265,35 @@ let useBuy = (animal: TokenId.t) => {
       let value = parseUnits(. value, 0);
       let oldPriceParsed = parseUnits(. oldPrice, 0);
 
+      // Just printing temporarily to avoid "unused variable" errors
+      Js.log2(oldPriceParsed, wildcardsPercentage);
+
       setTxState(_ => Created);
       switch (optSteward) {
       | Some(steward) =>
         let buyPromise =
-          steward.buy(.
-            animalId,
-            newPriceEncoded,
-            // oldPrice->Obj.magic,
-            oldPriceParsed,
-            wildcardsPercentage,
-            {
-              // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
-              value: value,
-            },
-          )
+          // steward.buy(.
+          //   animalId,
+          //   newPriceEncoded,
+          //   oldPriceParsed,
+          //   wildcardsPercentage,
+          //   {
+          //     // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
+          //     value: value,
+          //   },
+          // )
+          steward
+          ->buyOld(
+              animalId,
+              newPriceEncoded,
+              // // oldPrice->Obj.magic,
+              // oldPriceParsed,
+              // wildcardsPercentage,
+              {
+                // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
+                value: value,
+              },
+            )
           ->Promise.Js.toResult;
         buyPromise->Promise.getOk(tx => {
           setTxState(_ => SignedAndSubmitted(tx.hash));

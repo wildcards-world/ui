@@ -236,34 +236,6 @@ module LoadPatron = [%graphql
      |}
 ];
 
-// NOTE: we currently have two patron objects while the graph is in a half updated state. When the graph is refactored these 'patron' queries will be merged into one.
-// module LoadPatronNew = [%graphql
-//   {|
-//        query ($patronId: String!) {
-//          patronNew(id: $patronId) {
-//            id
-//            address @bsDecoder(fn: "decodeAddress")
-//            lastUpdated @bsDecoder(fn: "decodeBN")
-//            totalLoyaltyTokens @bsDecoder(fn: "decodeBN")
-//            totalLoyaltyTokensIncludingUnRedeemed @bsDecoder(fn: "decodeBN")
-//          }
-//        }
-//      |}
-// ];
-module LoadPatronNoDecode = [%graphql
-  {|
-       query ($patronId: String!) {
-         patron(id: $patronId) {
-           id
-           address
-           lastUpdated
-           totalLoyaltyTokens
-           totalLoyaltyTokensIncludingUnRedeemed
-         }
-       }
-     |}
-];
-
 module LoadTokenDataArray = [%graphql
   {|
         query ($orgArray: [String!]!) {
@@ -468,8 +440,6 @@ let useDetailsPageNextPrevious = (currentToken: TokenId.t) => {
         homepageAnimalData->Array.reduce(
           Js.Dict.empty(),
           (dict, item) => {
-            Js.log("setting the item");
-            Js.log(item);
             dict->Js.Dict.set(item.id->TokenId.toString, item);
             dict;
           },

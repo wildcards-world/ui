@@ -34,12 +34,10 @@ ReactDOMRe.renderToElementWithId(
             "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
           )
         | _ => (
-            mainnetApi |||| "http://34.65.171.221:7070",
-            // mainnetApi |||| "https://api.wildcards.world/v1/graphql",
+            mainnetApi |||| "https://api.wildcards.world/v1/graphql",
             "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards",
           )
         };
-      Js.log(endpoints);
       endpoints;
     }}>
     <UsdPriceProvider> <Router /> </UsdPriceProvider>

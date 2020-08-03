@@ -94,8 +94,6 @@ let make = () => {
       px=50>
       {switch (newConservationPartners) {
        | Some(conservationPartners) =>
-         Js.log("ConservationPartners");
-         Js.log(conservationPartners);
          <>
            {conservationPartners
             ->Array.map(conservation =>
@@ -107,7 +105,7 @@ let make = () => {
            {orgBox(React.null, ~key="b")}
            {orgBox(React.null, ~key="c")}
            {orgBox(React.null, ~key="d")}
-         </>;
+         </>
        //  "helloWorld"->React.string;
        | None => React.null
        }}
