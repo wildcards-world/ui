@@ -291,6 +291,7 @@ module LoadOrganisationData = [%graphql
           }
           logo
           logo_badge
+          youtube_vid
         }
       }
      |}
