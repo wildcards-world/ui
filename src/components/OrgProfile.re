@@ -103,7 +103,7 @@ module OrgPage = {
              | Some(videoCode) => <YoutubeVid videoCode />
              | None => React.null
              }}
-            <h2> "Total Rasied"->restr </h2>
+            <h2> "Total Raised"->restr </h2>
             {(totalPatronage ++ "ETH")->restr}
             <br />
             <small> {(totalPatronageUsd ++ "USD")->restr} </small>
