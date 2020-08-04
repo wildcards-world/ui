@@ -895,7 +895,7 @@ module AnimalInfo = {
           {optAnimalMedia->mapd(React.null, media =>
              <img
                className=Css.(style([width(`percent(100.))]))
-               src=media
+               src={Animal.cdnBase ++ media}
              />
            )}
         </ReactTabs.TabPanel>

@@ -74,6 +74,9 @@ module InitialLoad = [%graphql
            totalCollectedOrDueAccurate @bsDecoder(fn: "decodeBN")
            timeLastCollected @bsDecoder(fn: "decodeBN")
            totalTokenCostScaledNumeratorAccurate @bsDecoder(fn: "decodeBN")
+           defaultAuctionLength @bsDecoder(fn: "decodeBN")
+           defaultAuctionEndPrice @bsDecoder(fn: "decodeBN")
+           defaultAuctionStartPrice @bsDecoder(fn: "decodeBN")
          }
        }
      |}

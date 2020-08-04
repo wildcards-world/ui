@@ -17041,13 +17041,19 @@
           {
             "isDeprecated": false,
             "deprecationReason": null,
-            "name": "applied",
+            "name": "contacted",
             "description": null
           },
           {
             "isDeprecated": false,
             "deprecationReason": null,
-            "name": "contacted",
+            "name": "declined",
+            "description": null
+          },
+          {
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "interested",
             "description": null
           },
           {
@@ -17065,13 +17071,19 @@
           {
             "isDeprecated": false,
             "deprecationReason": null,
+            "name": "rejected",
+            "description": null
+          },
+          {
+            "isDeprecated": false,
+            "deprecationReason": null,
             "name": "signed",
             "description": null
           },
           {
             "isDeprecated": false,
             "deprecationReason": null,
-            "name": "vetted",
+            "name": "unprocessed",
             "description": null
           }
         ],
@@ -17274,6 +17286,18 @@
         "enumValues": null,
         "description": "columns and relationships of \"organisations\"",
         "fields": [
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "announcement_blog",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "description": null
+          },
           {
             "args": [],
             "isDeprecated": false,
@@ -17826,6 +17850,16 @@
             "description": null
           },
           {
+            "name": "announcement_blog",
+            "defaultValue": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "String_comparison_exp",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
             "name": "country",
             "defaultValue": null,
             "type": {
@@ -17967,6 +18001,18 @@
             "args": [],
             "isDeprecated": false,
             "deprecationReason": null,
+            "name": "announcement_blog",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
             "name": "country",
             "type": {
               "kind": "SCALAR",
@@ -18063,6 +18109,16 @@
       },
       {
         "inputFields": [
+          {
+            "name": "announcement_blog",
+            "defaultValue": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "description": null
+          },
           {
             "name": "country",
             "defaultValue": null,
@@ -18165,6 +18221,18 @@
             "args": [],
             "isDeprecated": false,
             "deprecationReason": null,
+            "name": "announcement_blog",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
             "name": "country",
             "type": {
               "kind": "SCALAR",
@@ -18262,6 +18330,16 @@
       {
         "inputFields": [
           {
+            "name": "announcement_blog",
+            "defaultValue": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
             "name": "country",
             "defaultValue": null,
             "type": {
@@ -18352,6 +18430,16 @@
       },
       {
         "inputFields": [
+          {
+            "name": "announcement_blog",
+            "defaultValue": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "description": null
+          },
           {
             "name": "country",
             "defaultValue": null,
@@ -18513,6 +18601,12 @@
         "interfaces": null,
         "name": "organisations_select_column",
         "enumValues": [
+          {
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "announcement_blog",
+            "description": "column name"
+          },
           {
             "isDeprecated": false,
             "deprecationReason": null,
