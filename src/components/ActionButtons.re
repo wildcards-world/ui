@@ -9,7 +9,7 @@ module Buy = {
     let buttonText =
       switch (currentPriceWei) {
       | Price(_price) => "Buy"
-      | Foreclosed => "Adopt"
+      | Foreclosed(_) => "Adopt"
       | Loading => "loading"
       };
 
@@ -25,6 +25,29 @@ module Buy = {
           goToBuy(animal);
         }}>
         {React.string(buttonText)}
+      </Rimble.Button>
+    </React.Fragment>;
+  };
+};
+
+module Auction = {
+  [@react.component]
+  let make = (~animal: TokenId.t, ~isExplorer: bool=false) => {
+    let goToBuy = RootProvider.useGoToBuy();
+    let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+
+    <React.Fragment>
+      <Rimble.Button
+        onClick={_e => {
+          clearAndPush(
+            "#"
+            ++ InputHelp.getPagePrefix(isExplorer)
+            ++ "details/"
+            ++ animal->TokenId.toString,
+          );
+          goToBuy(animal);
+        }}>
+        {React.string("Auction")}
       </Rimble.Button>
     </React.Fragment>;
   };

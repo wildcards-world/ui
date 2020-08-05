@@ -266,6 +266,7 @@ module UserDetails = {
            | LoginScreen(_)
            | UpdatePriceScreen(_)
            | BuyScreen(_)
+           | AuctionScreen(_)
            | NoExtraState =>
              <>
                {optName->reactMap(name => <h2> name->restr </h2>)}

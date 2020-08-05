@@ -41,6 +41,8 @@ let decodeBN: Js.Json.t => BN.bn =
     ->Js.Json.decodeString
     ->Belt.Option.mapWithDefault("0", a => a) /*trusting that gql will be reliable here*/
     ->BN.new_;
+let decodeOptionBN: option(Js.Json.t) => option(BN.bn) =
+  optionalNumber => optionalNumber->Option.map(num => decodeBN(num));
 
 let toTokenId: string => TokenId.t = Obj.magic;
 
@@ -68,6 +70,8 @@ module InitialLoad = [%graphql
            patronageNumeratorPriceScaled @bsDecoder(fn: "decodeBN")
            # timeCollected @bsDecoder(fn: "decodeMoment")
            timeAcquired @bsDecoder(fn: "decodeMoment")
+           auctionStartPrice @bsDecoder(fn: "decodeOptionBN")
+           launchTime @bsDecoder(fn: "decodeBN")
          }
          global(id: 1) {
            id
@@ -129,6 +133,8 @@ module SubWildcardQuery = [%graphql
              address @bsDecoder(fn: "decodeAddress")
              id
            }
+           auctionStartPrice @bsDecoder(fn: "decodeOptionBN")
+           launchTime @bsDecoder(fn: "decodeBN")
          }
        }
      |}
@@ -228,12 +234,12 @@ module LoadPatron = [%graphql
            }
            availableDeposit  @bsDecoder(fn: "decodePrice")
            patronTokenCostScaledNumerator  @bsDecoder(fn: "decodeBN")
-           foreclosureTime  @bsDecoder(fn: "decodeMoment")
-                   id
-                   address @bsDecoder(fn: "decodeAddress")
-                   lastUpdated @bsDecoder(fn: "decodeBN")
-                   totalLoyaltyTokens @bsDecoder(fn: "decodeBN")
-                   totalLoyaltyTokensIncludingUnRedeemed @bsDecoder(fn: "decodeBN")
+           foreclosureTime  @bsDecoder(fn: "decodeBN")
+           id
+           address @bsDecoder(fn: "decodeAddress")
+           lastUpdated @bsDecoder(fn: "decodeBN")
+           totalLoyaltyTokens @bsDecoder(fn: "decodeBN")
+           totalLoyaltyTokensIncludingUnRedeemed @bsDecoder(fn: "decodeBN")
          }
        }
      |}
@@ -566,7 +572,7 @@ let useQueryPatronNew = patron =>
     LoadPatron.definition,
   );
 
-let useForeclosureTime: string => option(MomentRe.Moment.t) =
+let useForeclosureTimeBn: string => option(BN.t) =
   patron => {
     let (simple, _) = useQueryPatron(patron);
     let getForclosureTime = response =>
@@ -574,6 +580,12 @@ let useForeclosureTime: string => option(MomentRe.Moment.t) =
 
     simple->queryResultOptionFlatMap(getForclosureTime);
   };
+
+let useForeclosureTime: string => option(MomentRe.Moment.t) =
+  patron => {
+    useForeclosureTimeBn(patron)->Option.map(Helper.bnToMoment);
+  };
+
 let usePatronQuery = patron => {
   let (simple, _) = useQueryPatron(patron);
 
@@ -622,6 +634,9 @@ let useCurrentTime = () => {
     [|setTimeLeft|],
   );
   currentTime;
+};
+let useCurrentTimestampBn = () => {
+  useCurrentTime()->BN.new_;
 };
 let useAmountRaised = () => {
   let currentTimestamp = useCurrentTime();
@@ -899,17 +914,22 @@ let useRemainingDepositEth: string => option(Eth.t) =
   };
 
 type animalPrice =
-  | Foreclosed
+  | Foreclosed(BN.t)
   | Price(Eth.t)
   | Loading;
 
 let usePrice: TokenId.t => animalPrice =
   animal => {
     let (simple, _) = useWildcardQuery(animal);
-    let currentPatron =
-      usePatron(animal)
-      ->Belt.Option.mapWithDefault("no-patron-defined", a => a);
-    let availableDeposit = useRemainingDepositEth(currentPatron);
+    let optCurrentPatron = usePatron(animal);
+    // let availableDeposit = useRemainingDepositEth(currentPatron);
+    let foreclosureTime =
+      useForeclosureTimeBn(
+        optCurrentPatron->Belt.Option.mapWithDefault("no-patron-defined", a =>
+          a
+        ),
+      );
+    let currentTime = useCurrentTime();
 
     switch (simple) {
     | Data(response) =>
@@ -919,14 +939,22 @@ let usePrice: TokenId.t => animalPrice =
             wildcard##price##price
           );
 
-      switch (availableDeposit) {
-      | Some(deposit) =>
-        if (deposit->BN.gtGet(. BN.new_("0"))) {
-          Price(priceValue);
+      Js.log("GETTING PRICE!!");
+
+      switch (optCurrentPatron, foreclosureTime) {
+      | (Some(_currentPatron), Some(foreclosureTime)) =>
+        if (foreclosureTime->BN.ltGet(. currentTime->BN.new_)) {
+          Foreclosed(foreclosureTime);
         } else {
-          Foreclosed;
+          Price(priceValue);
         }
-      | None => Foreclosed // I'm not sure if this is the correct thing to put here... If the availableDeposit is undefined, it could mean the token belongs to the steward and is foreclosed, or it could mean it
+      | (Some(_), None) =>
+        Js.log("WE HAVE A PATRON!!");
+
+        Price(priceValue);
+      | _ =>
+        Js.log("Loading current patron");
+        Loading;
       };
     | Error(_)
     | Loading
@@ -958,16 +986,14 @@ let useAuctioLength = (_tokenId: TokenId.t) => {
     "604800" // 1 week
   );
 };
-let useLaunchTime = (_tokenId: TokenId.t) => {
-  MomentRe.momentUtcDefaultFormat("2020-07-09T17:00:00")
-  ->MomentRe.Moment.toUnix
-  ->string_of_int
-  ->BN.new_;
-};
+let useLaunchTimeBN = (tokenId: TokenId.t) => {
+  let (simple, _) = useWildcardQuery(tokenId);
 
-// let useTokenCurrentActionPrice = (tokenId: TokenId.t) => {
-// };
-// _auctionStartPrice.sub(
-//                     (_auctionStartPrice.sub(auctionEndPrice))
-//                         .mul(now.sub(tokenAuctionBeginTimestamp[tokenId]))
-//                         .div(auctionLength)
+  switch (simple) {
+  | Data(response) =>
+    response##wildcard->Belt.Option.map(wildcard => wildcard##launchTime)
+  | Error(_)
+  | Loading
+  | NoData => None
+  };
+};
