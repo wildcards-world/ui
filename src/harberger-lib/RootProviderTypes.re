@@ -19,6 +19,7 @@ type web3reactContext = {
 type rootActions =
   | NoAction
   | GoToBuy(TokenId.t)
+  | GoToAuction(TokenId.t)
   | GoToDepositUpdate
   | GoToPriceUpdate(TokenId.t)
   | GoToUserVerification
@@ -32,6 +33,7 @@ type nonUrlState =
   | UpdateDepositScreen
   | UpdatePriceScreen(TokenId.t)
   | BuyScreen(TokenId.t)
+  | AuctionScreen(TokenId.t)
   | NoExtraState;
 type ethState =
   | Disconnected

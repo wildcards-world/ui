@@ -55,3 +55,11 @@ let makeFromEthStr: string => option(t) =
     ->Belt.Option.flatMap(ethFloat =>
         Some(BN.new_(toWei(Belt.Float.toString(ethFloat), "ether")))
       );
+
+let toFixedWithPrecisionNoTrailingZeros = (~digits=9, eth) => {
+  eth
+  ->fromWeiEth
+  ->Float.fromString
+  ->Option.getWithDefault(0.)
+  ->toFixedWithPrecisionNoTrailingZeros(~digits);
+};

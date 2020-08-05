@@ -93,31 +93,32 @@ module DisplayAfterDate = {
   };
 };
 
+module AuctionDisplay = {
+  [@react.component]
+  let make = (~launchTime, ~animal) => {
+    let currentPriceWei = Animal.useAuctionPriceWei(animal, launchTime);
+
+    let optCurrentUsdEthPrice = UsdPriceProvider.useUsdPrice();
+
+    let (priceEth, optPriceUsd) =
+      PriceDisplay.priceWeiToTuple(currentPriceWei, optCurrentUsdEthPrice);
+
+    <>
+      <h3> "Auction "->React.string </h3>
+      <PriceDisplay.PurePriceDisplay priceEth optPriceUsd />
+      <ActionButtons.Auction animal />
+    </>;
+  };
+};
 module AuctionDetails = {
   [@react.component]
   let make = (~animal: TokenId.t) => {
-    let auctionStartPrice = QlHooks.useAuctionStartPrice(animal);
-    let auctionEndPrice = QlHooks.useAuctionEndPrice(animal);
-    let auctioLength = QlHooks.useAuctioLength(animal);
-    let launchTime = QlHooks.useLaunchTime(animal);
-    let currentTime = QlHooks.useCurrentTime();
+    let launchTimeOpt = QlHooks.useLaunchTimeBN(animal);
 
-    let currentPriceWei =
-      auctionStartPrice
-      |-| (
-        auctionStartPrice
-        |-| auctionEndPrice
-        |*| (BN.new_(currentTime) |-| launchTime)
-        |/| auctioLength
-      );
-
-    let currentPriceEth = currentPriceWei->Eth.fromWeiEth;
-    // TODO: fix the precision of this value: toFixedWithPrecisionNoTrailingZeros;
-
-    // ->BN.mul(. now.sub(tokenAuctionBeginTimestamp[tokenId]))
-    // .div(auctionLength)
-
-    <p> {("is on auction " ++ currentPriceEth)->React.string} </p>;
+    switch (launchTimeOpt) {
+    | Some(launchTime) => <AuctionDisplay animal launchTime />
+    | None => <p> "Loading"->React.string </p>
+    };
   };
 };
 
@@ -134,29 +135,29 @@ module BasicAnimalDisplay = {
 
     let isOnAuction = Animal.useIsOnAuction(animal);
 
-    <React.Fragment>
-      <PriceDisplay animal />
-      <a
-        onClick={e => {
-          ReactEvent.Mouse.preventDefault(e);
-          clearAndPush({j|/#user/$currentPatron|j});
-        }}>
-        displayNameStr->restr
-      </a>
-      <br />
-      {switch (nonUrlRouting) {
-       | UserVerificationScreen
-       | UpdateDepositScreen
-       | UpdatePriceScreen(_)
-       | BuyScreen(_) => React.null
-       | LoginScreen(_)
-       | NoExtraState =>
-         owned
-           ? <EditButton animal />
-           : isOnAuction
-               ? <AuctionDetails animal /> : <ActionButtons.Buy animal />
-       }}
-    </React.Fragment>;
+    isOnAuction
+      ? <AuctionDetails animal />
+      : <>
+          <PriceDisplay animal />
+          <a
+            onClick={e => {
+              ReactEvent.Mouse.preventDefault(e);
+              clearAndPush({j|/#user/$currentPatron|j});
+            }}>
+            displayNameStr->restr
+          </a>
+          <br />
+          {switch (nonUrlRouting) {
+           | UserVerificationScreen
+           | UpdateDepositScreen
+           | UpdatePriceScreen(_)
+           | BuyScreen(_)
+           | AuctionScreen(_) => React.null
+           | LoginScreen(_)
+           | NoExtraState =>
+             owned ? <EditButton animal /> : <ActionButtons.Buy animal />
+           }}
+        </>;
   };
 };
 
@@ -201,7 +202,7 @@ module AnimalOnLandingPage = {
                         <Streak animal />
                       </div>
                     | Loading
-                    | Foreclosed => React.null
+                    | Foreclosed(_) => React.null
                     }
                   }
                 : React.null}
@@ -371,26 +372,30 @@ module AnimalActionsOnDetailsPage = {
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
     let nonUrlRouting = RootProvider.useNonUrlState();
+    let isOnAuction = Animal.useIsOnAuction(animal);
 
     let price = () =>
-      <React.Fragment>
-        <a
-          onClick={e => {
-            ReactEvent.Mouse.preventDefault(e);
-            clearAndPush({j|/#user/$currentPatron|j});
-          }}>
-          displayNameStr->restr
-        </a>
-        <PriceDisplay animal />
-        {switch (nonUrlRouting) {
-         | UserVerificationScreen
-         | UpdateDepositScreen
-         | UpdatePriceScreen(_)
-         | BuyScreen(_) => React.null
-         | LoginScreen(_)
-         | NoExtraState => <ActionButtons.Buy animal />
-         }}
-      </React.Fragment>;
+      isOnAuction
+        ? <AuctionDetails animal />
+        : <React.Fragment>
+            <a
+              onClick={e => {
+                ReactEvent.Mouse.preventDefault(e);
+                clearAndPush({j|/#user/$currentPatron|j});
+              }}>
+              displayNameStr->restr
+            </a>
+            <PriceDisplay animal />
+            {switch (nonUrlRouting) {
+             | UserVerificationScreen
+             | UpdateDepositScreen
+             | UpdatePriceScreen(_)
+             | BuyScreen(_)
+             | AuctionScreen(_) => React.null
+             | LoginScreen(_)
+             | NoExtraState => <ActionButtons.Buy animal />
+             }}
+          </React.Fragment>;
 
     if (owned) {
       <React.Fragment>
@@ -919,6 +924,20 @@ let make = () => {
         {switch (nonUrlRouting) {
          | LoginScreen(_followOnAction) => <Login />
          | BuyScreen(animal) =>
+           <div className=Css.(style([position(`relative)]))>
+             <Rimble.Button.Text
+               icononly=true
+               icon="Close"
+               color="moon-gray"
+               position="absolute"
+               top=0
+               right=0
+               m=1
+               onClick={_ => clearNonUrlState()}
+             />
+             <Buy tokenId=animal />
+           </div>
+         | AuctionScreen(animal) =>
            <div className=Css.(style([position(`relative)]))>
              <Rimble.Button.Text
                icononly=true

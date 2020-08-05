@@ -1,39 +1,36 @@
 open Globals;
 
+let priceWeiToTuple = (wei, optCurrentUsdEthPrice) => {
+  let totalPatronageEth = wei->Eth.toFixedWithPrecisionNoTrailingZeros;
+
+  let optTotaPatronageUsd =
+    optCurrentUsdEthPrice->Option.map(currentUsdEthPrice =>
+      toFixedWithPrecisionNoTrailingZeros(
+        Float.fromString(totalPatronageEth)->mapd(0., a => a)
+        *. currentUsdEthPrice,
+        ~digits=2,
+      )
+    );
+
+  (totalPatronageEth, optTotaPatronageUsd);
+};
+
 let usePrice = animal => {
   let optPriceWei = QlHooks.usePrice(animal); //->Web3Utils.fromWeiBNToEth;
-  let optCurrentUsdEthPrice = UsdPriceProvider.useUsdPrice(); //->mapWithDefault(0., a => a);
-  // let optCurrentUsdEthPrice = Some(0.5); //->mapWithDefault(0., a => a);
+  let optCurrentUsdEthPrice = UsdPriceProvider.useUsdPrice();
 
   switch (optPriceWei) {
   | Price(totalPatronageWei) =>
-    let totalPatronageEth =
-      totalPatronageWei->BN.toStringGet(.)->Web3Utils.fromWeiToEth;
-
-    let optTotaPatronageUsd =
-      optCurrentUsdEthPrice->oFlatMap(currentUsdEthPrice =>
-        Some(
-          toFixedWithPrecisionNoTrailingZeros(
-            Float.fromString(totalPatronageEth)->mapd(0., a => a)
-            *. currentUsdEthPrice,
-            ~digits=2,
-          ),
-        )
-      );
-
-    Some((totalPatronageEth, optTotaPatronageUsd));
-  | Foreclosed => Some(("0", Some("0")))
+    priceWeiToTuple(totalPatronageWei, optCurrentUsdEthPrice)->Some
+  | Foreclosed(_) => Some(("0", Some("0")))
   | Loading => None
   };
 };
 
-[@react.component]
-let make = (~animal: TokenId.t) => {
-  let optCurrentPrice = usePrice(animal);
-
-  switch (optCurrentPrice) {
-  | Some((priceEth, optPriceUsd)) =>
-    <React.Fragment>
+module PurePriceDisplay = {
+  [@react.component]
+  let make = (~priceEth, ~optPriceUsd) => {
+    <>
       <p className={Styles.noMarginTop ++ " " ++ Styles.noMarginBottom}>
         {{
            priceEth ++ " ETH";
@@ -52,7 +49,16 @@ let make = (~animal: TokenId.t) => {
          </p>
        | None => React.null
        }}
-    </React.Fragment>
+    </>;
+  };
+};
+
+[@react.component]
+let make = (~animal: TokenId.t) => {
+  let optCurrentPrice = usePrice(animal);
+
+  switch (optCurrentPrice) {
+  | Some((priceEth, optPriceUsd)) => <PurePriceDisplay priceEth optPriceUsd />
   | None => <Rimble.Loader />
   };
 };

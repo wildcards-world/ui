@@ -13,5 +13,11 @@ let elipsify: (string, int) => string =
     if (inputString->String.length > maxLength) {
       String.sub({j|$inputString|j}, 0, maxLength - 3) ++ "...";
     } else {
-      inputString;
+      inputString /* */;
     };
+
+let bnToMoment = bn =>
+  bn
+  ->BN.toStringGet(.)
+  ->int_of_string /*trusting that gql will be reliable here*/
+  ->MomentRe.momentWithUnix;

@@ -33,6 +33,10 @@ ReactDOMRe.renderToElementWithId(
             rinkebyApi |||| "https://rinkeby.api.wildcards.world/v1/graphq",
             "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
           )
+        // | _ => (
+        //     goerliApi |||| "https://goerli.api.wildcards.world/v1/graphq",
+        //     "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
+        //   )
         | _ => (
             mainnetApi |||| "https://api.wildcards.world/v1/graphql",
             "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards",

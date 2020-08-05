@@ -51,6 +51,7 @@ let rec reducer = (prevState, action) =>
     | UpdateDepositScreen
     | UpdatePriceScreen(_)
     | BuyScreen(_)
+    | AuctionScreen(_)
     | NoExtraState => newState
     };
   | GoToWeb3Connect(action) =>
@@ -61,6 +62,11 @@ let rec reducer = (prevState, action) =>
   | GoToBuy(animal) =>
     switch (prevState.ethState) {
     | Connected(_, _) => {...prevState, nonUrlState: BuyScreen(animal)}
+    | Disconnected => {...prevState, nonUrlState: LoginScreen(action)}
+    }
+  | GoToAuction(animal) =>
+    switch (prevState.ethState) {
+    | Connected(_, _) => {...prevState, nonUrlState: AuctionScreen(animal)}
     | Disconnected => {...prevState, nonUrlState: LoginScreen(action)}
     }
   | GoToDepositUpdate =>
@@ -272,6 +278,7 @@ let useShowLogin: unit => bool =
     | UpdateDepositScreen
     | UpdatePriceScreen(_)
     | BuyScreen(_)
+    | AuctionScreen(_)
     | NoExtraState => false
     };
   };
@@ -309,6 +316,13 @@ let useGoToBuy: (unit, TokenId.t) => unit =
     let (_, dispatch) = React.useContext(RootContext.context);
     animal => {
       dispatch(GoToBuy(animal));
+    };
+  };
+let useGoToAuction: (unit, TokenId.t) => unit =
+  () => {
+    let (_, dispatch) = React.useContext(RootContext.context);
+    animal => {
+      dispatch(GoToAuction(animal));
     };
   };
 let useGoToDepositUpdate: (unit, unit) => unit =
