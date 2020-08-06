@@ -49,9 +49,64 @@ let isLaunched: TokenId.t => launchStatus =
     | _ => Launched
     };
 
-let useIsOnAuction: TokenId.t => bool =
-  animal =>
-    switch (animal->TokenId.toString) {
-    // | "5" => true
-    | _ => false
+type tokenStatus =
+  | Loading
+  | WaitingForLaunch(MomentRe.Moment.t)
+  | Launched(MomentRe.Moment.t)
+  | Owned(Eth.t) // TODO put the owner and price as a parameter here
+  | Foreclosed(MomentRe.Moment.t);
+
+let useTokenStatus: TokenId.t => tokenStatus =
+  animal => {
+    let optLaunchTime = QlHooks.useLaunchTimeBN(animal);
+    let currentTime = QlHooks.useCurrentTimestampBn();
+    let currentPriceWei = QlHooks.usePrice(animal);
+
+    switch (optLaunchTime) {
+    | Some(launchTime) =>
+      if (launchTime->BN.gtGet(. currentTime)) {
+        WaitingForLaunch(launchTime->BN.toNumber->MomentRe.momentWithUnix);
+      } else {
+        switch (currentPriceWei) {
+        | Price(price) =>
+          if (price->BN.gtGet(. BN.new_("0"))) {
+            Owned(price);
+          } else {
+            Launched(launchTime->BN.toNumber->MomentRe.momentWithUnix);
+          }
+        | Foreclosed(foreclosureTime) =>
+          Foreclosed(foreclosureTime->Helper.bnToMoment)
+        | Loading => Loading
+        };
+      }
+    | None => Loading
     };
+  };
+
+let useIsOnAuction: TokenId.t => bool =
+  animal => {
+    let tokenStatus = useTokenStatus(animal);
+
+    switch (tokenStatus) {
+    | Loading
+    | WaitingForLaunch(_)
+    | Owned(_) => false
+    | Launched(_)
+    | Foreclosed(_) => true
+    };
+  };
+
+let useAuctionPriceWei = (animal, launchTime) => {
+  let auctionStartPrice = QlHooks.useAuctionStartPrice(animal);
+  let auctionEndPrice = QlHooks.useAuctionEndPrice(animal);
+  let auctionLength = QlHooks.useAuctioLength(animal);
+  let currentTime = QlHooks.useCurrentTime();
+
+  auctionStartPrice
+  |-| (
+    auctionStartPrice
+    |-| auctionEndPrice
+    |*| (BN.new_(currentTime) |-| launchTime)
+    |/| auctionLength
+  );
+};

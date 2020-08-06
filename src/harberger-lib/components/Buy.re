@@ -57,12 +57,24 @@ let make = (~tokenId: TokenId.t) => {
   let (numerator, denominator, ratio, _ratioInverse) =
     QlHooks.usePledgeRateDetailed(tokenId);
   let priceStatus = QlHooks.usePrice(tokenId);
+  let isOnAuction = Animal.useIsOnAuction(tokenId);
+  let launchTimeOpt = QlHooks.useLaunchTimeBN(tokenId);
   let currentPriceWei =
-    switch (priceStatus) {
-    | Price(price) => price
-    | Loading
-    | Foreclosed => BN.new_("0")
-    };
+    Animal.useAuctionPriceWei(
+      tokenId,
+      launchTimeOpt->Option.getWithDefault(BN.new_("5000")),
+    );
+
+  let currentPriceWei =
+    isOnAuction
+      ? currentPriceWei
+      : (
+        switch (priceStatus) {
+        | Price(price) => price
+        | Loading
+        | Foreclosed(_) => BN.new_("0")
+        }
+      );
 
   let tokenIdName = "token#" ++ tokenId->TokenId.toString;
 
@@ -130,19 +142,38 @@ let make = (~tokenId: TokenId.t) => {
 
   let onSubmitBuy = () => {
     let amountToSend =
-      currentPriceWei
-      ->BN.addGet(. BN.new_(Web3Utils.toWei(deposit, "ether")))
-      ->BN.toStringGet(.);
+      currentPriceWei->BN.addGet(.
+        BN.new_(Web3Utils.toWei(deposit, "ether")),
+      );
     switch (priceStatus) {
-    | Foreclosed
-    | Loading => buyFuncAuction(newPrice, "150000", amountToSend)
-    | Price(_) =>
-      buyFunc(
+    | Foreclosed(_)
+    | Loading =>
+      buyFuncAuction(
         newPrice,
-        currentPriceWei->BN.toStringGet(.),
         "150000",
-        amountToSend,
+        amountToSend
+        // Add 0.001 ETH as a buffer...
+        ->BN.addGet(. BN.new_("1000000000000000"))
+        ->BN.toStringGet(.),
       )
+    | Price(price) =>
+      if (price->BN.gtGet(. BN.new_("0"))) {
+        buyFunc(
+          newPrice,
+          currentPriceWei->BN.toStringGet(.),
+          "150000",
+          amountToSend->BN.toStringGet(.),
+        );
+      } else {
+        buyFuncAuction(
+          newPrice,
+          "150000",
+          amountToSend
+          // Add 0.001 ETH as a buffer...
+          ->BN.addGet(. BN.new_("1000000000000000"))
+          ->BN.toStringGet(.),
+        );
+      }
     };
   };
 
