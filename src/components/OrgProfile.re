@@ -8,12 +8,35 @@ module YoutubeVid = {
   external make: (~videoCode: string) => React.element = "default";
 };
 
+// module Token = {
+//   [@react.component]
+//   let make = (~tokenId: TokenId.t) => {
+//     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+//     let image = Animal.useAvatar(tokenId);
+
+//     <div className=Css.(style([width(vh(12.))]))>
+//       <img
+//         className=Css.(style([width(`percent(100.))]))
+//         onClick={_e =>
+//           clearAndPush("/#details/" ++ tokenId->TokenId.toString)
+//         }
+//         src=image
+//       />
+//     </div>;
+//   };
+// };
+
 module OrgPage = {
   [@react.component]
   let make = (~orgData, ~orgId) => {
     let orgName = orgData##name;
     let orgDescription = orgData##description->orgDescriptionArray_decode;
     let orgAnimals = orgData##wildcard;
+    //     unlaunched: wildcard (where: {id: {_is_null: true}}) {
+    // real_wc_photos {
+    //     image
+    //     photographer
+    let orgCommingSoon = orgData##unlaunched;
     let orgAnimalsArray = orgAnimals->Array.map(animal => animal##id);
     let currentUsdEthPrice = UsdPriceProvider.useUsdPrice();
     let totalCollected = QlHooks.useTotalRaisedAnimalGroup(orgAnimalsArray);
@@ -119,21 +142,34 @@ module OrgPage = {
                </p>
              | uniquePreviouslyOwnedTokens =>
                <React.Fragment>
-                 <Rimble.Heading>
-                   "Organisations animals"->React.string
-                 </Rimble.Heading>
-                 <Rimble.Flex
-                   flexWrap="wrap" className=UserProfile.centreAlignOnMobile>
-                   {React.array(
-                      uniquePreviouslyOwnedTokens->Array.map(animal => {
-                        <UserProfile.Token
-                          key={animal##id->TokenId.toString}
-                          tokenId={animal##id}
-                        />
-                      }),
-                    )}
-                 </Rimble.Flex>
-               </React.Fragment>
+
+                   <Rimble.Heading>
+                     "Organisations animals"->React.string
+                   </Rimble.Heading>
+                   <Rimble.Flex
+                     flexWrap="wrap" className=UserProfile.centreAlignOnMobile>
+                     {React.array(
+                        uniquePreviouslyOwnedTokens->Array.map(animal => {
+                          <UserProfile.Token
+                            key={animal##id->TokenId.toString}
+                            tokenId={animal##id}
+                          />
+                        }),
+                      )}
+                   </Rimble.Flex>
+                 </React.Fragment>
+                 //  <Rimble.Heading> "Coming soon"->React.string </Rimble.Heading>
+                 //  <Rimble.Flex
+                 //    flexWrap="wrap" className=UserProfile.centreAlignOnMobile>
+                 //    {React.array(
+                 //       orgCommingSoon->Array.mapWithIndex((key, animal) => {
+                 //         <UserProfile.Token
+                 //           key={key->string_of_int}
+                 //           tokenId={animal##id}
+                 //         />
+                 //       }),
+                 //     )}
+                 //  </Rimble.Flex>
              }}
           </Rimble.Box>
         </Rimble.Flex>

@@ -3879,6 +3879,123 @@
         "fields": null
       },
       {
+        "inputFields": [
+          {
+            "name": "_eq",
+            "defaultValue": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "_gt",
+            "defaultValue": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "_gte",
+            "defaultValue": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "_in",
+            "defaultValue": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            "description": null
+          },
+          {
+            "name": "_is_null",
+            "defaultValue": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "_lt",
+            "defaultValue": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "_lte",
+            "defaultValue": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "_neq",
+            "defaultValue": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "_nin",
+            "defaultValue": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            "description": null
+          }
+        ],
+        "kind": "INPUT_OBJECT",
+        "possibleTypes": null,
+        "interfaces": null,
+        "name": "Int_comparison_exp",
+        "enumValues": null,
+        "description": "expression to compare columns of type Int. All fields are combined with logical 'AND'.",
+        "fields": null
+      },
+      {
         "inputFields": null,
         "kind": "OBJECT",
         "possibleTypes": null,
@@ -16422,6 +16539,97 @@
               "ofType": null
             },
             "description": null
+          },
+          {
+            "args": [
+              {
+                "name": "distinct_on",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "wildcardData_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": "distinct select on columns"
+              },
+              {
+                "name": "limit",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "description": "limit the number of rows returned"
+              },
+              {
+                "name": "offset",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "description": "skip the first n rows. Use only with order_by"
+              },
+              {
+                "name": "order_by",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "wildcardData_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": "sort the rows by one or more columns"
+              },
+              {
+                "name": "where",
+                "defaultValue": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "wildcardData_bool_exp",
+                  "ofType": null
+                },
+                "description": "filter the rows returned"
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "wildcardData",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "wildcardData",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "description": "An array relationship"
           }
         ]
       },
@@ -16501,6 +16709,16 @@
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "String_comparison_exp",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "wildcardData",
+            "defaultValue": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "wildcardData_bool_exp",
               "ofType": null
             },
             "description": null
@@ -16950,10 +17168,621 @@
         "kind": "OBJECT",
         "possibleTypes": null,
         "interfaces": [],
+        "name": "launchedWildcards",
+        "enumValues": null,
+        "description": "columns and relationships of \"launchedWildcards\"",
+        "fields": [
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "id",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "wildcard",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "wildcardData",
+                "ofType": null
+              }
+            },
+            "description": "An object relationship"
+          }
+        ]
+      },
+      {
+        "inputFields": null,
+        "kind": "OBJECT",
+        "possibleTypes": null,
+        "interfaces": [],
+        "name": "launchedWildcards_aggregate",
+        "enumValues": null,
+        "description": "aggregated selection of \"launchedWildcards\"",
+        "fields": [
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "aggregate",
+            "type": {
+              "kind": "OBJECT",
+              "name": "launchedWildcards_aggregate_fields",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "nodes",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "launchedWildcards",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "description": null
+          }
+        ]
+      },
+      {
+        "inputFields": null,
+        "kind": "OBJECT",
+        "possibleTypes": null,
+        "interfaces": [],
+        "name": "launchedWildcards_aggregate_fields",
+        "enumValues": null,
+        "description": "aggregate fields of \"launchedWildcards\"",
+        "fields": [
+          {
+            "args": [
+              {
+                "name": "columns",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "launchedWildcards_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": null
+              },
+              {
+                "name": "distinct",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                },
+                "description": null
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "count",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "max",
+            "type": {
+              "kind": "OBJECT",
+              "name": "launchedWildcards_max_fields",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "min",
+            "type": {
+              "kind": "OBJECT",
+              "name": "launchedWildcards_min_fields",
+              "ofType": null
+            },
+            "description": null
+          }
+        ]
+      },
+      {
+        "inputFields": [
+          {
+            "name": "count",
+            "defaultValue": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "max",
+            "defaultValue": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "launchedWildcards_max_order_by",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "min",
+            "defaultValue": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "launchedWildcards_min_order_by",
+              "ofType": null
+            },
+            "description": null
+          }
+        ],
+        "kind": "INPUT_OBJECT",
+        "possibleTypes": null,
+        "interfaces": null,
+        "name": "launchedWildcards_aggregate_order_by",
+        "enumValues": null,
+        "description": "order by aggregate values of table \"launchedWildcards\"",
+        "fields": null
+      },
+      {
+        "inputFields": [
+          {
+            "name": "_and",
+            "defaultValue": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "launchedWildcards_bool_exp",
+                "ofType": null
+              }
+            },
+            "description": null
+          },
+          {
+            "name": "_not",
+            "defaultValue": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "launchedWildcards_bool_exp",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "_or",
+            "defaultValue": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "launchedWildcards_bool_exp",
+                "ofType": null
+              }
+            },
+            "description": null
+          },
+          {
+            "name": "id",
+            "defaultValue": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "String_comparison_exp",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "wildcard",
+            "defaultValue": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "wildcardData_bool_exp",
+              "ofType": null
+            },
+            "description": null
+          }
+        ],
+        "kind": "INPUT_OBJECT",
+        "possibleTypes": null,
+        "interfaces": null,
+        "name": "launchedWildcards_bool_exp",
+        "enumValues": null,
+        "description": "Boolean expression to filter rows from the table \"launchedWildcards\". All fields are combined with a logical 'AND'.",
+        "fields": null
+      },
+      {
+        "inputFields": null,
+        "kind": "OBJECT",
+        "possibleTypes": null,
+        "interfaces": [],
+        "name": "launchedWildcards_max_fields",
+        "enumValues": null,
+        "description": "aggregate max on columns",
+        "fields": [
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "id",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "description": null
+          }
+        ]
+      },
+      {
+        "inputFields": [
+          {
+            "name": "id",
+            "defaultValue": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "description": null
+          }
+        ],
+        "kind": "INPUT_OBJECT",
+        "possibleTypes": null,
+        "interfaces": null,
+        "name": "launchedWildcards_max_order_by",
+        "enumValues": null,
+        "description": "order by max() on columns of table \"launchedWildcards\"",
+        "fields": null
+      },
+      {
+        "inputFields": null,
+        "kind": "OBJECT",
+        "possibleTypes": null,
+        "interfaces": [],
+        "name": "launchedWildcards_min_fields",
+        "enumValues": null,
+        "description": "aggregate min on columns",
+        "fields": [
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "id",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "description": null
+          }
+        ]
+      },
+      {
+        "inputFields": [
+          {
+            "name": "id",
+            "defaultValue": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "description": null
+          }
+        ],
+        "kind": "INPUT_OBJECT",
+        "possibleTypes": null,
+        "interfaces": null,
+        "name": "launchedWildcards_min_order_by",
+        "enumValues": null,
+        "description": "order by min() on columns of table \"launchedWildcards\"",
+        "fields": null
+      },
+      {
+        "inputFields": [
+          {
+            "name": "id",
+            "defaultValue": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "wildcard",
+            "defaultValue": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "wildcardData_order_by",
+              "ofType": null
+            },
+            "description": null
+          }
+        ],
+        "kind": "INPUT_OBJECT",
+        "possibleTypes": null,
+        "interfaces": null,
+        "name": "launchedWildcards_order_by",
+        "enumValues": null,
+        "description": "ordering options when selecting data from \"launchedWildcards\"",
+        "fields": null
+      },
+      {
+        "inputFields": [
+          {
+            "name": "id",
+            "defaultValue": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "description": null
+          }
+        ],
+        "kind": "INPUT_OBJECT",
+        "possibleTypes": null,
+        "interfaces": null,
+        "name": "launchedWildcards_pk_columns_input",
+        "enumValues": null,
+        "description": "primary key columns input for table: \"launchedWildcards\"",
+        "fields": null
+      },
+      {
+        "inputFields": null,
+        "kind": "ENUM",
+        "possibleTypes": null,
+        "interfaces": null,
+        "name": "launchedWildcards_select_column",
+        "enumValues": [
+          {
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "id",
+            "description": "column name"
+          }
+        ],
+        "description": "select columns of table \"launchedWildcards\"",
+        "fields": null
+      },
+      {
+        "inputFields": null,
+        "kind": "OBJECT",
+        "possibleTypes": null,
+        "interfaces": [],
         "name": "onboarding_status",
         "enumValues": null,
         "description": "columns and relationships of \"onboarding_status\"",
         "fields": [
+          {
+            "args": [
+              {
+                "name": "distinct_on",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "organisations_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": "distinct select on columns"
+              },
+              {
+                "name": "limit",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "description": "limit the number of rows returned"
+              },
+              {
+                "name": "offset",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "description": "skip the first n rows. Use only with order_by"
+              },
+              {
+                "name": "order_by",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "organisations_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": "sort the rows by one or more columns"
+              },
+              {
+                "name": "where",
+                "defaultValue": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "organisations_bool_exp",
+                  "ofType": null
+                },
+                "description": "filter the rows returned"
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "organisations",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "organisations",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "description": "An array relationship"
+          },
+          {
+            "args": [
+              {
+                "name": "distinct_on",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "organisations_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": "distinct select on columns"
+              },
+              {
+                "name": "limit",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "description": "limit the number of rows returned"
+              },
+              {
+                "name": "offset",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "description": "skip the first n rows. Use only with order_by"
+              },
+              {
+                "name": "order_by",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "organisations_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": "sort the rows by one or more columns"
+              },
+              {
+                "name": "where",
+                "defaultValue": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "organisations_bool_exp",
+                  "ofType": null
+                },
+                "description": "filter the rows returned"
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "organisations_aggregate",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "organisations_aggregate",
+                "ofType": null
+              }
+            },
+            "description": "An aggregated array relationship"
+          },
           {
             "args": [],
             "isDeprecated": false,
@@ -17009,6 +17838,16 @@
                 "name": "onboarding_status_bool_exp",
                 "ofType": null
               }
+            },
+            "description": null
+          },
+          {
+            "name": "organisations",
+            "defaultValue": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "organisations_bool_exp",
+              "ofType": null
             },
             "description": null
           },
@@ -17169,6 +18008,16 @@
       },
       {
         "inputFields": [
+          {
+            "name": "organisations_aggregate",
+            "defaultValue": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "organisations_aggregate_order_by",
+              "ofType": null
+            },
+            "description": null
+          },
           {
             "name": "status",
             "defaultValue": null,
@@ -17547,89 +18396,6 @@
               }
             },
             "description": "An array relationship"
-          },
-          {
-            "args": [
-              {
-                "name": "distinct_on",
-                "defaultValue": null,
-                "type": {
-                  "kind": "LIST",
-                  "name": null,
-                  "ofType": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "ENUM",
-                      "name": "wildcardData_select_column",
-                      "ofType": null
-                    }
-                  }
-                },
-                "description": "distinct select on columns"
-              },
-              {
-                "name": "limit",
-                "defaultValue": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "description": "limit the number of rows returned"
-              },
-              {
-                "name": "offset",
-                "defaultValue": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "description": "skip the first n rows. Use only with order_by"
-              },
-              {
-                "name": "order_by",
-                "defaultValue": null,
-                "type": {
-                  "kind": "LIST",
-                  "name": null,
-                  "ofType": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "wildcardData_order_by",
-                      "ofType": null
-                    }
-                  }
-                },
-                "description": "sort the rows by one or more columns"
-              },
-              {
-                "name": "where",
-                "defaultValue": null,
-                "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "wildcardData_bool_exp",
-                  "ofType": null
-                },
-                "description": "filter the rows returned"
-              }
-            ],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "wildcard_aggregate",
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "wildcardData_aggregate",
-                "ofType": null
-              }
-            },
-            "description": "An aggregated array relationship"
           },
           {
             "args": [],
@@ -18541,16 +19307,6 @@
             "description": null
           },
           {
-            "name": "wildcard_aggregate",
-            "defaultValue": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "wildcardData_aggregate_order_by",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
             "name": "youtube_vid",
             "defaultValue": null,
             "type": {
@@ -19445,6 +20201,207 @@
                     "name": null,
                     "ofType": {
                       "kind": "ENUM",
+                      "name": "launchedWildcards_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": "distinct select on columns"
+              },
+              {
+                "name": "limit",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "description": "limit the number of rows returned"
+              },
+              {
+                "name": "offset",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "description": "skip the first n rows. Use only with order_by"
+              },
+              {
+                "name": "order_by",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "launchedWildcards_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": "sort the rows by one or more columns"
+              },
+              {
+                "name": "where",
+                "defaultValue": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "launchedWildcards_bool_exp",
+                  "ofType": null
+                },
+                "description": "filter the rows returned"
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "launchedWildcards",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "launchedWildcards",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "description": "fetch data from the table: \"launchedWildcards\""
+          },
+          {
+            "args": [
+              {
+                "name": "distinct_on",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "launchedWildcards_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": "distinct select on columns"
+              },
+              {
+                "name": "limit",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "description": "limit the number of rows returned"
+              },
+              {
+                "name": "offset",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "description": "skip the first n rows. Use only with order_by"
+              },
+              {
+                "name": "order_by",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "launchedWildcards_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": "sort the rows by one or more columns"
+              },
+              {
+                "name": "where",
+                "defaultValue": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "launchedWildcards_bool_exp",
+                  "ofType": null
+                },
+                "description": "filter the rows returned"
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "launchedWildcards_aggregate",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "launchedWildcards_aggregate",
+                "ofType": null
+              }
+            },
+            "description": "fetch aggregated fields from the table: \"launchedWildcards\""
+          },
+          {
+            "args": [
+              {
+                "name": "id",
+                "defaultValue": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "description": null
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "launchedWildcards_by_pk",
+            "type": {
+              "kind": "OBJECT",
+              "name": "launchedWildcards",
+              "ofType": null
+            },
+            "description": "fetch data from the table: \"launchedWildcards\" using primary key columns"
+          },
+          {
+            "args": [
+              {
+                "name": "distinct_on",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
                       "name": "onboarding_status_select_column",
                       "ofType": null
                     }
@@ -20976,97 +21933,14 @@
           {
             "args": [
               {
-                "name": "distinct_on",
-                "defaultValue": null,
-                "type": {
-                  "kind": "LIST",
-                  "name": null,
-                  "ofType": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "ENUM",
-                      "name": "wildcardData_select_column",
-                      "ofType": null
-                    }
-                  }
-                },
-                "description": "distinct select on columns"
-              },
-              {
-                "name": "limit",
-                "defaultValue": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "description": "limit the number of rows returned"
-              },
-              {
-                "name": "offset",
-                "defaultValue": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "description": "skip the first n rows. Use only with order_by"
-              },
-              {
-                "name": "order_by",
-                "defaultValue": null,
-                "type": {
-                  "kind": "LIST",
-                  "name": null,
-                  "ofType": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "wildcardData_order_by",
-                      "ofType": null
-                    }
-                  }
-                },
-                "description": "sort the rows by one or more columns"
-              },
-              {
-                "name": "where",
-                "defaultValue": null,
-                "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "wildcardData_bool_exp",
-                  "ofType": null
-                },
-                "description": "filter the rows returned"
-              }
-            ],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "wildcardData_aggregate",
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "wildcardData_aggregate",
-                "ofType": null
-              }
-            },
-            "description": "fetch aggregated fields from the table: \"wildcardData\""
-          },
-          {
-            "args": [
-              {
-                "name": "id",
+                "name": "key",
                 "defaultValue": null,
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
                   "ofType": {
                     "kind": "SCALAR",
-                    "name": "String",
+                    "name": "Int",
                     "ofType": null
                   }
                 },
@@ -21211,13 +22085,29 @@
             "args": [],
             "isDeprecated": false,
             "deprecationReason": null,
-            "name": "wildcard",
+            "name": "wildcardDatum",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "wildcardData",
+                "ofType": null
+              }
+            },
+            "description": "An object relationship"
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "wildcardKey",
             "type": {
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "Int",
                 "ofType": null
               }
             },
@@ -21286,11 +22176,21 @@
             "description": null
           },
           {
-            "name": "wildcard",
+            "name": "wildcardDatum",
             "defaultValue": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "String_comparison_exp",
+              "name": "wildcardData_bool_exp",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "wildcardKey",
+            "defaultValue": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "Int_comparison_exp",
               "ofType": null
             },
             "description": null
@@ -21327,7 +22227,17 @@
             "description": null
           },
           {
-            "name": "wildcard",
+            "name": "wildcardDatum",
+            "defaultValue": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "wildcardData_order_by",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "wildcardKey",
             "defaultValue": null,
             "type": {
               "kind": "ENUM",
@@ -21392,7 +22302,7 @@
           {
             "isDeprecated": false,
             "deprecationReason": null,
-            "name": "wildcard",
+            "name": "wildcardKey",
             "description": "column name"
           }
         ],
@@ -22173,6 +23083,207 @@
                     "name": null,
                     "ofType": {
                       "kind": "ENUM",
+                      "name": "launchedWildcards_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": "distinct select on columns"
+              },
+              {
+                "name": "limit",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "description": "limit the number of rows returned"
+              },
+              {
+                "name": "offset",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "description": "skip the first n rows. Use only with order_by"
+              },
+              {
+                "name": "order_by",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "launchedWildcards_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": "sort the rows by one or more columns"
+              },
+              {
+                "name": "where",
+                "defaultValue": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "launchedWildcards_bool_exp",
+                  "ofType": null
+                },
+                "description": "filter the rows returned"
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "launchedWildcards",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "launchedWildcards",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "description": "fetch data from the table: \"launchedWildcards\""
+          },
+          {
+            "args": [
+              {
+                "name": "distinct_on",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "launchedWildcards_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": "distinct select on columns"
+              },
+              {
+                "name": "limit",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "description": "limit the number of rows returned"
+              },
+              {
+                "name": "offset",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "description": "skip the first n rows. Use only with order_by"
+              },
+              {
+                "name": "order_by",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "launchedWildcards_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": "sort the rows by one or more columns"
+              },
+              {
+                "name": "where",
+                "defaultValue": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "launchedWildcards_bool_exp",
+                  "ofType": null
+                },
+                "description": "filter the rows returned"
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "launchedWildcards_aggregate",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "launchedWildcards_aggregate",
+                "ofType": null
+              }
+            },
+            "description": "fetch aggregated fields from the table: \"launchedWildcards\""
+          },
+          {
+            "args": [
+              {
+                "name": "id",
+                "defaultValue": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "description": null
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "launchedWildcards_by_pk",
+            "type": {
+              "kind": "OBJECT",
+              "name": "launchedWildcards",
+              "ofType": null
+            },
+            "description": "fetch data from the table: \"launchedWildcards\" using primary key columns"
+          },
+          {
+            "args": [
+              {
+                "name": "distinct_on",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
                       "name": "onboarding_status_select_column",
                       "ofType": null
                     }
@@ -23704,97 +24815,14 @@
           {
             "args": [
               {
-                "name": "distinct_on",
-                "defaultValue": null,
-                "type": {
-                  "kind": "LIST",
-                  "name": null,
-                  "ofType": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "ENUM",
-                      "name": "wildcardData_select_column",
-                      "ofType": null
-                    }
-                  }
-                },
-                "description": "distinct select on columns"
-              },
-              {
-                "name": "limit",
-                "defaultValue": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "description": "limit the number of rows returned"
-              },
-              {
-                "name": "offset",
-                "defaultValue": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "description": "skip the first n rows. Use only with order_by"
-              },
-              {
-                "name": "order_by",
-                "defaultValue": null,
-                "type": {
-                  "kind": "LIST",
-                  "name": null,
-                  "ofType": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "wildcardData_order_by",
-                      "ofType": null
-                    }
-                  }
-                },
-                "description": "sort the rows by one or more columns"
-              },
-              {
-                "name": "where",
-                "defaultValue": null,
-                "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "wildcardData_bool_exp",
-                  "ofType": null
-                },
-                "description": "filter the rows returned"
-              }
-            ],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "wildcardData_aggregate",
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "wildcardData_aggregate",
-                "ofType": null
-              }
-            },
-            "description": "fetch aggregated fields from the table: \"wildcardData\""
-          },
-          {
-            "args": [
-              {
-                "name": "id",
+                "name": "key",
                 "defaultValue": null,
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
                   "ofType": {
                     "kind": "SCALAR",
-                    "name": "String",
+                    "name": "Int",
                     "ofType": null
                   }
                 },
@@ -23909,123 +24937,6 @@
         "fields": null
       },
       {
-        "inputFields": [
-          {
-            "name": "_eq",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "timestamptz",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "_gt",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "timestamptz",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "_gte",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "timestamptz",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "_in",
-            "defaultValue": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "timestamptz",
-                  "ofType": null
-                }
-              }
-            },
-            "description": null
-          },
-          {
-            "name": "_is_null",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Boolean",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "_lt",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "timestamptz",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "_lte",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "timestamptz",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "_neq",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "timestamptz",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "_nin",
-            "defaultValue": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "timestamptz",
-                  "ofType": null
-                }
-              }
-            },
-            "description": null
-          }
-        ],
-        "kind": "INPUT_OBJECT",
-        "possibleTypes": null,
-        "interfaces": null,
-        "name": "timestamptz_comparison_exp",
-        "enumValues": null,
-        "description": "expression to compare columns of type timestamptz. All fields are combined with logical 'AND'.",
-        "fields": null
-      },
-      {
         "inputFields": null,
         "kind": "SCALAR",
         "possibleTypes": null,
@@ -24072,6 +24983,18 @@
             "args": [],
             "isDeprecated": false,
             "deprecationReason": null,
+            "name": "commonName",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
             "name": "deprecated_id",
             "type": {
               "kind": "SCALAR",
@@ -24113,13 +25036,9 @@
             "deprecationReason": null,
             "name": "id",
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "description": null
           },
@@ -24171,13 +25090,191 @@
             "args": [],
             "isDeprecated": false,
             "deprecationReason": null,
-            "name": "launchDate",
+            "name": "key",
             "type": {
-              "kind": "SCALAR",
-              "name": "timestamptz",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
             },
             "description": null
+          },
+          {
+            "args": [
+              {
+                "name": "distinct_on",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "launchedWildcards_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": "distinct select on columns"
+              },
+              {
+                "name": "limit",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "description": "limit the number of rows returned"
+              },
+              {
+                "name": "offset",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "description": "skip the first n rows. Use only with order_by"
+              },
+              {
+                "name": "order_by",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "launchedWildcards_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": "sort the rows by one or more columns"
+              },
+              {
+                "name": "where",
+                "defaultValue": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "launchedWildcards_bool_exp",
+                  "ofType": null
+                },
+                "description": "filter the rows returned"
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "launchedWildcards",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "launchedWildcards",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "description": "An array relationship"
+          },
+          {
+            "args": [
+              {
+                "name": "distinct_on",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "launchedWildcards_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": "distinct select on columns"
+              },
+              {
+                "name": "limit",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "description": "limit the number of rows returned"
+              },
+              {
+                "name": "offset",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "description": "skip the first n rows. Use only with order_by"
+              },
+              {
+                "name": "order_by",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "launchedWildcards_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": "sort the rows by one or more columns"
+              },
+              {
+                "name": "where",
+                "defaultValue": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "launchedWildcards_bool_exp",
+                  "ofType": null
+                },
+                "description": "filter the rows returned"
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "launchedWildcards_aggregate",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "launchedWildcards_aggregate",
+                "ofType": null
+              }
+            },
+            "description": "An aggregated array relationship"
           },
           {
             "args": [],
@@ -24185,13 +25282,9 @@
             "deprecationReason": null,
             "name": "name",
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "description": null
           },
@@ -24228,13 +25321,9 @@
             "deprecationReason": null,
             "name": "organisationId",
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "description": null
           },
@@ -24244,13 +25333,9 @@
             "deprecationReason": null,
             "name": "organization",
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "organisations",
-                "ofType": null
-              }
+              "kind": "OBJECT",
+              "name": "organisations",
+              "ofType": null
             },
             "description": "An object relationship"
           },
@@ -24344,172 +25429,20 @@
               }
             },
             "description": "An array relationship"
-          }
-        ]
-      },
-      {
-        "inputFields": null,
-        "kind": "OBJECT",
-        "possibleTypes": null,
-        "interfaces": [],
-        "name": "wildcardData_aggregate",
-        "enumValues": null,
-        "description": "aggregated selection of \"wildcardData\"",
-        "fields": [
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "aggregate",
-            "type": {
-              "kind": "OBJECT",
-              "name": "wildcardData_aggregate_fields",
-              "ofType": null
-            },
-            "description": null
           },
           {
             "args": [],
             "isDeprecated": false,
             "deprecationReason": null,
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "wildcardData",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "description": null
-          }
-        ]
-      },
-      {
-        "inputFields": null,
-        "kind": "OBJECT",
-        "possibleTypes": null,
-        "interfaces": [],
-        "name": "wildcardData_aggregate_fields",
-        "enumValues": null,
-        "description": "aggregate fields of \"wildcardData\"",
-        "fields": [
-          {
-            "args": [
-              {
-                "name": "columns",
-                "defaultValue": null,
-                "type": {
-                  "kind": "LIST",
-                  "name": null,
-                  "ofType": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "ENUM",
-                      "name": "wildcardData_select_column",
-                      "ofType": null
-                    }
-                  }
-                },
-                "description": null
-              },
-              {
-                "name": "distinct",
-                "defaultValue": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Boolean",
-                  "ofType": null
-                },
-                "description": null
-              }
-            ],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "count",
+            "name": "species",
             "type": {
               "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "max",
-            "type": {
-              "kind": "OBJECT",
-              "name": "wildcardData_max_fields",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "min",
-            "type": {
-              "kind": "OBJECT",
-              "name": "wildcardData_min_fields",
+              "name": "String",
               "ofType": null
             },
             "description": null
           }
         ]
-      },
-      {
-        "inputFields": [
-          {
-            "name": "count",
-            "defaultValue": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "max",
-            "defaultValue": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "wildcardData_max_order_by",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "min",
-            "defaultValue": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "wildcardData_min_order_by",
-              "ofType": null
-            },
-            "description": null
-          }
-        ],
-        "kind": "INPUT_OBJECT",
-        "possibleTypes": null,
-        "interfaces": null,
-        "name": "wildcardData_aggregate_order_by",
-        "enumValues": null,
-        "description": "order by aggregate values of table \"wildcardData\"",
-        "fields": null
       },
       {
         "inputFields": [
@@ -24572,6 +25505,16 @@
             "description": null
           },
           {
+            "name": "commonName",
+            "defaultValue": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "String_comparison_exp",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
             "name": "deprecated_id",
             "defaultValue": null,
             "type": {
@@ -24632,11 +25575,21 @@
             "description": null
           },
           {
-            "name": "launchDate",
+            "name": "key",
             "defaultValue": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "timestamptz_comparison_exp",
+              "name": "Int_comparison_exp",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "launchedWildcards",
+            "defaultValue": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "launchedWildcards_bool_exp",
               "ofType": null
             },
             "description": null
@@ -24690,6 +25643,16 @@
               "ofType": null
             },
             "description": null
+          },
+          {
+            "name": "species",
+            "defaultValue": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "String_comparison_exp",
+              "ofType": null
+            },
+            "description": null
           }
         ],
         "kind": "INPUT_OBJECT",
@@ -24698,446 +25661,6 @@
         "name": "wildcardData_bool_exp",
         "enumValues": null,
         "description": "Boolean expression to filter rows from the table \"wildcardData\". All fields are combined with a logical 'AND'.",
-        "fields": null
-      },
-      {
-        "inputFields": null,
-        "kind": "OBJECT",
-        "possibleTypes": null,
-        "interfaces": [],
-        "name": "wildcardData_max_fields",
-        "enumValues": null,
-        "description": "aggregate max on columns",
-        "fields": [
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "artist",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "deprecated_id",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "id",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "image",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "imageIpfsHash",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "ipfsMetadataHash",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "launchDate",
-            "type": {
-              "kind": "SCALAR",
-              "name": "timestamptz",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "name",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "organisationId",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          }
-        ]
-      },
-      {
-        "inputFields": [
-          {
-            "name": "artist",
-            "defaultValue": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "deprecated_id",
-            "defaultValue": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "id",
-            "defaultValue": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "image",
-            "defaultValue": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "imageIpfsHash",
-            "defaultValue": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "ipfsMetadataHash",
-            "defaultValue": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "launchDate",
-            "defaultValue": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "name",
-            "defaultValue": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "organisationId",
-            "defaultValue": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "description": null
-          }
-        ],
-        "kind": "INPUT_OBJECT",
-        "possibleTypes": null,
-        "interfaces": null,
-        "name": "wildcardData_max_order_by",
-        "enumValues": null,
-        "description": "order by max() on columns of table \"wildcardData\"",
-        "fields": null
-      },
-      {
-        "inputFields": null,
-        "kind": "OBJECT",
-        "possibleTypes": null,
-        "interfaces": [],
-        "name": "wildcardData_min_fields",
-        "enumValues": null,
-        "description": "aggregate min on columns",
-        "fields": [
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "artist",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "deprecated_id",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "id",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "image",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "imageIpfsHash",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "ipfsMetadataHash",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "launchDate",
-            "type": {
-              "kind": "SCALAR",
-              "name": "timestamptz",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "name",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "organisationId",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          }
-        ]
-      },
-      {
-        "inputFields": [
-          {
-            "name": "artist",
-            "defaultValue": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "deprecated_id",
-            "defaultValue": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "id",
-            "defaultValue": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "image",
-            "defaultValue": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "imageIpfsHash",
-            "defaultValue": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "ipfsMetadataHash",
-            "defaultValue": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "launchDate",
-            "defaultValue": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "name",
-            "defaultValue": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "organisationId",
-            "defaultValue": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "description": null
-          }
-        ],
-        "kind": "INPUT_OBJECT",
-        "possibleTypes": null,
-        "interfaces": null,
-        "name": "wildcardData_min_order_by",
-        "enumValues": null,
-        "description": "order by min() on columns of table \"wildcardData\"",
         "fields": null
       },
       {
@@ -25158,6 +25681,16 @@
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "artist_order_by",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "commonName",
+            "defaultValue": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
               "ofType": null
             },
             "description": null
@@ -25223,11 +25756,21 @@
             "description": null
           },
           {
-            "name": "launchDate",
+            "name": "key",
             "defaultValue": null,
             "type": {
               "kind": "ENUM",
               "name": "order_by",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "launchedWildcards_aggregate",
+            "defaultValue": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "launchedWildcards_aggregate_order_by",
               "ofType": null
             },
             "description": null
@@ -25271,6 +25814,16 @@
               "ofType": null
             },
             "description": null
+          },
+          {
+            "name": "species",
+            "defaultValue": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "description": null
           }
         ],
         "kind": "INPUT_OBJECT",
@@ -25284,14 +25837,14 @@
       {
         "inputFields": [
           {
-            "name": "id",
+            "name": "key",
             "defaultValue": null,
             "type": {
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "Int",
                 "ofType": null
               }
             },
@@ -25317,6 +25870,12 @@
             "isDeprecated": false,
             "deprecationReason": null,
             "name": "artist",
+            "description": "column name"
+          },
+          {
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "commonName",
             "description": "column name"
           },
           {
@@ -25358,7 +25917,7 @@
           {
             "isDeprecated": false,
             "deprecationReason": null,
-            "name": "launchDate",
+            "name": "key",
             "description": "column name"
           },
           {
@@ -25377,6 +25936,12 @@
             "isDeprecated": false,
             "deprecationReason": null,
             "name": "organisationId",
+            "description": "column name"
+          },
+          {
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "species",
             "description": "column name"
           }
         ],

@@ -45,6 +45,8 @@ let decodeOptionBN: option(Js.Json.t) => option(BN.bn) =
   optionalNumber => optionalNumber->Option.map(num => decodeBN(num));
 
 let toTokenId: string => TokenId.t = Obj.magic;
+let toTokenIdWithDefault = optTokenId =>
+  optTokenId->Option.getWithDefault("9999")->toTokenId;
 
 // TODO: make a real address string
 let decodeAddress: Js.Json.t => string =
@@ -143,15 +145,17 @@ module SubWildcardQuery = [%graphql
 module WildcardDataQuery = [%graphql
   {|
     query ($tokenId: String!) {
-      wildcardData_by_pk(id: $tokenId) {
-        id
-        name
-        description
-        organisationId
-        image
-        real_wc_photos {
+      launchedWildcards_by_pk(id: $tokenId) {
+        wildcard {
+          id
+          name
+          description
+          organisationId
           image
-          photographer
+          real_wc_photos {
+            image
+            photographer
+          }
         }
       }
     }
@@ -267,8 +271,14 @@ module LoadOrganisationData = [%graphql
           description
           name
           website
-          wildcard {
-            id @bsDecoder(fn: "toTokenId")
+          wildcard (where: {id: {_is_null: false}}) {
+            id @bsDecoder(fn: "toTokenIdWithDefault")
+          }
+          unlaunched: wildcard (where: {id: {_is_null: true}}) {
+          real_wc_photos {
+              image
+              photographer
+            }
           }
           logo
           logo_badge
@@ -465,9 +475,9 @@ type animalDescription = array(string);
 let useWildcardDescription = tokenId => {
   let (simple, _) = useWildcardDataQuery(tokenId);
   queryResultOptionMap(simple, a =>
-    a##wildcardData_by_pk
+    a##launchedWildcards_by_pk
     ->oMap(b =>
-        b##description
+        b##wildcard##description
         ->animalDescription_decode
         ->Belt.Result.getWithDefault([||])
       )
@@ -477,26 +487,27 @@ let useWildcardDescription = tokenId => {
 
 let useWildcardName = tokenId => {
   let (simple, _) = useWildcardDataQuery(tokenId);
-  queryResultOptionMap(simple, a =>
-    a##wildcardData_by_pk->oMap(b => b##name) |||| "Unknown"
+  queryResultOptionFlatMap(simple, a =>
+    a##launchedWildcards_by_pk->Option.flatMap(b => b##wildcard##name)
   );
 };
 let useWildcardAvatar = tokenId => {
   let (simple, _) = useWildcardDataQuery(tokenId);
   queryResultOptionFlatMap(simple, a =>
-    a##wildcardData_by_pk->Option.flatMap(b => b##image)
+    a##launchedWildcards_by_pk->Option.flatMap(b => b##wildcard##image)
   );
 };
 let useRealImages = tokenId => {
   let (simple, _) = useWildcardDataQuery(tokenId);
   queryResultOptionFlatMap(simple, a =>
-    a##wildcardData_by_pk->Option.map(b => b##real_wc_photos)
+    a##launchedWildcards_by_pk->Option.map(b => b##wildcard##real_wc_photos)
   );
 };
 let useWildcardOrgId = tokenId => {
   let (simple, _) = useWildcardDataQuery(tokenId);
-  queryResultOptionMap(simple, a =>
-    a##wildcardData_by_pk->oMap(b => b##organisationId) |||| "Unknown"
+  queryResultOptionFlatMap(simple, a =>
+    a##launchedWildcards_by_pk
+    ->Option.flatMap(b => b##wildcard##organisationId)
   );
 };
 let useLoadTopContributors = numberOfLeaders =>
