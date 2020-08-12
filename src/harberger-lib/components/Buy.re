@@ -156,13 +156,24 @@ let make = (~tokenId: TokenId.t) => {
         ->BN.addGet(. BN.new_("1000000000000000"))
         ->BN.toStringGet(.),
       )
-    | Price(_) =>
-      buyFunc(
-        newPrice,
-        currentPriceWei->BN.toStringGet(.),
-        "150000",
-        amountToSend->BN.toStringGet(.),
-      )
+    | Price(price) =>
+      if (price->BN.gtGet(. BN.new_("0"))) {
+        buyFunc(
+          newPrice,
+          currentPriceWei->BN.toStringGet(.),
+          "150000",
+          amountToSend->BN.toStringGet(.),
+        );
+      } else {
+        buyFuncAuction(
+          newPrice,
+          "150000",
+          amountToSend
+          // Add 0.001 ETH as a buffer...
+          ->BN.addGet(. BN.new_("1000000000000000"))
+          ->BN.toStringGet(.),
+        );
+      }
     };
   };
 
