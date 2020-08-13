@@ -275,10 +275,14 @@ module LoadOrganisationData = [%graphql
             id @bsDecoder(fn: "toTokenIdWithDefault")
           }
           unlaunched: wildcard (where: {id: {_is_null: true}}) {
-          real_wc_photos {
+            key
+            real_wc_photos {
               image
               photographer
             }
+            name
+            commonName
+            description
           }
           logo
           logo_badge

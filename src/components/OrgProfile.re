@@ -8,23 +8,18 @@ module YoutubeVid = {
   external make: (~videoCode: string) => React.element = "default";
 };
 
-// module Token = {
-//   [@react.component]
-//   let make = (~tokenId: TokenId.t) => {
-//     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
-//     let image = Animal.useAvatar(tokenId);
-
-//     <div className=Css.(style([width(vh(12.))]))>
-//       <img
-//         className=Css.(style([width(`percent(100.))]))
-//         onClick={_e =>
-//           clearAndPush("/#details/" ++ tokenId->TokenId.toString)
-//         }
-//         src=image
-//       />
-//     </div>;
-//   };
-// };
+module ComingSoonAnimal = {
+  [@react.component]
+  let make = (~image, ~onClick) => {
+    <div className=Css.(style([width(`percent(32.))]))>
+      <img
+        className=Css.(style([width(`percent(100.))]))
+        onClick={_e => onClick()}
+        src=image
+      />
+    </div>;
+  };
+};
 
 module OrgPage = {
   [@react.component]
@@ -32,11 +27,9 @@ module OrgPage = {
     let orgName = orgData##name;
     let orgDescription = orgData##description->orgDescriptionArray_decode;
     let orgAnimals = orgData##wildcard;
-    //     unlaunched: wildcard (where: {id: {_is_null: true}}) {
-    // real_wc_photos {
-    //     image
-    //     photographer
     let orgCommingSoon = orgData##unlaunched;
+    let (selectedComingSoonAnimal, setSelectedComingSoonAnimal) =
+      React.useState(() => None);
     let orgAnimalsArray = orgAnimals->Array.map(animal => animal##id);
     let currentUsdEthPrice = UsdPriceProvider.useUsdPrice();
     let totalCollected = QlHooks.useTotalRaisedAnimalGroup(orgAnimalsArray);
@@ -56,7 +49,111 @@ module OrgPage = {
     let optOrgYoutubeVid = orgData##youtube_vid;
     let orgImage = Animal.useGetOrgImage(orgId);
 
+    // let (isModalOpen, animal) = selectedComingSoonAnimal->Option.map(selectedAnimal => orgCommingSoon[selectedAnimal])->Option.mapWithDefault((false, 0), animal)
     <div>
+      <Rimble.Modal isOpen={selectedComingSoonAnimal->Option.isSome}>
+        <p> "Inside"->React.string </p>
+        <Rimble.Card width={Rimble.AnyStr("80vw")} p=0>
+          <Rimble.Button.Text
+            icononly=true
+            icon="Close"
+            color="moon-gray"
+            position="absolute"
+            right=0
+            m=1
+            top=0
+            onClick={_ => setSelectedComingSoonAnimal(_ => None)}
+          />
+          <Rimble.Box p=1 mb=1>
+            {switch (selectedComingSoonAnimal) {
+             | Some(selectedComingSoonAnimal) =>
+               let animal =
+                 orgCommingSoon->Array.getUnsafe(selectedComingSoonAnimal);
+
+               <div>
+                 <h3 className=Css.(style([textAlign(center)]))>
+                   {(
+                      animal##name->Option.getWithDefault("Unamed")
+                      ++ animal##commonName
+                         ->Option.mapWithDefault("", commonName =>
+                             " - " ++ commonName
+                           )
+                    )
+                    ->React.string}
+                 </h3>
+                 <Rimble.Flex
+                   flexWrap="wrap"
+                   alignItems="start"
+                   alignContent="space-arround">
+                   <Rimble.Box
+                     width=[|1., 1., 0.49|]
+                     className=Css.(
+                       style([
+                         textAlign(`center),
+                         alignSelf(center),
+                         padding(em(0.5)),
+                       ])
+                     )>
+                     <div
+                       className=Css.(
+                         style([maxHeight(`em(26.)), overflow(`scroll)])
+                       )>
+                       {React.array(
+                          animal##description
+                          ->QlHooks.animalDescription_decode
+                          ->Belt.Result.getWithDefault([||])
+                          ->Array.mapWithIndex((i, paragraphText) =>
+                              <p key={i->string_of_int}>
+                                paragraphText->React.string
+                              </p>
+                            ),
+                        )}
+                     </div>
+                   </Rimble.Box>
+                   <Rimble.Box
+                     width=[|1., 1., 0.45|]
+                     className=Css.(
+                       style([
+                         textAlign(`center),
+                         alignSelf(center),
+                         padding(em(2.)),
+                       ])
+                     )>
+                     //  {
+                     //   <img
+                     //     className=Css.(style([width(`percent(100.))]))
+                     //     // onClick={_e => onClick()}
+                     //     src={Animal.cdnBase ++ photo##image}
+                     //   />}
+                     // let photo = animal##real_wc_photos->Array.getUnsafe(0);
+
+                       <div className=Css.(style([maxHeight(`vh(80.))]))>
+                         <PhotoGallery
+                           onClick={(_, photoData) =>
+                             Js.log2("it was clicked", photoData)
+                           }
+                           targetRowHeight=30
+                           photos={
+                             animal##real_wc_photos
+                             ->Array.map(photo =>
+                                 PhotoGallery.{
+                                   src: Animal.cdnBase ++ photo##image,
+                                   width: 4,
+                                   height: 3,
+                                 }
+                               )
+                           }
+                         />
+                       </div>
+                     </Rimble.Box>
+                 </Rimble.Flex>
+               </div>;
+             | None => React.null
+             }}
+          </Rimble.Box>
+        </Rimble.Card>
+      </Rimble.Modal>
+      //  {animal->Array.map(animal => animal##)}
       <div className=Css.(style([width(`percent(100.))]))>
         <Rimble.Flex
           flexWrap="wrap" alignItems="start" alignContent="space-arround">
@@ -75,7 +172,8 @@ module OrgPage = {
                   // borderRadius(`percent(100.)),
                   width(`vh(25.)),
                   height(`vh(25.)),
-                  objectFit(`cover),
+                  objectFit(`contain),
+                  // objectFit(`cover),
                 ])
               )
               src=orgImage
@@ -142,34 +240,46 @@ module OrgPage = {
                </p>
              | uniquePreviouslyOwnedTokens =>
                <React.Fragment>
-
-                   <Rimble.Heading>
-                     "Organisations animals"->React.string
-                   </Rimble.Heading>
-                   <Rimble.Flex
-                     flexWrap="wrap" className=UserProfile.centreAlignOnMobile>
-                     {React.array(
-                        uniquePreviouslyOwnedTokens->Array.map(animal => {
-                          <UserProfile.Token
-                            key={animal##id->TokenId.toString}
-                            tokenId={animal##id}
-                          />
-                        }),
-                      )}
-                   </Rimble.Flex>
-                 </React.Fragment>
-                 //  <Rimble.Heading> "Coming soon"->React.string </Rimble.Heading>
-                 //  <Rimble.Flex
-                 //    flexWrap="wrap" className=UserProfile.centreAlignOnMobile>
-                 //    {React.array(
-                 //       orgCommingSoon->Array.mapWithIndex((key, animal) => {
-                 //         <UserProfile.Token
-                 //           key={key->string_of_int}
-                 //           tokenId={animal##id}
-                 //         />
-                 //       }),
-                 //     )}
-                 //  </Rimble.Flex>
+                 <Rimble.Heading>
+                   "Organisations animals"->React.string
+                 </Rimble.Heading>
+                 <Rimble.Flex
+                   flexWrap="wrap" className=UserProfile.centreAlignOnMobile>
+                   {React.array(
+                      uniquePreviouslyOwnedTokens->Array.map(animal => {
+                        <UserProfile.Token
+                          key={animal##id->TokenId.toString}
+                          tokenId={animal##id}
+                        />
+                      }),
+                    )}
+                 </Rimble.Flex>
+               </React.Fragment>
+             }}
+            {switch (orgCommingSoon) {
+             | [||] => React.null
+             | _orgAnimals =>
+               <React.Fragment>
+                 <Rimble.Heading> "Coming soon"->React.string </Rimble.Heading>
+                 <Rimble.Flex
+                   flexWrap="wrap" className=UserProfile.centreAlignOnMobile>
+                   React.null
+                   {React.array(
+                      orgCommingSoon->Array.mapWithIndex((key, animal) => {
+                        animal##real_wc_photos[0]
+                        ->Option.mapWithDefault(React.null, photos =>
+                            <ComingSoonAnimal
+                              key={key->string_of_int}
+                              image={Animal.cdnBase ++ photos##image}
+                              onClick={() =>
+                                setSelectedComingSoonAnimal(_ => Some(key))
+                              }
+                            />
+                          )
+                      }),
+                    )}
+                 </Rimble.Flex>
+               </React.Fragment>
              }}
           </Rimble.Box>
         </Rimble.Flex>
