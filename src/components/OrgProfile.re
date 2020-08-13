@@ -94,26 +94,22 @@ module OrgPage = {
                          padding(em(0.5)),
                        ])
                      )>
-                     {React.array(
-                        animal##description
-                        ->QlHooks.animalDescription_decode
-                        ->Belt.Result.getWithDefault([||])
-                        ->Array.mapWithIndex((i, paragraphText) =>
-                            <p key={i->string_of_int}>
-                              paragraphText->React.string
-                            </p>
-                          ),
-                      )}
+                     <div
+                       className=Css.(
+                         style([maxHeight(`em(26.)), overflow(`scroll)])
+                       )>
+                       {React.array(
+                          animal##description
+                          ->QlHooks.animalDescription_decode
+                          ->Belt.Result.getWithDefault([||])
+                          ->Array.mapWithIndex((i, paragraphText) =>
+                              <p key={i->string_of_int}>
+                                paragraphText->React.string
+                              </p>
+                            ),
+                        )}
+                     </div>
                    </Rimble.Box>
-                   //  {animal##real_wc_photos
-                   //   ->Array.map(photo =>
-                   //       <img
-                   //         className=Css.(style([width(`percent(100.))]))
-                   //         // onClick={_e => onClick()}
-                   //         src={Animal.cdnBase ++ photo##image}
-                   //       />
-                   //     )
-                   //   ->React.array}
                    <Rimble.Box
                      width=[|1., 1., 0.45|]
                      className=Css.(
@@ -123,13 +119,33 @@ module OrgPage = {
                          padding(em(2.)),
                        ])
                      )>
-                     {let photo = animal##real_wc_photos->Array.getUnsafe(0);
-                      <img
-                        className=Css.(style([width(`percent(100.))]))
-                        // onClick={_e => onClick()}
-                        src={Animal.cdnBase ++ photo##image}
-                      />}
-                   </Rimble.Box>
+                     //  {
+                     //   <img
+                     //     className=Css.(style([width(`percent(100.))]))
+                     //     // onClick={_e => onClick()}
+                     //     src={Animal.cdnBase ++ photo##image}
+                     //   />}
+                     // let photo = animal##real_wc_photos->Array.getUnsafe(0);
+
+                       <div className=Css.(style([maxHeight(`vh(80.))]))>
+                         <PhotoGallery
+                           onClick={(_, photoData) =>
+                             Js.log2("it was clicked", photoData)
+                           }
+                           targetRowHeight=30
+                           photos={
+                             animal##real_wc_photos
+                             ->Array.map(photo =>
+                                 PhotoGallery.{
+                                   src: Animal.cdnBase ++ photo##image,
+                                   width: 4,
+                                   height: 3,
+                                 }
+                               )
+                           }
+                         />
+                       </div>
+                     </Rimble.Box>
                  </Rimble.Flex>
                </div>;
              | None => React.null
