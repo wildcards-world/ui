@@ -102,7 +102,7 @@ let make = () => {
     <div className=Css.(style([minHeight(vh(88.))]))>
       <Announcement announcementBannerColor="72D6B5">
         <span>
-          "Due to the congestion on the Ethereum network, the next wildcards will be launched on the 20th of August"
+          "Due to the congestion on the Ethereum network, the next wildcards release will be delayed"
           ->React.string
         </span>
       </Announcement>
