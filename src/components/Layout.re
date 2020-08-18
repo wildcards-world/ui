@@ -100,18 +100,25 @@ let make = () => {
 
   <div className=Styles.app>
     <div className=Css.(style([minHeight(vh(88.))]))>
-      <Announcement
-        nextReleasedAnimals=[|TokenId.makeFromInt(25)|]
-        announcementBannerColor="FFCD47" //next color
-        // 2493AD - Star
-        // D6564B - whacky
-        // 0624a6 - Arthur
-        // DE4C38
-        // f49229
-        // 2493AD
-        // 72D6B5
-        // AEE79A
-      />
+      <Announcement announcementBannerColor="72D6B5">
+        <span>
+          "Due to the congestion on the Ethereum network, the next wildcards release will be delayed"
+          ->React.string
+        </span>
+      </Announcement>
+      // <AnimalAnnouncement
+      //   nextReleasedAnimals=[|TokenId.makeFromInt(25)|]
+      //   announcementBannerColor="f49229" //next color
+      //   // FFCD47 - Pendo
+      //   // 2493AD - Star
+      //   // D6564B - whacky
+      //   // 0624a6 - Arthur
+      //   // DE4C38
+      //   // f49229
+      //   // 2493AD
+      //   // 72D6B5
+      //   // AEE79A
+      // />
       <div className=Css.(style([position(relative)]))>
         <img src=betaBanner className=Styles.betaBanner />
       </div>
