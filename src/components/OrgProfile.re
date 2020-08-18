@@ -21,54 +21,73 @@ module ComingSoonAnimal = {
   };
 };
 
-module OrgPage = {
+module ImageCarousel = {
   [@react.component]
-  let make = (~orgData, ~orgId) => {
-    let orgName = orgData##name;
-    let orgDescription = orgData##description->orgDescriptionArray_decode;
-    let orgAnimals = orgData##wildcard;
-    let orgCommingSoon = orgData##unlaunched;
-    let (selectedComingSoonAnimal, setSelectedComingSoonAnimal) =
-      React.useState(() => None);
-    let orgAnimalsArray = orgAnimals->Array.map(animal => animal##id);
-    let currentUsdEthPrice = UsdPriceProvider.useUsdPrice();
-    let totalCollected = QlHooks.useTotalRaisedAnimalGroup(orgAnimalsArray);
+  let make = (~orgComingSoon, ~selectedIndex) => {
+    <ResponsiveCarousel
+      showArrows=true
+      showStatus=true
+      showIndicators=true
+      infiniteLoop=true
+      showThumbs=false
+      useKeyboardArrows=true
+      autoPlay=true
+      stopOnHover=true
+      swipeable=true
+      dynamicHeight=true
+      emulateTouch=true
+      selectedItem=selectedIndex>
+      {React.array(
+         orgComingSoon->Array.mapWithIndex((key, animal) => {
+           animal##real_wc_photos[0]
+           ->Option.mapWithDefault(React.null, photos =>
+               <img
+                 key={key->string_of_int}
+                 src={Animal.cdnBase ++ photos##image}
+               />
+             )
+         }),
+       )}
+    </ResponsiveCarousel>;
+  };
+};
 
-    let (totalPatronage, totalPatronageUsd) =
-      totalCollected->mapd(("Loading", "Loading"), a =>
-        (
-          (a->Eth.get(Eth.Eth(`ether))->Float.fromString |||| 0.0)
-          ->toFixedWithPrecisionNoTrailingZeros(~digits=9),
-          currentUsdEthPrice->mapd("Loading", usdEthRate =>
-            a->Eth.get(Eth.Usd(usdEthRate, 2))
-          ),
-        )
-      );
+module ComingSoonModal = {
+  [@react.component]
+  let make =
+      (
+        ~selectedComingSoonAnimal,
+        ~setSelectedComingSoonAnimal,
+        ~orgComingSoon,
+      ) => {
+    let (openImage, setOpenImage) = React.useState(_ => None);
 
-    let orgWebsite = orgData##website;
-    let optOrgYoutubeVid = orgData##youtube_vid;
-    let orgImage = Animal.useGetOrgImage(orgId);
-
-    // let (isModalOpen, animal) = selectedComingSoonAnimal->Option.map(selectedAnimal => orgCommingSoon[selectedAnimal])->Option.mapWithDefault((false, 0), animal)
-    <div>
-      <Rimble.Modal isOpen={selectedComingSoonAnimal->Option.isSome}>
-        <p> "Inside"->React.string </p>
-        <Rimble.Card width={Rimble.AnyStr("80vw")} p=0>
-          <Rimble.Button.Text
-            icononly=true
-            icon="Close"
-            color="moon-gray"
-            position="absolute"
-            right=0
-            m=1
-            top=0
-            onClick={_ => setSelectedComingSoonAnimal(_ => None)}
-          />
-          <Rimble.Box p=1 mb=1>
-            {switch (selectedComingSoonAnimal) {
-             | Some(selectedComingSoonAnimal) =>
+    <Rimble.Modal isOpen={selectedComingSoonAnimal->Option.isSome}>
+      <Rimble.Card width={Rimble.AnyStr("80vw")} p=0>
+        <Rimble.Button.Text
+          icononly=true
+          icon="Close"
+          color="moon-gray"
+          position="absolute"
+          right=0
+          m=1
+          top=0
+          onClick={_ => {
+            switch (openImage) {
+            | Some(_) => setOpenImage(_ => None)
+            | None => setSelectedComingSoonAnimal(_ => None)
+            }
+          }}
+        />
+        <Rimble.Box p=1 mb=1>
+          {switch (selectedComingSoonAnimal) {
+           | Some(selectedComingSoonAnimal) =>
+             switch (openImage) {
+             | Some(selectedIndex) =>
+               <ImageCarousel orgComingSoon selectedIndex />
+             | None =>
                let animal =
-                 orgCommingSoon->Array.getUnsafe(selectedComingSoonAnimal);
+                 orgComingSoon->Array.getUnsafe(selectedComingSoonAnimal);
 
                <div>
                  <h3 className=Css.(style([textAlign(center)]))>
@@ -119,41 +138,71 @@ module OrgPage = {
                          padding(em(2.)),
                        ])
                      )>
-                     //  {
-                     //   <img
-                     //     className=Css.(style([width(`percent(100.))]))
-                     //     // onClick={_e => onClick()}
-                     //     src={Animal.cdnBase ++ photo##image}
-                     //   />}
-                     // let photo = animal##real_wc_photos->Array.getUnsafe(0);
-
-                       <div className=Css.(style([maxHeight(`vh(80.))]))>
-                         <PhotoGallery
-                           onClick={(_, photoData) =>
-                             Js.log2("it was clicked", photoData)
-                           }
-                           targetRowHeight=30
-                           photos={
-                             animal##real_wc_photos
-                             ->Array.map(photo =>
-                                 PhotoGallery.{
-                                   src: Animal.cdnBase ++ photo##image,
-                                   width: 4,
-                                   height: 3,
-                                 }
-                               )
-                           }
-                         />
-                       </div>
-                     </Rimble.Box>
+                     <div className=Css.(style([maxHeight(`vh(80.))]))>
+                       <PhotoGallery
+                         onClick={(_, photoData) => {
+                           Js.log2("it was clicked", photoData);
+                           setOpenImage(_ => Some(photoData.index));
+                         }}
+                         targetRowHeight=30
+                         photos={
+                           animal##real_wc_photos
+                           ->Array.map(photo =>
+                               PhotoGallery.{
+                                 src: Animal.cdnBase ++ photo##image,
+                                 width: 4,
+                                 height: 3,
+                               }
+                             )
+                         }
+                       />
+                     </div>
+                   </Rimble.Box>
                  </Rimble.Flex>
                </div>;
-             | None => React.null
-             }}
-          </Rimble.Box>
-        </Rimble.Card>
-      </Rimble.Modal>
-      //  {animal->Array.map(animal => animal##)}
+             }
+           | None => React.null
+           }}
+        </Rimble.Box>
+      </Rimble.Card>
+    </Rimble.Modal>;
+  };
+};
+
+module OrgPage = {
+  [@react.component]
+  let make = (~orgData, ~orgId) => {
+    let orgName = orgData##name;
+    let orgDescription = orgData##description->orgDescriptionArray_decode;
+    let orgAnimals = orgData##wildcard;
+    let orgComingSoon = orgData##unlaunched;
+    let (selectedComingSoonAnimal, setSelectedComingSoonAnimal) =
+      React.useState(() => None);
+    let orgAnimalsArray = orgAnimals->Array.map(animal => animal##id);
+    let currentUsdEthPrice = UsdPriceProvider.useUsdPrice();
+    let totalCollected = QlHooks.useTotalRaisedAnimalGroup(orgAnimalsArray);
+
+    let (totalPatronage, totalPatronageUsd) =
+      totalCollected->mapd(("Loading", "Loading"), a =>
+        (
+          (a->Eth.get(Eth.Eth(`ether))->Float.fromString |||| 0.0)
+          ->toFixedWithPrecisionNoTrailingZeros(~digits=9),
+          currentUsdEthPrice->mapd("Loading", usdEthRate =>
+            a->Eth.get(Eth.Usd(usdEthRate, 2))
+          ),
+        )
+      );
+
+    let orgWebsite = orgData##website;
+    let optOrgYoutubeVid = orgData##youtube_vid;
+    let orgImage = Animal.useGetOrgImage(orgId);
+
+    <div>
+      <ComingSoonModal
+        selectedComingSoonAnimal
+        setSelectedComingSoonAnimal
+        orgComingSoon
+      />
       <div className=Css.(style([width(`percent(100.))]))>
         <Rimble.Flex
           flexWrap="wrap" alignItems="start" alignContent="space-arround">
@@ -256,7 +305,7 @@ module OrgPage = {
                  </Rimble.Flex>
                </React.Fragment>
              }}
-            {switch (orgCommingSoon) {
+            {switch (orgComingSoon) {
              | [||] => React.null
              | _orgAnimals =>
                <React.Fragment>
@@ -265,7 +314,7 @@ module OrgPage = {
                    flexWrap="wrap" className=UserProfile.centreAlignOnMobile>
                    React.null
                    {React.array(
-                      orgCommingSoon->Array.mapWithIndex((key, animal) => {
+                      orgComingSoon->Array.mapWithIndex((key, animal) => {
                         animal##real_wc_photos[0]
                         ->Option.mapWithDefault(React.null, photos =>
                             <ComingSoonAnimal
@@ -285,6 +334,7 @@ module OrgPage = {
         </Rimble.Flex>
       </div>
     </div>;
+    //  {animal->Array.map(animal => animal##)}
   };
 };
 

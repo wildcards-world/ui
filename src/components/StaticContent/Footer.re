@@ -124,7 +124,7 @@ let make = () =>
         <li className=footerSocialButton>
           <SocialButtons
             className=footerSocailButtonLink
-            url="https://www.facebook.com/wildcardscrypto"
+            url="https://www.facebook.com/wildcards.conservation"
             bgColor="transparent"
             target="_blank"
             rel="noopener noreferrer"

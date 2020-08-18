@@ -274,7 +274,7 @@ module LoadOrganisationData = [%graphql
           wildcard (where: {id: {_is_null: false}}) {
             id @bsDecoder(fn: "toTokenIdWithDefault")
           }
-          unlaunched: wildcard (where: {id: {_is_null: true}}) {
+          unlaunched: wildcard(where: {id: {_is_null: true}, real_wc_photos: {image: {_is_null: false}}}) {
             key
             real_wc_photos {
               image
