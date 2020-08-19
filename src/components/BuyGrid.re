@@ -22,7 +22,7 @@ let make = () => {
     <Rimble.Flex
       flexWrap="wrap" justifyContent="space-around" alignItems="stretch" px=50>
       {allAnimals
-       ->Array.map(animal =>
+       ->Array.map(animal => {
            <Rimble.Box
              key={animal->TokenId.toString}
              fontSize=4
@@ -32,7 +32,7 @@ let make = () => {
                <Dapp.CarouselAnimal animal isGqlLoaded scalar=1. />
              </Rimble.Card>
            </Rimble.Box>
-         )
+         })
        ->React.array}
       ///* Always empty to ensure grid structure */}
       <Rimble.Box fontSize=4 p=3 width=[|1., 1., 0.3|]>
