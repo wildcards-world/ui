@@ -11,6 +11,8 @@ type web3reactContext = {
 };
 [@bs.module "@web3-react/core"]
 external useWeb3React: unit => web3reactContext = "useWeb3React";
+[@bs.module "@web3-react/core"]
+external useWeb3ReactId: string => web3reactContext = "useWeb3React";
 
 module Web3ReactProvider = {
   [@bs.module "@web3-react/core"] [@react.component]
@@ -19,6 +21,7 @@ module Web3ReactProvider = {
     React.element =
     "Web3ReactProvider";
 };
+
 [@bs.module "ethers"] [@bs.scope "providers"] [@bs.new]
 external createWeb3Provider: rawProvider => web3Library = "Web3Provider";
 
@@ -127,6 +130,11 @@ module RootWithWeb3 = {
         },
       );
     let context = useWeb3React();
+    let contextMatic = useWeb3ReactId("matic");
+    Js.log("context.chainId");
+    Js.log(context.chainId);
+    Js.log("MATIC.chainId");
+    Js.log(contextMatic.chainId);
 
     // This prevents repeated tries at logging in (or re-login after logout)
     let (triedLoginAlready, setTriedLoginAlready) =
@@ -162,6 +170,31 @@ module RootWithWeb3 = {
         setTriedLoginAlready,
         triedLoginAlready,
       ),
+    );
+
+    React.useEffect3(
+      () => {
+        let maticChainId =
+          switch (context.chainId) {
+          | Some(4)
+          | Some(5) => 80001
+          | _ => 137
+          };
+        contextMatic.activate(
+          Web3Connectors.network(maticChainId),
+          () => (),
+          true,
+        )
+        ->Promise.Js.catch(e => {
+            Js.log("ERROR ACTIVATING MATIC CONNECTION");
+            Js.log(e);
+            Promise.resolved();
+          })
+        ->ignore;
+        None;
+      },
+      // intentionally only running on mount (make sure it's only mounted once :))
+      (contextMatic.activate, context.chainId, contextMatic.chainId),
     );
 
     //// This will never fire when metamask logs out unfortunately https://stackoverflow.com/a/59215775/3103033
@@ -216,6 +249,11 @@ module RootWithWeb3 = {
     <RootContext value=(rootState, dispatch)> children </RootContext>;
   };
 };
+let useRootContext: unit => RootProviderTypes.state =
+  () => {
+    let (state, _) = React.useContext(RootContext.context);
+    state;
+  };
 let useStewardContractAddress: unit => option(Web3.ethAddress) =
   () => {
     let (state, _) = React.useContext(RootContext.context);
@@ -412,8 +450,12 @@ let make =
       ~stewardAbi: option(Web3.abi),
     ) => {
   <Web3ReactProvider getLibrary>
-    <RootWithWeb3 stewardContractAddress stewardAbi>
-      <UserProvider> <ThemeProvider> children </ThemeProvider> </UserProvider>
-    </RootWithWeb3>
+    <Web3Connectors.Custom id="matic" getLibrary>
+      <RootWithWeb3 stewardContractAddress stewardAbi>
+        <UserProvider>
+          <ThemeProvider> children </ThemeProvider>
+        </UserProvider>
+      </RootWithWeb3>
+    </Web3Connectors.Custom>
   </Web3ReactProvider>;
 };
