@@ -49,3 +49,7 @@ package-lock.json
 /out/
 !public/
 public/index.backup.html
+
+# Ignore esy
+_esy
+esy.lock
