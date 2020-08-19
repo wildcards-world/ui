@@ -954,8 +954,6 @@ let usePrice: TokenId.t => animalPrice =
             wildcard##price##price
           );
 
-      Js.log("GETTING PRICE!!");
-
       switch (optCurrentPatron, foreclosureTime) {
       | (Some(_currentPatron), Some(foreclosureTime)) =>
         if (foreclosureTime->BN.ltGet(. currentTime->BN.new_)) {
@@ -963,13 +961,8 @@ let usePrice: TokenId.t => animalPrice =
         } else {
           Price(priceValue);
         }
-      | (Some(_), None) =>
-        Js.log("WE HAVE A PATRON!!");
-
-        Price(priceValue);
-      | _ =>
-        Js.log("Loading current patron");
-        Loading;
+      | (Some(_), None) => Price(priceValue)
+      | _ => Loading
       };
     | Error(_)
     | Loading

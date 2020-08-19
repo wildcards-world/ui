@@ -275,7 +275,15 @@ module CarouselAnimal = {
         isGqlLoaded
       />;
     switch (isLaunched) {
-    | Animal.Launched => makeAnimalOnLandingPage(None)
+    | Animal.Launched =>
+      let isForeclosed = Animal.useTokenStatus(animal);
+      switch (isForeclosed) {
+      | Animal.Foreclosed(_) => React.null
+      | Animal.Loading
+      | Animal.WaitingForLaunch(_)
+      | Animal.Launched(_)
+      | Animal.Owned(_) => makeAnimalOnLandingPage(None)
+      };
     | Animal.LaunchDate(endDateMoment) =>
       <DisplayAfterDate
         endDateMoment
