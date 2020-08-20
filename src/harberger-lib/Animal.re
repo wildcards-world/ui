@@ -97,16 +97,44 @@ let useIsOnAuction: TokenId.t => bool =
   };
 
 let useAuctionPriceWei = (animal, launchTime) => {
+  let tokenStatus = useTokenStatus(animal);
   let auctionStartPrice = QlHooks.useAuctionStartPrice(animal);
   let auctionEndPrice = QlHooks.useAuctionEndPrice(animal);
   let auctionLength = QlHooks.useAuctioLength(animal);
   let currentTime = QlHooks.useCurrentTime();
 
-  auctionStartPrice
-  |-| (
-    auctionStartPrice
-    |-| auctionEndPrice
-    |*| (BN.new_(currentTime) |-| launchTime)
-    |/| auctionLength
+  // disable warning #4
+  [@ocaml.warning "-4"]
+  (
+    switch (tokenStatus) {
+    | Foreclosed(foreclosureTime) =>
+      let auctionStartTime =
+        foreclosureTime->MomentRe.Moment.toUnix->BN.newInt_;
+
+      if (BN.new_(currentTime) |<| (auctionStartTime |+| auctionLength)) {
+        auctionStartPrice
+        |-| (
+          auctionStartPrice
+          |-| auctionEndPrice
+          |*| (BN.new_(currentTime) |-| auctionStartTime)
+          |/| auctionLength
+        );
+      } else {
+        auctionEndPrice;
+      };
+    | Launched(_) =>
+      if (BN.new_(currentTime) |<| (launchTime |+| auctionLength)) {
+        auctionStartPrice
+        |-| (
+          auctionStartPrice
+          |-| auctionEndPrice
+          |*| (BN.new_(currentTime) |-| launchTime)
+          |/| auctionLength
+        );
+      } else {
+        auctionEndPrice;
+      }
+    | _ => auctionEndPrice
+    }
   );
 };

@@ -18,6 +18,7 @@ type bn = t;
 [@bs.send] external toNumberFloat: t => float = "toNumber";
 
 [@bs.new] [@bs.module "bn.js"] external new_: string => t = "default";
+[@bs.new] [@bs.module "bn.js"] external newInt_: int => t = "default";
 
 // [@bs.module "@polkadot/util"] external tSqrt: (. t) => t = "tSqrt";
 

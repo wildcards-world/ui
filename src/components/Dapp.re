@@ -114,10 +114,20 @@ module AuctionDetails = {
   [@react.component]
   let make = (~animal: TokenId.t) => {
     let launchTimeOpt = QlHooks.useLaunchTimeBN(animal);
+    let foreclosureTimeOpt =
+      QlHooks.useForeclosureTimeBn(animal->TokenId.toString);
 
-    switch (launchTimeOpt) {
-    | Some(launchTime) => <AuctionDisplay animal launchTime />
-    | None => <p> "Loading"->React.string </p>
+    switch (launchTimeOpt, foreclosureTimeOpt) {
+    | (Some(launchTime), Some(foreclosurTime)) =>
+      if (foreclosurTime->BN.ltGet(. launchTime)) {
+        <AuctionDisplay animal launchTime />;
+      } else {
+        <AuctionDisplay animal launchTime=foreclosurTime />;
+      }
+    | (Some(launchTime), None) => <AuctionDisplay animal launchTime />
+    | (None, Some(foreclosureTime)) =>
+      <AuctionDisplay animal launchTime=foreclosureTime />
+    | (None, None) => <p> "Loading"->React.string </p>
     };
   };
 };
