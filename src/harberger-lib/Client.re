@@ -118,6 +118,14 @@ let wsLink = (~uri) =>
     },
   });
 
+type context =
+  | MaticQuery;
+type queryContext = {context};
+
+[@bs.send]
+external getContext: ReasonApolloTypes.splitTest => option(queryContext) =
+  "getContext";
+
 /* based on test, execute left or right */
 let webSocketHttpLink = (~uri, ~subscriptions) =>
   ApolloLinks.split(
@@ -128,7 +136,22 @@ let webSocketHttpLink = (~uri, ~subscriptions) =>
       && operationDefition.operation == "subscription";
     },
     wsLink(~uri=subscriptions),
-    httpLink(~uri),
+    ApolloLinks.split(
+      operation => {
+        switch (operation->getContext) {
+        | Some({context}) =>
+          switch (context) {
+          | MaticQuery => true
+          }
+        | None => false
+        }
+      },
+      httpLink(
+        ~uri=
+          "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/matic-mumbai/graphql",
+      ),
+      httpLink(~uri),
+    ),
   );
 
 let instance = (~getGraphEndpoints) => {

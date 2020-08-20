@@ -88,11 +88,13 @@ module InitialLoad = [%graphql
      |}
 ];
 
+let createContext: Client.queryContext => ApolloHooksTypes.Context.t = Obj.magic;
 // TODO: remove this function, it was an interesting but failed experiment.
 let useInitialDataLoad = () => {
   let (simple, _full) =
     ApolloHooks.useQuery(
       ~notifyOnNetworkStatusChange=true,
+      ~context={context: Client.MaticQuery}->createContext,
       InitialLoad.definition,
     );
 
@@ -372,6 +374,7 @@ let useWildcardDataQuery = tokenId =>
     ~variables=
       WildcardDataQuery.make(~tokenId=tokenId->TokenId.toString, ())##variables,
     WildcardDataQuery.definition,
+    ~context=Client.MaticQuery->Obj.magic,
   );
 let useHomeAnimalsQuery = () =>
   ApolloHooks.useQuery(HomeAnimalsQuery.definition);
@@ -954,8 +957,6 @@ let usePrice: TokenId.t => animalPrice =
             wildcard##price##price
           );
 
-      Js.log("GETTING PRICE!!");
-
       switch (optCurrentPatron, foreclosureTime) {
       | (Some(_currentPatron), Some(foreclosureTime)) =>
         if (foreclosureTime->BN.ltGet(. currentTime->BN.new_)) {
@@ -963,13 +964,8 @@ let usePrice: TokenId.t => animalPrice =
         } else {
           Price(priceValue);
         }
-      | (Some(_), None) =>
-        Js.log("WE HAVE A PATRON!!");
-
-        Price(priceValue);
-      | _ =>
-        Js.log("Loading current patron");
-        Loading;
+      | (Some(_), None) => Price(priceValue)
+      | _ => Loading
       };
     | Error(_)
     | Loading
