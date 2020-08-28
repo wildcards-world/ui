@@ -93,6 +93,14 @@ let make = () =>
       </div>
       <div className=footerText>
         <a
+          className=footerLink          
+          rel="noopener noreferrer"
+          href="/#team">
+          "Team"->restr
+        </a>
+      </div>
+      <div className=footerText>
+        <a
           className=footerLink
           target="_blank"
           rel="noopener noreferrer"

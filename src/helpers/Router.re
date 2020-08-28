@@ -11,6 +11,7 @@ type urlState =
   | User(Web3.ethAddress)
   | Org(string)
   | Explorer(animalPageState)
+  | Team
   | Leaderboards(leaderBoard)
   // | Unknown
   | Home(animalPageState)
@@ -48,6 +49,7 @@ let useUrlState = () => {
           Belt.Array.get(urlArray, 0)->Belt.Option.mapWithDefault("", a => a)
         ) {
         | "explorer" => Explorer(NormalView)
+        | "team" => Team
         | _ => Home(NormalView)
         // | _ => Unknown
         }
@@ -68,6 +70,7 @@ let useIsExplorer = () => {
       | Home(_)
       | Org(_)
       | IncreaseVoteIteration
+      | Team
       | VotePage => false
       },
     [|urlState|],
@@ -91,6 +94,7 @@ let useIsDetails = () => {
       | Org(_)
       | Leaderboards(_)
       | IncreaseVoteIteration
+      | Team
       | VotePage => false
       },
     [|urlState|],
@@ -108,6 +112,7 @@ let useIsHome = () => {
       | Explorer(_)
       | Leaderboards(_)
       | IncreaseVoteIteration
+      | Team
       | VotePage => false
       },
     [|urlState|],
@@ -134,6 +139,7 @@ let useAnimalForDetails = () => {
       | User(_)
       | Org(_)
       | Leaderboards(_)
+      | Team
       | IncreaseVoteIteration
       | VotePage => None
       },
