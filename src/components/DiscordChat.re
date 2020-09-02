@@ -11,7 +11,35 @@ let make = () => {
       ])
     )>
     {showChat
-       ? <div>
+       ? <div className=Css.(style([position(`relative)]))>
+           <div
+             className=Css.(
+               style([
+                 height(px(50)),
+                 width(px(50)),
+                 marginLeft(`auto),
+                 backgroundColor(hex("CCCCCCCC")),
+                 borderRadius(`percent(50.)),
+                 marginBottom(0.2->rem),
+                 selector(
+                   ":hover",
+                   [important(backgroundColor(hex("6CAD3DCC")))],
+                 ),
+               ])
+             )
+             onClick={_ => setShowChat(_ => false)}>
+             <div
+               className=Css.(
+                 style([
+                   padding(1.->rem),
+                   fontSize(16->px),
+                   transform(translateX(px(3))),
+                   color(white),
+                 ])
+               )>
+               {js|✖|js}->React.string
+             </div>
+           </div>
            <iframe
              src="https://discordapp.com/widget?id=723502058426073108&theme=dark"
              width="350"
@@ -23,6 +51,9 @@ let make = () => {
        //Add close button above here
        : <img
            src="/img/icons/discord.svg"
+           className=Css.(
+             style([height(px(50)), width(px(50)), marginLeft(`auto)])
+           )
            onClick={_ => setShowChat(_ => true)}
          />}
   </div>;
