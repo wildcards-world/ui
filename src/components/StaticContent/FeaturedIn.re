@@ -26,6 +26,10 @@ let featuredMediaContent: array(featuredMediaItemType) = [|
     imagePath: "/img/featured-media/cointelegraph.svg",
     link: "https://cointelegraph.com/news/wildcards-purports-to-save-endangered-species-with-technical-first-for-ethereum",
   },
+  {
+    imagePath: "/img/featured-media/coindesk.svg",
+    link: "https://www.coindesk.com/nfts-boring-make-fun",
+  },
 |];
 
 let featuredItemImgStyle =
@@ -48,7 +52,7 @@ let make = () =>
       {React.array(
          featuredMediaContent->Array.mapWithIndex((index, x) =>
            <Rimble.Box
-             key={index->string_of_int} p=2 mb=2 width=[|0.5, 0.5, 0.2|]>
+             key={index->string_of_int} p=2 mb=2 width=[|0.5, 0.5, 0.16|]>
              <a href={x.link}>
                <img src={x.imagePath} className=featuredItemImgStyle />
              </a>
