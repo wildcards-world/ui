@@ -9,6 +9,7 @@ let make = (~tokenId: TokenId.t) => {
   let userId = UserProvider.useDisplayName(currentPatron);
   let displayName = UserProvider.useDisplayName(currentPatron);
   let displayNameStr = UserProvider.displayNameToString(displayName);
+  let tokenName = tokenId->QlHooks.useWildcardName |||| "loading name";
   let userIdType =
     switch (userId) {
     | EthAddress(_) => "public address"
@@ -78,8 +79,8 @@ let make = (~tokenId: TokenId.t) => {
            ->restr}
           <Rimble.Tooltip
             message={
-              "This is the monthly percentage contribution of token#"
-              ++ tokenId->TokenId.toString
+              "This is the monthly percentage contribution of "
+              ++ tokenName
               ++ "'s sale price that will go towards conservation of at risk animals. This is deducted continuously from the deposit and paid by the owner of the animal"
             }
             placement="top">
@@ -156,13 +157,13 @@ let make = (~tokenId: TokenId.t) => {
       <small>
         <strong>
           {{
-             "token#" ++ tokenId->TokenId.toString ++ "'s Patronage: ";
+             tokenName ++ "'s Patronage: ";
            }
            ->restr}
           <Rimble.Tooltip
             message={
-              "This is the total contribution that has been raised thanks to the wildcard, token#"
-              ++ tokenId->TokenId.toString
+              "This is the total contribution that has been raised thanks to the wildcard, "
+              ++ tokenName
             }
             placement="top">
             <span> {js|ⓘ|js}->restr </span>
@@ -190,8 +191,8 @@ let make = (~tokenId: TokenId.t) => {
              "Foreclosure date: "->restr
              <Rimble.Tooltip
                message={
-                 "This is the date the deposit will run out and the current owner will lose ownership of token#"
-                 ++ tokenId->TokenId.toString
+                 "This is the date the deposit ran out and the current owner will lose ownership of "
+                 ++ tokenName
                }
                placement="top">
                <span> {js|ⓘ|js}->restr </span>
@@ -221,8 +222,8 @@ let make = (~tokenId: TokenId.t) => {
              "Days Held: "->restr
              <Rimble.Tooltip
                message={
-                 "This is the amount of time token#"
-                 ++ tokenId->TokenId.toString
+                 "This is the amount of time "
+                 ++ tokenName
                  ++ " has been held. It was acquired on the "
                  ++ timeAcquiredString
                  ++ "."
@@ -239,4 +240,169 @@ let make = (~tokenId: TokenId.t) => {
      | None => React.null
      }}
   </React.Fragment>;
+};
+
+module Auction = {
+  [@react.component]
+  let make = (~tokenId: TokenId.t, ~abandoned: bool, ~auctionStartTime) => {
+    let currentPatron = QlHooks.usePatron(tokenId) |||| "Loading";
+    let displayName = UserProvider.useDisplayName(currentPatron);
+    let displayNameStr = UserProvider.displayNameToString(displayName);
+
+    let tokenName = tokenId->QlHooks.useWildcardName |||| "loading name";
+
+    let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+
+    let currentUsdEthPrice = UsdPriceProvider.useUsdPrice();
+    let (totalPatronage, totalPatronageUsd) =
+      QlHooks.useAmountRaisedToken(tokenId)
+      ->mapd(("Loading", "Loading"), a =>
+          (
+            (a->Eth.get(Eth.Eth(`ether))->Float.fromString |||| 0.0)
+            ->toFixedWithPrecisionNoTrailingZeros(~digits=9),
+            currentUsdEthPrice->mapd("Loading", usdEthRate =>
+              a->Eth.get(Eth.Usd(usdEthRate, 2))
+            ),
+          )
+        );
+
+    let ratio = QlHooks.usePledgeRate(tokenId);
+
+    let monthlyRate = Js.Float.toString(ratio *. 100.);
+
+    <React.Fragment>
+      <div>
+        {if (ratio == 0.) {
+           <p>
+             "The monthly pledge rate will be revealed at launch."->restr
+           </p>;
+         } else {
+           <>
+             <small>
+               <strong>
+                 "Monthly Pledge Rate:"->restr
+                 <Rimble.Tooltip
+                   message={
+                     "This is the monthly percentage contribution of "
+                     ++ tokenName
+                     ++ "'s sale price that will go towards conservation of at risk animals. This is deducted continuously from the deposit and paid by the owner of the animal"
+                   }
+                   placement="top">
+                   <span> {js|ⓘ|js}->restr </span>
+                 </Rimble.Tooltip>
+               </strong>
+             </small>
+             <br />
+             {(monthlyRate ++ " %")->restr}
+           </>;
+         }}
+      </div>
+      {abandoned
+         ? <p>
+             <strong>
+               "Was abandoned by "->restr
+               <a
+                 onClick={e => {
+                   ReactEvent.Mouse.preventDefault(e);
+                   clearAndPush({j|/#user/$currentPatron|j});
+                 }}>
+                 displayNameStr->restr
+               </a>
+               <Rimble.Tooltip
+                 message={j|This happens when the user's deposit runs out for the wildcard.|j}
+                 placement="top">
+                 <span> {js|ⓘ|js}->restr </span>
+               </Rimble.Tooltip>
+             </strong>
+             <br />
+           </p>
+         : <p>
+             "This wildcard has never had a guardian - you can be the first."
+             ->React.string
+           </p>}
+      <p>
+        <small>
+          <strong>
+            {{
+               tokenName ++ "'s Patronage: ";
+             }
+             ->restr}
+            <Rimble.Tooltip
+              message={
+                "This is the total contribution that has been raised thanks to the wildcard, "
+                ++ tokenName
+              }
+              placement="top">
+              <span> {js|ⓘ|js}->restr </span>
+            </Rimble.Tooltip>
+          </strong>
+        </small>
+        <br />
+        {{
+           totalPatronage ++ " ETH";
+         }
+         ->restr}
+        <br />
+        <small>
+          {{
+             "(" ++ totalPatronageUsd ++ " USD)";
+           }
+           ->restr}
+        </small>
+      </p>
+      {abandoned
+         ? <>
+             <p>
+               <small>
+                 <strong>
+                   "Abandoned since: "->restr
+                   <Rimble.Tooltip
+                     message={
+                       "This is the date the deposit will run out and the current owner will lose ownership of "
+                       ++ tokenName
+                     }
+                     placement="top">
+                     <span> {js|ⓘ|js}->restr </span>
+                   </Rimble.Tooltip>
+                 </strong>
+               </small>
+               <br />
+               {{
+                  MomentRe.Moment.format("LLLL", auctionStartTime);
+                }
+                ->restr}
+               <br />
+             </p>
+             // TODO: show how long it was held by the previous patron
+             //  {switch (daysHeld) {
+             //   | Some((daysHeldFloat, timeAquired)) =>
+             //     let timeAcquiredString =
+             //       timeAquired->MomentRe.Moment.toISOString;
+             //     <p>
+             //       <small>
+             //         <strong>
+             //           "Days Held: "->restr
+             //           <Rimble.Tooltip
+             //             message={
+             //               "This is the amount of time "
+             //               ++ tokenName
+             //               ++ " has been held. It was acquired on the "
+             //               ++ timeAcquiredString
+             //               ++ "."
+             //             }
+             //             placement="top">
+             //             <span> {js|ⓘ|js}->restr </span>
+             //           </Rimble.Tooltip>
+             //         </strong>
+             //       </small>
+             //       <br />
+             //       {daysHeldFloat->Js.Float.toFixed->restr}
+             //       <br />
+             //     </p>;
+             //   | None => React.null
+             //   }}
+           </>
+         : React.null}
+    </React.Fragment>;
+  };
 };
