@@ -191,7 +191,7 @@ let make = (~tokenId: TokenId.t) => {
              "Foreclosure date: "->restr
              <Rimble.Tooltip
                message={
-                 "This is the date the deposit ran out and the current owner will lose ownership of "
+                 "This is the date the deposit will run out and the current owner will lose guardianship of "
                  ++ tokenName
                }
                placement="top">
@@ -285,7 +285,7 @@ module Auction = {
                    message={
                      "This is the monthly percentage contribution of "
                      ++ tokenName
-                     ++ "'s sale price that will go towards conservation of at risk animals. This is deducted continuously from the deposit and paid by the owner of the animal"
+                     ++ "'s sale price that will go towards conservation of at risk animals. This is deducted continuously from the deposit and paid by the guardian of the animal"
                    }
                    placement="top">
                    <span> {js|ⓘ|js}->restr </span>
@@ -300,7 +300,7 @@ module Auction = {
       {abandoned
          ? <p>
              <strong>
-               "Was abandoned by "->restr
+               "The previous guardian was "->restr
                <a
                  onClick={e => {
                    ReactEvent.Mouse.preventDefault(e);
@@ -317,8 +317,10 @@ module Auction = {
              <br />
            </p>
          : <p>
-             "This wildcard has never had a guardian - you can be the first."
-             ->React.string
+             {(
+                tokenName ++ " has never had a guardian - you can be the first."
+              )
+              ->React.string}
            </p>}
       <p>
         <small>
@@ -329,7 +331,7 @@ module Auction = {
              ->restr}
             <Rimble.Tooltip
               message={
-                "This is the total contribution that has been raised thanks to the wildcard, "
+                "This is the total contribution that has been raised thanks to "
                 ++ tokenName
               }
               placement="top">
@@ -358,7 +360,7 @@ module Auction = {
                    "Abandoned since: "->restr
                    <Rimble.Tooltip
                      message={
-                       "This is the date the deposit will run out and the current owner will lose ownership of "
+                       "This is the date the deposit ran out and the current guardian will lose guardianship of "
                        ++ tokenName
                      }
                      placement="top">
