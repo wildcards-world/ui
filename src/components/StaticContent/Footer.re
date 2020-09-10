@@ -92,10 +92,7 @@ let make = () =>
         </a>
       </div>
       <div className=footerText>
-        <a
-          className=footerLink          
-          rel="noopener noreferrer"
-          href="/#team">
+        <a className=footerLink rel="noopener noreferrer" href="/#team">
           "Team"->restr
         </a>
       </div>
@@ -137,17 +134,6 @@ let make = () =>
             target="_blank"
             rel="noopener noreferrer"
             network="facebook"
-            fgColor="#aaa"
-          />
-        </li>
-        <li className=footerSocialButton>
-          <SocialButtons
-            className=footerSocailButtonLink
-            url="https://t.me/wildcardsworld"
-            bgColor="transparent"
-            target="_blank"
-            rel="noopener noreferrer"
-            network="telegram"
             fgColor="#aaa"
           />
         </li>
