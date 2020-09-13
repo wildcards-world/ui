@@ -238,6 +238,7 @@ let make = () => {
       />
       {switch (urlState) {
        | VotePage => <VotePage />
+       | Team => <Team />
        | IncreaseVoteIteration => <IncreaseIterationPage />
        | Explorer(animalPageState) =>
          switch (animalPageState) {

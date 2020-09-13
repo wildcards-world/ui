@@ -49,6 +49,7 @@ ReactDOMRe.renderToElementWithId(
       endpoints;
     }}>
     <UsdPriceProvider> <Router /> </UsdPriceProvider>
+    <DiscordChat />
   </WildcardsProvider>,
   "root",
 );

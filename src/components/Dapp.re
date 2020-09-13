@@ -114,10 +114,20 @@ module AuctionDetails = {
   [@react.component]
   let make = (~animal: TokenId.t) => {
     let launchTimeOpt = QlHooks.useLaunchTimeBN(animal);
+    let foreclosureTimeOpt =
+      QlHooks.useForeclosureTimeBn(animal->TokenId.toString);
 
-    switch (launchTimeOpt) {
-    | Some(launchTime) => <AuctionDisplay animal launchTime />
-    | None => <p> "Loading"->React.string </p>
+    switch (launchTimeOpt, foreclosureTimeOpt) {
+    | (Some(launchTime), Some(foreclosurTime)) =>
+      if (foreclosurTime->BN.ltGet(. launchTime)) {
+        <AuctionDisplay animal launchTime />;
+      } else {
+        <AuctionDisplay animal launchTime=foreclosurTime />;
+      }
+    | (Some(launchTime), None) => <AuctionDisplay animal launchTime />
+    | (None, Some(foreclosureTime)) =>
+      <AuctionDisplay animal launchTime=foreclosureTime />
+    | (None, None) => <p> "Loading"->React.string </p>
     };
   };
 };
@@ -826,7 +836,6 @@ module UnlaunchedAnimalInfo = {
              </p>;
            } else {
              <>
-               // TODO: add this back after  launch
                <small>
                  <strong>
                    "Monthly Pledge Rate:"->restr
@@ -857,6 +866,9 @@ module AnimalInfo = {
     let animalDescription =
       QlHooks.useWildcardDescription(animal) |||| [|"Loading"|];
     let optAnimalMedia = animal->Animal.useAlternateImage;
+
+    let animalStatus = animal->Animal.useTokenStatus;
+
     // TODO: the ethereum address is really terribly displayed. But the default in Rimble UI includes a QR code scanner (which is really ugly).
     // https://rimble.consensys.design/components/rimble-ui/EthAddress#props
     // https://github.com/ConsenSys/rimble-ui/blob/dd470f00374a05c860b558a2cb9317861e4a0d89/src/EthAddress/index.js (maybe make a PR here with some changes)
@@ -890,10 +902,15 @@ module AnimalInfo = {
         </ReactTabs.TabPanel>
         // [@warning "-102"]
         <ReactTabs.TabPanel>
-          {switch (animal->Animal.isLaunched) {
-           | Launched => <Info tokenId=animal />
-           | LaunchDate(endDateMoment) =>
+          {switch (animalStatus) {
+           | Loading => <Rimble.Loader />
+           | WaitingForLaunch(endDateMoment) =>
              <UnlaunchedAnimalInfo endDateMoment animal />
+           | Launched(auctionStartTime) =>
+             <Info.Auction auctionStartTime abandoned=false tokenId=animal />
+           | Foreclosed(auctionStartTime) =>
+             <Info.Auction auctionStartTime abandoned=true tokenId=animal />
+           | Owned(_) => <Info tokenId=animal />
            }}
         </ReactTabs.TabPanel>
         <ReactTabs.TabPanel>
