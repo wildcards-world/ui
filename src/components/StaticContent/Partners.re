@@ -36,7 +36,14 @@ let usePartners = () => {
 };
 
 let blueBackground = Css.(style([backgroundColor(`hex("73C8D7"))]));
-let cardStyle = Css.(style([height(`percent(100.))]));
+let cardStyle =
+  Css.(
+    style([
+      height(`percent(100.)),
+      display(`flex),
+      important(padding(`percent(0.))),
+    ])
+  );
 let logoStyle =
   Css.(style([marginLeft(`percent(10.)), width(`percent(80.))]));
 let centerText = Css.(style([textAlign(`center)]));
@@ -50,6 +57,13 @@ module OrgDetails = {
 
     <Rimble.Card className=cardStyle>
       <a
+        className=Css.(
+          style([
+            display(`flex),
+            width(`percent(100.)),
+            height(`percent(100.)),
+          ])
+        )
         onClick={e => {
           ReactEvent.Mouse.stopPropagation(e);
           ReactEvent.Mouse.preventDefault(e);
@@ -57,7 +71,31 @@ module OrgDetails = {
         }}>
         <img
           className=Css.(
-            style([marginLeft(`percent(10.)), width(`percent(80.))])
+            style([
+              margin(`percent(1.)),
+              objectFit(`contain),
+              width(`percent(98.)),
+              justifyContent(`center),
+              alignItems(`center),
+              hover([
+                filter([`saturate(150.), `brightness(110.)]),
+                overflow(visible),
+                boxShadow(
+                  Shadow.box(
+                    ~blur=px(20),
+                    ~spread=px(20),
+                    rgba(121, 181, 80, 0.5),
+                  ),
+                ),
+                transform(scale(1.01, 1.01)),
+                transition(
+                  ~duration=100,
+                  ~delay=0,
+                  ~timingFunction=ease,
+                  "all",
+                ),
+              ]),
+            ])
           )
           src={Animal.cdnBase ++ logo}
           alt=name
