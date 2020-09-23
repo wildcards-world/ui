@@ -94,7 +94,7 @@ let useInitialDataLoad = () => {
   let (simple, _full) =
     ApolloHooks.useQuery(
       ~notifyOnNetworkStatusChange=true,
-      ~context={context: Client.MaticQuery}->createContext,
+      ~context={context: Client.MainnetQuery}->createContext,
       InitialLoad.definition,
     );
 
@@ -374,7 +374,7 @@ let useWildcardDataQuery = tokenId =>
     ~variables=
       WildcardDataQuery.make(~tokenId=tokenId->TokenId.toString, ())##variables,
     WildcardDataQuery.definition,
-    ~context=Client.MaticQuery->Obj.magic,
+    ~context=Client.MainnetQuery->Obj.magic,
   );
 let useHomeAnimalsQuery = () =>
   ApolloHooks.useQuery(HomeAnimalsQuery.definition);

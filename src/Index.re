@@ -7,6 +7,7 @@ module Router = {
   let make = () => {
     let url = ReasonReactRouter.useUrl();
     switch (url.path) {
+    | ["gsn-test"] => <GSNTest />
     | [_] => <p> {React.string("Unknown page")} </p>
     | _ => <ReactTranslate> <Layout /> </ReactTranslate>
     };
@@ -43,6 +44,7 @@ ReactDOMRe.renderToElementWithId(
         // )
         | _ => (
             mainnetApi |||| "https://api.wildcards.world/v1/graphql",
+            // mainnetApi |||| "https://api.wildcards.world/v1/graphql",
             "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards",
           )
         };

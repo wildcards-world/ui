@@ -46,9 +46,9 @@ let calcRequiredDepositForTime = (time, price, numerator, denominator) => {
 [@gentype]
 [@react.component]
 let make = (~tokenId: TokenId.t) => {
-  let (buyFunc, txBuyState) = ContractActions.useBuy(tokenId);
+  let (buyFunc, txBuyState) = ContractActions.useBuy(tokenId, false);
   let (buyFuncAuction, txBuyAuctionState) =
-    ContractActions.useBuyAuction(tokenId);
+    ContractActions.useBuyAuction(tokenId, false);
   let userBalance =
     Belt.Option.mapWithDefault(RootProvider.useEthBalance(), BN.new_("0"), a =>
       a

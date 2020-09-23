@@ -5,9 +5,16 @@ let getProviderOrSigner =
     (
       library: RootProviderTypes.web3Library,
       account: option(Web3.ethAddress),
+      isGsn: bool,
     ) => {
   switch (account) {
-  | Some(account) => library.getSigner(. account)
+  | Some(account) =>
+    if (isGsn) {
+      // TODO: wrap this in the gsn stuff
+      library.getSigner(. account);
+    } else {
+      library.getSigner(. account);
+    }
   | None => library
   };
 };
@@ -117,25 +124,26 @@ external loyaltyTokenAbi: Web3.abi = "loyaltyToken";
 [@bs.module "ethers"] [@bs.scope "utils"]
 external parseUnits: (. string, int) => parsedUnits = "parseUnits";
 
-let getExchangeContract = (stewardAddress, stewardAbi, library, account) => {
+let getExchangeContract =
+    (stewardAddress, stewardAbi, library, account, isGsn) => {
   getContract(
     stewardAddress,
     stewardAbi,
-    getProviderOrSigner(library, account),
+    getProviderOrSigner(library, account, isGsn),
   );
 };
-let getLoyaltyTokenContract = (stewardAddress, library, account) => {
+let getLoyaltyTokenContract = (stewardAddress, library, account, isGsn) => {
   getLoyaltyTokenContract(
     stewardAddress,
     loyaltyTokenAbi,
-    getProviderOrSigner(library, account),
+    getProviderOrSigner(library, account, isGsn),
   );
 };
-let getVotingContract = (stewardAddress, library, account) => {
+let getVotingContract = (stewardAddress, library, account, isGsn) => {
   getVotingContract(
     stewardAddress,
     voteContract,
-    getProviderOrSigner(library, account),
+    getProviderOrSigner(library, account, isGsn),
   );
 };
 
@@ -150,6 +158,13 @@ let loyaltyTokenAddressGoerli = "0xd7d8c42ab5b83aa3d4114e5297989dc27bdfb715";
 let voteContractMainnet = "0x03e051b7e42480Cc9D54F1caB525D2Fea2cF4d83";
 let voteContractGoerli = "0x316C5f8867B21923db8A0Bd6890A6BFE0Ab6F9d2";
 // let voteContractRinkeby = "0x316C5f8867B21923db8A0Bd6890A6BFE0Ab6F9d2";
+
+let stewardAddressMaticMain = "0x6D47CF86F6A490c6410fC082Fd1Ad29CF61492d0";
+let stewardAddressMumbai = "0x0C00CFE8EbB34fE7C31d4915a43Cde211e9F0F3B";
+
+let loyaltyTokenAddressMaticMain = "0x773c75c2277eD3e402BDEfd28Ec3b51A3AfbD8a4";
+let loyaltyTokenAddressMumbai = "0xd7d8c42ab5b83aa3d4114e5297989dc27bdfb715";
+// let loyaltyTokenAddressRinkbey = "0xd7d8c42ab5b83aa3d4114e5297989dc27bdfb715";
 
 let useStewardAbi = () => {
   switch (RootProvider.useStewardAbi()) {
@@ -186,7 +201,7 @@ let voteAddressFromChainId =
   | 5 => Some(voteContractGoerli)
   | _ => None;
 
-let useStewardContract = () => {
+let useStewardContract = isGsn => {
   let context = RootProvider.useWeb3React();
   let stewardContractAddress = useStewardAddress();
   let stewardAbi = useStewardAbi();
@@ -196,7 +211,15 @@ let useStewardContract = () => {
       switch (context.library, context.chainId) {
       | (Some(library), Some(chainId)) =>
         stewardContractAddress(chainId)
-        ->oMap(getExchangeContract(_, stewardAbi, library, context.account))
+        ->oMap(
+            getExchangeContract(
+              _,
+              stewardAbi,
+              library,
+              context.account,
+              isGsn,
+            ),
+          )
 
       | _ => None
       }
@@ -205,7 +228,7 @@ let useStewardContract = () => {
   );
 };
 
-let useLoyaltyTokenContract = () => {
+let useLoyaltyTokenContract = isGsn => {
   let context = RootProvider.useWeb3React();
 
   React.useMemo3(
@@ -214,7 +237,7 @@ let useLoyaltyTokenContract = () => {
       | (Some(library), Some(chainId)) =>
         chainId
         ->loyaltyTokenAddressFromChainId
-        ->oMap(getLoyaltyTokenContract(_, library, context.account))
+        ->oMap(getLoyaltyTokenContract(_, library, context.account, isGsn))
 
       | _ => None
       }
@@ -223,7 +246,7 @@ let useLoyaltyTokenContract = () => {
   );
 };
 
-let useVoteContract = () => {
+let useVoteContract = isGsn => {
   let context = RootProvider.useWeb3React();
 
   React.useMemo3(
@@ -232,7 +255,7 @@ let useVoteContract = () => {
       | (Some(library), Some(chainId)) =>
         chainId
         ->voteAddressFromChainId
-        ->oMap(getVotingContract(_, library, context.account))
+        ->oMap(getVotingContract(_, library, context.account, isGsn))
 
       | _ => None
       }
@@ -252,11 +275,11 @@ type transactionState =
   | Complete(txResult)
   | Failed;
 
-let useBuy = (animal: TokenId.t) => {
+let useBuy = (animal: TokenId.t, isGsn) => {
   let animalId = animal->TokenId.toString;
   let (txState, setTxState) = React.useState(() => UnInitialised);
 
-  let optSteward = useStewardContract();
+  let optSteward = useStewardContract(isGsn);
 
   (
     (newPrice, oldPrice, wildcardsPercentage, value: string) => {
@@ -304,11 +327,11 @@ let useBuy = (animal: TokenId.t) => {
   );
 };
 
-let useBuyAuction = (animal: TokenId.t) => {
+let useBuyAuction = (animal: TokenId.t, isGsn) => {
   let animalId = animal->TokenId.toString;
   let (txState, setTxState) = React.useState(() => UnInitialised);
 
-  let optSteward = useStewardContract();
+  let optSteward = useStewardContract(isGsn);
 
   (
     (newPrice, wildcardsPercentage, value: string) => {
@@ -355,9 +378,9 @@ let useBuyAuction = (animal: TokenId.t) => {
   );
 };
 
-let useRedeemLoyaltyTokens = (animalId: string) => {
+let useRedeemLoyaltyTokens = (animalId: string, isGsn) => {
   let (txState, setTxState) = React.useState(() => UnInitialised);
-  let optSteward = useStewardContract();
+  let optSteward = useStewardContract(isGsn);
   let buyFunction = () => {
     let value = parseUnits(. "0", 0);
 
@@ -399,7 +422,7 @@ let useRedeemLoyaltyTokens = (animalId: string) => {
 
 let useApproveLoyaltyTokens = () => {
   let (txState, setTxState) = React.useState(() => UnInitialised);
-  let optLoyaltyTokens = useLoyaltyTokenContract();
+  let optLoyaltyTokens = useLoyaltyTokenContract(false);
   let optNetworkId = RootProvider.useWeb3React().chainId;
 
   let buyFunction = () => {
@@ -408,13 +431,13 @@ let useApproveLoyaltyTokens = () => {
     setTxState(_ => Created);
 
     switch (optLoyaltyTokens, optNetworkId) {
-    | (Some(steward), Some(networkId)) =>
+    | (Some(loyaltyTokenCotract), Some(networkId)) =>
       let voteContractAddress =
         networkId->voteAddressFromChainId
         |||| "0x0000000000000000000000000000000000000500";
 
       let claimLoyaltyTokenPromise =
-        steward.approve(.
+        loyaltyTokenCotract.approve(.
           voteContractAddress,
           "100000000000000000000000",
           {
@@ -447,7 +470,7 @@ let useApproveLoyaltyTokens = () => {
 };
 let useVoteForProject = () => {
   let (txState, setTxState) = React.useState(() => UnInitialised);
-  let optSteward = useVoteContract();
+  let optSteward = useVoteContract(false);
   let buyFunction = (proposalId: string, squareRoot: BN.bn) => {
     Js.log("ProposalId" ++ proposalId);
     let value = parseUnits(. "0", 0);
@@ -502,7 +525,7 @@ let useVoteForProject = () => {
 
 let useIncreaseVoteIteration = () => {
   let (txState, setTxState) = React.useState(() => UnInitialised);
-  let optSteward = useVoteContract();
+  let optSteward = useVoteContract(false);
   let buyFunction = () => {
     let value = parseUnits(. "0", 0);
 
@@ -539,10 +562,10 @@ let useIncreaseVoteIteration = () => {
   (buyFunction, txState);
 };
 
-let useUpdateDeposit = () => {
+let useUpdateDeposit = isGsn => {
   let (txState, setTxState) = React.useState(() => UnInitialised);
 
-  let optSteward = useStewardContract();
+  let optSteward = useStewardContract(isGsn);
 
   (
     (value: string) => {
@@ -579,10 +602,10 @@ let useUpdateDeposit = () => {
   );
 };
 
-let useWithdrawDeposit = () => {
+let useWithdrawDeposit = isGsn => {
   let (txState, setTxState) = React.useState(() => UnInitialised);
 
-  let optSteward = useStewardContract();
+  let optSteward = useStewardContract(isGsn);
 
   (
     amountToWithdraw => {
@@ -630,7 +653,7 @@ let useUserLoyaltyTokenBalance = (address: Web3.ethAddress) => {
   let (result, setResult) = React.useState(() => None);
   let (counter, setCounter) = React.useState(() => 0);
 
-  let optSteward = useLoyaltyTokenContract();
+  let optSteward = useLoyaltyTokenContract(false);
 
   React.useEffect4(
     () => {
@@ -657,7 +680,7 @@ let useVoteApprovedTokens = (owner: Web3.ethAddress) => {
   let (result, setResult) = React.useState(() => None);
   let (counter, setCounter) = React.useState(() => 0);
 
-  let optLoyaltyTokens = useLoyaltyTokenContract();
+  let optLoyaltyTokens = useLoyaltyTokenContract(false);
   let optNetworkId = RootProvider.useWeb3React().chainId;
 
   React.useEffect5(
@@ -690,7 +713,7 @@ let useCurrentIteration = () => {
   let (result, setResult) = React.useState(() => None);
   let (counter, setCounter) = React.useState(() => 0);
 
-  let optVoteContract = useVoteContract();
+  let optVoteContract = useVoteContract(false);
 
   React.useEffect3(
     () => {
@@ -717,7 +740,7 @@ let useCurrentWinner = () => {
   let (result, setResult) = React.useState(() => None);
   let (counter, setCounter) = React.useState(() => 0);
 
-  let optVoteContract = useVoteContract();
+  let optVoteContract = useVoteContract(false);
 
   React.useEffect3(
     () => {
@@ -744,7 +767,7 @@ let useProposalVotes = (iteration, projectId) => {
   let (result, setResult) = React.useState(() => None);
   let (counter, setCounter) = React.useState(() => 0);
 
-  let optVoteContract = useVoteContract();
+  let optVoteContract = useVoteContract(false);
 
   React.useEffect5(
     () => {
@@ -768,11 +791,12 @@ let useProposalVotes = (iteration, projectId) => {
   (result, () => setCounter(_ => counter + 1));
 };
 
-let useHasUserVotedForProposalIteration = (iteration, userAddress, projectId) => {
+let useHasUserVotedForProposalIteration =
+    (iteration, userAddress, projectId, isGsn) => {
   let (result, setResult) = React.useState(() => None);
   let (counter, setCounter) = React.useState(() => 0);
 
-  let optVoteContract = useVoteContract();
+  let optVoteContract = useVoteContract(isGsn);
 
   React.useEffect6(
     () => {
@@ -804,7 +828,7 @@ let useTotalVotes = () => {
   let (result, setResult) = React.useState(() => None);
   let (counter, setCounter) = React.useState(() => 0);
 
-  let optVoteContract = useVoteContract();
+  let optVoteContract = useVoteContract(false);
 
   React.useEffect3(
     () => {
@@ -831,7 +855,7 @@ let useProposalDeadline = () => {
   let (result, setResult) = React.useState(() => None);
   let (counter, setCounter) = React.useState(() => 0);
 
-  let optSteward = useVoteContract();
+  let optSteward = useVoteContract(false);
 
   React.useEffect3(
     () => {
@@ -854,11 +878,11 @@ let useProposalDeadline = () => {
   (result, () => setCounter(_ => counter + 1));
 };
 
-let useChangePrice = animal => {
+let useChangePrice = (animal, isGsn) => {
   let animalId = TokenId.toString(animal);
   let (txState, setTxState) = React.useState(() => UnInitialised);
 
-  let optSteward = useStewardContract();
+  let optSteward = useStewardContract(isGsn);
 
   (
     newPrice => {

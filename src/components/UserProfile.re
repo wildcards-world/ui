@@ -34,7 +34,7 @@ module ClaimLoyaltyTokenButtons = {
   [@react.component]
   let make = (~id, ~refreshLoyaltyTokenBalance) => {
     let (redeemLoyaltyTokens, transactionStatus) =
-      ContractActions.useRedeemLoyaltyTokens(id);
+      ContractActions.useRedeemLoyaltyTokens(id, false);
     let balanceAvailableOnToken =
       QlHooks.useUnredeemedLoyaltyTokenDueFromWildcard(
         id->TokenId.makeWithDefault(0),

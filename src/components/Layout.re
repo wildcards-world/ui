@@ -236,6 +236,7 @@ let make = () => {
           },
         |]
       />
+      <GSNTest />
       {switch (urlState) {
        | VotePage => <VotePage />
        | Team => <Team />

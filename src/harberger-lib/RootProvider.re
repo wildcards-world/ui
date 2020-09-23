@@ -180,8 +180,10 @@ module RootWithWeb3 = {
           | Some(5) => 80001
           | _ => 137
           };
+        Js.log2("ACTIVATING THIS", maticChainId);
         contextMatic.activate(
-          Web3Connectors.network(maticChainId),
+          Web3Connectors.injected,
+          // Web3Connectors.sideChainNetwork(maticChainId),
           () => (),
           true,
         )

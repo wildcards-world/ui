@@ -20,14 +20,17 @@ const RPC_URLS = {
 export const injected = new InjectedConnector({
   // TODO: make this only accept 2 networks , mainnet and testnet. Then display a message when people use the wrong network.
   // QUESTION: should we allow them to connect to matic here (137/80001)? Maybe they should always use our connector?
-  supportedChainIds: [1, 3, 4, 5, 42, 137, 80001],
+  supportedChainIds: [1, 3, 4, 5, 42, 137, 1337, 80001],
 });
 
-export const network = (defaultChainId) =>
+export const sideChainNetwork = (defaultChainId) =>
   new NetworkConnector({
     urls: {
-      137: "https://rpc-mainnet.matic.network",
-      80001: "https://rpc-mumbai.matic.today",
+      // 137: "https://rpc-mainnet.matic.network",
+      // 80001: "https://rpc-mumbai.matic.today",
+      1337: "http://localhost:8545",
+      137: "http://localhost:8545",
+      80001: "http://localhost:8545",
     },
     defaultChainId,
     pollingInterval: POLLING_INTERVAL,

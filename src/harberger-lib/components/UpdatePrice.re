@@ -8,7 +8,8 @@ let getToDisplay = (label, value) =>
 let make = (~tokenId: TokenId.t) => {
   let (newBuyPrice, setNewBuyPrice) = React.useState(() => "");
 
-  let (updatePriceFunc, txState) = ContractActions.useChangePrice(tokenId);
+  let (updatePriceFunc, txState) =
+    ContractActions.useChangePrice(tokenId, false);
 
   let onSubmitBuy = event => {
     ReactEvent.Form.preventDefault(event);

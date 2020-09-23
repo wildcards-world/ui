@@ -119,6 +119,7 @@ let wsLink = (~uri) =>
   });
 
 type context =
+  | MainnetQuery
   | MaticQuery;
 type queryContext = {context};
 
@@ -142,6 +143,7 @@ let webSocketHttpLink = (~uri, ~subscriptions) =>
         | Some({context}) =>
           switch (context) {
           | MaticQuery => true
+          | MainnetQuery => false
           }
         | None => false
         }

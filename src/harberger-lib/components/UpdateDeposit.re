@@ -23,8 +23,10 @@ let make = (~closeButtonText) => {
   let (depositChange, setDepositChange) = React.useState(() => "");
   let (isAddDeposit, setIsAddDeposit) = React.useState(() => true);
 
-  let (depositFunc, txWithdrawObject) = ContractActions.useUpdateDeposit();
-  let (withdrawFunc, txDepositObject) = ContractActions.useWithdrawDeposit();
+  let (depositFunc, txWithdrawObject) =
+    ContractActions.useUpdateDeposit(false);
+  let (withdrawFunc, txDepositObject) =
+    ContractActions.useWithdrawDeposit(false);
 
   // let _availableDeposit =
   //   useDepositAbleToWithdrawWeiNew(currentUser)
