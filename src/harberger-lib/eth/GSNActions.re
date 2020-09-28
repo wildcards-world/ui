@@ -62,30 +62,12 @@ type tx = {
     Promise.Js.t(ContractActions.txResult, ContractActions.txError),
 };
 type parsedUnits;
-type txOptions = {value: parsedUnits};
+type txOptions = {value: parsedUnits, from: option(string)};
 type tokenIdString = string;
-type estimateBuy = {
-  buy:
-    // (. string, parsedUnits, txOptions) =>
-    (. string, parsedUnits, parsedUnits, txOptions) =>
-    Promise.Js.t(string, string),
-};
+
 type stewardContract = {
-  estimate: estimateBuy,
   // mint(address to, uint256 amount):
-  mint: (. string, parsedUnits, txOptions) => Promise.Js.t(tx, txError),
-  buy:
-    (. tokenIdString, parsedUnits, parsedUnits, string, txOptions) =>
-    Promise.Js.t(tx, txError),
-  buyAuction:
-    (. tokenIdString, parsedUnits, string, txOptions) =>
-    Promise.Js.t(tx, txError),
-  depositWei: (. txOptions) => Promise.Js.t(tx, txError),
-  withdrawDeposit: (. parsedUnits, txOptions) => Promise.Js.t(tx, txError),
-  _collectPatronage:
-    (. tokenIdString, txOptions) => Promise.Js.t(tx, txError),
-  changePrice:
-    (. tokenIdString, parsedUnits, txOptions) => Promise.Js.t(tx, txError),
+  testFunctionThatDoesNothing: (. string, txOptions) => Promise.Js.t(tx, txError),
 };
 [@bs.send]
 external buyOld:
@@ -116,7 +98,7 @@ let getExchangeContract =
   );
 };
 
-let erc20 = "0xc10B962351DCebEee99BFb6219D75aEDe2872839";
+let erc20 = "0x8ada86a3cB8869eE29b31424597e90c0413Df772";
 
 let useStewardAbi = () => {
   // switch (RootProvider.useStewardAbi()) {
@@ -124,7 +106,7 @@ let useStewardAbi = () => {
   // | None =>
 
   %raw
-  {|require("./gsn-test-erc20.json")|};
+  {|require("./gsn-steward-abi.json")|};
   // };
 };
 
@@ -189,7 +171,6 @@ let useMint = isGsn => {
 
   (
     () => {
-      let amount = parseUnits(. "1", 18);
       let value = parseUnits(. "0", 18);
       Js.log("This is something");
 
@@ -197,12 +178,12 @@ let useMint = isGsn => {
       switch (optSteward) {
       | Some(steward) =>
         let buyPromise =
-          steward.mint(.
-            "0x8c7A88756EbbF46Ede65E4D678359cAC5f08f7b2",
-            amount,
+          steward.testFunctionThatDoesNothing(.
+            "0x0120000000000000000000000000000000000000",
             {
               // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
               value: value,
+              from: Some("0x4e9F3eaAe986CfD010758367880cd6a21d60Bf02")
             },
           )
           ->Promise.Js.toResult;

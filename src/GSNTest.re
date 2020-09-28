@@ -1,6 +1,7 @@
 [@react.component]
 let make = () => {
   // useMint();
+  // let (mintFunc, txBuyState) = GSNActions.useMint(true);
   let (mintFunc, txBuyState) = GSNActions.useMint(true);
 
   <div>
