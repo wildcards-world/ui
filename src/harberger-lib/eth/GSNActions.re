@@ -98,7 +98,7 @@ let getExchangeContract =
   );
 };
 
-let erc20 = "0x8ada86a3cB8869eE29b31424597e90c0413Df772";
+let erc20 = "0x25de79B68Ff6f76aaDDCD21bF2e2FB073eB000Cd";
 
 let useStewardAbi = () => {
   // switch (RootProvider.useStewardAbi()) {
@@ -179,11 +179,12 @@ let useMint = isGsn => {
       | Some(steward) =>
         let buyPromise =
           steward.testFunctionThatDoesNothing(.
-            "0x0120000000000000000000000000000000000000",
+            "0xeb2D9aAfD2b3d74D288c022Ab5b58396A4a6c677",
             {
               // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
               value: value,
-              from: Some("0x4e9F3eaAe986CfD010758367880cd6a21d60Bf02")
+              from: None
+              // from: Some("0x4e9F3eaAe986CfD010758367880cd6a21d60Bf02")
             },
           )
           ->Promise.Js.toResult;
