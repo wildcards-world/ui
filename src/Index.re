@@ -9,6 +9,7 @@ module Router = {
     switch (url.path) {
     | ["gsn-test"] => <GSNTest />
     | [_] => <p> {React.string("Unknown page")} </p>
+    // | _ => <GSNTest />
     | _ => <ReactTranslate> <Layout /> </ReactTranslate>
     };
   };

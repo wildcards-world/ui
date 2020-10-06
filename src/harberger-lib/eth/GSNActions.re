@@ -62,12 +62,16 @@ type tx = {
     Promise.Js.t(ContractActions.txResult, ContractActions.txError),
 };
 type parsedUnits;
-type txOptions = {value: parsedUnits, from: option(string)};
+type txOptions = {
+  value: parsedUnits,
+  from: option(string),
+};
 type tokenIdString = string;
 
 type stewardContract = {
   // mint(address to, uint256 amount):
-  testFunctionThatDoesNothing: (. string, txOptions) => Promise.Js.t(tx, txError),
+  testFunctionThatDoesNothing:
+    (. string, txOptions) => Promise.Js.t(tx, txError),
 };
 [@bs.send]
 external buyOld:
@@ -98,7 +102,7 @@ let getExchangeContract =
   );
 };
 
-let erc20 = "0x25de79B68Ff6f76aaDDCD21bF2e2FB073eB000Cd";
+let erc20 = "0x9fcb777f6c1c160029004d959C0e0eA7175eEeB1";
 
 let useStewardAbi = () => {
   // switch (RootProvider.useStewardAbi()) {
@@ -182,8 +186,8 @@ let useMint = isGsn => {
             "0xeb2D9aAfD2b3d74D288c022Ab5b58396A4a6c677",
             {
               // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
-              value: value,
-              from: None
+              value,
+              from: None,
               // from: Some("0x4e9F3eaAe986CfD010758367880cd6a21d60Bf02")
             },
           )
