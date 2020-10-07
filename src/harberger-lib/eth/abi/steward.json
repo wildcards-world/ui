@@ -1193,26 +1193,6 @@
           "internalType": "uint256",
           "name": "_newPrice",
           "type": "uint256"
-        }
-      ],
-      "name": "buy",
-      "outputs": [],
-      "payable": true,
-      "stateMutability": "payable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_newPrice",
-          "type": "uint256"
         },
         {
           "internalType": "uint256",
