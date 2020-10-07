@@ -2,7 +2,11 @@ open Globals;
 
 [@bs.module "./wrapSignerInGsnProvider"]
 external wrapSignerInGsnProvider:
-  (. RootProviderTypes.rawProvider, RootProviderTypes.web3Library) =>
+  (
+    . RootProviderTypes.rawProvider,
+    RootProviderTypes.web3Library,
+    Web3.ethAddress
+  ) =>
   RootProviderTypes.web3Library =
   "default";
 // (. RootProviderTypes.web3Library) => RootProviderTypes.web3Library =
@@ -14,18 +18,21 @@ let getProviderOrSigner =
       account: option(Web3.ethAddress),
       isGsn: bool,
     ) => {
+  Js.log3("Getting the signer", account, isGsn);
   switch (account) {
   | Some(account) =>
     if (isGsn) {
       wrapSignerInGsnProvider(.
         library.provider,
         library.getSigner(. account),
+        account,
         // TODO: wrap this in the gsn stuff
         // library.getSigner(.
         //   account,
         // );
       );
     } else {
+      Js.log2("The account we are using", account);
       library.getSigner(. account);
     }
   | None => library
@@ -95,6 +102,7 @@ external parseUnits: (. string, int) => parsedUnits = "parseUnits";
 
 let getExchangeContract =
     (stewardAddress, stewardAbi, library, account, isGsn) => {
+  Js.log("Getting the contract instance");
   getContract(
     stewardAddress,
     stewardAbi,
@@ -102,7 +110,10 @@ let getExchangeContract =
   );
 };
 
-let erc20 = "0x9fcb777f6c1c160029004d959C0e0eA7175eEeB1";
+// localhost
+// let erc20 = "0xF96b2149f098b089fc76EDB82Aa19EB2c0e3bf46";
+// kovan
+let erc20 = "0x80615a1A1c9E31aa2dCd605592e8A1e674A0c0Bd";
 
 let useStewardAbi = () => {
   // switch (RootProvider.useStewardAbi()) {
@@ -130,30 +141,28 @@ let useStewardAddress = () => {
 
 let useStewardContract = isGsn => {
   let context = RootProvider.useWeb3React();
+  let address = context.account;
   // let context = RootProvider.useWeb3ReactId("matic");
   let stewardContractAddress = useStewardAddress();
   let stewardAbi = useStewardAbi();
 
-  React.useMemo3(
-    () => {
-      switch (context.library, context.chainId) {
-      | (Some(library), Some(chainId)) =>
-        stewardContractAddress(chainId)
-        ->oMap(
-            getExchangeContract(
-              _,
-              stewardAbi,
-              library,
-              context.account,
-              isGsn,
-            ),
-          )
+  Js.log2("address", address);
 
-      | _ => None
-      }
-    },
-    (context.library, context.account, context.chainId),
-  );
+  // React.useMemo3(
+  //   () => {
+  switch (context.library, context.chainId) {
+  | (Some(library), Some(chainId)) => (
+      stewardContractAddress(chainId)
+      ->oMap(
+          getExchangeContract(_, stewardAbi, library, context.account, isGsn),
+        ),
+      address,
+    )
+  | _ => (None, None)
+  };
+  //   },
+  //   (context.library, context.account, context.chainId),
+  // );
 };
 
 // type transactionState =
@@ -171,7 +180,7 @@ let useMint = isGsn => {
   let (txState, setTxState) =
     React.useState(() => ContractActions.UnInitialised);
 
-  let optSteward = useStewardContract(isGsn);
+  let (optSteward, from) = useStewardContract(isGsn);
 
   (
     () => {
@@ -187,8 +196,11 @@ let useMint = isGsn => {
             {
               // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
               value,
-              from: None,
-              // from: Some("0x4e9F3eaAe986CfD010758367880cd6a21d60Bf02")
+              // from: None,
+              // from: Some("0x4e9F3eaAe986CfD010758367880cd6a21d60Bf02"),
+              from,
+              // fromAddr: None,
+              // fromAddr: Some("0xd3cbce59318b2e570883719c8165f9390a12bdd6"),
             },
           )
           ->Promise.Js.toResult;

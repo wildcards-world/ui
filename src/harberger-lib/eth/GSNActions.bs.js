@@ -15,10 +15,12 @@ import * as WrapSignerInGsnProvider from "./wrapSignerInGsnProvider";
 var wrapSignerInGsnProvider = WrapSignerInGsnProvider.default;
 
 function getProviderOrSigner(library, account, isGsn) {
+  console.log("Getting the signer", account, isGsn);
   if (account !== undefined) {
     if (isGsn) {
-      return wrapSignerInGsnProvider(library.provider, library.getSigner(account));
+      return wrapSignerInGsnProvider(library.provider, library.getSigner(account), account);
     } else {
+      console.log("The account we are using", account);
       return library.getSigner(account);
     }
   } else {
@@ -29,10 +31,11 @@ function getProviderOrSigner(library, account, isGsn) {
 var voteContract = VoteContractJson.voteContract;
 
 function getExchangeContract(stewardAddress, stewardAbi, library, account, isGsn) {
+  console.log("Getting the contract instance");
   return new Ethers.Contract(stewardAddress, stewardAbi, getProviderOrSigner(library, account, isGsn));
 }
 
-var erc20 = "0x9fcb777f6c1c160029004d959C0e0eA7175eEeB1";
+var erc20 = "0x80615a1A1c9E31aa2dCd605592e8A1e674A0c0Bd";
 
 function useStewardAbi(param) {
   return (require("./gsn-steward-abi.json"));
@@ -53,22 +56,25 @@ function useStewardAddress(param) {
 
 function useStewardContract(isGsn) {
   var context = Core.useWeb3React();
+  var address = context.account;
   var stewardContractAddress = useStewardAddress(undefined);
   var stewardAbi = useStewardAbi(undefined);
-  return React.useMemo((function () {
-                var match = context.library;
-                var match$1 = context.chainId;
-                if (match !== undefined && match$1 !== undefined) {
-                  return Globals$WildCards.oMap(Curry._1(stewardContractAddress, match$1), (function (__x) {
-                                return getExchangeContract(__x, stewardAbi, match, context.account, isGsn);
-                              }));
-                }
-                
-              }), /* tuple */[
-              context.library,
-              context.account,
-              context.chainId
-            ]);
+  console.log("address", address);
+  var match = context.library;
+  var match$1 = context.chainId;
+  if (match !== undefined && match$1 !== undefined) {
+    return /* tuple */[
+            Globals$WildCards.oMap(Curry._1(stewardContractAddress, match$1), (function (__x) {
+                    return getExchangeContract(__x, stewardAbi, match, context.account, isGsn);
+                  })),
+            address
+          ];
+  } else {
+    return /* tuple */[
+            undefined,
+            undefined
+          ];
+  }
 }
 
 function useMint(isGsn) {
@@ -76,7 +82,9 @@ function useMint(isGsn) {
           return /* UnInitialised */0;
         }));
   var setTxState = match[1];
-  var optSteward = useStewardContract(isGsn);
+  var match$1 = useStewardContract(isGsn);
+  var from = match$1[1];
+  var optSteward = match$1[0];
   return /* tuple */[
           (function (param) {
               var value = Ethers.utils.parseUnits("0", 18);
@@ -89,7 +97,7 @@ function useMint(isGsn) {
               }
               var buyPromise = $$Promise.Js.toResult(optSteward.testFunctionThatDoesNothing("0xeb2D9aAfD2b3d74D288c022Ab5b58396A4a6c677", {
                         value: value,
-                        from: undefined
+                        from: from
                       }));
               $$Promise.getOk(buyPromise, (function (tx) {
                       Curry._1(setTxState, (function (param) {

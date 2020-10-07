@@ -7,34 +7,20 @@ import * as React from "react";
 import * as RimbleUi from "rimble-ui";
 import * as ReactSwitch from "react-switch";
 import * as Dapp$WildCards from "./Dapp.bs.js";
-import * as FAQs$WildCards from "./StaticContent/FAQs.bs.js";
-import * as Team$WildCards from "./StaticContent/Team.bs.js";
 import * as Footer$WildCards from "./StaticContent/Footer.bs.js";
 import * as Header$WildCards from "./Header.bs.js";
 import * as Router$WildCards from "../helpers/Router.bs.js";
 import * as Styles$WildCards from "../Styles.bs.js";
-import * as BuyGrid$WildCards from "./BuyGrid.bs.js";
 import * as GSNTest$WildCards from "../GSNTest.bs.js";
 import * as Globals$WildCards from "../harberger-lib/Globals.bs.js";
 import * as QlHooks$WildCards from "../harberger-lib/QlHooks.bs.js";
 import * as TokenId$WildCards from "../harberger-lib/TokenId.bs.js";
-import * as Partners$WildCards from "./StaticContent/Partners.bs.js";
-import * as VotePage$WildCards from "../ethTurin/VotePage.bs.js";
 import * as InputHelp$WildCards from "../harberger-lib/InputHelp.bs.js";
-import * as FeaturedIn$WildCards from "./StaticContent/FeaturedIn.bs.js";
-import * as HowItWorks$WildCards from "./StaticContent/HowItWorks.bs.js";
-import * as OrgProfile$WildCards from "./OrgProfile.bs.js";
-import * as EmailSignup$WildCards from "./StaticContent/EmailSignup.bs.js";
 import * as ProfileIcon$WildCards from "../harberger-lib/components/ProfileIcon.bs.js";
-import * as UserProfile$WildCards from "./UserProfile.bs.js";
 import * as Web3Connect$WildCards from "../harberger-lib/components/Web3Connect.bs.js";
 import * as Announcement$WildCards from "./Announcement.bs.js";
-import * as LeaderBoards$WildCards from "./Leaderboards/LeaderBoards.bs.js";
 import * as RootProvider$WildCards from "../harberger-lib/RootProvider.bs.js";
 import * as ReactTranslate$WildCards from "../helpers/providers/ReactTranslate.bs.js";
-import * as CustomerBenefit$WildCards from "./StaticContent/CustomerBenefit.bs.js";
-import * as HomepageLeaderBoard$WildCards from "./StaticContent/HomepageLeaderBoard.bs.js";
-import * as IncreaseIterationPage$WildCards from "../ethTurin/IncreaseIterationPage.bs.js";
 
 var betaBanner = "/img/beta-banner.png";
 
@@ -133,73 +119,12 @@ var AnimalFocusDetails = {
 };
 
 function Layout(Props) {
-  var urlState = Router$WildCards.useUrlState(undefined);
+  Router$WildCards.useUrlState(undefined);
   var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
   var isExplorer = Router$WildCards.useIsExplorer(undefined);
   var isDetails = Router$WildCards.useIsDetails(undefined);
   var isHome = Router$WildCards.useIsHome(undefined);
   var translationModeContext = ReactTranslate$WildCards.useTranslationModeContext(undefined);
-  var tmp;
-  if (typeof urlState === "number") {
-    switch (urlState) {
-      case /* Team */0 :
-          tmp = React.createElement(Team$WildCards.make, { });
-          break;
-      case /* IncreaseVoteIteration */1 :
-          tmp = React.createElement(IncreaseIterationPage$WildCards.make, { });
-          break;
-      case /* VotePage */2 :
-          tmp = React.createElement(VotePage$WildCards.make, { });
-          break;
-      
-    }
-  } else {
-    switch (urlState.tag | 0) {
-      case /* User */0 :
-          tmp = React.createElement(UserProfile$WildCards.make, {
-                userAddress: urlState[0]
-              });
-          break;
-      case /* Org */1 :
-          tmp = React.createElement(OrgProfile$WildCards.make, {
-                orgId: urlState[0]
-              });
-          break;
-      case /* Explorer */2 :
-          var animalPageState = urlState[0];
-          tmp = animalPageState ? React.createElement(Layout$AnimalFocusDetails, {
-                  currentAnimal: animalPageState[0],
-                  showForwardBackButtons: false
-                }) : React.createElement(BuyGrid$WildCards.make, { });
-          break;
-      case /* Leaderboards */3 :
-          tmp = React.createElement(RimbleUi.Flex, {
-                children: React.createElement(LeaderBoards$WildCards.make, {
-                      leaderboardType: urlState[0]
-                    }),
-                flexWrap: "wrap",
-                alignItems: "center",
-                className: Curry._1(Css.style, /* :: */[
-                      Css.padding(Css.em(2)),
-                      /* [] */0
-                    ])
-              });
-          break;
-      case /* Home */4 :
-          var animalPageState$1 = urlState[0];
-          tmp = animalPageState$1 ? React.createElement(Layout$AnimalFocusDetails, {
-                  currentAnimal: animalPageState$1[0],
-                  showForwardBackButtons: true
-                }) : React.createElement(React.Fragment, {
-                  children: null
-                }, React.createElement(Layout$AnimalFocusDetails, {
-                      currentAnimal: undefined,
-                      showForwardBackButtons: false
-                    }), React.createElement(FeaturedIn$WildCards.make, { }), React.createElement(HomepageLeaderBoard$WildCards.make, { }), React.createElement(CustomerBenefit$WildCards.make, { }), React.createElement(HowItWorks$WildCards.make, { }), React.createElement(EmailSignup$WildCards.make, { }), React.createElement(FAQs$WildCards.make, { }), React.createElement(Partners$WildCards.make, { }));
-          break;
-      
-    }
-  }
   return React.createElement("div", {
               className: Styles$WildCards.app
             }, React.createElement("div", {
@@ -336,7 +261,10 @@ function Layout(Props) {
                             })
                         }
                       ]
-                    }), React.createElement(GSNTest$WildCards.make, { }), tmp), React.createElement(Footer$WildCards.make, { }));
+                    }), React.createElement(GSNTest$WildCards.make, { }), React.createElement(Layout$AnimalFocusDetails, {
+                      currentAnimal: undefined,
+                      showForwardBackButtons: false
+                    })), React.createElement(Footer$WildCards.make, { }));
 }
 
 var make = Layout;

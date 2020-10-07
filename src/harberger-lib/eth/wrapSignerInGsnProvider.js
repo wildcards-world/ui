@@ -1,55 +1,95 @@
-// const { RelayProvider } = require("@opengsn/gsn");
+const { RelayProvider, configureGSN } = require("@opengsn/gsn");
+const Web3HttpProvider = require("web3-providers-http");
+var PrivateKeyProvider = require("truffle-privatekey-provider");
+const ethers = require("ethers");
 
-export default async (origProvider, signer) => {
-  console.log({ origProvider });
-  // const configuration = {
-  //   relayHubAddress: relayHub.address,
-  //   stakeManagerAddress: stakeManager.address,
-  // };
-  // const Gsn = require("@opengsn/gsn");
-  const { RelayProvider, resolveConfigurationGSN } = require('@opengsn/gsn')
-  const Web3HttpProvider = require( 'web3-providers-http')
+const useGsn = true;
 
-  // const RelayProvider = Gsn.RelayProvider;
+export default (origProvider, externalSigner, address) => {
+  // console.log({ origProvider });
 
-  // const configureGSN = require("@opengsn/gsn/dist/src/relayclient/GSNConfigurator")
-  // const configureGSN = require("@opengsn/gsn").configureGSN;
+  // const web3provider = new Web3HttpProvider("http://localhost:8545");
+  const web3provider = new Web3HttpProvider(
+    "https://kovan.infura.io/v3/c401b8ee3a324619a453f2b5b2122d7a"
+  );
 
-  const ethers = require("ethers");
-  const web3provider = new Web3HttpProvider('http://localhost:8545')
-
-  const config = await resolveConfigurationGSN(web3provider, {
-    verbose: true,
-    forwarderAddress: "0x844849A90479a12FFc549c8Da98E362575FF78d7",
-    paymasterAddress: "0x0C00CFE8EbB34fE7C31d4915a43Cde211e9F0F3B",
-  })
-  
-  let gsnProvider = new RelayProvider(web3provider, config)
-
-  const account = new ethers.Wallet(Buffer.from('1'.repeat(64),'hex'))
-  gsnProvider.addAccount({address:account.address, privateKey: Buffer.from(account.privateKey.replace('0x',''),'hex') })
-  const from = account.address
-      
-
-  const etherProvider = new ethers.providers.Web3Provider(gsnProvider)
+  // // Local:
   // const gsnConfig = configureGSN({
-  //   relayHubAddress: "0x2167016491369C0820F054FC92A301B97c4C0413",
-  //   paymasterAddress: "0x0C00CFE8EbB34fE7C31d4915a43Cde211e9F0F3B",
-  //   stakeManagerAddress: "0xF9EF5090550E55d3408411d6D23361A1363f13b1",
-  //   trustedForwarderAddress: "0x844849A90479a12FFc549c8Da98E362575FF78d7",
+  //   relayHubAddress: "0xb068cfc28733c9b396559efaa3d4d90690b65fd7",
+  //   paymasterAddress: "0x4af46ecdc266a58f0c0b49bc3930e5619b37e82e",
+  //   stakeManagerAddress: "0xe3331b7f0e5f030fe46ea41ed85e29ada5b661df",
+  //   trustedForwarderAddress: "0x97c588bf0e178cd5c56b26a6a26d483e1d94f93c",
+  //   versionRegistry: "0x0c83e5937010c8946bca89eb6a2185006243acfb",
   //   gasPriceFactorPercent: 70,
-  //   methodSuffix: "_v4",
-  //   jsonStringifyRequest: true,
-  //   chainId: 42,
+  //   // methodSuffix: "_v4",
+  //   // jsonStringifyRequest: true,
+  //   // chainId: 42,
   //   relayLookupWindowBlocks: 1e5,
   //   verbose: true,
   // }); // gsnConfig
-  // var PrivateKeyProvider = require("truffle-privatekey-provider");
+
+  // Kovan
+  const gsnConfig = configureGSN({
+    relayHubAddress: "0xE9dcD2CccEcD77a92BA48933cb626e04214Edb92",
+    paymasterAddress: "0x083082b7Eada37dbD8f263050570B31448E61c94",
+    stakeManagerAddress: "0x93e4F8d0904a52F8a7304066499a6B2B77260ce1",
+    trustedForwarderAddress: "0x0842Ad6B8cb64364761C7c170D0002CC56b1c498",
+    versionRegistry: "0x570EFB87a19367cDbD715039b4aC38554b308896",
+    // gasPriceFactorPercent: 70,
+    // methodSuffix: "_v4",
+    // jsonStringifyRequest: true,
+    chainId: 42,
+    // relayLookupWindowBlocks: 1e5,
+    verbose: true,
+  }); // gsnConfig
+
+  // console.log({ from });
+  // console.log(from);
+  var privateKey =
+    "dd723f2c7dcbf6f4914d2f940d0f06cb3caf352947fd786cd7edb5f4c25c8276";
+
+  let etherProvider;
+  if (useGsn) {
+    // let gsnProvider = new RelayProvider(web3provider, gsnConfig);
+    let gsnProvider = new RelayProvider(web3provider, gsnConfig);
+
+    // const account = new ethers.Wallet(Buffer.from(privateKey, "hex"));
+    // // // const account = new ethers.Wallet(Buffer.from("1".repeat(64), "hex"));
+    // gsnProvider.addAccount({
+    //   address: account.address,
+    //   privateKey: Buffer.from(account.privateKey.replace("0x", ""), "hex"),
+    // });
+
+    // const from = account.address;
+
+    etherProvider = new ethers.providers.Web3Provider(gsnProvider);
+
+    // let signer = etherProvider.getSigner(address);
+    // signer
+    //   .signMessage("test message")
+    //   .then((message, a) => console.log("SIGNER - signed message", message, a));
+    // // console.log("SIGNER");
+    // // console.log(signer._address);
+    // // console.log(signer.address);
+    // // console.log(signer.privateKey);
+    // // signer.connect(etherProvider);
+    let newSigner = externalSigner.connect(etherProvider);
+    newSigner
+      .signMessage("test message")
+      .then((message, a) => console.log("SIGNER - signed message", message, a));
+
+    return newSigner;
+  } else {
+    var privKeyProv = new PrivateKeyProvider(
+      privateKey,
+      "https://kovan.infura.io/v3/c401b8ee3a324619a453f2b5b2122d7a"
+    );
+    etherProvider = new ethers.providers.Web3Provider(privKeyProv);
+  }
   // "0x4e9F3eaAe986CfD010758367880cd6a21d60Bf02"
-  // var privateKey = "dd723f2c7dcbf6f4914d2f940d0f06cb3caf352947fd786cd7edb5f4c25c8276";
   // var privKeyProv = new PrivateKeyProvider(privateKey, "https://kovan.infura.io/v3/c401b8ee3a324619a453f2b5b2122d7a");
   // var privKeyProv = new PrivateKeyProvider(privateKey, "http://localhost:8545");
- 
+
   // const gsnProvider = new RelayProvider(privKeyProv, gsnConfig);
   // const gsnProvider = new RelayProvider(privKeyProv, gsnConfig);
   // const gsnProvider = privKeyProv;
@@ -59,18 +99,11 @@ export default async (origProvider, signer) => {
   */
   // const provider = new ethers.providers.Web3Provider(origProvider);
   // const provider = new ethers.providers.Web3Provider(gsnProvider);
-  return etherProvider.getSigner(from);
+  // return etherProvider.getSigner("0xd3Cbce59318B2E570883719c8165F9390A12BdD6");
   // return new ethers.Wallet(provider);
   // return signer.connect(provider);
   // return new RelayProvider(provider, configuration);
 };
-
-// RelayHub: 0x2167016491369C0820F054FC92A301B97c4C0413
-// StakeManager: 0xF9EF5090550E55d3408411d6D23361A1363f13b1
-// Penalizer: 0x270d0a520f1921c476FeECba08Ff965a389d49C7
-// VersionRegistry: 0xB8bAa0b4bd356b3f643047DF729F62F401F4DB2d
-// Forwarder: 0x844849A90479a12FFc549c8Da98E362575FF78d7
-// Paymaster (Default): 0x0C00CFE8EbB34fE7C31d4915a43Cde211e9F0F3B
 
 // const conf = {
 //   ourContract: "0x23Cd0E36bB4727550bc01Cd3A1E8931b6d7CC796",

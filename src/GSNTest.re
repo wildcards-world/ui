@@ -1,8 +1,8 @@
 [@react.component]
 let make = () => {
   // useMint();
-  // let (mintFunc, txBuyState) = GSNActions.useMint(true);
   let (mintFunc, txBuyState) = GSNActions.useMint(true);
+  // let (mintFunc, txBuyState) = GSNActions.useMint(false);
 
   <div>
     <h1> "testing"->React.string </h1>
