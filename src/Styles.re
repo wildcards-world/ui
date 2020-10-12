@@ -106,22 +106,19 @@ let overlayImg = (topPosition, leftPosition) =>
   ]);
 let overlayFlameImg = overlayImg(30., 0.);
 let prettyTransparent = rgba(255, 255, 255, 0.5);
+let imageHoverStyle =
+  hover([
+    filter([`saturate(150.), `brightness(110.)]),
+    overflow(visible),
+    backgroundColor(prettyTransparent),
+    boxShadow(Shadow.box(~blur=px(20), ~spread=px(20), prettyTransparent)),
+    transform(scale(1.3, 1.3)),
+    transition(~duration=100, ~delay=0, ~timingFunction=ease, "all"),
+  ]);
 let overlayBadgeImg =
   Cn.make([
     overlayImg(60., 70.),
-    style([
-      borderRadius(`percent(100.)),
-      hover([
-        filter([`saturate(150.), `brightness(110.)]),
-        overflow(visible),
-        backgroundColor(prettyTransparent),
-        boxShadow(
-          Shadow.box(~blur=px(20), ~spread=px(20), prettyTransparent),
-        ),
-        transform(scale(1.3, 1.3)),
-        transition(~duration=100, ~delay=0, ~timingFunction=ease, "all"),
-      ]),
-    ]),
+    style([borderRadius(`percent(100.)), imageHoverStyle]),
   ]);
 
 let streakText =
@@ -193,6 +190,14 @@ let clickableLink =
     cursor(`pointer),
   ]);
 
+let mainImageHoverStyle = scalar =>
+  hover([
+    filter([`saturate(150.), `brightness(110.)]),
+    zIndex(2),
+    overflow(visible),
+    transform(scale(1.1 *. scalar, 1.1 *. scalar)),
+    transition(~duration=100, ~delay=0, ~timingFunction=ease, "all"),
+  ]);
 let headerImg = (enlargement, scalar) =>
   style([
     position(`relative),
@@ -203,13 +208,7 @@ let headerImg = (enlargement, scalar) =>
     transform(scale(scalar, scalar)),
     textAlign(center),
     transition(~duration=1000, ~delay=0, ~timingFunction=ease, "all"),
-    hover([
-      filter([`saturate(150.), `brightness(110.)]),
-      zIndex(2),
-      overflow(visible),
-      transform(scale(1.1 *. scalar, 1.1 *. scalar)),
-      transition(~duration=100, ~delay=0, ~timingFunction=ease, "all"),
-    ]),
+    mainImageHoverStyle(scalar),
   ]);
 
 let horizantalBlueTile =

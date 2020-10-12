@@ -45,14 +45,8 @@ let conservationPartners: array(conservationPartnerType) = [|
   },
 |];
 
-// type reasonUneligeableToVote =
-//   | DontOwnAWildcard
-//   | EligeableToVote;
 type organisationArrayIndex = int;
-// type currentVote = {
-//   vote: BN.bn,
-//   maxPossibleVote: BN.bn // This should be calculated at the beginning
-// };
+
 type voteStep =
   | DefaultView // sub-states can either be loading data, ready, or user is not eligible to vote
   | SelectedOrganisationToVote(organisationArrayIndex, float => unit)
@@ -60,7 +54,6 @@ type voteStep =
   | ProcessTransaction
   | ViewResults;
 
-// TODO: this shouldn't be done using a component, it should be done with a 'useEffect'
 module HackyComponentThatCallsAFunctionOnce = {
   [@react.component]
   let make = (~reloadFunction) => {
@@ -108,24 +101,7 @@ module HackyComponentThatReloadsOnTimeout = {
 
 module OrganisationVote = {
   [@react.component]
-  let make =
-      (
-        ~currentIteration,
-        ~conservationPartner,
-        ~cannotVote,
-        ~selectConservation,
-        ~index,
-        ~currentUser,
-      ) => {
-    // TODO: add a reload on timeout if this doesn't load
-    let (hasVotedForProposal1Votes, _reloadHasVoted) =
-      ContractActions.useHasUserVotedForProposalIteration(
-        currentIteration->string_of_int,
-        currentUser,
-        conservationPartner.index->string_of_int,
-        false,
-      );
-
+  let make = (~conservationPartner, ~selectConservation, ~index) => {
     <Rimble.Box width=[|1., 0.25|]>
       <a href={conservationPartner.link} target="_blank">
         <img
@@ -144,14 +120,9 @@ module OrganisationVote = {
         className=Css.(
           style([display(`block), margin(auto), width(`percent(90.))])
         )
-        disabled={hasVotedForProposal1Votes |||| true || cannotVote}
+        disabled=true
         onClick={_ => selectConservation(index)}>
-        {(
-           hasVotedForProposal1Votes
-           >>= (hasVoted => hasVoted ? Some("Cannot Vote Twice") : None)
-           |||| "Vote"
-         )
-         ->restr}
+        "Voting Disabled"->restr
       </Rimble.Button>
     </Rimble.Box>;
   };
@@ -318,7 +289,7 @@ let make = () => {
   let (voteStep, setVoteStep) = React.useState(() => DefaultView);
   // let (voteStep, setVoteStep) = React.useState(() => ViewResults);
 
-  let (voteForProject, transactionStatus) =
+  let (voteForProject, _transactionStatus) =
     ContractActions.useVoteForProject();
   let selectConservation = conservationArrayIndex => {
     let submitVoteFunction: float => unit =
@@ -351,79 +322,6 @@ let make = () => {
     setVoteStep(_ => DefaultView);
   };
 
-  let networkIdOpt = RootProvider.useNetworkId();
-
-  let currentUser = RootProvider.useCurrentUser();
-
-  let userAddressLowerCase =
-    switch (currentUser) {
-    | Some(currentUser) => currentUser->Js.String.toLowerCase
-    | _ => "0x0000000000000000000000000000000000000000"
-    };
-
-  let patronQueryOpt = QlHooks.usePatronQuery(userAddressLowerCase);
-
-  let (optProposalDeadline, _reloadProposalDeadline) =
-    ContractActions.useProposalDeadline();
-
-  let currentlyOwnedTokens =
-    switch (patronQueryOpt) {
-    | Some(patronQueryResult) =>
-      patronQueryResult##patron
-      ->oMap(patron => patron##tokens->Array.map(token => token##id))
-      |||| [||]
-    | None => [||]
-    };
-
-  let isProviderSelucted = RootProvider.useIsProviderSelected();
-
-  let (cannotVote, incorrectNetworkWarning) = {
-    let cannotVote: bool = currentlyOwnedTokens->Array.length <= 0;
-
-    switch (isProviderSelucted) {
-    | false => (
-        false,
-        <>
-          <h4 className=Css.(style([color(red)]))>
-            "You need to be logged in to vote"->restr
-          </h4>
-        </>,
-      )
-    | true =>
-      switch (networkIdOpt) {
-      | Some(5) => (cannotVote, React.null)
-      | Some(1) =>
-        let launchTime =
-          MomentRe.momentUtcDefaultFormat("2020-05-08T08:00:00");
-        let isBeforeDate =
-          MomentRe.diff(launchTime, MomentRe.momentNow(), `seconds) > 0.;
-        isBeforeDate
-          ? (
-            true,
-            <>
-              <h4 className=Css.(style([color(red)]))>
-                "Voting is currently only available on the Goerli testnet right."
-                ->restr
-              </h4>
-              <h2 className=Css.(style([color(red)]))>
-                "Launching in: "->restr
-                <CountDown endDateMoment=launchTime />
-              </h2>
-            </>,
-          )
-          : (cannotVote, React.null);
-      | _ => (
-          true,
-          <>
-            <h4 className=Css.(style([color(red)]))>
-              "We only support mainnet and goerli testnet."->restr
-            </h4>
-          </>,
-        )
-      }
-    };
-  };
-
   let glen = TokenId.makeFromInt(13);
   let optCurrentPrice = PriceDisplay.usePrice(glen);
   let (_, _, ratio, _) = QlHooks.usePledgeRateDetailed(glen);
@@ -444,82 +342,6 @@ let make = () => {
       )
     | None => (None, None)
     };
-
-  let etherScanUrl = RootProvider.useEtherscanUrl();
-
-  let (redeemedLoyaltyTokenBalanceBn, resetLoyaltyTokenBalance) =
-    ContractActions.useUserLoyaltyTokenBalance(userAddressLowerCase);
-  let (optCurrentIteration, reloadCurrentIteration) =
-    ContractActions.useCurrentIteration();
-
-  let redeemedLoyaltyTokenBalanceOpt =
-    redeemedLoyaltyTokenBalanceBn->oFlatMap(balance =>
-      balance->Web3Utils.fromWeiBNToEthPrecision(~digits=3)->Float.fromString
-    );
-
-  let txStateDisplay =
-    <div>
-      {switch (transactionStatus) {
-       | UnInitialised =>
-         <> <Rimble.Loader /> <p> "Starting Transaction"->restr </p> </>
-       | Created =>
-         <> <Rimble.Loader /> <p> "Transaction Created"->restr </p> </>
-       | SignedAndSubmitted(txHash) =>
-         <>
-           <Rimble.Loader />
-           <p>
-             "Processing: "->restr
-             <a
-               target="_blank"
-               rel="noopener noreferrer"
-               href={"https://" ++ etherScanUrl ++ "/tx/" ++ txHash}>
-               "view transaction"->restr
-             </a>
-           </p>
-         </>
-       | Declined(message) =>
-         <p> {("Submitting transaction failed: " ++ message)->restr} </p>
-       | Complete(_txResult) =>
-         <>
-           <HackyComponentThatCallsAFunctionOnce
-             reloadFunction=resetLoyaltyTokenBalance
-           />
-           <p> "Congratulations for voting"->restr </p>
-           <Rimble.Button
-             className=Css.(
-               style([
-                 display(`block),
-                 margin(auto),
-                 width(`percent(90.)),
-               ])
-             )
-             onClick={_ => setVoteStep(_ => ViewResults)}>
-             "Reveal Rankings"->restr
-           </Rimble.Button>
-         </>
-       | Failed => <p> "Transaction failed"->restr </p>
-       }}
-    </div>;
-
-  let (amountApproved, resetAmountApproved) =
-    ContractActions.useVoteApprovedTokens(userAddressLowerCase);
-  // let hasApprovedFullBalance =
-  //   amountApproved
-  //   |||| BN.new_("0")
-  //   |>| (
-  //     redeemedLoyaltyTokenBalanceBn |||| BN.new_("10000000000000000000000")
-  //   );
-
-  // TODO: This gets the value from the graph rather - use this in the future rather than querying the chain.
-  // let totalLoyaltyTokensOpt =
-  //   QlHooks.useTotalLoyaltyToken(userAddressLowerCase);
-  // let redeemedLoyaltyTokenBalance: float =
-  //   totalLoyaltyTokensOpt->oFlatMap(((_, claimedLoyaltyTokens)) =>
-  //     claimedLoyaltyTokens
-  //     ->Web3Utils.fromWeiBNToEthPrecision(~digits=3)
-  //     ->Float.fromString
-  //   )
-  //   |||| 0.;
 
   <Rimble.Box className=Styles.topBody>
     <Rimble.Box>
@@ -553,33 +375,12 @@ let make = () => {
           <br />
           <br />
           <br />
-          {switch (optProposalDeadline) {
-           | Some(proposalDeadline) =>
-             let proposalDeadlineMoment =
-               proposalDeadline->MomentRe.momentWithUnix;
-             let isBeforeDate =
-               MomentRe.diff(
-                 proposalDeadlineMoment,
-                 MomentRe.momentNow(),
-                 `seconds,
-               )
-               > 0.;
-             isBeforeDate
-               ? <>
-                   <h4> "Winner will be paid out in:"->restr </h4>
-                   <CountDown endDateMoment=proposalDeadlineMoment />
-                 </>
-               : <h4>
-                   "This voting cycle is over, the winner will be paid out shortly."
-                   ->restr
-                 </h4> /* TODO:
-                          this should say who the winner is. But in general we need think about the flow of this,
-                              because technically users can still vote here.
-                              Should the vote buttons be disabled in the UI?
-                          */;
-           // TODO: when the voting interval is over, it should re-request every few seconds to update the page if it does come back.
-           | None => React.null
-           }}
+          <h4
+            className=Css.(
+              style([width(`percent(100.)), textAlign(center)])
+            )>
+            "Voting coming again soon!"->restr
+          </h4>
         </Rimble.Box>
         <Rimble.Box width=[|1., 1., 0.7|]>
           <h3 className=Css.(style([textDecoration(`underline)]))>
@@ -606,130 +407,23 @@ let make = () => {
                : React.null}
           </h3>
           <small>
-            {currentlyOwnedTokens->Array.length <= 0
-               ? <p className=Css.(style([color(red)]))>
-                   "You can only vote if you are the owner of a wildcard"
-                   ->restr
-                 </p>
-               : {
-                 switch (redeemedLoyaltyTokenBalanceOpt) {
-                 | Some(redeemedLoyaltyTokenBalance) =>
-                   <p>
-                     {(
-                        "Redeemed loyalty token balance: "
-                        ++ {
-                          redeemedLoyaltyTokenBalance->Float.toString;
-                        }
-                        ++ " WLT"
-                      )
-                      ->restr}
-                   </p>
-                 | None => <Rimble.Loader />
-                 };
-               }}
-            incorrectNetworkWarning
+            <p>
+              "Unfortunately we have decided to stop running our DAO on mainnet ethereum. We are moving all of this code to Matic where voting will be much cheaper and more frictionless"
+              ->restr
+            </p>
           </small>
           <Rimble.Flex flexWrap="wrap" alignItems="center">
-            {switch (voteStep) {
-             | DefaultView =>
-               switch (optCurrentIteration) {
-               | Some(currentIteration) =>
-                 conservationPartners
-                 ->Array.mapWithIndex((index, conservationPartner) =>
-                     <OrganisationVote
-                       currentUser=userAddressLowerCase
-                       currentIteration
-                       conservationPartner
-                       cannotVote
-                       index
-                       selectConservation
-                       key={conservationPartner.name}
-                     />
-                   )
-                 ->React.array
-               | None =>
-                 <>
-                   <HackyComponentThatReloadsOnTimeout
-                     // If the loyalty token balance or the amountApproved are still not loaded after 1 second, attempt to reload them.
-                     reloadFunction=reloadCurrentIteration
-                     timeoutTime=1000
-                   />
-                   <Rimble.Loader />
-                   <p> "loading vote data"->restr </p>
-                 </>
-               }
-             | SelectedOrganisationToVote(
-                 conservationVotedArrayIndex,
-                 submitVoteFunction,
-               ) =>
-               let selectedConservationPartner =
-                 conservationPartners->Array.getUnsafe(
-                   conservationVotedArrayIndex,
-                 );
-               <>
-                 <Rimble.Box width=[|1., 0.25|]>
-                   <a href={selectedConservationPartner.link} target="_blank">
-                     <img
-                       className=Css.(
-                         style([
-                           display(`block),
-                           width(`percent(70.)),
-                           maxWidth(`px(800)),
-                           margin(auto),
-                         ])
-                       )
-                       src={selectedConservationPartner.image}
-                     />
-                   </a>
-                 </Rimble.Box>
-                 <Rimble.Box width=[|1., 0.75|]>
-                   {switch (amountApproved, redeemedLoyaltyTokenBalanceBn) {
-                    | (
-                        Some(amountApproved),
-                        Some(redeemedLoyaltyTokenBalanceBn),
-                      ) =>
-                      let hasApprovedFullBalance =
-                        amountApproved |>| redeemedLoyaltyTokenBalanceBn;
-                      hasApprovedFullBalance
-                        ? {
-                          switch (redeemedLoyaltyTokenBalanceOpt) {
-                          | Some(redeemedLoyaltyTokenBalance) =>
-                            let maxVote =
-                              Js.Math.sqrt(redeemedLoyaltyTokenBalance);
-                            <QVSelect submitVoteFunction maxVote />;
-                          | None =>
-                            <>
-                              <Rimble.Loader />
-                              <p> "Loading your balance"->restr </p>
-                            </>
-                          };
-                        }
-                        : <ApproveLoyaltyTokens
-                            reloadFunction=resetAmountApproved
-                          />;
-                    | _ =>
-                      <>
-                        <HackyComponentThatReloadsOnTimeout
-                          // If the loyalty token balance or the amountApproved are still not loaded after 1 second, attempt to reload them.
-                          reloadFunction={() => {
-                            resetLoyaltyTokenBalance();
-                            resetAmountApproved();
-                          }}
-                          timeoutTime=1000
-                        />
-                        <Rimble.Loader />
-                      </>
-                    }}
-                 </Rimble.Box>
-               </>;
-             | ProcessTransaction => txStateDisplay
-             | ViewResults =>
-               switch (optCurrentIteration) {
-               | Some(currentIteration) => <VoteResults currentIteration />
-               // NOTE: it is logically impossible that this is null here since it needs to be defined to go through the previous steps.
-               | None => <p> "loading vote data"->restr </p>
-               }
-             }}
+            {conservationPartners
+             ->Array.mapWithIndex((index, conservationPartner) =>
+                 <OrganisationVote
+                   conservationPartner
+                   index
+                   selectConservation
+                   //  currentIteration=1
+                   key={conservationPartner.name}
+                 />
+               )
+             ->React.array}
           </Rimble.Flex>
         </Rimble.Box>
       </Rimble.Flex>

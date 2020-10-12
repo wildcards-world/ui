@@ -215,18 +215,27 @@ module OrgPage = {
                 padding(em(2.)),
               ])
             )>
-            <img
-              className=Css.(
-                style([
-                  // borderRadius(`percent(100.)),
-                  width(`vh(25.)),
-                  height(`vh(25.)),
-                  objectFit(`contain),
-                  // objectFit(`cover),
-                ])
-              )
-              src=orgImage
-            />
+            <a
+              className={Cn.make([
+                Styles.navListText,
+                Css.(style([fontSize(em(3.))])),
+              ])}
+              target="_blank"
+              rel="noopener noreferrer"
+              href=orgWebsite>
+              <img
+                className=Css.(
+                  style([
+                    // borderRadius(`percent(100.)),
+                    width(`vh(25.)),
+                    height(`vh(25.)),
+                    objectFit(`contain),
+                    // objectFit(`cover),
+                  ])
+                )
+                src=orgImage
+              />
+            </a>
             <br />
             <a
               className={Cn.make([
