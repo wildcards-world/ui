@@ -1,5 +1,14 @@
 open Globals;
 
+[@bs.module "./biconomy-exec"]
+external execTestTx:
+  (
+    . option(RootProviderTypes.web3Library),
+      option(Web3.ethAddress),
+  ) =>
+  Js.Promise.t(unit) =
+  "execTestTx";
+
 [@bs.module "./wrapSignerInGsnProvider"]
 external wrapSignerInGsnProvider:
   (

@@ -6,11 +6,14 @@ import * as React from "react";
 import * as Ethers from "ethers";
 import * as $$Promise from "reason-promise/src/js/promise.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
+import * as BiconomyExec from "./biconomy-exec";
 import * as Core from "@web3-react/core";
 import * as Globals$WildCards from "../Globals.bs.js";
 import * as RootProvider$WildCards from "../RootProvider.bs.js";
 import * as VoteContractJson from "./abi/voteContract.json";
 import * as WrapSignerInGsnProvider from "./wrapSignerInGsnProvider";
+
+var execTestTx = BiconomyExec.execTestTx;
 
 var wrapSignerInGsnProvider = WrapSignerInGsnProvider.default;
 
@@ -131,6 +134,7 @@ function useMint(isGsn) {
 }
 
 export {
+  execTestTx ,
   wrapSignerInGsnProvider ,
   getProviderOrSigner ,
   voteContract ,
@@ -143,4 +147,4 @@ export {
   useMint ,
   
 }
-/* wrapSignerInGsnProvider Not a pure module */
+/* execTestTx Not a pure module */
