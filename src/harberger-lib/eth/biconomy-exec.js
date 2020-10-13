@@ -11,8 +11,64 @@ import abi from "ethereumjs-abi";
 import events from "events";
 // import Biconomy from "@biconomy/mexa";
 
+export const setupBuyFunction = async (contractAddress, networkId) => {
+  const context = useWeb3React();
+  const { library, account } = context;
 
+  if (!library) {
+    // TODO: FIX THIS CODE IS BAD AND ERROR PRONE!
+    console.log("Library not defined");
+    return;
+  }
 
+  const web3 = new Web3(library.provider);
+  // const contractAddress = "0x59b3c176c39bd8734717492f4da8fe26ff6a454d";
+
+  const contract = new web3.eth.Contract(jsonInterface.abi, contractAddress);
+
+  return async (
+    newPrice,
+    currentPriceWei,
+    wildcardsPercentage,
+    amountToSend
+  ) => {
+    const functionSignature = contract.methods
+      .setupBuyFunction(
+        newPrice,
+        currentPriceWei,
+        wildcardsPercentage,
+        amountToSend
+      )
+      .encodeABI();
+
+    const result = await executeMetaTransaciton(
+      account,
+      functionSignature,
+      contract,
+      contractAddress,
+      networkId,
+      web3
+    );
+
+    result
+      .on("transactionHash", (hash) => {
+        // On transacion Hash
+        console.log("hash", { hash });
+      })
+      .once("confirmation", (confirmation, recipet) => {
+        console.log("confirmation", { confirmation, recipet });
+        // On Confirmation
+      })
+      .on("error", (error) => {
+        // On Error
+      });
+  };
+};
+
+// function buyAuctionFunction(newPrice, wildcardsPercentage, amountToSend) {
+//   console.log(newPrice, wildcardsPercentage, amountToSend);
+//   return Promise.resolve("Some Auction tx hash");
+// }
 
 // var Contract = require("web3-eth-contract");
 /******
@@ -83,7 +139,6 @@ const executeMetaTransaciton = async (
 
     // console.info(`User signature is ${signature}`);
     let { r, s, v } = getSignatureParameters(signature, web3);
-    
 
     // try {
     //   fetch(`https://api.biconomy.io/api/v2/meta-tx/native`, {
@@ -154,7 +209,7 @@ export const execTestTx = async (library, account) => {
   //   error,
   // } = context;
 
-  if (!library) return
+  if (!library) return;
 
   const web3 = new Web3(library.provider);
   const contractAddress = "0x59b3c176c39bd8734717492f4da8fe26ff6a454d";
@@ -165,37 +220,34 @@ export const execTestTx = async (library, account) => {
   // });
 
   // const web3Biconomy = new Web3(biconomy);
-  var contract = new web3.eth.Contract(
-    jsonInterface.abi,
-    contractAddress
+  var contract = new web3.eth.Contract(jsonInterface.abi, contractAddress);
+
+  let functionSignature = contract.methods
+    .testFunctionThatDoesNothing(account)
+    .encodeABI();
+
+  // let result = contract.methods.testFunctionThatDoesNothing(account).send({
+  //   from: account,
+  // });
+  let result = await executeMetaTransaciton(
+    account,
+    functionSignature,
+    contract,
+    contractAddress,
+    "4",
+    web3
   );
 
-    let functionSignature = contract.methods
-      .testFunctionThatDoesNothing(account)
-      .encodeABI();
-
-    // let result = contract.methods.testFunctionThatDoesNothing(account).send({
-    //   from: account,
-    // });
-    let result = await executeMetaTransaciton(
-      account,
-      functionSignature,
-      contract,
-      contractAddress,
-      "4",
-      web3
-    );
-
-    // result
-    //   .on("transactionHash", (hash) => {
-    //     // On transacion Hash
-    //     console.log("hash", { hash });
-    //   })
-    //   .once("confirmation", (confirmation, recipet) => {
-    //     console.log("confirmation", { confirmation, recipet });
-    //     // On Confirmation
-    //   })
-    //   .on("error", (error) => {
-    //     // On Error
-    //   });
-  };
+  // result
+  //   .on("transactionHash", (hash) => {
+  //     // On transacion Hash
+  //     console.log("hash", { hash });
+  //   })
+  //   .once("confirmation", (confirmation, recipet) => {
+  //     console.log("confirmation", { confirmation, recipet });
+  //     // On Confirmation
+  //   })
+  //   .on("error", (error) => {
+  //     // On Error
+  //   });
+};

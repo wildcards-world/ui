@@ -266,6 +266,38 @@ var overlayFlameImg = overlayImg(30, 0);
 
 var prettyTransparent = Css.rgba(255, 255, 255, 0.5);
 
+var imageHoverStyle = Css.hover(/* :: */[
+      Css.filter(/* :: */[
+            /* `saturate */[
+              -29929489,
+              150
+            ],
+            /* :: */[
+              /* `brightness */[
+                -445542959,
+                110
+              ],
+              /* [] */0
+            ]
+          ]),
+      /* :: */[
+        Css.overflow(Css.visible),
+        /* :: */[
+          Css.backgroundColor(prettyTransparent),
+          /* :: */[
+            Css.boxShadow(Css_Core.Shadow.box(undefined, undefined, Css.px(20), Css.px(20), undefined, prettyTransparent)),
+            /* :: */[
+              Css.transform(Css.scale(1.3, 1.3)),
+              /* :: */[
+                Css.transition(100, 0, Css.ease, "all"),
+                /* [] */0
+              ]
+            ]
+          ]
+        ]
+      ]
+    ]);
+
 var overlayBadgeImg = Cn.make(/* :: */[
       overlayImg(60, 70),
       /* :: */[
@@ -275,37 +307,7 @@ var overlayBadgeImg = Cn.make(/* :: */[
                     100
                   ]),
               /* :: */[
-                Css.hover(/* :: */[
-                      Css.filter(/* :: */[
-                            /* `saturate */[
-                              -29929489,
-                              150
-                            ],
-                            /* :: */[
-                              /* `brightness */[
-                                -445542959,
-                                110
-                              ],
-                              /* [] */0
-                            ]
-                          ]),
-                      /* :: */[
-                        Css.overflow(Css.visible),
-                        /* :: */[
-                          Css.backgroundColor(prettyTransparent),
-                          /* :: */[
-                            Css.boxShadow(Css_Core.Shadow.box(undefined, undefined, Css.px(20), Css.px(20), undefined, prettyTransparent)),
-                            /* :: */[
-                              Css.transform(Css.scale(1.3, 1.3)),
-                              /* :: */[
-                                Css.transition(100, 0, Css.ease, "all"),
-                                /* [] */0
-                              ]
-                            ]
-                          ]
-                        ]
-                      ]
-                    ]),
+                imageHoverStyle,
                 /* [] */0
               ]
             ]),
@@ -497,6 +499,37 @@ var clickableLink = Curry._1(Css.style, /* :: */[
       ]
     ]);
 
+function mainImageHoverStyle(scalar) {
+  return Css.hover(/* :: */[
+              Css.filter(/* :: */[
+                    /* `saturate */[
+                      -29929489,
+                      150
+                    ],
+                    /* :: */[
+                      /* `brightness */[
+                        -445542959,
+                        110
+                      ],
+                      /* [] */0
+                    ]
+                  ]),
+              /* :: */[
+                Css.zIndex(2),
+                /* :: */[
+                  Css.overflow(Css.visible),
+                  /* :: */[
+                    Css.transform(Css.scale(1.1 * scalar, 1.1 * scalar)),
+                    /* :: */[
+                      Css.transition(100, 0, Css.ease, "all"),
+                      /* [] */0
+                    ]
+                  ]
+                ]
+              ]
+            ]);
+}
+
 function headerImg(enlargement, scalar) {
   return Curry._1(Css.style, /* :: */[
               Css.position(/* relative */903134412),
@@ -521,34 +554,7 @@ function headerImg(enlargement, scalar) {
                           /* :: */[
                             Css.transition(1000, 0, Css.ease, "all"),
                             /* :: */[
-                              Css.hover(/* :: */[
-                                    Css.filter(/* :: */[
-                                          /* `saturate */[
-                                            -29929489,
-                                            150
-                                          ],
-                                          /* :: */[
-                                            /* `brightness */[
-                                              -445542959,
-                                              110
-                                            ],
-                                            /* [] */0
-                                          ]
-                                        ]),
-                                    /* :: */[
-                                      Css.zIndex(2),
-                                      /* :: */[
-                                        Css.overflow(Css.visible),
-                                        /* :: */[
-                                          Css.transform(Css.scale(1.1 * scalar, 1.1 * scalar)),
-                                          /* :: */[
-                                            Css.transition(100, 0, Css.ease, "all"),
-                                            /* [] */0
-                                          ]
-                                        ]
-                                      ]
-                                    ]
-                                  ]),
+                              mainImageHoverStyle(scalar),
                               /* [] */0
                             ]
                           ]
@@ -1098,6 +1104,7 @@ export {
   overlayImg ,
   overlayFlameImg ,
   prettyTransparent ,
+  imageHoverStyle ,
   overlayBadgeImg ,
   streakText ,
   flameImg ,
@@ -1119,6 +1126,7 @@ export {
   animalBox ,
   ownedAnimalImg ,
   clickableLink ,
+  mainImageHoverStyle ,
   headerImg ,
   horizantalBlueTile ,
   explainerLargeText ,

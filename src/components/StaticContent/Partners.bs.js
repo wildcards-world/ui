@@ -6,6 +6,7 @@ import * as React from "react";
 import * as Js_exn from "bs-platform/lib/es6/js_exn.js";
 import * as Js_dict from "bs-platform/lib/es6/js_dict.js";
 import * as Js_json from "bs-platform/lib/es6/js_json.js";
+import * as Css_Core from "bs-css/src/Css_Core.js";
 import * as Js_option from "bs-platform/lib/es6/js_option.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
@@ -145,7 +146,16 @@ var cardStyle = Curry._1(Css.style, /* :: */[
             -119887163,
             100
           ]),
-      /* [] */0
+      /* :: */[
+        Css.display(/* flex */-1010954439),
+        /* :: */[
+          Css.important(Css.padding(/* `percent */[
+                    -119887163,
+                    0
+                  ])),
+          /* [] */0
+        ]
+      ]
     ]);
 
 var logoStyle = Curry._1(Css.style, /* :: */[
@@ -174,6 +184,22 @@ function Partners$OrgDetails(Props) {
   return React.createElement(RimbleUi.Card, {
               className: cardStyle,
               children: React.createElement("a", {
+                    className: Curry._1(Css.style, /* :: */[
+                          Css.display(/* flex */-1010954439),
+                          /* :: */[
+                            Css.width(/* `percent */[
+                                  -119887163,
+                                  100
+                                ]),
+                            /* :: */[
+                              Css.height(/* `percent */[
+                                    -119887163,
+                                    100
+                                  ]),
+                              /* [] */0
+                            ]
+                          ]
+                        ]),
                     onClick: (function (e) {
                         e.stopPropagation();
                         e.preventDefault();
@@ -181,16 +207,55 @@ function Partners$OrgDetails(Props) {
                       })
                   }, React.createElement("img", {
                         className: Curry._1(Css.style, /* :: */[
-                              Css.marginLeft(/* `percent */[
+                              Css.margin(/* `percent */[
                                     -119887163,
-                                    10
+                                    1
                                   ]),
                               /* :: */[
-                                Css.width(/* `percent */[
-                                      -119887163,
-                                      80
-                                    ]),
-                                /* [] */0
+                                Css.objectFit(/* contain */427065300),
+                                /* :: */[
+                                  Css.width(/* `percent */[
+                                        -119887163,
+                                        98
+                                      ]),
+                                  /* :: */[
+                                    Css.justifyContent(/* center */98248149),
+                                    /* :: */[
+                                      Css.alignItems(/* center */98248149),
+                                      /* :: */[
+                                        Css.hover(/* :: */[
+                                              Css.filter(/* :: */[
+                                                    /* `saturate */[
+                                                      -29929489,
+                                                      150
+                                                    ],
+                                                    /* :: */[
+                                                      /* `brightness */[
+                                                        -445542959,
+                                                        110
+                                                      ],
+                                                      /* [] */0
+                                                    ]
+                                                  ]),
+                                              /* :: */[
+                                                Css.overflow(Css.visible),
+                                                /* :: */[
+                                                  Css.boxShadow(Css_Core.Shadow.box(undefined, undefined, Css.px(20), Css.px(20), undefined, Css.rgba(121, 181, 80, 0.5))),
+                                                  /* :: */[
+                                                    Css.transform(Css.scale(1.01, 1.01)),
+                                                    /* :: */[
+                                                      Css.transition(100, 0, Css.ease, "all"),
+                                                      /* [] */0
+                                                    ]
+                                                  ]
+                                                ]
+                                              ]
+                                            ]),
+                                        /* [] */0
+                                      ]
+                                    ]
+                                  ]
+                                ]
                               ]
                             ]),
                         alt: conservation.name,

@@ -313,25 +313,39 @@ function OrgProfile$OrgPage(Props) {
                                   ]
                                 ]
                               ])
-                        }, React.createElement("img", {
-                              className: Curry._1(Css.style, /* :: */[
-                                    Css.width(/* `vh */[
-                                          26418,
-                                          25
-                                        ]),
+                        }, React.createElement("a", {
+                              className: Cn.make(/* :: */[
+                                    Styles$WildCards.navListText,
                                     /* :: */[
-                                      Css.height(/* `vh */[
-                                            26418,
-                                            25
+                                      Curry._1(Css.style, /* :: */[
+                                            Css.fontSize(Css.em(3)),
+                                            /* [] */0
                                           ]),
-                                      /* :: */[
-                                        Css.objectFit(/* contain */427065300),
-                                        /* [] */0
-                                      ]
+                                      /* [] */0
                                     ]
                                   ]),
-                              src: orgImage
-                            }), React.createElement("br", undefined), React.createElement("a", {
+                              href: orgWebsite,
+                              rel: "noopener noreferrer",
+                              target: "_blank"
+                            }, React.createElement("img", {
+                                  className: Curry._1(Css.style, /* :: */[
+                                        Css.width(/* `vh */[
+                                              26418,
+                                              25
+                                            ]),
+                                        /* :: */[
+                                          Css.height(/* `vh */[
+                                                26418,
+                                                25
+                                              ]),
+                                          /* :: */[
+                                            Css.objectFit(/* contain */427065300),
+                                            /* [] */0
+                                          ]
+                                        ]
+                                      ]),
+                                  src: orgImage
+                                })), React.createElement("br", undefined), React.createElement("a", {
                               className: Cn.make(/* :: */[
                                     Styles$WildCards.navListText,
                                     /* :: */[

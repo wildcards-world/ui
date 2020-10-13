@@ -4,8 +4,6 @@ import * as Css from "bs-css-emotion/src/Css.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as BnJs from "bn.js";
 import * as React from "react";
-import * as Moment from "moment";
-import * as MomentRe from "bs-moment/src/MomentRe.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import * as Belt_Float from "bs-platform/lib/es6/belt_Float.js";
@@ -14,8 +12,6 @@ import * as Styles$WildCards from "../Styles.bs.js";
 import * as Globals$WildCards from "../harberger-lib/Globals.bs.js";
 import * as QlHooks$WildCards from "../harberger-lib/QlHooks.bs.js";
 import * as TokenId$WildCards from "../harberger-lib/TokenId.bs.js";
-import * as QVSelect$WildCards from "./QVSelect.bs.js";
-import * as CountDown$WildCards from "../harberger-lib/CountDown.bs.js";
 import * as Web3Utils$WildCards from "../harberger-lib/Web3Utils.bs.js";
 import * as Accounting$WildCards from "../harberger-lib/Accounting.bs.js";
 import * as PriceDisplay$WildCards from "../harberger-lib/PriceDisplay.bs.js";
@@ -115,14 +111,9 @@ var HackyComponentThatReloadsOnTimeout = {
 };
 
 function VotePage$OrganisationVote(Props) {
-  var currentIteration = Props.currentIteration;
   var conservationPartner = Props.conservationPartner;
-  var cannotVote = Props.cannotVote;
   var selectConservation = Props.selectConservation;
   var index = Props.index;
-  var currentUser = Props.currentUser;
-  var match = ContractActions$WildCards.useHasUserVotedForProposalIteration(String(currentIteration), currentUser, String(conservationPartner.index), false);
-  var hasVotedForProposal1Votes = match[0];
   return React.createElement(RimbleUi.Box, {
               children: null,
               width: [
@@ -167,13 +158,8 @@ function VotePage$OrganisationVote(Props) {
                           ]
                         ]
                       ]),
-                  disabled: Globals$WildCards.$pipe$pipe$pipe$pipe(hasVotedForProposal1Votes, true) || cannotVote,
-                  children: Globals$WildCards.restr(Globals$WildCards.$pipe$pipe$pipe$pipe(Globals$WildCards.$great$great$eq(hasVotedForProposal1Votes, (function (hasVoted) {
-                                  if (hasVoted) {
-                                    return "Cannot Vote Twice";
-                                  }
-                                  
-                                })), "Vote")),
+                  disabled: true,
+                  children: Globals$WildCards.restr("Voting Disabled"),
                   onClick: (function (param) {
                       return Curry._1(selectConservation, index);
                     })
@@ -324,9 +310,7 @@ function VotePage(Props) {
           return /* DefaultView */0;
         }));
   var setVoteStep = match[1];
-  var voteStep = match[0];
   var match$1 = ContractActions$WildCards.useVoteForProject(undefined);
-  var transactionStatus = match$1[1];
   var voteForProject = match$1[0];
   var selectConservation = function (conservationArrayIndex) {
     var submitVoteFunction = function (votes) {
@@ -344,271 +328,18 @@ function VotePage(Props) {
                         ];
                 }));
   };
-  var networkIdOpt = RootProvider$WildCards.useNetworkId(undefined);
-  var currentUser = RootProvider$WildCards.useCurrentUser(undefined);
-  var userAddressLowerCase = currentUser !== undefined ? currentUser.toLowerCase() : "0x0000000000000000000000000000000000000000";
-  var patronQueryOpt = QlHooks$WildCards.usePatronQuery(userAddressLowerCase);
-  var match$2 = ContractActions$WildCards.useProposalDeadline(undefined);
-  var optProposalDeadline = match$2[0];
-  var currentlyOwnedTokens = patronQueryOpt !== undefined ? Globals$WildCards.$pipe$pipe$pipe$pipe(Globals$WildCards.oMap(Caml_option.valFromOption(patronQueryOpt).patron, (function (patron) {
-                return Belt_Array.map(patron.tokens, (function (token) {
-                              return token.id;
-                            }));
-              })), []) : [];
-  var isProviderSelucted = RootProvider$WildCards.useIsProviderSelected(undefined);
-  var cannotVote = currentlyOwnedTokens.length <= 0;
-  var match$3;
-  if (isProviderSelucted) {
-    var exit = 0;
-    if (networkIdOpt !== undefined) {
-      if (networkIdOpt !== 1) {
-        if (networkIdOpt !== 5) {
-          exit = 1;
-        } else {
-          match$3 = /* tuple */[
-            cannotVote,
-            null
-          ];
-        }
-      } else {
-        var launchTime = Moment.utc("2020-05-08T08:00:00");
-        var isBeforeDate = launchTime.diff(Moment(), "seconds") > 0;
-        match$3 = isBeforeDate ? /* tuple */[
-            true,
-            React.createElement(React.Fragment, undefined, React.createElement("h4", {
-                      className: Curry._1(Css.style, /* :: */[
-                            Css.color(Css.red),
-                            /* [] */0
-                          ])
-                    }, Globals$WildCards.restr("Voting is currently only available on the Goerli testnet right.")), React.createElement("h2", {
-                      className: Curry._1(Css.style, /* :: */[
-                            Css.color(Css.red),
-                            /* [] */0
-                          ])
-                    }, Globals$WildCards.restr("Launching in: "), React.createElement(CountDown$WildCards.make, {
-                          endDateMoment: launchTime
-                        })))
-          ] : /* tuple */[
-            cannotVote,
-            null
-          ];
-      }
-    } else {
-      exit = 1;
-    }
-    if (exit === 1) {
-      match$3 = /* tuple */[
-        true,
-        React.createElement(React.Fragment, undefined, React.createElement("h4", {
-                  className: Curry._1(Css.style, /* :: */[
-                        Css.color(Css.red),
-                        /* [] */0
-                      ])
-                }, Globals$WildCards.restr("We only support mainnet and goerli testnet.")))
-      ];
-    }
-    
-  } else {
-    match$3 = /* tuple */[
-      false,
-      React.createElement(React.Fragment, undefined, React.createElement("h4", {
-                className: Curry._1(Css.style, /* :: */[
-                      Css.color(Css.red),
-                      /* [] */0
-                    ])
-              }, Globals$WildCards.restr("You need to be logged in to vote")))
-    ];
-  }
-  var cannotVote$1 = match$3[0];
   var glen = TokenId$WildCards.makeFromInt(13);
   var optCurrentPrice = PriceDisplay$WildCards.usePrice(glen);
-  var match$4 = QlHooks$WildCards.usePledgeRateDetailed(glen);
-  var match$5 = optCurrentPrice !== undefined ? /* tuple */[
-      Globals$WildCards.toFixedWithPrecisionNoTrailingZeros(Accounting$WildCards.defaultZeroF(Belt_Float.fromString(optCurrentPrice[0])) * match$4[2], 5),
+  var match$2 = QlHooks$WildCards.usePledgeRateDetailed(glen);
+  var match$3 = optCurrentPrice !== undefined ? /* tuple */[
+      Globals$WildCards.toFixedWithPrecisionNoTrailingZeros(Accounting$WildCards.defaultZeroF(Belt_Float.fromString(optCurrentPrice[0])) * match$2[2], 5),
       undefined
     ] : /* tuple */[
       undefined,
       undefined
     ];
-  var optMonthlyPledgeUsd = match$5[1];
-  var optMonthlyPledgeEth = match$5[0];
-  var etherScanUrl = RootProvider$WildCards.useEtherscanUrl(undefined);
-  var match$6 = ContractActions$WildCards.useUserLoyaltyTokenBalance(userAddressLowerCase);
-  var resetLoyaltyTokenBalance = match$6[1];
-  var redeemedLoyaltyTokenBalanceBn = match$6[0];
-  var match$7 = ContractActions$WildCards.useCurrentIteration(undefined);
-  var optCurrentIteration = match$7[0];
-  var redeemedLoyaltyTokenBalanceOpt = Globals$WildCards.oFlatMap(redeemedLoyaltyTokenBalanceBn, (function (balance) {
-          return Belt_Float.fromString(Web3Utils$WildCards.fromWeiBNToEthPrecision(balance, 3));
-        }));
-  var tmp;
-  if (typeof transactionStatus === "number") {
-    switch (transactionStatus) {
-      case /* UnInitialised */0 :
-          tmp = React.createElement(React.Fragment, undefined, React.createElement(RimbleUi.Loader, { }), React.createElement("p", undefined, Globals$WildCards.restr("Starting Transaction")));
-          break;
-      case /* Created */1 :
-          tmp = React.createElement(React.Fragment, undefined, React.createElement(RimbleUi.Loader, { }), React.createElement("p", undefined, Globals$WildCards.restr("Transaction Created")));
-          break;
-      case /* Failed */2 :
-          tmp = React.createElement("p", undefined, Globals$WildCards.restr("Transaction failed"));
-          break;
-      
-    }
-  } else {
-    switch (transactionStatus.tag | 0) {
-      case /* SignedAndSubmitted */0 :
-          tmp = React.createElement(React.Fragment, undefined, React.createElement(RimbleUi.Loader, { }), React.createElement("p", undefined, Globals$WildCards.restr("Processing: "), React.createElement("a", {
-                        href: "https://" + (etherScanUrl + ("/tx/" + transactionStatus[0])),
-                        rel: "noopener noreferrer",
-                        target: "_blank"
-                      }, Globals$WildCards.restr("view transaction"))));
-          break;
-      case /* Declined */1 :
-          tmp = React.createElement("p", undefined, Globals$WildCards.restr("Submitting transaction failed: " + transactionStatus[0]));
-          break;
-      case /* Complete */2 :
-          tmp = React.createElement(React.Fragment, undefined, React.createElement(VotePage$HackyComponentThatCallsAFunctionOnce, {
-                    reloadFunction: resetLoyaltyTokenBalance
-                  }), React.createElement("p", undefined, Globals$WildCards.restr("Congratulations for voting")), React.createElement(RimbleUi.Button, {
-                    className: Curry._1(Css.style, /* :: */[
-                          Css.display(/* block */888960333),
-                          /* :: */[
-                            Css.margin(Css.auto),
-                            /* :: */[
-                              Css.width(/* `percent */[
-                                    -119887163,
-                                    90
-                                  ]),
-                              /* [] */0
-                            ]
-                          ]
-                        ]),
-                    children: Globals$WildCards.restr("Reveal Rankings"),
-                    onClick: (function (param) {
-                        return Curry._1(setVoteStep, (function (param) {
-                                      return /* ViewResults */2;
-                                    }));
-                      })
-                  }));
-          break;
-      
-    }
-  }
-  var txStateDisplay = React.createElement("div", undefined, tmp);
-  var match$8 = ContractActions$WildCards.useVoteApprovedTokens(userAddressLowerCase);
-  var resetAmountApproved = match$8[1];
-  var amountApproved = match$8[0];
-  var tmp$1;
-  if (optProposalDeadline !== undefined) {
-    var proposalDeadlineMoment = MomentRe.momentWithUnix(optProposalDeadline);
-    var isBeforeDate$1 = proposalDeadlineMoment.diff(Moment(), "seconds") > 0;
-    tmp$1 = isBeforeDate$1 ? React.createElement(React.Fragment, undefined, React.createElement("h4", undefined, Globals$WildCards.restr("Winner will be paid out in:")), React.createElement(CountDown$WildCards.make, {
-                endDateMoment: proposalDeadlineMoment
-              })) : React.createElement("h4", undefined, Globals$WildCards.restr("This voting cycle is over, the winner will be paid out shortly."));
-  } else {
-    tmp$1 = null;
-  }
-  var tmp$2;
-  if (typeof voteStep === "number") {
-    switch (voteStep) {
-      case /* DefaultView */0 :
-          tmp$2 = optCurrentIteration !== undefined ? Belt_Array.mapWithIndex(conservationPartners, (function (index, conservationPartner) {
-                    return React.createElement(VotePage$OrganisationVote, {
-                                currentIteration: optCurrentIteration,
-                                conservationPartner: conservationPartner,
-                                cannotVote: cannotVote$1,
-                                selectConservation: selectConservation,
-                                index: index,
-                                currentUser: userAddressLowerCase,
-                                key: conservationPartner.name
-                              });
-                  })) : React.createElement(React.Fragment, undefined, React.createElement(VotePage$HackyComponentThatReloadsOnTimeout, {
-                      reloadFunction: match$7[1],
-                      timeoutTime: 1000
-                    }), React.createElement(RimbleUi.Loader, { }), React.createElement("p", undefined, Globals$WildCards.restr("loading vote data")));
-          break;
-      case /* ProcessTransaction */1 :
-          tmp$2 = txStateDisplay;
-          break;
-      case /* ViewResults */2 :
-          tmp$2 = optCurrentIteration !== undefined ? React.createElement(VotePage$VoteResults, {
-                  currentIteration: optCurrentIteration
-                }) : React.createElement("p", undefined, Globals$WildCards.restr("loading vote data"));
-          break;
-      
-    }
-  } else {
-    var selectedConservationPartner = conservationPartners[voteStep[0]];
-    var tmp$3;
-    var exit$1 = 0;
-    if (amountApproved !== undefined && redeemedLoyaltyTokenBalanceBn !== undefined) {
-      var hasApprovedFullBalance = Globals$WildCards.$pipe$great$pipe(Caml_option.valFromOption(amountApproved), Caml_option.valFromOption(redeemedLoyaltyTokenBalanceBn));
-      if (hasApprovedFullBalance) {
-        if (redeemedLoyaltyTokenBalanceOpt !== undefined) {
-          var maxVote = Math.sqrt(redeemedLoyaltyTokenBalanceOpt);
-          tmp$3 = React.createElement(QVSelect$WildCards.make, {
-                submitVoteFunction: voteStep[1],
-                maxVote: maxVote
-              });
-        } else {
-          tmp$3 = React.createElement(React.Fragment, undefined, React.createElement(RimbleUi.Loader, { }), React.createElement("p", undefined, Globals$WildCards.restr("Loading your balance")));
-        }
-      } else {
-        tmp$3 = React.createElement(VotePage$ApproveLoyaltyTokens, {
-              reloadFunction: resetAmountApproved
-            });
-      }
-    } else {
-      exit$1 = 1;
-    }
-    if (exit$1 === 1) {
-      tmp$3 = React.createElement(React.Fragment, undefined, React.createElement(VotePage$HackyComponentThatReloadsOnTimeout, {
-                reloadFunction: (function (param) {
-                    Curry._1(resetLoyaltyTokenBalance, undefined);
-                    return Curry._1(resetAmountApproved, undefined);
-                  }),
-                timeoutTime: 1000
-              }), React.createElement(RimbleUi.Loader, { }));
-    }
-    tmp$2 = React.createElement(React.Fragment, undefined, React.createElement(RimbleUi.Box, {
-              children: React.createElement("a", {
-                    href: selectedConservationPartner.link,
-                    target: "_blank"
-                  }, React.createElement("img", {
-                        className: Curry._1(Css.style, /* :: */[
-                              Css.display(/* block */888960333),
-                              /* :: */[
-                                Css.width(/* `percent */[
-                                      -119887163,
-                                      70
-                                    ]),
-                                /* :: */[
-                                  Css.maxWidth(/* `px */[
-                                        25096,
-                                        800
-                                      ]),
-                                  /* :: */[
-                                    Css.margin(Css.auto),
-                                    /* [] */0
-                                  ]
-                                ]
-                              ]
-                            ]),
-                        src: selectedConservationPartner.image
-                      })),
-              width: [
-                1,
-                0.25
-              ]
-            }), React.createElement(RimbleUi.Box, {
-              children: tmp$3,
-              width: [
-                1,
-                0.75
-              ]
-            }));
-  }
+  var optMonthlyPledgeUsd = match$3[1];
+  var optMonthlyPledgeEth = match$3[0];
   return React.createElement(RimbleUi.Box, {
               children: React.createElement(RimbleUi.Box, {
                     children: React.createElement(RimbleUi.Flex, {
@@ -650,7 +381,18 @@ function VotePage(Props) {
                                               Css.margin(Css.auto),
                                               /* [] */0
                                             ])
-                                      }), React.createElement("br", undefined), React.createElement("small", undefined, optMonthlyPledgeUsd !== undefined ? Globals$WildCards.restr("(" + (Caml_option.valFromOption(optMonthlyPledgeUsd) + " USD)")) : null)), React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("br", undefined), tmp$1), React.createElement(RimbleUi.Box, {
+                                      }), React.createElement("br", undefined), React.createElement("small", undefined, optMonthlyPledgeUsd !== undefined ? Globals$WildCards.restr("(" + (Caml_option.valFromOption(optMonthlyPledgeUsd) + " USD)")) : null)), React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("h4", {
+                                  className: Curry._1(Css.style, /* :: */[
+                                        Css.width(/* `percent */[
+                                              -119887163,
+                                              100
+                                            ]),
+                                        /* :: */[
+                                          Css.textAlign(Css.center),
+                                          /* [] */0
+                                        ]
+                                      ])
+                                }, Globals$WildCards.restr("Voting coming again soon!"))), React.createElement(RimbleUi.Box, {
                               children: null,
                               width: [
                                 1,
@@ -667,7 +409,7 @@ function VotePage(Props) {
                                         Css.textDecoration(/* underline */131142924),
                                         /* [] */0
                                       ])
-                                }, Globals$WildCards.restr("Quadratic Voting    "), voteStep !== /* DefaultView */0 ? React.createElement("img", {
+                                }, Globals$WildCards.restr("Quadratic Voting    "), match[0] !== /* DefaultView */0 ? React.createElement("img", {
                                         className: Curry._1(Css.style, /* :: */[
                                               Css.maxHeight(/* `px */[
                                                     25096,
@@ -687,15 +429,15 @@ function VotePage(Props) {
                                                           return /* DefaultView */0;
                                                         }));
                                           })
-                                      }) : null), React.createElement("small", undefined, currentlyOwnedTokens.length <= 0 ? React.createElement("p", {
-                                        className: Curry._1(Css.style, /* :: */[
-                                              Css.color(Css.red),
-                                              /* [] */0
-                                            ])
-                                      }, Globals$WildCards.restr("You can only vote if you are the owner of a wildcard")) : (
-                                    redeemedLoyaltyTokenBalanceOpt !== undefined ? React.createElement("p", undefined, Globals$WildCards.restr("Redeemed loyalty token balance: " + (String(redeemedLoyaltyTokenBalanceOpt) + " WLT"))) : React.createElement(RimbleUi.Loader, { })
-                                  ), match$3[1]), React.createElement(RimbleUi.Flex, {
-                                  children: tmp$2,
+                                      }) : null), React.createElement("small", undefined, React.createElement("p", undefined, Globals$WildCards.restr("Unfortunately we have decided to stop running our DAO on mainnet ethereum. We are moving all of this code to Matic where voting will be much cheaper and more frictionless"))), React.createElement(RimbleUi.Flex, {
+                                  children: Belt_Array.mapWithIndex(conservationPartners, (function (index, conservationPartner) {
+                                          return React.createElement(VotePage$OrganisationVote, {
+                                                      conservationPartner: conservationPartner,
+                                                      selectConservation: selectConservation,
+                                                      index: index,
+                                                      key: conservationPartner.name
+                                                    });
+                                        })),
                                   flexWrap: "wrap",
                                   alignItems: "center"
                                 })))
