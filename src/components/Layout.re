@@ -236,48 +236,46 @@ let make = () => {
           },
         |]
       />
-      <GSNTest />
-      <AnimalFocusDetails currentAnimal=None showForwardBackButtons=false />
+      {switch (urlState) {
+       | VotePage => <VotePage />
+       | Team => <Team />
+       | IncreaseVoteIteration => <IncreaseIterationPage />
+       | Explorer(animalPageState) =>
+         switch (animalPageState) {
+         | DetailView(currentAnimal) =>
+           <AnimalFocusDetails currentAnimal showForwardBackButtons=false />
+         | NormalView => <BuyGrid />
+         }
+       | Home(animalPageState) =>
+         switch (animalPageState) {
+         | DetailView(currentAnimal) =>
+           <AnimalFocusDetails currentAnimal showForwardBackButtons=true />
+         | NormalView =>
+           <React.Fragment>
+             <AnimalFocusDetails
+               currentAnimal=None
+               showForwardBackButtons=false
+             />
+             <FeaturedIn />
+             <HomepageLeaderBoard />
+             <CustomerBenefit />
+             <HowItWorks />
+             <EmailSignup />
+             <FAQs />
+             <Partners />
+           </React.Fragment>
+         }
+       | User(userAddress) => <UserProfile userAddress />
+       | Org(orgId) => <OrgProfile orgId />
+       | Leaderboards(leaderboardType) =>
+         <Rimble.Flex
+           flexWrap="wrap"
+           alignItems="center"
+           className=Css.(style([padding(em(2.))]))>
+           <LeaderBoards leaderboardType />
+         </Rimble.Flex>
+       }}
     </div>
-    //   {switch (urlState) {
-    //    | VotePage => <VotePage />
-    //    | Team => <Team />
-    //    | IncreaseVoteIteration => <IncreaseIterationPage />
-    //    | Explorer(animalPageState) =>
-    //      switch (animalPageState) {
-    //      | DetailView(currentAnimal) =>
-    //        <AnimalFocusDetails currentAnimal showForwardBackButtons=false />
-    //      | NormalView => <BuyGrid />
-    //      }
-    //    | Home(animalPageState) =>
-    //      switch (animalPageState) {
-    //      | DetailView(currentAnimal) =>
-    //        <AnimalFocusDetails currentAnimal showForwardBackButtons=true />
-    //      | NormalView =>
-    //        <React.Fragment>
-    //          <AnimalFocusDetails
-    //            currentAnimal=None
-    //            showForwardBackButtons=false
-    //          />
-    //          <FeaturedIn />
-    //          <HomepageLeaderBoard />
-    //          <CustomerBenefit />
-    //          <HowItWorks />
-    //          <EmailSignup />
-    //          <FAQs />
-    //          <Partners />
-    //        </React.Fragment>
-    //      }
-    //    | User(userAddress) => <UserProfile userAddress />
-    //    | Org(orgId) => <OrgProfile orgId />
-    //    | Leaderboards(leaderboardType) =>
-    //      <Rimble.Flex
-    //        flexWrap="wrap"
-    //        alignItems="center"
-    //        className=Css.(style([padding(em(2.))]))>
-    //        <LeaderBoards leaderboardType />
-    //      </Rimble.Flex>
-    //    }}
     <Footer />
   </div>;
 };

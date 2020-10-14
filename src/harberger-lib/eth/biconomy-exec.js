@@ -9,9 +9,10 @@ import Web3 from "web3";
 import { toBuffer } from "ethereumjs-util";
 import abi from "ethereumjs-abi";
 import events from "events";
+
 // import Biconomy from "@biconomy/mexa";
 
-export const setupBuyFunction = async (contractAddress, networkId) => {
+export const useSetupBuyFunction = async (contractAddress, networkId) => {
   const context = useWeb3React();
   const { library, account } = context;
 
