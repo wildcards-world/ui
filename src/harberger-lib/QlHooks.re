@@ -187,7 +187,7 @@ module SubStateChangeEvents = [%graphql
          stateChanges(first: 1, orderBy: timestamp, orderDirection: desc) {
            id
            timestamp
-           txEventList
+          #  txEventList
            wildcardChanges {
              id
              tokenId
