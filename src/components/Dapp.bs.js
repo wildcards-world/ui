@@ -35,7 +35,6 @@ import * as RootProvider$WildCards from "../harberger-lib/RootProvider.bs.js";
 import * as UserProvider$WildCards from "../harberger-lib/js/user-provider/UserProvider.bs.js";
 import * as ActionButtons$WildCards from "./ActionButtons.bs.js";
 import * as UpdateDeposit$WildCards from "../harberger-lib/components/UpdateDeposit.bs.js";
-import * as QlStateManager$WildCards from "../harberger-lib/QlStateManager.bs.js";
 import * as ReactTranslate$WildCards from "../helpers/providers/ReactTranslate.bs.js";
 import * as ReactCarousel from "@wildcards/react-carousel";
 import * as UsdPriceProvider$WildCards from "../harberger-lib/components/UsdPriceProvider.bs.js";
@@ -321,9 +320,13 @@ function Dapp$CarouselAnimal(Props) {
   var animal = Props.animal;
   var scalar = Props.scalar;
   var enlargementOpt = Props.enlargement;
-  var isGqlLoaded = Props.isGqlLoaded;
+  var isGqlLoadedOpt = Props.isGqlLoaded;
+  var chainOpt = Props.chain;
   var enlargement = enlargementOpt !== undefined ? enlargementOpt : 1;
+  var isGqlLoaded = isGqlLoadedOpt !== undefined ? isGqlLoadedOpt : true;
+  var chain = chainOpt !== undefined ? chainOpt : /* MainnetQuery */2;
   var isLaunched = Animal$WildCards.isLaunched(animal);
+  console.log(chain);
   var makeAnimalOnLandingPage = function (optionEndDateMoment) {
     return React.createElement(Dapp$AnimalOnLandingPage, {
                 animal: animal,
@@ -941,7 +944,6 @@ var AnimalInfo = {
 };
 
 function Dapp(Props) {
-  var isGqlLoaded = QlStateManager$WildCards.useIsInitialized(undefined);
   var nonUrlRouting = RootProvider$WildCards.useNonUrlState(undefined);
   var clearNonUrlState = RootProvider$WildCards.useClearNonUrlState(undefined);
   var isDetailView = Router$WildCards.useIsDetails(undefined);
@@ -1087,7 +1089,7 @@ function Dapp(Props) {
                 }), React.createElement(RimbleUi.Box, {
                   p: 1,
                   children: React.createElement(Dapp$DefaultLook, {
-                        isGqlLoaded: isGqlLoaded
+                        isGqlLoaded: true
                       }),
                   width: [
                     1,

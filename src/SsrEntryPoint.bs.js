@@ -3,6 +3,7 @@
 import * as React from "react";
 import * as ReactApollo from "react-apollo";
 import * as Layout$WildCards from "./components/Layout.bs.js";
+import * as Globals$WildCards from "./harberger-lib/Globals.bs.js";
 import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.js";
 import * as ReactHooks from "@apollo/react-hooks";
 import * as WildcardsProvider$WildCards from "./harberger-lib/components/WildcardsProvider.bs.js";
@@ -45,15 +46,17 @@ function SsrEntryPoint(Props) {
   return React.createElement(WildcardsProvider$WildCards.make, {
               getGraphEndpoints: (function (networkId, param) {
                   if (networkId !== 5) {
-                    return /* tuple */[
-                            process.env.REACT_APP_MAINNET_BE,
-                            "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli"
-                          ];
+                    return {
+                            mainnet: Globals$WildCards.$pipe$pipe$pipe$pipe(process.env.REACT_APP_MAINNET_BE, "https://api.wildcards.world/v1/graphql"),
+                            matic: "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai/graphql",
+                            ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards"
+                          };
                   } else {
-                    return /* tuple */[
-                            process.env.REACT_APP_GOERLI_BE,
-                            "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards"
-                          ];
+                    return {
+                            mainnet: Globals$WildCards.$pipe$pipe$pipe$pipe(process.env.REACT_APP_GOERLI_BE, "https://goerli.api.wildcards.world/v1/graphq"),
+                            matic: "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai/graphql",
+                            ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli"
+                          };
                   }
                 }),
               children: React.createElement(SsrEntryPoint$Router, { })

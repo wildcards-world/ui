@@ -263,8 +263,16 @@ module AnimalOnLandingPage = {
 module CarouselAnimal = {
   [@react.component]
   let make =
-      (~animal: TokenId.t, ~scalar, ~enlargement: float=1., ~isGqlLoaded) => {
+      (
+        ~animal: TokenId.t,
+        ~scalar,
+        ~enlargement: float=1.,
+        ~isGqlLoaded=true,
+        ~chain=Client.MainnetQuery,
+      ) => {
     let isLaunched = animal->Animal.isLaunched;
+
+    Js.log(chain);
 
     let makeAnimalOnLandingPage = optionEndDateMoment =>
       <AnimalOnLandingPage
@@ -928,7 +936,8 @@ module AnimalInfo = {
 
 [@react.component]
 let make = () => {
-  let isGqlLoaded = QlStateManager.useIsInitialized();
+  // let isGqlLoaded = QlStateManager.useIsInitialized();
+  let isGqlLoaded = true;
   let nonUrlRouting = RootProvider.useNonUrlState();
   let clearNonUrlState = RootProvider.useClearNonUrlState();
   let isDetailView = Router.useIsDetails();

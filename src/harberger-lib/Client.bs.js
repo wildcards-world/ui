@@ -2,7 +2,7 @@
 
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as ApolloLinks from "@wildcards/reason-apollo/src/ApolloLinks.bs.js";
-import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
+import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as ApolloLink from "apollo-link";
 import * as ReasonApollo from "@wildcards/reason-apollo/src/ReasonApollo.bs.js";
 import * as ApolloLinkWs from "apollo-link-ws";
@@ -10,95 +10,7 @@ import * as ApolloUtilities from "apollo-utilities";
 import * as ApolloInMemoryCache from "@wildcards/reason-apollo/src/ApolloInMemoryCache.bs.js";
 
 function inMemoryCache(param) {
-  return ApolloInMemoryCache.createInMemoryCache(undefined, undefined, Caml_option.some(({
-        HomeAnimal:
-        {
-          wildcardData: (_, args, { getCacheKey }) => {
-        let result = getCacheKey({ __typename: 'WildcardData', id: args.id })
-        console.log('getting wildcard data', result)
-        return result
-      }
-        },
-        HomeAnimals:
-        {
-          wildcardData: (_, args, { getCacheKey }) => {
-        let result = getCacheKey({ __typename: 'WildcardData', id: args.id })
-        console.log('getting wildcard data', result)
-        return result
-      }
-        },
-        homeAnimal:
-        {
-          wildcardData: (_, args, { getCacheKey }) => {
-        let result = getCacheKey({ __typename: 'WildcardData', id: args.id })
-        console.log('2getting wildcard data', result)
-        return result
-      }
-        },
-        homeAnimals:
-        {
-          wildcardData: (_, args, { getCacheKey }) => {
-        let result = getCacheKey({ __typename: 'WildcardData', id: args.id })
-        console.log('2getting wildcard data', result)
-        return result
-      }
-        },
-        AnimalId:
-        {
-          wildcardData: (_, args, { getCacheKey }) => {
-        let result = getCacheKey({ __typename: 'WildcardData', id: args.id })
-        console.log('2getting wildcard data', result)
-        return result
-      }},
-        AnimalIds:
-        {
-          wildcardData: (_, args, { getCacheKey }) => {
-        let result = getCacheKey({ __typename: 'WildcardData', id: args.id })
-        console.log('2getting wildcard data', result)
-        return result
-      }
-        },
-    Query: {
-          wildcardDatas: (_, args, { getCacheKey }) => {
-            console.log('datatttaaa');
-        let result = getCacheKey({ __typename: 'WildcardData', id: args.id })
-        console.log('2getting wildcard data', result)
-        return result
-      },
-          wildcardData: (_, args, { getCacheKey }) => {
-            console.log('datatttaaa');
-        let result = getCacheKey({ __typename: 'WildcardData', id: args.id })
-        console.log('2getting wildcard data', result)
-        return result
-      },
-      global: (_, args, { getCacheKey }) => {
-        let result = getCacheKey({ __typename: 'Global', id: args.id })
-        return result
-      },
-      wildcard: (_, args, { getCacheKey }) => {
-        const result = getCacheKey({ __typename: 'Wildcard', id: args.id})
-        return result
-      },
-      // global: (_, args, { getCacheKey }) => {
-      //   let result = getCacheKey({ __typename: 'Global', id: args.id + 'wc' })
-      //   // console.log("the result within", result)
-      //   return result
-      // },
-      // wildcard: (_, args, { getCacheKey }) => {
-      //   return getCacheKey({ __typename: 'Wildcard', id: args.id + 'wc' })
-      // },
-    },
-    // Subscription: {
-    //   global: (_, args, { getCacheKey }) => {
-    //     let result = getCacheKey({ __typename: 'Global', id: args.id })
-    //     console.log("the result within", result)
-    //     return result
-    //   },
-    //   wildcard: (_, args, { getCacheKey }) => {
-    //     return getCacheKey({ __typename: 'Wildcard', id: args.id })
-    //   },
-    // },
-  })), undefined, undefined);
+  return ApolloInMemoryCache.createInMemoryCache(undefined, undefined, undefined, undefined, undefined);
 }
 
 function httpLink(uri) {
@@ -115,7 +27,7 @@ function wsLink(uri) {
             });
 }
 
-function webSocketHttpLink(uri, subscriptions) {
+function webSocketHttpLink(uri, matic, subscriptions) {
   return ApolloLink.split((function (operation) {
                 var operationDefition = ApolloUtilities.getMainDefinition(operation.query);
                 if (operationDefition.kind === "OperationDefinition") {
@@ -124,18 +36,39 @@ function webSocketHttpLink(uri, subscriptions) {
                   return false;
                 }
               }), wsLink(subscriptions), ApolloLink.split((function (operation) {
+                    var context = operation.getContext();
+                    console.log("Context", Belt_Option.mapWithDefault(context, "NOT DEFINED", (function (a) {
+                                return a;
+                              })));
                     var match = operation.getContext();
-                    if (match !== undefined && match.context) {
-                      return true;
+                    var usingMatic;
+                    if (match !== undefined) {
+                      switch (match.context) {
+                        case /* Neither */0 :
+                            console.log("it was neither");
+                            usingMatic = false;
+                            break;
+                        case /* MaticQuery */1 :
+                            console.log("it was MATIC!!");
+                            usingMatic = true;
+                            break;
+                        case /* MainnetQuery */2 :
+                            console.log("it was MAINNET");
+                            usingMatic = false;
+                            break;
+                        
+                      }
                     } else {
-                      return false;
+                      usingMatic = false;
                     }
-                  }), httpLink("https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/matic-mumbai/graphql"), httpLink(uri)));
+                    console.log("USING MATIC", usingMatic);
+                    return usingMatic;
+                  }), httpLink(matic), httpLink(uri)));
 }
 
 function instance(getGraphEndpoints) {
   var match = Curry._1(getGraphEndpoints, undefined);
-  return ReasonApollo.createApolloClient(webSocketHttpLink(match[0], match[1]), inMemoryCache(undefined), undefined, undefined, undefined, undefined, undefined);
+  return ReasonApollo.createApolloClient(webSocketHttpLink(match.mainnet, match.matic, match.ws), inMemoryCache(undefined), undefined, undefined, undefined, undefined, undefined);
 }
 
 export {

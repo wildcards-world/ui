@@ -34,7 +34,7 @@ function useIsInitialized(param) {
 function QlStateManager(Props) {
   var children = Props.children;
   var result = QlHooks$WildCards.useStateChangeSubscriptionData(undefined);
-  var initialDataLoad = QlHooks$WildCards.useInitialDataLoad(undefined);
+  var initialDataLoad = QlHooks$WildCards.useInitialDataLoad(/* MainnetQuery */2);
   var hasLoadedInitialData = initialDataLoad !== undefined;
   return React.createElement(make, makeProps(hasLoadedInitialData, null, undefined), Belt_Option.mapWithDefault(result, null, (function (result) {
                     return React.createElement(ApolloConsumer.make, {

@@ -38,24 +38,11 @@ var Router = {
 
 ReactDOMRe.renderToElementWithId(React.createElement(WildcardsProvider$WildCards.make, {
           getGraphEndpoints: (function (networkId, param) {
-              if (networkId !== 4) {
-                if (networkId !== 5) {
-                  return /* tuple */[
-                          Globals$WildCards.$pipe$pipe$pipe$pipe(process.env.REACT_APP_MAINNET_BE, "https://api.wildcards.world/v1/graphql"),
-                          "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards"
-                        ];
-                } else {
-                  return /* tuple */[
-                          Globals$WildCards.$pipe$pipe$pipe$pipe(process.env.REACT_APP_GOERLI_BE, "https://goerli.api.wildcards.world/v1/graphq"),
-                          "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli"
-                        ];
-                }
-              } else {
-                return /* tuple */[
-                        Globals$WildCards.$pipe$pipe$pipe$pipe(process.env.REACT_APP_RINKEBY_BE, "https://rinkeby.api.wildcards.world/v1/graphq"),
-                        "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli"
-                      ];
-              }
+              return {
+                      mainnet: Globals$WildCards.$pipe$pipe$pipe$pipe(process.env.REACT_APP_GOERLI_BE, "https://goerli.api.wildcards.world/v1/graphq"),
+                      matic: Globals$WildCards.$pipe$pipe$pipe$pipe(process.env.REACT_APP_MATIC_TESTNET, "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai"),
+                      ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli"
+                    };
             }),
           children: null
         }, React.createElement(UsdPriceProvider$WildCards.make, {

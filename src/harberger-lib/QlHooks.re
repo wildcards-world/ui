@@ -88,13 +88,51 @@ module InitialLoad = [%graphql
      |}
 ];
 
+module InitialLoadMatic = [%graphql
+  {|
+       query {
+         wildcards(first: 30) {
+           id
+           animal: tokenId @bsDecoder(fn: "tokenIdToAnimal")
+           owner {
+             address
+             id
+           }
+           price {
+             price @bsDecoder(fn: "decodePrice")
+             id
+           }
+           totalCollected @bsDecoder(fn: "decodePrice")
+           timeCollected @bsDecoder(fn: "decodeBN")
+           patronageNumeratorPriceScaled @bsDecoder(fn: "decodeBN")
+           # timeCollected @bsDecoder(fn: "decodeMoment")
+           timeAcquired @bsDecoder(fn: "decodeMoment")
+           auctionStartPrice @bsDecoder(fn: "decodeOptionBN")
+           launchTime @bsDecoder(fn: "decodeBN")
+         }
+         global(id: 1) {
+           id
+           totalCollectedOrDueAccurate @bsDecoder(fn: "decodeBN")
+           timeLastCollected @bsDecoder(fn: "decodeBN")
+           totalTokenCostScaledNumeratorAccurate @bsDecoder(fn: "decodeBN")
+           defaultAuctionLength @bsDecoder(fn: "decodeBN")
+           defaultAuctionEndPrice @bsDecoder(fn: "decodeBN")
+           defaultAuctionStartPrice @bsDecoder(fn: "decodeBN")
+         }
+       }
+     |}
+];
+
 let createContext: Client.queryContext => ApolloHooksTypes.Context.t = Obj.magic;
+
 // TODO: remove this function, it was an interesting but failed experiment.
-let useInitialDataLoad = () => {
+let useInitialDataLoad = (~chain) => {
   let (simple, _full) =
     ApolloHooks.useQuery(
       ~notifyOnNetworkStatusChange=true,
-      ~context={context: Client.MainnetQuery}->createContext,
+      ~fetchPolicy=ApolloHooksTypes.NoCache,
+      // ~fetchPolicy=ApolloHooksTypes.NetworkOnly,
+      ~context={context: chain}->createContext,
       InitialLoad.definition,
     );
 
@@ -106,14 +144,14 @@ let useInitialDataLoad = () => {
   };
 };
 
-let useAnimalList = () => {
-  let allData = useInitialDataLoad();
-  React.useMemo1(
+let useAnimalList = (~chain) => {
+  let allData = useInitialDataLoad(~chain);
+  React.useMemo2(
     () => {
       allData->oMap(data => data##wildcards->Array.map(wc => wc##animal))
       |||| [||]
     },
-    [|allData|],
+    (allData, chain),
   );
 };
 

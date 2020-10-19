@@ -7,7 +7,6 @@ import * as ReactApollo from "react-apollo";
 import * as Client$WildCards from "../Client.bs.js";
 import * as ReactHooks from "@apollo/react-hooks";
 import * as RootProvider$WildCards from "../RootProvider.bs.js";
-import * as QlStateManager$WildCards from "../QlStateManager.bs.js";
 
 function WildcardsProvider$GraphQl(Props) {
   var getGraphEndpoints = Props.getGraphEndpoints;
@@ -25,9 +24,7 @@ function WildcardsProvider$GraphQl(Props) {
               client: client,
               children: React.createElement(ReactHooks.ApolloProvider, {
                     client: client,
-                    children: React.createElement(QlStateManager$WildCards.make, {
-                          children: children
-                        })
+                    children: children
                   })
             });
 }
