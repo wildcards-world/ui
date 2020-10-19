@@ -55,43 +55,8 @@ let decodeAddress: Js.Json.t => string =
 
 module InitialLoad = [%graphql
   {|
-       query {
-         wildcards(first: 30) {
-           id
-           animal: tokenId @bsDecoder(fn: "tokenIdToAnimal")
-           owner {
-             address
-             id
-           }
-           price {
-             price @bsDecoder(fn: "decodePrice")
-             id
-           }
-           totalCollected @bsDecoder(fn: "decodePrice")
-           timeCollected @bsDecoder(fn: "decodeBN")
-           patronageNumeratorPriceScaled @bsDecoder(fn: "decodeBN")
-           # timeCollected @bsDecoder(fn: "decodeMoment")
-           timeAcquired @bsDecoder(fn: "decodeMoment")
-           auctionStartPrice @bsDecoder(fn: "decodeOptionBN")
-           launchTime @bsDecoder(fn: "decodeBN")
-         }
-         global(id: 1) {
-           id
-           totalCollectedOrDueAccurate @bsDecoder(fn: "decodeBN")
-           timeLastCollected @bsDecoder(fn: "decodeBN")
-           totalTokenCostScaledNumeratorAccurate @bsDecoder(fn: "decodeBN")
-           defaultAuctionLength @bsDecoder(fn: "decodeBN")
-           defaultAuctionEndPrice @bsDecoder(fn: "decodeBN")
-           defaultAuctionStartPrice @bsDecoder(fn: "decodeBN")
-         }
-       }
-     |}
-];
-
-module InitialLoadMatic = [%graphql
-  {|
-       query {
-         wildcards(first: 30) {
+       query($amount: Int) {
+         wildcards(first: $amount) {
            id
            animal: tokenId @bsDecoder(fn: "tokenIdToAnimal")
            owner {
@@ -125,13 +90,23 @@ module InitialLoadMatic = [%graphql
 
 let createContext: Client.queryContext => ApolloHooksTypes.Context.t = Obj.magic;
 
-// TODO: remove this function, it was an interesting but failed experiment.
 let useInitialDataLoad = (~chain) => {
   let (simple, _full) =
     ApolloHooks.useQuery(
       ~notifyOnNetworkStatusChange=true,
-      ~fetchPolicy=ApolloHooksTypes.NoCache,
-      // ~fetchPolicy=ApolloHooksTypes.NetworkOnly,
+      // ~fetchPolicy=ApolloHooksTypes.NoCache,
+      ~fetchPolicy=ApolloHooksTypes.CacheFirst,
+      // This is a wierd hack for the sake of caching
+      ~variables=
+        InitialLoad.make(
+          ~amount=
+            switch (chain) {
+            | Client.MaticQuery => 31
+            | Client.Neither
+            | Client.MainnetQuery => 30
+            },
+          (),
+        )##variables,
       ~context={context: chain}->createContext,
       InitialLoad.definition,
     );

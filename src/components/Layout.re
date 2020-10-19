@@ -240,11 +240,11 @@ let make = () => {
        | VotePage => <VotePage chain=Client.MainnetQuery />
        | Team => <Team />
        | IncreaseVoteIteration => <IncreaseIterationPage />
-       | Explorer(animalPageState) =>
-         switch (animalPageState) {
+       | Explorer(wildcardsEddition, subState) =>
+         switch (subState) {
          | DetailView(currentAnimal) =>
            <AnimalFocusDetails currentAnimal showForwardBackButtons=false />
-         | NormalView => <BuyGrid />
+         | NormalView => <BuyGrid wildcardsEddition />
          }
        | Home(animalPageState) =>
          switch (animalPageState) {

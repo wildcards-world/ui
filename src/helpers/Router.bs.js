@@ -3,8 +3,8 @@
 import * as Block from "bs-platform/lib/es6/block.js";
 import * as React from "react";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
-import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Animal$WildCards from "../harberger-lib/Animal.bs.js";
+import * as Globals$WildCards from "../harberger-lib/Globals.bs.js";
 import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.js";
 
 function useUrlState(param) {
@@ -13,8 +13,10 @@ function useUrlState(param) {
                 var urlArray = url.hash.split("/");
                 var exit = 0;
                 var animalStr;
+                var tab;
+                var animalStr$1;
                 var len = urlArray.length;
-                if (len >= 5) {
+                if (len >= 6) {
                   exit = 1;
                 } else {
                   switch (len) {
@@ -36,8 +38,8 @@ function useUrlState(param) {
                         var match$1 = urlArray[0];
                         switch (match$1) {
                           case "details" :
-                              var animalStr$1 = urlArray[1];
-                              var optionAnimal = Animal$WildCards.getAnimal(animalStr$1);
+                              var animalStr$2 = urlArray[1];
+                              var optionAnimal = Animal$WildCards.getAnimal(animalStr$2);
                               return /* Home */Block.__(4, [/* DetailView */[optionAnimal]]);
                           case "leaderboards" :
                               var leaderboardType = urlArray[1];
@@ -66,8 +68,8 @@ function useUrlState(param) {
                         if (match$2 === "explorer") {
                           var match$3 = urlArray[1];
                           if (match$3 === "details") {
-                            var animalStr$2 = urlArray[2];
-                            animalStr = animalStr$2;
+                            var animalStr$3 = urlArray[2];
+                            animalStr = animalStr$3;
                             exit = 2;
                           } else {
                             exit = 1;
@@ -79,13 +81,48 @@ function useUrlState(param) {
                     case 4 :
                         var match$4 = urlArray[0];
                         if (match$4 === "explorer") {
-                          var match$5 = urlArray[1];
-                          if (match$5 === "details") {
-                            var animalStr$3 = urlArray[2];
-                            var match$6 = urlArray[3];
-                            if (match$6 === "") {
-                              animalStr = animalStr$3;
+                          var tab$1 = urlArray[1];
+                          var exit$1 = 0;
+                          if (tab$1 === "details") {
+                            var animalStr$4 = urlArray[2];
+                            var match$5 = urlArray[3];
+                            if (match$5 === "") {
+                              animalStr = animalStr$4;
                               exit = 2;
+                            } else {
+                              exit$1 = 4;
+                            }
+                          } else {
+                            exit$1 = 4;
+                          }
+                          if (exit$1 === 4) {
+                            var match$6 = urlArray[2];
+                            if (match$6 === "details") {
+                              var animalStr$5 = urlArray[3];
+                              tab = tab$1;
+                              animalStr$1 = animalStr$5;
+                              exit = 3;
+                            } else {
+                              exit = 1;
+                            }
+                          }
+                          
+                        } else {
+                          exit = 1;
+                        }
+                        break;
+                    case 5 :
+                        var match$7 = urlArray[0];
+                        if (match$7 === "explorer") {
+                          var tab$2 = urlArray[1];
+                          var match$8 = urlArray[2];
+                          if (match$8 === "details") {
+                            var animalStr$6 = urlArray[3];
+                            var match$9 = urlArray[4];
+                            if (match$9 === "") {
+                              tab = tab$2;
+                              animalStr$1 = animalStr$6;
+                              exit = 3;
                             } else {
                               exit = 1;
                             }
@@ -101,12 +138,25 @@ function useUrlState(param) {
                 }
                 switch (exit) {
                   case 1 :
-                      var match$7 = Belt_Option.mapWithDefault(Belt_Array.get(urlArray, 0), "", (function (a) {
-                              return a;
-                            }));
-                      switch (match$7) {
+                      var match$10 = Globals$WildCards.$pipe$pipe$pipe$pipe(Belt_Array.get(urlArray, 0), "");
+                      switch (match$10) {
                         case "explorer" :
-                            return /* Explorer */Block.__(2, [/* NormalView */0]);
+                            var match$11 = Globals$WildCards.$pipe$pipe$pipe$pipe(Belt_Array.get(urlArray, 1), "");
+                            var tmp;
+                            switch (match$11) {
+                              case "1st-eddition" :
+                                  tmp = /* Gen1 */0;
+                                  break;
+                              case "2nd-eddition" :
+                                  tmp = /* Gen2 */1;
+                                  break;
+                              default:
+                                tmp = /* Gen1 */0;
+                            }
+                            return /* Explorer */Block.__(2, [
+                                      tmp,
+                                      /* NormalView */0
+                                    ]);
                         case "team" :
                             return /* Team */0;
                         default:
@@ -114,7 +164,27 @@ function useUrlState(param) {
                       }
                   case 2 :
                       var optionAnimal$1 = Animal$WildCards.getAnimal(animalStr);
-                      return /* Explorer */Block.__(2, [/* DetailView */[optionAnimal$1]]);
+                      return /* Explorer */Block.__(2, [
+                                /* Gen2 */1,
+                                /* DetailView */[optionAnimal$1]
+                              ]);
+                  case 3 :
+                      var optionAnimal$2 = Animal$WildCards.getAnimal(animalStr$1);
+                      var tmp$1;
+                      switch (tab) {
+                        case "1st-eddition" :
+                            tmp$1 = /* Gen1 */0;
+                            break;
+                        case "2nd-eddition" :
+                            tmp$1 = /* Gen2 */1;
+                            break;
+                        default:
+                          tmp$1 = /* Gen1 */0;
+                      }
+                      return /* Explorer */Block.__(2, [
+                                tmp$1,
+                                /* DetailView */[optionAnimal$2]
+                              ]);
                   
                 }
               }), [url.hash]);
@@ -147,6 +217,7 @@ function useIsDetails(param) {
                 }
                 switch (urlState.tag | 0) {
                   case /* Explorer */2 :
+                      return isDetailsAnimalPage(urlState[1]);
                   case /* Home */4 :
                       return isDetailsAnimalPage(urlState[0]);
                   default:
@@ -181,6 +252,7 @@ function useAnimalForDetails(param) {
                 }
                 switch (urlState.tag | 0) {
                   case /* Explorer */2 :
+                      return getAnimalFormAnimalPageState(urlState[1]);
                   case /* Home */4 :
                       return getAnimalFormAnimalPageState(urlState[0]);
                   default:

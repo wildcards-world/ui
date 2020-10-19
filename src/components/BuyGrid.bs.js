@@ -5,10 +5,12 @@ import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
+import * as ReactTabs from "react-tabs";
 import * as Dapp$WildCards from "./Dapp.bs.js";
 import * as Globals$WildCards from "../harberger-lib/Globals.bs.js";
 import * as QlHooks$WildCards from "../harberger-lib/QlHooks.bs.js";
 import * as TokenId$WildCards from "../harberger-lib/TokenId.bs.js";
+import * as RootProvider$WildCards from "../harberger-lib/RootProvider.bs.js";
 
 var backgroundStyle = Curry._1(Css.style, /* :: */[
       Css.paddingTop(Css.rem(1)),
@@ -79,14 +81,50 @@ var Grid = {
   make: BuyGrid$Grid
 };
 
+function indexToType(tabIndex) {
+  if (tabIndex !== 0) {
+    if (tabIndex !== 1) {
+      return "unknown";
+    } else {
+      return "2nd-eddition";
+    }
+  } else {
+    return "1st-eddition";
+  }
+}
+
 function BuyGrid(Props) {
+  var wildcardsEddition = Props.wildcardsEddition;
+  var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
+  console.log(wildcardsEddition);
+  var index = wildcardsEddition ? 1 : 0;
+  var selectLeaderBoard = function (newIndex, _oldIndex) {
+    Curry._1(clearAndPush, "#explorer/" + indexToType(newIndex));
+    return true;
+  };
   return React.createElement("div", {
               className: backgroundStyle
             }, React.createElement("div", undefined, React.createElement("h1", {
                       className: headingStyle
-                    }, Globals$WildCards.restr("Wildcards Kingdom")), React.createElement(BuyGrid$Grid, {
-                      chain: /* MaticQuery */1
-                    })));
+                    }, Globals$WildCards.restr("Wildcards Kingdom")), React.createElement(ReactTabs.Tabs, {
+                      selectedIndex: index,
+                      onSelect: selectLeaderBoard,
+                      children: null
+                    }, React.createElement(ReactTabs.TabList, {
+                          children: null
+                        }, React.createElement(ReactTabs.Tab, {
+                              children: "First Eddition"
+                            }), React.createElement(ReactTabs.Tab, {
+                              children: "Second Eddition"
+                            })), React.createElement(ReactTabs.TabPanel, {
+                          children: React.createElement(BuyGrid$Grid, {
+                                chain: /* MainnetQuery */2
+                              })
+                        }), React.createElement(ReactTabs.TabPanel, {
+                          children: React.createElement(BuyGrid$Grid, {
+                                chain: /* MaticQuery */1
+                              })
+                        }))));
 }
 
 var make = BuyGrid;
@@ -95,6 +133,7 @@ export {
   backgroundStyle ,
   headingStyle ,
   Grid ,
+  indexToType ,
   make ,
   
 }

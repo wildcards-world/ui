@@ -45,32 +45,51 @@ module Grid = {
     </Rimble.Flex>;
   };
 };
-/*
-  <ReactTabs selectedIndex=index onSelect=selectLeaderBoard>
-    <ReactTabs.TabList>
-      <ReactTabs.Tab> "Monthly Contribution"->React.string </ReactTabs.Tab>
-      <ReactTabs.Tab> "Total Contribution"->React.string </ReactTabs.Tab>
-      <ReactTabs.Tab> "Days Held"->React.string </ReactTabs.Tab>
-    </ReactTabs.TabList>
-    <ReactTabs.TabPanel>
-      <MonthlyContribution numberOfLeaders=10 />
-    </ReactTabs.TabPanel>
-    <ReactTabs.TabPanel>
-      <TotalContribution numberOfLeaders=10 />
-    </ReactTabs.TabPanel>
-    <ReactTabs.TabPanel>
-      <TotalDaysHeld numberOfLeaders=10 />
-    </ReactTabs.TabPanel>
-  </ReactTabs>;
 
- */
+let indexToType = tabIndex =>
+  switch (tabIndex) {
+  | 0 => "1st-eddition"
+  | 1 => "2nd-eddition"
+  // | 2 => "coming-soon"
+  | _ => "unknown"
+  };
 
 [@react.component]
-let make = () => {
+let make = (~wildcardsEddition) => {
+  let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+
+  Js.log(wildcardsEddition);
+
+  let index =
+    switch (wildcardsEddition) {
+    | Router.Gen1 => 0
+    | Router.Gen2 => 1
+    };
+  let selectLeaderBoard = (newIndex, _oldIndex) => {
+    clearAndPush("#explorer/" ++ indexToType(newIndex));
+
+    true;
+  };
+
   <div className=backgroundStyle>
     <div>
       <h1 className=headingStyle> "Wildcards Kingdom"->restr </h1>
-      <Grid chain=Client.MaticQuery />
+      <ReactTabs selectedIndex=index onSelect=selectLeaderBoard>
+        <ReactTabs.TabList>
+          <ReactTabs.Tab> "First Eddition"->React.string </ReactTabs.Tab>
+          <ReactTabs.Tab> "Second Eddition"->React.string </ReactTabs.Tab>
+        </ReactTabs.TabList>
+        // <ReactTabs.Tab> "Coming soon"->React.string </ReactTabs.Tab>
+        <ReactTabs.TabPanel>
+          <Grid chain=Client.MainnetQuery />
+        </ReactTabs.TabPanel>
+        <ReactTabs.TabPanel>
+          <Grid chain=Client.MaticQuery />
+        </ReactTabs.TabPanel>
+      </ReactTabs>
     </div>
   </div>;
+  // <ReactTabs.TabPanel>
+  //   <TotalDaysHeld numberOfLeaders=10 />
+  // </ReactTabs.TabPanel>
 };

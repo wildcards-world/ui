@@ -170,11 +170,13 @@ function Layout(Props) {
               });
           break;
       case /* Explorer */2 :
-          var animalPageState = urlState[0];
-          tmp = animalPageState ? React.createElement(Layout$AnimalFocusDetails, {
-                  currentAnimal: animalPageState[0],
+          var subState = urlState[1];
+          tmp = subState ? React.createElement(Layout$AnimalFocusDetails, {
+                  currentAnimal: subState[0],
                   showForwardBackButtons: false
-                }) : React.createElement(BuyGrid$WildCards.make, { });
+                }) : React.createElement(BuyGrid$WildCards.make, {
+                  wildcardsEddition: urlState[0]
+                });
           break;
       case /* Leaderboards */3 :
           tmp = React.createElement(RimbleUi.Flex, {
@@ -190,9 +192,9 @@ function Layout(Props) {
               });
           break;
       case /* Home */4 :
-          var animalPageState$1 = urlState[0];
-          tmp = animalPageState$1 ? React.createElement(Layout$AnimalFocusDetails, {
-                  currentAnimal: animalPageState$1[0],
+          var animalPageState = urlState[0];
+          tmp = animalPageState ? React.createElement(Layout$AnimalFocusDetails, {
+                  currentAnimal: animalPageState[0],
                   showForwardBackButtons: true
                 }) : React.createElement(React.Fragment, {
                   children: null
