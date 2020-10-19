@@ -285,7 +285,7 @@ module ApproveLoyaltyTokens = {
 };
 
 [@react.component]
-let make = () => {
+let make = (~chain) => {
   let (voteStep, setVoteStep) = React.useState(() => DefaultView);
   // let (voteStep, setVoteStep) = React.useState(() => ViewResults);
 
@@ -323,8 +323,8 @@ let make = () => {
   };
 
   let glen = TokenId.makeFromInt(13);
-  let optCurrentPrice = PriceDisplay.usePrice(glen);
-  let (_, _, ratio, _) = QlHooks.usePledgeRateDetailed(glen);
+  let optCurrentPrice = PriceDisplay.usePrice(~chain, glen);
+  let (_, _, ratio, _) = QlHooks.usePledgeRateDetailed(~chain, glen);
   // TODO: investigate why the USD price doesn't load here.
   let (optMonthlyPledgeEth, optMonthlyPledgeUsd) =
     switch (optCurrentPrice) {

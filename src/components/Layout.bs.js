@@ -103,7 +103,9 @@ function Layout$AnimalFocusDetails(Props) {
                                   ]),
                             /* [] */0
                           ])
-                    }, React.createElement(Dapp$WildCards.make, { })), showForwardBackButtons ? React.createElement("div", {
+                    }, React.createElement(Dapp$WildCards.make, {
+                          chain: /* MainnetQuery */2
+                        })), showForwardBackButtons ? React.createElement("div", {
                         className: Curry._1(Css.style, /* :: */[
                               Css.width(/* `percent */[
                                     -119887163,
@@ -148,7 +150,9 @@ function Layout(Props) {
           tmp = React.createElement(IncreaseIterationPage$WildCards.make, { });
           break;
       case /* VotePage */2 :
-          tmp = React.createElement(VotePage$WildCards.make, { });
+          tmp = React.createElement(VotePage$WildCards.make, {
+                chain: /* MainnetQuery */2
+              });
           break;
       
     }
@@ -156,6 +160,7 @@ function Layout(Props) {
     switch (urlState.tag | 0) {
       case /* User */0 :
           tmp = React.createElement(UserProfile$WildCards.make, {
+                chain: /* MainnetQuery */2,
                 userAddress: urlState[0]
               });
           break;

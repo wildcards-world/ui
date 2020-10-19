@@ -389,8 +389,9 @@ let queryResultToOption = result => queryResultOptionMap(result, a => a);
 
 type data = {tokenId: string};
 
-let useWildcardQuery = tokenId =>
+let useWildcardQuery = (~chain, tokenId) =>
   ApolloHooks.useQuery(
+    ~context={context: chain}->createContext,
     ~variables=
       SubWildcardQuery.make(~tokenId=tokenId->TokenId.toString, ())##variables,
     SubWildcardQuery.definition,
@@ -581,9 +582,9 @@ let useLoadTopContributorsData = numberOfLeaders => {
 
   simple->subscriptionResultOptionMap(getLargestContributors);
 };
-let usePatron: TokenId.t => option(string) =
-  animal => {
-    let (simple, _) = useWildcardQuery(animal);
+let usePatron: (~chain: Client.context, TokenId.t) => option(string) =
+  (~chain, animal) => {
+    let (simple, _) = useWildcardQuery(~chain, animal);
     let getAddress = response =>
       response##wildcard
       ->Belt.Option.flatMap(wildcard => Some(wildcard##owner##address));
@@ -591,22 +592,23 @@ let usePatron: TokenId.t => option(string) =
     simple->queryResultOptionFlatMap(getAddress);
   };
 
-let useIsAnimalOwened = ownedAnimal => {
+let useIsAnimalOwened = (~chain, ownedAnimal) => {
   let currentAccount =
     RootProvider.useCurrentUser()
     ->Belt.Option.mapWithDefault("loading", a => a);
 
   let currentPatron =
-    usePatron(ownedAnimal)
+    usePatron(~chain, ownedAnimal)
     ->Belt.Option.mapWithDefault("no-patron-defined", a => a);
 
   currentAccount->Js.String.toLowerCase
   == currentPatron->Js.String.toLocaleLowerCase;
 };
 
-let useTimeAcquired: TokenId.t => option(MomentRe.Moment.t) =
-  animal => {
-    let (simple, _) = useWildcardQuery(animal);
+let useTimeAcquired:
+  (~chain: Client.context, TokenId.t) => option(MomentRe.Moment.t) =
+  (~chain, animal) => {
+    let (simple, _) = useWildcardQuery(~chain, animal);
     let getTimeAquired = response =>
       response##wildcard
       ->Belt.Option.mapWithDefault(MomentRe.momentNow(), wildcard
@@ -646,10 +648,10 @@ let usePatronQuery = patron => {
 
   simple->queryResultToOption;
 };
-let useTimeAcquiredWithDefault = (animal, default: MomentRe.Moment.t) =>
-  useTimeAcquired(animal) |||| default;
-let useDaysHeld = tokenId =>
-  useTimeAcquired(tokenId)
+let useTimeAcquiredWithDefault = (~chain, animal, default: MomentRe.Moment.t) =>
+  useTimeAcquired(~chain, animal) |||| default;
+let useDaysHeld = (~chain, tokenId) =>
+  useTimeAcquired(~chain, tokenId)
   ->oMap(moment =>
       (MomentRe.diff(MomentRe.momentNow(), moment, `days), moment)
     );
@@ -719,9 +721,10 @@ let useAmountRaised = () => {
     });
 };
 
-let useTotalCollectedToken: TokenId.t => option((Eth.t, BN.bn, BN.bn)) =
-  animal => {
-    let (simple, _) = useWildcardQuery(animal);
+let useTotalCollectedToken:
+  (~chain: Client.context, TokenId.t) => option((Eth.t, BN.bn, BN.bn)) =
+  (~chain, animal) => {
+    let (simple, _) = useWildcardQuery(~chain, animal);
     let getTotalCollectedData = response =>
       response##wildcard
       ->oMap(wc =>
@@ -740,8 +743,8 @@ let useTotalCollectedTokenArray = animalArray => {
   simple->queryResultToOption;
 };
 
-let usePatronageNumerator = (tokenId: TokenId.t) => {
-  let (simple, _) = useWildcardQuery(tokenId);
+let usePatronageNumerator = (~chain, tokenId: TokenId.t) => {
+  let (simple, _) = useWildcardQuery(~chain, tokenId);
   let patronageNumerator = response =>
     response##wildcard
     ->Belt.Option.map(wildcard => wildcard##patronageNumerator);
@@ -750,8 +753,8 @@ let usePatronageNumerator = (tokenId: TokenId.t) => {
 };
 
 // TODO: fix this, this is a hardcoded pledgerate. It should be fetched from the graph!
-let usePledgeRate = tokenId => {
-  let optPatronageNumerator = usePatronageNumerator(tokenId);
+let usePledgeRate = (~chain, tokenId) => {
+  let optPatronageNumerator = usePatronageNumerator(~chain, tokenId);
   React.useMemo1(
     () => {
       switch (optPatronageNumerator) {
@@ -765,8 +768,8 @@ let usePledgeRate = tokenId => {
   );
 };
 
-let usePledgeRateDetailed = tokenId => {
-  let pledgeRate = usePledgeRate(tokenId);
+let usePledgeRateDetailed = (~chain, tokenId) => {
+  let pledgeRate = usePledgeRate(~chain, tokenId);
   let inversePledgeRate = 1. /. pledgeRate;
   let numeratorOverYear = (pledgeRate *. 1200.)->Float.toInt->string_of_int;
   (numeratorOverYear, "100", pledgeRate, inversePledgeRate);
@@ -809,11 +812,11 @@ let usePatronLoyaltyTokenDetails:
   };
 
 // TODO:: Take min of total deposit and amount raised
-let useAmountRaisedToken: TokenId.t => option(Eth.t) =
-  animal => {
+let useAmountRaisedToken: (~chain: Client.context, TokenId.t) => option(Eth.t) =
+  (~chain, animal) => {
     let currentTimestamp = useCurrentTime();
 
-    switch (useTotalCollectedToken(animal)) {
+    switch (useTotalCollectedToken(~chain, animal)) {
     | Some((
         amountCollectedOrDue,
         timeCalculated,
@@ -879,11 +882,12 @@ let useTotalRaisedAnimalGroup: array(TokenId.t) => option(Eth.t) =
     };
   };
 
-let useTimeSinceTokenWasLastSettled: TokenId.t => option(BN.bn) =
-  animal => {
+let useTimeSinceTokenWasLastSettled:
+  (~chain: Client.context, TokenId.t) => option(BN.bn) =
+  (~chain, animal) => {
     let currentTimestamp = useCurrentTime();
 
-    switch (useTotalCollectedToken(animal)) {
+    switch (useTotalCollectedToken(~chain, animal)) {
     | Some((_, timeCalculated, _)) =>
       let timeElapsed =
         BN.new_(currentTimestamp)->BN.subGet(. timeCalculated);
@@ -893,9 +897,10 @@ let useTimeSinceTokenWasLastSettled: TokenId.t => option(BN.bn) =
     };
   };
 
-let useUnredeemedLoyaltyTokenDueFromWildcard: TokenId.t => option(Eth.t) =
-  animal => {
-    switch (useTimeSinceTokenWasLastSettled(animal)) {
+let useUnredeemedLoyaltyTokenDueFromWildcard:
+  (~chain: Client.context, TokenId.t) => option(Eth.t) =
+  (~chain, animal) => {
+    switch (useTimeSinceTokenWasLastSettled(~chain, animal)) {
     | Some(timeSinceTokenWasLastSettled) =>
       let totalLoyaltyTokensPerSecondPerAnimal = BN.new_("11574074074074");
       let totalLoyaltyTokensForAllAnimals =
@@ -973,10 +978,10 @@ type animalPrice =
   | Price(Eth.t)
   | Loading;
 
-let usePrice: TokenId.t => animalPrice =
-  animal => {
-    let (simple, _) = useWildcardQuery(animal);
-    let optCurrentPatron = usePatron(animal);
+let usePrice: (~chain: Client.context, TokenId.t) => animalPrice =
+  (~chain, animal) => {
+    let (simple, _) = useWildcardQuery(~chain, animal);
+    let optCurrentPatron = usePatron(~chain, animal);
     // let availableDeposit = useRemainingDepositEth(currentPatron);
     let foreclosureTime =
       useForeclosureTimeBn(
@@ -1034,8 +1039,8 @@ let useAuctioLength = (_tokenId: TokenId.t) => {
     "604800" // 1 week
   );
 };
-let useLaunchTimeBN = (tokenId: TokenId.t) => {
-  let (simple, _) = useWildcardQuery(tokenId);
+let useLaunchTimeBN = (~chain, tokenId: TokenId.t) => {
+  let (simple, _) = useWildcardQuery(~chain, tokenId);
 
   switch (simple) {
   | Data(response) =>

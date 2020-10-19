@@ -68,12 +68,13 @@ var Token = {
 };
 
 function UserProfile$ClaimLoyaltyTokenButtons(Props) {
+  var chain = Props.chain;
   var id = Props.id;
   var refreshLoyaltyTokenBalance = Props.refreshLoyaltyTokenBalance;
   var match = ContractActions$WildCards.useRedeemLoyaltyTokens(id, false);
   var transactionStatus = match[1];
   var redeemLoyaltyTokens = match[0];
-  var balanceAvailableOnToken = QlHooks$WildCards.useUnredeemedLoyaltyTokenDueFromWildcard(TokenId$WildCards.makeWithDefault(id, 0));
+  var balanceAvailableOnToken = QlHooks$WildCards.useUnredeemedLoyaltyTokenDueFromWildcard(chain, TokenId$WildCards.makeWithDefault(id, 0));
   var tokenName = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.useWildcardName(TokenId$WildCards.fromStringUnsafe(id)), "loading");
   var etherScanUrl = RootProvider$WildCards.useEtherscanUrl(undefined);
   React.useEffect((function () {
@@ -132,6 +133,7 @@ var ClaimLoyaltyTokenButtons = {
 };
 
 function UserProfile$UserDetails(Props) {
+  var chain = Props.chain;
   var patronQueryResult = Props.patronQueryResult;
   var optThreeBoxData = Props.optThreeBoxData;
   var userAddress = Props.userAddress;
@@ -272,6 +274,7 @@ function UserProfile$UserDetails(Props) {
                                     return Web3Utils$WildCards.fromWeiBNToEthPrecision(claimedLoyaltyTokens, 6);
                                   })) + " WLT")))), currentlyOwnedTokens.length !== 0 ? Belt_Array.map(currentlyOwnedTokens, (function (id) {
                         return React.createElement(UserProfile$ClaimLoyaltyTokenButtons, {
+                                    chain: chain,
                                     id: id,
                                     refreshLoyaltyTokenBalance: updateFunction,
                                     key: id
@@ -390,6 +393,7 @@ var UserDetails = {
 };
 
 function UserProfile(Props) {
+  var chain = Props.chain;
   var userAddress = Props.userAddress;
   var userAddressLowerCase = userAddress.toLowerCase();
   var patronQuery = QlHooks$WildCards.usePatronQuery(userAddressLowerCase);
@@ -398,6 +402,7 @@ function UserProfile(Props) {
   var optThreeBoxData = UserProvider$WildCards.use3BoxUserData(userAddressLowerCase);
   return React.createElement(RimbleUi.Flex, {
               children: patronQuery !== undefined ? React.createElement(UserProfile$UserDetails, {
+                      chain: chain,
                       patronQueryResult: Caml_option.valFromOption(patronQuery),
                       optThreeBoxData: optThreeBoxData,
                       userAddress: userAddress

@@ -58,7 +58,7 @@ module AnimalFocusDetails = {
               // style([width(`percent(animalCarousel->mapd(100., _ => 90.)))])
             ])
           )>
-          <Dapp />
+          <Dapp chain=Client.MainnetQuery />
         </div>
         {showForwardBackButtons
            ? <div className=Css.(style([width(`percent(5.))]))>
@@ -237,7 +237,7 @@ let make = () => {
         |]
       />
       {switch (urlState) {
-       | VotePage => <VotePage />
+       | VotePage => <VotePage chain=Client.MainnetQuery />
        | Team => <Team />
        | IncreaseVoteIteration => <IncreaseIterationPage />
        | Explorer(animalPageState) =>
@@ -265,7 +265,8 @@ let make = () => {
              <Partners />
            </React.Fragment>
          }
-       | User(userAddress) => <UserProfile userAddress />
+       | User(userAddress) =>
+         <UserProfile chain=Client.MainnetQuery userAddress />
        | Org(orgId) => <OrgProfile orgId />
        | Leaderboards(leaderboardType) =>
          <Rimble.Flex

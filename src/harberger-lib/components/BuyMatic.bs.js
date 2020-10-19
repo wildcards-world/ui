@@ -43,6 +43,7 @@ function calcRequiredDepositForTime(time, price, numerator, denominator) {
 }
 
 function BuyMatic(Props) {
+  var chain = Props.chain;
   var tokenId = Props.tokenId;
   var match = React.useState((function () {
           
@@ -53,14 +54,14 @@ function BuyMatic(Props) {
   var userBalance = Belt_Option.mapWithDefault(RootProvider$WildCards.useEthBalance(undefined), new BnJs.default("0"), (function (a) {
           return a;
         }));
-  var match$2 = QlHooks$WildCards.usePledgeRateDetailed(tokenId);
+  var match$2 = QlHooks$WildCards.usePledgeRateDetailed(chain, tokenId);
   var ratio = match$2[2];
   var denominator = match$2[1];
   var numerator = match$2[0];
-  var priceStatus = QlHooks$WildCards.usePrice(tokenId);
-  var isOnAuction = Animal$WildCards.useIsOnAuction(tokenId);
-  var launchTimeOpt = QlHooks$WildCards.useLaunchTimeBN(tokenId);
-  var currentPriceWei = Animal$WildCards.useAuctionPriceWei(tokenId, Belt_Option.getWithDefault(launchTimeOpt, new BnJs.default("5000")));
+  var priceStatus = QlHooks$WildCards.usePrice(chain, tokenId);
+  var isOnAuction = Animal$WildCards.useIsOnAuction(chain, tokenId);
+  var launchTimeOpt = QlHooks$WildCards.useLaunchTimeBN(chain, tokenId);
+  var currentPriceWei = Animal$WildCards.useAuctionPriceWei(chain, tokenId, Belt_Option.getWithDefault(launchTimeOpt, new BnJs.default("5000")));
   var currentPriceWei$1 = isOnAuction ? currentPriceWei : (
       typeof priceStatus === "number" ? new BnJs.default("0") : (
           priceStatus.tag ? priceStatus[0] : new BnJs.default("0")

@@ -9,10 +9,11 @@ import * as InputHelp$WildCards from "../harberger-lib/InputHelp.bs.js";
 import * as RootProvider$WildCards from "../harberger-lib/RootProvider.bs.js";
 
 function ActionButtons$Buy(Props) {
+  var chain = Props.chain;
   var animal = Props.animal;
   var isExplorerOpt = Props.isExplorer;
   var isExplorer = isExplorerOpt !== undefined ? isExplorerOpt : false;
-  var currentPriceWei = QlHooks$WildCards.usePrice(animal);
+  var currentPriceWei = QlHooks$WildCards.usePrice(chain, animal);
   var goToBuy = RootProvider$WildCards.useGoToBuy(undefined);
   var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
   var buttonText;

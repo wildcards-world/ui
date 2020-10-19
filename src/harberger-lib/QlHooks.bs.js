@@ -1920,8 +1920,10 @@ function queryResultToOption(result) {
               }));
 }
 
-function useWildcardQuery(tokenId) {
-  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$2(TokenId$WildCards.toString(tokenId), undefined).variables), undefined, undefined, undefined, undefined, undefined, undefined, definition$2);
+function useWildcardQuery(chain, tokenId) {
+  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$2(TokenId$WildCards.toString(tokenId), undefined).variables), undefined, undefined, undefined, undefined, undefined, {
+              context: chain
+            }, definition$2);
 }
 
 function useLoadTokenDataArrayQuery(tokenIdArray) {
@@ -2086,8 +2088,8 @@ function useLoadTopContributorsData(numberOfLeaders) {
   return subscriptionResultOptionMap(match[0], getLargestContributors);
 }
 
-function usePatron(animal) {
-  var match = useWildcardQuery(animal);
+function usePatron(chain, animal) {
+  var match = useWildcardQuery(chain, animal);
   var getAddress = function (response) {
     return Belt_Option.flatMap(response.wildcard, (function (wildcard) {
                   return Caml_option.some(wildcard.owner.address);
@@ -2096,18 +2098,18 @@ function usePatron(animal) {
   return queryResultOptionFlatMap(match[0], getAddress);
 }
 
-function useIsAnimalOwened(ownedAnimal) {
+function useIsAnimalOwened(chain, ownedAnimal) {
   var currentAccount = Belt_Option.mapWithDefault(RootProvider$WildCards.useCurrentUser(undefined), "loading", (function (a) {
           return a;
         }));
-  var currentPatron = Belt_Option.mapWithDefault(usePatron(ownedAnimal), "no-patron-defined", (function (a) {
+  var currentPatron = Belt_Option.mapWithDefault(usePatron(chain, ownedAnimal), "no-patron-defined", (function (a) {
           return a;
         }));
   return currentAccount.toLowerCase() === currentPatron.toLocaleLowerCase();
 }
 
-function useTimeAcquired(animal) {
-  var match = useWildcardQuery(animal);
+function useTimeAcquired(chain, animal) {
+  var match = useWildcardQuery(chain, animal);
   var getTimeAquired = function (response) {
     return Belt_Option.mapWithDefault(response.wildcard, Moment(), (function (wildcard) {
                   return wildcard.timeAcquired;
@@ -2145,12 +2147,12 @@ function usePatronQuery(patron) {
               }));
 }
 
-function useTimeAcquiredWithDefault(animal, $$default) {
-  return Globals$WildCards.$pipe$pipe$pipe$pipe(useTimeAcquired(animal), $$default);
+function useTimeAcquiredWithDefault(chain, animal, $$default) {
+  return Globals$WildCards.$pipe$pipe$pipe$pipe(useTimeAcquired(chain, animal), $$default);
 }
 
-function useDaysHeld(tokenId) {
-  return Globals$WildCards.oMap(useTimeAcquired(tokenId), (function (moment) {
+function useDaysHeld(chain, tokenId) {
+  return Globals$WildCards.oMap(useTimeAcquired(chain, tokenId), (function (moment) {
                 return /* tuple */[
                         Moment().diff(moment, "days"),
                         moment
@@ -2208,8 +2210,8 @@ function useAmountRaised(param) {
               }));
 }
 
-function useTotalCollectedToken(animal) {
-  var match = useWildcardQuery(animal);
+function useTotalCollectedToken(chain, animal) {
+  var match = useWildcardQuery(chain, animal);
   var getTotalCollectedData = function (response) {
     return Globals$WildCards.oMap(response.wildcard, (function (wc) {
                   return /* tuple */[
@@ -2229,8 +2231,8 @@ function useTotalCollectedTokenArray(animalArray) {
               }));
 }
 
-function usePatronageNumerator(tokenId) {
-  var match = useWildcardQuery(tokenId);
+function usePatronageNumerator(chain, tokenId) {
+  var match = useWildcardQuery(chain, tokenId);
   var patronageNumerator = function (response) {
     return Belt_Option.map(response.wildcard, (function (wildcard) {
                   return wildcard.patronageNumerator;
@@ -2239,8 +2241,8 @@ function usePatronageNumerator(tokenId) {
   return queryResultOptionFlatMap(match[0], patronageNumerator);
 }
 
-function usePledgeRate(tokenId) {
-  var optPatronageNumerator = usePatronageNumerator(tokenId);
+function usePledgeRate(chain, tokenId) {
+  var optPatronageNumerator = usePatronageNumerator(chain, tokenId);
   return React.useMemo((function () {
                 if (optPatronageNumerator === undefined) {
                   return 0;
@@ -2250,8 +2252,8 @@ function usePledgeRate(tokenId) {
               }), [optPatronageNumerator]);
 }
 
-function usePledgeRateDetailed(tokenId) {
-  var pledgeRate = usePledgeRate(tokenId);
+function usePledgeRateDetailed(chain, tokenId) {
+  var pledgeRate = usePledgeRate(chain, tokenId);
   var inversePledgeRate = 1 / pledgeRate;
   var numeratorOverYear = String(pledgeRate * 1200 | 0);
   return /* tuple */[
@@ -2284,9 +2286,9 @@ function usePatronLoyaltyTokenDetails(address) {
         };
 }
 
-function useAmountRaisedToken(animal) {
+function useAmountRaisedToken(chain, animal) {
   var currentTimestamp = useCurrentTime(undefined);
-  var match = useTotalCollectedToken(animal);
+  var match = useTotalCollectedToken(chain, animal);
   if (match === undefined) {
     return ;
   }
@@ -2316,17 +2318,17 @@ function useTotalRaisedAnimalGroup(animals) {
   
 }
 
-function useTimeSinceTokenWasLastSettled(animal) {
+function useTimeSinceTokenWasLastSettled(chain, animal) {
   var currentTimestamp = useCurrentTime(undefined);
-  var match = useTotalCollectedToken(animal);
+  var match = useTotalCollectedToken(chain, animal);
   if (match !== undefined) {
     return Caml_option.some(new BnJs.default(currentTimestamp).sub(match[1]));
   }
   
 }
 
-function useUnredeemedLoyaltyTokenDueFromWildcard(animal) {
-  var timeSinceTokenWasLastSettled = useTimeSinceTokenWasLastSettled(animal);
+function useUnredeemedLoyaltyTokenDueFromWildcard(chain, animal) {
+  var timeSinceTokenWasLastSettled = useTimeSinceTokenWasLastSettled(chain, animal);
   if (timeSinceTokenWasLastSettled === undefined) {
     return ;
   }
@@ -2376,10 +2378,10 @@ function useRemainingDepositEth(patron) {
   return Caml_option.some(match[0].sub(amountRaisedSinceLastCollection));
 }
 
-function usePrice(animal) {
-  var match = useWildcardQuery(animal);
+function usePrice(chain, animal) {
+  var match = useWildcardQuery(chain, animal);
   var simple = match[0];
-  var optCurrentPatron = usePatron(animal);
+  var optCurrentPatron = usePatron(chain, animal);
   var foreclosureTime = useForeclosureTimeBn(Belt_Option.mapWithDefault(optCurrentPatron, "no-patron-defined", (function (a) {
               return a;
             })));
@@ -2426,8 +2428,8 @@ function useAuctioLength(_tokenId) {
   return new BnJs.default("604800");
 }
 
-function useLaunchTimeBN(tokenId) {
-  var match = useWildcardQuery(tokenId);
+function useLaunchTimeBN(chain, tokenId) {
+  var match = useWildcardQuery(chain, tokenId);
   var simple = match[0];
   if (typeof simple === "number" || simple.tag) {
     return ;

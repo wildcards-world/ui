@@ -67,9 +67,10 @@ var EditButton = {
 };
 
 function Dapp$Streak(Props) {
+  var chain = Props.chain;
   var animal = Props.animal;
   var animalName = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.useWildcardName(animal), "Loading");
-  var daysHeld = QlHooks$WildCards.useDaysHeld(animal);
+  var daysHeld = QlHooks$WildCards.useDaysHeld(chain, animal);
   if (daysHeld === undefined) {
     return null;
   }
@@ -135,9 +136,10 @@ var DisplayAfterDate = {
 };
 
 function Dapp$AuctionDisplay(Props) {
+  var chain = Props.chain;
   var launchTime = Props.launchTime;
   var animal = Props.animal;
-  var currentPriceWei = Animal$WildCards.useAuctionPriceWei(animal, launchTime);
+  var currentPriceWei = Animal$WildCards.useAuctionPriceWei(chain, animal, launchTime);
   var optCurrentUsdEthPrice = UsdPriceProvider$WildCards.useUsdPrice(undefined);
   var match = PriceDisplay$WildCards.priceWeiToTuple(currentPriceWei, optCurrentUsdEthPrice);
   return React.createElement(React.Fragment, undefined, React.createElement("h3", undefined, "Auction "), React.createElement(PriceDisplay$WildCards.PurePriceDisplay.make, {
@@ -153,12 +155,14 @@ var AuctionDisplay = {
 };
 
 function Dapp$AuctionDetails(Props) {
+  var chain = Props.chain;
   var animal = Props.animal;
-  var launchTimeOpt = QlHooks$WildCards.useLaunchTimeBN(animal);
+  var launchTimeOpt = QlHooks$WildCards.useLaunchTimeBN(chain, animal);
   var foreclosureTimeOpt = QlHooks$WildCards.useForeclosureTimeBn(TokenId$WildCards.toString(animal));
   if (launchTimeOpt === undefined) {
     if (foreclosureTimeOpt !== undefined) {
       return React.createElement(Dapp$AuctionDisplay, {
+                  chain: chain,
                   launchTime: Caml_option.valFromOption(foreclosureTimeOpt),
                   animal: animal
                 });
@@ -169,6 +173,7 @@ function Dapp$AuctionDetails(Props) {
   var launchTime = Caml_option.valFromOption(launchTimeOpt);
   if (foreclosureTimeOpt === undefined) {
     return React.createElement(Dapp$AuctionDisplay, {
+                chain: chain,
                 launchTime: launchTime,
                 animal: animal
               });
@@ -176,11 +181,13 @@ function Dapp$AuctionDetails(Props) {
   var foreclosurTime = Caml_option.valFromOption(foreclosureTimeOpt);
   if (foreclosurTime.lt(launchTime)) {
     return React.createElement(Dapp$AuctionDisplay, {
+                chain: chain,
                 launchTime: launchTime,
                 animal: animal
               });
   } else {
     return React.createElement(Dapp$AuctionDisplay, {
+                chain: chain,
                 launchTime: foreclosurTime,
                 animal: animal
               });
@@ -192,16 +199,18 @@ var AuctionDetails = {
 };
 
 function Dapp$BasicAnimalDisplay(Props) {
+  var chain = Props.chain;
   var animal = Props.animal;
-  var owned = QlHooks$WildCards.useIsAnimalOwened(animal);
-  var currentPatron = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.usePatron(animal), "Loading");
+  var owned = QlHooks$WildCards.useIsAnimalOwened(chain, animal);
+  var currentPatron = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.usePatron(chain, animal), "Loading");
   var displayName = UserProvider$WildCards.useDisplayName(currentPatron);
   var displayNameStr = UserProvider$WildCards.displayNameToString(displayName);
   var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
   var nonUrlRouting = RootProvider$WildCards.useNonUrlState(undefined);
-  var isOnAuction = Animal$WildCards.useIsOnAuction(animal);
+  var isOnAuction = Animal$WildCards.useIsOnAuction(chain, animal);
   if (isOnAuction) {
     return React.createElement(Dapp$AuctionDetails, {
+                chain: chain,
                 animal: animal
               });
   }
@@ -222,10 +231,12 @@ function Dapp$BasicAnimalDisplay(Props) {
     tmp = owned ? React.createElement(Dapp$EditButton, {
             animal: animal
           }) : React.createElement(ActionButtons$WildCards.Buy.make, {
+            chain: chain,
             animal: animal
           });
   }
   return React.createElement(React.Fragment, undefined, React.createElement(PriceDisplay$WildCards.make, {
+                  chain: chain,
                   animal: animal
                 }), React.createElement("a", {
                   onClick: (function (e) {
@@ -242,6 +253,7 @@ var BasicAnimalDisplay = {
 function Dapp$AnimalOnLandingPage(Props) {
   var animal = Props.animal;
   var scalarOpt = Props.scalar;
+  var chain = Props.chain;
   var enlargementOpt = Props.enlargement;
   var optionEndDateMoment = Props.optionEndDateMoment;
   var isGqlLoaded = Props.isGqlLoaded;
@@ -251,7 +263,7 @@ function Dapp$AnimalOnLandingPage(Props) {
   var isExplorer = Router$WildCards.useIsExplorer(undefined);
   var orgBadge = Animal$WildCards.useGetOrgBadgeImage(animal);
   var orgId = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.useWildcardOrgId(animal), "");
-  var currentPriceWei = QlHooks$WildCards.usePrice(animal);
+  var currentPriceWei = QlHooks$WildCards.usePrice(chain, animal);
   var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
   var image = Animal$WildCards.useAvatar(animal);
   var normalImage = function (param) {
@@ -269,6 +281,7 @@ function Dapp$AnimalOnLandingPage(Props) {
       tmp$1 = isGqlLoaded && !(optionEndDateMoment !== undefined || typeof currentPriceWei === "number" || !currentPriceWei.tag) ? React.createElement("div", {
               className: Styles$WildCards.overlayFlameImg
             }, React.createElement(Dapp$Streak, {
+                  chain: chain,
                   animal: animal
                 })) : null;
       tmp = React.createElement(React.Fragment, {
@@ -307,6 +320,7 @@ function Dapp$AnimalOnLandingPage(Props) {
                         displayUnits: false
                       })) : (
                 isGqlLoaded ? React.createElement("div", undefined, React.createElement(Dapp$BasicAnimalDisplay, {
+                            chain: chain,
                             animal: animal
                           })) : null
               ));
@@ -331,6 +345,7 @@ function Dapp$CarouselAnimal(Props) {
     return React.createElement(Dapp$AnimalOnLandingPage, {
                 animal: animal,
                 scalar: scalar,
+                chain: chain,
                 enlargement: enlargement,
                 optionEndDateMoment: optionEndDateMoment,
                 isGqlLoaded: isGqlLoaded
@@ -435,17 +450,19 @@ var AnimalCarousel = {
 };
 
 function Dapp$AnimalActionsOnDetailsPage(Props) {
+  var chain = Props.chain;
   var animal = Props.animal;
-  var owned = QlHooks$WildCards.useIsAnimalOwened(animal);
-  var currentPatron = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.usePatron(animal), "Loading");
+  var owned = QlHooks$WildCards.useIsAnimalOwened(chain, animal);
+  var currentPatron = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.usePatron(chain, animal), "Loading");
   var displayName = UserProvider$WildCards.useDisplayName(currentPatron);
   var displayNameStr = UserProvider$WildCards.displayNameToString(displayName);
   var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
   var nonUrlRouting = RootProvider$WildCards.useNonUrlState(undefined);
-  var isOnAuction = Animal$WildCards.useIsOnAuction(animal);
+  var isOnAuction = Animal$WildCards.useIsOnAuction(chain, animal);
   var price = function (param) {
     if (isOnAuction) {
       return React.createElement(Dapp$AuctionDetails, {
+                  chain: chain,
                   animal: animal
                 });
     }
@@ -464,6 +481,7 @@ function Dapp$AnimalActionsOnDetailsPage(Props) {
     }
     if (exit === 1) {
       tmp = React.createElement(ActionButtons$WildCards.Buy.make, {
+            chain: chain,
             animal: animal
           });
     }
@@ -475,6 +493,7 @@ function Dapp$AnimalActionsOnDetailsPage(Props) {
                         return Curry._1(clearAndPush, "/#user/" + (String(currentPatron) + ""));
                       })
                   }, Globals$WildCards.restr(displayNameStr)), React.createElement(PriceDisplay$WildCards.make, {
+                    chain: chain,
                     animal: animal
                   }), tmp);
   };
@@ -482,6 +501,7 @@ function Dapp$AnimalActionsOnDetailsPage(Props) {
     return React.createElement(React.Fragment, {
                 children: null
               }, React.createElement(PriceDisplay$WildCards.make, {
+                    chain: chain,
                     animal: animal
                   }), React.createElement(ActionButtons$WildCards.UpdatePrice.make, {
                     animal: animal
@@ -513,6 +533,7 @@ var AnimalActionsOnDetailsPage = {
 };
 
 function Dapp$DetailsViewAnimal(Props) {
+  var chain = Props.chain;
   var animal = Props.animal;
   var orgId = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.useWildcardOrgId(animal), "");
   var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
@@ -528,11 +549,13 @@ function Dapp$DetailsViewAnimal(Props) {
                       afterComponent: React.createElement("div", {
                             className: Styles$WildCards.overlayFlameImg
                           }, React.createElement(Dapp$Streak, {
+                                chain: chain,
                                 animal: animal
                               }))
                     }) : React.createElement("div", {
                       className: Styles$WildCards.overlayFlameImg
                     }, React.createElement(Dapp$Streak, {
+                          chain: chain,
                           animal: animal
                         })), React.createElement("div", {
                     className: Styles$WildCards.overlayBadgeImg,
@@ -554,6 +577,7 @@ function Dapp$DetailsViewAnimal(Props) {
                                 src: image
                               });
                   })), React.createElement("h2", undefined, Globals$WildCards.restr(Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.useWildcardName(animal), "Loading"))), React.createElement(Dapp$AnimalActionsOnDetailsPage, {
+                  chain: chain,
                   animal: animal
                 }));
 }
@@ -563,6 +587,7 @@ var DetailsViewAnimal = {
 };
 
 function Dapp$DetailsView(Props) {
+  var chain = Props.chain;
   var optionAnimal = Props.optionAnimal;
   BrowserLogger.infoWithData("Dapp-WildCards", "optionAnimal", /* tuple */[
         "a",
@@ -570,6 +595,7 @@ function Dapp$DetailsView(Props) {
       ]);
   if (optionAnimal !== undefined) {
     return React.createElement(Dapp$DetailsViewAnimal, {
+                chain: chain,
                 animal: Caml_option.valFromOption(optionAnimal)
               });
   } else {
@@ -582,6 +608,7 @@ var DetailsView = {
 };
 
 function Dapp$DefaultLook(Props) {
+  var chain = Props.chain;
   var isGqlLoaded = Props.isGqlLoaded;
   var url = ReasonReactRouter.useUrl(undefined, undefined);
   var match = url.hash.split("/");
@@ -662,6 +689,7 @@ function Dapp$DefaultLook(Props) {
               animalStr
             ]);
         tmp = React.createElement(Dapp$DetailsView, {
+              chain: chain,
               optionAnimal: TokenId$WildCards.make(animalStr)
             });
         break;
@@ -697,10 +725,11 @@ var DefaultLeftPanel = {
 };
 
 function Dapp$AnimalInfoStats(Props) {
+  var chain = Props.chain;
   var animal = Props.animal;
   var animalName = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.useWildcardName(animal), "Loading");
-  var daysHeld = QlHooks$WildCards.useDaysHeld(animal);
-  var currentPatron = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.usePatron(animal), "Loading");
+  var daysHeld = QlHooks$WildCards.useDaysHeld(chain, animal);
+  var currentPatron = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.usePatron(chain, animal), "Loading");
   var userId = UserProvider$WildCards.useDisplayName(currentPatron);
   var displayName = UserProvider$WildCards.useDisplayName(currentPatron);
   var displayNameStr = UserProvider$WildCards.displayNameToString(displayName);
@@ -733,7 +762,7 @@ function Dapp$AnimalInfoStats(Props) {
                         }))
                 ];
         }));
-  var match$1 = Globals$WildCards.mapd(QlHooks$WildCards.useAmountRaisedToken(animal), /* tuple */[
+  var match$1 = Globals$WildCards.mapd(QlHooks$WildCards.useAmountRaisedToken(chain, animal), /* tuple */[
         "Loading",
         "Loading"
       ], (function (a) {
@@ -751,8 +780,8 @@ function Dapp$AnimalInfoStats(Props) {
   var definiteTime = Globals$WildCards.mapd(foreclosureTime, /* Loading */0, (function (a) {
           return /* Date */[a];
         }));
-  var ratio = QlHooks$WildCards.usePledgeRate(animal);
-  var optCurrentPrice = PriceDisplay$WildCards.usePrice(animal);
+  var ratio = QlHooks$WildCards.usePledgeRate(chain, animal);
+  var optCurrentPrice = PriceDisplay$WildCards.usePrice(chain, animal);
   var match$2 = optCurrentPrice !== undefined ? /* tuple */[
       Globals$WildCards.toFixedWithPrecisionNoTrailingZeros(Accounting$WildCards.defaultZeroF(Belt_Float.fromString(optCurrentPrice[0])) * ratio, 4),
       undefined
@@ -818,10 +847,11 @@ var AnimalInfoStats = {
 };
 
 function Dapp$UnlaunchedAnimalInfo(Props) {
+  var chain = Props.chain;
   var endDateMoment = Props.endDateMoment;
   var animal = Props.animal;
   var animalName = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.useWildcardName(animal), "Loading");
-  var ratio = QlHooks$WildCards.usePledgeRate(animal);
+  var ratio = QlHooks$WildCards.usePledgeRate(chain, animal);
   var monthlyRate = (ratio * 100).toString();
   return React.createElement(Dapp$DisplayAfterDate, {
               endDateMoment: endDateMoment,
@@ -835,6 +865,7 @@ function Dapp$UnlaunchedAnimalInfo(Props) {
                                       children: React.createElement("span", undefined, Globals$WildCards.restr("ⓘ"))
                                     }))), React.createElement("br", undefined), Globals$WildCards.restr(monthlyRate + " %"))),
               afterComponent: React.createElement(Dapp$AnimalInfoStats, {
+                    chain: chain,
                     animal: animal
                   })
             });
@@ -845,10 +876,11 @@ var UnlaunchedAnimalInfo = {
 };
 
 function Dapp$AnimalInfo(Props) {
+  var chain = Props.chain;
   var animal = Props.animal;
   var animalDescription = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.useWildcardDescription(animal), ["Loading"]);
   var optAnimalMedia = Animal$WildCards.useAlternateImage(animal);
-  var animalStatus = Animal$WildCards.useTokenStatus(animal);
+  var animalStatus = Animal$WildCards.useTokenStatus(chain, animal);
   var tmp;
   if (typeof animalStatus === "number") {
     tmp = React.createElement(RimbleUi.Loader, { });
@@ -856,12 +888,14 @@ function Dapp$AnimalInfo(Props) {
     switch (animalStatus.tag | 0) {
       case /* WaitingForLaunch */0 :
           tmp = React.createElement(Dapp$UnlaunchedAnimalInfo, {
+                chain: chain,
                 endDateMoment: animalStatus[0],
                 animal: animal
               });
           break;
       case /* Launched */1 :
           tmp = React.createElement(Info$WildCards.Auction.make, {
+                chain: chain,
                 tokenId: animal,
                 abandoned: false,
                 auctionStartTime: animalStatus[0]
@@ -869,11 +903,13 @@ function Dapp$AnimalInfo(Props) {
           break;
       case /* Owned */2 :
           tmp = React.createElement(Info$WildCards.make, {
+                chain: chain,
                 tokenId: animal
               });
           break;
       case /* Foreclosed */3 :
           tmp = React.createElement(Info$WildCards.Auction.make, {
+                chain: chain,
                 tokenId: animal,
                 abandoned: true,
                 auctionStartTime: animalStatus[0]
@@ -944,6 +980,7 @@ var AnimalInfo = {
 };
 
 function Dapp(Props) {
+  var chain = Props.chain;
   var nonUrlRouting = RootProvider$WildCards.useNonUrlState(undefined);
   var clearNonUrlState = RootProvider$WildCards.useClearNonUrlState(undefined);
   var isDetailView = Router$WildCards.useIsDetails(undefined);
@@ -996,6 +1033,7 @@ function Dapp(Props) {
           break;
       case /* NoExtraState */2 :
           tmp = optAnimalForDetails !== undefined ? React.createElement(Dapp$AnimalInfo, {
+                  chain: chain,
                   animal: Caml_option.valFromOption(optAnimalForDetails)
                 }) : React.createElement(Dapp$DefaultLeftPanel, { });
           break;
@@ -1045,6 +1083,7 @@ function Dapp(Props) {
                     right: 0,
                     m: 1
                   }), React.createElement(Buy$WildCards.make, {
+                    chain: chain,
                     tokenId: nonUrlRouting[0]
                   }));
           break;
@@ -1066,6 +1105,7 @@ function Dapp(Props) {
                     right: 0,
                     m: 1
                   }), React.createElement(Buy$WildCards.make, {
+                    chain: chain,
                     tokenId: nonUrlRouting[0]
                   }));
           break;
@@ -1089,6 +1129,7 @@ function Dapp(Props) {
                 }), React.createElement(RimbleUi.Box, {
                   p: 1,
                   children: React.createElement(Dapp$DefaultLook, {
+                        chain: chain,
                         isGqlLoaded: true
                       }),
                   width: [

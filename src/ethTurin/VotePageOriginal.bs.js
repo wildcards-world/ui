@@ -320,6 +320,7 @@ var ApproveLoyaltyTokens = {
 };
 
 function VotePageOriginal(Props) {
+  var chain = Props.chain;
   var match = React.useState((function () {
           return /* DefaultView */0;
         }));
@@ -421,8 +422,8 @@ function VotePageOriginal(Props) {
   }
   var cannotVote$1 = match$3[0];
   var glen = TokenId$WildCards.makeFromInt(13);
-  var optCurrentPrice = PriceDisplay$WildCards.usePrice(glen);
-  var match$4 = QlHooks$WildCards.usePledgeRateDetailed(glen);
+  var optCurrentPrice = PriceDisplay$WildCards.usePrice(chain, glen);
+  var match$4 = QlHooks$WildCards.usePledgeRateDetailed(chain, glen);
   var match$5 = optCurrentPrice !== undefined ? /* tuple */[
       Globals$WildCards.toFixedWithPrecisionNoTrailingZeros(Accounting$WildCards.defaultZeroF(Belt_Float.fromString(optCurrentPrice[0])) * match$4[2], 5),
       undefined

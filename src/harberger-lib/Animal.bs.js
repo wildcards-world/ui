@@ -55,10 +55,10 @@ function isLaunched(animal) {
   return /* Launched */0;
 }
 
-function useTokenStatus(animal) {
-  var optLaunchTime = QlHooks$WildCards.useLaunchTimeBN(animal);
+function useTokenStatus(chain, animal) {
+  var optLaunchTime = QlHooks$WildCards.useLaunchTimeBN(chain, animal);
   var currentTime = QlHooks$WildCards.useCurrentTimestampBn(undefined);
-  var currentPriceWei = QlHooks$WildCards.usePrice(animal);
+  var currentPriceWei = QlHooks$WildCards.usePrice(chain, animal);
   if (optLaunchTime === undefined) {
     return /* Loading */0;
   }
@@ -80,8 +80,8 @@ function useTokenStatus(animal) {
   }
 }
 
-function useIsOnAuction(animal) {
-  var tokenStatus = useTokenStatus(animal);
+function useIsOnAuction(chain, animal) {
+  var tokenStatus = useTokenStatus(chain, animal);
   if (typeof tokenStatus === "number") {
     return false;
   }
@@ -94,8 +94,8 @@ function useIsOnAuction(animal) {
   }
 }
 
-function useAuctionPriceWei(animal, launchTime) {
-  var tokenStatus = useTokenStatus(animal);
+function useAuctionPriceWei(chain, animal, launchTime) {
+  var tokenStatus = useTokenStatus(chain, animal);
   var auctionStartPrice = QlHooks$WildCards.useAuctionStartPrice(animal);
   var auctionEndPrice = QlHooks$WildCards.useAuctionEndPrice(animal);
   var auctionLength = QlHooks$WildCards.useAuctioLength(animal);

@@ -32,11 +32,12 @@ module Token = {
 
 module ClaimLoyaltyTokenButtons = {
   [@react.component]
-  let make = (~id, ~refreshLoyaltyTokenBalance) => {
+  let make = (~chain, ~id, ~refreshLoyaltyTokenBalance) => {
     let (redeemLoyaltyTokens, transactionStatus) =
       ContractActions.useRedeemLoyaltyTokens(id, false);
     let balanceAvailableOnToken =
       QlHooks.useUnredeemedLoyaltyTokenDueFromWildcard(
+        ~chain,
         id->TokenId.makeWithDefault(0),
       );
     let tokenName =
@@ -106,6 +107,7 @@ module UserDetails = {
   [@react.component]
   let make =
       (
+        ~chain,
         ~patronQueryResult,
         ~optThreeBoxData: option(UserProvider.threeBoxUserInfo),
         ~userAddress: string,
@@ -321,6 +323,7 @@ module UserDetails = {
                          ->Array.map(id =>
                              <ClaimLoyaltyTokenButtons
                                id
+                               chain
                                key=id
                                refreshLoyaltyTokenBalance=updateFunction
                              />
@@ -436,7 +439,7 @@ module UserDetails = {
 };
 
 [@react.component]
-let make = (~userAddress: string) => {
+let make = (~chain, ~userAddress: string) => {
   let userAddressLowerCase = userAddress->Js.String.toLowerCase;
   let patronQuery = QlHooks.usePatronQuery(userAddressLowerCase);
   let userInfoContext = UserProvider.useUserInfoContext();
@@ -448,7 +451,7 @@ let make = (~userAddress: string) => {
   <Rimble.Flex flexWrap="wrap" alignItems="center" className=Styles.topBody>
     {switch (patronQuery) {
      | Some(patronQueryResult) =>
-       <UserDetails optThreeBoxData patronQueryResult userAddress />
+       <UserDetails chain optThreeBoxData patronQueryResult userAddress />
      | None =>
        <div>
          <Rimble.Heading>

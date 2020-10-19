@@ -56,11 +56,11 @@ type tokenStatus =
   | Owned(Eth.t) // TODO put the owner and price as a parameter here
   | Foreclosed(MomentRe.Moment.t);
 
-let useTokenStatus: TokenId.t => tokenStatus =
-  animal => {
-    let optLaunchTime = QlHooks.useLaunchTimeBN(animal);
+let useTokenStatus: (~chain: Client.context, TokenId.t) => tokenStatus =
+  (~chain, animal) => {
+    let optLaunchTime = QlHooks.useLaunchTimeBN(~chain, animal);
     let currentTime = QlHooks.useCurrentTimestampBn();
-    let currentPriceWei = QlHooks.usePrice(animal);
+    let currentPriceWei = QlHooks.usePrice(~chain, animal);
 
     switch (optLaunchTime) {
     | Some(launchTime) =>
@@ -83,9 +83,9 @@ let useTokenStatus: TokenId.t => tokenStatus =
     };
   };
 
-let useIsOnAuction: TokenId.t => bool =
-  animal => {
-    let tokenStatus = useTokenStatus(animal);
+let useIsOnAuction: (~chain: Client.context, TokenId.t) => bool =
+  (~chain, animal) => {
+    let tokenStatus = useTokenStatus(~chain, animal);
 
     switch (tokenStatus) {
     | Loading
@@ -96,8 +96,8 @@ let useIsOnAuction: TokenId.t => bool =
     };
   };
 
-let useAuctionPriceWei = (animal, launchTime) => {
-  let tokenStatus = useTokenStatus(animal);
+let useAuctionPriceWei = (~chain, animal, launchTime) => {
+  let tokenStatus = useTokenStatus(~chain, animal);
   let auctionStartPrice = QlHooks.useAuctionStartPrice(animal);
   let auctionEndPrice = QlHooks.useAuctionEndPrice(animal);
   let auctionLength = QlHooks.useAuctioLength(animal);

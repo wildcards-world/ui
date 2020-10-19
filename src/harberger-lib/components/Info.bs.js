@@ -17,9 +17,10 @@ import * as UserProvider$WildCards from "../js/user-provider/UserProvider.bs.js"
 import * as UsdPriceProvider$WildCards from "./UsdPriceProvider.bs.js";
 
 function Info(Props) {
+  var chain = Props.chain;
   var tokenId = Props.tokenId;
-  var daysHeld = QlHooks$WildCards.useDaysHeld(tokenId);
-  var currentPatron = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.usePatron(tokenId), "Loading");
+  var daysHeld = QlHooks$WildCards.useDaysHeld(chain, tokenId);
+  var currentPatron = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.usePatron(chain, tokenId), "Loading");
   var userId = UserProvider$WildCards.useDisplayName(currentPatron);
   var displayName = UserProvider$WildCards.useDisplayName(currentPatron);
   var displayNameStr = UserProvider$WildCards.displayNameToString(displayName);
@@ -53,7 +54,7 @@ function Info(Props) {
                         }))
                 ];
         }));
-  var match$1 = Globals$WildCards.mapd(QlHooks$WildCards.useAmountRaisedToken(tokenId), /* tuple */[
+  var match$1 = Globals$WildCards.mapd(QlHooks$WildCards.useAmountRaisedToken(chain, tokenId), /* tuple */[
         "Loading",
         "Loading"
       ], (function (a) {
@@ -71,8 +72,8 @@ function Info(Props) {
   var definiteTime = Globals$WildCards.mapd(foreclosureTime, undefined, (function (a) {
           return Caml_option.some(a);
         }));
-  var ratio = QlHooks$WildCards.usePledgeRate(tokenId);
-  var optCurrentPrice = PriceDisplay$WildCards.usePrice(tokenId);
+  var ratio = QlHooks$WildCards.usePledgeRate(chain, tokenId);
+  var optCurrentPrice = PriceDisplay$WildCards.usePrice(chain, tokenId);
   var match$2 = optCurrentPrice !== undefined ? /* tuple */[
       Globals$WildCards.toFixedWithPrecisionNoTrailingZeros(Accounting$WildCards.defaultZeroF(Belt_Float.fromString(optCurrentPrice[0])) * ratio, 4),
       undefined
@@ -134,16 +135,17 @@ function Info(Props) {
 }
 
 function Info$Auction(Props) {
+  var chain = Props.chain;
   var tokenId = Props.tokenId;
   var abandoned = Props.abandoned;
   var auctionStartTime = Props.auctionStartTime;
-  var currentPatron = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.usePatron(tokenId), "Loading");
+  var currentPatron = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.usePatron(chain, tokenId), "Loading");
   var displayName = UserProvider$WildCards.useDisplayName(currentPatron);
   var displayNameStr = UserProvider$WildCards.displayNameToString(displayName);
   var tokenName = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.useWildcardName(tokenId), "loading name");
   var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
   var currentUsdEthPrice = UsdPriceProvider$WildCards.useUsdPrice(undefined);
-  var match = Globals$WildCards.mapd(QlHooks$WildCards.useAmountRaisedToken(tokenId), /* tuple */[
+  var match = Globals$WildCards.mapd(QlHooks$WildCards.useAmountRaisedToken(chain, tokenId), /* tuple */[
         "Loading",
         "Loading"
       ], (function (a) {
@@ -157,7 +159,7 @@ function Info$Auction(Props) {
                         }))
                 ];
         }));
-  var ratio = QlHooks$WildCards.usePledgeRate(tokenId);
+  var ratio = QlHooks$WildCards.usePledgeRate(chain, tokenId);
   var monthlyRate = (ratio * 100).toString();
   return React.createElement(React.Fragment, {
               children: null

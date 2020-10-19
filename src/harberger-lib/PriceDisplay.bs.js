@@ -23,8 +23,8 @@ function priceWeiToTuple(wei, optCurrentUsdEthPrice) {
         ];
 }
 
-function usePrice(animal) {
-  var optPriceWei = QlHooks$WildCards.usePrice(animal);
+function usePrice(chain, animal) {
+  var optPriceWei = QlHooks$WildCards.usePrice(chain, animal);
   var optCurrentUsdEthPrice = UsdPriceProvider$WildCards.useUsdPrice(undefined);
   if (typeof optPriceWei === "number") {
     return ;
@@ -53,8 +53,9 @@ var PurePriceDisplay = {
 };
 
 function PriceDisplay(Props) {
+  var chain = Props.chain;
   var animal = Props.animal;
-  var optCurrentPrice = usePrice(animal);
+  var optCurrentPrice = usePrice(chain, animal);
   if (optCurrentPrice !== undefined) {
     return React.createElement(PriceDisplay$PurePriceDisplay, {
                 priceEth: optCurrentPrice[0],

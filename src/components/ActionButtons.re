@@ -1,7 +1,7 @@
 module Buy = {
   [@react.component]
-  let make = (~animal: TokenId.t, ~isExplorer: bool=false) => {
-    let currentPriceWei = QlHooks.usePrice(animal);
+  let make = (~chain, ~animal: TokenId.t, ~isExplorer: bool=false) => {
+    let currentPriceWei = QlHooks.usePrice(~chain, animal);
 
     let goToBuy = RootProvider.useGoToBuy();
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();

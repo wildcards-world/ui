@@ -2,10 +2,10 @@ open Globals;
 
 [@gentype]
 [@react.component]
-let make = (~tokenId: TokenId.t) => {
-  let daysHeld = QlHooks.useDaysHeld(tokenId);
+let make = (~chain, ~tokenId: TokenId.t) => {
+  let daysHeld = QlHooks.useDaysHeld(~chain, tokenId);
 
-  let currentPatron = QlHooks.usePatron(tokenId) |||| "Loading";
+  let currentPatron = QlHooks.usePatron(~chain, tokenId) |||| "Loading";
   let userId = UserProvider.useDisplayName(currentPatron);
   let displayName = UserProvider.useDisplayName(currentPatron);
   let displayNameStr = UserProvider.displayNameToString(displayName);
@@ -32,7 +32,7 @@ let make = (~tokenId: TokenId.t) => {
       );
 
   let (totalPatronage, totalPatronageUsd) =
-    QlHooks.useAmountRaisedToken(tokenId)
+    QlHooks.useAmountRaisedToken(~chain, tokenId)
     ->mapd(("Loading", "Loading"), a =>
         (
           (a->Eth.get(Eth.Eth(`ether))->Float.fromString |||| 0.0)
@@ -45,9 +45,9 @@ let make = (~tokenId: TokenId.t) => {
   let foreclosureTime = QlHooks.useForeclosureTime(currentPatron);
   let definiteTime = foreclosureTime->mapd(None, a => Some(a));
 
-  let ratio = QlHooks.usePledgeRate(tokenId);
+  let ratio = QlHooks.usePledgeRate(~chain, tokenId);
 
-  let optCurrentPrice = PriceDisplay.usePrice(tokenId);
+  let optCurrentPrice = PriceDisplay.usePrice(~chain, tokenId);
 
   let (optMonthlyPledgeEth, optMonthlyPledgeUsd) =
     switch (optCurrentPrice) {
@@ -244,8 +244,9 @@ let make = (~tokenId: TokenId.t) => {
 
 module Auction = {
   [@react.component]
-  let make = (~tokenId: TokenId.t, ~abandoned: bool, ~auctionStartTime) => {
-    let currentPatron = QlHooks.usePatron(tokenId) |||| "Loading";
+  let make =
+      (~chain, ~tokenId: TokenId.t, ~abandoned: bool, ~auctionStartTime) => {
+    let currentPatron = QlHooks.usePatron(~chain, tokenId) |||| "Loading";
     let displayName = UserProvider.useDisplayName(currentPatron);
     let displayNameStr = UserProvider.displayNameToString(displayName);
 
@@ -255,7 +256,7 @@ module Auction = {
 
     let currentUsdEthPrice = UsdPriceProvider.useUsdPrice();
     let (totalPatronage, totalPatronageUsd) =
-      QlHooks.useAmountRaisedToken(tokenId)
+      QlHooks.useAmountRaisedToken(~chain, tokenId)
       ->mapd(("Loading", "Loading"), a =>
           (
             (a->Eth.get(Eth.Eth(`ether))->Float.fromString |||| 0.0)
@@ -266,7 +267,7 @@ module Auction = {
           )
         );
 
-    let ratio = QlHooks.usePledgeRate(tokenId);
+    let ratio = QlHooks.usePledgeRate(~chain, tokenId);
 
     let monthlyRate = Js.Float.toString(ratio *. 100.);
 

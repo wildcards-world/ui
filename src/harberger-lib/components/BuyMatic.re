@@ -45,7 +45,7 @@ let calcRequiredDepositForTime = (time, price, numerator, denominator) => {
 
 [@gentype]
 [@react.component]
-let make = (~tokenId: TokenId.t) => {
+let make = (~chain, ~tokenId: TokenId.t) => {
   let (buyTxHash, _setBuyTxHash) = React.useState(() => None);
   let (buyAuctionTxHash, _setBuyAuctionTxHash) = React.useState(() => None);
   let userBalance =
@@ -54,12 +54,13 @@ let make = (~tokenId: TokenId.t) => {
     );
 
   let (numerator, denominator, ratio, _ratioInverse) =
-    QlHooks.usePledgeRateDetailed(tokenId);
-  let priceStatus = QlHooks.usePrice(tokenId);
-  let isOnAuction = Animal.useIsOnAuction(tokenId);
-  let launchTimeOpt = QlHooks.useLaunchTimeBN(tokenId);
+    QlHooks.usePledgeRateDetailed(~chain, tokenId);
+  let priceStatus = QlHooks.usePrice(~chain, tokenId);
+  let isOnAuction = Animal.useIsOnAuction(~chain, tokenId);
+  let launchTimeOpt = QlHooks.useLaunchTimeBN(~chain, tokenId);
   let currentPriceWei =
     Animal.useAuctionPriceWei(
+      ~chain,
       tokenId,
       launchTimeOpt->Option.getWithDefault(BN.new_("5000")),
     );
