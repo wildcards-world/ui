@@ -188,6 +188,7 @@ function useBuy(animal, isGsn) {
                 return ;
               }
               var buyPromise = $$Promise.Js.toResult(optSteward.buy(animalId, newPriceEncoded, oldPriceParsed, wildcardsPercentage, {
+                        gasLimit: "500302",
                         value: value$1
                       }));
               $$Promise.getOk(buyPromise, (function (tx) {
@@ -239,6 +240,7 @@ function useBuyAuction(animal, isGsn) {
                 return ;
               }
               var buyPromise = $$Promise.Js.toResult(optSteward.buyAuction(animalId, newPriceEncoded, wildcardsPercentage, {
+                        gasLimit: "500302",
                         value: value$1
                       }));
               $$Promise.getOk(buyPromise, (function (tx) {
@@ -287,6 +289,7 @@ function useRedeemLoyaltyTokens(animalId, isGsn) {
       return ;
     }
     var claimLoyaltyTokenPromise = $$Promise.Js.toResult(optSteward._collectPatronage(animalId, {
+              gasLimit: "500302",
               value: value
             }));
     $$Promise.getOk(claimLoyaltyTokenPromise, (function (tx) {
@@ -342,6 +345,7 @@ function useApproveLoyaltyTokens(param) {
     }
     var voteContractAddress = Globals$WildCards.$pipe$pipe$pipe$pipe(voteAddressFromChainId(optNetworkId), "0x0000000000000000000000000000000000000500");
     var claimLoyaltyTokenPromise = $$Promise.Js.toResult(optLoyaltyTokens.approve(voteContractAddress, "100000000000000000000000", {
+              gasLimit: "500302",
               value: value
             }));
     $$Promise.getOk(claimLoyaltyTokenPromise, (function (tx) {
@@ -396,6 +400,7 @@ function useVoteForProject(param) {
     console.log(proposalId, squareRoot.sqr().toString(), squareRoot.toString());
     console.log("!!Voting - end!!");
     var claimLoyaltyTokenPromise = $$Promise.Js.toResult(optSteward.vote(proposalId, squareRoot.sqr().toString(), squareRoot.toString(), {
+              gasLimit: "500302",
               value: value
             }));
     $$Promise.getOk(claimLoyaltyTokenPromise, (function (tx) {
@@ -446,6 +451,7 @@ function useIncreaseVoteIteration(param) {
       return ;
     }
     var claimLoyaltyTokenPromise = $$Promise.Js.toResult(optSteward.distributeFunds({
+              gasLimit: "500302",
               value: value
             }));
     $$Promise.getOk(claimLoyaltyTokenPromise, (function (tx) {
@@ -497,6 +503,7 @@ function useUpdateDeposit(isGsn) {
                 return ;
               }
               var updateDepositPromise = $$Promise.Js.toResult(optSteward.depositWei({
+                        gasLimit: "500302",
                         value: value$1
                       }));
               $$Promise.getOk(updateDepositPromise, (function (tx) {
@@ -544,6 +551,7 @@ function useWithdrawDeposit(isGsn) {
                 return ;
               }
               var updateDepositPromise = $$Promise.Js.toResult(optSteward.withdrawDeposit(amountToWithdrawEncoded, {
+                        gasLimit: "500302",
                         value: value
                       }));
               $$Promise.getOk(updateDepositPromise, (function (tx) {
@@ -900,6 +908,7 @@ function useChangePrice(animal, isGsn) {
                 return ;
               }
               var updatePricePromise = $$Promise.Js.toResult(optSteward.changePrice(animalId, newPriceEncoded, {
+                        gasLimit: "500302",
                         value: value
                       }));
               $$Promise.getOk(updatePricePromise, (function (tx) {

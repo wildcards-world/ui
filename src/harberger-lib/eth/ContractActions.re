@@ -47,7 +47,10 @@ type tx = {
   wait: (. unit) => Promise.Js.t(txResult, txError),
 };
 type parsedUnits;
-type txOptions = {value: parsedUnits};
+type txOptions = {
+  gasLimit: string,
+  value: parsedUnits,
+};
 type tokenIdString = string;
 type estimateBuy = {
   buy:
@@ -146,7 +149,6 @@ let getVotingContract = (stewardAddress, library, account, isGsn) => {
     getProviderOrSigner(library, account, isGsn),
   );
 };
-
 let stewardAddressMainnet = "0x6D47CF86F6A490c6410fC082Fd1Ad29CF61492d0";
 let stewardAddressGoerli = "0x0C00CFE8EbB34fE7C31d4915a43Cde211e9F0F3B";
 let stewardAddressRinkeby = "0x229Cb219F056A9097b2744594Bc37597380854E8";
@@ -298,8 +300,8 @@ let useBuy = (animal: TokenId.t, isGsn) => {
             oldPriceParsed,
             wildcardsPercentage,
             {
-              // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
-              value: value,
+              gasLimit: "500302", //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
+              value,
             },
           )
           ->Promise.Js.toResult;
@@ -349,8 +351,9 @@ let useBuyAuction = (animal: TokenId.t, isGsn) => {
             newPriceEncoded,
             wildcardsPercentage,
             {
-              // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
-              value: value,
+              gasLimit: "500302", //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
+
+              value,
             },
           )
           ->Promise.Js.toResult;
@@ -391,8 +394,9 @@ let useRedeemLoyaltyTokens = (animalId: string, isGsn) => {
         steward._collectPatronage(.
           animalId,
           {
-            // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
-            value: value,
+            gasLimit: "500302", //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
+
+            value,
           },
         )
         ->Promise.Js.toResult;
@@ -441,8 +445,9 @@ let useApproveLoyaltyTokens = () => {
           voteContractAddress,
           "100000000000000000000000",
           {
-            // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
-            value: value,
+            gasLimit: "500302", //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
+
+            value,
           },
         )
         ->Promise.Js.toResult;
@@ -494,8 +499,9 @@ let useVoteForProject = () => {
           squareRoot->BN.sqrGet(.)->BN.toStringGet(.),
           squareRoot->BN.toStringGet(.),
           {
-            // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
-            value: value,
+            gasLimit: "500302", //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
+
+            value,
           },
         )
         ->Promise.Js.toResult;
@@ -534,8 +540,9 @@ let useIncreaseVoteIteration = () => {
     | Some(voteContract) =>
       let claimLoyaltyTokenPromise =
         voteContract.distributeFunds(. {
-          // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
-          value: value,
+          gasLimit: "500302", //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
+
+          value,
         })
         ->Promise.Js.toResult;
       claimLoyaltyTokenPromise->Promise.getOk(tx => {
@@ -576,8 +583,9 @@ let useUpdateDeposit = isGsn => {
       | Some(steward) =>
         let updateDepositPromise =
           steward.depositWei(. {
-            // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
-            value: value,
+            gasLimit: "500302", //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
+
+            value,
           })
           ->Promise.Js.toResult;
         updateDepositPromise->Promise.getOk(tx => {
@@ -620,8 +628,9 @@ let useWithdrawDeposit = isGsn => {
           steward.withdrawDeposit(.
             amountToWithdrawEncoded,
             {
-              // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
-              value: value,
+              gasLimit: "500302", //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
+
+              value,
             },
           )
           ->Promise.Js.toResult;
@@ -897,8 +906,9 @@ let useChangePrice = (animal, isGsn) => {
             animalId,
             newPriceEncoded,
             {
-              // gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
-              value: value,
+              gasLimit: "500302", //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
+
+              value,
             },
           )
           ->Promise.Js.toResult;

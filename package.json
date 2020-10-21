@@ -32,6 +32,7 @@
     "bs-webapi": "^0.15.9",
     "decco": "^1.2.0",
     "emotion-server": "^10.0.27",
+    "eth-permit": "^0.1.8",
     "ethereum-blockies-base64": "^1.0.2",
     "ethereumjs-abi": "^0.6.8",
     "ethereumjs-util": "^7.0.6",

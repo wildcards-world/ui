@@ -9,10 +9,11 @@ import Web3 from "web3";
 import { toBuffer } from "ethereumjs-util";
 import abi from "ethereumjs-abi";
 import events from "events";
+const { signDaiPermit } = require("eth-permit");
 
 // import Biconomy from "@biconomy/mexa";
 
-export const useSetupBuyFunction = async (contractAddress, networkId) => {
+export const useSetupBuyFunction = async (tokenId, stewardContractAddress, daiContractAddress, networkId) => {
   const context = useWeb3React();
   const { library, account } = context;
 
@@ -25,20 +26,46 @@ export const useSetupBuyFunction = async (contractAddress, networkId) => {
   const web3 = new Web3(library.provider);
   // const contractAddress = "0x59b3c176c39bd8734717492f4da8fe26ff6a454d";
 
-  const contract = new web3.eth.Contract(jsonInterface.abi, contractAddress);
+  const contract = new web3.eth.Contract(jsonInterface.abi, stewardContractAddress);
 
   return async (
     newPrice,
     currentPriceWei,
     wildcardsPercentage,
     amountToSend
-  ) => {
-    const functionSignature = contract.methods
-      .setupBuyFunction(
-        newPrice,
-        currentPriceWei,
-        wildcardsPercentage,
-        amountToSend
+    ) => {
+      const { nonce, expiry, v, r, s } = await signDaiPermit(
+        library.provider,
+        daiContractAddress,
+        account,
+        stewardContractAddress,
+        Number.MAX_SAFE_INTEGER// TODO: put a reasonable number here!!
+        );
+        
+        const functionSignature = contract.methods
+        .buyAuctionWithPermit(
+          // uint256 nonce,
+          nonce,
+          // uint256 expiry,
+          expiry,
+          // bool allowed,
+          true,
+          // uint8 v,
+          v,
+          // bytes32 r,
+          r,
+          // bytes32 s,
+          s,
+          // uint256 tokenId,
+          tokenId,
+          // uint256 _newPrice,
+          newPrice,
+          // uint256 previousPrice,
+          currentPriceWei,
+          // uint256 serviceProviderPercentage,
+          wildcardsPercentage,
+          // uint256 depositAmount
+          amountToSend
       )
       .encodeABI();
 
@@ -46,7 +73,7 @@ export const useSetupBuyFunction = async (contractAddress, networkId) => {
       account,
       functionSignature,
       contract,
-      contractAddress,
+      stewardContractAddress,
       networkId,
       web3
     );
