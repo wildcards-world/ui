@@ -122,6 +122,15 @@ function useAuctionPriceWei(chain, animal, launchTime) {
   }
 }
 
+function getChainIdFromAnimalId(animalId) {
+  var a = Globals$WildCards.$pipe$pipe$pipe$pipe(TokenId$WildCards.toInt(animalId), 0);
+  if (a > 26 || a === 42) {
+    return /* MainnetQuery */2;
+  } else {
+    return /* MaticQuery */1;
+  }
+}
+
 export {
   getAnimal ,
   cdnBase ,
@@ -135,6 +144,7 @@ export {
   useTokenStatus ,
   useIsOnAuction ,
   useAuctionPriceWei ,
+  getChainIdFromAnimalId ,
   
 }
 /* nextLaunchDate Not a pure module */

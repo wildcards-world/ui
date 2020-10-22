@@ -5,7 +5,10 @@ let getToDisplay = (label, value) =>
 
 [@gentype]
 [@react.component]
-let make = (~tokenId: TokenId.t) => {
+let make = (~tokenId: TokenId.t, ~chain) => {
+  // TODO: We must use the correct client for updating the deposit
+  Js.log(chain);
+
   let (newBuyPrice, setNewBuyPrice) = React.useState(() => "");
 
   let (updatePriceFunc, txState) =

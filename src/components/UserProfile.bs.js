@@ -242,7 +242,8 @@ function UserProfile$UserDetails(Props) {
                     right: 0,
                     m: 1
                   }), React.createElement(UpdateDeposit$WildCards.make, {
-                    closeButtonText: "Close"
+                    closeButtonText: "Close",
+                    chain: /* MainnetQuery */2
                   }));
           break;
       case /* NoExtraState */2 :

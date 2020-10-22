@@ -13,35 +13,43 @@ const { signDaiPermit } = require("eth-permit");
 
 // import Biconomy from "@biconomy/mexa";
 
-export const useSetupBuyFunction = async (tokenId, stewardContractAddress, daiContractAddress, networkId) => {
+export const useSetupBuyFunction = (tokenId, stewardContractAddress, daiContractAddress, networkId) => {
+  console.log("1")
   const context = useWeb3React();
+  console.log("2")
   const { library, account } = context;
-
+  
+  console.log("3");
   if (!library) {
     // TODO: FIX THIS CODE IS BAD AND ERROR PRONE!
     console.log("Library not defined");
     return;
   }
-
+  
   const web3 = new Web3(library.provider);
+  console.log("4");
   // const contractAddress = "0x59b3c176c39bd8734717492f4da8fe26ff6a454d";
-
+  
   const contract = new web3.eth.Contract(jsonInterface.abi, stewardContractAddress);
-
+  console.log("5");
+  
   return async (
     newPrice,
     currentPriceWei,
     wildcardsPercentage,
     amountToSend
     ) => {
+      console.log("6");
       const { nonce, expiry, v, r, s } = await signDaiPermit(
-        library.provider,
+        library.provider,// Mainnet - for signing
+        library.provider,// matic - for getting dai info
         daiContractAddress,
         account,
         stewardContractAddress,
         Number.MAX_SAFE_INTEGER// TODO: put a reasonable number here!!
         );
         
+        console.log("7");
         const functionSignature = contract.methods
         .buyAuctionWithPermit(
           // uint256 nonce,
@@ -66,30 +74,32 @@ export const useSetupBuyFunction = async (tokenId, stewardContractAddress, daiCo
           wildcardsPercentage,
           // uint256 depositAmount
           amountToSend
-      )
-      .encodeABI();
+          )
+          .encodeABI();
+          console.log("8");
+          
+    //       const result = await executeMetaTransaciton(
+    //         account,
+    //         functionSignature,
+    //         contract,
+    //         stewardContractAddress,
+    //         networkId,
+    //         web3
+    //         );
+    //         console.log("9");
 
-    const result = await executeMetaTransaciton(
-      account,
-      functionSignature,
-      contract,
-      stewardContractAddress,
-      networkId,
-      web3
-    );
-
-    result
-      .on("transactionHash", (hash) => {
-        // On transacion Hash
-        console.log("hash", { hash });
-      })
-      .once("confirmation", (confirmation, recipet) => {
-        console.log("confirmation", { confirmation, recipet });
-        // On Confirmation
-      })
-      .on("error", (error) => {
-        // On Error
-      });
+    // result
+    //   .on("transactionHash", (hash) => {
+    //     // On transacion Hash
+    //     console.log("hash", { hash });
+    //   })
+    //   .once("confirmation", (confirmation, recipet) => {
+    //     console.log("confirmation", { confirmation, recipet });
+    //     // On Confirmation
+    //   })
+    //   .on("error", (error) => {
+    //     // On Error
+    //   });
   };
 };
 

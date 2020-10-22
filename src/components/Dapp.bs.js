@@ -10,7 +10,9 @@ import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import * as Belt_Float from "bs-platform/lib/es6/belt_Float.js";
 import * as Caml_int32 from "bs-platform/lib/es6/caml_int32.js";
 import * as ReactTabs from "react-tabs";
+import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
+import * as BrowserLogger from "bs-log/src/BrowserLogger.bs.js";
 import * as Buy$WildCards from "../harberger-lib/components/Buy.bs.js";
 import * as Eth$WildCards from "../harberger-lib/Eth.bs.js";
 import * as Info$WildCards from "../harberger-lib/components/Info.bs.js";
@@ -588,6 +590,10 @@ var DetailsViewAnimal = {
 function Dapp$DetailsView(Props) {
   var chain = Props.chain;
   var optionAnimal = Props.optionAnimal;
+  BrowserLogger.infoWithData("Dapp-WildCards", "optionAnimal", /* tuple */[
+        "a",
+        optionAnimal
+      ]);
   if (optionAnimal !== undefined) {
     return React.createElement(Dapp$DetailsViewAnimal, {
                 chain: chain,
@@ -603,7 +609,6 @@ var DetailsView = {
 };
 
 function Dapp$DefaultLook(Props) {
-  var chain = Props.chain;
   var isGqlLoaded = Props.isGqlLoaded;
   var url = ReasonReactRouter.useUrl(undefined, undefined);
   var match = url.hash.split("/");
@@ -679,6 +684,12 @@ function Dapp$DefaultLook(Props) {
                 }));
         break;
     case 2 :
+        BrowserLogger.infoWithData("Dapp-WildCards", "the animalString", /* tuple */[
+              "a",
+              animalStr
+            ]);
+        var optionAnimal = TokenId$WildCards.make(animalStr);
+        var chain = Belt_Option.mapWithDefault(optionAnimal, /* MainnetQuery */2, Animal$WildCards.getChainIdFromAnimalId);
         tmp = React.createElement(Dapp$DetailsView, {
               chain: chain,
               optionAnimal: TokenId$WildCards.make(animalStr)
@@ -971,7 +982,6 @@ var AnimalInfo = {
 };
 
 function Dapp(Props) {
-  var chain = Props.chain;
   var nonUrlRouting = RootProvider$WildCards.useNonUrlState(undefined);
   var clearNonUrlState = RootProvider$WildCards.useClearNonUrlState(undefined);
   var isDetailView = Router$WildCards.useIsDetails(undefined);
@@ -1019,14 +1029,20 @@ function Dapp(Props) {
                     right: 0,
                     m: 1
                   }), React.createElement(UpdateDeposit$WildCards.make, {
-                    closeButtonText: "Back to view Animal"
+                    closeButtonText: "Back to view Animal",
+                    chain: /* MainnetQuery */2
                   }));
           break;
       case /* NoExtraState */2 :
-          tmp = optAnimalForDetails !== undefined ? React.createElement(Dapp$AnimalInfo, {
-                  chain: chain,
-                  animal: Caml_option.valFromOption(optAnimalForDetails)
-                }) : React.createElement(Dapp$DefaultLeftPanel, { });
+          if (optAnimalForDetails !== undefined) {
+            var animal = Caml_option.valFromOption(optAnimalForDetails);
+            tmp = React.createElement(Dapp$AnimalInfo, {
+                  chain: Animal$WildCards.getChainIdFromAnimalId(animal),
+                  animal: animal
+                });
+          } else {
+            tmp = React.createElement(Dapp$DefaultLeftPanel, { });
+          }
           break;
       
     }
@@ -1036,6 +1052,7 @@ function Dapp(Props) {
           tmp = React.createElement(Login$WildCards.make, { });
           break;
       case /* UpdatePriceScreen */1 :
+          var animal$1 = nonUrlRouting[0];
           tmp = React.createElement("div", {
                 className: Curry._1(Css.style, /* :: */[
                       Css.position(/* relative */903134412),
@@ -1053,10 +1070,12 @@ function Dapp(Props) {
                     right: 0,
                     m: 1
                   }), React.createElement(UpdatePrice$WildCards.make, {
-                    tokenId: nonUrlRouting[0]
+                    tokenId: animal$1,
+                    chain: Animal$WildCards.getChainIdFromAnimalId(animal$1)
                   }));
           break;
       case /* BuyScreen */2 :
+          var animal$2 = nonUrlRouting[0];
           tmp = React.createElement("div", {
                 className: Curry._1(Css.style, /* :: */[
                       Css.position(/* relative */903134412),
@@ -1074,11 +1093,12 @@ function Dapp(Props) {
                     right: 0,
                     m: 1
                   }), React.createElement(Buy$WildCards.make, {
-                    chain: chain,
-                    tokenId: nonUrlRouting[0]
+                    chain: Animal$WildCards.getChainIdFromAnimalId(animal$2),
+                    tokenId: animal$2
                   }));
           break;
       case /* AuctionScreen */3 :
+          var animal$3 = nonUrlRouting[0];
           tmp = React.createElement("div", {
                 className: Curry._1(Css.style, /* :: */[
                       Css.position(/* relative */903134412),
@@ -1096,8 +1116,8 @@ function Dapp(Props) {
                     right: 0,
                     m: 1
                   }), React.createElement(Buy$WildCards.make, {
-                    chain: chain,
-                    tokenId: nonUrlRouting[0]
+                    chain: Animal$WildCards.getChainIdFromAnimalId(animal$3),
+                    tokenId: animal$3
                   }));
           break;
       
@@ -1120,7 +1140,6 @@ function Dapp(Props) {
                 }), React.createElement(RimbleUi.Box, {
                   p: 1,
                   children: React.createElement(Dapp$DefaultLook, {
-                        chain: chain,
                         isGqlLoaded: true
                       }),
                   width: [

@@ -17,6 +17,8 @@ function getToDisplay(label, value) {
 
 function UpdatePrice(Props) {
   var tokenId = Props.tokenId;
+  var chain = Props.chain;
+  console.log(chain);
   var match = React.useState((function () {
           return "";
         }));

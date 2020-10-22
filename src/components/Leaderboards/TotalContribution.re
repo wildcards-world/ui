@@ -24,24 +24,24 @@ let useLoadMostContributedData = () => {
       largestContributors##patrons
       |> Js.Array.map(patron => {
            let timeElapsed =
-             BN.new_(currentTimestamp)->BN.subGet(. patron##lastUpdated);
+             BN.new_(currentTimestamp)->BN.sub(patron##lastUpdated);
 
            let amountContributedSinceLastUpdate =
              patron##patronTokenCostScaledNumerator
-             ->BN.mulGet(. timeElapsed) // A month with 30 days has 2592000 seconds
-             ->BN.divGet(.
-                 // BN.new_("1000000000000")->BN.mulGet(. BN.new_("31536000")),
+             ->BN.mul(timeElapsed) // A month with 30 days has 2592000 seconds
+             ->BN.div(
+                 // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
                  BN.new_("31536000000000000000"),
                );
 
            let totalContributedWei =
              patron##totalContributed
-             ->BN.addGet(. amountContributedSinceLastUpdate);
+             ->BN.add(amountContributedSinceLastUpdate);
 
            (patron##id, totalContributedWei);
          });
     Array.sort(
-      ((_, first), (_, second)) => {second->BN.cmpGet(. first)},
+      ((_, first), (_, second)) => {second->BN.cmp(first)},
       dailyContributions,
     );
     Some(dailyContributions);

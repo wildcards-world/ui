@@ -17,9 +17,10 @@ let getToDisplay = (label, value) =>
     label ++ ": " ++ value->Belt.Option.mapWithDefault("loading", a => a),
   );
 
-[@gentype]
 [@react.component]
-let make = (~closeButtonText) => {
+let make = (~closeButtonText, ~chain) => {
+  // TODO: We must use the correct client for updating the deposit
+  Js.log(chain);
   let (depositChange, setDepositChange) = React.useState(() => "");
   let (isAddDeposit, setIsAddDeposit) = React.useState(() => true);
 

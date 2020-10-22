@@ -171,15 +171,14 @@ var BuyMainnet = {
 
 function Buy$BuyMatic(Props) {
   var tokenId = Props.tokenId;
+  var buyTransaction = GSNActions$WildCards.useSetupBuyFunction(tokenId, "0x89e2d4628435368a7CD72611E769dDe27802b95e", "", 5);
   var match = React.useState((function () {
           
         }));
   var match$1 = React.useState((function () {
           
         }));
-  var userBalance = Belt_Option.mapWithDefault(RootProvider$WildCards.useEthBalance(undefined), new BnJs.default("0"), (function (a) {
-          return a;
-        }));
+  var userBalance = new BnJs.default("10000000000000000000");
   var match$2 = QlHooks$WildCards.usePledgeRateDetailed(/* MaticQuery */1, tokenId);
   var ratio = match$2[2];
   var denominator = match$2[1];
@@ -196,7 +195,6 @@ function Buy$BuyMatic(Props) {
   var tokenIdName = "token#" + TokenId$WildCards.toString(tokenId);
   var maxAvailableDepositBN = userBalance.sub(new BnJs.default("3000000000000000")).sub(currentPriceWei$1);
   var maxAvailableDeposit = Web3Utils$WildCards.fromWeiToEth(maxAvailableDepositBN.toString());
-  var isAbleToBuy = maxAvailableDepositBN.gt(new BnJs.default("0"));
   var currentPriceEth = Web3Utils$WildCards.fromWeiBNToEth(currentPriceWei$1);
   var currentPriceFloat = Accounting$WildCards.defaultZeroF(Belt_Float.fromString(currentPriceEth));
   var currentPriceFloatWithMinimum = Math.max(currentPriceFloat, 0.005);
@@ -235,7 +233,8 @@ function Buy$BuyMatic(Props) {
     var amountToSend = currentPriceWei$1.add(new BnJs.default(Web3Utils.toWei(deposit, "ether")));
     if (typeof priceStatus !== "number" && priceStatus.tag) {
       if (priceStatus[0].gt(new BnJs.default("0"))) {
-        GSNActions$WildCards.buyFunction(newPrice, currentPriceWei$1.toString(), "150000", amountToSend.toString());
+        console.log("CLICKED BUY!!!!!");
+        buyTransaction("65000000000000000000", "50000000000000000000", "150000", "95000000000000000000");
         return ;
       } else {
         GSNActions$WildCards.buyAuctionFunction(newPrice, "150000", amountToSend.add(new BnJs.default("1000000000000000")).toString());
@@ -272,21 +271,17 @@ function Buy$BuyMatic(Props) {
   };
   return React.createElement(TxTemplateMatic$WildCards.make, {
               children: React.createElement(TxTemplateMatic$WildCards.make, {
-                    children: isAbleToBuy ? React.createElement(BuyInput$WildCards.make, {
-                            patronage: match$5[0],
-                            onSubmitBuy: onSubmitBuy,
-                            newPrice: newPrice,
-                            deposit: deposit,
-                            depositTimeInSeconds: match$7[0],
-                            maxAvailableDeposit: maxAvailableDeposit,
-                            setNewPrice: setNewPrice,
-                            setDeposit: setDeposit,
-                            tokenIdName: tokenIdName
-                          }) : React.createElement(RimbleUi.Box, {
-                            children: React.createElement("p", {
-                                  className: Styles$WildCards.textOnlyModalText
-                                }, "You do not have enough ether to buy " + (tokenIdName + "."))
-                          }),
+                    children: React.createElement(BuyInput$WildCards.make, {
+                          patronage: match$5[0],
+                          onSubmitBuy: onSubmitBuy,
+                          newPrice: newPrice,
+                          deposit: deposit,
+                          depositTimeInSeconds: match$7[0],
+                          maxAvailableDeposit: maxAvailableDeposit,
+                          setNewPrice: setNewPrice,
+                          setDeposit: setDeposit,
+                          tokenIdName: tokenIdName
+                        }),
                     txHash: match[0],
                     closeButtonText: "Back to view Animal"
                   }),

@@ -144,7 +144,7 @@ module OrganisationVoteResult = {
           (
             (
               (proposalVotes |*| BN.new_("10000") |/| totalVotes)
-              ->BN.toStringGet(.)
+              ->BN.toString
               ->Float.fromString
               |||| 0.
             )
@@ -303,7 +303,7 @@ let make = (~chain) => {
           ->int_of_float
           ->Int.toString
           ->BN.new_
-          ->BN.mulGet(. BN.new_("10000"));
+          ->BN.mul(BN.new_("10000"));
 
         voteForProject(
           conservationVotedContractIndex->string_of_int,

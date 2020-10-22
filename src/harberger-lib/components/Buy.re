@@ -8,9 +8,9 @@ let calcPricePerSecond = (price, numerator, denominator) => {
   let fullYearSeconds = BN.new_("31536000");
 
   priceBn
-  ->BN.mulGet(. numeratorBn)
-  ->BN.divGet(. denominatorBn)
-  ->BN.divGet(. fullYearSeconds);
+  ->BN.mul(numeratorBn)
+  ->BN.div(denominatorBn)
+  ->BN.div(fullYearSeconds);
 };
 
 // TODO: Could cached and stored so that all values don't need to be culculated each time!
@@ -20,14 +20,14 @@ let calculateDepositDuration = (deposit, price, numerator, denominator) => {
   let pricePerSecond = calcPricePerSecond(price, numerator, denominator);
 
   depositBn
-  ->BN.divGet(.
-      if (pricePerSecond->BN.gtGet(. BN.new_("0"))) {
+  ->BN.div(
+      if (pricePerSecond->BN.gt(BN.new_("0"))) {
         pricePerSecond;
       } else {
         BN.new_("1");
       },
     )
-  ->BN.toStringGet(.)
+  ->BN.toString
   ->Int.fromString
   ->defaultZeroI;
   // Check, 9007199254740992 is the largest integer available to javascript.
@@ -37,8 +37,7 @@ let calcRequiredDepositForTime = (time, price, numerator, denominator) => {
   let timeBn = BN.new_(string_of_int(time));
   let pricePerSecond = calcPricePerSecond(price, numerator, denominator);
 
-  let requiredDeposit =
-    timeBn->BN.mulGet(. pricePerSecond)->BN.toStringGet(.);
+  let requiredDeposit = timeBn->BN.mul(pricePerSecond)->BN.toString;
 
   requiredDeposit->Web3Utils.fromWeiToEth;
 };
@@ -83,12 +82,12 @@ module BuyMainnet = {
 
     let maxAvailableDepositBN =
       userBalance
-      ->BN.subGet(. BN.new_("3000000000000000")) // 0.003 eth as gas
-      ->BN.subGet(. currentPriceWei);
+      ->BN.sub(BN.new_("3000000000000000")) // 0.003 eth as gas
+      ->BN.sub(currentPriceWei);
     let maxAvailableDeposit =
-      maxAvailableDepositBN->BN.toStringGet(.)->Web3Utils.fromWeiToEth;
+      maxAvailableDepositBN->BN.toString->Web3Utils.fromWeiToEth;
 
-    let isAbleToBuy = maxAvailableDepositBN->BN.gtGet(. BN.new_("0"));
+    let isAbleToBuy = maxAvailableDepositBN->BN.gt(BN.new_("0"));
 
     let currentPriceEth = Web3Utils.fromWeiBNToEth(currentPriceWei);
     let currentPriceFloat = Float.fromString(currentPriceEth)->defaultZeroF;
@@ -146,9 +145,7 @@ module BuyMainnet = {
 
     let onSubmitBuy = () => {
       let amountToSend =
-        currentPriceWei->BN.addGet(.
-          BN.new_(Web3Utils.toWei(deposit, "ether")),
-        );
+        currentPriceWei->BN.add(BN.new_(Web3Utils.toWei(deposit, "ether")));
       switch (priceStatus) {
       | Foreclosed(_)
       | Loading =>
@@ -157,16 +154,16 @@ module BuyMainnet = {
           "150000",
           amountToSend
           // Add 0.001 ETH as a buffer...
-          ->BN.addGet(. BN.new_("1000000000000000"))
-          ->BN.toStringGet(.),
+          ->BN.add(BN.new_("1000000000000000"))
+          ->BN.toString,
         )
       | Price(price) =>
-        if (price->BN.gtGet(. BN.new_("0"))) {
+        if (price->BN.gt(BN.new_("0"))) {
           buyFunc(
             newPrice,
-            currentPriceWei->BN.toStringGet(.),
+            currentPriceWei->BN.toString,
             "150000",
-            amountToSend->BN.toStringGet(.),
+            amountToSend->BN.toString,
           );
         } else {
           buyFuncAuction(
@@ -174,8 +171,8 @@ module BuyMainnet = {
             "150000",
             amountToSend
             // Add 0.001 ETH as a buffer...
-            ->BN.addGet(. BN.new_("1000000000000000"))
-            ->BN.toStringGet(.),
+            ->BN.add(BN.new_("1000000000000000"))
+            ->BN.toString,
           );
         }
       };
@@ -291,13 +288,24 @@ module BuyMatic = {
   [@react.component]
   let make = (~tokenId: TokenId.t) => {
     let chain = Client.MaticQuery;
+    let buyTransaction =
+      GSNActions.useSetupBuyFunction(.
+        tokenId,
+        "0x89e2d4628435368a7CD72611E769dDe27802b95e",
+        "",
+        5,
+      );
+    // let buyTransaction =
+    //   GSNActions.useSetupBuyFunction(.
+    //     tokenId,
+    //     "0x8aC385e66876aaA088C77912D5Bcf6Eec2072675",
+    //     "0x3ABbA7caA87722F253D0e1759613105103F83529",
+    //     80001,
+    //   );
     let (buyTxHash, _setBuyTxHash) = React.useState(() => None);
     let (buyAuctionTxHash, _setBuyAuctionTxHash) = React.useState(() => None);
-    let userBalance =
-      Belt.Option.mapWithDefault(
-        RootProvider.useEthBalance(), BN.new_("0"), a =>
-        a
-      );
+    // TODO: make this get their real balance from matic:
+    let userBalance = BN.new_("10000000000000000000");
 
     let (numerator, denominator, ratio, _ratioInverse) =
       QlHooks.usePledgeRateDetailed(~chain, tokenId);
@@ -326,12 +334,14 @@ module BuyMatic = {
 
     let maxAvailableDepositBN =
       userBalance
-      ->BN.subGet(. BN.new_("3000000000000000")) // 0.003 eth as gas
-      ->BN.subGet(. currentPriceWei);
+      ->BN.sub(BN.new_("3000000000000000")) // 0.003 eth as gas
+      ->BN.sub(currentPriceWei);
     let maxAvailableDeposit =
-      maxAvailableDepositBN->BN.toStringGet(.)->Web3Utils.fromWeiToEth;
+      maxAvailableDepositBN->BN.toString->Web3Utils.fromWeiToEth;
 
-    let isAbleToBuy = maxAvailableDepositBN->BN.gtGet(. BN.new_("0"));
+    // let isAbleToBuy = maxAvailableDepositBN->BN.gt( BN.new_("0"));
+    // TODO: check if the user has enough dai!
+    let isAbleToBuy = true;
 
     let currentPriceEth = Web3Utils.fromWeiBNToEth(currentPriceWei);
     let currentPriceFloat = Float.fromString(currentPriceEth)->defaultZeroF;
@@ -389,9 +399,7 @@ module BuyMatic = {
 
     let onSubmitBuy = () => {
       let amountToSend =
-        currentPriceWei->BN.addGet(.
-          BN.new_(Web3Utils.toWei(deposit, "ether")),
-        );
+        currentPriceWei->BN.add(BN.new_(Web3Utils.toWei(deposit, "ether")));
       switch (priceStatus) {
       | Foreclosed(_)
       | Loading =>
@@ -400,17 +408,25 @@ module BuyMatic = {
           "150000",
           amountToSend
           // Add 0.001 ETH as a buffer...
-          ->BN.addGet(. BN.new_("1000000000000000"))
-          ->BN.toStringGet(.),
+          ->BN.add(BN.new_("1000000000000000"))
+          ->BN.toString,
         )
         ->ignore
       | Price(price) =>
-        if (price->BN.gtGet(. BN.new_("0"))) {
-          GSNActions.buyFunction(
-            newPrice,
-            currentPriceWei->BN.toStringGet(.),
+        if (price->BN.gt(BN.new_("0"))) {
+          // GSNActions.buyFunction(
+          //   newPrice,
+          //   currentPriceWei->BN.toString,
+          //   "150000",
+          //   amountToSend->BN.toString,
+          // )
+          // ->ignore;
+          Js.log("CLICKED BUY!!!!!");
+          buyTransaction(.
+            "65000000000000000000",
+            "50000000000000000000",
             "150000",
-            amountToSend->BN.toStringGet(.),
+            "95000000000000000000",
           )
           ->ignore;
         } else {
@@ -419,8 +435,8 @@ module BuyMatic = {
             "150000",
             amountToSend
             // Add 0.001 ETH as a buffer...
-            ->BN.addGet(. BN.new_("1000000000000000"))
-            ->BN.toStringGet(.),
+            ->BN.add(BN.new_("1000000000000000"))
+            ->BN.toString,
           )
           ->ignore;
         }
@@ -535,9 +551,11 @@ module BuyMatic = {
 
 [@react.component]
 let make = (~chain, ~tokenId) => {
+  // Js.log2(chain, tokenId);
   switch (chain) {
   | Client.Neither
   | Client.MainnetQuery => <BuyMainnet tokenId />
   | Client.MaticQuery => <BuyMatic tokenId />
+  // <BuyMatic tokenId />;
   };
 };

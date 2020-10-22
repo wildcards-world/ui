@@ -177,9 +177,9 @@ module UserDetails = {
       <$> (
         patron =>
           patron##patronTokenCostScaledNumerator
-          ->BN.mulGet(. BN.new_("2592000")) // A month with 30 days has 2592000 seconds
-          ->BN.divGet(.
-              // BN.new_("1000000000000")->BN.mulGet(. BN.new_("31536000")),
+          ->BN.mul(BN.new_("2592000")) // A month with 30 days has 2592000 seconds
+          ->BN.div(
+              // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
               BN.new_("31536000000000000000"),
             )
       )
@@ -263,7 +263,10 @@ module UserDetails = {
                  m=1
                  onClick={_ => clearNonUrlState()}
                />
-               <UpdateDeposit closeButtonText="Close" />
+               <UpdateDeposit
+                 chain=Client.MainnetQuery
+                 closeButtonText="Close"
+               />
              </div>
            | LoginScreen(_)
            | UpdatePriceScreen(_)

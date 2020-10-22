@@ -50,8 +50,8 @@ let conservationPartners: array(conservationPartnerType) = [|
 //   | EligeableToVote;
 type organisationArrayIndex = int;
 // type currentVote = {
-//   vote: BN.bn,
-//   maxPossibleVote: BN.bn // This should be calculated at the beginning
+//   vote: BN.t,
+//   maxPossibleVote: BN.t // This should be calculated at the beginning
 // };
 type voteStep =
   | DefaultView // sub-states can either be loading data, ready, or user is not eligible to vote
@@ -173,7 +173,7 @@ module OrganisationVoteResult = {
           (
             (
               (proposalVotes |*| BN.new_("10000") |/| totalVotes)
-              ->BN.toStringGet(.)
+              ->BN.toString
               ->Float.fromString
               |||| 0.
             )
@@ -332,7 +332,7 @@ let make = (~chain) => {
           ->int_of_float
           ->Int.toString
           ->BN.new_
-          ->BN.mulGet(. BN.new_("10000"));
+          ->BN.mul(BN.new_("10000"));
 
         voteForProject(
           conservationVotedContractIndex->string_of_int,

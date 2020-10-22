@@ -2,6 +2,8 @@
 
 import * as BiconomyExec from "./biconomy-exec";
 
+var useSetupBuyFunction = BiconomyExec.useSetupBuyFunction;
+
 var execTestTx = BiconomyExec.execTestTx;
 
 function buyFunction(newPrice, currentPriceWei, wildcardsPercentage, amountToSend) {
@@ -15,9 +17,10 @@ function buyAuctionFunction(newPrice, wildcardsPercentage, amountToSend) {
 }
 
 export {
+  useSetupBuyFunction ,
   execTestTx ,
   buyFunction ,
   buyAuctionFunction ,
   
 }
-/* execTestTx Not a pure module */
+/* useSetupBuyFunction Not a pure module */

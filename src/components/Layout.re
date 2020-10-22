@@ -58,7 +58,7 @@ module AnimalFocusDetails = {
               // style([width(`percent(animalCarousel->mapd(100., _ => 90.)))])
             ])
           )>
-          <Dapp chain=Client.MainnetQuery />
+          <Dapp />
         </div>
         {showForwardBackButtons
            ? <div className=Css.(style([width(`percent(5.))]))>

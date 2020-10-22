@@ -1,11 +1,19 @@
 // open Globals;
 
+// export const useSetupBuyFunction = async (tokenId, stewardContractAddress, daiContractAddress, networkId) => {
+// async(newPrice, currentPriceWei, wildcardsPercentage, amountToSend);
+//
+[@bs.module "./biconomy-exec"]
+external useSetupBuyFunction:
+  (. TokenId.t, string, string, int) =>
+  (. string, string, string, string) => Js.Promise.t(unit) =
+  "useSetupBuyFunction";
+
 [@bs.module "./biconomy-exec"]
 external execTestTx:
   (. option(RootProviderTypes.web3Library), option(Web3.ethAddress)) =>
   Js.Promise.t(unit) =
   "execTestTx";
-
 let buyFunction =
     (newPrice, currentPriceWei, wildcardsPercentage, amountToSend) => {
   Js.log4(newPrice, currentPriceWei, wildcardsPercentage, amountToSend);

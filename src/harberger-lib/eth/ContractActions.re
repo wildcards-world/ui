@@ -476,7 +476,7 @@ let useApproveLoyaltyTokens = () => {
 let useVoteForProject = () => {
   let (txState, setTxState) = React.useState(() => UnInitialised);
   let optSteward = useVoteContract(false);
-  let buyFunction = (proposalId: string, squareRoot: BN.bn) => {
+  let buyFunction = (proposalId: string, squareRoot: BN.t) => {
     Js.log("ProposalId" ++ proposalId);
     let value = parseUnits(. "0", 0);
 
@@ -489,18 +489,17 @@ let useVoteForProject = () => {
       );
       Js.log3(
         proposalId,
-        squareRoot->BN.sqrGet(.)->BN.toStringGet(.),
-        squareRoot->BN.toStringGet(.),
+        squareRoot->BN.sqr->BN.toString,
+        squareRoot->BN.toString,
       );
       Js.log("!!Voting - end!!");
       let claimLoyaltyTokenPromise =
         steward.vote(.
           proposalId,
-          squareRoot->BN.sqrGet(.)->BN.toStringGet(.),
-          squareRoot->BN.toStringGet(.),
+          squareRoot->BN.sqr->BN.toString,
+          squareRoot->BN.toString,
           {
             gasLimit: "500302", //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
-
             value,
           },
         )

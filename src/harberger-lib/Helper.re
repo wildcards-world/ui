@@ -18,6 +18,6 @@ let elipsify: (string, int) => string =
 
 let bnToMoment = bn =>
   bn
-  ->BN.toStringGet(.)
+  ->BN.toString
   ->int_of_string /*trusting that gql will be reliable here*/
   ->MomentRe.momentWithUnix;

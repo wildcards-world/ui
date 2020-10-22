@@ -64,12 +64,12 @@ let useTokenStatus: (~chain: Client.context, TokenId.t) => tokenStatus =
 
     switch (optLaunchTime) {
     | Some(launchTime) =>
-      if (launchTime->BN.gtGet(. currentTime)) {
+      if (launchTime->BN.gt(currentTime)) {
         WaitingForLaunch(launchTime->BN.toNumber->MomentRe.momentWithUnix);
       } else {
         switch (currentPriceWei) {
         | Price(price) =>
-          if (price->BN.gtGet(. BN.new_("0"))) {
+          if (price->BN.gt(BN.new_("0"))) {
             Owned(price);
           } else {
             Launched(launchTime->BN.toNumber->MomentRe.momentWithUnix);
@@ -137,4 +137,11 @@ let useAuctionPriceWei = (~chain, animal, launchTime) => {
     | _ => auctionEndPrice
     }
   );
+};
+
+let getChainIdFromAnimalId = animalId => {
+  switch (animalId->TokenId.toInt |||| 0) {
+  | a when a > 26 || a == 42 => Client.MainnetQuery
+  | _ => Client.MaticQuery
+  };
 };

@@ -35,13 +35,13 @@ let decodeMoment: Js.Json.t => MomentRe.Moment.t =
     ->Belt.Option.mapWithDefault(0, a => a->int_of_string) /*trusting that gql will be reliable here*/
     ->MomentRe.momentWithUnix;
 
-let decodeBN: Js.Json.t => BN.bn =
+let decodeBN: Js.Json.t => BN.t =
   number =>
     number
     ->Js.Json.decodeString
     ->Belt.Option.mapWithDefault("0", a => a) /*trusting that gql will be reliable here*/
     ->BN.new_;
-let decodeOptionBN: option(Js.Json.t) => option(BN.bn) =
+let decodeOptionBN: option(Js.Json.t) => option(BN.t) =
   optionalNumber => optionalNumber->Option.map(num => decodeBN(num));
 
 let toTokenId: string => TokenId.t = Obj.magic;
@@ -544,9 +544,9 @@ let useLoadTopContributorsData = numberOfLeaders => {
       |> Js.Array.map(patron => {
            let monthlyContribution =
              patron##patronTokenCostScaledNumerator
-             ->BN.mulGet(. BN.new_("2592000")) // A month with 30 days has 2592000 seconds
-             ->BN.divGet(.
-                 // BN.new_("1000000000000")->BN.mulGet(. BN.new_("31536000")),
+             ->BN.mul(BN.new_("2592000")) // A month with 30 days has 2592000 seconds
+             ->BN.div(
+                 // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
                  BN.new_("31536000000000000000"),
                )
              ->Web3Utils.fromWeiBNToEthPrecision(~digits=4);
@@ -630,7 +630,7 @@ let useDaysHeld = (~chain, tokenId) =>
   ->oMap(moment =>
       (MomentRe.diff(MomentRe.momentNow(), moment, `days), moment)
     );
-let useTotalCollectedOrDue: unit => option((BN.bn, BN.bn, BN.bn)) =
+let useTotalCollectedOrDue: unit => option((BN.t, BN.t, BN.t)) =
   () => {
     let (simple, _) =
       ApolloHooks.useQuery(SubTotalRaisedOrDueQuery.definition);
@@ -682,22 +682,21 @@ let useAmountRaised = () => {
           totalTokenCostScaledNumeratorAccurate,
         ),
       ) => {
-      let timeElapsed =
-        BN.new_(currentTimestamp)->BN.subGet(. timeCalculated);
+      let timeElapsed = BN.new_(currentTimestamp)->BN.sub(timeCalculated);
 
       let amountRaisedSinceLastCollection =
         totalTokenCostScaledNumeratorAccurate
-        ->BN.mulGet(. timeElapsed)
-        ->BN.divGet(.
-            // BN.new_("1000000000000")->BN.mulGet(. BN.new_("31536000")),
+        ->BN.mul(timeElapsed)
+        ->BN.div(
+            // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
             BN.new_("31536000000000000000"),
           );
-      amountCollectedOrDue->BN.addGet(. amountRaisedSinceLastCollection);
+      amountCollectedOrDue->BN.add(amountRaisedSinceLastCollection);
     });
 };
 
 let useTotalCollectedToken:
-  (~chain: Client.context, TokenId.t) => option((Eth.t, BN.bn, BN.bn)) =
+  (~chain: Client.context, TokenId.t) => option((Eth.t, BN.t, BN.t)) =
   (~chain, animal) => {
     let (simple, _) = useWildcardQuery(~chain, animal);
     let getTotalCollectedData = response =>
@@ -753,8 +752,8 @@ let usePledgeRateDetailed = (~chain, tokenId) => {
 type patronLoyaltyTokenDetails = {
   currentLoyaltyTokens: Eth.t,
   currentLoyaltyTokensIncludingUnredeemed: Eth.t,
-  lastCollected: BN.bn,
-  numberOfAnimalsOwned: BN.bn,
+  lastCollected: BN.t,
+  numberOfAnimalsOwned: BN.t,
 };
 let usePatronLoyaltyTokenDetails:
   Web3.ethAddress => option(patronLoyaltyTokenDetails) =
@@ -797,20 +796,17 @@ let useAmountRaisedToken: (~chain: Client.context, TokenId.t) => option(Eth.t) =
         timeCalculated,
         patronageNumeratorPriceScaled,
       )) =>
-      let timeElapsed =
-        BN.new_(currentTimestamp)->BN.subGet(. timeCalculated);
+      let timeElapsed = BN.new_(currentTimestamp)->BN.sub(timeCalculated);
 
       let amountRaisedSinceLastCollection =
         patronageNumeratorPriceScaled
-        ->BN.mulGet(. timeElapsed)
-        ->BN.divGet(.
-            // BN.new_("1000000000000")->BN.mulGet(. BN.new_("31536000")),
+        ->BN.mul(timeElapsed)
+        ->BN.div(
+            // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
             BN.new_("31536000000000000000"),
           );
 
-      Some(
-        amountCollectedOrDue->BN.addGet(. amountRaisedSinceLastCollection),
-      );
+      Some(amountCollectedOrDue->BN.add(amountRaisedSinceLastCollection));
     | None => None
     };
   };
@@ -819,17 +815,17 @@ let calculateTotalRaised =
       currentTimestamp,
       (amountCollectedOrDue, timeCalculated, patronageNumeratorPriceScaled),
     ) => {
-  let timeElapsed = BN.new_(currentTimestamp)->BN.subGet(. timeCalculated);
+  let timeElapsed = BN.new_(currentTimestamp)->BN.sub(timeCalculated);
 
   let amountRaisedSinceLastCollection =
     patronageNumeratorPriceScaled
-    ->BN.mulGet(. timeElapsed)
-    ->BN.divGet(.
-        // BN.new_("1000000000000")->BN.mulGet(. BN.new_("31536000")),
+    ->BN.mul(timeElapsed)
+    ->BN.div(
+        // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
         BN.new_("31536000000000000000"),
       );
 
-  amountCollectedOrDue->BN.addGet(. amountRaisedSinceLastCollection);
+  amountCollectedOrDue->BN.add(amountRaisedSinceLastCollection);
 };
 let useTotalRaisedAnimalGroup: array(TokenId.t) => option(Eth.t) =
   animals => {
@@ -858,14 +854,13 @@ let useTotalRaisedAnimalGroup: array(TokenId.t) => option(Eth.t) =
   };
 
 let useTimeSinceTokenWasLastSettled:
-  (~chain: Client.context, TokenId.t) => option(BN.bn) =
+  (~chain: Client.context, TokenId.t) => option(BN.t) =
   (~chain, animal) => {
     let currentTimestamp = useCurrentTime();
 
     switch (useTotalCollectedToken(~chain, animal)) {
     | Some((_, timeCalculated, _)) =>
-      let timeElapsed =
-        BN.new_(currentTimestamp)->BN.subGet(. timeCalculated);
+      let timeElapsed = BN.new_(currentTimestamp)->BN.sub(timeCalculated);
 
       Some(timeElapsed);
     | None => None
@@ -910,7 +905,7 @@ let useTotalLoyaltyToken: Web3.ethAddress => option((Eth.t, Eth.t)) =
     };
   };
 
-let useRemainingDeposit: string => option((Eth.t, BN.bn, BN.bn)) =
+let useRemainingDeposit: string => option((Eth.t, BN.t, BN.t)) =
   patron => {
     let (simple, _) = useQueryPatron(patron);
 
@@ -934,16 +929,16 @@ let useRemainingDepositEth: string => option(Eth.t) =
 
     switch (useRemainingDeposit(patron)) {
     | Some((availableDeposit, lastUpdated, patronTokenCostScaledNumerator)) =>
-      let timeElapsed = BN.new_(currentTimestamp)->BN.subGet(. lastUpdated);
+      let timeElapsed = BN.new_(currentTimestamp)->BN.sub(lastUpdated);
 
       let amountRaisedSinceLastCollection =
         patronTokenCostScaledNumerator
-        ->BN.mulGet(. timeElapsed)
-        ->BN.divGet(.
-            // BN.new_("1000000000000")->BN.mulGet(. BN.new_("31536000")),
+        ->BN.mul(timeElapsed)
+        ->BN.div(
+            // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
             BN.new_("31536000000000000000"),
           );
-      Some(availableDeposit->BN.subGet(. amountRaisedSinceLastCollection));
+      Some(availableDeposit->BN.sub(amountRaisedSinceLastCollection));
     | None => None
     };
   };
@@ -976,7 +971,7 @@ let usePrice: (~chain: Client.context, TokenId.t) => animalPrice =
 
       switch (optCurrentPatron, foreclosureTime) {
       | (Some(_currentPatron), Some(foreclosureTime)) =>
-        if (foreclosureTime->BN.ltGet(. currentTime->BN.new_)) {
+        if (foreclosureTime->BN.lt(currentTime->BN.new_)) {
           Foreclosed(foreclosureTime);
         } else {
           Price(priceValue);
@@ -995,7 +990,7 @@ let useIsForeclosed: Web3.ethAddress => bool =
     let optAvailableDeposit = useRemainingDepositEth(currentPatron);
 
     optAvailableDeposit->Option.mapWithDefault(true, availableDeposit => {
-      !availableDeposit->BN.gtGet(. BN.new_("0"))
+      !availableDeposit->BN.gt(BN.new_("0"))
     });
   };
 

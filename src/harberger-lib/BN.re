@@ -1,18 +1,15 @@
-// [@bs.deriving {abstract: light}]
-[@bs.deriving abstract]
-type t = {
-  add: (. t) => t,
-  sub: (. t) => t,
-  mul: (. t) => t,
-  div: (. t) => t,
-  gt: (. t) => bool,
-  lt: (. t) => bool,
-  eq: (. t) => bool,
-  cmp: (. t) => int,
-  sqr: (. unit) => t,
-  toString: (. unit) => string,
-};
-type bn = t;
+type t;
+
+[@bs.send] external add: (t, t) => t = "add";
+[@bs.send] external sub: (t, t) => t = "sub";
+[@bs.send] external mul: (t, t) => t = "mul";
+[@bs.send] external div: (t, t) => t = "div";
+[@bs.send] external gt: (t, t) => bool = "gt";
+[@bs.send] external lt: (t, t) => bool = "lt";
+[@bs.send] external eq: (t, t) => bool = "eq";
+[@bs.send] external cmp: (t, t) => int = "cmp";
+[@bs.send] external sqr: t => t = "sqr";
+[@bs.send] external toString: t => string = "toString";
 
 [@bs.send] external toNumber: t => int = "toNumber";
 [@bs.send] external toNumberFloat: t => float = "toNumber";

@@ -21,3 +21,4 @@ let makeFromInt: int => t =
   tokenId => tokenId->Js.Math.abs_int->Belt.Int.toString->fromStringUnsafe;
 
 let toString: t => string = Obj.magic;
+let toInt: t => option(int) = token => token->toString->int_of_string_opt;

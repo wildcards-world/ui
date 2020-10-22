@@ -23,6 +23,8 @@ function getToDisplay(label, value) {
 
 function UpdateDeposit(Props) {
   var closeButtonText = Props.closeButtonText;
+  var chain = Props.chain;
+  console.log(chain);
   var match = React.useState((function () {
           return "";
         }));

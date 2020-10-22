@@ -120,7 +120,7 @@ module AuctionDetails = {
 
     switch (launchTimeOpt, foreclosureTimeOpt) {
     | (Some(launchTime), Some(foreclosurTime)) =>
-      if (foreclosurTime->BN.ltGet(. launchTime)) {
+      if (foreclosurTime->BN.lt(launchTime)) {
         <AuctionDisplay chain animal launchTime />;
       } else {
         <AuctionDisplay chain animal launchTime=foreclosurTime />;
@@ -527,7 +527,7 @@ module DetailsView = {
 
 module DefaultLook = {
   [@react.component]
-  let make = (~chain, ~isGqlLoaded) => {
+  let make = (~isGqlLoaded) => {
     let url = ReasonReactRouter.useUrl();
 
     <div className=Styles.centerText>
@@ -536,6 +536,12 @@ module DefaultLook = {
        | [|"explorer", "details", animalStr|]
        | [|"explorer", "details", animalStr, ""|] =>
          [%log.info "the animalString"; ("a", animalStr)];
+         let optionAnimal = TokenId.make(animalStr);
+         let chain =
+           optionAnimal->Option.mapWithDefault(
+             Client.MainnetQuery,
+             Animal.getChainIdFromAnimalId,
+           );
 
          <DetailsView chain optionAnimal={TokenId.make(animalStr)} />;
        | _ =>
@@ -953,7 +959,7 @@ module AnimalInfo = {
 };
 
 [@react.component]
-let make = (~chain) => {
+let make = () => {
   // let isGqlLoaded = QlStateManager.useIsInitialized();
   let isGqlLoaded = true;
   let nonUrlRouting = RootProvider.useNonUrlState();
@@ -979,7 +985,10 @@ let make = (~chain) => {
                m=1
                onClick={_ => clearNonUrlState()}
              />
-             <Buy chain tokenId=animal />
+             <Buy
+               chain={Animal.getChainIdFromAnimalId(animal)}
+               tokenId=animal
+             />
            </div>
          | AuctionScreen(animal) =>
            <div className=Css.(style([position(`relative)]))>
@@ -993,7 +1002,10 @@ let make = (~chain) => {
                m=1
                onClick={_ => clearNonUrlState()}
              />
-             <Buy chain tokenId=animal />
+             <Buy
+               chain={Animal.getChainIdFromAnimalId(animal)}
+               tokenId=animal
+             />
            </div>
          | UserVerificationScreen =>
            <div className=Css.(style([position(`relative)]))>
@@ -1023,7 +1035,10 @@ let make = (~chain) => {
                m=1
                onClick={_ => clearNonUrlState()}
              />
-             <UpdateDeposit closeButtonText="Back to view Animal" />
+             <UpdateDeposit
+               chain=Client.MainnetQuery
+               closeButtonText="Back to view Animal"
+             />
            </div>
          | UpdatePriceScreen(animal) =>
            <div className=Css.(style([position(`relative)]))>
@@ -1037,11 +1052,18 @@ let make = (~chain) => {
                m=1
                onClick={_ => clearNonUrlState()}
              />
-             <UpdatePrice tokenId=animal />
+             <UpdatePrice
+               chain={Animal.getChainIdFromAnimalId(animal)}
+               tokenId=animal
+             />
            </div>
          | NoExtraState =>
            switch (optAnimalForDetails) {
-           | Some(animal) => <AnimalInfo chain animal />
+           | Some(animal) =>
+             <AnimalInfo
+               chain={Animal.getChainIdFromAnimalId(animal)}
+               animal
+             />
            | None => <DefaultLeftPanel />
            }
          }}
@@ -1053,7 +1075,7 @@ let make = (~chain) => {
         style([media("(max-width: 831px)", [overflow(`hidden)])])
       )
       width=[|1., 1., 0.5|]>
-      <DefaultLook chain isGqlLoaded />
+      <DefaultLook isGqlLoaded />
     </Rimble.Box>
   </Rimble.Flex>;
 };
