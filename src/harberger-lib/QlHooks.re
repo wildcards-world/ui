@@ -852,13 +852,15 @@ let useTimeSinceTokenWasLastSettled: TokenId.t => option(BN.bn) =
     };
   };
 
-let useUnredeemedLoyaltyTokenDueFromWildcard: TokenId.t => option(Eth.t) =
-  animal => {
+let useUnredeemedLoyaltyTokenDueForUser: (TokenId.t, int) => option(Eth.t) =
+  (animal, numberOfTokens) => {
     switch (useTimeSinceTokenWasLastSettled(animal)) {
     | Some(timeSinceTokenWasLastSettled) =>
       let totalLoyaltyTokensPerSecondPerAnimal = BN.new_("11574074074074");
       let totalLoyaltyTokensForAllAnimals =
-        timeSinceTokenWasLastSettled |*| totalLoyaltyTokensPerSecondPerAnimal;
+        timeSinceTokenWasLastSettled
+        |*| totalLoyaltyTokensPerSecondPerAnimal
+        |*| BN.newInt_(numberOfTokens);
       Some(totalLoyaltyTokensForAllAnimals);
     | None => None
     };

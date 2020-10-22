@@ -32,15 +32,17 @@ module Token = {
 
 module ClaimLoyaltyTokenButtons = {
   [@react.component]
-  let make = (~id, ~refreshLoyaltyTokenBalance) => {
+  let make =
+      (
+        ~id,
+        ~userAddress: string,
+        ~refreshLoyaltyTokenBalance,
+        ~numberOfTokens,
+      ) => {
     let (redeemLoyaltyTokens, transactionStatus) =
-      ContractActions.useRedeemLoyaltyTokens(id);
-    let balanceAvailableOnToken =
-      QlHooks.useUnredeemedLoyaltyTokenDueFromWildcard(
-        id->TokenId.makeWithDefault(0),
-      );
-    let tokenName =
-      id->TokenId.fromStringUnsafe->QlHooks.useWildcardName |||| "loading";
+      ContractActions.useRedeemLoyaltyTokens(userAddress);
+    let balanceAvailableOnTokens =
+      QlHooks.useUnredeemedLoyaltyTokenDueForUser(id, numberOfTokens);
     let etherScanUrl = RootProvider.useEtherscanUrl();
 
     React.useEffect2(
@@ -58,21 +60,19 @@ module ClaimLoyaltyTokenButtons = {
       (transactionStatus, refreshLoyaltyTokenBalance),
     );
 
-    switch (balanceAvailableOnToken) {
+    switch (balanceAvailableOnTokens) {
     | None => React.null
-    | Some(balanceAvailableOnToken) =>
+    | Some(balanceAvailableOnTokens) =>
       <small>
         {switch (transactionStatus) {
          | UnInitialised =>
            <p>
              <a onClick={_ => {redeemLoyaltyTokens()}}>
                {(
-                  "redeem "
-                  ++ balanceAvailableOnToken->Web3Utils.fromWeiBNToEthPrecision(
+                  "Redeem "
+                  ++ balanceAvailableOnTokens->Web3Utils.fromWeiBNToEthPrecision(
                        ~digits=5,
-                     )
-                  ++ " tokens for "
-                  ++ tokenName
+                     ) ++" loyalty tokens"
                 )
                 ->restr}
              </a>
@@ -314,18 +314,17 @@ module UserDetails = {
                            ->restr}
                         </p>
                       </small>
-                      {switch (currentlyOwnedTokens) {
-                       | [||] => React.null
-                       | currentlyOwnedTokens =>
-                         currentlyOwnedTokens
-                         ->Array.map(id =>
-                             <ClaimLoyaltyTokenButtons
-                               id
-                               key=id
-                               refreshLoyaltyTokenBalance=updateFunction
-                             />
-                           )
-                         ->React.array
+                      {let firstToken = currentlyOwnedTokens[0];
+                       switch (firstToken) {
+                       | None => React.null
+                       | Some(firstToken) =>
+                         <ClaimLoyaltyTokenButtons
+                           id={firstToken->TokenId.fromStringUnsafe}
+                           key=firstToken
+                           userAddress
+                           numberOfTokens={currentlyOwnedTokens->Array.length}
+                           refreshLoyaltyTokenBalance=updateFunction
+                         />
                        }}
                       <a href="/#ethturin-quadratic-voting"> "vote"->restr </a>
                     </>

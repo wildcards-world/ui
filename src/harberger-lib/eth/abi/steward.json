@@ -1260,6 +1260,27 @@
       "constant": false,
       "inputs": [
         {
+          "internalType": "address",
+          "name": "tokenPatron",
+          "type": "address"
+        }
+      ],
+      "name": "_collectPatronagePatron",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "newTimeLastCollectedOnForeclosure",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
           "internalType": "uint256",
           "name": "_wei",
           "type": "uint256"
