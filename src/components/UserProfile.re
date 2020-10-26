@@ -72,7 +72,8 @@ module ClaimLoyaltyTokenButtons = {
                   "Redeem "
                   ++ balanceAvailableOnTokens->Web3Utils.fromWeiBNToEthPrecision(
                        ~digits=5,
-                     ) ++" loyalty tokens"
+                     )
+                  ++ " loyalty tokens"
                 )
                 ->restr}
              </a>
@@ -347,11 +348,8 @@ module UserDetails = {
                     </small>}
                {if (isAddressCurrentUser) {
                   <React.Fragment>
-                    {if (isForeclosed) {
-                       React.null;
-                     } else {
-                       <> <br /> <ActionButtons.UpdateDeposit /> </>;
-                     }}
+                    <br />
+                    <ActionButtons.UpdateDeposit />
                     <br />
                     // {UserProvider.useIsUserValidated(currentAccount)
                     //    ? <ShareSocial /> : <Validate />}
