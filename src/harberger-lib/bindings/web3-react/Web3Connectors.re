@@ -8,8 +8,7 @@ module Custom = {
   external make:
     (
       ~id: string,
-      ~getLibrary: RootProviderTypes.rawProvider =>
-                   RootProviderTypes.web3Library,
+      ~getLibrary: Web3.rawProvider => Web3.web3Library,
       ~children: React.element
     ) =>
     React.element =

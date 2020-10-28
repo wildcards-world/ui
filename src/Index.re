@@ -37,9 +37,9 @@ ReactDOMRe.renderToElementWithId(
         | 5 => {
             mainnet:
               goerliApi |||| "https://goerli.api.wildcards.world/v1/graphq",
-            matic:
-              maticTestnetApi
-              |||| "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai",
+            matic: "http://localhost:8000/subgraphs/name/wildcards-world/wildcards-mumbai",
+            // maticTestnetApi
+            // |||| "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai",
             ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
           }
         // | 4 => (

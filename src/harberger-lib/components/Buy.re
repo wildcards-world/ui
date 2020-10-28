@@ -292,9 +292,13 @@ module BuyMatic = {
       GSNActions.useSetupBuyFunction(.
         tokenId,
         "0x89e2d4628435368a7CD72611E769dDe27802b95e",
-        "",
+        "0x0099F841a6aB9A082828fac66134fD25c9d8A195",
         5,
       );
+
+    /*TEMP CODE:*/
+    let web3Context = RootProvider.useWeb3React();
+
     // let buyTransaction =
     //   GSNActions.useSetupBuyFunction(.
     //     tokenId,
@@ -305,7 +309,7 @@ module BuyMatic = {
     let (buyTxHash, _setBuyTxHash) = React.useState(() => None);
     let (buyAuctionTxHash, _setBuyAuctionTxHash) = React.useState(() => None);
     // TODO: make this get their real balance from matic:
-    let userBalance = BN.new_("10000000000000000000");
+    let userBalance = BN.new_("100000000000000000000");
 
     let (numerator, denominator, ratio, _ratioInverse) =
       QlHooks.usePledgeRateDetailed(~chain, tokenId);
@@ -336,6 +340,11 @@ module BuyMatic = {
       userBalance
       ->BN.sub(BN.new_("3000000000000000")) // 0.003 eth as gas
       ->BN.sub(currentPriceWei);
+    Js.log2(
+      "Max available deposit",
+      (userBalance->BN.toString, currentPriceWei->BN.toString),
+    );
+    Js.log2("Max available deposit", maxAvailableDepositBN->BN.toString);
     let maxAvailableDeposit =
       maxAvailableDepositBN->BN.toString->Web3Utils.fromWeiToEth;
 
@@ -400,47 +409,68 @@ module BuyMatic = {
     let onSubmitBuy = () => {
       let amountToSend =
         currentPriceWei->BN.add(BN.new_(Web3Utils.toWei(deposit, "ether")));
-      switch (priceStatus) {
-      | Foreclosed(_)
-      | Loading =>
-        GSNActions.buyAuctionFunction(
-          newPrice,
-          "150000",
-          amountToSend
-          // Add 0.001 ETH as a buffer...
-          ->BN.add(BN.new_("1000000000000000"))
-          ->BN.toString,
+      // switch (priceStatus) {
+      // | Foreclosed(_)
+      // | Loading =>
+      //   GSNActions.buyAuctionFunction(
+      //     newPrice,
+      //     "150000",
+      //     amountToSend
+      //     // Add 0.001 ETH as a buffer...
+      //     ->BN.add(BN.new_("1000000000000000"))
+      //     ->BN.toString,
+      //   )
+      //   ->ignore
+      // | Price(price) =>
+      //   if (price->BN.gt(BN.new_("0"))) {
+      //     GSNActions.buyFunction(
+      //       newPrice,
+      //       currentPriceWei->BN.toString,
+      //       "150000",
+      //       amountToSend->BN.toString,
+      //     )
+      //     ->ignore;
+      //     // buyTransaction(.
+      //     //   "65000000000000000000",
+      //     //   "50000000000000000000",
+      //     //   "150000",
+      //     //   "95000000000000000000",
+      //     // )
+      //     // ->ignore;
+      //   } else {
+      //     GSNActions.buyAuctionFunction(
+      //       newPrice,
+      //       "150000",
+      //       amountToSend
+      //       // Add 0.001 ETH as a buffer...
+      //       ->BN.add(BN.new_("1000000000000000"))
+      //       ->BN.toString,
+      //     )
+      //     ->ignore;
+      //   }
+      // };
+      Js.log("CLICKED BUY!!!!!");
+
+      let verifyingContract = "0x0099f841a6ab9a082828fac66134fd25c9d8a195";
+      let nonce = "0x0000000000000000000000000000000000000000000000000000000000000000";
+      let deadline = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+      let holder = "0xd3Cbce59318B2E570883719c8165F9390A12BdD6";
+      let spender = "0x89e2d4628435368a7CD72611E769dDe27802b95e";
+      let from = "0xd3Cbce59318B2E570883719c8165F9390A12BdD6";
+
+      web3Context.library
+      ->Option.map(lib =>
+          DaiPermit.createPermitSig(
+            lib.provider,
+            verifyingContract,
+            nonce,
+            deadline,
+            holder,
+            spender,
+            from,
+          )
         )
-        ->ignore
-      | Price(price) =>
-        if (price->BN.gt(BN.new_("0"))) {
-          // GSNActions.buyFunction(
-          //   newPrice,
-          //   currentPriceWei->BN.toString,
-          //   "150000",
-          //   amountToSend->BN.toString,
-          // )
-          // ->ignore;
-          Js.log("CLICKED BUY!!!!!");
-          buyTransaction(.
-            "65000000000000000000",
-            "50000000000000000000",
-            "150000",
-            "95000000000000000000",
-          )
-          ->ignore;
-        } else {
-          GSNActions.buyAuctionFunction(
-            newPrice,
-            "150000",
-            amountToSend
-            // Add 0.001 ETH as a buffer...
-            ->BN.add(BN.new_("1000000000000000"))
-            ->BN.toString,
-          )
-          ->ignore;
-        }
-      };
+      ->ignore;
     };
 
     let setNewPrice = value => {

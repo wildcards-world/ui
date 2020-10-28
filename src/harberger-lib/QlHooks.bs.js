@@ -1728,6 +1728,14 @@ var SubTotalRaisedOrDueQuery = {
   MT_Ret: MT_Ret$9
 };
 
+function getQueryPrefix(chain) {
+  if (chain !== 1) {
+    return "";
+  } else {
+    return "matic";
+  }
+}
+
 function subscriptionResultOptionMap(result, mapping) {
   if (typeof result === "number" || result.tag) {
     return ;
@@ -1765,7 +1773,7 @@ function queryResultToOption(result) {
 }
 
 function useWildcardQuery(chain, tokenId) {
-  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$1(TokenId$WildCards.toString(tokenId), undefined).variables), undefined, undefined, undefined, undefined, undefined, {
+  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$1(getQueryPrefix(chain) + TokenId$WildCards.toString(tokenId), undefined).variables), undefined, undefined, undefined, undefined, undefined, {
               context: chain
             }, definition$1);
 }
@@ -2306,6 +2314,7 @@ export {
   LoadOrganisationData ,
   LoadTopContributors ,
   SubTotalRaisedOrDueQuery ,
+  getQueryPrefix ,
   subscriptionResultOptionMap ,
   subscriptionResultToOption ,
   queryResultOptionMap ,

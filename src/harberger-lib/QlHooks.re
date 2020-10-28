@@ -336,6 +336,13 @@ type graphqlDataLoad('a) =
   | NoData
   | Data('a);
 
+let getQueryPrefix = (chain: Client.context) =>
+  switch (chain) {
+  | MainnetQuery
+  | Neither => ""
+  | MaticQuery => "matic"
+  };
+
 let subscriptionResultOptionMap = (result, mapping) =>
   switch (result) {
   | ApolloHooks.Subscription.Data(response) => response->mapping->Some
@@ -368,7 +375,10 @@ let useWildcardQuery = (~chain, tokenId) =>
   ApolloHooks.useQuery(
     ~context={context: chain}->createContext,
     ~variables=
-      SubWildcardQuery.make(~tokenId=tokenId->TokenId.toString, ())##variables,
+      SubWildcardQuery.make(
+        ~tokenId=chain->getQueryPrefix ++ tokenId->TokenId.toString,
+        (),
+      )##variables,
     SubWildcardQuery.definition,
   );
 

@@ -40,43 +40,56 @@ export const useSetupBuyFunction = (tokenId, stewardContractAddress, daiContract
     amountToSend
     ) => {
       console.log("6");
-      const { nonce, expiry, v, r, s } = await signDaiPermit(
-        library.provider,// Mainnet - for signing
-        library.provider,// matic - for getting dai info
+      console.log(library.provider,// Mainnet - for signing
         daiContractAddress,
         account,
         stewardContractAddress,
-        Number.MAX_SAFE_INTEGER// TODO: put a reasonable number here!!
+        Number.MAX_SAFE_INTEGER);
+      const { nonce, expiry, v, r, s } = await signDaiPermit(
+        // library.provider,
+        window.ethereum,
+        "0x0099f841a6ab9a082828fac66134fd25c9d8a195",
+        account,
+        "0x89e2d4628435368a7CD72611E769dDe27802b95e",
         );
+      // const { nonce, expiry, v, r, s } = await signDaiPermit(
+      //   // library.provider,// Mainnet - for signing
+      //   window.ethereum,
+      //   // library.provider,// matic - for getting dai info
+      //   daiContractAddress.toLowerCase(),
+      //   account.toLowerCase(),
+      //   stewardContractAddress,
+      //   Number.MAX_SAFE_INTEGER// TODO: put a reasonable number here!!
+      //   );
         
-        console.log("7");
-        const functionSignature = contract.methods
-        .buyAuctionWithPermit(
-          // uint256 nonce,
-          nonce,
-          // uint256 expiry,
-          expiry,
-          // bool allowed,
-          true,
-          // uint8 v,
-          v,
-          // bytes32 r,
-          r,
-          // bytes32 s,
-          s,
-          // uint256 tokenId,
-          tokenId,
-          // uint256 _newPrice,
-          newPrice,
-          // uint256 previousPrice,
-          currentPriceWei,
-          // uint256 serviceProviderPercentage,
-          wildcardsPercentage,
-          // uint256 depositAmount
-          amountToSend
-          )
-          .encodeABI();
-          console.log("8");
+        // console.log("7 ---!");
+        // const functionSignature = contract.methods
+        // .buyAuctionWithPermit(
+        //   // uint256 nonce,
+        //   nonce,
+        //   // uint256 expiry,
+        //   expiry,
+        //   // bool allowed,
+        //   true,
+        //   // uint8 v,
+        //   v,
+        //   // bytes32 r,
+        //   r,
+        //   // bytes32 s,
+        //   s,
+        //   // uint256 tokenId,
+        //   tokenId,
+        //   // uint256 _newPrice,
+        //   newPrice,
+        //   // uint256 previousPrice,
+        //   currentPriceWei,
+        //   // uint256 serviceProviderPercentage,
+        //   wildcardsPercentage,
+        //   // uint256 depositAmount
+        //   amountToSend
+        //   )
+        //   .encodeABI();
+        //   console.log("8");
           
     //       const result = await executeMetaTransaciton(
     //         account,

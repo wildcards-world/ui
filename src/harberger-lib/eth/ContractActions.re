@@ -3,7 +3,7 @@ open Globals;
 // CODE TO BUY:
 let getProviderOrSigner =
     (
-      library: RootProviderTypes.web3Library,
+      library: Web3.web3Library,
       account: option(Web3.ethAddress),
       isGsn: bool,
     ) => {
@@ -104,18 +104,17 @@ type loyaltyTokenContract = {
 
 [@bs.new] [@bs.module "ethers"]
 external getContract:
-  (Web3.ethAddress, Web3.abi, RootProviderTypes.web3Library) => stewardContract =
+  (Web3.ethAddress, Web3.abi, Web3.web3Library) => stewardContract =
   "Contract";
 
 [@bs.new] [@bs.module "ethers"]
 external getLoyaltyTokenContract:
-  (Web3.ethAddress, Web3.abi, RootProviderTypes.web3Library) =>
-  loyaltyTokenContract =
+  (Web3.ethAddress, Web3.abi, Web3.web3Library) => loyaltyTokenContract =
   "Contract";
 
 [@bs.new] [@bs.module "ethers"]
 external getVotingContract:
-  (Web3.ethAddress, Web3.abi, RootProviderTypes.web3Library) => voteContract =
+  (Web3.ethAddress, Web3.abi, Web3.web3Library) => voteContract =
   "Contract";
 
 [@bs.module "./abi/voteContract.json"]

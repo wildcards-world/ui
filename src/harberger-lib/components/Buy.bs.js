@@ -9,12 +9,14 @@ import * as Belt_Float from "bs-platform/lib/es6/belt_Float.js";
 import * as Web3Utils from "web3-utils";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_format from "bs-platform/lib/es6/caml_format.js";
+import * as Core from "@web3-react/core";
 import * as Animal$WildCards from "../Animal.bs.js";
 import * as Styles$WildCards from "../../Styles.bs.js";
 import * as Globals$WildCards from "../Globals.bs.js";
 import * as QlHooks$WildCards from "../QlHooks.bs.js";
 import * as TokenId$WildCards from "../TokenId.bs.js";
 import * as BuyInput$WildCards from "./BuyInput.bs.js";
+import * as DaiPermit$WildCards from "../eth/DaiPermit.bs.js";
 import * as InputHelp$WildCards from "../InputHelp.bs.js";
 import * as Web3Utils$WildCards from "../Web3Utils.bs.js";
 import * as Accounting$WildCards from "../Accounting.bs.js";
@@ -171,14 +173,15 @@ var BuyMainnet = {
 
 function Buy$BuyMatic(Props) {
   var tokenId = Props.tokenId;
-  var buyTransaction = GSNActions$WildCards.useSetupBuyFunction(tokenId, "0x89e2d4628435368a7CD72611E769dDe27802b95e", "", 5);
+  GSNActions$WildCards.useSetupBuyFunction(tokenId, "0x89e2d4628435368a7CD72611E769dDe27802b95e", "0x0099F841a6aB9A082828fac66134fD25c9d8A195", 5);
+  var web3Context = Core.useWeb3React();
   var match = React.useState((function () {
           
         }));
   var match$1 = React.useState((function () {
           
         }));
-  var userBalance = new BnJs.default("10000000000000000000");
+  var userBalance = new BnJs.default("100000000000000000000");
   var match$2 = QlHooks$WildCards.usePledgeRateDetailed(/* MaticQuery */1, tokenId);
   var ratio = match$2[2];
   var denominator = match$2[1];
@@ -194,6 +197,11 @@ function Buy$BuyMatic(Props) {
     );
   var tokenIdName = "token#" + TokenId$WildCards.toString(tokenId);
   var maxAvailableDepositBN = userBalance.sub(new BnJs.default("3000000000000000")).sub(currentPriceWei$1);
+  console.log("Max available deposit", /* tuple */[
+        userBalance.toString(),
+        currentPriceWei$1.toString()
+      ]);
+  console.log("Max available deposit", maxAvailableDepositBN.toString());
   var maxAvailableDeposit = Web3Utils$WildCards.fromWeiToEth(maxAvailableDepositBN.toString());
   var currentPriceEth = Web3Utils$WildCards.fromWeiBNToEth(currentPriceWei$1);
   var currentPriceFloat = Accounting$WildCards.defaultZeroF(Belt_Float.fromString(currentPriceEth));
@@ -230,18 +238,11 @@ function Buy$BuyMatic(Props) {
         }));
   var setDepositTimeInSeconds = match$7[1];
   var onSubmitBuy = function (param) {
-    var amountToSend = currentPriceWei$1.add(new BnJs.default(Web3Utils.toWei(deposit, "ether")));
-    if (typeof priceStatus !== "number" && priceStatus.tag) {
-      if (priceStatus[0].gt(new BnJs.default("0"))) {
-        console.log("CLICKED BUY!!!!!");
-        buyTransaction("65000000000000000000", "50000000000000000000", "150000", "95000000000000000000");
-        return ;
-      } else {
-        GSNActions$WildCards.buyAuctionFunction(newPrice, "150000", amountToSend.add(new BnJs.default("1000000000000000")).toString());
-        return ;
-      }
-    }
-    GSNActions$WildCards.buyAuctionFunction(newPrice, "150000", amountToSend.add(new BnJs.default("1000000000000000")).toString());
+    currentPriceWei$1.add(new BnJs.default(Web3Utils.toWei(deposit, "ether")));
+    console.log("CLICKED BUY!!!!!");
+    Belt_Option.map(web3Context.library, (function (lib) {
+            return DaiPermit$WildCards.createPermitSig(lib.provider, "0x0099f841a6ab9a082828fac66134fd25c9d8a195", "0x0000000000000000000000000000000000000000000000000000000000000000", "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", "0xd3Cbce59318B2E570883719c8165F9390A12BdD6", "0x89e2d4628435368a7CD72611E769dDe27802b95e", "0xd3Cbce59318B2E570883719c8165F9390A12BdD6");
+          }));
     
   };
   var setNewPrice = function (value) {

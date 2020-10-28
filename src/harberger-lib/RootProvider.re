@@ -5,7 +5,7 @@ type web3reactContext = {
   activate:
     (Web3Connectors.injectedType, unit => unit, bool) => Promise.promise(unit),
   account: option(Web3.ethAddress),
-  library: option(web3Library),
+  library: option(Web3.web3Library),
   chainId: option(int),
   deactivate: unit => unit,
 };
@@ -17,18 +17,22 @@ external useWeb3ReactId: string => web3reactContext = "useWeb3React";
 module Web3ReactProvider = {
   [@bs.module "@web3-react/core"] [@react.component]
   external make:
-    (~getLibrary: rawProvider => web3Library, ~children: React.element) =>
+    (
+      ~getLibrary: Web3.rawProvider => Web3.web3Library,
+      ~children: React.element
+    ) =>
     React.element =
     "Web3ReactProvider";
 };
 
 [@bs.module "ethers"] [@bs.scope "providers"] [@bs.new]
-external createWeb3Provider: rawProvider => web3Library = "Web3Provider";
+external createWeb3Provider: Web3.rawProvider => Web3.web3Library =
+  "Web3Provider";
 
 let getLibrary = provider => {
   let library = createWeb3Provider(provider);
 
-  let setPollingInterval: web3Library => web3Library = [%raw
+  let setPollingInterval: Web3.web3Library => Web3.web3Library = [%raw
     "lib => {lib.pollingInterval = 8000; return lib; }"
   ];
   setPollingInterval(library);
@@ -343,7 +347,7 @@ let useDeactivateWeb3: (unit, unit) => unit =
 
     context.deactivate;
   };
-let useWeb3: unit => option(RootProviderTypes.web3Library) =
+let useWeb3: unit => option(Web3.web3Library) =
   () => {
     let context = useWeb3React();
 

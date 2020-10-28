@@ -1,18 +1,9 @@
-type rawProvider;
-type ethersBigNumber = {toString: (. unit) => string};
-type web3Library = {
-  getBalance:
-    (. Web3.ethAddress) => Promise.promise(option(ethersBigNumber)),
-  getSigner: (. Web3.ethAddress) => web3Library,
-  // pollingInterval: ref(int),
-  provider: rawProvider,
-};
 type injectedType = {isAuthorized: unit => Promise.promise(bool)};
 type web3reactContext = {
   active: bool,
   activate: (injectedType, unit => unit, bool) => Promise.promise(unit),
   account: option(Web3.ethAddress),
-  library: option(web3Library),
+  library: option(Web3.web3Library),
   chainId: option(int),
 };
 

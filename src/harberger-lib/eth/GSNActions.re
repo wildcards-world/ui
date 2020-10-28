@@ -11,7 +11,7 @@ external useSetupBuyFunction:
 
 [@bs.module "./biconomy-exec"]
 external execTestTx:
-  (. option(RootProviderTypes.web3Library), option(Web3.ethAddress)) =>
+  (. option(Web3.web3Library), option(Web3.ethAddress)) =>
   Js.Promise.t(unit) =
   "execTestTx";
 let buyFunction =
@@ -26,18 +26,18 @@ let buyAuctionFunction = (newPrice, wildcardsPercentage, amountToSend) => {
 // [@bs.module "./wrapSignerInGsnProvider"]
 // external wrapSignerInGsnProvider:
 //   (
-//     . RootProviderTypes.rawProvider,
-//     RootProviderTypes.web3Library,
+//     . Web3.rawProvider,
+//     Web3.web3Library,
 //     Web3.ethAddress
 //   ) =>
-//   RootProviderTypes.web3Library =
+//   Web3.web3Library =
 //   "default";
-// // (. RootProviderTypes.web3Library) => RootProviderTypes.web3Library =
+// // (. Web3.web3Library) => Web3.web3Library =
 
 // // CODE TO BUY:
 // let getProviderOrSigner =
 //     (
-//       library: RootProviderTypes.web3Library,
+//       library: Web3.web3Library,
 //       account: option(Web3.ethAddress),
 //       isGsn: bool,
 //     ) => {
@@ -114,7 +114,7 @@ let buyAuctionFunction = (newPrice, wildcardsPercentage, amountToSend) => {
 
 // [@bs.new] [@bs.module "ethers"]
 // external getContract:
-//   (Web3.ethAddress, Web3.abi, RootProviderTypes.web3Library) => stewardContract =
+//   (Web3.ethAddress, Web3.abi, Web3.web3Library) => stewardContract =
 //   "Contract";
 
 // [@bs.module "./abi/voteContract.json"]
