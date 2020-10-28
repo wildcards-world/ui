@@ -10,6 +10,7 @@ type t;
 [@bs.send] external cmp: (t, t) => int = "cmp";
 [@bs.send] external sqr: t => t = "sqr";
 [@bs.send] external toString: t => string = "toString";
+[@bs.send] external toStringRad: (t, int) => string = "toString";
 
 [@bs.send] external toNumber: t => int = "toNumber";
 [@bs.send] external toNumberFloat: t => float = "toNumber";

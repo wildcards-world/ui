@@ -1,23 +1,24 @@
 open Globals;
 
+[@bs.send] external padStart: (string, int, string) => string = "padStart";
 let createPermitSig =
-    (provider, verifyingContract, nonce, deadline, holder, spender, from) => {
+    (provider, verifyingContract, nonce, chainId, holder, spender, from) => {
   open Web3;
   open Erc712;
 
   let domain = {
     name: "Dai Stablecoin",
     version: "1",
-    // chainId: "8",
     verifyingContract,
-    salt: "0x0000000000000000000000000000000000000000000000000000000000000008",
+    salt: "0x" ++ chainId->BN.toStringRad(16)->padStart(16, "0"),
   };
 
   let message = {
     "holder": holder,
     "spender": spender,
     "nonce": nonce,
-    "expiry": deadline,
+    "expiry": 0,
+    // "expiry": deadline,
     "allowed": true,
   };
 

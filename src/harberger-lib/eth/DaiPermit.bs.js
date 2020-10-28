@@ -3,18 +3,19 @@
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Erc712$WildCards from "./Erc712.bs.js";
 
-function createPermitSig(provider, verifyingContract, nonce, deadline, holder, spender, from) {
+function createPermitSig(provider, verifyingContract, nonce, chainId, holder, spender, from) {
+  var domain_salt = "0x" + chainId.toString(16).padStart(16, "0");
   var domain = {
     name: "Dai Stablecoin",
     version: "1",
     verifyingContract: verifyingContract,
-    salt: "0x0000000000000000000000000000000000000000000000000000000000000008"
+    salt: domain_salt
   };
   var message = {
     holder: holder,
     spender: spender,
     nonce: nonce,
-    expiry: deadline,
+    expiry: 0,
     allowed: true
   };
   var data = {
