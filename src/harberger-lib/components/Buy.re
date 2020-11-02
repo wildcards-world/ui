@@ -298,6 +298,9 @@ module BuyMatic = {
 
     /*TEMP CODE:*/
     let web3Context = RootProvider.useWeb3React();
+    let contextMatic = RootProvider.useWeb3ReactId("matic");
+
+    // let web3Context = RootProvider.useWeb3React();
 
     // let buyTransaction =
     //   GSNActions.useSetupBuyFunction(.
@@ -451,26 +454,54 @@ module BuyMatic = {
       // };
       Js.log("CLICKED BUY!!!!!");
 
-      let verifyingContract = "0x0099f841a6ab9a082828fac66134fd25c9d8a195";
+      let verifyingContract = "0x44BCF77AC60294db906f50c36e63af5d4C120A66";
       let nonce = "0x0000000000000000000000000000000000000000000000000000000000000000";
       // let deadline = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
       let holder = "0xd3Cbce59318B2E570883719c8165F9390A12BdD6";
-      let spender = "0x89e2d4628435368a7CD72611E769dDe27802b95e";
+      let spender = "0x4FF99B0a7C638F9d2b4D03ac46B0096Df6b6DB61";
       let from = "0xd3Cbce59318B2E570883719c8165F9390A12BdD6";
 
-      web3Context.library
-      ->Option.map(lib =>
-          DaiPermit.createPermitSig(
-            lib.provider,
+      Js.log2("MATIC", contextMatic);
+      Js.log3("The library", web3Context.library, contextMatic.library);
+
+      switch (web3Context.library, contextMatic.library) {
+      | (Some(lib), Some(maticLib)) =>
+        let value =
+          DaiPermit.getNonce(
             verifyingContract,
-            nonce,
-            BN.newInt_(5),
-            holder,
-            spender,
-            from,
+            maticLib,
+            web3Context.account,
+          );
+        Js.log2("THE VALUE", value);
+
+        // DaiPermit.getNonce(verifyingContract, maticLib, web3Context.account)
+        value
+        ->Js.Promise.then_(
+            result => {
+              Js.log2("THE NONCE", result);
+              Js.Promise.resolve();
+            },
+            _,
           )
-        )
-      ->ignore;
+        ->Js.Promise.catch(
+            e => {
+              Js.log2("error", e);
+              Js.Promise.resolve();
+            },
+            _,
+          )
+        ->ignore;
+        DaiPermit.createPermitSig(
+          lib.provider,
+          verifyingContract,
+          nonce,
+          BN.newInt_(5),
+          holder,
+          spender,
+          from,
+        );
+      | _ => ()
+      };
     };
 
     let setNewPrice = value => {

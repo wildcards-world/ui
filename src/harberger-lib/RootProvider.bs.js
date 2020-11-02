@@ -250,7 +250,16 @@ function RootProvider$RootWithWeb3(Props) {
           var match = context.chainId;
           var maticChainId = match !== undefined && (match === 5 || match === 4) ? 80001 : 137;
           console.log("ACTIVATING THIS", maticChainId);
-          $$Promise.Js.$$catch(Curry._3(contextMatic.activate, Web3Connectors$WildCards.injected, (function (param) {
+          console.log("ACTIVATING THIS", maticChainId);
+          console.log("ACTIVATING THIS", maticChainId);
+          console.log("ACTIVATING THIS", maticChainId);
+          console.log("ACTIVATING THIS", maticChainId);
+          console.log("ACTIVATING THIS", maticChainId);
+          console.log("ACTIVATING THIS", maticChainId);
+          console.log("ACTIVATING THIS", maticChainId);
+          console.log("ACTIVATING THIS", maticChainId);
+          console.log("ACTIVATING THIS", maticChainId);
+          $$Promise.Js.$$catch(Curry._3(contextMatic.activate, Web3Connectors$WildCards.sideChainNetwork(maticChainId), (function (param) {
                       
                     }), true), (function (e) {
                   console.log("ERROR ACTIVATING MATIC CONNECTION");

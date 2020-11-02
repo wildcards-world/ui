@@ -175,6 +175,7 @@ function Buy$BuyMatic(Props) {
   var tokenId = Props.tokenId;
   GSNActions$WildCards.useSetupBuyFunction(tokenId, "0x89e2d4628435368a7CD72611E769dDe27802b95e", "0x0099F841a6aB9A082828fac66134fD25c9d8A195", 5);
   var web3Context = Core.useWeb3React();
+  var contextMatic = Core.useWeb3React("matic");
   var match = React.useState((function () {
           
         }));
@@ -240,10 +241,28 @@ function Buy$BuyMatic(Props) {
   var onSubmitBuy = function (param) {
     currentPriceWei$1.add(new BnJs.default(Web3Utils.toWei(deposit, "ether")));
     console.log("CLICKED BUY!!!!!");
-    Belt_Option.map(web3Context.library, (function (lib) {
-            return DaiPermit$WildCards.createPermitSig(lib.provider, "0x0099f841a6ab9a082828fac66134fd25c9d8a195", "0x0000000000000000000000000000000000000000000000000000000000000000", new BnJs.default(5), "0xd3Cbce59318B2E570883719c8165F9390A12BdD6", "0x89e2d4628435368a7CD72611E769dDe27802b95e", "0xd3Cbce59318B2E570883719c8165F9390A12BdD6");
+    var verifyingContract = "0x44BCF77AC60294db906f50c36e63af5d4C120A66";
+    console.log("MATIC", contextMatic);
+    console.log("The library", web3Context.library, contextMatic.library);
+    var match = web3Context.library;
+    var match$1 = contextMatic.library;
+    if (match === undefined) {
+      return ;
+    }
+    if (match$1 === undefined) {
+      return ;
+    }
+    var value = DaiPermit$WildCards.getNonce(verifyingContract, match$1, web3Context.account);
+    console.log("THE VALUE", value);
+    var __x = value.then((function (result) {
+            console.log("THE NONCE", result);
+            return Promise.resolve(undefined);
           }));
-    
+    __x.catch((function (e) {
+            console.log("error", e);
+            return Promise.resolve(undefined);
+          }));
+    return DaiPermit$WildCards.createPermitSig(match.provider, verifyingContract, "0x0000000000000000000000000000000000000000000000000000000000000000", new BnJs.default(5), "0xd3Cbce59318B2E570883719c8165F9390A12BdD6", "0x4FF99B0a7C638F9d2b4D03ac46B0096Df6b6DB61", "0xd3Cbce59318B2E570883719c8165F9390A12BdD6");
   };
   var setNewPrice = function (value) {
     var match = InputHelp$WildCards.onlyUpdateValueIfPositiveFloat(newPrice, setInitialPrice, value);

@@ -23,18 +23,21 @@ export const injected = new InjectedConnector({
   supportedChainIds: [1, 3, 4, 5, 42, 137, 1337, 80001],
 });
 
-export const sideChainNetwork = (defaultChainId) =>
-  new NetworkConnector({
+export const sideChainNetwork = (defaultChainId) => {
+  return new NetworkConnector({
     urls: {
-      // 137: "https://rpc-mainnet.matic.network",
+      137: "https://rpc-mainnet.matic.network",
+      // 80001: "https://rpc-mumbai.maticvigil.com/v1/d68927e8a4cc85eb49e23c93e63f3b018a90efc0",
+      80001: "https://ztjv2.csb.app",
       // 80001: "https://rpc-mumbai.matic.today",
-      1337: "http://localhost:8545",
-      137: "http://localhost:8545",
-      80001: "http://localhost:8545",
+      // 1337: "http://localhost:8545",
+      // 137: "http://localhost:8545",
+      // 80001: "http://localhost:8545",
     },
     defaultChainId,
     pollingInterval: POLLING_INTERVAL,
   });
+};
 
 export const walletconnect = new WalletConnectConnector({
   rpc: { 1: RPC_URLS[1] },

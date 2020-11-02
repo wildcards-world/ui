@@ -38,19 +38,11 @@ var Router = {
 
 ReactDOMRe.renderToElementWithId(React.createElement(WildcardsProvider$WildCards.make, {
           getGraphEndpoints: (function (networkId, param) {
-              if (networkId !== 5) {
-                return {
-                        mainnet: Globals$WildCards.$pipe$pipe$pipe$pipe(process.env.REACT_APP_GOERLI_BE, "https://goerli.api.wildcards.world/v1/graphq"),
-                        matic: Globals$WildCards.$pipe$pipe$pipe$pipe(process.env.REACT_APP_MATIC_TESTNET, "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai"),
-                        ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli"
-                      };
-              } else {
-                return {
-                        mainnet: Globals$WildCards.$pipe$pipe$pipe$pipe(process.env.REACT_APP_GOERLI_BE, "https://goerli.api.wildcards.world/v1/graphq"),
-                        matic: "http://localhost:8000/subgraphs/name/wildcards-world/wildcards-mumbai",
-                        ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli"
-                      };
-              }
+              return {
+                      mainnet: Globals$WildCards.$pipe$pipe$pipe$pipe(process.env.REACT_APP_GOERLI_BE, "https://goerli.api.wildcards.world/v1/graphq"),
+                      matic: (console.log(networkId), "") + "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai",
+                      ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli"
+                    };
             }),
           children: null
         }, React.createElement(UsdPriceProvider$WildCards.make, {

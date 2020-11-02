@@ -32,41 +32,50 @@ ReactDOMRe.renderToElementWithId(
     getGraphEndpoints={(networkId, ()) => {
       open Client;
 
-      let endpoints =
-        switch (networkId) {
-        | 5 => {
-            mainnet:
-              goerliApi |||| "https://goerli.api.wildcards.world/v1/graphq",
-            matic: "http://localhost:8000/subgraphs/name/wildcards-world/wildcards-mumbai",
-            // maticTestnetApi
-            // |||| "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai",
-            ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
+      let endpoints = {
+        mainnet: goerliApi |||| "https://goerli.api.wildcards.world/v1/graphq",
+        matic:
+          {
+            Js.log(networkId);
+            "";
           }
-        // | 4 => (
-        //     rinkebyApi |||| "https://rinkeby.api.wildcards.world/v1/graphq",
-        //     "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
-        //   )
-        // | _ => (
-        //     goerliApi |||| "https://goerli.api.wildcards.world/v1/graphq",
-        //     "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
-        //   )
-        | _ => {
-            mainnet:
-              goerliApi |||| "https://goerli.api.wildcards.world/v1/graphq",
-            matic:
-              maticTestnetApi
-              |||| "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai",
-            ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
-          }
-        //   goerliApi |||| "https://goerli.api.wildcards.world/v1/graphq",
-        //   "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
-        // )
-        // | _ => {
-        //     mainnet: mainnetApi |||| "https://api.wildcards.world/v1/graphql",
-        //     matic: maticApi |||| "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai/graphql",
-        //     ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards",
-        //   }
-        };
+          ++ "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai",
+        ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
+      };
+      // switch (networkId) {
+      // | 5 => {
+      //     mainnet:
+      //       goerliApi |||| "https://goerli.api.wildcards.world/v1/graphq",
+      //     matic:
+      //       maticTestnetApi
+      //       |||| "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai",
+      //     ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
+      //   }
+      // // | 4 => (
+      // //     rinkebyApi |||| "https://rinkeby.api.wildcards.world/v1/graphq",
+      // //     "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
+      // //   )
+      // // | _ => (
+      // //     goerliApi |||| "https://goerli.api.wildcards.world/v1/graphq",
+      // //     "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
+      // //   )
+      // | _ => {
+      //     mainnet:
+      //       goerliApi |||| "https://goerli.api.wildcards.world/v1/graphq",
+      //     matic:
+      //       maticTestnetApi
+      //       |||| "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai",
+      //     ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
+      //   }
+      // //   goerliApi |||| "https://goerli.api.wildcards.world/v1/graphq",
+      // //   "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
+      // // )
+      // // | _ => {
+      // //     mainnet: mainnetApi |||| "https://api.wildcards.world/v1/graphql",
+      // //     matic: maticApi |||| "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai/graphql",
+      // //     ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards",
+      // //   }
+      // };
       endpoints;
     }}>
     <UsdPriceProvider> <Router /> </UsdPriceProvider>
