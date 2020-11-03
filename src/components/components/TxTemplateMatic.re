@@ -7,7 +7,7 @@ let make =
       ~txHash: option(string),
       ~closeButtonText: string,
     ) => {
-  Js.log2("printing so they are used...", closeButtonText);
+  // Js.log2("printing so they are used...", closeButtonText);
   let etherscanUrl = RootProvider.useEtherscanUrl();
   // let clearNonUrlState = RootProvider.useClearNonUrlState();
 
@@ -16,6 +16,7 @@ let make =
   | Some(txHash) =>
     <React.Fragment>
       <Rimble.Heading>
+        closeButtonText->restr
         "Processing Transaction "->restr
         <WildcardsLoader />
       </Rimble.Heading>

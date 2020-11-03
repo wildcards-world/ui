@@ -27,5 +27,6 @@ type rpcResult = {result};
 
 [@bs.send]
 external sendAsync:
-  (rawProvider, rpcDefinition, (. option(error), rpcResult) => unit) => unit =
+  (rawProvider, rpcDefinition, (. Js.Nullable.t(error), rpcResult) => unit) =>
+  unit =
   "sendAsync";

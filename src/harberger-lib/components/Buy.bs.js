@@ -20,7 +20,6 @@ import * as DaiPermit$WildCards from "../eth/DaiPermit.bs.js";
 import * as InputHelp$WildCards from "../InputHelp.bs.js";
 import * as Web3Utils$WildCards from "../Web3Utils.bs.js";
 import * as Accounting$WildCards from "../Accounting.bs.js";
-import * as GSNActions$WildCards from "../eth/GSNActions.bs.js";
 import * as TxTemplate$WildCards from "../../components/components/TxTemplate.bs.js";
 import * as RootProvider$WildCards from "../RootProvider.bs.js";
 import * as ContractActions$WildCards from "../eth/ContractActions.bs.js";
@@ -173,9 +172,7 @@ var BuyMainnet = {
 
 function Buy$BuyMatic(Props) {
   var tokenId = Props.tokenId;
-  GSNActions$WildCards.useSetupBuyFunction(tokenId, "0x89e2d4628435368a7CD72611E769dDe27802b95e", "0x0099F841a6aB9A082828fac66134fD25c9d8A195", 5);
   var web3Context = Core.useWeb3React();
-  var contextMatic = Core.useWeb3React("matic");
   var match = React.useState((function () {
           
         }));
@@ -198,11 +195,6 @@ function Buy$BuyMatic(Props) {
     );
   var tokenIdName = "token#" + TokenId$WildCards.toString(tokenId);
   var maxAvailableDepositBN = userBalance.sub(new BnJs.default("3000000000000000")).sub(currentPriceWei$1);
-  console.log("Max available deposit", /* tuple */[
-        userBalance.toString(),
-        currentPriceWei$1.toString()
-      ]);
-  console.log("Max available deposit", maxAvailableDepositBN.toString());
   var maxAvailableDeposit = Web3Utils$WildCards.fromWeiToEth(maxAvailableDepositBN.toString());
   var currentPriceEth = Web3Utils$WildCards.fromWeiBNToEth(currentPriceWei$1);
   var currentPriceFloat = Accounting$WildCards.defaultZeroF(Belt_Float.fromString(currentPriceEth));
@@ -239,30 +231,23 @@ function Buy$BuyMatic(Props) {
         }));
   var setDepositTimeInSeconds = match$7[1];
   var onSubmitBuy = function (param) {
-    currentPriceWei$1.add(new BnJs.default(Web3Utils.toWei(deposit, "ether")));
+    var amountToSend = currentPriceWei$1.add(new BnJs.default(Web3Utils.toWei(deposit, "ether")));
     console.log("CLICKED BUY!!!!!");
-    var verifyingContract = "0x44BCF77AC60294db906f50c36e63af5d4C120A66";
-    console.log("MATIC", contextMatic);
-    console.log("The library", web3Context.library, contextMatic.library);
+    var spender = "0xD2Dd5BEF69b07090BB183b7F856Df260d1fBf41d";
     var match = web3Context.library;
-    var match$1 = contextMatic.library;
+    var match$1 = web3Context.account;
     if (match === undefined) {
       return ;
     }
     if (match$1 === undefined) {
       return ;
     }
-    var value = DaiPermit$WildCards.getNonce(verifyingContract, match$1, web3Context.account);
-    console.log("THE VALUE", value);
-    var __x = value.then((function (result) {
-            console.log("THE NONCE", result);
+    var __x = DaiPermit$WildCards.createPermitSig(match.provider, "0x5bEEeb754cE511908d0374462698B05e963bF35C", "0", new BnJs.default(80001), match$1, spender, match$1);
+    __x.then((function (rsvSig) {
+            DaiPermit$WildCards.execTestTx(web3Context.library, web3Context.account, spender, "0", "0", true, rsvSig.v, rsvSig.r, rsvSig.s, TokenId$WildCards.toString(tokenId), newPrice, currentPriceWei$1.toString(), "150000", amountToSend.toString());
             return Promise.resolve(undefined);
           }));
-    __x.catch((function (e) {
-            console.log("error", e);
-            return Promise.resolve(undefined);
-          }));
-    return DaiPermit$WildCards.createPermitSig(match.provider, verifyingContract, "0x0000000000000000000000000000000000000000000000000000000000000000", new BnJs.default(5), "0xd3Cbce59318B2E570883719c8165F9390A12BdD6", "0x4FF99B0a7C638F9d2b4D03ac46B0096Df6b6DB61", "0xd3Cbce59318B2E570883719c8165F9390A12BdD6");
+    
   };
   var setNewPrice = function (value) {
     var match = InputHelp$WildCards.onlyUpdateValueIfPositiveFloat(newPrice, setInitialPrice, value);

@@ -204,11 +204,6 @@ function RootProvider$RootWithWeb3(Props) {
       });
   var dispatch = match[1];
   var context = Core.useWeb3React();
-  var contextMatic = Core.useWeb3React("matic");
-  console.log("context.chainId");
-  console.log(context.chainId);
-  console.log("MATIC.chainId");
-  console.log(contextMatic.chainId);
   var match$1 = React.useState((function () {
           return false;
         }));
@@ -245,32 +240,6 @@ function RootProvider$RootWithWeb3(Props) {
         dispatch,
         setTriedLoginAlready,
         triedLoginAlready
-      ]);
-  React.useEffect((function () {
-          var match = context.chainId;
-          var maticChainId = match !== undefined && (match === 5 || match === 4) ? 80001 : 137;
-          console.log("ACTIVATING THIS", maticChainId);
-          console.log("ACTIVATING THIS", maticChainId);
-          console.log("ACTIVATING THIS", maticChainId);
-          console.log("ACTIVATING THIS", maticChainId);
-          console.log("ACTIVATING THIS", maticChainId);
-          console.log("ACTIVATING THIS", maticChainId);
-          console.log("ACTIVATING THIS", maticChainId);
-          console.log("ACTIVATING THIS", maticChainId);
-          console.log("ACTIVATING THIS", maticChainId);
-          console.log("ACTIVATING THIS", maticChainId);
-          $$Promise.Js.$$catch(Curry._3(contextMatic.activate, Web3Connectors$WildCards.sideChainNetwork(maticChainId), (function (param) {
-                      
-                    }), true), (function (e) {
-                  console.log("ERROR ACTIVATING MATIC CONNECTION");
-                  console.log(e);
-                  return $$Promise.resolved(undefined);
-                }));
-          
-        }), /* tuple */[
-        contextMatic.activate,
-        context.chainId,
-        contextMatic.chainId
       ]);
   React.useEffect((function () {
           if (!triedLoginAlready && context.active) {
@@ -511,18 +480,14 @@ function RootProvider(Props) {
   var stewardAbi = Props.stewardAbi;
   return React.createElement(Core.Web3ReactProvider, {
               getLibrary: getLibrary,
-              children: React.createElement(Web3Connectors$WildCards.Custom.make, {
-                    id: "matic",
-                    getLibrary: getLibrary,
-                    children: React.createElement(RootProvider$RootWithWeb3, {
-                          children: React.createElement(UserProvider$WildCards.make, {
-                                children: React.createElement(ThemeProvider$WildCards.make, {
-                                      children: children
-                                    })
-                              }),
-                          stewardContractAddress: stewardContractAddress,
-                          stewardAbi: stewardAbi
-                        })
+              children: React.createElement(RootProvider$RootWithWeb3, {
+                    children: React.createElement(UserProvider$WildCards.make, {
+                          children: React.createElement(ThemeProvider$WildCards.make, {
+                                children: children
+                              })
+                        }),
+                    stewardContractAddress: stewardContractAddress,
+                    stewardAbi: stewardAbi
                   })
             });
 }

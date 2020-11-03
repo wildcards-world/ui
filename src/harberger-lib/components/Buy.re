@@ -288,17 +288,17 @@ module BuyMatic = {
   [@react.component]
   let make = (~tokenId: TokenId.t) => {
     let chain = Client.MaticQuery;
-    let buyTransaction =
-      GSNActions.useSetupBuyFunction(.
-        tokenId,
-        "0x89e2d4628435368a7CD72611E769dDe27802b95e",
-        "0x0099F841a6aB9A082828fac66134fD25c9d8A195",
-        5,
-      );
+    // let buyTransaction =
+    //   GSNActions.useSetupBuyFunction(.
+    //     tokenId,
+    //     "0x89e2d4628435368a7CD72611E769dDe27802b95e",
+    //     "0x0099F841a6aB9A082828fac66134fD25c9d8A195",
+    //     5,
+    //   );
 
     /*TEMP CODE:*/
     let web3Context = RootProvider.useWeb3React();
-    let contextMatic = RootProvider.useWeb3ReactId("matic");
+    // let contextMatic = RootProvider.useWeb3ReactId("matic");
 
     // let web3Context = RootProvider.useWeb3React();
 
@@ -343,11 +343,11 @@ module BuyMatic = {
       userBalance
       ->BN.sub(BN.new_("3000000000000000")) // 0.003 eth as gas
       ->BN.sub(currentPriceWei);
-    Js.log2(
-      "Max available deposit",
-      (userBalance->BN.toString, currentPriceWei->BN.toString),
-    );
-    Js.log2("Max available deposit", maxAvailableDepositBN->BN.toString);
+    // Js.log2(
+    //   "Max available deposit",
+    //   (userBalance->BN.toString, currentPriceWei->BN.toString),
+    // );
+    // Js.log2("Max available deposit", maxAvailableDepositBN->BN.toString);
     let maxAvailableDeposit =
       maxAvailableDepositBN->BN.toString->Web3Utils.fromWeiToEth;
 
@@ -454,52 +454,104 @@ module BuyMatic = {
       // };
       Js.log("CLICKED BUY!!!!!");
 
-      let verifyingContract = "0x44BCF77AC60294db906f50c36e63af5d4C120A66";
-      let nonce = "0x0000000000000000000000000000000000000000000000000000000000000000";
+      let nonce = "0";
+      // let nonce = "1";
+      // let nonce = "0x000000000000000000000000000000000000000000000000000000000000000a";
       // let deadline = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
-      let holder = "0xd3Cbce59318B2E570883719c8165F9390A12BdD6";
-      let spender = "0x4FF99B0a7C638F9d2b4D03ac46B0096Df6b6DB61";
-      let from = "0xd3Cbce59318B2E570883719c8165F9390A12BdD6";
 
-      Js.log2("MATIC", contextMatic);
-      Js.log3("The library", web3Context.library, contextMatic.library);
+      // GOERLI:
+      // let verifyingContract = "0xea9d8a947dD7eBa9cF883c4aa71f18aD5A9c06bB";
+      // let spender = "0xf02Bb5b595Af96597b82f39F5de265E77Dc75CbC";
 
-      switch (web3Context.library, contextMatic.library) {
-      | (Some(lib), Some(maticLib)) =>
-        let value =
-          DaiPermit.getNonce(
-            verifyingContract,
-            maticLib,
-            web3Context.account,
-          );
-        Js.log2("THE VALUE", value);
+      // MUMBAI:
+      let verifyingContract = "0x5bEEeb754cE511908d0374462698B05e963bF35C";
+      let spender = "0xD2Dd5BEF69b07090BB183b7F856Df260d1fBf41d";
 
-        // DaiPermit.getNonce(verifyingContract, maticLib, web3Context.account)
-        value
+      // let holder = "0xd3Cbce59318B2E570883719c8165F9390A12BdD6";
+      // let from = "0xd3Cbce59318B2E570883719c8165F9390A12BdD6";
+
+      // Js.log2("MATIC", contextMatic);
+      // Js.log3("The library", web3Context.library, contextMatic.library);
+
+      // switch (web3Context.library, contextMatic.library) {
+      // | (Some(lib), Some(maticLib)) =>
+      switch (web3Context.library, web3Context.account) {
+      | (Some(lib), Some(account)) =>
+        // let value =
+        //   DaiPermit.getNonce(
+        //     verifyingContract,
+        //     maticLib,
+        //     web3Context.account,
+        //   );
+        // Js.log2("THE VALUE", value);
+
+        // // DaiPermit.getNonce(verifyingContract, maticLib, web3Context.account)
+        // value
+        // ->Js.Promise.then_(
+        //     result => {
+        //       Js.log2("THE NONCE", result);
+        //       Js.Promise.resolve();
+        //     },
+        //     _,
+        //   )
+        // ->Js.Promise.catch(
+        //     e => {
+        //       Js.log2("error", e);
+        //       Js.Promise.resolve();
+        //     },
+        //     _,
+        //   )
+        // ->ignore;
+        DaiPermit.createPermitSig(
+          lib.provider,
+          verifyingContract,
+          nonce,
+          BN.newInt_(80001),
+          account,
+          spender,
+          account,
+        )
+        // Js.log(result);
+        //   account,
+        //   nonce,
+        //   expiry,
+        //   allowed,
+        //   tokenId,
+        //   serviceProviderPercentage,
+        //   depositAmount,
+        // "to stop compile"
+        //       newPrice,
+        //       currentPriceWei->BN.toString,
+        //       "150000",
+        /*       amountToSend->BN.toString*/
         ->Js.Promise.then_(
-            result => {
-              Js.log2("THE NONCE", result);
-              Js.Promise.resolve();
-            },
-            _,
-          )
-        ->Js.Promise.catch(
-            e => {
-              Js.log2("error", e);
+            rsvSig => {
+              open DaiPermit;
+              let {r, s, v} = rsvSig;
+              execTestTx(.
+                web3Context.library,
+                web3Context.account,
+                spender,
+                "0",
+                "0",
+                true,
+                v,
+                r,
+                s,
+                tokenId->TokenId.toString,
+                newPrice,
+                currentPriceWei->BN.toString,
+                "150000",
+                amountToSend->BN.toString,
+              )
+              ->ignore;
+
               Js.Promise.resolve();
             },
             _,
           )
         ->ignore;
-        DaiPermit.createPermitSig(
-          lib.provider,
-          verifyingContract,
-          nonce,
-          BN.newInt_(5),
-          holder,
-          spender,
-          from,
-        );
+        ();
       | _ => ()
       };
     };

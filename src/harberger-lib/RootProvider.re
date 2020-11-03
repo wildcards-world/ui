@@ -134,11 +134,11 @@ module RootWithWeb3 = {
         },
       );
     let context = useWeb3React();
-    let contextMatic = useWeb3ReactId("matic");
-    Js.log("context.chainId");
-    Js.log(context.chainId);
-    Js.log("MATIC.chainId");
-    Js.log(contextMatic.chainId);
+    // let contextMatic = useWeb3ReactId("matic");
+    // Js.log("context.chainId");
+    // Js.log(context.chainId);
+    // Js.log("MATIC.chainId");
+    // Js.log(contextMatic.chainId);
 
     // This prevents repeated tries at logging in (or re-login after logout)
     let (triedLoginAlready, setTriedLoginAlready) =
@@ -176,31 +176,31 @@ module RootWithWeb3 = {
       ),
     );
 
-    React.useEffect3(
-      () => {
-        let maticChainId =
-          switch (context.chainId) {
-          | Some(4)
-          | Some(5) => 80001
-          | _ => 137
-          };
-        contextMatic.activate(
-          // Web3Connectors.injected,
-          Web3Connectors.sideChainNetwork(maticChainId),
-          () => (),
-          true,
-        )
-        ->Promise.Js.catch(e => {
-            Js.log("ERROR ACTIVATING MATIC CONNECTION");
-            Js.log(e);
-            Promise.resolved();
-          })
-        ->ignore;
-        None;
-      },
-      // intentionally only running on mount (make sure it's only mounted once :))
-      (contextMatic.activate, context.chainId, contextMatic.chainId),
-    );
+    // React.useEffect3(
+    //   () => {
+    //     let maticChainId =
+    //       switch (context.chainId) {
+    //       | Some(4)
+    //       | Some(5) => 80001
+    //       | _ => 137
+    //       };
+    //     contextMatic.activate(
+    //       // Web3Connectors.injected,
+    //       Web3Connectors.sideChainNetwork(maticChainId),
+    //       () => (),
+    //       true,
+    //     )
+    //     ->Promise.Js.catch(e => {
+    //         Js.log("ERROR ACTIVATING MATIC CONNECTION");
+    //         Js.log(e);
+    //         Promise.resolved();
+    //       })
+    //     ->ignore;
+    //     None;
+    //   },
+    //   // intentionally only running on mount (make sure it's only mounted once :))
+    //   (contextMatic.activate, context.chainId, contextMatic.chainId),
+    // );
 
     //// This will never fire when metamask logs out unfortunately https://stackoverflow.com/a/59215775/3103033
     // React.useEffect1(
@@ -455,12 +455,13 @@ let make =
       ~stewardAbi: option(Web3.abi),
     ) => {
   <Web3ReactProvider getLibrary>
-    <Web3Connectors.Custom id="matic" getLibrary>
+
       <RootWithWeb3 stewardContractAddress stewardAbi>
         <UserProvider>
           <ThemeProvider> children </ThemeProvider>
         </UserProvider>
       </RootWithWeb3>
-    </Web3Connectors.Custom>
-  </Web3ReactProvider>;
+    </Web3ReactProvider>;
+    // </Web3Connectors.Custom>
+    // <Web3Connectors.Custom id="matic" getLibrary>
 };

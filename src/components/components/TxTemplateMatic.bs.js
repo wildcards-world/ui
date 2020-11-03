@@ -11,14 +11,13 @@ function TxTemplateMatic(Props) {
   var children = Props.children;
   var txHash = Props.txHash;
   var closeButtonText = Props.closeButtonText;
-  console.log("printing so they are used...", closeButtonText);
   var etherscanUrl = RootProvider$WildCards.useEtherscanUrl(undefined);
   if (txHash !== undefined) {
     return React.createElement(React.Fragment, {
                 children: null
               }, React.createElement(RimbleUi.Heading, {
                     children: null
-                  }, Globals$WildCards.restr("Processing Transaction "), React.createElement(WildcardsLoader$WildCards.make, { })), React.createElement(RimbleUi.Text, {
+                  }, Globals$WildCards.restr(closeButtonText), Globals$WildCards.restr("Processing Transaction "), React.createElement(WildcardsLoader$WildCards.make, { })), React.createElement(RimbleUi.Text, {
                     children: React.createElement("a", {
                           href: "https://" + (String(etherscanUrl) + ("/tx/" + (String(txHash) + ""))),
                           rel: "noopener noreferrer",

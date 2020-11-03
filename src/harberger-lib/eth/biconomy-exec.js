@@ -13,84 +13,92 @@ const { signDaiPermit } = require("eth-permit");
 
 // import Biconomy from "@biconomy/mexa";
 
-export const useSetupBuyFunction = (tokenId, stewardContractAddress, daiContractAddress, networkId) => {
-  console.log("1")
+export const useSetupBuyFunction = (
+  tokenId,
+  stewardContractAddress,
+  daiContractAddress,
+  networkId
+) => {
+  // console.log("1")
   const context = useWeb3React();
-  console.log("2")
+  // console.log("2")
   const { library, account } = context;
-  
-  console.log("3");
+
+  // console.log("3");
   if (!library) {
     // TODO: FIX THIS CODE IS BAD AND ERROR PRONE!
     console.log("Library not defined");
     return;
   }
-  
+
   const web3 = new Web3(library.provider);
-  console.log("4");
+  // console.log("4");
   // const contractAddress = "0x59b3c176c39bd8734717492f4da8fe26ff6a454d";
-  
-  const contract = new web3.eth.Contract(jsonInterface.abi, stewardContractAddress);
-  console.log("5");
-  
+
+  const contract = new web3.eth.Contract(
+    jsonInterface.abi,
+    stewardContractAddress
+  );
+  // console.log("5");
+
   return async (
     newPrice,
     currentPriceWei,
     wildcardsPercentage,
     amountToSend
-    ) => {
-      console.log("6");
-      console.log(library.provider,// Mainnet - for signing
-        daiContractAddress,
-        account,
-        stewardContractAddress,
-        Number.MAX_SAFE_INTEGER);
-      const { nonce, expiry, v, r, s } = await signDaiPermit(
-        // library.provider,
-        window.ethereum,
-        "0x0099f841a6ab9a082828fac66134fd25c9d8a195",
-        account,
-        "0x89e2d4628435368a7CD72611E769dDe27802b95e",
-        );
-      // const { nonce, expiry, v, r, s } = await signDaiPermit(
-      //   // library.provider,// Mainnet - for signing
-      //   window.ethereum,
-      //   // library.provider,// matic - for getting dai info
-      //   daiContractAddress.toLowerCase(),
-      //   account.toLowerCase(),
-      //   stewardContractAddress,
-      //   Number.MAX_SAFE_INTEGER// TODO: put a reasonable number here!!
-      //   );
-        
-        // console.log("7 ---!");
-        // const functionSignature = contract.methods
-        // .buyAuctionWithPermit(
-        //   // uint256 nonce,
-        //   nonce,
-        //   // uint256 expiry,
-        //   expiry,
-        //   // bool allowed,
-        //   true,
-        //   // uint8 v,
-        //   v,
-        //   // bytes32 r,
-        //   r,
-        //   // bytes32 s,
-        //   s,
-        //   // uint256 tokenId,
-        //   tokenId,
-        //   // uint256 _newPrice,
-        //   newPrice,
-        //   // uint256 previousPrice,
-        //   currentPriceWei,
-        //   // uint256 serviceProviderPercentage,
-        //   wildcardsPercentage,
-        //   // uint256 depositAmount
-        //   amountToSend
-        //   )
-        //   .encodeABI();
-        //   console.log("8");
-          
+  ) => {
+    // console.log("6");
+    // console.log(library.provider,// Mainnet - for signing
+    //   daiContractAddress,
+    //   account,
+    //   stewardContractAddress,
+    //   Number.MAX_SAFE_INTEGER);
+    const { nonce, expiry, v, r, s } = await signDaiPermit(
+      // library.provider,
+      window.ethereum,
+      "0x0099f841a6ab9a082828fac66134fd25c9d8a195",
+      account,
+      "0x89e2d4628435368a7CD72611E769dDe27802b95e"
+    );
+    // const { nonce, expiry, v, r, s } = await signDaiPermit(
+    //   // library.provider,// Mainnet - for signing
+    //   window.ethereum,
+    //   // library.provider,// matic - for getting dai info
+    //   daiContractAddress.toLowerCase(),
+    //   account.toLowerCase(),
+    //   stewardContractAddress,
+    //   Number.MAX_SAFE_INTEGER// TODO: put a reasonable number here!!
+    //   );
+
+    // console.log("7 ---!");
+    // const functionSignature = contract.methods
+    // .buyAuctionWithPermit(
+    //   // uint256 nonce,
+    //   nonce,
+    //   // uint256 expiry,
+    //   expiry,
+    //   // bool allowed,
+    //   true,
+    //   // uint8 v,
+    //   v,
+    //   // bytes32 r,
+    //   r,
+    //   // bytes32 s,
+    //   s,
+    //   // uint256 tokenId,
+    //   tokenId,
+    //   // uint256 _newPrice,
+    //   newPrice,
+    //   // uint256 previousPrice,
+    //   currentPriceWei,
+    //   // uint256 serviceProviderPercentage,
+    //   wildcardsPercentage,
+    //   // uint256 depositAmount
+    //   amountToSend
+    //   )
+    //   .encodeABI();
+    //   console.log("8");
+
     //       const result = await executeMetaTransaciton(
     //         account,
     //         functionSignature,
@@ -247,7 +255,22 @@ const executeMetaTransaciton = async (
  * HELPER CODE -end
  */
 
-export const execTestTx = async (library, account) => {
+export const execTestTx = async (
+  library,
+  account,
+  contractAddress,
+  nonce,
+  expiry,
+  allowed,
+  v,
+  r,
+  s,
+  tokenId,
+  _newPrice,
+  previousPrice,
+  serviceProviderPercentage,
+  depositAmount
+) => {
   // const context = useWeb3React();
   // const {
   //   // connector,
@@ -263,7 +286,9 @@ export const execTestTx = async (library, account) => {
   if (!library) return;
 
   const web3 = new Web3(library.provider);
-  const contractAddress = "0x59b3c176c39bd8734717492f4da8fe26ff6a454d";
+  // const contractAddress = "0xf02Bb5b595Af96597b82f39F5de265E77Dc75CbC";
+  // const contractAddress = "0x4FF99B0a7C638F9d2b4D03ac46B0096Df6b6DB61";
+  // const contractAddress = "0x59b3c176c39bd8734717492f4da8fe26ff6a454d";
 
   // const biconomy = new Biconomy(library.provider, {
   //   apiKey: "IUNMuYhZ7.9c178f07-e191-4877-b995-ef4b61ed956f",
@@ -273,32 +298,73 @@ export const execTestTx = async (library, account) => {
   // const web3Biconomy = new Web3(biconomy);
   var contract = new web3.eth.Contract(jsonInterface.abi, contractAddress);
 
-  let functionSignature = contract.methods
-    .testFunctionThatDoesNothing(account)
-    .encodeABI();
+  // let functionSignature = contract.methods
+  //   .testFunctionThatDoesNothing(account)
+  //   .encodeABI();
 
-  // let result = contract.methods.testFunctionThatDoesNothing(account).send({
-  //   from: account,
-  // });
-  let result = await executeMetaTransaciton(
-    account,
-    functionSignature,
-    contract,
-    contractAddress,
-    "4",
-    web3
-  );
+  /*
+  buyWithPermit(
+        uint256 nonce,
+        uint256 expiry,
+        bool allowed,
+        uint8 v,
+        bytes32 r,
+        bytes32 s,
+        uint256 tokenId,
+        uint256 _newPrice,
+        uint256 previousPrice,
+        uint256 serviceProviderPercentage,
+        uint256 depositAmount
+        nonce,
+        expiry,
+        allowed,
+        v,
+        r,
+        s,
+        tokenId,
+        _newPrice,
+        previousPrice,
+        serviceProviderPercentage,
+        depositAmount
+    )
+  */
 
-  // result
-  //   .on("transactionHash", (hash) => {
-  //     // On transacion Hash
-  //     console.log("hash", { hash });
-  //   })
-  //   .once("confirmation", (confirmation, recipet) => {
-  //     console.log("confirmation", { confirmation, recipet });
-  //     // On Confirmation
-  //   })
-  //   .on("error", (error) => {
-  //     // On Error
-  //   });
+  let result = contract.methods
+    .buyWithPermit(
+      nonce,
+      expiry,
+      allowed,
+      v,
+      r,
+      s,
+      tokenId,
+      _newPrice,
+      previousPrice,
+      serviceProviderPercentage,
+      depositAmount
+    )
+    .send({
+      from: account,
+    });
+  // let result = await executeMetaTransaciton(
+  //   account,
+  //   functionSignature,
+  //   contract,
+  //   contractAddress,
+  //   "4",
+  //   web3
+  // );
+
+  result
+    .on("transactionHash", (hash) => {
+      // On transacion Hash
+      console.log("hash", { hash });
+    })
+    .once("confirmation", (confirmation, recipet) => {
+      console.log("confirmation", { confirmation, recipet });
+      // On Confirmation
+    })
+    .on("error", (error) => {
+      // On Error
+    });
 };
