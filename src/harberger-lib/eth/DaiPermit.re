@@ -195,7 +195,7 @@ let createPermitSig =
 
 [@bs.module "./biconomy-exec"]
 //   library,
-external execTestTx:
+external buyWithPermit:
   (
     . option(Web3.web3Library),
     //   account,
@@ -226,7 +226,40 @@ external execTestTx:
     string
   ) =>
   Js.Promise.t(unit) =
-  "execTestTx";
+  "buyWithPermit";
+
+[@bs.module "./biconomy-exec"]
+//   library,
+external buyAuctionWithPermit:
+  (
+    . option(Web3.web3Library),
+    //   account,
+    option(Web3.ethAddress),
+    //   stewardContractAddress
+    Web3.ethAddress,
+    //   nonce,
+    string,
+    //   expiry,
+    string,
+    //   allowed,
+    bool,
+    //   v,
+    int,
+    //   r,
+    string,
+    //   s,
+    string,
+    //   tokenId,
+    string,
+    //   _newPrice,
+    string,
+    //   serviceProviderPercentage,
+    string,
+    //   depositAmount,
+    string
+  ) =>
+  Js.Promise.t(unit) =
+  "buyAuctionWithPermit";
 
 // (
 // );

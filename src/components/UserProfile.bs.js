@@ -137,7 +137,7 @@ function UserProfile$UserDetails(Props) {
   var patronQueryResult = Props.patronQueryResult;
   var optThreeBoxData = Props.optThreeBoxData;
   var userAddress = Props.userAddress;
-  var isForeclosed = QlHooks$WildCards.useIsForeclosed(userAddress);
+  var isForeclosed = QlHooks$WildCards.useIsForeclosed(/* MainnetQuery */2, userAddress);
   var isAddressCurrentUser = RootProvider$WildCards.useIsAddressCurrentUser(userAddress);
   var currentlyOwnedTokens = isForeclosed ? [] : Globals$WildCards.$pipe$pipe$pipe$pipe(Globals$WildCards.oMap(patronQueryResult.patron, (function (patron) {
                 return Belt_Array.map(patron.tokens, (function (token) {
@@ -195,7 +195,7 @@ function UserProfile$UserDetails(Props) {
         }));
   var match = ContractActions$WildCards.useUserLoyaltyTokenBalance(userAddress);
   var updateFunction = match[1];
-  var totalLoyaltyTokensAvailableAndClaimedOpt = QlHooks$WildCards.useTotalLoyaltyToken(userAddress);
+  var totalLoyaltyTokensAvailableAndClaimedOpt = QlHooks$WildCards.useTotalLoyaltyToken(/* MainnetQuery */2, userAddress);
   var nonUrlState = RootProvider$WildCards.useNonUrlState(undefined);
   var clearNonUrlState = RootProvider$WildCards.useClearNonUrlState(undefined);
   var tmp;
@@ -397,7 +397,7 @@ function UserProfile(Props) {
   var chain = Props.chain;
   var userAddress = Props.userAddress;
   var userAddressLowerCase = userAddress.toLowerCase();
-  var patronQuery = QlHooks$WildCards.usePatronQuery(userAddressLowerCase);
+  var patronQuery = QlHooks$WildCards.usePatronQuery(/* MainnetQuery */2, userAddressLowerCase);
   var userInfoContext = UserProvider$WildCards.useUserInfoContext(undefined);
   Curry._2(userInfoContext.update, userAddressLowerCase, false);
   var optThreeBoxData = UserProvider$WildCards.use3BoxUserData(userAddressLowerCase);

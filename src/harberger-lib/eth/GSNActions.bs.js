@@ -4,8 +4,6 @@ import * as BiconomyExec from "./biconomy-exec";
 
 var useSetupBuyFunction = BiconomyExec.useSetupBuyFunction;
 
-var execTestTx = BiconomyExec.execTestTx;
-
 function buyFunction(newPrice, currentPriceWei, wildcardsPercentage, amountToSend) {
   console.log(newPrice, currentPriceWei, wildcardsPercentage, amountToSend);
   return Promise.resolve("Some tx hash");
@@ -18,7 +16,6 @@ function buyAuctionFunction(newPrice, wildcardsPercentage, amountToSend) {
 
 export {
   useSetupBuyFunction ,
-  execTestTx ,
   buyFunction ,
   buyAuctionFunction ,
   

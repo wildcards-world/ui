@@ -7,9 +7,7 @@ module Router = {
   let make = () => {
     let url = ReasonReactRouter.useUrl();
     switch (url.path) {
-    | ["gsn-test"] => <GSNTest />
     | [_] => <p> {React.string("Unknown page")} </p>
-    // | _ => <GSNTest />
     | _ => <ReactTranslate> <Layout /> </ReactTranslate>
     };
   };
@@ -39,7 +37,8 @@ ReactDOMRe.renderToElementWithId(
             Js.log(networkId);
             "";
           }
-          ++ "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai",
+          ++ "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-testnet",
+        // ++ "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai",
         ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
       };
       // switch (networkId) {

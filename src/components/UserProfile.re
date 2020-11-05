@@ -112,7 +112,8 @@ module UserDetails = {
         ~optThreeBoxData: option(UserProvider.threeBoxUserInfo),
         ~userAddress: string,
       ) => {
-    let isForeclosed = QlHooks.useIsForeclosed(userAddress);
+    let isForeclosed =
+      QlHooks.useIsForeclosed(~chain=Client.MainnetQuery, userAddress);
     let isAddressCurrentUser =
       RootProvider.useIsAddressCurrentUser(userAddress);
 
@@ -211,7 +212,7 @@ module UserDetails = {
 
     // This is the value of ALL tokens that this address has ever claimed, or is able to claim (even if they have spent those tokens)!
     let totalLoyaltyTokensAvailableAndClaimedOpt =
-      QlHooks.useTotalLoyaltyToken(userAddress);
+      QlHooks.useTotalLoyaltyToken(~chain=Client.MainnetQuery, userAddress);
 
     let nonUrlState = RootProvider.useNonUrlState();
     let clearNonUrlState = RootProvider.useClearNonUrlState();
@@ -444,7 +445,8 @@ module UserDetails = {
 [@react.component]
 let make = (~chain, ~userAddress: string) => {
   let userAddressLowerCase = userAddress->Js.String.toLowerCase;
-  let patronQuery = QlHooks.usePatronQuery(userAddressLowerCase);
+  let patronQuery =
+    QlHooks.usePatronQuery(~chain=Client.MainnetQuery, userAddressLowerCase);
   let userInfoContext = UserProvider.useUserInfoContext();
   let reloadUser = forceReload =>
     userInfoContext.update(userAddressLowerCase, forceReload); // double check that data is loaded.

@@ -40,7 +40,7 @@ function Info(Props) {
   }
   var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
   var currentUsdEthPrice = UsdPriceProvider$WildCards.useUsdPrice(undefined);
-  var match = Globals$WildCards.mapd(QlHooks$WildCards.useRemainingDepositEth(currentPatron), /* tuple */[
+  var match = Globals$WildCards.mapd(QlHooks$WildCards.useRemainingDepositEth(/* MainnetQuery */2, currentPatron), /* tuple */[
         "Loading",
         "Loading"
       ], (function (a) {
@@ -68,7 +68,7 @@ function Info(Props) {
                         }))
                 ];
         }));
-  var foreclosureTime = QlHooks$WildCards.useForeclosureTime(currentPatron);
+  var foreclosureTime = QlHooks$WildCards.useForeclosureTime(/* MainnetQuery */2, currentPatron);
   var definiteTime = Globals$WildCards.mapd(foreclosureTime, undefined, (function (a) {
           return Caml_option.some(a);
         }));

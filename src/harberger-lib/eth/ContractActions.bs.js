@@ -487,102 +487,122 @@ function useIncreaseVoteIteration(param) {
         ];
 }
 
-function useUpdateDeposit(isGsn) {
+function useUpdateDeposit(chain, isGsn) {
   var match = React.useState((function () {
           return /* UnInitialised */0;
         }));
   var setTxState = match[1];
+  var txState = match[0];
   var optSteward = useStewardContract(isGsn);
-  return /* tuple */[
-          (function (value) {
-              var value$1 = Ethers.utils.parseUnits(value, 0);
-              Curry._1(setTxState, (function (param) {
-                      return /* Created */1;
-                    }));
-              if (optSteward === undefined) {
-                return ;
-              }
-              var updateDepositPromise = $$Promise.Js.toResult(optSteward.depositWei({
-                        gasLimit: "500302",
-                        value: value$1
+  if (chain >= 2) {
+    return /* tuple */[
+            (function (value) {
+                var value$1 = Ethers.utils.parseUnits(value, 0);
+                Curry._1(setTxState, (function (param) {
+                        return /* Created */1;
                       }));
-              $$Promise.getOk(updateDepositPromise, (function (tx) {
-                      Curry._1(setTxState, (function (param) {
-                              return /* SignedAndSubmitted */Block.__(0, [tx.hash]);
-                            }));
-                      var txMinedPromise = $$Promise.Js.toResult(tx.wait());
-                      $$Promise.getOk(txMinedPromise, (function (txOutcome) {
-                              return Curry._1(setTxState, (function (param) {
-                                            return /* Complete */Block.__(2, [txOutcome]);
-                                          }));
-                            }));
-                      $$Promise.getError(txMinedPromise, (function (_error) {
-                              return Curry._1(setTxState, (function (param) {
-                                            return /* Failed */2;
-                                          }));
-                            }));
-                      
-                    }));
-              $$Promise.getError(updateDepositPromise, (function (error) {
-                      console.log("error processing transaction: " + error.message);
-                      
-                    }));
-              
-            }),
-          match[0]
-        ];
+                if (optSteward === undefined) {
+                  return ;
+                }
+                var updateDepositPromise = $$Promise.Js.toResult(optSteward.depositWei({
+                          gasLimit: "500302",
+                          value: value$1
+                        }));
+                $$Promise.getOk(updateDepositPromise, (function (tx) {
+                        Curry._1(setTxState, (function (param) {
+                                return /* SignedAndSubmitted */Block.__(0, [tx.hash]);
+                              }));
+                        var txMinedPromise = $$Promise.Js.toResult(tx.wait());
+                        $$Promise.getOk(txMinedPromise, (function (txOutcome) {
+                                return Curry._1(setTxState, (function (param) {
+                                              return /* Complete */Block.__(2, [txOutcome]);
+                                            }));
+                              }));
+                        $$Promise.getError(txMinedPromise, (function (_error) {
+                                return Curry._1(setTxState, (function (param) {
+                                              return /* Failed */2;
+                                            }));
+                              }));
+                        
+                      }));
+                $$Promise.getError(updateDepositPromise, (function (error) {
+                        console.log("error processing transaction: " + error.message);
+                        
+                      }));
+                
+              }),
+            txState
+          ];
+  } else {
+    return /* tuple */[
+            (function (_amountToWithdraw) {
+                
+              }),
+            txState
+          ];
+  }
 }
 
-function useWithdrawDeposit(isGsn) {
+function useWithdrawDeposit(chain, isGsn) {
   var match = React.useState((function () {
           return /* UnInitialised */0;
         }));
   var setTxState = match[1];
+  var txState = match[0];
   var optSteward = useStewardContract(isGsn);
-  return /* tuple */[
-          (function (amountToWithdraw) {
-              var value = Ethers.utils.parseUnits("0", 0);
-              console.log(amountToWithdraw + " is the amount I'm trying to withdraw");
-              var amountToWithdrawEncoded = Ethers.utils.parseUnits(amountToWithdraw, 0);
-              Curry._1(setTxState, (function (param) {
-                      return /* Created */1;
-                    }));
-              if (optSteward === undefined) {
-                return ;
-              }
-              var updateDepositPromise = $$Promise.Js.toResult(optSteward.withdrawDeposit(amountToWithdrawEncoded, {
-                        gasLimit: "500302",
-                        value: value
+  if (chain >= 2) {
+    return /* tuple */[
+            (function (amountToWithdraw) {
+                var value = Ethers.utils.parseUnits("0", 0);
+                console.log(amountToWithdraw + " is the amount I'm trying to withdraw");
+                var amountToWithdrawEncoded = Ethers.utils.parseUnits(amountToWithdraw, 0);
+                Curry._1(setTxState, (function (param) {
+                        return /* Created */1;
                       }));
-              $$Promise.getOk(updateDepositPromise, (function (tx) {
-                      Curry._1(setTxState, (function (param) {
-                              return /* SignedAndSubmitted */Block.__(0, [tx.hash]);
-                            }));
-                      var txMinedPromise = $$Promise.Js.toResult(tx.wait());
-                      $$Promise.getOk(txMinedPromise, (function (txOutcome) {
-                              console.log(txOutcome);
-                              return Curry._1(setTxState, (function (param) {
-                                            return /* Complete */Block.__(2, [txOutcome]);
-                                          }));
-                            }));
-                      $$Promise.getError(txMinedPromise, (function (error) {
-                              Curry._1(setTxState, (function (param) {
-                                      return /* Failed */2;
+                if (optSteward === undefined) {
+                  return ;
+                }
+                var updateDepositPromise = $$Promise.Js.toResult(optSteward.withdrawDeposit(amountToWithdrawEncoded, {
+                          gasLimit: "500302",
+                          value: value
+                        }));
+                $$Promise.getOk(updateDepositPromise, (function (tx) {
+                        Curry._1(setTxState, (function (param) {
+                                return /* SignedAndSubmitted */Block.__(0, [tx.hash]);
+                              }));
+                        var txMinedPromise = $$Promise.Js.toResult(tx.wait());
+                        $$Promise.getOk(txMinedPromise, (function (txOutcome) {
+                                console.log(txOutcome);
+                                return Curry._1(setTxState, (function (param) {
+                                              return /* Complete */Block.__(2, [txOutcome]);
+                                            }));
+                              }));
+                        $$Promise.getError(txMinedPromise, (function (error) {
+                                Curry._1(setTxState, (function (param) {
+                                        return /* Failed */2;
+                                      }));
+                                console.log(error);
+                                
+                              }));
+                        
+                      }));
+                $$Promise.getError(updateDepositPromise, (function (error) {
+                        return Curry._1(setTxState, (function (param) {
+                                      return /* Declined */Block.__(1, [error.message]);
                                     }));
-                              console.log(error);
-                              
-                            }));
-                      
-                    }));
-              $$Promise.getError(updateDepositPromise, (function (error) {
-                      return Curry._1(setTxState, (function (param) {
-                                    return /* Declined */Block.__(1, [error.message]);
-                                  }));
-                    }));
-              
-            }),
-          match[0]
-        ];
+                      }));
+                
+              }),
+            txState
+          ];
+  } else {
+    return /* tuple */[
+            (function (_amountToWithdraw) {
+                
+              }),
+            txState
+          ];
+  }
 }
 
 function useUserLoyaltyTokenBalance(address) {

@@ -348,7 +348,7 @@ function VotePageOriginal(Props) {
   var networkIdOpt = RootProvider$WildCards.useNetworkId(undefined);
   var currentUser = RootProvider$WildCards.useCurrentUser(undefined);
   var userAddressLowerCase = currentUser !== undefined ? currentUser.toLowerCase() : "0x0000000000000000000000000000000000000000";
-  var patronQueryOpt = QlHooks$WildCards.usePatronQuery(userAddressLowerCase);
+  var patronQueryOpt = QlHooks$WildCards.usePatronQuery(/* MainnetQuery */2, userAddressLowerCase);
   var match$2 = ContractActions$WildCards.useProposalDeadline(undefined);
   var optProposalDeadline = match$2[0];
   var currentlyOwnedTokens = patronQueryOpt !== undefined ? Globals$WildCards.$pipe$pipe$pipe$pipe(Globals$WildCards.oMap(Caml_option.valFromOption(patronQueryOpt).patron, (function (patron) {

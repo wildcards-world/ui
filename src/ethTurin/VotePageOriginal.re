@@ -361,7 +361,8 @@ let make = (~chain) => {
     | _ => "0x0000000000000000000000000000000000000000"
     };
 
-  let patronQueryOpt = QlHooks.usePatronQuery(userAddressLowerCase);
+  let patronQueryOpt =
+    QlHooks.usePatronQuery(~chain=Client.MainnetQuery, userAddressLowerCase);
 
   let (optProposalDeadline, _reloadProposalDeadline) =
     ContractActions.useProposalDeadline();

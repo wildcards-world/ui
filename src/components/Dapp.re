@@ -116,7 +116,7 @@ module AuctionDetails = {
   let make = (~chain, ~animal: TokenId.t) => {
     let launchTimeOpt = QlHooks.useLaunchTimeBN(~chain, animal);
     let foreclosureTimeOpt =
-      QlHooks.useForeclosureTimeBn(animal->TokenId.toString);
+      QlHooks.useForeclosureTimeBn(~chain, animal->TokenId.toString);
 
     switch (launchTimeOpt, foreclosureTimeOpt) {
     | (Some(launchTime), Some(foreclosurTime)) =>
@@ -618,7 +618,7 @@ module AnimalInfoStats = {
 
     let currentUsdEthPrice = UsdPriceProvider.useUsdPrice();
     let (depositAvailableToWithdrawEth, depositAvailableToWithdrawUsd) =
-      QlHooks.useRemainingDepositEth(currentPatron)
+      QlHooks.useRemainingDepositEth(~chain, currentPatron)
       ->mapd(("Loading", "Loading"), a =>
           (
             (a->Eth.get(Eth.Eth(`ether))->Float.fromString |||| 0.0)
@@ -640,7 +640,7 @@ module AnimalInfoStats = {
             ),
           )
         );
-    let foreclosureTime = QlHooks.useForeclosureTime(currentPatron);
+    let foreclosureTime = QlHooks.useForeclosureTime(~chain, currentPatron);
     let definiteTime = foreclosureTime->mapd(Loading, a => Date(a));
     let ratio = QlHooks.usePledgeRate(~chain, animal);
 

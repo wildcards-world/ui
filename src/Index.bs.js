@@ -3,7 +3,6 @@
 import * as React from "react";
 import * as ReactDOMRe from "reason-react/src/ReactDOMRe.js";
 import * as Layout$WildCards from "./components/Layout.bs.js";
-import * as GSNTest$WildCards from "./GSNTest.bs.js";
 import * as Globals$WildCards from "./harberger-lib/Globals.bs.js";
 import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.js";
 import * as DiscordChat$WildCards from "./components/DiscordChat.bs.js";
@@ -16,16 +15,8 @@ import * as WildcardsProvider$WildCards from "./harberger-lib/components/Wildcar
 function Index$Router(Props) {
   var url = ReasonReactRouter.useUrl(undefined, undefined);
   var match = url.path;
-  if (match) {
-    if (match[0] === "gsn-test") {
-      if (!match[1]) {
-        return React.createElement(GSNTest$WildCards.make, { });
-      }
-      
-    } else if (!match[1]) {
-      return React.createElement("p", undefined, "Unknown page");
-    }
-    
+  if (match && !match[1]) {
+    return React.createElement("p", undefined, "Unknown page");
   }
   return React.createElement(ReactTranslate$WildCards.make, {
               children: React.createElement(Layout$WildCards.make, { })
@@ -40,7 +31,7 @@ ReactDOMRe.renderToElementWithId(React.createElement(WildcardsProvider$WildCards
           getGraphEndpoints: (function (networkId, param) {
               return {
                       mainnet: Globals$WildCards.$pipe$pipe$pipe$pipe(process.env.REACT_APP_GOERLI_BE, "https://goerli.api.wildcards.world/v1/graphq"),
-                      matic: (console.log(networkId), "") + "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai",
+                      matic: (console.log(networkId), "") + "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-testnet",
                       ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli"
                     };
             }),

@@ -9,11 +9,11 @@ external useSetupBuyFunction:
   (. string, string, string, string) => Js.Promise.t(unit) =
   "useSetupBuyFunction";
 
-[@bs.module "./biconomy-exec"]
-external execTestTx:
-  (. option(Web3.web3Library), option(Web3.ethAddress)) =>
-  Js.Promise.t(unit) =
-  "execTestTx";
+// [@bs.module "./biconomy-exec"]
+// external execTestTx:
+//   (. option(Web3.web3Library), option(Web3.ethAddress)) =>
+//   Js.Promise.t(unit) =
+//   "execTestTx";
 let buyFunction =
     (newPrice, currentPriceWei, wildcardsPercentage, amountToSend) => {
   Js.log4(newPrice, currentPriceWei, wildcardsPercentage, amountToSend);

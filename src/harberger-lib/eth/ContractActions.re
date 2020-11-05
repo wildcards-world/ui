@@ -567,93 +567,105 @@ let useIncreaseVoteIteration = () => {
   (buyFunction, txState);
 };
 
-let useUpdateDeposit = isGsn => {
+let useUpdateDeposit = (~chain, isGsn) => {
   let (txState, setTxState) = React.useState(() => UnInitialised);
 
   let optSteward = useStewardContract(isGsn);
 
-  (
-    (value: string) => {
-      let value = parseUnits(. value, 0);
+  switch (chain) {
+  | Client.Neither
+  | Client.MaticQuery => ((_amountToWithdraw => ()), txState)
+  | Client.MainnetQuery => (
+      (
+        (value: string) => {
+          let value = parseUnits(. value, 0);
 
-      setTxState(_ => Created);
-      switch (optSteward) {
-      | Some(steward) =>
-        let updateDepositPromise =
-          steward.depositWei(. {
-            gasLimit: "500302", //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
+          setTxState(_ => Created);
+          switch (optSteward) {
+          | Some(steward) =>
+            let updateDepositPromise =
+              steward.depositWei(. {
+                gasLimit: "500302", //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
 
-            value,
-          })
-          ->Promise.Js.toResult;
-        updateDepositPromise->Promise.getOk(tx => {
-          setTxState(_ => SignedAndSubmitted(tx.hash));
-          let txMinedPromise = tx.wait(.)->Promise.Js.toResult;
-          txMinedPromise->Promise.getOk(txOutcome => {
-            setTxState(_ => Complete(txOutcome))
-          });
-          txMinedPromise->Promise.getError(_error => {
-            setTxState(_ => Failed)
-          });
-          ();
-        });
-        updateDepositPromise->Promise.getError(error => {
-          Js.log("error processing transaction: " ++ error.message)
-        });
-        ();
-      | None => ()
-      };
-    },
-    txState,
-  );
+                value,
+              })
+              ->Promise.Js.toResult;
+            updateDepositPromise->Promise.getOk(tx => {
+              setTxState(_ => SignedAndSubmitted(tx.hash));
+              let txMinedPromise = tx.wait(.)->Promise.Js.toResult;
+              txMinedPromise->Promise.getOk(txOutcome => {
+                setTxState(_ => Complete(txOutcome))
+              });
+              txMinedPromise->Promise.getError(_error => {
+                setTxState(_ => Failed)
+              });
+              ();
+            });
+            updateDepositPromise->Promise.getError(error => {
+              Js.log("error processing transaction: " ++ error.message)
+            });
+            ();
+          | None => ()
+          };
+        }
+      ),
+      txState,
+    )
+  };
 };
 
-let useWithdrawDeposit = isGsn => {
+let useWithdrawDeposit = (~chain, isGsn) => {
   let (txState, setTxState) = React.useState(() => UnInitialised);
 
   let optSteward = useStewardContract(isGsn);
 
-  (
-    amountToWithdraw => {
-      let value = parseUnits(. "0", 0);
-      Js.log(amountToWithdraw ++ " is the amount I'm trying to withdraw");
-      let amountToWithdrawEncoded = parseUnits(. amountToWithdraw, 0);
+  switch (chain) {
+  | Client.Neither
+  | Client.MaticQuery => ((_amountToWithdraw => ()), txState)
+  | Client.MainnetQuery => (
+      (
+        amountToWithdraw => {
+          let value = parseUnits(. "0", 0);
+          Js.log(amountToWithdraw ++ " is the amount I'm trying to withdraw");
+          let amountToWithdrawEncoded = parseUnits(. amountToWithdraw, 0);
 
-      setTxState(_ => Created);
-      switch (optSteward) {
-      | Some(steward) =>
-        let updateDepositPromise =
-          steward.withdrawDeposit(.
-            amountToWithdrawEncoded,
-            {
-              gasLimit: "500302", //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
+          setTxState(_ => Created);
+          switch (optSteward) {
+          | Some(steward) =>
+            let updateDepositPromise =
+              steward.withdrawDeposit(.
+                amountToWithdrawEncoded,
+                {
+                  gasLimit: "500302", //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
 
-              value,
-            },
-          )
-          ->Promise.Js.toResult;
-        updateDepositPromise->Promise.getOk(tx => {
-          setTxState(_ => SignedAndSubmitted(tx.hash));
-          let txMinedPromise = tx.wait(.)->Promise.Js.toResult;
-          txMinedPromise->Promise.getOk(txOutcome => {
-            Js.log(txOutcome);
-            setTxState(_ => Complete(txOutcome));
-          });
-          txMinedPromise->Promise.getError(error => {
-            setTxState(_ => Failed);
-            Js.log(error);
-          });
-          ();
-        });
-        updateDepositPromise->Promise.getError(error => {
-          setTxState(_ => Declined(error.message))
-        });
-        ();
-      | None => ()
-      };
-    },
-    txState,
-  );
+                  value,
+                },
+              )
+              ->Promise.Js.toResult;
+            updateDepositPromise->Promise.getOk(tx => {
+              setTxState(_ => SignedAndSubmitted(tx.hash));
+              let txMinedPromise = tx.wait(.)->Promise.Js.toResult;
+              txMinedPromise->Promise.getOk(txOutcome => {
+                Js.log(txOutcome);
+                setTxState(_ => Complete(txOutcome));
+              });
+              txMinedPromise->Promise.getError(error => {
+                setTxState(_ => Failed);
+                Js.log(error);
+              });
+              ();
+            });
+            updateDepositPromise->Promise.getError(error => {
+              setTxState(_ => Declined(error.message))
+            });
+            ();
+          | None => ()
+          };
+        }
+      ),
+      txState,
+    )
+  };
 };
 
 let useUserLoyaltyTokenBalance = (address: Web3.ethAddress) => {

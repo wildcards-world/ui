@@ -34,7 +34,7 @@ function onlyUpdateValueIfPositiveFloat(currentValue, updateFunction, value) {
         ]
     ) : (
       value === "" ? /* tuple */[
-          value,
+          "0",
           true
         ] : /* tuple */[
           currentValue,
@@ -52,6 +52,11 @@ function onlyUpdateValueIfPositiveFloat(currentValue, updateFunction, value) {
 }
 
 function onlyUpdateValueIfInRangeFloat(min, max, currentValue, updateFunction, value) {
+  console.log("THE MINNN");
+  console.log("THE MINNN");
+  console.log("THE MINNN");
+  console.log("THE MINNN");
+  console.log(min);
   var valueFloat = Belt_Float.fromString(value);
   var match = valueFloat !== undefined ? (
       valueFloat >= min && valueFloat <= max ? /* tuple */[
@@ -63,7 +68,7 @@ function onlyUpdateValueIfInRangeFloat(min, max, currentValue, updateFunction, v
         ]
     ) : (
       value === "" ? /* tuple */[
-          value,
+          min.toString(),
           true
         ] : /* tuple */[
           currentValue,

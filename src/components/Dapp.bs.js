@@ -159,7 +159,7 @@ function Dapp$AuctionDetails(Props) {
   var chain = Props.chain;
   var animal = Props.animal;
   var launchTimeOpt = QlHooks$WildCards.useLaunchTimeBN(chain, animal);
-  var foreclosureTimeOpt = QlHooks$WildCards.useForeclosureTimeBn(TokenId$WildCards.toString(animal));
+  var foreclosureTimeOpt = QlHooks$WildCards.useForeclosureTimeBn(chain, TokenId$WildCards.toString(animal));
   if (launchTimeOpt === undefined) {
     if (foreclosureTimeOpt !== undefined) {
       return React.createElement(Dapp$AuctionDisplay, {
@@ -750,7 +750,7 @@ function Dapp$AnimalInfoStats(Props) {
   }
   var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
   var currentUsdEthPrice = UsdPriceProvider$WildCards.useUsdPrice(undefined);
-  var match = Globals$WildCards.mapd(QlHooks$WildCards.useRemainingDepositEth(currentPatron), /* tuple */[
+  var match = Globals$WildCards.mapd(QlHooks$WildCards.useRemainingDepositEth(chain, currentPatron), /* tuple */[
         "Loading",
         "Loading"
       ], (function (a) {
@@ -778,7 +778,7 @@ function Dapp$AnimalInfoStats(Props) {
                         }))
                 ];
         }));
-  var foreclosureTime = QlHooks$WildCards.useForeclosureTime(currentPatron);
+  var foreclosureTime = QlHooks$WildCards.useForeclosureTime(chain, currentPatron);
   var definiteTime = Globals$WildCards.mapd(foreclosureTime, /* Loading */0, (function (a) {
           return /* Date */[a];
         }));

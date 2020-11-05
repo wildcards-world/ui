@@ -412,147 +412,119 @@ module BuyMatic = {
     let onSubmitBuy = () => {
       let amountToSend =
         currentPriceWei->BN.add(BN.new_(Web3Utils.toWei(deposit, "ether")));
-      // switch (priceStatus) {
-      // | Foreclosed(_)
-      // | Loading =>
-      //   GSNActions.buyAuctionFunction(
-      //     newPrice,
-      //     "150000",
-      //     amountToSend
-      //     // Add 0.001 ETH as a buffer...
-      //     ->BN.add(BN.new_("1000000000000000"))
-      //     ->BN.toString,
-      //   )
-      //   ->ignore
-      // | Price(price) =>
-      //   if (price->BN.gt(BN.new_("0"))) {
-      //     GSNActions.buyFunction(
-      //       newPrice,
-      //       currentPriceWei->BN.toString,
-      //       "150000",
-      //       amountToSend->BN.toString,
-      //     )
-      //     ->ignore;
-      //     // buyTransaction(.
-      //     //   "65000000000000000000",
-      //     //   "50000000000000000000",
-      //     //   "150000",
-      //     //   "95000000000000000000",
-      //     // )
-      //     // ->ignore;
-      //   } else {
-      //     GSNActions.buyAuctionFunction(
-      //       newPrice,
-      //       "150000",
-      //       amountToSend
-      //       // Add 0.001 ETH as a buffer...
-      //       ->BN.add(BN.new_("1000000000000000"))
-      //       ->BN.toString,
-      //     )
-      //     ->ignore;
-      //   }
-      // };
-      Js.log("CLICKED BUY!!!!!");
 
       let nonce = "0";
-      // let nonce = "1";
-      // let nonce = "0x000000000000000000000000000000000000000000000000000000000000000a";
-      // let deadline = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
 
       // GOERLI:
-      // let verifyingContract = "0xea9d8a947dD7eBa9cF883c4aa71f18aD5A9c06bB";
-      // let spender = "0xf02Bb5b595Af96597b82f39F5de265E77Dc75CbC";
+      let verifyingContract = "0xea9d8a947dD7eBa9cF883c4aa71f18aD5A9c06bB";
+      let spender = "0xf02Bb5b595Af96597b82f39F5de265E77Dc75CbC";
 
-      // MUMBAI:
-      let verifyingContract = "0x5bEEeb754cE511908d0374462698B05e963bF35C";
-      let spender = "0xD2Dd5BEF69b07090BB183b7F856Df260d1fBf41d";
+      // // MUMBAI:
+      // let verifyingContract = "0x5bEEeb754cE511908d0374462698B05e963bF35C";
+      // let spender = "0xD2Dd5BEF69b07090BB183b7F856Df260d1fBf41d";
 
-      // let holder = "0xd3Cbce59318B2E570883719c8165F9390A12BdD6";
-      // let from = "0xd3Cbce59318B2E570883719c8165F9390A12BdD6";
-
-      // Js.log2("MATIC", contextMatic);
-      // Js.log3("The library", web3Context.library, contextMatic.library);
-
-      // switch (web3Context.library, contextMatic.library) {
-      // | (Some(lib), Some(maticLib)) =>
-      switch (web3Context.library, web3Context.account) {
-      | (Some(lib), Some(account)) =>
-        // let value =
-        //   DaiPermit.getNonce(
-        //     verifyingContract,
-        //     maticLib,
-        //     web3Context.account,
-        //   );
-        // Js.log2("THE VALUE", value);
-
-        // // DaiPermit.getNonce(verifyingContract, maticLib, web3Context.account)
-        // value
-        // ->Js.Promise.then_(
-        //     result => {
-        //       Js.log2("THE NONCE", result);
-        //       Js.Promise.resolve();
-        //     },
-        //     _,
-        //   )
-        // ->Js.Promise.catch(
-        //     e => {
-        //       Js.log2("error", e);
-        //       Js.Promise.resolve();
-        //     },
-        //     _,
-        //   )
-        // ->ignore;
-        DaiPermit.createPermitSig(
-          lib.provider,
-          verifyingContract,
-          nonce,
-          BN.newInt_(80001),
-          account,
-          spender,
-          account,
-        )
-        // Js.log(result);
-        //   account,
-        //   nonce,
-        //   expiry,
-        //   allowed,
-        //   tokenId,
-        //   serviceProviderPercentage,
-        //   depositAmount,
-        // "to stop compile"
-        //       newPrice,
-        //       currentPriceWei->BN.toString,
-        //       "150000",
-        /*       amountToSend->BN.toString*/
-        ->Js.Promise.then_(
-            rsvSig => {
-              open DaiPermit;
-              let {r, s, v} = rsvSig;
-              execTestTx(.
-                web3Context.library,
-                web3Context.account,
-                spender,
-                "0",
-                "0",
-                true,
-                v,
-                r,
-                s,
-                tokenId->TokenId.toString,
-                newPrice,
-                currentPriceWei->BN.toString,
-                "150000",
-                amountToSend->BN.toString,
-              )
-              ->ignore;
-
-              Js.Promise.resolve();
-            },
-            _,
+      let buyAuctionFunction = () => {
+        Js.log("BUYING WITH AUCTION!!!");
+        let newPriceEncoded = ContractActions.parseUnits(. newPrice, 18);
+        Js.log2("price encoded", newPriceEncoded);
+        switch (web3Context.library, web3Context.account) {
+        | (Some(lib), Some(account)) =>
+          DaiPermit.createPermitSig(
+            lib.provider,
+            verifyingContract,
+            nonce,
+            BN.newInt_(5),
+            // BN.newInt_(80001),
+            account,
+            spender,
+            account,
           )
-        ->ignore;
-        ();
-      | _ => ()
+          ->Js.Promise.then_(
+              rsvSig => {
+                open DaiPermit;
+                let {r, s, v} = rsvSig;
+                buyAuctionWithPermit(.
+                  web3Context.library,
+                  web3Context.account,
+                  spender,
+                  "0",
+                  "0",
+                  true,
+                  v,
+                  r,
+                  s,
+                  tokenId->TokenId.toString,
+                  newPrice->Web3Utils.toWeiFromEth,
+                  "150000",
+                  amountToSend
+                  ->BN.add(
+                      BN.new_(
+                        /*Add 0.001 ETH as a buffer...*/ "1000000000000000",
+                      ),
+                    )
+                  ->BN.toString,
+                )
+                ->ignore;
+
+                Js.Promise.resolve();
+              },
+              _,
+            )
+          ->ignore
+        | _ => ()
+        };
+      };
+      switch (priceStatus) {
+      | Foreclosed(_)
+      | Loading =>
+        Js.log("wrong buy auction function...");
+        buyAuctionFunction();
+      | Price(price) =>
+        if (price->BN.gt(BN.new_("0"))) {
+          switch (web3Context.library, web3Context.account) {
+          | (Some(lib), Some(account)) =>
+            DaiPermit.createPermitSig(
+              lib.provider,
+              verifyingContract,
+              nonce,
+              BN.newInt_(80001),
+              account,
+              spender,
+              account,
+            )
+            ->Js.Promise.then_(
+                rsvSig => {
+                  open DaiPermit;
+                  let {r, s, v} = rsvSig;
+                  buyWithPermit(.
+                    web3Context.library,
+                    web3Context.account,
+                    spender,
+                    "0",
+                    "0",
+                    true,
+                    v,
+                    r,
+                    s,
+                    tokenId->TokenId.toString,
+                    newPrice->Web3Utils.toWeiFromEth,
+                    currentPriceWei->BN.toString,
+                    "150000",
+                    amountToSend->BN.toString,
+                  )
+                  ->ignore;
+
+                  Js.Promise.resolve();
+                },
+                _,
+              )
+            ->ignore
+          | _ => ()
+          };
+        } else {
+          Js.log("buy with auction else");
+          buyAuctionFunction()->ignore;
+        }
       };
     };
 

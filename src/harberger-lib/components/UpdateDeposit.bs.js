@@ -35,9 +35,9 @@ function UpdateDeposit(Props) {
         }));
   var setIsAddDeposit = match$1[1];
   var isAddDeposit = match$1[0];
-  var match$2 = ContractActions$WildCards.useUpdateDeposit(false);
+  var match$2 = ContractActions$WildCards.useUpdateDeposit(chain, false);
   var depositFunc = match$2[0];
-  var match$3 = ContractActions$WildCards.useWithdrawDeposit(false);
+  var match$3 = ContractActions$WildCards.useWithdrawDeposit(chain, false);
   var withdrawFunc = match$3[0];
   var onSubmitDepositChange = function ($$event) {
     $$event.preventDefault();

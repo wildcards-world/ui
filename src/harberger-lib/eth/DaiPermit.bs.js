@@ -150,7 +150,9 @@ function createPermitSig(provider, verifyingContract, nonce, chainId, holder, sp
               }));
 }
 
-var execTestTx = BiconomyExec.execTestTx;
+var buyWithPermit = BiconomyExec.buyWithPermit;
+
+var buyAuctionWithPermit = BiconomyExec.buyAuctionWithPermit;
 
 export {
   getDaiContract ,
@@ -158,7 +160,8 @@ export {
   getNonce ,
   getEthSig ,
   createPermitSig ,
-  execTestTx ,
+  buyWithPermit ,
+  buyAuctionWithPermit ,
   
 }
 /* daiAbi Not a pure module */

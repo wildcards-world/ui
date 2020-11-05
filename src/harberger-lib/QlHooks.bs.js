@@ -18,6 +18,7 @@ import * as Belt_Result from "bs-platform/lib/es6/belt_Result.js";
 import * as Caml_format from "bs-platform/lib/es6/caml_format.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as Eth$WildCards from "./Eth.bs.js";
+import * as Client$WildCards from "./Client.bs.js";
 import * as Helper$WildCards from "./Helper.bs.js";
 import * as Globals$WildCards from "./Globals.bs.js";
 import * as TokenId$WildCards from "./TokenId.bs.js";
@@ -1970,16 +1971,18 @@ function useTimeAcquired(chain, animal) {
   return queryResultOptionMap(match[0], getTimeAquired);
 }
 
-function useQueryPatron(patron) {
-  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$5(patron, undefined).variables), undefined, undefined, undefined, undefined, undefined, undefined, definition$5);
+function useQueryPatron(chain, patron) {
+  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$5(getQueryPrefix(chain) + patron, undefined).variables), undefined, undefined, undefined, undefined, undefined, {
+              context: chain
+            }, definition$5);
 }
 
 function useQueryPatronNew(patron) {
   return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$5(patron, undefined).variables), undefined, undefined, undefined, undefined, undefined, undefined, definition$5);
 }
 
-function useForeclosureTimeBn(patron) {
-  var match = useQueryPatron(patron);
+function useForeclosureTimeBn(chain, patron) {
+  var match = useQueryPatron(chain, patron);
   var getForclosureTime = function (response) {
     return Belt_Option.map(response.patron, (function (patron) {
                   return patron.foreclosureTime;
@@ -1988,12 +1991,12 @@ function useForeclosureTimeBn(patron) {
   return queryResultOptionFlatMap(match[0], getForclosureTime);
 }
 
-function useForeclosureTime(patron) {
-  return Belt_Option.map(useForeclosureTimeBn(patron), Helper$WildCards.bnToMoment);
+function useForeclosureTime(chain, patron) {
+  return Belt_Option.map(useForeclosureTimeBn(chain, patron), Helper$WildCards.bnToMoment);
 }
 
-function usePatronQuery(patron) {
-  var match = useQueryPatron(patron);
+function usePatronQuery(chain, patron) {
+  var match = useQueryPatron(chain, patron);
   return queryResultOptionMap(match[0], (function (a) {
                 return a;
               }));
@@ -2116,8 +2119,8 @@ function usePledgeRateDetailed(chain, tokenId) {
         ];
 }
 
-function usePatronLoyaltyTokenDetails(address) {
-  var match = useQueryPatron(address);
+function usePatronLoyaltyTokenDetails(chain, address) {
+  var match = useQueryPatron(chain, address);
   var response = match[0];
   if (typeof response === "number") {
     return ;
@@ -2188,9 +2191,9 @@ function useUnredeemedLoyaltyTokenDueFromWildcard(chain, animal) {
   return Caml_option.some(Globals$WildCards.$pipe$star$pipe(Caml_option.valFromOption(timeSinceTokenWasLastSettled), totalLoyaltyTokensPerSecondPerAnimal));
 }
 
-function useTotalLoyaltyToken(patron) {
+function useTotalLoyaltyToken(chain, patron) {
   var currentTimestamp = useCurrentTime(undefined);
-  var match = usePatronLoyaltyTokenDetails(patron);
+  var match = usePatronLoyaltyTokenDetails(chain, patron);
   if (match === undefined) {
     return ;
   }
@@ -2205,8 +2208,8 @@ function useTotalLoyaltyToken(patron) {
         ];
 }
 
-function useRemainingDeposit(patron) {
-  var match = useQueryPatron(patron);
+function useRemainingDeposit(chain, patron) {
+  var match = useQueryPatron(chain, patron);
   var getRemainingDepositData = function (response) {
     return Globals$WildCards.oMap(response.patron, (function (wc) {
                   return /* tuple */[
@@ -2219,9 +2222,9 @@ function useRemainingDeposit(patron) {
   return queryResultOptionFlatMap(match[0], getRemainingDepositData);
 }
 
-function useRemainingDepositEth(patron) {
+function useRemainingDepositEth(chain, patron) {
   var currentTimestamp = useCurrentTime(undefined);
-  var match = useRemainingDeposit(patron);
+  var match = useRemainingDeposit(chain, patron);
   if (match === undefined) {
     return ;
   }
@@ -2234,9 +2237,13 @@ function usePrice(chain, animal) {
   var match = useWildcardQuery(chain, animal);
   var simple = match[0];
   var optCurrentPatron = usePatron(chain, animal);
-  var foreclosureTime = useForeclosureTimeBn(Belt_Option.mapWithDefault(optCurrentPatron, "no-patron-defined", (function (a) {
-              return a;
-            })));
+  var currentPatron = Belt_Option.mapWithDefault(optCurrentPatron, "no-patron-defined", (function (a) {
+          return a;
+        }));
+  var foreclosureTime = useForeclosureTimeBn(chain, currentPatron);
+  console.log("patron of animal", currentPatron, Belt_Option.map(foreclosureTime, (function (prim) {
+              return prim.toString();
+            })), Client$WildCards.chainContextToStr(chain));
   var currentTime = useCurrentTime(undefined);
   if (typeof simple === "number") {
     return /* Loading */0;
@@ -2261,8 +2268,8 @@ function usePrice(chain, animal) {
   }
 }
 
-function useIsForeclosed(currentPatron) {
-  var optAvailableDeposit = useRemainingDepositEth(currentPatron);
+function useIsForeclosed(chain, currentPatron) {
+  var optAvailableDeposit = useRemainingDepositEth(chain, currentPatron);
   return Belt_Option.mapWithDefault(optAvailableDeposit, true, (function (availableDeposit) {
                 return !availableDeposit.gt(new BnJs.default("0"));
               }));

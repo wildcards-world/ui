@@ -603,33 +603,34 @@ let useTimeAcquired:
     simple->queryResultOptionMap(getTimeAquired);
   };
 
-let useQueryPatron = patron =>
+let useQueryPatron = (~chain, patron) =>
   ApolloHooks.useQuery(
-    ~variables=LoadPatron.make(~patronId=patron, ())##variables,
+    ~context={context: chain}->createContext,
+    ~variables=
+      LoadPatron.make(~patronId=chain->getQueryPrefix ++ patron, ())##variables,
     LoadPatron.definition,
   );
+
 let useQueryPatronNew = patron =>
   ApolloHooks.useQuery(
     ~variables=LoadPatron.make(~patronId=patron, ())##variables,
     LoadPatron.definition,
   );
 
-let useForeclosureTimeBn: string => option(BN.t) =
-  patron => {
-    let (simple, _) = useQueryPatron(patron);
-    let getForclosureTime = response =>
-      response##patron->Belt.Option.map(patron => patron##foreclosureTime);
+let useForeclosureTimeBn = (~chain, patron) => {
+  let (simple, _) = useQueryPatron(~chain, patron);
+  let getForclosureTime = response =>
+    response##patron->Belt.Option.map(patron => patron##foreclosureTime);
 
-    simple->queryResultOptionFlatMap(getForclosureTime);
-  };
+  simple->queryResultOptionFlatMap(getForclosureTime);
+};
 
-let useForeclosureTime: string => option(MomentRe.Moment.t) =
-  patron => {
-    useForeclosureTimeBn(patron)->Option.map(Helper.bnToMoment);
-  };
+let useForeclosureTime = (~chain, patron) => {
+  useForeclosureTimeBn(~chain, patron)->Option.map(Helper.bnToMoment);
+};
 
-let usePatronQuery = patron => {
-  let (simple, _) = useQueryPatron(patron);
+let usePatronQuery = (~chain, patron) => {
+  let (simple, _) = useQueryPatron(~chain, patron);
 
   simple->queryResultToOption;
 };
@@ -765,35 +766,33 @@ type patronLoyaltyTokenDetails = {
   lastCollected: BN.t,
   numberOfAnimalsOwned: BN.t,
 };
-let usePatronLoyaltyTokenDetails:
-  Web3.ethAddress => option(patronLoyaltyTokenDetails) =
-  address => {
-    // NOTE: we are using both 'new patron' and 'patron' because the work on the graph is incomplete.
-    let (response, _) = useQueryPatron(address);
+let usePatronLoyaltyTokenDetails = (~chain, address) => {
+  // NOTE: we are using both 'new patron' and 'patron' because the work on the graph is incomplete.
+  let (response, _) = useQueryPatron(~chain, address);
 
-    [@ocaml.warning "-4"]
-    (
-      switch (response) {
-      | Data(dataPatron) =>
-        switch (dataPatron##patron) {
-        | Some(patron) =>
-          Some({
-            currentLoyaltyTokens: patron##totalLoyaltyTokens,
-            currentLoyaltyTokensIncludingUnredeemed:
-              patron##totalLoyaltyTokensIncludingUnRedeemed,
-            lastCollected: patron##lastUpdated,
-            numberOfAnimalsOwned:
-              BN.new_(patron##tokens->Obj.magic->Array.length->string_of_int),
-          })
-        | _ => None
-        }
-      // | Loading
-      // | Error(_error)
-      // | NoData => None
+  [@ocaml.warning "-4"]
+  (
+    switch (response) {
+    | Data(dataPatron) =>
+      switch (dataPatron##patron) {
+      | Some(patron) =>
+        Some({
+          currentLoyaltyTokens: patron##totalLoyaltyTokens,
+          currentLoyaltyTokensIncludingUnredeemed:
+            patron##totalLoyaltyTokensIncludingUnRedeemed,
+          lastCollected: patron##lastUpdated,
+          numberOfAnimalsOwned:
+            BN.new_(patron##tokens->Obj.magic->Array.length->string_of_int),
+        })
       | _ => None
       }
-    );
-  };
+    // | Loading
+    // | Error(_error)
+    // | NoData => None
+    | _ => None
+    }
+  );
+};
 
 // TODO:: Take min of total deposit and amount raised
 let useAmountRaisedToken: (~chain: Client.context, TokenId.t) => option(Eth.t) =
@@ -889,11 +888,12 @@ let useUnredeemedLoyaltyTokenDueFromWildcard:
     | None => None
     };
   };
-let useTotalLoyaltyToken: Web3.ethAddress => option((Eth.t, Eth.t)) =
-  patron => {
+let useTotalLoyaltyToken:
+  (~chain: Client.context, Web3.ethAddress) => option((Eth.t, Eth.t)) =
+  (~chain, patron) => {
     let currentTimestamp = useCurrentTime();
 
-    switch (usePatronLoyaltyTokenDetails(patron)) {
+    switch (usePatronLoyaltyTokenDetails(~chain, patron)) {
     | Some({
         currentLoyaltyTokens,
         currentLoyaltyTokensIncludingUnredeemed,
@@ -915,9 +915,10 @@ let useTotalLoyaltyToken: Web3.ethAddress => option((Eth.t, Eth.t)) =
     };
   };
 
-let useRemainingDeposit: string => option((Eth.t, BN.t, BN.t)) =
-  patron => {
-    let (simple, _) = useQueryPatron(patron);
+let useRemainingDeposit:
+  (~chain: Client.context, string) => option((Eth.t, BN.t, BN.t)) =
+  (~chain, patron) => {
+    let (simple, _) = useQueryPatron(~chain, patron);
 
     let getRemainingDepositData = response =>
       response##patron
@@ -933,11 +934,11 @@ let useRemainingDeposit: string => option((Eth.t, BN.t, BN.t)) =
   };
 
 // TODO:: Take min of total deposit and amount raised
-let useRemainingDepositEth: string => option(Eth.t) =
-  patron => {
+let useRemainingDepositEth: (~chain: Client.context, string) => option(Eth.t) =
+  (~chain, patron) => {
     let currentTimestamp = useCurrentTime();
 
-    switch (useRemainingDeposit(patron)) {
+    switch (useRemainingDeposit(~chain, patron)) {
     | Some((availableDeposit, lastUpdated, patronTokenCostScaledNumerator)) =>
       let timeElapsed = BN.new_(currentTimestamp)->BN.sub(lastUpdated);
 
@@ -962,13 +963,18 @@ let usePrice: (~chain: Client.context, TokenId.t) => animalPrice =
   (~chain, animal) => {
     let (simple, _) = useWildcardQuery(~chain, animal);
     let optCurrentPatron = usePatron(~chain, animal);
-    // let availableDeposit = useRemainingDepositEth(currentPatron);
-    let foreclosureTime =
-      useForeclosureTimeBn(
-        optCurrentPatron->Belt.Option.mapWithDefault("no-patron-defined", a =>
-          a
-        ),
+    let currentPatron =
+      optCurrentPatron->Belt.Option.mapWithDefault("no-patron-defined", a =>
+        a
       );
+    // let availableDeposit = useRemainingDepositEth(currentPatron);
+    let foreclosureTime = useForeclosureTimeBn(~chain, currentPatron);
+    Js.log4(
+      "patron of animal",
+      currentPatron,
+      foreclosureTime->Option.map(BN.toString),
+      chain->Client.chainContextToStr,
+    );
     let currentTime = useCurrentTime();
 
     switch (simple) {
@@ -995,14 +1001,13 @@ let usePrice: (~chain: Client.context, TokenId.t) => animalPrice =
     };
   };
 
-let useIsForeclosed: Web3.ethAddress => bool =
-  currentPatron => {
-    let optAvailableDeposit = useRemainingDepositEth(currentPatron);
+let useIsForeclosed = (~chain, currentPatron) => {
+  let optAvailableDeposit = useRemainingDepositEth(~chain, currentPatron);
 
-    optAvailableDeposit->Option.mapWithDefault(true, availableDeposit => {
-      !availableDeposit->BN.gt(BN.new_("0"))
-    });
-  };
+  optAvailableDeposit->Option.mapWithDefault(true, availableDeposit => {
+    !availableDeposit->BN.gt(BN.new_("0"))
+  });
+};
 
 let useAuctionStartPrice = (_tokenId: TokenId.t) => {
   BN.new_(

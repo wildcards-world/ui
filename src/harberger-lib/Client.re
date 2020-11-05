@@ -25,6 +25,12 @@ type context =
   | Neither
   | MaticQuery
   | MainnetQuery;
+let chainContextToStr = chain =>
+  switch (chain) {
+  | Neither => "neither"
+  | MaticQuery => "matic"
+  | MainnetQuery => "mainnet"
+  };
 type queryContext = {context};
 
 [@bs.send]

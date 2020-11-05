@@ -176,9 +176,7 @@ const executeMetaTransaciton = async (
   if (
     (contract && userAddress && functionSignature, chainId, contractAddress)
   ) {
-    // let nonce = 0;
     let nonce = await contract.methods.getNonce(userAddress).call();
-    // console.log("The nonce is:", nonce);
     let messageToSign = constructMetaTransactionMessage(
       nonce,
       chainId,
@@ -186,45 +184,12 @@ const executeMetaTransaciton = async (
       contractAddress
     );
 
-    // console.log("web3", web3);
-    // console.log("web3.eth", web3.eth);
-    // console.log("web3.eth.personal", web3.eth.personal);
-
-    // const signature = await web3.eth.sign(
     const signature = await web3.eth.personal.sign(
       "0x" + messageToSign.toString("hex"),
       userAddress
     );
 
-    // console.info(`User signature is ${signature}`);
     let { r, s, v } = getSignatureParameters(signature, web3);
-
-    // try {
-    //   fetch(`https://api.biconomy.io/api/v2/meta-tx/native`, {
-    //     method: "POST",
-    //     headers: {
-    //       "x-api-key": "IUNMuYhZ7.9c178f07-e191-4877-b995-ef4b61ed956f",
-    //       "Content-Type": "application/json;charset=utf-8",
-    //     },
-    //     body: JSON.stringify({
-    //       to: contractAddress,
-    //       apiId: "e0dd72a6-78e0-44f8-b56e-902c1b519ffa",
-    //       params: [userAddress, functionSignature, r, s, v],
-    //       // params: [userAddress, functionData, r, s, v],
-    //       from: userAddress,
-    //     }),
-    //   })
-    //     .then((response) => response.json())
-    //     .then(function (result) {
-    //       console.log(result);
-    //       console.log(`Transaction sent by relayer with hash ${result.txHash}`);
-    //     })
-    //     .catch(function (error) {
-    //       console.log(error);
-    //     });
-    // } catch (error) {
-    //   console.log(error);
-    // }
 
     // No need to calculate gas limit or gas price here
     let transactionListener = contract.methods
@@ -255,7 +220,7 @@ const executeMetaTransaciton = async (
  * HELPER CODE -end
  */
 
-export const execTestTx = async (
+export const buyWithPermit = async (
   library,
   account,
   contractAddress,
@@ -271,65 +236,13 @@ export const execTestTx = async (
   serviceProviderPercentage,
   depositAmount
 ) => {
-  // const context = useWeb3React();
-  // const {
-  //   // connector,
-  //   library,
-  //   chainId,
-  //   account,
-  //   activate,
-  //   deactivate,
-  //   active,
-  //   error,
-  // } = context;
-
   if (!library) return;
 
   const web3 = new Web3(library.provider);
-  // const contractAddress = "0xf02Bb5b595Af96597b82f39F5de265E77Dc75CbC";
-  // const contractAddress = "0x4FF99B0a7C638F9d2b4D03ac46B0096Df6b6DB61";
-  // const contractAddress = "0x59b3c176c39bd8734717492f4da8fe26ff6a454d";
 
-  // const biconomy = new Biconomy(library.provider, {
-  //   apiKey: "IUNMuYhZ7.9c178f07-e191-4877-b995-ef4b61ed956f",
-  //   debug: true,
-  // });
-
-  // const web3Biconomy = new Web3(biconomy);
   var contract = new web3.eth.Contract(jsonInterface.abi, contractAddress);
 
-  // let functionSignature = contract.methods
-  //   .testFunctionThatDoesNothing(account)
-  //   .encodeABI();
-
-  /*
-  buyWithPermit(
-        uint256 nonce,
-        uint256 expiry,
-        bool allowed,
-        uint8 v,
-        bytes32 r,
-        bytes32 s,
-        uint256 tokenId,
-        uint256 _newPrice,
-        uint256 previousPrice,
-        uint256 serviceProviderPercentage,
-        uint256 depositAmount
-        nonce,
-        expiry,
-        allowed,
-        v,
-        r,
-        s,
-        tokenId,
-        _newPrice,
-        previousPrice,
-        serviceProviderPercentage,
-        depositAmount
-    )
-  */
-
-  let result = contract.methods
+  let functionSignature = contract.methods
     .buyWithPermit(
       nonce,
       expiry,
@@ -343,9 +256,12 @@ export const execTestTx = async (
       serviceProviderPercentage,
       depositAmount
     )
+    // .encodeABI();
     .send({
       from: account,
     });
+
+  console.log(functionSignature);
   // let result = await executeMetaTransaciton(
   //   account,
   //   functionSignature,
@@ -355,16 +271,128 @@ export const execTestTx = async (
   //   web3
   // );
 
-  result
-    .on("transactionHash", (hash) => {
-      // On transacion Hash
-      console.log("hash", { hash });
-    })
-    .once("confirmation", (confirmation, recipet) => {
-      console.log("confirmation", { confirmation, recipet });
-      // On Confirmation
-    })
-    .on("error", (error) => {
-      // On Error
+  // result
+  //   .on("transactionHash", (hash) => {
+  //     // On transacion Hash
+  //     console.log("hash", { hash });
+  //   })
+  //   .once("confirmation", (confirmation, recipet) => {
+  //     console.log("confirmation", { confirmation, recipet });
+  //     // On Confirmation
+  //   })
+  //   .on("error", (error) => {
+  //     // On Error
+  //   });
+};
+
+export const buyAuctionWithPermit = async (
+  library,
+  account,
+  contractAddress,
+  nonce,
+  expiry,
+  allowed,
+  v,
+  r,
+  s,
+  tokenId,
+  _newPrice,
+  serviceProviderPercentage,
+  depositAmount
+) => {
+  if (!library) return;
+
+  const web3 = new Web3(library.provider);
+
+  var contract = new web3.eth.Contract(jsonInterface.abi, contractAddress);
+
+  let functionSignature = contract.methods
+    .buyAuctionWithPermit(
+      nonce,
+      expiry,
+      allowed,
+      v,
+      r,
+      s,
+      tokenId,
+      _newPrice,
+      // previousPrice,
+      serviceProviderPercentage,
+      depositAmount
+    )
+    // .encodeABI();
+    .send({
+      from: account,
     });
+
+  // console.log(functionSignature);
+  // let result = await executeMetaTransaciton(
+  //   account,
+  //   functionSignature,
+  //   contract,
+  //   contractAddress,
+  //   "4",
+  //   web3
+  // );
+
+  // result
+  //   .on("transactionHash", (hash) => {
+  //     // On transacion Hash
+  //     console.log("hash", { hash });
+  //   })
+  //   .once("confirmation", (confirmation, recipet) => {
+  //     console.log("confirmation", { confirmation, recipet });
+  //     // On Confirmation
+  //   })
+  //   .on("error", (error) => {
+  //     // On Error
+  //   });
+};
+export const depositWithPermit = async (
+  library,
+  account,
+  contractAddress,
+  nonce,
+  expiry,
+  allowed,
+  v,
+  r,
+  s,
+  depositAmount
+) => {
+  if (!library) return;
+
+  const web3 = new Web3(library.provider);
+
+  var contract = new web3.eth.Contract(jsonInterface.abi, contractAddress);
+
+  let functionSignature = contract.methods
+    .depositWithPermit(nonce, expiry, allowed, v, r, s, account, depositAmount)
+    // .encodeABI();
+    .send({
+      from: account,
+    });
+
+  // console.log(functionSignature);
+  // let result = await executeMetaTransaciton(
+  //   account,
+  //   functionSignature,
+  //   contract,
+  //   contractAddress,
+  //   "4",
+  //   web3
+  // );
+
+  // result
+  //   .on("transactionHash", (hash) => {
+  //     // On transacion Hash
+  //     console.log("hash", { hash });
+  //   })
+  //   .once("confirmation", (confirmation, recipet) => {
+  //     console.log("confirmation", { confirmation, recipet });
+  //     // On Confirmation
+  //   })
+  //   .on("error", (error) => {
+  //     // On Error
+  //   });
 };

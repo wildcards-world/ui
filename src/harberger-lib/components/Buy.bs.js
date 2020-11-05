@@ -3,6 +3,7 @@
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as BnJs from "bn.js";
 import * as React from "react";
+import * as Ethers from "ethers";
 import * as Belt_Int from "bs-platform/lib/es6/belt_Int.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Float from "bs-platform/lib/es6/belt_Float.js";
@@ -232,22 +233,55 @@ function Buy$BuyMatic(Props) {
   var setDepositTimeInSeconds = match$7[1];
   var onSubmitBuy = function (param) {
     var amountToSend = currentPriceWei$1.add(new BnJs.default(Web3Utils.toWei(deposit, "ether")));
-    console.log("CLICKED BUY!!!!!");
-    var spender = "0xD2Dd5BEF69b07090BB183b7F856Df260d1fBf41d";
-    var match = web3Context.library;
-    var match$1 = web3Context.account;
-    if (match === undefined) {
+    var nonce = "0";
+    var verifyingContract = "0xea9d8a947dD7eBa9cF883c4aa71f18aD5A9c06bB";
+    var spender = "0xf02Bb5b595Af96597b82f39F5de265E77Dc75CbC";
+    var buyAuctionFunction = function (param) {
+      console.log("BUYING WITH AUCTION!!!");
+      var newPriceEncoded = Ethers.utils.parseUnits(newPrice, 18);
+      console.log("price encoded", newPriceEncoded);
+      var match = web3Context.library;
+      var match$1 = web3Context.account;
+      if (match === undefined) {
+        return ;
+      }
+      if (match$1 === undefined) {
+        return ;
+      }
+      var __x = DaiPermit$WildCards.createPermitSig(match.provider, verifyingContract, nonce, new BnJs.default(5), match$1, spender, match$1);
+      __x.then((function (rsvSig) {
+              DaiPermit$WildCards.buyAuctionWithPermit(web3Context.library, web3Context.account, spender, "0", "0", true, rsvSig.v, rsvSig.r, rsvSig.s, TokenId$WildCards.toString(tokenId), Web3Utils$WildCards.toWeiFromEth(newPrice), "150000", amountToSend.add(new BnJs.default("1000000000000000")).toString());
+              return Promise.resolve(undefined);
+            }));
+      
+    };
+    if (typeof priceStatus === "number") {
+      console.log("wrong buy auction function...");
+      return buyAuctionFunction(undefined);
+    }
+    if (priceStatus.tag) {
+      if (priceStatus[0].gt(new BnJs.default("0"))) {
+        var match = web3Context.library;
+        var match$1 = web3Context.account;
+        if (match === undefined) {
+          return ;
+        }
+        if (match$1 === undefined) {
+          return ;
+        }
+        var __x = DaiPermit$WildCards.createPermitSig(match.provider, verifyingContract, nonce, new BnJs.default(80001), match$1, spender, match$1);
+        __x.then((function (rsvSig) {
+                DaiPermit$WildCards.buyWithPermit(web3Context.library, web3Context.account, spender, "0", "0", true, rsvSig.v, rsvSig.r, rsvSig.s, TokenId$WildCards.toString(tokenId), Web3Utils$WildCards.toWeiFromEth(newPrice), currentPriceWei$1.toString(), "150000", amountToSend.toString());
+                return Promise.resolve(undefined);
+              }));
+        return ;
+      }
+      console.log("buy with auction else");
+      buyAuctionFunction(undefined);
       return ;
     }
-    if (match$1 === undefined) {
-      return ;
-    }
-    var __x = DaiPermit$WildCards.createPermitSig(match.provider, "0x5bEEeb754cE511908d0374462698B05e963bF35C", "0", new BnJs.default(80001), match$1, spender, match$1);
-    __x.then((function (rsvSig) {
-            DaiPermit$WildCards.execTestTx(web3Context.library, web3Context.account, spender, "0", "0", true, rsvSig.v, rsvSig.r, rsvSig.s, TokenId$WildCards.toString(tokenId), newPrice, currentPriceWei$1.toString(), "150000", amountToSend.toString());
-            return Promise.resolve(undefined);
-          }));
-    
+    console.log("wrong buy auction function...");
+    return buyAuctionFunction(undefined);
   };
   var setNewPrice = function (value) {
     var match = InputHelp$WildCards.onlyUpdateValueIfPositiveFloat(newPrice, setInitialPrice, value);

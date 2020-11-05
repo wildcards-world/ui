@@ -27,6 +27,18 @@ function wsLink(uri) {
             });
 }
 
+function chainContextToStr(chain) {
+  switch (chain) {
+    case /* Neither */0 :
+        return "neither";
+    case /* MaticQuery */1 :
+        return "matic";
+    case /* MainnetQuery */2 :
+        return "mainnet";
+    
+  }
+}
+
 function webSocketHttpLink(uri, matic, subscriptions) {
   return ApolloLink.split((function (operation) {
                 var operationDefition = ApolloUtilities.getMainDefinition(operation.query);
@@ -75,6 +87,7 @@ export {
   inMemoryCache ,
   httpLink ,
   wsLink ,
+  chainContextToStr ,
   webSocketHttpLink ,
   instance ,
   
