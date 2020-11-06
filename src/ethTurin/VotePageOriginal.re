@@ -358,7 +358,7 @@ let make = (~chain) => {
   let userAddressLowerCase =
     switch (currentUser) {
     | Some(currentUser) => currentUser->Js.String.toLowerCase
-    | _ => "0x0000000000000000000000000000000000000000"
+    | _ => CONSTANTS.nullEthAddress
     };
 
   let patronQueryOpt =

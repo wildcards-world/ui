@@ -9,6 +9,7 @@ import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Blockie$WildCards from "../bindings/ethereum-blockies-base64/Blockie.bs.js";
 import * as Globals$WildCards from "../Globals.bs.js";
+import * as CONSTANTS$WildCards from "../../CONSTANTS.bs.js";
 import * as RootProvider$WildCards from "../RootProvider.bs.js";
 import * as UserProvider$WildCards from "../js/user-provider/UserProvider.bs.js";
 
@@ -25,7 +26,7 @@ function ProfileIcon(Props) {
               return a;
             })));
   var displayNameStr = UserProvider$WildCards.displayNameToString(displayName);
-  var userAddressLowerCase = currentUser !== undefined ? currentUser.toLowerCase() : "0x0000000000000000000000000000000000000000";
+  var userAddressLowerCase = currentUser !== undefined ? currentUser.toLowerCase() : CONSTANTS$WildCards.nullEthAddress;
   var optThreeBoxData = UserProvider$WildCards.use3BoxUserData(userAddressLowerCase);
   var optProfile = Globals$WildCards.$great$great$eq(optThreeBoxData, (function (a) {
           return a.profile;

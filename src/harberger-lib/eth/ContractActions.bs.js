@@ -14,7 +14,9 @@ import * as Web3$WildCards from "../Web3.bs.js";
 import * as Async$WildCards from "../Async.bs.js";
 import * as Core from "@web3-react/core";
 import * as Globals$WildCards from "../Globals.bs.js";
+import * as QlHooks$WildCards from "../QlHooks.bs.js";
 import * as TokenId$WildCards from "../TokenId.bs.js";
+import * as CONSTANTS$WildCards from "../../CONSTANTS.bs.js";
 import * as DaiPermit$WildCards from "./DaiPermit.bs.js";
 import * as ContractUtil$WildCards from "./ContractUtil.bs.js";
 import * as RootProvider$WildCards from "../RootProvider.bs.js";
@@ -355,7 +357,7 @@ function useApproveLoyaltyTokens(param) {
     if (optNetworkId === undefined) {
       return ;
     }
-    var voteContractAddress = Globals$WildCards.$pipe$pipe$pipe$pipe(voteAddressFromChainId(optNetworkId), "0x0000000000000000000000000000000000000500");
+    var voteContractAddress = Globals$WildCards.$pipe$pipe$pipe$pipe(voteAddressFromChainId(optNetworkId), CONSTANTS$WildCards.nullEthAddress);
     var claimLoyaltyTokenPromise = $$Promise.Js.toResult(optLoyaltyTokens.approve(voteContractAddress, "100000000000000000000000", {
               gasLimit: "500302",
               value: value
@@ -506,7 +508,11 @@ function useUpdateDeposit(chain, isGsn, library, account) {
   var setTxState = match[1];
   var txState = match[0];
   var optSteward = useStewardContract(isGsn);
-  var nonce = "2";
+  var maticState = Belt_Option.flatMap(account, (function (usersAddress) {
+          console.log("the users address", usersAddress);
+          return QlHooks$WildCards.useMaticState(false, usersAddress, "goerli");
+        }));
+  console.log("Matic state", maticState);
   var verifyingContract = getDaiContractAddress(chain, 5);
   var spender = getStewardAddress(chain, 5);
   var chainId = new BnJs.default(5);
@@ -552,24 +558,40 @@ function useUpdateDeposit(chain, isGsn, library, account) {
   } else {
     return /* tuple */[
             (function (amountToAdd) {
-                if (library === undefined) {
+                if (library !== undefined && account !== undefined && maticState !== undefined) {
+                  var maticState$1 = Caml_option.valFromOption(maticState);
+                  var daiNonce = maticState$1.daiNonce;
+                  var stewardNonce = maticState$1.stewardNonce;
+                  var __x = DaiPermit$WildCards.createPermitSig(library.provider, verifyingContract, daiNonce, chainId, account, spender, account);
+                  var __x$1 = __x.then((function (rsvSig) {
+                          var web3 = new Web3.default(library.provider);
+                          var steward = Curry._2(Web3$WildCards.Contract.MaticSteward.getStewardContract, web3, spender);
+                          var functionSignature = Curry._1(steward.methods.depositWithPermit(new BnJs.default(daiNonce), new BnJs.default("0"), true, rsvSig.v, rsvSig.r, rsvSig.s, account, new BnJs.default(amountToAdd)).encodeABI, undefined);
+                          var messageToSign = ContractUtil$WildCards.constructMetaTransactionMessage(stewardNonce, chainId.toString(), functionSignature, spender);
+                          var __x = web3.eth.personal.sign(messageToSign, account);
+                          return __x.then((function (signature) {
+                                        return Promise.resolve(/* tuple */[
+                                                    functionSignature,
+                                                    signature
+                                                  ]);
+                                      }));
+                        }));
+                  var __x$2 = __x$1.then((function (param) {
+                          var signature = param[1];
+                          console.log("THE SIGNATURE!!", signature);
+                          var match = ContractUtil$WildCards.getEthSig(signature);
+                          console.log("Sig!");
+                          console.log(param[0], match.r, match.s, match.v);
+                          return Promise.resolve(undefined);
+                        }));
+                  __x$2.catch((function (err) {
+                          console.log("this error was caught", err);
+                          return Promise.resolve("");
+                        }));
                   return ;
                 }
-                if (account === undefined) {
-                  return ;
-                }
-                var __x = DaiPermit$WildCards.createPermitSig(library.provider, verifyingContract, nonce, chainId, account, spender, account);
-                var __x$1 = __x.then((function (rsvSig) {
-                        var web3 = new Web3.default(library.provider);
-                        var steward = Curry._2(Web3$WildCards.Contract.MaticSteward.getStewardContract, web3, spender);
-                        return Curry._1(steward.methods.depositWithPermit(new BnJs.default(nonce), new BnJs.default("0"), true, rsvSig.v, rsvSig.r, rsvSig.s, account, new BnJs.default(amountToAdd)).send, {
-                                    from: account
-                                  });
-                      }));
-                __x$1.catch((function (err) {
-                        console.log("this error was caught", err);
-                        return Promise.resolve("");
-                      }));
+                console.log("something important is null");
+                console.log(library, account, maticState);
                 
               }),
             txState
@@ -707,7 +729,7 @@ function useVoteApprovedTokens(owner) {
   var optNetworkId = Core.useWeb3React().chainId;
   React.useEffect((function () {
           if (optLoyaltyTokens !== undefined && optNetworkId !== undefined) {
-            var voteContractAddress = Globals$WildCards.$pipe$pipe$pipe$pipe(voteAddressFromChainId(optNetworkId), "0x0000000000000000000000000000000000000500");
+            var voteContractAddress = Globals$WildCards.$pipe$pipe$pipe$pipe(voteAddressFromChainId(optNetworkId), CONSTANTS$WildCards.nullEthAddress);
             Async$WildCards.let_(optLoyaltyTokens.allowance(owner, voteContractAddress), (function (allowance) {
                     var allowanceString = allowance.toString();
                     Curry._1(setResult, (function (param) {

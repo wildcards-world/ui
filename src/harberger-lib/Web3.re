@@ -46,11 +46,15 @@ external sendAsync:
 
 [@bs.new] [@bs.module "web3"] external new_: rawProvider => t = "default";
 
+[@bs.send] [@bs.scope ("eth", "personal")]
+external personalSign: (t, string, ethAddress) => Js.Promise.t(string) =
+  "sign";
+
 module Contract = {
   type sendParams = {from: ethAddress};
   type txSendResult;
   type contractMethod = {
-    abiEncode: unit => string,
+    encodeABI: unit => string,
     send: sendParams => Js.Promise.t(txSendResult),
   };
 

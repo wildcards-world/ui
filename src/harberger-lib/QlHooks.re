@@ -176,6 +176,19 @@ module WildcardDataQuery = [%graphql
     }
   |}
 ];
+
+module MaticStateQuery = [%graphql
+  {|
+    query ($address: String!, $network: String!) {
+      maticState(address: $address, network: $network) {
+        balance
+        daiNonce
+        error
+        stewardNonce
+      }
+    }
+  |}
+];
 module HomeAnimalsQuery = [%graphql
   {|
     query {
@@ -1024,6 +1037,27 @@ let useLaunchTimeBN = (~chain, tokenId: TokenId.t) => {
   switch (simple) {
   | Data(response) =>
     response##wildcard->Belt.Option.map(wildcard => wildcard##launchTime)
+  | Error(_)
+  | Loading
+  | NoData => None
+  };
+};
+
+let useMaticStateQuery = (~forceRefetch, address, network) =>
+  ApolloHooks.useQuery(
+    ~variables=MaticStateQuery.make(~address, ~network, ())##variables,
+    ~fetchPolicy=
+      forceRefetch
+        ? ReasonApolloHooks.ApolloHooksTypes.CacheAndNetwork
+        : ReasonApolloHooks.ApolloHooksTypes.CacheFirst,
+    ~context=Client.MainnetQuery->Obj.magic,
+    MaticStateQuery.definition,
+  );
+let useMaticState = (~forceRefetch, address, network) => {
+  let (simple, _) = useMaticStateQuery(~forceRefetch, address, network);
+  Js.log2("Matic state", simple);
+  switch (simple) {
+  | Data(response) => Some(response##maticState)
   | Error(_)
   | Loading
   | NoData => None

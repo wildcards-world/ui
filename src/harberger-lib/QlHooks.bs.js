@@ -661,9 +661,166 @@ var WildcardDataQuery = {
   MT_Ret: MT_Ret$2
 };
 
-var ppx_printed_query$3 = "query   {\nhomeAnimals  {\nid  \nnext  \nprev  \nwildcardData  {\ndescription  \nid  \nname  \norganisationId  \n}\n\n}\n\n}\n";
+var ppx_printed_query$3 = "query ($address: String!, $network: String!)  {\nmaticState(address: $address, network: $network)  {\nbalance  \ndaiNonce  \nerror  \nstewardNonce  \n}\n\n}\n";
 
 function parse$3(value) {
+  var value$1 = Js_option.getExn(Js_json.decodeObject(value));
+  var value$2 = Js_dict.get(value$1, "maticState");
+  var tmp;
+  if (value$2 !== undefined) {
+    var value$3 = Js_option.getExn(Js_json.decodeObject(Caml_option.valFromOption(value$2)));
+    var value$4 = Js_dict.get(value$3, "balance");
+    var tmp$1;
+    if (value$4 !== undefined) {
+      var value$5 = Caml_option.valFromOption(value$4);
+      var value$6 = Js_json.decodeString(value$5);
+      tmp$1 = value$6 !== undefined ? value$6 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$5));
+    } else {
+      tmp$1 = Js_exn.raiseError("graphql_ppx: Field balance on type MaticStateQueryOutput is missing");
+    }
+    var value$7 = Js_dict.get(value$3, "daiNonce");
+    var tmp$2;
+    if (value$7 !== undefined) {
+      var value$8 = Caml_option.valFromOption(value$7);
+      var value$9 = Js_json.decodeString(value$8);
+      tmp$2 = value$9 !== undefined ? value$9 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$8));
+    } else {
+      tmp$2 = Js_exn.raiseError("graphql_ppx: Field daiNonce on type MaticStateQueryOutput is missing");
+    }
+    var value$10 = Js_dict.get(value$3, "error");
+    var tmp$3;
+    if (value$10 !== undefined) {
+      var value$11 = Caml_option.valFromOption(value$10);
+      var match = Js_json.decodeNull(value$11);
+      if (match !== undefined) {
+        tmp$3 = undefined;
+      } else {
+        var value$12 = Js_json.decodeString(value$11);
+        tmp$3 = value$12 !== undefined ? value$12 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$11));
+      }
+    } else {
+      tmp$3 = undefined;
+    }
+    var value$13 = Js_dict.get(value$3, "stewardNonce");
+    var tmp$4;
+    if (value$13 !== undefined) {
+      var value$14 = Caml_option.valFromOption(value$13);
+      var value$15 = Js_json.decodeString(value$14);
+      tmp$4 = value$15 !== undefined ? value$15 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$14));
+    } else {
+      tmp$4 = Js_exn.raiseError("graphql_ppx: Field stewardNonce on type MaticStateQueryOutput is missing");
+    }
+    tmp = {
+      balance: tmp$1,
+      daiNonce: tmp$2,
+      error: tmp$3,
+      stewardNonce: tmp$4
+    };
+  } else {
+    tmp = Js_exn.raiseError("graphql_ppx: Field maticState on type query_root is missing");
+  }
+  return {
+          maticState: tmp
+        };
+}
+
+function make$3(address, network, param) {
+  return {
+          query: ppx_printed_query$3,
+          variables: Js_dict.fromArray([
+                  /* tuple */[
+                    "address",
+                    address
+                  ],
+                  /* tuple */[
+                    "network",
+                    network
+                  ]
+                ].filter((function (param) {
+                      return !Js_json.test(param[1], /* Null */5);
+                    }))),
+          parse: parse$3
+        };
+}
+
+function makeWithVariables$3(variables) {
+  var address = variables.address;
+  var network = variables.network;
+  return {
+          query: ppx_printed_query$3,
+          variables: Js_dict.fromArray([
+                  /* tuple */[
+                    "address",
+                    address
+                  ],
+                  /* tuple */[
+                    "network",
+                    network
+                  ]
+                ].filter((function (param) {
+                      return !Js_json.test(param[1], /* Null */5);
+                    }))),
+          parse: parse$3
+        };
+}
+
+function makeVariables$3(address, network, param) {
+  return Js_dict.fromArray([
+                /* tuple */[
+                  "address",
+                  address
+                ],
+                /* tuple */[
+                  "network",
+                  network
+                ]
+              ].filter((function (param) {
+                    return !Js_json.test(param[1], /* Null */5);
+                  })));
+}
+
+function definition_002$3(graphql_ppx_use_json_variables_fn, address, network, param) {
+  return Curry._1(graphql_ppx_use_json_variables_fn, Js_dict.fromArray([
+                    /* tuple */[
+                      "address",
+                      address
+                    ],
+                    /* tuple */[
+                      "network",
+                      network
+                    ]
+                  ].filter((function (param) {
+                        return !Js_json.test(param[1], /* Null */5);
+                      }))));
+}
+
+var definition$3 = /* tuple */[
+  parse$3,
+  ppx_printed_query$3,
+  definition_002$3
+];
+
+function ret_type$3(f) {
+  return { };
+}
+
+var MT_Ret$3 = { };
+
+var MaticStateQuery = {
+  ppx_printed_query: ppx_printed_query$3,
+  query: ppx_printed_query$3,
+  parse: parse$3,
+  make: make$3,
+  makeWithVariables: makeWithVariables$3,
+  makeVariables: makeVariables$3,
+  definition: definition$3,
+  ret_type: ret_type$3,
+  MT_Ret: MT_Ret$3
+};
+
+var ppx_printed_query$4 = "query   {\nhomeAnimals  {\nid  \nnext  \nprev  \nwildcardData  {\ndescription  \nid  \nname  \norganisationId  \n}\n\n}\n\n}\n";
+
+function parse$4(value) {
   var value$1 = Js_option.getExn(Js_json.decodeObject(value));
   var value$2 = Js_dict.get(value$1, "homeAnimals");
   return {
@@ -768,57 +925,57 @@ function parse$3(value) {
         };
 }
 
-function make$3(param) {
+function make$4(param) {
   return {
-          query: ppx_printed_query$3,
+          query: ppx_printed_query$4,
           variables: null,
-          parse: parse$3
+          parse: parse$4
         };
 }
 
-function makeWithVariables$3(param) {
+function makeWithVariables$4(param) {
   return {
-          query: ppx_printed_query$3,
+          query: ppx_printed_query$4,
           variables: null,
-          parse: parse$3
+          parse: parse$4
         };
 }
 
-function makeVariables$3(param) {
+function makeVariables$4(param) {
   return null;
 }
 
-function definition_002$3(graphql_ppx_use_json_variables_fn) {
+function definition_002$4(graphql_ppx_use_json_variables_fn) {
   return 0;
 }
 
-var definition$3 = /* tuple */[
-  parse$3,
-  ppx_printed_query$3,
-  definition_002$3
+var definition$4 = /* tuple */[
+  parse$4,
+  ppx_printed_query$4,
+  definition_002$4
 ];
 
-function ret_type$3(f) {
+function ret_type$4(f) {
   return { };
 }
 
-var MT_Ret$3 = { };
+var MT_Ret$4 = { };
 
 var HomeAnimalsQuery = {
-  ppx_printed_query: ppx_printed_query$3,
-  query: ppx_printed_query$3,
-  parse: parse$3,
-  make: make$3,
-  makeWithVariables: makeWithVariables$3,
-  makeVariables: makeVariables$3,
-  definition: definition$3,
-  ret_type: ret_type$3,
-  MT_Ret: MT_Ret$3
+  ppx_printed_query: ppx_printed_query$4,
+  query: ppx_printed_query$4,
+  parse: parse$4,
+  make: make$4,
+  makeWithVariables: makeWithVariables$4,
+  makeVariables: makeVariables$4,
+  definition: definition$4,
+  ret_type: ret_type$4,
+  MT_Ret: MT_Ret$4
 };
 
-var ppx_printed_query$4 = "subscription   {\nstateChanges(first: 1, orderBy: timestamp, orderDirection: desc)  {\nid  \ntimestamp  \nwildcardChanges  {\nid  \ntokenId  \ntimeAcquired  \ntotalCollected  \npatronageNumeratorPriceScaled  \ntimeCollected  \nprice  {\nid  \nprice  \n}\n\nowner  {\naddress  \nid  \n}\n\n}\n\npatronChanges  {\nid  \naddress  \nlastUpdated  \npreviouslyOwnedTokens  {\nid  \n}\n\ntokens  {\nid  \n}\n\navailableDeposit  \npatronTokenCostScaledNumerator  \nforeclosureTime  \n}\n\n}\n\n}\n";
+var ppx_printed_query$5 = "subscription   {\nstateChanges(first: 1, orderBy: timestamp, orderDirection: desc)  {\nid  \ntimestamp  \nwildcardChanges  {\nid  \ntokenId  \ntimeAcquired  \ntotalCollected  \npatronageNumeratorPriceScaled  \ntimeCollected  \nprice  {\nid  \nprice  \n}\n\nowner  {\naddress  \nid  \n}\n\n}\n\npatronChanges  {\nid  \naddress  \nlastUpdated  \npreviouslyOwnedTokens  {\nid  \n}\n\ntokens  {\nid  \n}\n\navailableDeposit  \npatronTokenCostScaledNumerator  \nforeclosureTime  \n}\n\n}\n\n}\n";
 
-function parse$4(value) {
+function parse$5(value) {
   var value$1 = Js_option.getExn(Js_json.decodeObject(value));
   var value$2 = Js_dict.get(value$1, "stateChanges");
   return {
@@ -970,57 +1127,57 @@ function parse$4(value) {
         };
 }
 
-function make$4(param) {
+function make$5(param) {
   return {
-          query: ppx_printed_query$4,
+          query: ppx_printed_query$5,
           variables: null,
-          parse: parse$4
+          parse: parse$5
         };
 }
 
-function makeWithVariables$4(param) {
+function makeWithVariables$5(param) {
   return {
-          query: ppx_printed_query$4,
+          query: ppx_printed_query$5,
           variables: null,
-          parse: parse$4
+          parse: parse$5
         };
 }
 
-function makeVariables$4(param) {
+function makeVariables$5(param) {
   return null;
 }
 
-function definition_002$4(graphql_ppx_use_json_variables_fn) {
+function definition_002$5(graphql_ppx_use_json_variables_fn) {
   return 0;
 }
 
-var definition$4 = /* tuple */[
-  parse$4,
-  ppx_printed_query$4,
-  definition_002$4
+var definition$5 = /* tuple */[
+  parse$5,
+  ppx_printed_query$5,
+  definition_002$5
 ];
 
-function ret_type$4(f) {
+function ret_type$5(f) {
   return { };
 }
 
-var MT_Ret$4 = { };
+var MT_Ret$5 = { };
 
 var SubStateChangeEvents = {
-  ppx_printed_query: ppx_printed_query$4,
-  query: ppx_printed_query$4,
-  parse: parse$4,
-  make: make$4,
-  makeWithVariables: makeWithVariables$4,
-  makeVariables: makeVariables$4,
-  definition: definition$4,
-  ret_type: ret_type$4,
-  MT_Ret: MT_Ret$4
+  ppx_printed_query: ppx_printed_query$5,
+  query: ppx_printed_query$5,
+  parse: parse$5,
+  make: make$5,
+  makeWithVariables: makeWithVariables$5,
+  makeVariables: makeVariables$5,
+  definition: definition$5,
+  ret_type: ret_type$5,
+  MT_Ret: MT_Ret$5
 };
 
-var ppx_printed_query$5 = "query ($patronId: String!)  {\npatron(id: $patronId)  {\nid  \naddress  \nlastUpdated  \npreviouslyOwnedTokens  {\nid  \n}\n\ntokens  {\nid  \n}\n\navailableDeposit  \npatronTokenCostScaledNumerator  \nforeclosureTime  \nid  \naddress  \nlastUpdated  \ntotalLoyaltyTokens  \ntotalLoyaltyTokensIncludingUnRedeemed  \n}\n\n}\n";
+var ppx_printed_query$6 = "query ($patronId: String!)  {\npatron(id: $patronId)  {\nid  \naddress  \nlastUpdated  \npreviouslyOwnedTokens  {\nid  \n}\n\ntokens  {\nid  \n}\n\navailableDeposit  \npatronTokenCostScaledNumerator  \nforeclosureTime  \nid  \naddress  \nlastUpdated  \ntotalLoyaltyTokens  \ntotalLoyaltyTokensIncludingUnRedeemed  \n}\n\n}\n";
 
-function parse$5(value) {
+function parse$6(value) {
   var value$1 = Js_option.getExn(Js_json.decodeObject(value));
   var value$2 = Js_dict.get(value$1, "patron");
   var tmp;
@@ -1112,34 +1269,34 @@ function parse$5(value) {
         };
 }
 
-function make$5(patronId, param) {
+function make$6(patronId, param) {
   return {
-          query: ppx_printed_query$5,
+          query: ppx_printed_query$6,
           variables: Js_dict.fromArray([/* tuple */[
                     "patronId",
                     patronId
                   ]].filter((function (param) {
                       return !Js_json.test(param[1], /* Null */5);
                     }))),
-          parse: parse$5
+          parse: parse$6
         };
 }
 
-function makeWithVariables$5(variables) {
+function makeWithVariables$6(variables) {
   var patronId = variables.patronId;
   return {
-          query: ppx_printed_query$5,
+          query: ppx_printed_query$6,
           variables: Js_dict.fromArray([/* tuple */[
                     "patronId",
                     patronId
                   ]].filter((function (param) {
                       return !Js_json.test(param[1], /* Null */5);
                     }))),
-          parse: parse$5
+          parse: parse$6
         };
 }
 
-function makeVariables$5(patronId, param) {
+function makeVariables$6(patronId, param) {
   return Js_dict.fromArray([/* tuple */[
                   "patronId",
                   patronId
@@ -1148,7 +1305,7 @@ function makeVariables$5(patronId, param) {
                   })));
 }
 
-function definition_002$5(graphql_ppx_use_json_variables_fn, patronId, param) {
+function definition_002$6(graphql_ppx_use_json_variables_fn, patronId, param) {
   return Curry._1(graphql_ppx_use_json_variables_fn, Js_dict.fromArray([/* tuple */[
                       "patronId",
                       patronId
@@ -1157,33 +1314,33 @@ function definition_002$5(graphql_ppx_use_json_variables_fn, patronId, param) {
                       }))));
 }
 
-var definition$5 = /* tuple */[
-  parse$5,
-  ppx_printed_query$5,
-  definition_002$5
+var definition$6 = /* tuple */[
+  parse$6,
+  ppx_printed_query$6,
+  definition_002$6
 ];
 
-function ret_type$5(f) {
+function ret_type$6(f) {
   return { };
 }
 
-var MT_Ret$5 = { };
+var MT_Ret$6 = { };
 
 var LoadPatron = {
-  ppx_printed_query: ppx_printed_query$5,
-  query: ppx_printed_query$5,
-  parse: parse$5,
-  make: make$5,
-  makeWithVariables: makeWithVariables$5,
-  makeVariables: makeVariables$5,
-  definition: definition$5,
-  ret_type: ret_type$5,
-  MT_Ret: MT_Ret$5
+  ppx_printed_query: ppx_printed_query$6,
+  query: ppx_printed_query$6,
+  parse: parse$6,
+  make: make$6,
+  makeWithVariables: makeWithVariables$6,
+  makeVariables: makeVariables$6,
+  definition: definition$6,
+  ret_type: ret_type$6,
+  MT_Ret: MT_Ret$6
 };
 
-var ppx_printed_query$6 = "query ($orgArray: [String!]!)  {\nwildcards(where: {id_in: $orgArray})  {\nid  \ntotalCollected  \npatronageNumeratorPriceScaled  \ntimeCollected  \n}\n\n}\n";
+var ppx_printed_query$7 = "query ($orgArray: [String!]!)  {\nwildcards(where: {id_in: $orgArray})  {\nid  \ntotalCollected  \npatronageNumeratorPriceScaled  \ntimeCollected  \n}\n\n}\n";
 
-function parse$6(value) {
+function parse$7(value) {
   var value$1 = Js_option.getExn(Js_json.decodeObject(value));
   var value$2 = Js_dict.get(value$1, "wildcards");
   return {
@@ -1211,9 +1368,9 @@ function parse$6(value) {
         };
 }
 
-function make$6(orgArray, param) {
+function make$7(orgArray, param) {
   return {
-          query: ppx_printed_query$6,
+          query: ppx_printed_query$7,
           variables: Js_dict.fromArray([/* tuple */[
                     "orgArray",
                     orgArray.map((function (prim) {
@@ -1222,14 +1379,14 @@ function make$6(orgArray, param) {
                   ]].filter((function (param) {
                       return !Js_json.test(param[1], /* Null */5);
                     }))),
-          parse: parse$6
+          parse: parse$7
         };
 }
 
-function makeWithVariables$6(variables) {
+function makeWithVariables$7(variables) {
   var orgArray = variables.orgArray;
   return {
-          query: ppx_printed_query$6,
+          query: ppx_printed_query$7,
           variables: Js_dict.fromArray([/* tuple */[
                     "orgArray",
                     orgArray.map((function (prim) {
@@ -1238,11 +1395,11 @@ function makeWithVariables$6(variables) {
                   ]].filter((function (param) {
                       return !Js_json.test(param[1], /* Null */5);
                     }))),
-          parse: parse$6
+          parse: parse$7
         };
 }
 
-function makeVariables$6(orgArray, param) {
+function makeVariables$7(orgArray, param) {
   return Js_dict.fromArray([/* tuple */[
                   "orgArray",
                   orgArray.map((function (prim) {
@@ -1253,7 +1410,7 @@ function makeVariables$6(orgArray, param) {
                   })));
 }
 
-function definition_002$6(graphql_ppx_use_json_variables_fn, orgArray, param) {
+function definition_002$7(graphql_ppx_use_json_variables_fn, orgArray, param) {
   return Curry._1(graphql_ppx_use_json_variables_fn, Js_dict.fromArray([/* tuple */[
                       "orgArray",
                       orgArray.map((function (prim) {
@@ -1264,33 +1421,33 @@ function definition_002$6(graphql_ppx_use_json_variables_fn, orgArray, param) {
                       }))));
 }
 
-var definition$6 = /* tuple */[
-  parse$6,
-  ppx_printed_query$6,
-  definition_002$6
+var definition$7 = /* tuple */[
+  parse$7,
+  ppx_printed_query$7,
+  definition_002$7
 ];
 
-function ret_type$6(f) {
+function ret_type$7(f) {
   return { };
 }
 
-var MT_Ret$6 = { };
+var MT_Ret$7 = { };
 
 var LoadTokenDataArray = {
-  ppx_printed_query: ppx_printed_query$6,
-  query: ppx_printed_query$6,
-  parse: parse$6,
-  make: make$6,
-  makeWithVariables: makeWithVariables$6,
-  makeVariables: makeVariables$6,
-  definition: definition$6,
-  ret_type: ret_type$6,
-  MT_Ret: MT_Ret$6
+  ppx_printed_query: ppx_printed_query$7,
+  query: ppx_printed_query$7,
+  parse: parse$7,
+  make: make$7,
+  makeWithVariables: makeWithVariables$7,
+  makeVariables: makeVariables$7,
+  definition: definition$7,
+  ret_type: ret_type$7,
+  MT_Ret: MT_Ret$7
 };
 
-var ppx_printed_query$7 = "query ($orgId: String!)  {\norganisations_by_pk(id: $orgId)  {\ndescription  \nname  \nwebsite  \nwildcard(where: {id: {_is_null: false}})  {\nid  \n}\n\nunlaunched: wildcard(where: {id: {_is_null: true}, real_wc_photos: {image: {_is_null: false}}})  {\nkey  \nreal_wc_photos  {\nimage  \nphotographer  \n}\n\nname  \ncommonName  \ndescription  \n}\n\nlogo  \nlogo_badge  \nyoutube_vid  \n}\n\n}\n";
+var ppx_printed_query$8 = "query ($orgId: String!)  {\norganisations_by_pk(id: $orgId)  {\ndescription  \nname  \nwebsite  \nwildcard(where: {id: {_is_null: false}})  {\nid  \n}\n\nunlaunched: wildcard(where: {id: {_is_null: true}, real_wc_photos: {image: {_is_null: false}}})  {\nkey  \nreal_wc_photos  {\nimage  \nphotographer  \n}\n\nname  \ncommonName  \ndescription  \n}\n\nlogo  \nlogo_badge  \nyoutube_vid  \n}\n\n}\n";
 
-function parse$7(value) {
+function parse$8(value) {
   var value$1 = Js_option.getExn(Js_json.decodeObject(value));
   var value$2 = Js_dict.get(value$1, "organisations_by_pk");
   var tmp;
@@ -1476,34 +1633,34 @@ function parse$7(value) {
         };
 }
 
-function make$7(orgId, param) {
+function make$8(orgId, param) {
   return {
-          query: ppx_printed_query$7,
+          query: ppx_printed_query$8,
           variables: Js_dict.fromArray([/* tuple */[
                     "orgId",
                     orgId
                   ]].filter((function (param) {
                       return !Js_json.test(param[1], /* Null */5);
                     }))),
-          parse: parse$7
+          parse: parse$8
         };
 }
 
-function makeWithVariables$7(variables) {
+function makeWithVariables$8(variables) {
   var orgId = variables.orgId;
   return {
-          query: ppx_printed_query$7,
+          query: ppx_printed_query$8,
           variables: Js_dict.fromArray([/* tuple */[
                     "orgId",
                     orgId
                   ]].filter((function (param) {
                       return !Js_json.test(param[1], /* Null */5);
                     }))),
-          parse: parse$7
+          parse: parse$8
         };
 }
 
-function makeVariables$7(orgId, param) {
+function makeVariables$8(orgId, param) {
   return Js_dict.fromArray([/* tuple */[
                   "orgId",
                   orgId
@@ -1512,7 +1669,7 @@ function makeVariables$7(orgId, param) {
                   })));
 }
 
-function definition_002$7(graphql_ppx_use_json_variables_fn, orgId, param) {
+function definition_002$8(graphql_ppx_use_json_variables_fn, orgId, param) {
   return Curry._1(graphql_ppx_use_json_variables_fn, Js_dict.fromArray([/* tuple */[
                       "orgId",
                       orgId
@@ -1521,33 +1678,33 @@ function definition_002$7(graphql_ppx_use_json_variables_fn, orgId, param) {
                       }))));
 }
 
-var definition$7 = /* tuple */[
-  parse$7,
-  ppx_printed_query$7,
-  definition_002$7
+var definition$8 = /* tuple */[
+  parse$8,
+  ppx_printed_query$8,
+  definition_002$8
 ];
 
-function ret_type$7(f) {
+function ret_type$8(f) {
   return { };
 }
 
-var MT_Ret$7 = { };
+var MT_Ret$8 = { };
 
 var LoadOrganisationData = {
-  ppx_printed_query: ppx_printed_query$7,
-  query: ppx_printed_query$7,
-  parse: parse$7,
-  make: make$7,
-  makeWithVariables: makeWithVariables$7,
-  makeVariables: makeVariables$7,
-  definition: definition$7,
-  ret_type: ret_type$7,
-  MT_Ret: MT_Ret$7
+  ppx_printed_query: ppx_printed_query$8,
+  query: ppx_printed_query$8,
+  parse: parse$8,
+  make: make$8,
+  makeWithVariables: makeWithVariables$8,
+  makeVariables: makeVariables$8,
+  definition: definition$8,
+  ret_type: ret_type$8,
+  MT_Ret: MT_Ret$8
 };
 
-var ppx_printed_query$8 = "query ($numberOfLeaders: Int!)  {\npatrons(first: $numberOfLeaders, orderBy: patronTokenCostScaledNumerator, orderDirection: desc, where: {id_not: \"NO_OWNER\"})  {\nid  \npatronTokenCostScaledNumerator  \n}\n\n}\n";
+var ppx_printed_query$9 = "query ($numberOfLeaders: Int!)  {\npatrons(first: $numberOfLeaders, orderBy: patronTokenCostScaledNumerator, orderDirection: desc, where: {id_not: \"NO_OWNER\"})  {\nid  \npatronTokenCostScaledNumerator  \n}\n\n}\n";
 
-function parse$8(value) {
+function parse$9(value) {
   var value$1 = Js_option.getExn(Js_json.decodeObject(value));
   var value$2 = Js_dict.get(value$1, "patrons");
   return {
@@ -1571,34 +1728,34 @@ function parse$8(value) {
         };
 }
 
-function make$8(numberOfLeaders, param) {
+function make$9(numberOfLeaders, param) {
   return {
-          query: ppx_printed_query$8,
+          query: ppx_printed_query$9,
           variables: Js_dict.fromArray([/* tuple */[
                     "numberOfLeaders",
                     numberOfLeaders
                   ]].filter((function (param) {
                       return !Js_json.test(param[1], /* Null */5);
                     }))),
-          parse: parse$8
+          parse: parse$9
         };
 }
 
-function makeWithVariables$8(variables) {
+function makeWithVariables$9(variables) {
   var numberOfLeaders = variables.numberOfLeaders;
   return {
-          query: ppx_printed_query$8,
+          query: ppx_printed_query$9,
           variables: Js_dict.fromArray([/* tuple */[
                     "numberOfLeaders",
                     numberOfLeaders
                   ]].filter((function (param) {
                       return !Js_json.test(param[1], /* Null */5);
                     }))),
-          parse: parse$8
+          parse: parse$9
         };
 }
 
-function makeVariables$8(numberOfLeaders, param) {
+function makeVariables$9(numberOfLeaders, param) {
   return Js_dict.fromArray([/* tuple */[
                   "numberOfLeaders",
                   numberOfLeaders
@@ -1607,7 +1764,7 @@ function makeVariables$8(numberOfLeaders, param) {
                   })));
 }
 
-function definition_002$8(graphql_ppx_use_json_variables_fn, numberOfLeaders, param) {
+function definition_002$9(graphql_ppx_use_json_variables_fn, numberOfLeaders, param) {
   return Curry._1(graphql_ppx_use_json_variables_fn, Js_dict.fromArray([/* tuple */[
                       "numberOfLeaders",
                       numberOfLeaders
@@ -1616,33 +1773,33 @@ function definition_002$8(graphql_ppx_use_json_variables_fn, numberOfLeaders, pa
                       }))));
 }
 
-var definition$8 = /* tuple */[
-  parse$8,
-  ppx_printed_query$8,
-  definition_002$8
+var definition$9 = /* tuple */[
+  parse$9,
+  ppx_printed_query$9,
+  definition_002$9
 ];
 
-function ret_type$8(f) {
+function ret_type$9(f) {
   return { };
 }
 
-var MT_Ret$8 = { };
+var MT_Ret$9 = { };
 
 var LoadTopContributors = {
-  ppx_printed_query: ppx_printed_query$8,
-  query: ppx_printed_query$8,
-  parse: parse$8,
-  make: make$8,
-  makeWithVariables: makeWithVariables$8,
-  makeVariables: makeVariables$8,
-  definition: definition$8,
-  ret_type: ret_type$8,
-  MT_Ret: MT_Ret$8
+  ppx_printed_query: ppx_printed_query$9,
+  query: ppx_printed_query$9,
+  parse: parse$9,
+  make: make$9,
+  makeWithVariables: makeWithVariables$9,
+  makeVariables: makeVariables$9,
+  definition: definition$9,
+  ret_type: ret_type$9,
+  MT_Ret: MT_Ret$9
 };
 
-var ppx_printed_query$9 = "query   {\nglobal(id: 1)  {\nid  \ntotalCollectedOrDueAccurate  \ntimeLastCollected  \ntotalTokenCostScaledNumeratorAccurate  \n}\n\n}\n";
+var ppx_printed_query$10 = "query   {\nglobal(id: 1)  {\nid  \ntotalCollectedOrDueAccurate  \ntimeLastCollected  \ntotalTokenCostScaledNumeratorAccurate  \n}\n\n}\n";
 
-function parse$9(value) {
+function parse$10(value) {
   var value$1 = Js_option.getExn(Js_json.decodeObject(value));
   var value$2 = Js_dict.get(value$1, "global");
   var tmp;
@@ -1680,52 +1837,52 @@ function parse$9(value) {
         };
 }
 
-function make$9(param) {
+function make$10(param) {
   return {
-          query: ppx_printed_query$9,
+          query: ppx_printed_query$10,
           variables: null,
-          parse: parse$9
+          parse: parse$10
         };
 }
 
-function makeWithVariables$9(param) {
+function makeWithVariables$10(param) {
   return {
-          query: ppx_printed_query$9,
+          query: ppx_printed_query$10,
           variables: null,
-          parse: parse$9
+          parse: parse$10
         };
 }
 
-function makeVariables$9(param) {
+function makeVariables$10(param) {
   return null;
 }
 
-function definition_002$9(graphql_ppx_use_json_variables_fn) {
+function definition_002$10(graphql_ppx_use_json_variables_fn) {
   return 0;
 }
 
-var definition$9 = /* tuple */[
-  parse$9,
-  ppx_printed_query$9,
-  definition_002$9
+var definition$10 = /* tuple */[
+  parse$10,
+  ppx_printed_query$10,
+  definition_002$10
 ];
 
-function ret_type$9(f) {
+function ret_type$10(f) {
   return { };
 }
 
-var MT_Ret$9 = { };
+var MT_Ret$10 = { };
 
 var SubTotalRaisedOrDueQuery = {
-  ppx_printed_query: ppx_printed_query$9,
-  query: ppx_printed_query$9,
-  parse: parse$9,
-  make: make$9,
-  makeWithVariables: makeWithVariables$9,
-  makeVariables: makeVariables$9,
-  definition: definition$9,
-  ret_type: ret_type$9,
-  MT_Ret: MT_Ret$9
+  ppx_printed_query: ppx_printed_query$10,
+  query: ppx_printed_query$10,
+  parse: parse$10,
+  make: make$10,
+  makeWithVariables: makeWithVariables$10,
+  makeVariables: makeVariables$10,
+  definition: definition$10,
+  ret_type: ret_type$10,
+  MT_Ret: MT_Ret$10
 };
 
 function getQueryPrefix(chain) {
@@ -1779,7 +1936,7 @@ function useWildcardQuery(chain, tokenId) {
 }
 
 function useLoadTokenDataArrayQuery(tokenIdArray) {
-  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$6(Belt_Array.map(tokenIdArray, TokenId$WildCards.toString), undefined).variables), undefined, undefined, undefined, undefined, undefined, undefined, definition$6);
+  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$7(Belt_Array.map(tokenIdArray, TokenId$WildCards.toString), undefined).variables), undefined, undefined, undefined, undefined, undefined, undefined, definition$7);
 }
 
 function useWildcardDataQuery(tokenId) {
@@ -1787,15 +1944,15 @@ function useWildcardDataQuery(tokenId) {
 }
 
 function useHomeAnimalsQuery(param) {
-  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, definition$3);
+  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, definition$4);
 }
 
 function useStateChangeSubscription(param) {
-  return ApolloHooks$ReasonApolloHooks.useSubscription(Caml_option.some(make$4(undefined).variables), undefined, undefined, definition$4);
+  return ApolloHooks$ReasonApolloHooks.useSubscription(Caml_option.some(make$5(undefined).variables), undefined, undefined, definition$5);
 }
 
 function useLoadOrganisationQuery(orgId) {
-  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$7(orgId, undefined).variables), undefined, undefined, undefined, undefined, undefined, undefined, definition$7);
+  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$8(orgId, undefined).variables), undefined, undefined, undefined, undefined, undefined, undefined, definition$8);
 }
 
 function useStateChangeSubscriptionData(param) {
@@ -1923,7 +2080,7 @@ function useWildcardOrgId(tokenId) {
 }
 
 function useLoadTopContributors(numberOfLeaders) {
-  return ApolloHooks$ReasonApolloHooks.useSubscription(Caml_option.some(make$8(numberOfLeaders, undefined).variables), undefined, undefined, definition$8);
+  return ApolloHooks$ReasonApolloHooks.useSubscription(Caml_option.some(make$9(numberOfLeaders, undefined).variables), undefined, undefined, definition$9);
 }
 
 function useLoadTopContributorsData(numberOfLeaders) {
@@ -1971,13 +2128,13 @@ function useTimeAcquired(chain, animal) {
 }
 
 function useQueryPatron(chain, patron) {
-  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$5(getQueryPrefix(chain) + patron, undefined).variables), undefined, undefined, undefined, undefined, undefined, {
+  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$6(getQueryPrefix(chain) + patron, undefined).variables), undefined, undefined, undefined, undefined, undefined, {
               context: chain
-            }, definition$5);
+            }, definition$6);
 }
 
 function useQueryPatronNew(patron) {
-  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$5(patron, undefined).variables), undefined, undefined, undefined, undefined, undefined, undefined, definition$5);
+  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$6(patron, undefined).variables), undefined, undefined, undefined, undefined, undefined, undefined, definition$6);
 }
 
 function useForeclosureTimeBn(chain, patron) {
@@ -2015,7 +2172,7 @@ function useDaysHeld(chain, tokenId) {
 }
 
 function useTotalCollectedOrDue(param) {
-  var match = ApolloHooks$ReasonApolloHooks.useQuery(undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, definition$9);
+  var match = ApolloHooks$ReasonApolloHooks.useQuery(undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, definition$10);
   var getTotalCollected = function (response) {
     return Globals$WildCards.oMap(response.global, (function ($$global) {
                   return /* tuple */[
@@ -2295,6 +2452,21 @@ function useLaunchTimeBN(chain, tokenId) {
   }
 }
 
+function useMaticStateQuery(forceRefetch, address, network) {
+  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$3(address, network, undefined).variables), undefined, forceRefetch ? /* CacheAndNetwork */1 : /* CacheFirst */0, undefined, undefined, undefined, /* MainnetQuery */2, definition$3);
+}
+
+function useMaticState(forceRefetch, address, network) {
+  var match = useMaticStateQuery(forceRefetch, address, network);
+  var simple = match[0];
+  console.log("Matic state", simple);
+  if (typeof simple === "number" || simple.tag) {
+    return ;
+  } else {
+    return Caml_option.some(simple[0].maticState);
+  }
+}
+
 export {
   tokenIdToAnimal ,
   decodePrice ,
@@ -2310,6 +2482,7 @@ export {
   useAnimalList ,
   SubWildcardQuery ,
   WildcardDataQuery ,
+  MaticStateQuery ,
   HomeAnimalsQuery ,
   SubStateChangeEvents ,
   LoadPatron ,
@@ -2380,6 +2553,8 @@ export {
   useAuctionEndPrice ,
   useAuctioLength ,
   useLaunchTimeBN ,
+  useMaticStateQuery ,
+  useMaticState ,
   
 }
 /* bn.js Not a pure module */

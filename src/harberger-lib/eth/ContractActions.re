@@ -447,8 +447,7 @@ let useApproveLoyaltyTokens = () => {
     switch (optLoyaltyTokens, optNetworkId) {
     | (Some(loyaltyTokenCotract), Some(networkId)) =>
       let voteContractAddress =
-        networkId->voteAddressFromChainId
-        |||| "0x0000000000000000000000000000000000000500";
+        networkId->voteAddressFromChainId |||| CONSTANTS.nullEthAddress;
 
       let claimLoyaltyTokenPromise =
         loyaltyTokenCotract.approve(.
@@ -584,7 +583,12 @@ let useUpdateDeposit =
 
   let optSteward = useStewardContract(isGsn);
 
-  let nonce = "2";
+  let maticState =
+    account->Option.flatMap(usersAddress => {
+      Js.log2("the users address", usersAddress);
+      QlHooks.useMaticState(~forceRefetch=false, usersAddress, "goerli");
+    });
+  Js.log2("Matic state", maticState);
 
   // GOERLI:
   let verifyingContract = getDaiContractAddress(chain, 5);
@@ -597,20 +601,24 @@ let useUpdateDeposit =
   | Client.MaticQuery => (
       (
         amountToAdd => {
-          switch (library, account) {
-          | (Some(lib), Some(account)) =>
+          switch (library, account, maticState) {
+          | (Some(lib), Some(account), Some(maticState)) =>
+            let daiNonce = maticState##daiNonce;
+            let stewardNonce = maticState##stewardNonce;
+
             DaiPermit.createPermitSig(
               lib.provider,
               verifyingContract,
-              nonce,
+              daiNonce,
               chainId,
               account,
               spender,
               account,
             )
+            // Js.log();
             ->Js.Promise.then_(
                 rsvSig => {
-                  open DaiPermit;
+                  open ContractUtil;
                   let {r, s, v} = rsvSig;
 
                   let web3 = Web3.new_(lib.provider);
@@ -621,19 +629,45 @@ let useUpdateDeposit =
                       spender,
                     );
 
-                  steward->Web3.Contract.MaticSteward.depositWithPermit(
-                    BN.new_(nonce),
-                    BN.new_("0"),
-                    true,
-                    v,
-                    r,
-                    s,
-                    account,
-                    BN.new_(amountToAdd),
-                  ).
-                    send({
-                    from: account,
-                  });
+                  let functionSignature =
+                    steward->Web3.Contract.MaticSteward.depositWithPermit(
+                      BN.new_(daiNonce),
+                      BN.new_("0"),
+                      true,
+                      v,
+                      r,
+                      s,
+                      account,
+                      BN.new_(amountToAdd),
+                    ).
+                      encodeABI();
+
+                  let messageToSign =
+                    ContractUtil.constructMetaTransactionMessage(
+                      stewardNonce,
+                      chainId->BN.toString,
+                      functionSignature,
+                      spender,
+                    );
+
+                  web3
+                  ->Web3.personalSign(messageToSign, account)
+                  ->Js.Promise.then_(
+                      signature =>
+                        Js.Promise.resolve((functionSignature, signature)),
+                      _,
+                    );
+                },
+                _,
+              )
+            ->Js.Promise.then_(
+                ((functionSignature, signature)) => {
+                  Js.log2("THE SIGNATURE!!", signature);
+                  open ContractUtil;
+                  let {r, s, v} = getEthSig(signature);
+                  Js.log("Sig!");
+                  Js.log4(functionSignature, r, s, v);
+                  Js.Promise.resolve();
                 },
                 _,
               )
@@ -644,8 +678,11 @@ let useUpdateDeposit =
                 },
                 _,
               )
-            ->ignore
-          | _ => ()
+            ->ignore;
+          | _ =>
+            Js.log("something important is null");
+            Js.log3(library, account, maticState);
+            ();
           };
         }
       ),
@@ -824,8 +861,7 @@ let useVoteApprovedTokens = (owner: Web3.ethAddress) => {
       | (Some(loyaltyToken), Some(networkId)) =>
         let _ = {
           let voteContractAddress =
-            networkId->voteAddressFromChainId
-            |||| "0x0000000000000000000000000000000000000500";
+            networkId->voteAddressFromChainId |||| CONSTANTS.nullEthAddress;
           // Js.log3("getting the allowance", owner, voteContractAddress);
           let%Async allowance =
             loyaltyToken.allowance(. owner, voteContractAddress);

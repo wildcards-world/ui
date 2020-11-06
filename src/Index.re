@@ -1,6 +1,6 @@
 [%bs.raw {|require("react-tabs/style/react-tabs.css")|}];
 
-open Globals;
+// open Globals;
 
 module Router = {
   [@react.component]
@@ -31,7 +31,7 @@ ReactDOMRe.renderToElementWithId(
       open Client;
 
       let endpoints = {
-        mainnet: goerliApi |||| "https://goerli.api.wildcards.world/v1/graphq",
+        mainnet: "http://localhost:8080/v1/graphql", //goerliApi |||| "https://goerli.api.wildcards.world/v1/graphql",
         matic:
           {
             Js.log(networkId);

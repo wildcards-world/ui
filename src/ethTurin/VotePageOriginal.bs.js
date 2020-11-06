@@ -15,6 +15,7 @@ import * as Globals$WildCards from "../harberger-lib/Globals.bs.js";
 import * as QlHooks$WildCards from "../harberger-lib/QlHooks.bs.js";
 import * as TokenId$WildCards from "../harberger-lib/TokenId.bs.js";
 import * as QVSelect$WildCards from "./QVSelect.bs.js";
+import * as CONSTANTS$WildCards from "../CONSTANTS.bs.js";
 import * as CountDown$WildCards from "../harberger-lib/CountDown.bs.js";
 import * as Web3Utils$WildCards from "../harberger-lib/Web3Utils.bs.js";
 import * as Accounting$WildCards from "../harberger-lib/Accounting.bs.js";
@@ -347,7 +348,7 @@ function VotePageOriginal(Props) {
   };
   var networkIdOpt = RootProvider$WildCards.useNetworkId(undefined);
   var currentUser = RootProvider$WildCards.useCurrentUser(undefined);
-  var userAddressLowerCase = currentUser !== undefined ? currentUser.toLowerCase() : "0x0000000000000000000000000000000000000000";
+  var userAddressLowerCase = currentUser !== undefined ? currentUser.toLowerCase() : CONSTANTS$WildCards.nullEthAddress;
   var patronQueryOpt = QlHooks$WildCards.usePatronQuery(/* MainnetQuery */2, userAddressLowerCase);
   var match$2 = ContractActions$WildCards.useProposalDeadline(undefined);
   var optProposalDeadline = match$2[0];

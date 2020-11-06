@@ -444,7 +444,9 @@ module BuyMatic = {
           )
           ->Js.Promise.then_(
               rsvSig => {
+                open ContractUtil;
                 open DaiPermit;
+
                 let {r, s, v} = rsvSig;
                 buyAuctionWithPermit(.
                   web3Context.library,
@@ -498,6 +500,8 @@ module BuyMatic = {
             ->Js.Promise.then_(
                 rsvSig => {
                   open DaiPermit;
+                  open ContractUtil;
+
                   let {r, s, v} = rsvSig;
                   buyWithPermit(.
                     web3Context.library,

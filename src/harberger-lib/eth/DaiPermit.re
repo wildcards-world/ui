@@ -41,22 +41,6 @@ let getNonce = (daiContractAddress, library, account) => {
   daiContract->getNonce(account->Option.getWithDefault("0x0"));
 };
 
-type ethSig = {
-  r: string,
-  s: string,
-  v: int,
-};
-[@bs.send] external slice: (string, int, int) => string = "slice";
-[@bs.val] external parseInt: (string, int) => int = "parseInt";
-
-let getEthSig = sigString => {
-  {
-    r: sigString->slice(0, 66),
-    s: "0x" ++ sigString->slice(66, 130),
-    v: parseInt(sigString->slice(130, 132), 16),
-  };
-};
-
 [@bs.send] external padStart: (string, int, string) => string = "padStart";
 let createPermitSig =
     (provider, verifyingContract, nonce, chainId, holder, spender, from) => {
@@ -110,7 +94,7 @@ let createPermitSig =
         | None =>
           let sigString = result.result->Obj.magic;
 
-          resolve(. getEthSig(sigString));
+          resolve(. ContractUtil.getEthSig(sigString));
         }
       })
     ->ignore

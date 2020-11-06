@@ -27,14 +27,6 @@ function getNonce(daiContractAddress, library, account) {
   return daiContract.getNonce(Belt_Option.getWithDefault(account, "0x0"));
 }
 
-function getEthSig(sigString) {
-  return {
-          r: sigString.slice(0, 66),
-          s: "0x" + sigString.slice(66, 130),
-          v: parseInt(sigString.slice(130, 132), 16)
-        };
-}
-
 function createPermitSig(provider, verifyingContract, nonce, chainId, holder, spender, from) {
   var domain_salt = "0x" + chainId.toString(16).padStart(64, "0");
   var domain = {
@@ -73,7 +65,7 @@ function createPermitSig(provider, verifyingContract, nonce, chainId, holder, sp
                 provider.sendAsync(exampleRpcDefinition, (function (err, result) {
                         if (err == null) {
                           var sigString = result.result;
-                          return resolve(getEthSig(sigString));
+                          return resolve(ContractUtil$WildCards.getEthSig(sigString));
                         }
                         console.log("There was an error", err);
                         return reject(err);
@@ -90,7 +82,6 @@ export {
   getDaiContract ,
   daiAbi ,
   getNonce ,
-  getEthSig ,
   createPermitSig ,
   buyWithPermit ,
   buyAuctionWithPermit ,
