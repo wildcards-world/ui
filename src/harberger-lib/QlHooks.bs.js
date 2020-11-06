@@ -18,7 +18,6 @@ import * as Belt_Result from "bs-platform/lib/es6/belt_Result.js";
 import * as Caml_format from "bs-platform/lib/es6/caml_format.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as Eth$WildCards from "./Eth.bs.js";
-import * as Client$WildCards from "./Client.bs.js";
 import * as Helper$WildCards from "./Helper.bs.js";
 import * as Globals$WildCards from "./Globals.bs.js";
 import * as TokenId$WildCards from "./TokenId.bs.js";
@@ -2241,9 +2240,6 @@ function usePrice(chain, animal) {
           return a;
         }));
   var foreclosureTime = useForeclosureTimeBn(chain, currentPatron);
-  console.log("patron of animal", currentPatron, Belt_Option.map(foreclosureTime, (function (prim) {
-              return prim.toString();
-            })), Client$WildCards.chainContextToStr(chain));
   var currentTime = useCurrentTime(undefined);
   if (typeof simple === "number") {
     return /* Loading */0;

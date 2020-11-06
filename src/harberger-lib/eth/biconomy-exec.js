@@ -364,7 +364,7 @@ export const depositWithPermit = async (
 
   const web3 = new Web3(library.provider);
 
-  var contract = new web3.eth.Contract(jsonInterface.abi, contractAddress);
+  const contract = new web3.eth.Contract(jsonInterface.abi, contractAddress);
 
   let functionSignature = contract.methods
     .depositWithPermit(nonce, expiry, allowed, v, r, s, account, depositAmount)

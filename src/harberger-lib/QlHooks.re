@@ -967,14 +967,8 @@ let usePrice: (~chain: Client.context, TokenId.t) => animalPrice =
       optCurrentPatron->Belt.Option.mapWithDefault("no-patron-defined", a =>
         a
       );
-    // let availableDeposit = useRemainingDepositEth(currentPatron);
     let foreclosureTime = useForeclosureTimeBn(~chain, currentPatron);
-    Js.log4(
-      "patron of animal",
-      currentPatron,
-      foreclosureTime->Option.map(BN.toString),
-      chain->Client.chainContextToStr,
-    );
+
     let currentTime = useCurrentTime();
 
     switch (simple) {

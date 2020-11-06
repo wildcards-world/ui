@@ -123,6 +123,7 @@ function useAuctionPriceWei(chain, animal, launchTime) {
 }
 
 function getChainIdFromAnimalId(animalId) {
+  console.log("animal id", animalId);
   var a = Globals$WildCards.$pipe$pipe$pipe$pipe(TokenId$WildCards.toInt(animalId), 0);
   if (a > 26 || a === 42) {
     return /* MainnetQuery */2;

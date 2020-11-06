@@ -416,8 +416,12 @@ module BuyMatic = {
       let nonce = "0";
 
       // GOERLI:
-      let verifyingContract = "0xea9d8a947dD7eBa9cF883c4aa71f18aD5A9c06bB";
-      let spender = "0xf02Bb5b595Af96597b82f39F5de265E77Dc75CbC";
+      let verifyingContract = ContractActions.getDaiContractAddress(chain, 5);
+      let spender = ContractActions.getStewardAddress(chain, 5);
+      // BN.newInt_(80001),
+      let chainId = BN.newInt_(5);
+
+      Js.log("contract addresses " ++ verifyingContract ++ " -- " ++ spender);
 
       // // MUMBAI:
       // let verifyingContract = "0x5bEEeb754cE511908d0374462698B05e963bF35C";
@@ -433,8 +437,7 @@ module BuyMatic = {
             lib.provider,
             verifyingContract,
             nonce,
-            BN.newInt_(5),
-            // BN.newInt_(80001),
+            chainId,
             account,
             spender,
             account,
@@ -487,7 +490,7 @@ module BuyMatic = {
               lib.provider,
               verifyingContract,
               nonce,
-              BN.newInt_(80001),
+              chainId,
               account,
               spender,
               account,

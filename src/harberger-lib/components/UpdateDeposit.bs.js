@@ -4,6 +4,8 @@ import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Web3Utils from "web3-utils";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
+import * as Core from "@web3-react/core";
+import * as Client$WildCards from "../Client.bs.js";
 import * as InputHelp$WildCards from "../InputHelp.bs.js";
 import * as UpdateDepositInput from "./UpdateDepositInput";
 import * as TxTemplate$WildCards from "../../components/components/TxTemplate.bs.js";
@@ -24,7 +26,7 @@ function getToDisplay(label, value) {
 function UpdateDeposit(Props) {
   var closeButtonText = Props.closeButtonText;
   var chain = Props.chain;
-  console.log(chain);
+  console.log("The chain context in update deposit" + Client$WildCards.chainContextToStr(chain));
   var match = React.useState((function () {
           return "";
         }));
@@ -35,9 +37,10 @@ function UpdateDeposit(Props) {
         }));
   var setIsAddDeposit = match$1[1];
   var isAddDeposit = match$1[0];
-  var match$2 = ContractActions$WildCards.useUpdateDeposit(chain, false);
+  var web3Context = Core.useWeb3React();
+  var match$2 = ContractActions$WildCards.useUpdateDeposit(chain, false, web3Context.library, web3Context.account);
   var depositFunc = match$2[0];
-  var match$3 = ContractActions$WildCards.useWithdrawDeposit(chain, false);
+  var match$3 = ContractActions$WildCards.useWithdrawDeposit(chain, false, web3Context.library, web3Context.account);
   var withdrawFunc = match$3[0];
   var onSubmitDepositChange = function ($$event) {
     $$event.preventDefault();

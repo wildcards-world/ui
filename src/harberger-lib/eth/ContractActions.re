@@ -1,24 +1,5 @@
 open Globals;
 
-// CODE TO BUY:
-let getProviderOrSigner =
-    (
-      library: Web3.web3Library,
-      account: option(Web3.ethAddress),
-      isGsn: bool,
-    ) => {
-  switch (account) {
-  | Some(account) =>
-    if (isGsn) {
-      // TODO: wrap this in the gsn stuff
-      library.getSigner(. account);
-    } else {
-      library.getSigner(. account);
-    }
-  | None => library
-  };
-};
-
 type txResult = {
   blockHash: string,
   blockNumber: int,
@@ -131,21 +112,21 @@ let getExchangeContract =
   getContract(
     stewardAddress,
     stewardAbi,
-    getProviderOrSigner(library, account, isGsn),
+    ContractUtil.getProviderOrSigner(library, account, isGsn),
   );
 };
 let getLoyaltyTokenContract = (stewardAddress, library, account, isGsn) => {
   getLoyaltyTokenContract(
     stewardAddress,
     loyaltyTokenAbi,
-    getProviderOrSigner(library, account, isGsn),
+    ContractUtil.getProviderOrSigner(library, account, isGsn),
   );
 };
 let getVotingContract = (stewardAddress, library, account, isGsn) => {
   getVotingContract(
     stewardAddress,
     voteContract,
-    getProviderOrSigner(library, account, isGsn),
+    ContractUtil.getProviderOrSigner(library, account, isGsn),
   );
 };
 let stewardAddressMainnet = "0x6D47CF86F6A490c6410fC082Fd1Ad29CF61492d0";
@@ -166,6 +147,36 @@ let stewardAddressMumbai = "0x0C00CFE8EbB34fE7C31d4915a43Cde211e9F0F3B";
 let loyaltyTokenAddressMaticMain = "0x773c75c2277eD3e402BDEfd28Ec3b51A3AfbD8a4";
 let loyaltyTokenAddressMumbai = "0xd7d8c42ab5b83aa3d4114e5297989dc27bdfb715";
 // let loyaltyTokenAddressRinkbey = "0xd7d8c42ab5b83aa3d4114e5297989dc27bdfb715";
+
+let getDaiContractAddress = (chain: Client.context, chainId) =>
+  switch (chain) {
+  | Neither
+  | MaticQuery =>
+    switch (chainId) {
+    | 1 => "TODO"
+    | _ =>
+      // Goerli-Mumbai
+      "0xB014216fd1d2B46c4d0291f0Bee46350227a2C60"
+    // Mumbai
+    // "0x6D725E5472D8c386D5759259b01278AA202130f0"
+    }
+  | MainnetQuery => "TODO"
+  };
+
+let getStewardAddress = (chain: Client.context, chainId) =>
+  switch (chain) {
+  | Neither
+  | MaticQuery =>
+    switch (chainId) {
+    | 1 => "TODO"
+    | _ =>
+      // Goerli-Mumbai
+      "0x5FDcd5bE3b476f146DbF46d50e0374f17515292f"
+    // Mumbai
+    // "0x90ED26DA8ceF71ab3ec6853572677D501Dcc670f"
+    }
+  | MainnetQuery => "TODO"
+  };
 
 let useStewardAbi = () => {
   switch (RootProvider.useStewardAbi()) {
@@ -567,14 +578,79 @@ let useIncreaseVoteIteration = () => {
   (buyFunction, txState);
 };
 
-let useUpdateDeposit = (~chain, isGsn) => {
+let useUpdateDeposit =
+    (~chain, isGsn, library: option(Web3.web3Library), account) => {
   let (txState, setTxState) = React.useState(() => UnInitialised);
 
   let optSteward = useStewardContract(isGsn);
 
+  let nonce = "2";
+
+  // GOERLI:
+  let verifyingContract = getDaiContractAddress(chain, 5);
+  let spender = getStewardAddress(chain, 5);
+  // BN.newInt_(80001),
+  let chainId = BN.newInt_(5);
+
   switch (chain) {
   | Client.Neither
-  | Client.MaticQuery => ((_amountToWithdraw => ()), txState)
+  | Client.MaticQuery => (
+      (
+        amountToAdd => {
+          switch (library, account) {
+          | (Some(lib), Some(account)) =>
+            DaiPermit.createPermitSig(
+              lib.provider,
+              verifyingContract,
+              nonce,
+              chainId,
+              account,
+              spender,
+              account,
+            )
+            ->Js.Promise.then_(
+                rsvSig => {
+                  open DaiPermit;
+                  let {r, s, v} = rsvSig;
+
+                  let web3 = Web3.new_(lib.provider);
+
+                  let steward =
+                    Web3.Contract.MaticSteward.getStewardContract(
+                      web3,
+                      spender,
+                    );
+
+                  steward->Web3.Contract.MaticSteward.depositWithPermit(
+                    BN.new_(nonce),
+                    BN.new_("0"),
+                    true,
+                    v,
+                    r,
+                    s,
+                    account,
+                    BN.new_(amountToAdd),
+                  ).
+                    send({
+                    from: account,
+                  });
+                },
+                _,
+              )
+            ->Js.Promise.catch(
+                err => {
+                  Js.log2("this error was caught", err);
+                  Js.Promise.resolve(""->Obj.magic);
+                },
+                _,
+              )
+            ->ignore
+          | _ => ()
+          };
+        }
+      ),
+      txState,
+    )
   | Client.MainnetQuery => (
       (
         (value: string) => {
@@ -614,14 +690,54 @@ let useUpdateDeposit = (~chain, isGsn) => {
   };
 };
 
-let useWithdrawDeposit = (~chain, isGsn) => {
+let useWithdrawDeposit =
+    (~chain, isGsn, library: option(Web3.web3Library), account) => {
   let (txState, setTxState) = React.useState(() => UnInitialised);
 
   let optSteward = useStewardContract(isGsn);
 
+  // let nonce = "";
+
+  // GOERLI:
+  // let verifyingContract = getDaiContractAddress(chain, 5);
+  let spender = getStewardAddress(chain, 5);
+  // BN.newInt_(80001),
+  // let chainId = BN.newInt_(5);
+
   switch (chain) {
   | Client.Neither
-  | Client.MaticQuery => ((_amountToWithdraw => ()), txState)
+  | Client.MaticQuery => (
+      (
+        amountToWithdraw => {
+          switch (library, account) {
+          | (Some(lib), Some(account)) =>
+            {
+              let web3 = Web3.new_(lib.provider);
+
+              let steward =
+                Web3.Contract.MaticSteward.getStewardContract(web3, spender);
+
+              steward->Web3.Contract.MaticSteward.withdrawDeposit(
+                amountToWithdraw,
+              ).
+                send({
+                from: account,
+              });
+            }
+            ->Js.Promise.catch(
+                err => {
+                  Js.log2("this error was caught", err);
+                  Js.Promise.resolve(""->Obj.magic);
+                },
+                _,
+              )
+            ->ignore
+          | _ => ()
+          };
+        }
+      ),
+      txState,
+    )
   | Client.MainnetQuery => (
       (
         amountToWithdraw => {

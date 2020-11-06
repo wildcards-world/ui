@@ -20,14 +20,28 @@ let getToDisplay = (label, value) =>
 [@react.component]
 let make = (~closeButtonText, ~chain) => {
   // TODO: We must use the correct client for updating the deposit
-  Js.log(chain);
+  Js.log(
+    "The chain context in update deposit" ++ chain->Client.chainContextToStr,
+  );
   let (depositChange, setDepositChange) = React.useState(() => "");
   let (isAddDeposit, setIsAddDeposit) = React.useState(() => true);
 
+  let web3Context = RootProvider.useWeb3React();
+
   let (depositFunc, txWithdrawObject) =
-    ContractActions.useUpdateDeposit(~chain, false);
+    ContractActions.useUpdateDeposit(
+      ~chain,
+      false,
+      web3Context.library,
+      web3Context.account,
+    );
   let (withdrawFunc, txDepositObject) =
-    ContractActions.useWithdrawDeposit(~chain, false);
+    ContractActions.useWithdrawDeposit(
+      ~chain,
+      false,
+      web3Context.library,
+      web3Context.account,
+    );
 
   // let _availableDeposit =
   //   useDepositAbleToWithdrawWeiNew(currentUser)

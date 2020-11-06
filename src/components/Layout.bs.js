@@ -103,7 +103,9 @@ function Layout$AnimalFocusDetails(Props) {
                                   ]),
                             /* [] */0
                           ])
-                    }, React.createElement(Dapp$WildCards.make, { })), showForwardBackButtons ? React.createElement("div", {
+                    }, React.createElement(Dapp$WildCards.make, {
+                          currentAnimal: currentAnimal
+                        })), showForwardBackButtons ? React.createElement("div", {
                         className: Curry._1(Css.style, /* :: */[
                               Css.width(/* `percent */[
                                     -119887163,

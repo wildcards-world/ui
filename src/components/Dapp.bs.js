@@ -982,6 +982,7 @@ var AnimalInfo = {
 };
 
 function Dapp(Props) {
+  var currentAnimal = Props.currentAnimal;
   var nonUrlRouting = RootProvider$WildCards.useNonUrlState(undefined);
   var clearNonUrlState = RootProvider$WildCards.useClearNonUrlState(undefined);
   var isDetailView = Router$WildCards.useIsDetails(undefined);
@@ -1030,7 +1031,7 @@ function Dapp(Props) {
                     m: 1
                   }), React.createElement(UpdateDeposit$WildCards.make, {
                     closeButtonText: "Back to view Animal",
-                    chain: /* MainnetQuery */2
+                    chain: Belt_Option.mapWithDefault(currentAnimal, /* MainnetQuery */2, Animal$WildCards.getChainIdFromAnimalId)
                   }));
           break;
       case /* NoExtraState */2 :

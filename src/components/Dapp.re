@@ -959,7 +959,7 @@ module AnimalInfo = {
 };
 
 [@react.component]
-let make = () => {
+let make = (~currentAnimal) => {
   // let isGqlLoaded = QlStateManager.useIsInitialized();
   let isGqlLoaded = true;
   let nonUrlRouting = RootProvider.useNonUrlState();
@@ -1036,7 +1036,12 @@ let make = () => {
                onClick={_ => clearNonUrlState()}
              />
              <UpdateDeposit
-               chain=Client.MainnetQuery
+               chain={
+                 currentAnimal->Option.mapWithDefault(
+                   Client.MainnetQuery,
+                   Animal.getChainIdFromAnimalId,
+                 )
+               }
                closeButtonText="Back to view Animal"
              />
            </div>

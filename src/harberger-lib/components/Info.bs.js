@@ -7,6 +7,7 @@ import * as RimbleUi from "rimble-ui";
 import * as Belt_Float from "bs-platform/lib/es6/belt_Float.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as Eth$WildCards from "../Eth.bs.js";
+import * as Client$WildCards from "../Client.bs.js";
 import * as Globals$WildCards from "../Globals.bs.js";
 import * as QlHooks$WildCards from "../QlHooks.bs.js";
 import * as CountDown$WildCards from "../CountDown.bs.js";
@@ -19,6 +20,7 @@ import * as UsdPriceProvider$WildCards from "./UsdPriceProvider.bs.js";
 function Info(Props) {
   var chain = Props.chain;
   var tokenId = Props.tokenId;
+  console.log("Chain being used (INFO!!) " + Client$WildCards.chainContextToStr(chain));
   var daysHeld = QlHooks$WildCards.useDaysHeld(chain, tokenId);
   var currentPatron = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.usePatron(chain, tokenId), "Loading");
   var userId = UserProvider$WildCards.useDisplayName(currentPatron);
@@ -40,7 +42,7 @@ function Info(Props) {
   }
   var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
   var currentUsdEthPrice = UsdPriceProvider$WildCards.useUsdPrice(undefined);
-  var match = Globals$WildCards.mapd(QlHooks$WildCards.useRemainingDepositEth(/* MainnetQuery */2, currentPatron), /* tuple */[
+  var match = Globals$WildCards.mapd(QlHooks$WildCards.useRemainingDepositEth(chain, currentPatron), /* tuple */[
         "Loading",
         "Loading"
       ], (function (a) {
@@ -68,7 +70,7 @@ function Info(Props) {
                         }))
                 ];
         }));
-  var foreclosureTime = QlHooks$WildCards.useForeclosureTime(/* MainnetQuery */2, currentPatron);
+  var foreclosureTime = QlHooks$WildCards.useForeclosureTime(chain, currentPatron);
   var definiteTime = Globals$WildCards.mapd(foreclosureTime, undefined, (function (a) {
           return Caml_option.some(a);
         }));

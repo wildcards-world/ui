@@ -234,8 +234,10 @@ function Buy$BuyMatic(Props) {
   var onSubmitBuy = function (param) {
     var amountToSend = currentPriceWei$1.add(new BnJs.default(Web3Utils.toWei(deposit, "ether")));
     var nonce = "0";
-    var verifyingContract = "0xea9d8a947dD7eBa9cF883c4aa71f18aD5A9c06bB";
-    var spender = "0xf02Bb5b595Af96597b82f39F5de265E77Dc75CbC";
+    var verifyingContract = ContractActions$WildCards.getDaiContractAddress(/* MaticQuery */1, 5);
+    var spender = ContractActions$WildCards.getStewardAddress(/* MaticQuery */1, 5);
+    var chainId = new BnJs.default(5);
+    console.log("contract addresses " + (verifyingContract + (" -- " + spender)));
     var buyAuctionFunction = function (param) {
       console.log("BUYING WITH AUCTION!!!");
       var newPriceEncoded = Ethers.utils.parseUnits(newPrice, 18);
@@ -248,7 +250,7 @@ function Buy$BuyMatic(Props) {
       if (match$1 === undefined) {
         return ;
       }
-      var __x = DaiPermit$WildCards.createPermitSig(match.provider, verifyingContract, nonce, new BnJs.default(5), match$1, spender, match$1);
+      var __x = DaiPermit$WildCards.createPermitSig(match.provider, verifyingContract, nonce, chainId, match$1, spender, match$1);
       __x.then((function (rsvSig) {
               DaiPermit$WildCards.buyAuctionWithPermit(web3Context.library, web3Context.account, spender, "0", "0", true, rsvSig.v, rsvSig.r, rsvSig.s, TokenId$WildCards.toString(tokenId), Web3Utils$WildCards.toWeiFromEth(newPrice), "150000", amountToSend.add(new BnJs.default("1000000000000000")).toString());
               return Promise.resolve(undefined);
@@ -269,7 +271,7 @@ function Buy$BuyMatic(Props) {
         if (match$1 === undefined) {
           return ;
         }
-        var __x = DaiPermit$WildCards.createPermitSig(match.provider, verifyingContract, nonce, new BnJs.default(80001), match$1, spender, match$1);
+        var __x = DaiPermit$WildCards.createPermitSig(match.provider, verifyingContract, nonce, chainId, match$1, spender, match$1);
         __x.then((function (rsvSig) {
                 DaiPermit$WildCards.buyWithPermit(web3Context.library, web3Context.account, spender, "0", "0", true, rsvSig.v, rsvSig.r, rsvSig.s, TokenId$WildCards.toString(tokenId), Web3Utils$WildCards.toWeiFromEth(newPrice), currentPriceWei$1.toString(), "150000", amountToSend.toString());
                 return Promise.resolve(undefined);

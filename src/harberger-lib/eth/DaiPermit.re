@@ -14,7 +14,7 @@ let getDaiContract = (daiAddress, stewardAbi, library, account) => {
   getContract(
     daiAddress,
     stewardAbi,
-    ContractActions.getProviderOrSigner(library, account, false),
+    ContractUtil.getProviderOrSigner(library, account, false),
   );
 };
 
@@ -63,12 +63,6 @@ let createPermitSig =
   open Web3;
   open Erc712;
 
-  Js.log2("Chain Id being used:", chainId);
-  Js.log2(
-    "Chain Id being used:",
-    "0x" ++ chainId->BN.toStringRad(16)->padStart(16, "0"),
-  );
-
   let domain = {
     name: "(PoS) Dai Stablecoin",
     // name: "Dai Stablecoin",
@@ -97,73 +91,7 @@ let createPermitSig =
   };
   let dataString =
     data->Obj.magic->Js.Json.stringifyAny->Option.getWithDefault("");
-  Js.log2("data1", dataString);
 
-  let getData: unit => Js.t(string) = [%raw
-    {|() =>({
-    types: {
-      EIP712Domain: [
-        {
-          name: "name",
-          type: "string",
-        },
-        {
-          name: "version",
-          type: "string",
-        },
-        {
-          name: "verifyingContract",
-          type: "address",
-        },
-        {
-          name: "salt",
-          type: "bytes32",
-        },
-      ],
-      Permit: [
-        {
-          name: "holder",
-          type: "address",
-        },
-        {
-          name: "spender",
-          type: "address",
-        },
-        {
-          name: "nonce",
-          type: "uint256",
-        },
-        {
-          name: "expiry",
-          type: "uint256",
-        },
-        {
-          name: "allowed",
-          type: "bool",
-        },
-      ],
-    },
-    domain: {
-      name: "(PoS) Dai Stablecoin",
-      version: "1",
-      verifyingContract: "0xea9d8a947dD7eBa9cF883c4aa71f18aD5A9c06bB",
-      salt:
-        "0x0000000000000000000000000000000000000000000000000000000000000005",
-    },
-    primaryType: "Permit",
-    message: {
-      holder: "0xd3Cbce59318B2E570883719c8165F9390A12BdD6",
-      spender: "0xf02Bb5b595Af96597b82f39F5de265E77Dc75CbC",
-      nonce: "0",
-      expiry: "0",
-      allowed: true,
-    },
-  })|}
-  ];
-
-  let data =
-    getData()->Obj.magic->Js.Json.stringifyAny->Option.getWithDefault("");
-  Js.log2("data2", data);
   let exampleRpcDefinition = {
     // method: "eth_signTypedData",
     method: "eth_signTypedData_v3",
@@ -171,8 +99,6 @@ let createPermitSig =
     params: [|from, dataString|],
     from,
   };
-
-  Js.log2("The query", exampleRpcDefinition);
 
   Js.Promise.make((~resolve, ~reject) =>
     provider
@@ -182,9 +108,7 @@ let createPermitSig =
           Js.log2("There was an error", err);
           reject(. err->Obj.magic);
         | None =>
-          Js.log(result);
           let sigString = result.result->Obj.magic;
-          Js.log(getEthSig(sigString));
 
           resolve(. getEthSig(sigString));
         }

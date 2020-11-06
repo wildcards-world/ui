@@ -140,6 +140,7 @@ let useAuctionPriceWei = (~chain, animal, launchTime) => {
 };
 
 let getChainIdFromAnimalId = animalId => {
+  Js.log2("animal id", animalId);
   switch (animalId->TokenId.toInt |||| 0) {
   | a when a > 26 || a == 42 => Client.MainnetQuery
   | _ => Client.MaticQuery
