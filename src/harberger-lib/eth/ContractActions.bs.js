@@ -508,6 +508,7 @@ function useUpdateDeposit(chain, isGsn, library, account) {
   var setTxState = match[1];
   var txState = match[0];
   var optSteward = useStewardContract(isGsn);
+  var sendMetaTx = QlHooks$WildCards.useMetaTx(undefined);
   var maticState = Belt_Option.flatMap(account, (function (usersAddress) {
           console.log("the users address", usersAddress);
           return QlHooks$WildCards.useMaticState(false, usersAddress, "goerli");
@@ -562,6 +563,9 @@ function useUpdateDeposit(chain, isGsn, library, account) {
                   var maticState$1 = Caml_option.valFromOption(maticState);
                   var daiNonce = maticState$1.daiNonce;
                   var stewardNonce = maticState$1.stewardNonce;
+                  Curry._1(setTxState, (function (param) {
+                          return /* Created */1;
+                        }));
                   var __x = DaiPermit$WildCards.createPermitSig(library.provider, verifyingContract, daiNonce, chainId, account, spender, account);
                   var __x$1 = __x.then((function (rsvSig) {
                           var web3 = new Web3.default(library.provider);
@@ -577,14 +581,28 @@ function useUpdateDeposit(chain, isGsn, library, account) {
                                       }));
                         }));
                   var __x$2 = __x$1.then((function (param) {
-                          var signature = param[1];
-                          console.log("THE SIGNATURE!!", signature);
-                          var match = ContractUtil$WildCards.getEthSig(signature);
-                          console.log("Sig!");
-                          console.log(param[0], match.r, match.s, match.v);
+                          var match = ContractUtil$WildCards.getEthSig(param[1]);
+                          return Curry._6(sendMetaTx, "goerli", match.r, match.s, match.v, param[0], account);
+                        }));
+                  var __x$3 = __x$2.then((function (result) {
+                          var simple = result[0];
+                          var exit = 0;
+                          if (typeof simple === "number" || simple.tag) {
+                            exit = 1;
+                          } else {
+                            var data = simple[0];
+                            Curry._1(setTxState, (function (param) {
+                                    return /* SignedAndSubmitted */Block.__(0, [data.metaTx.txHash]);
+                                  }));
+                          }
+                          if (exit === 1) {
+                            Curry._1(setTxState, (function (param) {
+                                    return /* Failed */2;
+                                  }));
+                          }
                           return Promise.resolve(undefined);
                         }));
-                  __x$2.catch((function (err) {
+                  __x$3.catch((function (err) {
                           console.log("this error was caught", err);
                           return Promise.resolve("");
                         }));

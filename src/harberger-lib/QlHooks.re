@@ -404,14 +404,14 @@ let useLoadTokenDataArrayQuery = tokenIdArray =>
       )##variables,
     LoadTokenDataArray.definition,
   );
-
-let useWildcardDataQuery = tokenId =>
+let useWildcardDataQuery = tokenId => {
   ApolloHooks.useQuery(
     ~variables=
       WildcardDataQuery.make(~tokenId=tokenId->TokenId.toString, ())##variables,
     WildcardDataQuery.definition,
-    ~context=Client.MainnetQuery->Obj.magic,
   );
+};
+
 let useHomeAnimalsQuery = () =>
   ApolloHooks.useQuery(HomeAnimalsQuery.definition);
 // let useBuySubscription = () =>
@@ -1055,11 +1055,64 @@ let useMaticStateQuery = (~forceRefetch, address, network) =>
   );
 let useMaticState = (~forceRefetch, address, network) => {
   let (simple, _) = useMaticStateQuery(~forceRefetch, address, network);
-  Js.log2("Matic state", simple);
   switch (simple) {
   | Data(response) => Some(response##maticState)
   | Error(_)
   | Loading
   | NoData => None
+  };
+};
+
+module ExecuteMetaTxMutation = [%graphql
+  {|
+    mutation (
+      $network: String!,
+      $r: String!,
+      $s: String!,
+      $v: Int!,
+      $userAddress: String!,
+      $functionSignature: String!
+    ) {
+      metaTx(
+        functionSignature: $functionSignature,
+        network: $network ,
+        r: $r,
+        s: $s,
+        userAddress: $userAddress,
+        v: $v
+      ) {
+        txHash
+        success
+      }
+    }
+  |}
+];
+
+let useMetaTx = () => {
+  let (mutation, _simple, _full) =
+    ApolloHooks.useMutation(
+      // NOTE: this refetch query doesn't really do much. Since it does the refetch before the transaction has had time to be mined.
+      ExecuteMetaTxMutation.definition,
+    );
+  (~network, ~r, ~s, ~v, ~functionSignature, userAddress) => {
+    let refetchQueries = _ => {
+      let query =
+        MaticStateQuery.make(~address=userAddress, ~network="goerli", ());
+      [|ApolloHooks.toQueryObj(query)|];
+    };
+    mutation(
+      ~refetchQueries,
+      ~variables=
+        ExecuteMetaTxMutation.make(
+          ~network,
+          ~r,
+          ~s,
+          ~v,
+          ~functionSignature,
+          ~userAddress,
+          (),
+        )##variables,
+      (),
+    );
   };
 };

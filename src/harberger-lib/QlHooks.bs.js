@@ -1940,7 +1940,7 @@ function useLoadTokenDataArrayQuery(tokenIdArray) {
 }
 
 function useWildcardDataQuery(tokenId) {
-  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$2(TokenId$WildCards.toString(tokenId), undefined).variables), undefined, undefined, undefined, undefined, undefined, /* MainnetQuery */2, definition$2);
+  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$2(TokenId$WildCards.toString(tokenId), undefined).variables), undefined, undefined, undefined, undefined, undefined, undefined, definition$2);
 }
 
 function useHomeAnimalsQuery(param) {
@@ -2459,12 +2459,223 @@ function useMaticStateQuery(forceRefetch, address, network) {
 function useMaticState(forceRefetch, address, network) {
   var match = useMaticStateQuery(forceRefetch, address, network);
   var simple = match[0];
-  console.log("Matic state", simple);
   if (typeof simple === "number" || simple.tag) {
     return ;
   } else {
     return Caml_option.some(simple[0].maticState);
   }
+}
+
+var ppx_printed_query$11 = "mutation ($network: String!, $r: String!, $s: String!, $v: Int!, $userAddress: String!, $functionSignature: String!)  {\nmetaTx(functionSignature: $functionSignature, network: $network, r: $r, s: $s, userAddress: $userAddress, v: $v)  {\ntxHash  \nsuccess  \n}\n\n}\n";
+
+function parse$11(value) {
+  var value$1 = Js_option.getExn(Js_json.decodeObject(value));
+  var value$2 = Js_dict.get(value$1, "metaTx");
+  var tmp;
+  if (value$2 !== undefined) {
+    var value$3 = Js_option.getExn(Js_json.decodeObject(Caml_option.valFromOption(value$2)));
+    var value$4 = Js_dict.get(value$3, "txHash");
+    var tmp$1;
+    if (value$4 !== undefined) {
+      var value$5 = Caml_option.valFromOption(value$4);
+      var value$6 = Js_json.decodeString(value$5);
+      tmp$1 = value$6 !== undefined ? value$6 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$5));
+    } else {
+      tmp$1 = Js_exn.raiseError("graphql_ppx: Field txHash on type MetaTxQueryOutput is missing");
+    }
+    var value$7 = Js_dict.get(value$3, "success");
+    var tmp$2;
+    if (value$7 !== undefined) {
+      var value$8 = Caml_option.valFromOption(value$7);
+      var value$9 = Js_json.decodeBoolean(value$8);
+      tmp$2 = value$9 !== undefined ? value$9 : Js_exn.raiseError("graphql_ppx: Expected boolean, got " + JSON.stringify(value$8));
+    } else {
+      tmp$2 = Js_exn.raiseError("graphql_ppx: Field success on type MetaTxQueryOutput is missing");
+    }
+    tmp = {
+      txHash: tmp$1,
+      success: tmp$2
+    };
+  } else {
+    tmp = Js_exn.raiseError("graphql_ppx: Field metaTx on type mutation_root is missing");
+  }
+  return {
+          metaTx: tmp
+        };
+}
+
+function make$11(network, r, s, v, userAddress, functionSignature, param) {
+  return {
+          query: ppx_printed_query$11,
+          variables: Js_dict.fromArray([
+                  /* tuple */[
+                    "network",
+                    network
+                  ],
+                  /* tuple */[
+                    "r",
+                    r
+                  ],
+                  /* tuple */[
+                    "s",
+                    s
+                  ],
+                  /* tuple */[
+                    "v",
+                    v
+                  ],
+                  /* tuple */[
+                    "userAddress",
+                    userAddress
+                  ],
+                  /* tuple */[
+                    "functionSignature",
+                    functionSignature
+                  ]
+                ].filter((function (param) {
+                      return !Js_json.test(param[1], /* Null */5);
+                    }))),
+          parse: parse$11
+        };
+}
+
+function makeWithVariables$11(variables) {
+  var network = variables.network;
+  var r = variables.r;
+  var s = variables.s;
+  var v = variables.v;
+  var userAddress = variables.userAddress;
+  var functionSignature = variables.functionSignature;
+  return {
+          query: ppx_printed_query$11,
+          variables: Js_dict.fromArray([
+                  /* tuple */[
+                    "network",
+                    network
+                  ],
+                  /* tuple */[
+                    "r",
+                    r
+                  ],
+                  /* tuple */[
+                    "s",
+                    s
+                  ],
+                  /* tuple */[
+                    "v",
+                    v
+                  ],
+                  /* tuple */[
+                    "userAddress",
+                    userAddress
+                  ],
+                  /* tuple */[
+                    "functionSignature",
+                    functionSignature
+                  ]
+                ].filter((function (param) {
+                      return !Js_json.test(param[1], /* Null */5);
+                    }))),
+          parse: parse$11
+        };
+}
+
+function makeVariables$11(network, r, s, v, userAddress, functionSignature, param) {
+  return Js_dict.fromArray([
+                /* tuple */[
+                  "network",
+                  network
+                ],
+                /* tuple */[
+                  "r",
+                  r
+                ],
+                /* tuple */[
+                  "s",
+                  s
+                ],
+                /* tuple */[
+                  "v",
+                  v
+                ],
+                /* tuple */[
+                  "userAddress",
+                  userAddress
+                ],
+                /* tuple */[
+                  "functionSignature",
+                  functionSignature
+                ]
+              ].filter((function (param) {
+                    return !Js_json.test(param[1], /* Null */5);
+                  })));
+}
+
+function definition_002$11(graphql_ppx_use_json_variables_fn, network, r, s, v, userAddress, functionSignature, param) {
+  return Curry._1(graphql_ppx_use_json_variables_fn, Js_dict.fromArray([
+                    /* tuple */[
+                      "network",
+                      network
+                    ],
+                    /* tuple */[
+                      "r",
+                      r
+                    ],
+                    /* tuple */[
+                      "s",
+                      s
+                    ],
+                    /* tuple */[
+                      "v",
+                      v
+                    ],
+                    /* tuple */[
+                      "userAddress",
+                      userAddress
+                    ],
+                    /* tuple */[
+                      "functionSignature",
+                      functionSignature
+                    ]
+                  ].filter((function (param) {
+                        return !Js_json.test(param[1], /* Null */5);
+                      }))));
+}
+
+var definition$11 = /* tuple */[
+  parse$11,
+  ppx_printed_query$11,
+  definition_002$11
+];
+
+function ret_type$11(f) {
+  return { };
+}
+
+var MT_Ret$11 = { };
+
+var ExecuteMetaTxMutation = {
+  ppx_printed_query: ppx_printed_query$11,
+  query: ppx_printed_query$11,
+  parse: parse$11,
+  make: make$11,
+  makeWithVariables: makeWithVariables$11,
+  makeVariables: makeVariables$11,
+  definition: definition$11,
+  ret_type: ret_type$11,
+  MT_Ret: MT_Ret$11
+};
+
+function useMetaTx(param) {
+  var match = ApolloHooks$ReasonApolloHooks.useMutation(undefined, undefined, undefined, undefined, undefined, undefined, definition$11);
+  var mutation = match[0];
+  return (function (network, r, s, v, functionSignature, userAddress) {
+      var refetchQueries = function (param) {
+        var query = make$3(userAddress, "goerli", undefined);
+        return [ApolloHooks$ReasonApolloHooks.toQueryObj(query)];
+      };
+      return Curry._6(mutation, Caml_option.some(make$11(network, r, s, v, userAddress, functionSignature, undefined).variables), undefined, refetchQueries, undefined, undefined, undefined);
+    });
 }
 
 export {
@@ -2555,6 +2766,8 @@ export {
   useLaunchTimeBN ,
   useMaticStateQuery ,
   useMaticState ,
+  ExecuteMetaTxMutation ,
+  useMetaTx ,
   
 }
 /* bn.js Not a pure module */

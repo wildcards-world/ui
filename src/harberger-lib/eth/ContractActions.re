@@ -583,6 +583,8 @@ let useUpdateDeposit =
 
   let optSteward = useStewardContract(isGsn);
 
+  let sendMetaTx = QlHooks.useMetaTx();
+
   let maticState =
     account->Option.flatMap(usersAddress => {
       Js.log2("the users address", usersAddress);
@@ -602,20 +604,20 @@ let useUpdateDeposit =
       (
         amountToAdd => {
           switch (library, account, maticState) {
-          | (Some(lib), Some(account), Some(maticState)) =>
+          | (Some(lib), Some(userAddress), Some(maticState)) =>
             let daiNonce = maticState##daiNonce;
             let stewardNonce = maticState##stewardNonce;
+            setTxState(_ => Created);
 
             DaiPermit.createPermitSig(
               lib.provider,
               verifyingContract,
               daiNonce,
               chainId,
-              account,
+              userAddress,
               spender,
-              account,
+              userAddress,
             )
-            // Js.log();
             ->Js.Promise.then_(
                 rsvSig => {
                   open ContractUtil;
@@ -637,7 +639,7 @@ let useUpdateDeposit =
                       v,
                       r,
                       s,
-                      account,
+                      userAddress,
                       BN.new_(amountToAdd),
                     ).
                       encodeABI();
@@ -651,7 +653,7 @@ let useUpdateDeposit =
                     );
 
                   web3
-                  ->Web3.personalSign(messageToSign, account)
+                  ->Web3.personalSign(messageToSign, userAddress)
                   ->Js.Promise.then_(
                       signature =>
                         Js.Promise.resolve((functionSignature, signature)),
@@ -662,11 +664,37 @@ let useUpdateDeposit =
               )
             ->Js.Promise.then_(
                 ((functionSignature, signature)) => {
-                  Js.log2("THE SIGNATURE!!", signature);
                   open ContractUtil;
                   let {r, s, v} = getEthSig(signature);
-                  Js.log("Sig!");
-                  Js.log4(functionSignature, r, s, v);
+                  let resultPromise =
+                    sendMetaTx(
+                      ~network="goerli",
+                      ~r,
+                      ~s,
+                      ~v,
+                      ~functionSignature,
+                      userAddress,
+                    );
+                  resultPromise;
+                },
+                _,
+              )
+            ->Js.Promise.then_(
+                result => {
+                  open ReasonApolloHooks;
+                  let (simple, _) = result;
+
+                  (
+                    switch (simple) {
+                    | ApolloHooksMutation.Errors(_)
+                    | ApolloHooksMutation.NoData => setTxState(_ => Failed)
+                    | ApolloHooksMutation.Data(data) =>
+                      setTxState(_ =>
+                        SignedAndSubmitted(data##metaTx##txHash)
+                      )
+                    }
+                  )
+                  ->ignore;
                   Js.Promise.resolve();
                 },
                 _,
