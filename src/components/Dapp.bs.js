@@ -341,7 +341,6 @@ function Dapp$CarouselAnimal(Props) {
   var isGqlLoaded = isGqlLoadedOpt !== undefined ? isGqlLoadedOpt : true;
   var chain = chainOpt !== undefined ? chainOpt : /* MainnetQuery */2;
   var isLaunched = Animal$WildCards.isLaunched(animal);
-  console.log(chain);
   var makeAnimalOnLandingPage = function (optionEndDateMoment) {
     return React.createElement(Dapp$AnimalOnLandingPage, {
                 animal: animal,

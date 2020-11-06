@@ -2,6 +2,7 @@
 
 import * as Block from "bs-platform/lib/es6/block.js";
 import * as BnJs from "bn.js";
+import * as React from "react";
 import * as Moment from "moment";
 import * as MomentRe from "bs-moment/src/MomentRe.js";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
@@ -123,13 +124,18 @@ function useAuctionPriceWei(chain, animal, launchTime) {
 }
 
 function getChainIdFromAnimalId(animalId) {
-  console.log("animal id", animalId);
   var a = Globals$WildCards.$pipe$pipe$pipe$pipe(TokenId$WildCards.toInt(animalId), 0);
-  if (a > 26 || a === 42) {
+  if (a < 26 || a === 42) {
     return /* MainnetQuery */2;
   } else {
     return /* MaticQuery */1;
   }
+}
+
+function useChainIdFromAnimalId(animalId) {
+  return React.useMemo((function () {
+                return getChainIdFromAnimalId(animalId);
+              }), [animalId]);
 }
 
 export {
@@ -146,6 +152,7 @@ export {
   useIsOnAuction ,
   useAuctionPriceWei ,
   getChainIdFromAnimalId ,
+  useChainIdFromAnimalId ,
   
 }
 /* nextLaunchDate Not a pure module */

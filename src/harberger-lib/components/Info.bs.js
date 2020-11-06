@@ -84,6 +84,8 @@ function Info(Props) {
   var optMonthlyPledgeUsd = match$2[1];
   var optMonthlyPledgeEth = match$2[0];
   var monthlyRate = (ratio * 100).toString();
+  var showEthWithUsdConversion = chain !== 1;
+  var unit = showEthWithUsdConversion ? "ETH" : "USD";
   var tmp;
   if (definiteTime !== undefined) {
     var date = Caml_option.valFromOption(definiteTime);
@@ -114,7 +116,7 @@ function Info(Props) {
                               message: "This is the monthly percentage contribution of " + (tokenName + "'s sale price that will go towards conservation of at risk animals. This is deducted continuously from the deposit and paid by the owner of the animal"),
                               placement: "top",
                               children: React.createElement("span", undefined, Globals$WildCards.restr("ⓘ"))
-                            }))), React.createElement("br", undefined), optMonthlyPledgeEth !== undefined ? Globals$WildCards.restr(optMonthlyPledgeEth + " ETH") : React.createElement(RimbleUi.Loader, { }), React.createElement("br", undefined), React.createElement("small", undefined, optMonthlyPledgeUsd !== undefined ? Globals$WildCards.restr("(" + (Caml_option.valFromOption(optMonthlyPledgeUsd) + " USD)")) : null)), React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, Globals$WildCards.restr("Current Patron: "), React.createElement(RimbleUi.Tooltip, {
+                            }))), React.createElement("br", undefined), optMonthlyPledgeEth !== undefined ? Globals$WildCards.restr(optMonthlyPledgeEth + (" " + unit)) : React.createElement(RimbleUi.Loader, { }), React.createElement("br", undefined), showEthWithUsdConversion && optMonthlyPledgeUsd !== undefined ? React.createElement("small", undefined, Globals$WildCards.restr("(" + (Caml_option.valFromOption(optMonthlyPledgeUsd) + " USD)"))) : null), React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, Globals$WildCards.restr("Current Patron: "), React.createElement(RimbleUi.Tooltip, {
                               message: "This is the " + (String(userIdType) + " of the current owner"),
                               placement: "top",
                               children: React.createElement("span", undefined, Globals$WildCards.restr("ⓘ"))
@@ -127,11 +129,11 @@ function Info(Props) {
                               message: "This is the amount the owner has deposited to pay their monthly contribution",
                               placement: "top",
                               children: React.createElement("span", undefined, Globals$WildCards.restr("ⓘ"))
-                            }))), React.createElement("br", undefined), Globals$WildCards.restr(match[0] + " ETH"), React.createElement("br", undefined), React.createElement("small", undefined, Globals$WildCards.restr("(" + (match[1] + " USD)")))), React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, Globals$WildCards.restr(tokenName + "'s Patronage: "), React.createElement(RimbleUi.Tooltip, {
+                            }))), React.createElement("br", undefined), Globals$WildCards.restr(match[0] + (" " + unit)), React.createElement("br", undefined), showEthWithUsdConversion ? React.createElement("small", undefined, Globals$WildCards.restr("(" + (match[1] + " USD)"))) : null), React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, Globals$WildCards.restr(tokenName + "'s Patronage: "), React.createElement(RimbleUi.Tooltip, {
                               message: "This is the total contribution that has been raised thanks to the wildcard, " + tokenName,
                               placement: "top",
                               children: React.createElement("span", undefined, Globals$WildCards.restr("ⓘ"))
-                            }))), React.createElement("br", undefined), Globals$WildCards.restr(match$1[0] + " ETH"), React.createElement("br", undefined), React.createElement("small", undefined, Globals$WildCards.restr("(" + (match$1[1] + " USD)")))), tmp, tmp$1);
+                            }))), React.createElement("br", undefined), Globals$WildCards.restr(match$1[0] + (" " + unit)), React.createElement("br", undefined), showEthWithUsdConversion ? React.createElement("small", undefined, Globals$WildCards.restr("(" + (match$1[1] + " USD)"))) : null), tmp, tmp$1);
 }
 
 function Info$Auction(Props) {
@@ -161,6 +163,8 @@ function Info$Auction(Props) {
         }));
   var ratio = QlHooks$WildCards.usePledgeRate(chain, tokenId);
   var monthlyRate = (ratio * 100).toString();
+  var showEthWithUsdConversion = chain !== 1;
+  var unit = showEthWithUsdConversion ? "ETH" : "USD";
   return React.createElement(React.Fragment, {
               children: null
             }, React.createElement("div", undefined, ratio === 0 ? React.createElement("p", undefined, Globals$WildCards.restr("The monthly pledge rate will be revealed at launch.")) : React.createElement(React.Fragment, undefined, React.createElement("small", undefined, React.createElement("strong", undefined, Globals$WildCards.restr("Monthly Pledge Rate:"), React.createElement(RimbleUi.Tooltip, {
@@ -180,7 +184,7 @@ function Info$Auction(Props) {
                               message: "This is the total contribution that has been raised thanks to " + tokenName,
                               placement: "top",
                               children: React.createElement("span", undefined, Globals$WildCards.restr("ⓘ"))
-                            }))), React.createElement("br", undefined), Globals$WildCards.restr(match[0] + " ETH"), React.createElement("br", undefined), React.createElement("small", undefined, Globals$WildCards.restr("(" + (match[1] + " USD)")))), abandoned ? React.createElement(React.Fragment, undefined, React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, Globals$WildCards.restr("Abandoned since: "), React.createElement(RimbleUi.Tooltip, {
+                            }))), React.createElement("br", undefined), Globals$WildCards.restr(match[0] + (" " + unit)), React.createElement("br", undefined), showEthWithUsdConversion ? React.createElement("small", undefined, Globals$WildCards.restr("(" + (match[1] + " USD)"))) : null), abandoned ? React.createElement(React.Fragment, undefined, React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, Globals$WildCards.restr("Abandoned since: "), React.createElement(RimbleUi.Tooltip, {
                                     message: "This is the date the deposit ran out and the current guardian will lose guardianship of " + tokenName,
                                     placement: "top",
                                     children: React.createElement("span", undefined, Globals$WildCards.restr("ⓘ"))

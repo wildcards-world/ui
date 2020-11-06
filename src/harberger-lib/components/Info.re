@@ -69,6 +69,14 @@ let make = (~chain, ~tokenId: TokenId.t) => {
 
   let monthlyRate = Js.Float.toString(ratio *. 100.);
 
+  let showEthWithUsdConversion =
+    switch (chain) {
+    | Client.MaticQuery => false
+    | Client.Neither
+    | Client.MainnetQuery => true
+    };
+  let unit = showEthWithUsdConversion ? "ETH" : "USD";
+
   <React.Fragment>
     <div>
       <small>
@@ -92,22 +100,22 @@ let make = (~chain, ~tokenId: TokenId.t) => {
       {switch (optMonthlyPledgeEth) {
        | Some(monthlyPledgeEth) =>
          {
-           monthlyPledgeEth ++ " ETH";
+           monthlyPledgeEth ++ " " ++ unit;
          }
          ->restr
        | None => <Rimble.Loader />
        }}
       <br />
-      <small>
-        {switch (optMonthlyPledgeUsd) {
-         | Some(monthlyPledgeUsd) =>
-           {
-             "(" ++ monthlyPledgeUsd ++ " USD)";
-           }
-           ->restr
-         | None => React.null
-         }}
-      </small>
+      {switch (showEthWithUsdConversion, optMonthlyPledgeUsd) {
+       | (true, Some(monthlyPledgeUsd)) =>
+         <small>
+           {{
+              "(" ++ monthlyPledgeUsd ++ " USD)";
+            }
+            ->restr}
+         </small>
+       | _ => React.null
+       }}
     </div>
     <p>
       <small>
@@ -142,16 +150,18 @@ let make = (~chain, ~tokenId: TokenId.t) => {
       </small>
       <br />
       {{
-         depositAvailableToWithdrawEth ++ " ETH";
+         depositAvailableToWithdrawEth ++ " " ++ unit;
        }
        ->restr}
       <br />
-      <small>
-        {{
-           "(" ++ depositAvailableToWithdrawUsd ++ " USD)";
-         }
-         ->restr}
-      </small>
+      {showEthWithUsdConversion
+         ? <small>
+             {{
+                "(" ++ depositAvailableToWithdrawUsd ++ " USD)";
+              }
+              ->restr}
+           </small>
+         : React.null}
     </p>
     <p>
       <small>
@@ -172,16 +182,18 @@ let make = (~chain, ~tokenId: TokenId.t) => {
       </small>
       <br />
       {{
-         totalPatronage ++ " ETH";
+         totalPatronage ++ " " ++ unit;
        }
        ->restr}
       <br />
-      <small>
-        {{
-           "(" ++ totalPatronageUsd ++ " USD)";
-         }
-         ->restr}
-      </small>
+      {showEthWithUsdConversion
+         ? <small>
+             {{
+                "(" ++ totalPatronageUsd ++ " USD)";
+              }
+              ->restr}
+           </small>
+         : React.null}
     </p>
     {switch (definiteTime) {
      | Some(date) =>
@@ -271,6 +283,14 @@ module Auction = {
 
     let monthlyRate = Js.Float.toString(ratio *. 100.);
 
+    let showEthWithUsdConversion =
+      switch (chain) {
+      | Client.MaticQuery => false
+      | Client.Neither
+      | Client.MainnetQuery => true
+      };
+    let unit = showEthWithUsdConversion ? "ETH" : "USD";
+
     <React.Fragment>
       <div>
         {if (ratio == 0.) {
@@ -342,16 +362,18 @@ module Auction = {
         </small>
         <br />
         {{
-           totalPatronage ++ " ETH";
+           totalPatronage ++ " " ++ unit;
          }
          ->restr}
         <br />
-        <small>
-          {{
-             "(" ++ totalPatronageUsd ++ " USD)";
-           }
-           ->restr}
-        </small>
+        {showEthWithUsdConversion
+           ? <small>
+               {{
+                  "(" ++ totalPatronageUsd ++ " USD)";
+                }
+                ->restr}
+             </small>
+           : React.null}
       </p>
       {abandoned
          ? <>

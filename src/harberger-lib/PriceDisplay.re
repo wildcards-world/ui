@@ -53,12 +53,46 @@ module PurePriceDisplay = {
   };
 };
 
+module InUSD = {
+  [@react.component]
+  let make = (~chain, ~animal: TokenId.t) => {
+    let optPriceWei = QlHooks.usePrice(~chain, animal); //->Web3Utils.fromWeiBNToEth;
+
+    switch (optPriceWei) {
+    | Price(totalPatronageWei) =>
+      <p className={Styles.noMarginTop ++ " " ++ Styles.noMarginBottom}>
+        {{
+           totalPatronageWei->Eth.toFixedWithPrecisionNoTrailingZeros ++ " USD";
+         }
+         ->restr}
+      </p>
+    | Foreclosed(_) =>
+      <p className={Styles.noMarginTop ++ " " ++ Styles.noMarginBottom}>
+        {"0 USD"}->restr
+      </p>
+
+    | Loading => <Rimble.Loader />
+    };
+  };
+};
+
+module InEth = {
+  [@react.component]
+  let make = (~chain, ~animal: TokenId.t) => {
+    let optCurrentPrice = usePrice(~chain, animal);
+
+    switch (optCurrentPrice) {
+    | Some((priceEth, optPriceUsd)) =>
+      <PurePriceDisplay priceEth optPriceUsd />
+    | None => <Rimble.Loader />
+    };
+  };
+};
 [@react.component]
 let make = (~chain, ~animal: TokenId.t) => {
-  let optCurrentPrice = usePrice(~chain, animal);
-
-  switch (optCurrentPrice) {
-  | Some((priceEth, optPriceUsd)) => <PurePriceDisplay priceEth optPriceUsd />
-  | None => <Rimble.Loader />
+  switch (chain) {
+  | Client.MainnetQuery => <InEth chain animal />
+  | Client.Neither
+  | Client.MaticQuery => <InUSD chain animal />
   };
 };

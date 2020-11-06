@@ -275,8 +275,6 @@ module CarouselAnimal = {
       ) => {
     let isLaunched = animal->Animal.isLaunched;
 
-    Js.log(chain);
-
     let makeAnimalOnLandingPage = optionEndDateMoment =>
       <AnimalOnLandingPage
         animal

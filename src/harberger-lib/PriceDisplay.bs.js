@@ -52,7 +52,28 @@ var PurePriceDisplay = {
   make: PriceDisplay$PurePriceDisplay
 };
 
-function PriceDisplay(Props) {
+function PriceDisplay$InUSD(Props) {
+  var chain = Props.chain;
+  var animal = Props.animal;
+  var optPriceWei = QlHooks$WildCards.usePrice(chain, animal);
+  if (typeof optPriceWei === "number") {
+    return React.createElement(RimbleUi.Loader, { });
+  } else if (optPriceWei.tag) {
+    return React.createElement("p", {
+                className: Styles$WildCards.noMarginTop + (" " + Styles$WildCards.noMarginBottom)
+              }, Globals$WildCards.restr(Eth$WildCards.toFixedWithPrecisionNoTrailingZeros(undefined, optPriceWei[0]) + " USD"));
+  } else {
+    return React.createElement("p", {
+                className: Styles$WildCards.noMarginTop + (" " + Styles$WildCards.noMarginBottom)
+              }, Globals$WildCards.restr("0 USD"));
+  }
+}
+
+var InUSD = {
+  make: PriceDisplay$InUSD
+};
+
+function PriceDisplay$InEth(Props) {
   var chain = Props.chain;
   var animal = Props.animal;
   var optCurrentPrice = usePrice(chain, animal);
@@ -66,12 +87,34 @@ function PriceDisplay(Props) {
   }
 }
 
+var InEth = {
+  make: PriceDisplay$InEth
+};
+
+function PriceDisplay(Props) {
+  var chain = Props.chain;
+  var animal = Props.animal;
+  if (chain >= 2) {
+    return React.createElement(PriceDisplay$InEth, {
+                chain: chain,
+                animal: animal
+              });
+  } else {
+    return React.createElement(PriceDisplay$InUSD, {
+                chain: chain,
+                animal: animal
+              });
+  }
+}
+
 var make = PriceDisplay;
 
 export {
   priceWeiToTuple ,
   usePrice ,
   PurePriceDisplay ,
+  InUSD ,
+  InEth ,
   make ,
   
 }
