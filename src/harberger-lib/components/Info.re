@@ -20,7 +20,7 @@ let make = (~chain, ~tokenId: TokenId.t) => {
 
   let currentUsdEthPrice = UsdPriceProvider.useUsdPrice();
   let (depositAvailableToWithdrawEth, depositAvailableToWithdrawUsd) =
-    QlHooks.useRemainingDepositEth(~chain=Client.MainnetQuery, currentPatron)
+    QlHooks.useRemainingDepositEth(~chain, currentPatron)
     ->mapd(("Loading", "Loading"), a =>
         (
           (a->Eth.get(Eth.Eth(`ether))->Float.fromString |||| 0.0)
@@ -42,8 +42,7 @@ let make = (~chain, ~tokenId: TokenId.t) => {
           ),
         )
       );
-  let foreclosureTime =
-    QlHooks.useForeclosureTime(~chain=Client.MainnetQuery, currentPatron);
+  let foreclosureTime = QlHooks.useForeclosureTime(~chain, currentPatron);
   let definiteTime = foreclosureTime->mapd(None, a => Some(a));
 
   let ratio = QlHooks.usePledgeRate(~chain, tokenId);
