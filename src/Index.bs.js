@@ -3,6 +3,7 @@
 import * as React from "react";
 import * as ReactDOMRe from "reason-react/src/ReactDOMRe.js";
 import * as Layout$WildCards from "./components/Layout.bs.js";
+import * as Globals$WildCards from "./harberger-lib/Globals.bs.js";
 import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.js";
 import * as DiscordChat$WildCards from "./components/DiscordChat.bs.js";
 import * as ReactTranslate$WildCards from "./helpers/providers/ReactTranslate.bs.js";
@@ -29,7 +30,7 @@ var Router = {
 ReactDOMRe.renderToElementWithId(React.createElement(WildcardsProvider$WildCards.make, {
           getGraphEndpoints: (function (networkId, param) {
               return {
-                      mainnet: "http://localhost:8080/v1/graphql",
+                      mainnet: Globals$WildCards.$pipe$pipe$pipe$pipe(process.env.REACT_APP_GOERLI_BE, "https://goerli.api.wildcards.world/v1/graphql"),
                       matic: (console.log(networkId), "") + "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-testnet",
                       ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli"
                     };
