@@ -18,6 +18,7 @@ import * as QlHooks$WildCards from "../QlHooks.bs.js";
 import * as TokenId$WildCards from "../TokenId.bs.js";
 import * as CONSTANTS$WildCards from "../../CONSTANTS.bs.js";
 import * as DaiPermit$WildCards from "./DaiPermit.bs.js";
+import * as Web3Utils$WildCards from "../Web3Utils.bs.js";
 import * as ContractUtil$WildCards from "./ContractUtil.bs.js";
 import * as RootProvider$WildCards from "../RootProvider.bs.js";
 import * as LoyaltyTokenJson from "./abi/loyaltyToken.json";
@@ -183,57 +184,128 @@ function useVoteContract(isGsn) {
             ]);
 }
 
-function useBuy(animal, isGsn) {
+function useBuy(chain, animal, isGsn, library, account) {
   var animalId = TokenId$WildCards.toString(animal);
+  React.useState((function () {
+          return /* UnInitialised */0;
+        }));
+  var optSteward = useStewardContract(isGsn);
   var match = React.useState((function () {
           return /* UnInitialised */0;
         }));
   var setTxState = match[1];
-  var optSteward = useStewardContract(isGsn);
-  return /* tuple */[
-          (function (newPrice, oldPrice, wildcardsPercentage, value) {
-              var newPriceEncoded = Ethers.utils.parseUnits(newPrice, 18);
-              var value$1 = Ethers.utils.parseUnits(value, 0);
-              var oldPriceParsed = Ethers.utils.parseUnits(oldPrice, 0);
-              Curry._1(setTxState, (function (param) {
-                      return /* Created */1;
-                    }));
-              if (optSteward === undefined) {
-                return ;
-              }
-              var buyPromise = $$Promise.Js.toResult(optSteward.buy(animalId, newPriceEncoded, oldPriceParsed, wildcardsPercentage, {
-                        gasLimit: "500302",
-                        value: value$1
+  var txState = match[0];
+  var sendMetaTx = QlHooks$WildCards.useMetaTx(undefined);
+  var maticState = Belt_Option.flatMap(account, (function (usersAddress) {
+          console.log("the users address", usersAddress);
+          return QlHooks$WildCards.useMaticState(false, usersAddress, "goerli");
+        }));
+  console.log("Matic state", maticState);
+  var verifyingContract = getDaiContractAddress(chain, 5);
+  var spender = getStewardAddress(chain, 5);
+  var chainId = new BnJs.default(5);
+  if (chain >= 2) {
+    return /* tuple */[
+            (function (newPrice, oldPrice, wildcardsPercentage, value) {
+                var newPriceEncoded = Ethers.utils.parseUnits(newPrice, 18);
+                var value$1 = Ethers.utils.parseUnits(value, 0);
+                var oldPriceParsed = Ethers.utils.parseUnits(oldPrice, 0);
+                Curry._1(setTxState, (function (param) {
+                        return /* Created */1;
                       }));
-              $$Promise.getOk(buyPromise, (function (tx) {
-                      Curry._1(setTxState, (function (param) {
-                              return /* SignedAndSubmitted */Block.__(0, [tx.hash]);
-                            }));
-                      var txMinedPromise = $$Promise.Js.toResult(tx.wait());
-                      $$Promise.getOk(txMinedPromise, (function (txOutcome) {
-                              console.log(txOutcome);
-                              return Curry._1(setTxState, (function (param) {
-                                            return /* Complete */Block.__(2, [txOutcome]);
-                                          }));
-                            }));
-                      $$Promise.getError(txMinedPromise, (function (error) {
-                              Curry._1(setTxState, (function (param) {
-                                      return /* Failed */2;
+                if (optSteward === undefined) {
+                  return ;
+                }
+                var buyPromise = $$Promise.Js.toResult(optSteward.buy(animalId, newPriceEncoded, oldPriceParsed, wildcardsPercentage, {
+                          gasLimit: "500302",
+                          value: value$1
+                        }));
+                $$Promise.getOk(buyPromise, (function (tx) {
+                        Curry._1(setTxState, (function (param) {
+                                return /* SignedAndSubmitted */Block.__(0, [tx.hash]);
+                              }));
+                        var txMinedPromise = $$Promise.Js.toResult(tx.wait());
+                        $$Promise.getOk(txMinedPromise, (function (txOutcome) {
+                                console.log(txOutcome);
+                                return Curry._1(setTxState, (function (param) {
+                                              return /* Complete */Block.__(2, [txOutcome]);
+                                            }));
+                              }));
+                        $$Promise.getError(txMinedPromise, (function (error) {
+                                Curry._1(setTxState, (function (param) {
+                                        return /* Failed */2;
+                                      }));
+                                console.log(error);
+                                
+                              }));
+                        
+                      }));
+                $$Promise.getError(buyPromise, (function (error) {
+                        return Curry._1(setTxState, (function (param) {
+                                      return /* Declined */Block.__(1, [error.message]);
                                     }));
-                              console.log(error);
-                              
-                            }));
-                      
-                    }));
-              $$Promise.getError(buyPromise, (function (error) {
-                      return Curry._1(setTxState, (function (param) {
-                                    return /* Declined */Block.__(1, [error.message]);
+                      }));
+                
+              }),
+            txState
+          ];
+  } else {
+    return /* tuple */[
+            (function (newPrice, oldPrice, wildcardsPercentage, value) {
+                console.log(newPrice, oldPrice, wildcardsPercentage, value);
+                if (library !== undefined && account !== undefined && maticState !== undefined) {
+                  var maticState$1 = Caml_option.valFromOption(maticState);
+                  var daiNonce = maticState$1.daiNonce;
+                  var stewardNonce = maticState$1.stewardNonce;
+                  Curry._1(setTxState, (function (param) {
+                          return /* Created */1;
+                        }));
+                  var __x = DaiPermit$WildCards.createPermitSig(library.provider, verifyingContract, daiNonce, chainId, account, spender, account);
+                  var __x$1 = __x.then((function (rsvSig) {
+                          var web3 = new Web3.default(library.provider);
+                          var steward = Curry._2(Web3$WildCards.Contract.MaticSteward.getStewardContract, web3, spender);
+                          var functionSignature = Curry._1(steward.methods.buyWithPermit(new BnJs.default(daiNonce), new BnJs.default("0"), true, rsvSig.v, rsvSig.r, rsvSig.s, animalId, Web3Utils$WildCards.toWeiFromEth(newPrice), oldPrice, "150000", value).encodeABI, undefined);
+                          var messageToSign = ContractUtil$WildCards.constructMetaTransactionMessage(stewardNonce, chainId.toString(), functionSignature, spender);
+                          var __x = web3.eth.personal.sign(messageToSign, account);
+                          return __x.then((function (signature) {
+                                        return Promise.resolve(/* tuple */[
+                                                    functionSignature,
+                                                    signature
+                                                  ]);
+                                      }));
+                        }));
+                  var __x$2 = __x$1.then((function (param) {
+                          var match = ContractUtil$WildCards.getEthSig(param[1]);
+                          return Curry._6(sendMetaTx, "goerli", match.r, match.s, match.v, param[0], account);
+                        }));
+                  var __x$3 = __x$2.then((function (result) {
+                          var simple = result[0];
+                          var exit = 0;
+                          if (typeof simple === "number" || simple.tag) {
+                            exit = 1;
+                          } else {
+                            var data = simple[0];
+                            Curry._1(setTxState, (function (param) {
+                                    return /* SignedAndSubmitted */Block.__(0, [data.metaTx.txHash]);
                                   }));
-                    }));
-              
-            }),
-          match[0]
-        ];
+                          }
+                          if (exit === 1) {
+                            Curry._1(setTxState, (function (param) {
+                                    return /* Failed */2;
+                                  }));
+                          }
+                          return Promise.resolve(undefined);
+                        }));
+                  __x$3.catch((function (err) {
+                          console.log("this error was caught", err);
+                          return Promise.resolve("");
+                        }));
+                }
+                
+              }),
+            txState
+          ];
+  }
 }
 
 function useBuyAuction(animal, isGsn) {

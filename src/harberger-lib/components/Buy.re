@@ -42,11 +42,19 @@ let calcRequiredDepositForTime = (time, price, numerator, denominator) => {
   requiredDeposit->Web3Utils.fromWeiToEth;
 };
 
-module BuyMainnet = {
+module Buy = {
   [@react.component]
-  let make = (~tokenId: TokenId.t) => {
-    let chain = Client.MainnetQuery;
-    let (buyFunc, txBuyState) = ContractActions.useBuy(tokenId, false);
+  let make =
+      (~chain, ~tokenId: TokenId.t, ~availableBalance: option(Eth.t)=?) => {
+    let web3Context = RootProvider.useWeb3React();
+    let (buyFunc, txBuyState) =
+      ContractActions.useBuy(
+        ~chain,
+        tokenId,
+        false,
+        web3Context.library,
+        web3Context.account,
+      );
     let (buyFuncAuction, txBuyAuctionState) =
       ContractActions.useBuyAuction(tokenId, false);
     let userBalance =
@@ -81,9 +89,11 @@ module BuyMainnet = {
     let tokenIdName = "token#" ++ tokenId->TokenId.toString;
 
     let maxAvailableDepositBN =
-      userBalance
-      ->BN.sub(BN.new_("3000000000000000")) // 0.003 eth as gas
-      ->BN.sub(currentPriceWei);
+      availableBalance->Option.getWithDefault(
+        userBalance
+        ->BN.sub(BN.new_("3000000000000000")) // 0.003 eth as gas
+        ->BN.sub(currentPriceWei),
+      );
     let maxAvailableDeposit =
       maxAvailableDepositBN->BN.toString->Web3Utils.fromWeiToEth;
 
@@ -643,11 +653,44 @@ module BuyMatic = {
 
 [@react.component]
 let make = (~chain, ~tokenId) => {
-  // Js.log2(chain, tokenId);
+  let web3Context = RootProvider.useWeb3React();
+  let optMaticState =
+    web3Context.account
+    ->Option.flatMap(usersAddress => {
+        Js.log2("the users address", usersAddress);
+        QlHooks.useMaticState(~forceRefetch=false, usersAddress, "goerli");
+      });
+  // let forceUpdateMaticState = QlHooks.useForceUpdateMaticStateFunc("goerli");
+  // React.useMemo1(
+  //   () => {
+  //     web3Context.account
+  //     ->Option.flatMap(usersAddress => {
+  //         Js.log("forcing refresh of blockcahin state");
+  //         forceUpdateMaticState(usersAddress);
+  //       })
+  //     ->ignore
+  //   },
+  //   [|web3Context.account|],
+  // );
+
+  Js.log2(chain, tokenId);
   switch (chain) {
   | Client.Neither
-  | Client.MainnetQuery => <BuyMainnet tokenId />
-  | Client.MaticQuery => <BuyMatic tokenId />
-  // <BuyMatic tokenId />;
+  | Client.MainnetQuery => <Buy chain tokenId />
+  | Client.MaticQuery =>
+    switch (optMaticState) {
+    | Some(maticState) =>
+      switch (maticState##error) {
+      | Some(error) =>
+        Js.log2("matic state fetch error", error);
+        <p>
+          "Error: Unable to get matic state - please try again or contact the Wildcards Team."
+          ->React.string
+        </p>;
+      | None =>
+        <Buy chain tokenId availableBalance={maticState##balance->BN.new_} />
+      }
+    | None => <p> "Updating latest state."->React.string </p>
+    }
   };
 };

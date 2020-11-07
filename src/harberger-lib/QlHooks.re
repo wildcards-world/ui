@@ -1053,6 +1053,15 @@ let useMaticStateQuery = (~forceRefetch, address, network) =>
     ~context=Client.MainnetQuery->Obj.magic,
     MaticStateQuery.definition,
   );
+
+// let useMaticStateQueryPartial = forceRefetch =>
+//   ApolloHooks.useQuery(
+//     ~fetchPolicy=
+//       forceRefetch
+//         ? ReasonApolloHooks.ApolloHooksTypes.CacheAndNetwork
+//         : ReasonApolloHooks.ApolloHooksTypes.CacheFirst,
+//     ~context=Client.MainnetQuery->Obj.magic,
+//   );
 let useMaticState = (~forceRefetch, address, network) => {
   let (simple, _) = useMaticStateQuery(~forceRefetch, address, network);
   switch (simple) {
@@ -1062,6 +1071,22 @@ let useMaticState = (~forceRefetch, address, network) => {
   | NoData => None
   };
 };
+// let useForceUpdateMaticStateFunc = network => {
+//   let partialMaticStateReq = useMaticStateQueryPartial(true);
+//   address => {
+//     let (simple, _) =
+//       partialMaticStateReq(
+//         ~variables=MaticStateQuery.make(~address, ~network, ())##variables,
+//         MaticStateQuery.definition,
+//       );
+//     switch (simple) {
+//     | Data(response) => Some(response##maticState)
+//     | Error(_)
+//     | Loading
+//     | NoData => None
+//     };
+//   };
+// };
 
 module ExecuteMetaTxMutation = [%graphql
   {|

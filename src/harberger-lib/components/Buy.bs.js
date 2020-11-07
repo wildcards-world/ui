@@ -10,6 +10,7 @@ import * as Belt_Float from "bs-platform/lib/es6/belt_Float.js";
 import * as Web3Utils from "web3-utils";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_format from "bs-platform/lib/es6/caml_format.js";
+import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as Core from "@web3-react/core";
 import * as Animal$WildCards from "../Animal.bs.js";
 import * as Styles$WildCards from "../../Styles.bs.js";
@@ -46,30 +47,33 @@ function calcRequiredDepositForTime(time, price, numerator, denominator) {
   return Web3Utils$WildCards.fromWeiToEth(timeBn.mul(pricePerSecond).toString());
 }
 
-function Buy$BuyMainnet(Props) {
+function Buy$Buy(Props) {
+  var chain = Props.chain;
   var tokenId = Props.tokenId;
-  var match = ContractActions$WildCards.useBuy(tokenId, false);
+  var availableBalance = Props.availableBalance;
+  var web3Context = Core.useWeb3React();
+  var match = ContractActions$WildCards.useBuy(chain, tokenId, false, web3Context.library, web3Context.account);
   var buyFunc = match[0];
   var match$1 = ContractActions$WildCards.useBuyAuction(tokenId, false);
   var buyFuncAuction = match$1[0];
   var userBalance = Belt_Option.mapWithDefault(RootProvider$WildCards.useEthBalance(undefined), new BnJs.default("0"), (function (a) {
           return a;
         }));
-  var match$2 = QlHooks$WildCards.usePledgeRateDetailed(/* MainnetQuery */2, tokenId);
+  var match$2 = QlHooks$WildCards.usePledgeRateDetailed(chain, tokenId);
   var ratio = match$2[2];
   var denominator = match$2[1];
   var numerator = match$2[0];
-  var priceStatus = QlHooks$WildCards.usePrice(/* MainnetQuery */2, tokenId);
-  var isOnAuction = Animal$WildCards.useIsOnAuction(/* MainnetQuery */2, tokenId);
-  var launchTimeOpt = QlHooks$WildCards.useLaunchTimeBN(/* MainnetQuery */2, tokenId);
-  var currentPriceWei = Animal$WildCards.useAuctionPriceWei(/* MainnetQuery */2, tokenId, Belt_Option.getWithDefault(launchTimeOpt, new BnJs.default("5000")));
+  var priceStatus = QlHooks$WildCards.usePrice(chain, tokenId);
+  var isOnAuction = Animal$WildCards.useIsOnAuction(chain, tokenId);
+  var launchTimeOpt = QlHooks$WildCards.useLaunchTimeBN(chain, tokenId);
+  var currentPriceWei = Animal$WildCards.useAuctionPriceWei(chain, tokenId, Belt_Option.getWithDefault(launchTimeOpt, new BnJs.default("5000")));
   var currentPriceWei$1 = isOnAuction ? currentPriceWei : (
       typeof priceStatus === "number" ? new BnJs.default("0") : (
           priceStatus.tag ? priceStatus[0] : new BnJs.default("0")
         )
     );
   var tokenIdName = "token#" + TokenId$WildCards.toString(tokenId);
-  var maxAvailableDepositBN = userBalance.sub(new BnJs.default("3000000000000000")).sub(currentPriceWei$1);
+  var maxAvailableDepositBN = Belt_Option.getWithDefault(availableBalance, userBalance.sub(new BnJs.default("3000000000000000")).sub(currentPriceWei$1));
   var maxAvailableDeposit = Web3Utils$WildCards.fromWeiToEth(maxAvailableDepositBN.toString());
   var isAbleToBuy = maxAvailableDepositBN.gt(new BnJs.default("0"));
   var currentPriceEth = Web3Utils$WildCards.fromWeiBNToEth(currentPriceWei$1);
@@ -167,8 +171,8 @@ function Buy$BuyMainnet(Props) {
             });
 }
 
-var BuyMainnet = {
-  make: Buy$BuyMainnet
+var Buy = {
+  make: Buy$Buy
 };
 
 function Buy$BuyMatic(Props) {
@@ -335,27 +339,45 @@ var BuyMatic = {
   make: Buy$BuyMatic
 };
 
-function Buy(Props) {
+function Buy$1(Props) {
   var chain = Props.chain;
   var tokenId = Props.tokenId;
+  var web3Context = Core.useWeb3React();
+  var optMaticState = Belt_Option.flatMap(web3Context.account, (function (usersAddress) {
+          console.log("the users address", usersAddress);
+          return QlHooks$WildCards.useMaticState(false, usersAddress, "goerli");
+        }));
+  console.log(chain, tokenId);
   if (chain !== 1) {
-    return React.createElement(Buy$BuyMainnet, {
+    return React.createElement(Buy$Buy, {
+                chain: chain,
                 tokenId: tokenId
               });
+  }
+  if (optMaticState === undefined) {
+    return React.createElement("p", undefined, "Updating latest state.");
+  }
+  var maticState = Caml_option.valFromOption(optMaticState);
+  var error = maticState.error;
+  if (error !== undefined) {
+    console.log("matic state fetch error", error);
+    return React.createElement("p", undefined, "Error: Unable to get matic state - please try again or contact the Wildcards Team.");
   } else {
-    return React.createElement(Buy$BuyMatic, {
-                tokenId: tokenId
+    return React.createElement(Buy$Buy, {
+                chain: chain,
+                tokenId: tokenId,
+                availableBalance: new BnJs.default(maticState.balance)
               });
   }
 }
 
-var make = Buy;
+var make = Buy$1;
 
 export {
   calcPricePerSecond ,
   calculateDepositDuration ,
   calcRequiredDepositForTime ,
-  BuyMainnet ,
+  Buy ,
   BuyMatic ,
   make ,
   
