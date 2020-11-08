@@ -281,6 +281,7 @@ module ApproveLoyaltyTokens = {
          </>
        | DaiPermit(_)
        | SignMetaTx
+       | SubmittedMetaTx
        | Created =>
          <>
            <Rimble.Loader />
@@ -467,6 +468,7 @@ let make = (~chain) => {
          <> <Rimble.Loader /> <p> "Starting Transaction"->restr </p> </>
        | DaiPermit(_)
        | SignMetaTx
+         | SubmittedMetaTx
        | Created =>
          <> <Rimble.Loader /> <p> "Transaction Created"->restr </p> </>
        | SignedAndSubmitted(txHash) =>

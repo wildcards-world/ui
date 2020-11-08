@@ -252,6 +252,7 @@ module ApproveLoyaltyTokens = {
          </>
        | DaiPermit(_)
        | SignMetaTx
+       | SubmittedMetaTx
        | Created =>
          <>
            <Rimble.Loader />

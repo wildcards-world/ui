@@ -228,7 +228,7 @@ function useBuy(chain, animal, isGsn, library, account) {
                               }));
                         $$Promise.getError(txMinedPromise, (function (error) {
                                 Curry._1(setTxState, (function (param) {
-                                        return /* Failed */3;
+                                        return /* Failed */4;
                                       }));
                                 console.log(error);
                                 
@@ -278,7 +278,7 @@ function useBuy(chain, animal, isGsn, library, account) {
                   var __x$3 = __x$2.then((function (result) {
                           var simple = result[0];
                           Curry._1(setTxState, (function (param) {
-                                  return /* Created */2;
+                                  return /* SubmittedMetaTx */3;
                                 }));
                           var exit = 0;
                           if (typeof simple === "number" || simple.tag) {
@@ -306,7 +306,7 @@ function useBuy(chain, animal, isGsn, library, account) {
                             $$Promise.getError(waitForTx, (function (error) {
                                     console.log("GOT AN ERROR");
                                     Curry._1(setTxState, (function (param) {
-                                            return /* Failed */3;
+                                            return /* Failed */4;
                                           }));
                                     console.log(error);
                                     
@@ -314,7 +314,7 @@ function useBuy(chain, animal, isGsn, library, account) {
                           }
                           if (exit === 1) {
                             Curry._1(setTxState, (function (param) {
-                                    return /* Failed */3;
+                                    return /* Failed */4;
                                   }));
                           }
                           return Promise.resolve(undefined);
@@ -365,7 +365,7 @@ function useBuyAuction(animal, isGsn) {
                             }));
                       $$Promise.getError(txMinedPromise, (function (error) {
                               Curry._1(setTxState, (function (param) {
-                                      return /* Failed */3;
+                                      return /* Failed */4;
                                     }));
                               console.log(error);
                               
@@ -414,7 +414,7 @@ function useRedeemLoyaltyTokens(animalId, isGsn) {
                   }));
             $$Promise.getError(txMinedPromise, (function (error) {
                     Curry._1(setTxState, (function (param) {
-                            return /* Failed */3;
+                            return /* Failed */4;
                           }));
                     console.log(error);
                     
@@ -469,7 +469,7 @@ function useApproveLoyaltyTokens(param) {
                   }));
             $$Promise.getError(txMinedPromise, (function (error) {
                     Curry._1(setTxState, (function (param) {
-                            return /* Failed */3;
+                            return /* Failed */4;
                           }));
                     console.log(error);
                     
@@ -525,7 +525,7 @@ function useVoteForProject(param) {
                   }));
             $$Promise.getError(txMinedPromise, (function (error) {
                     Curry._1(setTxState, (function (param) {
-                            return /* Failed */3;
+                            return /* Failed */4;
                           }));
                     console.log(error);
                     
@@ -576,7 +576,7 @@ function useIncreaseVoteIteration(param) {
                   }));
             $$Promise.getError(txMinedPromise, (function (error) {
                     Curry._1(setTxState, (function (param) {
-                            return /* Failed */3;
+                            return /* Failed */4;
                           }));
                     console.log(error);
                     
@@ -638,7 +638,7 @@ function useUpdateDeposit(chain, isGsn, library, account) {
                               }));
                         $$Promise.getError(txMinedPromise, (function (_error) {
                                 return Curry._1(setTxState, (function (param) {
-                                              return /* Failed */3;
+                                              return /* Failed */4;
                                             }));
                               }));
                         
@@ -692,7 +692,7 @@ function useUpdateDeposit(chain, isGsn, library, account) {
                           }
                           if (exit === 1) {
                             Curry._1(setTxState, (function (param) {
-                                    return /* Failed */3;
+                                    return /* Failed */4;
                                   }));
                           }
                           return Promise.resolve(undefined);
@@ -749,7 +749,7 @@ function useWithdrawDeposit(chain, isGsn, library, account) {
                               }));
                         $$Promise.getError(txMinedPromise, (function (error) {
                                 Curry._1(setTxState, (function (param) {
-                                        return /* Failed */3;
+                                        return /* Failed */4;
                                       }));
                                 console.log(error);
                                 
@@ -1129,7 +1129,7 @@ function useChangePrice(animal, isGsn) {
                             }));
                       $$Promise.getError(txMinedPromise, (function (error) {
                               Curry._1(setTxState, (function (param) {
-                                      return /* Failed */3;
+                                      return /* Failed */4;
                                     }));
                               console.log(error);
                               

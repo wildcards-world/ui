@@ -99,7 +99,7 @@ function UserProfile$ClaimLoyaltyTokenButtons(Props) {
                       })
                   }, Globals$WildCards.restr("redeem " + (Web3Utils$WildCards.fromWeiBNToEthPrecision(Caml_option.valFromOption(balanceAvailableOnToken), 5) + (" tokens for " + tokenName)))));
           break;
-      case /* Failed */3 :
+      case /* Failed */4 :
           tmp = React.createElement("p", undefined, Globals$WildCards.restr("Transaction failed"));
           break;
       default:

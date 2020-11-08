@@ -286,7 +286,7 @@ function VotePageOriginal$ApproveLoyaltyTokens(Props) {
                           })
                       }, Globals$WildCards.restr(">>Click here to enable wildcards vote with your tokens<<"))));
           break;
-      case /* Failed */3 :
+      case /* Failed */4 :
           tmp = React.createElement("p", undefined, Globals$WildCards.restr("Transaction failed"));
           break;
       default:
@@ -453,7 +453,7 @@ function VotePageOriginal(Props) {
       case /* UnInitialised */0 :
           tmp = React.createElement(React.Fragment, undefined, React.createElement(RimbleUi.Loader, { }), React.createElement("p", undefined, Globals$WildCards.restr("Starting Transaction")));
           break;
-      case /* Failed */3 :
+      case /* Failed */4 :
           tmp = React.createElement("p", undefined, Globals$WildCards.restr("Transaction failed"));
           break;
       default:

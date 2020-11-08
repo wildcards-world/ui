@@ -271,7 +271,7 @@ function VotePage$ApproveLoyaltyTokens(Props) {
                           })
                       }, Globals$WildCards.restr(">>Click here to enable wildcards vote with your tokens<<"))));
           break;
-      case /* Failed */3 :
+      case /* Failed */4 :
           tmp = React.createElement("p", undefined, Globals$WildCards.restr("Transaction failed"));
           break;
       default:

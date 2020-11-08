@@ -43,7 +43,20 @@ function TxTemplate(Props) {
                               }),
                           justifyContent: "center"
                         }));
-      case /* Failed */3 :
+      case /* SubmittedMetaTx */3 :
+          return React.createElement(React.Fragment, {
+                      children: null
+                    }, React.createElement(RimbleUi.Heading, {
+                          children: null
+                        }, Globals$WildCards.restr("Transaction Sumbitted "), React.createElement(WildcardsLoader$WildCards.make, { })), React.createElement(RimbleUi.Text, {
+                          children: Globals$WildCards.restr("Awaiting transaction details.")
+                        }), React.createElement(RimbleUi.Flex, {
+                          children: React.createElement(RimbleUi.Loader, {
+                                size: "80px"
+                              }),
+                          justifyContent: "center"
+                        }));
+      case /* Failed */4 :
           return React.createElement(React.Fragment, {
                       children: null
                     }, React.createElement(RimbleUi.Heading, {

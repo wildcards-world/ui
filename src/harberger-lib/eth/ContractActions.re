@@ -260,6 +260,7 @@ type transactionState =
   | DaiPermit(BN.t)
   | SignMetaTx
   | Created
+  | SubmittedMetaTx
   | SignedAndSubmitted(txHash)
   // TODO: get the error message when it is declined.
   //      4001 - means the transaction was declined by the signer
@@ -395,7 +396,7 @@ let useBuy =
                   open ReasonApolloHooks;
                   let (simple, _) = result;
 
-                  setTxState(_ => Created);
+                  setTxState(_ => SubmittedMetaTx);
 
                   (
                     switch (simple) {

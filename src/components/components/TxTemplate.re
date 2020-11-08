@@ -38,6 +38,17 @@ let make =
         <Rimble.Loader size="80px" />
       </Rimble.Flex>
     </React.Fragment>
+  | SubmittedMetaTx =>
+    <React.Fragment>
+      <Rimble.Heading>
+        "Transaction Sumbitted "->restr
+        <WildcardsLoader />
+      </Rimble.Heading>
+      <Rimble.Text> "Awaiting transaction details."->restr </Rimble.Text>
+      <Rimble.Flex justifyContent="center">
+        <Rimble.Loader size="80px" />
+      </Rimble.Flex>
+    </React.Fragment>
   | ContractActions.Created =>
     <React.Fragment>
       <Rimble.Heading>
