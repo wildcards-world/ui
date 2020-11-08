@@ -50,6 +50,8 @@ module ClaimLoyaltyTokenButtons = {
         | Complete(_) => refreshLoyaltyTokenBalance()
         | UnInitialised
         | Created
+        | DaiPermit(_)
+        | SignMetaTx
         | SignedAndSubmitted(_)
         | Declined(_)
         | Failed => ()
@@ -78,6 +80,8 @@ module ClaimLoyaltyTokenButtons = {
                 ->restr}
              </a>
            </p>
+         | DaiPermit(_)
+         | SignMetaTx
          | Created => <p> "Transaction Created"->restr </p>
          | SignedAndSubmitted(txHash) =>
            <p>

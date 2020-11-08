@@ -78,7 +78,7 @@ function UserProfile$ClaimLoyaltyTokenButtons(Props) {
   var tokenName = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.useWildcardName(TokenId$WildCards.fromStringUnsafe(id)), "loading");
   var etherScanUrl = RootProvider$WildCards.useEtherscanUrl(undefined);
   React.useEffect((function () {
-          if (typeof transactionStatus !== "number" && transactionStatus.tag === /* Complete */2) {
+          if (typeof transactionStatus !== "number" && transactionStatus.tag === /* Complete */3) {
             Curry._1(refreshLoyaltyTokenBalance, undefined);
           }
           
@@ -99,30 +99,29 @@ function UserProfile$ClaimLoyaltyTokenButtons(Props) {
                       })
                   }, Globals$WildCards.restr("redeem " + (Web3Utils$WildCards.fromWeiBNToEthPrecision(Caml_option.valFromOption(balanceAvailableOnToken), 5) + (" tokens for " + tokenName)))));
           break;
-      case /* Created */1 :
-          tmp = React.createElement("p", undefined, Globals$WildCards.restr("Transaction Created"));
-          break;
-      case /* Failed */2 :
+      case /* Failed */3 :
           tmp = React.createElement("p", undefined, Globals$WildCards.restr("Transaction failed"));
           break;
-      
+      default:
+        tmp = React.createElement("p", undefined, Globals$WildCards.restr("Transaction Created"));
     }
   } else {
     switch (transactionStatus.tag | 0) {
-      case /* SignedAndSubmitted */0 :
+      case /* SignedAndSubmitted */1 :
           tmp = React.createElement("p", undefined, Globals$WildCards.restr("Processing: "), React.createElement("a", {
                     href: "https://" + (etherScanUrl + ("/tx/" + transactionStatus[0])),
                     rel: "noopener noreferrer",
                     target: "_blank"
                   }, Globals$WildCards.restr("view transaction")));
           break;
-      case /* Declined */1 :
+      case /* Declined */2 :
           tmp = React.createElement("p", undefined, Globals$WildCards.restr("Submitting transaction failed: " + transactionStatus[0]));
           break;
-      case /* Complete */2 :
+      case /* Complete */3 :
           tmp = React.createElement("p", undefined, Globals$WildCards.restr("Tokens claimed (please reload the page, this will be improved soon)"));
           break;
-      
+      default:
+        tmp = React.createElement("p", undefined, Globals$WildCards.restr("Transaction Created"));
     }
   }
   return React.createElement("small", undefined, tmp);

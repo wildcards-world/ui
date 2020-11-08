@@ -31,19 +31,6 @@ external sendAsync:
   unit =
   "sendAsync";
 
-/*
-   const web3 = new Web3(library.provider);
-
- var contract = new web3.eth.Contract(jsonInterface.abi, contractAddress);
-
- let functionSignature = contract.methods
-   .depositWithPermit(nonce, expiry, allowed, v, r, s, account, depositAmount)
-   // .encodeABI();
-   .send({
-     from: account,
-   });
- */
-
 [@bs.new] [@bs.module "web3"] external new_: rawProvider => t = "default";
 
 [@bs.send] [@bs.scope ("eth", "personal")]

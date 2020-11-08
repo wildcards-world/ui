@@ -12,6 +12,32 @@ let make =
 
   switch (txState) {
   | ContractActions.UnInitialised => children
+  | DaiPermit(value) =>
+    <React.Fragment>
+      <Rimble.Heading>
+        {(
+           "Please accept the signature in your signer to allow use of "
+           ++ value->Web3Utils.fromWeiBNToEthPrecision(~digits=2)
+           ++ "."
+         )
+         ->restr}
+        <WildcardsLoader />
+      </Rimble.Heading>
+      <Rimble.Flex justifyContent="center">
+        <Rimble.Loader size="80px" />
+      </Rimble.Flex>
+    </React.Fragment>
+  | SignMetaTx =>
+    <React.Fragment>
+      <Rimble.Heading>
+        "Please accept the signature in your signer to submit this transaction."
+        ->restr
+        <WildcardsLoader />
+      </Rimble.Heading>
+      <Rimble.Flex justifyContent="center">
+        <Rimble.Loader size="80px" />
+      </Rimble.Flex>
+    </React.Fragment>
   | ContractActions.Created =>
     <React.Fragment>
       <Rimble.Heading>

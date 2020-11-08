@@ -5,6 +5,7 @@ import * as React from "react";
 import * as RimbleUi from "rimble-ui";
 import * as Styles$WildCards from "../../Styles.bs.js";
 import * as Globals$WildCards from "../../harberger-lib/Globals.bs.js";
+import * as Web3Utils$WildCards from "../../harberger-lib/Web3Utils.bs.js";
 import * as RootProvider$WildCards from "../../harberger-lib/RootProvider.bs.js";
 import * as WildcardsLoader$WildCards from "../StaticContent/WildcardsLoader.bs.js";
 
@@ -18,7 +19,18 @@ function TxTemplate(Props) {
     switch (txState) {
       case /* UnInitialised */0 :
           return children;
-      case /* Created */1 :
+      case /* SignMetaTx */1 :
+          return React.createElement(React.Fragment, {
+                      children: null
+                    }, React.createElement(RimbleUi.Heading, {
+                          children: null
+                        }, Globals$WildCards.restr("Please accept the signature in your signer to submit this transaction."), React.createElement(WildcardsLoader$WildCards.make, { })), React.createElement(RimbleUi.Flex, {
+                          children: React.createElement(RimbleUi.Loader, {
+                                size: "80px"
+                              }),
+                          justifyContent: "center"
+                        }));
+      case /* Created */2 :
           return React.createElement(React.Fragment, {
                       children: null
                     }, React.createElement(RimbleUi.Heading, {
@@ -31,7 +43,7 @@ function TxTemplate(Props) {
                               }),
                           justifyContent: "center"
                         }));
-      case /* Failed */2 :
+      case /* Failed */3 :
           return React.createElement(React.Fragment, {
                       children: null
                     }, React.createElement(RimbleUi.Heading, {
@@ -43,7 +55,18 @@ function TxTemplate(Props) {
     }
   } else {
     switch (txState.tag | 0) {
-      case /* SignedAndSubmitted */0 :
+      case /* DaiPermit */0 :
+          return React.createElement(React.Fragment, {
+                      children: null
+                    }, React.createElement(RimbleUi.Heading, {
+                          children: null
+                        }, Globals$WildCards.restr("Please accept the signature in your signer to allow use of " + (Web3Utils$WildCards.fromWeiBNToEthPrecision(txState[0], 2) + ".")), React.createElement(WildcardsLoader$WildCards.make, { })), React.createElement(RimbleUi.Flex, {
+                          children: React.createElement(RimbleUi.Loader, {
+                                size: "80px"
+                              }),
+                          justifyContent: "center"
+                        }));
+      case /* SignedAndSubmitted */1 :
           return React.createElement(React.Fragment, {
                       children: null
                     }, React.createElement(RimbleUi.Heading, {
@@ -58,13 +81,13 @@ function TxTemplate(Props) {
                           className: Styles$WildCards.centerItems,
                           size: "80px"
                         }));
-      case /* Declined */1 :
+      case /* Declined */2 :
           return React.createElement(React.Fragment, {
                       children: null
                     }, React.createElement(RimbleUi.Heading, {
                           children: Globals$WildCards.restr("The transaction was declined by signing device, please try again.")
                         }), React.createElement("p", undefined, Globals$WildCards.restr("Failure reason: " + txState[0])), children);
-      case /* Complete */2 :
+      case /* Complete */3 :
           var txHash = txState[0].transactionHash;
           return React.createElement(React.Fragment, {
                       children: null

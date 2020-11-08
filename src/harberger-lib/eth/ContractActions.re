@@ -1,27 +1,6 @@
 open Globals;
+open Ethers;
 
-type txResult = {
-  blockHash: string,
-  blockNumber: int,
-  byzantium: bool,
-  confirmations: int,
-  // contractAddress: null,
-  // cumulativeGasUsed: Object { _hex: "0x26063", … },
-  // events: Array(4) [ {…}, {…}, {…}, … ],
-  from: Web3.ethAddress,
-  // gasUsed: Object { _hex: "0x26063", … },
-  // logs: Array(4) [ {…}, {…}, {…}, … ],
-  // logsBloom: "0x00200000000000008000000000000000000020000001000000000000400020000000000000002000000000000000000000000002800010000000008000000000000000000000000000000008000000000040000000000000000000000000000000000000020000014000000000000800024000000000000000000010000000000000000000000000000000000000000000008000000000000000000000000200000008000000000000000000000000000000000800000000000000000000000000001002000000000000000000000000000000000000000020000000040020000000000000000080000000000000000000000000000000080000000000200000"
-  status: int,
-  _to: Web3.ethAddress,
-  transactionHash: string,
-  transactionIndex: int,
-};
-type txError = {
-  code: int, // -32000 = always failing tx ;  4001 = Rejected by signer.
-  message: string,
-  stack: option(string),
-};
 type txHash = string;
 type tx = {
   hash: txHash,
@@ -278,6 +257,8 @@ let useVoteContract = isGsn => {
 
 type transactionState =
   | UnInitialised
+  | DaiPermit(BN.t)
+  | SignMetaTx
   | Created
   | SignedAndSubmitted(txHash)
   // TODO: get the error message when it is declined.
@@ -296,7 +277,6 @@ let useBuy =
       account,
     ) => {
   let animalId = animal->TokenId.toString;
-  let (txState, setTxState) = React.useState(() => UnInitialised);
 
   let optSteward = useStewardContract(isGsn);
   let (txState, setTxState) = React.useState(() => UnInitialised);
@@ -305,10 +285,8 @@ let useBuy =
 
   let maticState =
     account->Option.flatMap(usersAddress => {
-      Js.log2("the users address", usersAddress);
-      QlHooks.useMaticState(~forceRefetch=false, usersAddress, "goerli");
+      QlHooks.useMaticState(~forceRefetch=false, usersAddress, "goerli")
     });
-  Js.log2("Matic state", maticState);
 
   // GOERLI:
   let verifyingContract = getDaiContractAddress(chain, 5);
@@ -321,13 +299,12 @@ let useBuy =
   | Client.MaticQuery => (
       (
         (newPrice, oldPrice, wildcardsPercentage, value: string) => {
-          Js.log4(newPrice, oldPrice, wildcardsPercentage, value);
           switch (library, account, maticState) {
           | (Some(lib), Some(userAddress), Some(maticState)) =>
             /* START */
             let daiNonce = maticState##daiNonce;
             let stewardNonce = maticState##stewardNonce;
-            setTxState(_ => Created);
+            setTxState(_ => DaiPermit(value->BN.new_));
 
             DaiPermit.createPermitSig(
               lib.provider,
@@ -340,6 +317,7 @@ let useBuy =
             )
             ->Js.Promise.then_(
                 rsvSig => {
+                  setTxState(_ => SignMetaTx);
                   open ContractUtil;
                   let {r, s, v} = rsvSig;
 
@@ -362,7 +340,7 @@ let useBuy =
                       animalId,
                       newPrice->Web3Utils.toWeiFromEth,
                       oldPrice,
-                      "150000",
+                      wildcardsPercentage,
                       value,
                     ).
                       encodeABI();
@@ -402,19 +380,53 @@ let useBuy =
                 },
                 _,
               )
+            // ->Js.Promise.then_(
+            //     txResult => {
+            //       Js.log2("THE TRANSACTION", txResult);
+            //       setTxState(_ => Complete(txResult->Obj.magic));
+            //       Js.log2("THE TRANSACTION", txResult)
+            //     },
+            //     _,
+            //   )
+            // ->ignore;
+            // Ethers.makeProvider("https://rpc-mumbai.matic.today");
             ->Js.Promise.then_(
                 result => {
                   open ReasonApolloHooks;
                   let (simple, _) = result;
+
+                  setTxState(_ => Created);
 
                   (
                     switch (simple) {
                     | ApolloHooksMutation.Errors(_)
                     | ApolloHooksMutation.NoData => setTxState(_ => Failed)
                     | ApolloHooksMutation.Data(data) =>
-                      setTxState(_ =>
-                        SignedAndSubmitted(data##metaTx##txHash)
-                      )
+                      let txHash = data##metaTx##txHash;
+                      setTxState(_ => SignedAndSubmitted(txHash));
+                      Js.log("got the hash...");
+
+                      let providerUrl = "https://goerli.infura.io/v3/c401b8ee3a324619a453f2b5b2122d7a";
+                      let maticProvider = Ethers.makeProvider(providerUrl);
+                      Js.log("got matic provider");
+                      Js.log(maticProvider);
+                      let waitForTx =
+                        maticProvider
+                        ->Ethers.waitForTransaction(txHash)
+                        ->Promise.Js.toResult;
+                      Js.log("waitForTx");
+                      Js.log(waitForTx);
+                      waitForTx->Promise.getOk(tx => {
+                        Js.log("GOT OK");
+                        setTxState(_ => Complete(tx));
+                        Js.log(tx);
+                      });
+                      waitForTx->Promise.getError(error => {
+                        Js.log("GOT AN ERROR");
+                        setTxState(_ => Failed);
+                        Js.log(error);
+                      });
+                      ();
                     }
                   )
                   ->ignore;

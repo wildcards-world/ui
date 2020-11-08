@@ -261,6 +261,7 @@ function VotePage$ApproveLoyaltyTokens(Props) {
   var approveLoyaltyTokens = match[0];
   var etherScanUrl = RootProvider$WildCards.useEtherscanUrl(undefined);
   var tmp;
+  var exit = 0;
   if (typeof transactionStatus === "number") {
     switch (transactionStatus) {
       case /* UnInitialised */0 :
@@ -270,33 +271,35 @@ function VotePage$ApproveLoyaltyTokens(Props) {
                           })
                       }, Globals$WildCards.restr(">>Click here to enable wildcards vote with your tokens<<"))));
           break;
-      case /* Created */1 :
-          tmp = React.createElement(React.Fragment, undefined, React.createElement(RimbleUi.Loader, { }), React.createElement("p", undefined, Globals$WildCards.restr("Transaction Created - please check the details and confirm.")));
-          break;
-      case /* Failed */2 :
+      case /* Failed */3 :
           tmp = React.createElement("p", undefined, Globals$WildCards.restr("Transaction failed"));
           break;
-      
+      default:
+        exit = 1;
     }
   } else {
     switch (transactionStatus.tag | 0) {
-      case /* SignedAndSubmitted */0 :
+      case /* SignedAndSubmitted */1 :
           tmp = React.createElement(React.Fragment, undefined, React.createElement(RimbleUi.Loader, { }), React.createElement("p", undefined, Globals$WildCards.restr("Processing: "), React.createElement("a", {
                         href: "https://" + (etherScanUrl + ("/tx/" + transactionStatus[0])),
                         rel: "noopener noreferrer",
                         target: "_blank"
                       }, Globals$WildCards.restr("view transaction"))));
           break;
-      case /* Declined */1 :
+      case /* Declined */2 :
           tmp = React.createElement("p", undefined, Globals$WildCards.restr("Submitting transaction failed: " + transactionStatus[0]));
           break;
-      case /* Complete */2 :
+      case /* Complete */3 :
           tmp = React.createElement("p", undefined, React.createElement(VotePage$HackyComponentThatCallsAFunctionOnce, {
                     reloadFunction: reloadFunction
                   }), Globals$WildCards.restr("You are now ready to vote :)"));
           break;
-      
+      default:
+        exit = 1;
     }
+  }
+  if (exit === 1) {
+    tmp = React.createElement(React.Fragment, undefined, React.createElement(RimbleUi.Loader, { }), React.createElement("p", undefined, Globals$WildCards.restr("Transaction Created - please check the details and confirm.")));
   }
   return React.createElement("div", undefined, tmp);
 }

@@ -276,6 +276,7 @@ function VotePageOriginal$ApproveLoyaltyTokens(Props) {
   var approveLoyaltyTokens = match[0];
   var etherScanUrl = RootProvider$WildCards.useEtherscanUrl(undefined);
   var tmp;
+  var exit = 0;
   if (typeof transactionStatus === "number") {
     switch (transactionStatus) {
       case /* UnInitialised */0 :
@@ -285,33 +286,35 @@ function VotePageOriginal$ApproveLoyaltyTokens(Props) {
                           })
                       }, Globals$WildCards.restr(">>Click here to enable wildcards vote with your tokens<<"))));
           break;
-      case /* Created */1 :
-          tmp = React.createElement(React.Fragment, undefined, React.createElement(RimbleUi.Loader, { }), React.createElement("p", undefined, Globals$WildCards.restr("Transaction Created - please check the details and confirm.")));
-          break;
-      case /* Failed */2 :
+      case /* Failed */3 :
           tmp = React.createElement("p", undefined, Globals$WildCards.restr("Transaction failed"));
           break;
-      
+      default:
+        exit = 1;
     }
   } else {
     switch (transactionStatus.tag | 0) {
-      case /* SignedAndSubmitted */0 :
+      case /* SignedAndSubmitted */1 :
           tmp = React.createElement(React.Fragment, undefined, React.createElement(RimbleUi.Loader, { }), React.createElement("p", undefined, Globals$WildCards.restr("Processing: "), React.createElement("a", {
                         href: "https://" + (etherScanUrl + ("/tx/" + transactionStatus[0])),
                         rel: "noopener noreferrer",
                         target: "_blank"
                       }, Globals$WildCards.restr("view transaction"))));
           break;
-      case /* Declined */1 :
+      case /* Declined */2 :
           tmp = React.createElement("p", undefined, Globals$WildCards.restr("Submitting transaction failed: " + transactionStatus[0]));
           break;
-      case /* Complete */2 :
+      case /* Complete */3 :
           tmp = React.createElement("p", undefined, React.createElement(VotePageOriginal$HackyComponentThatCallsAFunctionOnce, {
                     reloadFunction: reloadFunction
                   }), Globals$WildCards.restr("You are now ready to vote :)"));
           break;
-      
+      default:
+        exit = 1;
     }
+  }
+  if (exit === 1) {
+    tmp = React.createElement(React.Fragment, undefined, React.createElement(RimbleUi.Loader, { }), React.createElement("p", undefined, Globals$WildCards.restr("Transaction Created - please check the details and confirm.")));
   }
   return React.createElement("div", undefined, tmp);
 }
@@ -444,32 +447,31 @@ function VotePageOriginal(Props) {
           return Belt_Float.fromString(Web3Utils$WildCards.fromWeiBNToEthPrecision(balance, 3));
         }));
   var tmp;
+  var exit$1 = 0;
   if (typeof transactionStatus === "number") {
     switch (transactionStatus) {
       case /* UnInitialised */0 :
           tmp = React.createElement(React.Fragment, undefined, React.createElement(RimbleUi.Loader, { }), React.createElement("p", undefined, Globals$WildCards.restr("Starting Transaction")));
           break;
-      case /* Created */1 :
-          tmp = React.createElement(React.Fragment, undefined, React.createElement(RimbleUi.Loader, { }), React.createElement("p", undefined, Globals$WildCards.restr("Transaction Created")));
-          break;
-      case /* Failed */2 :
+      case /* Failed */3 :
           tmp = React.createElement("p", undefined, Globals$WildCards.restr("Transaction failed"));
           break;
-      
+      default:
+        exit$1 = 1;
     }
   } else {
     switch (transactionStatus.tag | 0) {
-      case /* SignedAndSubmitted */0 :
+      case /* SignedAndSubmitted */1 :
           tmp = React.createElement(React.Fragment, undefined, React.createElement(RimbleUi.Loader, { }), React.createElement("p", undefined, Globals$WildCards.restr("Processing: "), React.createElement("a", {
                         href: "https://" + (etherScanUrl + ("/tx/" + transactionStatus[0])),
                         rel: "noopener noreferrer",
                         target: "_blank"
                       }, Globals$WildCards.restr("view transaction"))));
           break;
-      case /* Declined */1 :
+      case /* Declined */2 :
           tmp = React.createElement("p", undefined, Globals$WildCards.restr("Submitting transaction failed: " + transactionStatus[0]));
           break;
-      case /* Complete */2 :
+      case /* Complete */3 :
           tmp = React.createElement(React.Fragment, undefined, React.createElement(VotePageOriginal$HackyComponentThatCallsAFunctionOnce, {
                     reloadFunction: resetLoyaltyTokenBalance
                   }), React.createElement("p", undefined, Globals$WildCards.restr("Congratulations for voting")), React.createElement(RimbleUi.Button, {
@@ -494,8 +496,12 @@ function VotePageOriginal(Props) {
                       })
                   }));
           break;
-      
+      default:
+        exit$1 = 1;
     }
+  }
+  if (exit$1 === 1) {
+    tmp = React.createElement(React.Fragment, undefined, React.createElement(RimbleUi.Loader, { }), React.createElement("p", undefined, Globals$WildCards.restr("Transaction Created")));
   }
   var txStateDisplay = React.createElement("div", undefined, tmp);
   var match$8 = ContractActions$WildCards.useVoteApprovedTokens(userAddressLowerCase);
@@ -543,7 +549,7 @@ function VotePageOriginal(Props) {
   } else {
     var selectedConservationPartner = conservationPartners[voteStep[0]];
     var tmp$3;
-    var exit$1 = 0;
+    var exit$2 = 0;
     if (amountApproved !== undefined && redeemedLoyaltyTokenBalanceBn !== undefined) {
       var hasApprovedFullBalance = Globals$WildCards.$pipe$great$pipe(Caml_option.valFromOption(amountApproved), Caml_option.valFromOption(redeemedLoyaltyTokenBalanceBn));
       if (hasApprovedFullBalance) {
@@ -562,9 +568,9 @@ function VotePageOriginal(Props) {
             });
       }
     } else {
-      exit$1 = 1;
+      exit$2 = 1;
     }
-    if (exit$1 === 1) {
+    if (exit$2 === 1) {
       tmp$3 = React.createElement(React.Fragment, undefined, React.createElement(VotePageOriginal$HackyComponentThatReloadsOnTimeout, {
                 reloadFunction: (function (param) {
                     Curry._1(resetLoyaltyTokenBalance, undefined);
