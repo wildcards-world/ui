@@ -1108,6 +1108,7 @@ module ExecuteMetaTxMutation = [%graphql
       ) {
         txHash
         success
+        errorMsg
       }
     }
   |}

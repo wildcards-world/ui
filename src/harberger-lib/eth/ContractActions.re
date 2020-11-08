@@ -266,6 +266,9 @@ type transactionState =
   //      4001 - means the transaction was declined by the signer
   //      -32000 - means the transaction is always failing (exceeds gas allowance)
   | Declined(string)
+  // | DaiPermitDclined(string)
+  // | SignMetaTxDclined(string)
+  | ServerError(string)
   | Complete(txResult)
   | Failed;
 
@@ -403,31 +406,42 @@ let useBuy =
                     | ApolloHooksMutation.Errors(_)
                     | ApolloHooksMutation.NoData => setTxState(_ => Failed)
                     | ApolloHooksMutation.Data(data) =>
+                      let success = data##metaTx##success;
+                      let errorMsg = data##metaTx##errorMsg;
                       let txHash = data##metaTx##txHash;
-                      setTxState(_ => SignedAndSubmitted(txHash));
-                      Js.log("got the hash...");
+                      if (success) {
+                        setTxState(_ => SignedAndSubmitted(txHash));
+                        Js.log("got the hash...");
 
-                      let providerUrl = "https://goerli.infura.io/v3/c401b8ee3a324619a453f2b5b2122d7a";
-                      let maticProvider = Ethers.makeProvider(providerUrl);
-                      Js.log("got matic provider");
-                      Js.log(maticProvider);
-                      let waitForTx =
-                        maticProvider
-                        ->Ethers.waitForTransaction(txHash)
-                        ->Promise.Js.toResult;
-                      Js.log("waitForTx");
-                      Js.log(waitForTx);
-                      waitForTx->Promise.getOk(tx => {
-                        Js.log("GOT OK");
-                        setTxState(_ => Complete(tx));
-                        Js.log(tx);
-                      });
-                      waitForTx->Promise.getError(error => {
-                        Js.log("GOT AN ERROR");
-                        setTxState(_ => Failed);
-                        Js.log(error);
-                      });
-                      ();
+                        let providerUrl = "https://goerli.infura.io/v3/c401b8ee3a324619a453f2b5b2122d7a";
+                        let maticProvider = Ethers.makeProvider(providerUrl);
+                        Js.log("got matic provider");
+                        Js.log(maticProvider);
+                        let waitForTx =
+                          maticProvider
+                          ->Ethers.waitForTransaction(txHash)
+                          ->Promise.Js.toResult;
+                        Js.log("waitForTx");
+                        Js.log(waitForTx);
+                        waitForTx->Promise.getOk(tx => {
+                          Js.log("GOT OK");
+                          setTxState(_ => Complete(tx));
+                          Js.log(tx);
+                        });
+                        waitForTx->Promise.getError(error => {
+                          Js.log("GOT AN ERROR");
+                          setTxState(_ => Failed);
+                          Js.log(error);
+                        });
+                        ();
+                      } else {
+                        setTxState(_ =>
+                          ServerError(
+                            errorMsg->Option.getWithDefault("Unknown error"),
+                          )
+                        );
+                        ();
+                      };
                     }
                   )
                   ->ignore;

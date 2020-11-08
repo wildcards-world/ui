@@ -53,6 +53,7 @@ module ClaimLoyaltyTokenButtons = {
         | DaiPermit(_)
         | SubmittedMetaTx
         | SignMetaTx
+        | ServerError(_)
         | SignedAndSubmitted(_)
         | Declined(_)
         | Failed => ()
@@ -83,6 +84,7 @@ module ClaimLoyaltyTokenButtons = {
            </p>
          | DaiPermit(_)
          | SignMetaTx
+         | ServerError(_)
          | SubmittedMetaTx
          | Created => <p> "Transaction Created"->restr </p>
          | SignedAndSubmitted(txHash) =>

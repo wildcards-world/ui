@@ -78,7 +78,7 @@ function UserProfile$ClaimLoyaltyTokenButtons(Props) {
   var tokenName = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.useWildcardName(TokenId$WildCards.fromStringUnsafe(id)), "loading");
   var etherScanUrl = RootProvider$WildCards.useEtherscanUrl(undefined);
   React.useEffect((function () {
-          if (typeof transactionStatus !== "number" && transactionStatus.tag === /* Complete */3) {
+          if (typeof transactionStatus !== "number" && transactionStatus.tag === /* Complete */4) {
             Curry._1(refreshLoyaltyTokenBalance, undefined);
           }
           
@@ -117,7 +117,7 @@ function UserProfile$ClaimLoyaltyTokenButtons(Props) {
       case /* Declined */2 :
           tmp = React.createElement("p", undefined, Globals$WildCards.restr("Submitting transaction failed: " + transactionStatus[0]));
           break;
-      case /* Complete */3 :
+      case /* Complete */4 :
           tmp = React.createElement("p", undefined, Globals$WildCards.restr("Tokens claimed (please reload the page, this will be improved soon)"));
           break;
       default:

@@ -105,6 +105,14 @@ let make =
       <p> {("Failure reason: " ++ message)->restr} </p>
       children
     </React.Fragment>
+  | ServerError(message) =>
+    <React.Fragment>
+      <Rimble.Heading>
+        "There was server error when submitting that transaction."->restr
+      </Rimble.Heading>
+      <p> {("Failure reason: " ++ message)->restr} </p>
+      children
+    </React.Fragment>
   | ContractActions.Failed =>
     <React.Fragment>
       <Rimble.Heading>

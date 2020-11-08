@@ -100,7 +100,13 @@ function TxTemplate(Props) {
                     }, React.createElement(RimbleUi.Heading, {
                           children: Globals$WildCards.restr("The transaction was declined by signing device, please try again.")
                         }), React.createElement("p", undefined, Globals$WildCards.restr("Failure reason: " + txState[0])), children);
-      case /* Complete */3 :
+      case /* ServerError */3 :
+          return React.createElement(React.Fragment, {
+                      children: null
+                    }, React.createElement(RimbleUi.Heading, {
+                          children: Globals$WildCards.restr("There was server error when submitting that transaction.")
+                        }), React.createElement("p", undefined, Globals$WildCards.restr("Failure reason: " + txState[0])), children);
+      case /* Complete */4 :
           var txHash = txState[0].transactionHash;
           return React.createElement(React.Fragment, {
                       children: null

@@ -2466,7 +2466,7 @@ function useMaticState(forceRefetch, address, network) {
   }
 }
 
-var ppx_printed_query$11 = "mutation ($network: String!, $r: String!, $s: String!, $v: Int!, $userAddress: String!, $functionSignature: String!)  {\nmetaTx(functionSignature: $functionSignature, network: $network, r: $r, s: $s, userAddress: $userAddress, v: $v)  {\ntxHash  \nsuccess  \n}\n\n}\n";
+var ppx_printed_query$11 = "mutation ($network: String!, $r: String!, $s: String!, $v: Int!, $userAddress: String!, $functionSignature: String!)  {\nmetaTx(functionSignature: $functionSignature, network: $network, r: $r, s: $s, userAddress: $userAddress, v: $v)  {\ntxHash  \nsuccess  \nerrorMsg  \n}\n\n}\n";
 
 function parse$11(value) {
   var value$1 = Js_option.getExn(Js_json.decodeObject(value));
@@ -2492,9 +2492,24 @@ function parse$11(value) {
     } else {
       tmp$2 = Js_exn.raiseError("graphql_ppx: Field success on type MetaTxQueryOutput is missing");
     }
+    var value$10 = Js_dict.get(value$3, "errorMsg");
+    var tmp$3;
+    if (value$10 !== undefined) {
+      var value$11 = Caml_option.valFromOption(value$10);
+      var match = Js_json.decodeNull(value$11);
+      if (match !== undefined) {
+        tmp$3 = undefined;
+      } else {
+        var value$12 = Js_json.decodeString(value$11);
+        tmp$3 = value$12 !== undefined ? value$12 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$11));
+      }
+    } else {
+      tmp$3 = undefined;
+    }
     tmp = {
       txHash: tmp$1,
-      success: tmp$2
+      success: tmp$2,
+      errorMsg: tmp$3
     };
   } else {
     tmp = Js_exn.raiseError("graphql_ppx: Field metaTx on type mutation_root is missing");

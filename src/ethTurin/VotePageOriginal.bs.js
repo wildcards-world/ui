@@ -304,7 +304,7 @@ function VotePageOriginal$ApproveLoyaltyTokens(Props) {
       case /* Declined */2 :
           tmp = React.createElement("p", undefined, Globals$WildCards.restr("Submitting transaction failed: " + transactionStatus[0]));
           break;
-      case /* Complete */3 :
+      case /* Complete */4 :
           tmp = React.createElement("p", undefined, React.createElement(VotePageOriginal$HackyComponentThatCallsAFunctionOnce, {
                     reloadFunction: reloadFunction
                   }), Globals$WildCards.restr("You are now ready to vote :)"));
@@ -471,7 +471,7 @@ function VotePageOriginal(Props) {
       case /* Declined */2 :
           tmp = React.createElement("p", undefined, Globals$WildCards.restr("Submitting transaction failed: " + transactionStatus[0]));
           break;
-      case /* Complete */3 :
+      case /* Complete */4 :
           tmp = React.createElement(React.Fragment, undefined, React.createElement(VotePageOriginal$HackyComponentThatCallsAFunctionOnce, {
                     reloadFunction: resetLoyaltyTokenBalance
                   }), React.createElement("p", undefined, Globals$WildCards.restr("Congratulations for voting")), React.createElement(RimbleUi.Button, {

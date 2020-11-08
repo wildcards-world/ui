@@ -5055,6 +5055,18 @@
             "args": [],
             "isDeprecated": false,
             "deprecationReason": null,
+            "name": "errorMsg",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
             "name": "success",
             "type": {
               "kind": "NON_NULL",

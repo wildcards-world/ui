@@ -223,7 +223,7 @@ function useBuy(chain, animal, isGsn, library, account) {
                         $$Promise.getOk(txMinedPromise, (function (txOutcome) {
                                 console.log(txOutcome);
                                 return Curry._1(setTxState, (function (param) {
-                                              return /* Complete */Block.__(3, [txOutcome]);
+                                              return /* Complete */Block.__(4, [txOutcome]);
                                             }));
                               }));
                         $$Promise.getError(txMinedPromise, (function (error) {
@@ -284,33 +284,42 @@ function useBuy(chain, animal, isGsn, library, account) {
                           if (typeof simple === "number" || simple.tag) {
                             exit = 1;
                           } else {
-                            var txHash = simple[0].metaTx.txHash;
-                            Curry._1(setTxState, (function (param) {
-                                    return /* SignedAndSubmitted */Block.__(1, [txHash]);
-                                  }));
-                            console.log("got the hash...");
-                            var maticProvider = new (Ethers.providers.JsonRpcProvider)("https://goerli.infura.io/v3/c401b8ee3a324619a453f2b5b2122d7a");
-                            console.log("got matic provider");
-                            console.log(maticProvider);
-                            var waitForTx = $$Promise.Js.toResult(maticProvider.waitForTransaction(txHash));
-                            console.log("waitForTx");
-                            console.log(waitForTx);
-                            $$Promise.getOk(waitForTx, (function (tx) {
-                                    console.log("GOT OK");
-                                    Curry._1(setTxState, (function (param) {
-                                            return /* Complete */Block.__(3, [tx]);
-                                          }));
-                                    console.log(tx);
-                                    
-                                  }));
-                            $$Promise.getError(waitForTx, (function (error) {
-                                    console.log("GOT AN ERROR");
-                                    Curry._1(setTxState, (function (param) {
-                                            return /* Failed */4;
-                                          }));
-                                    console.log(error);
-                                    
-                                  }));
+                            var data = simple[0];
+                            var success = data.metaTx.success;
+                            var errorMsg = data.metaTx.errorMsg;
+                            var txHash = data.metaTx.txHash;
+                            if (success) {
+                              Curry._1(setTxState, (function (param) {
+                                      return /* SignedAndSubmitted */Block.__(1, [txHash]);
+                                    }));
+                              console.log("got the hash...");
+                              var maticProvider = new (Ethers.providers.JsonRpcProvider)("https://goerli.infura.io/v3/c401b8ee3a324619a453f2b5b2122d7a");
+                              console.log("got matic provider");
+                              console.log(maticProvider);
+                              var waitForTx = $$Promise.Js.toResult(maticProvider.waitForTransaction(txHash));
+                              console.log("waitForTx");
+                              console.log(waitForTx);
+                              $$Promise.getOk(waitForTx, (function (tx) {
+                                      console.log("GOT OK");
+                                      Curry._1(setTxState, (function (param) {
+                                              return /* Complete */Block.__(4, [tx]);
+                                            }));
+                                      console.log(tx);
+                                      
+                                    }));
+                              $$Promise.getError(waitForTx, (function (error) {
+                                      console.log("GOT AN ERROR");
+                                      Curry._1(setTxState, (function (param) {
+                                              return /* Failed */4;
+                                            }));
+                                      console.log(error);
+                                      
+                                    }));
+                            } else {
+                              Curry._1(setTxState, (function (param) {
+                                      return /* ServerError */Block.__(3, [Belt_Option.getWithDefault(errorMsg, "Unknown error")]);
+                                    }));
+                            }
                           }
                           if (exit === 1) {
                             Curry._1(setTxState, (function (param) {
@@ -360,7 +369,7 @@ function useBuyAuction(animal, isGsn) {
                       $$Promise.getOk(txMinedPromise, (function (txOutcome) {
                               console.log(txOutcome);
                               return Curry._1(setTxState, (function (param) {
-                                            return /* Complete */Block.__(3, [txOutcome]);
+                                            return /* Complete */Block.__(4, [txOutcome]);
                                           }));
                             }));
                       $$Promise.getError(txMinedPromise, (function (error) {
@@ -409,7 +418,7 @@ function useRedeemLoyaltyTokens(animalId, isGsn) {
             $$Promise.getOk(txMinedPromise, (function (txOutcome) {
                     console.log(txOutcome);
                     return Curry._1(setTxState, (function (param) {
-                                  return /* Complete */Block.__(3, [txOutcome]);
+                                  return /* Complete */Block.__(4, [txOutcome]);
                                 }));
                   }));
             $$Promise.getError(txMinedPromise, (function (error) {
@@ -464,7 +473,7 @@ function useApproveLoyaltyTokens(param) {
             var txMinedPromise = $$Promise.Js.toResult(tx.wait());
             $$Promise.getOk(txMinedPromise, (function (txOutcome) {
                     return Curry._1(setTxState, (function (param) {
-                                  return /* Complete */Block.__(3, [txOutcome]);
+                                  return /* Complete */Block.__(4, [txOutcome]);
                                 }));
                   }));
             $$Promise.getError(txMinedPromise, (function (error) {
@@ -520,7 +529,7 @@ function useVoteForProject(param) {
             $$Promise.getOk(txMinedPromise, (function (txOutcome) {
                     console.log(txOutcome);
                     return Curry._1(setTxState, (function (param) {
-                                  return /* Complete */Block.__(3, [txOutcome]);
+                                  return /* Complete */Block.__(4, [txOutcome]);
                                 }));
                   }));
             $$Promise.getError(txMinedPromise, (function (error) {
@@ -571,7 +580,7 @@ function useIncreaseVoteIteration(param) {
             $$Promise.getOk(txMinedPromise, (function (txOutcome) {
                     console.log(txOutcome);
                     return Curry._1(setTxState, (function (param) {
-                                  return /* Complete */Block.__(3, [txOutcome]);
+                                  return /* Complete */Block.__(4, [txOutcome]);
                                 }));
                   }));
             $$Promise.getError(txMinedPromise, (function (error) {
@@ -633,7 +642,7 @@ function useUpdateDeposit(chain, isGsn, library, account) {
                         var txMinedPromise = $$Promise.Js.toResult(tx.wait());
                         $$Promise.getOk(txMinedPromise, (function (txOutcome) {
                                 return Curry._1(setTxState, (function (param) {
-                                              return /* Complete */Block.__(3, [txOutcome]);
+                                              return /* Complete */Block.__(4, [txOutcome]);
                                             }));
                               }));
                         $$Promise.getError(txMinedPromise, (function (_error) {
@@ -744,7 +753,7 @@ function useWithdrawDeposit(chain, isGsn, library, account) {
                         $$Promise.getOk(txMinedPromise, (function (txOutcome) {
                                 console.log(txOutcome);
                                 return Curry._1(setTxState, (function (param) {
-                                              return /* Complete */Block.__(3, [txOutcome]);
+                                              return /* Complete */Block.__(4, [txOutcome]);
                                             }));
                               }));
                         $$Promise.getError(txMinedPromise, (function (error) {
@@ -1124,7 +1133,7 @@ function useChangePrice(animal, isGsn) {
                       $$Promise.getOk(txMinedPromise, (function (txOutcome) {
                               console.log(txOutcome);
                               return Curry._1(setTxState, (function (param) {
-                                            return /* Complete */Block.__(3, [txOutcome]);
+                                            return /* Complete */Block.__(4, [txOutcome]);
                                           }));
                             }));
                       $$Promise.getError(txMinedPromise, (function (error) {
