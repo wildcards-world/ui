@@ -3,7 +3,6 @@
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as BnJs from "bn.js";
 import * as React from "react";
-import * as Ethers from "ethers";
 import * as Belt_Int from "bs-platform/lib/es6/belt_Int.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Float from "bs-platform/lib/es6/belt_Float.js";
@@ -18,14 +17,12 @@ import * as Globals$WildCards from "../Globals.bs.js";
 import * as QlHooks$WildCards from "../QlHooks.bs.js";
 import * as TokenId$WildCards from "../TokenId.bs.js";
 import * as BuyInput$WildCards from "./BuyInput.bs.js";
-import * as DaiPermit$WildCards from "../eth/DaiPermit.bs.js";
 import * as InputHelp$WildCards from "../InputHelp.bs.js";
 import * as Web3Utils$WildCards from "../Web3Utils.bs.js";
 import * as Accounting$WildCards from "../Accounting.bs.js";
 import * as TxTemplate$WildCards from "../../components/components/TxTemplate.bs.js";
 import * as RootProvider$WildCards from "../RootProvider.bs.js";
 import * as ContractActions$WildCards from "../eth/ContractActions.bs.js";
-import * as TxTemplateMatic$WildCards from "../../components/components/TxTemplateMatic.bs.js";
 
 function calcPricePerSecond(price, numerator, denominator) {
   var priceBn = new BnJs.default(price);
@@ -54,7 +51,7 @@ function Buy$Buy(Props) {
   var web3Context = Core.useWeb3React();
   var match = ContractActions$WildCards.useBuy(chain, tokenId, false, web3Context.library, web3Context.account);
   var buyFunc = match[0];
-  var match$1 = ContractActions$WildCards.useBuyAuction(tokenId, false);
+  var match$1 = ContractActions$WildCards.useBuyAuction(chain, tokenId, false, web3Context.library, web3Context.account);
   var buyFuncAuction = match$1[0];
   var userBalance = Belt_Option.mapWithDefault(RootProvider$WildCards.useEthBalance(undefined), new BnJs.default("0"), (function (a) {
           return a;
@@ -175,170 +172,6 @@ var Buy = {
   make: Buy$Buy
 };
 
-function Buy$BuyMatic(Props) {
-  var tokenId = Props.tokenId;
-  var web3Context = Core.useWeb3React();
-  var match = React.useState((function () {
-          
-        }));
-  var match$1 = React.useState((function () {
-          
-        }));
-  var userBalance = new BnJs.default("100000000000000000000");
-  var match$2 = QlHooks$WildCards.usePledgeRateDetailed(/* MaticQuery */1, tokenId);
-  var ratio = match$2[2];
-  var denominator = match$2[1];
-  var numerator = match$2[0];
-  var priceStatus = QlHooks$WildCards.usePrice(/* MaticQuery */1, tokenId);
-  var isOnAuction = Animal$WildCards.useIsOnAuction(/* MaticQuery */1, tokenId);
-  var launchTimeOpt = QlHooks$WildCards.useLaunchTimeBN(/* MaticQuery */1, tokenId);
-  var currentPriceWei = Animal$WildCards.useAuctionPriceWei(/* MaticQuery */1, tokenId, Belt_Option.getWithDefault(launchTimeOpt, new BnJs.default("5000")));
-  var currentPriceWei$1 = isOnAuction ? currentPriceWei : (
-      typeof priceStatus === "number" ? new BnJs.default("0") : (
-          priceStatus.tag ? priceStatus[0] : new BnJs.default("0")
-        )
-    );
-  var tokenIdName = "token#" + TokenId$WildCards.toString(tokenId);
-  var maxAvailableDepositBN = userBalance.sub(new BnJs.default("3000000000000000")).sub(currentPriceWei$1);
-  var maxAvailableDeposit = Web3Utils$WildCards.fromWeiToEth(maxAvailableDepositBN.toString());
-  var currentPriceEth = Web3Utils$WildCards.fromWeiBNToEth(currentPriceWei$1);
-  var currentPriceFloat = Accounting$WildCards.defaultZeroF(Belt_Float.fromString(currentPriceEth));
-  var currentPriceFloatWithMinimum = Math.max(currentPriceFloat, 0.005);
-  var defaultPriceValue = Globals$WildCards.toFixedWithPrecisionNoTrailingZeros(currentPriceFloatWithMinimum * 1.5, 2);
-  var defaultMonthlyPatronage = Globals$WildCards.toFixedWithPrecisionNoTrailingZeros(currentPriceFloatWithMinimum * 1.5 * ratio, 3);
-  var defaultPriceWei = Web3Utils$WildCards.toWeiFromEth(defaultPriceValue);
-  var depositForAYear = calcRequiredDepositForTime(31536000, defaultPriceWei, numerator, denominator);
-  var match$3 = Caml_format.caml_float_of_string(depositForAYear) < Caml_format.caml_float_of_string(maxAvailableDeposit) ? /* tuple */[
-      31536000,
-      depositForAYear
-    ] : /* tuple */[
-      calculateDepositDuration(Web3Utils$WildCards.toWeiFromEth(maxAvailableDeposit), defaultPriceWei, numerator, denominator),
-      Math.max(0, Caml_format.caml_float_of_string(maxAvailableDeposit)).toString()
-    ];
-  var defaultDeposit = match$3[1];
-  var defaultDepositTime = match$3[0];
-  var match$4 = React.useState((function () {
-          return defaultPriceValue;
-        }));
-  var setInitialPrice = match$4[1];
-  var newPrice = match$4[0];
-  var match$5 = React.useState((function () {
-          return defaultMonthlyPatronage;
-        }));
-  var setPatronage = match$5[1];
-  var match$6 = React.useState((function () {
-          return defaultDeposit;
-        }));
-  var setInitialDeposit = match$6[1];
-  var deposit = match$6[0];
-  var match$7 = React.useState((function () {
-          return defaultDepositTime;
-        }));
-  var setDepositTimeInSeconds = match$7[1];
-  var onSubmitBuy = function (param) {
-    var amountToSend = currentPriceWei$1.add(new BnJs.default(Web3Utils.toWei(deposit, "ether")));
-    var nonce = "0";
-    var verifyingContract = ContractActions$WildCards.getDaiContractAddress(/* MaticQuery */1, 5);
-    var spender = ContractActions$WildCards.getStewardAddress(/* MaticQuery */1, 5);
-    var chainId = new BnJs.default(5);
-    console.log("contract addresses " + (verifyingContract + (" -- " + spender)));
-    var buyAuctionFunction = function (param) {
-      console.log("BUYING WITH AUCTION!!!");
-      var newPriceEncoded = Ethers.utils.parseUnits(newPrice, 18);
-      console.log("price encoded", newPriceEncoded);
-      var match = web3Context.library;
-      var match$1 = web3Context.account;
-      if (match === undefined) {
-        return ;
-      }
-      if (match$1 === undefined) {
-        return ;
-      }
-      var __x = DaiPermit$WildCards.createPermitSig(match.provider, verifyingContract, nonce, chainId, match$1, spender, match$1);
-      __x.then((function (rsvSig) {
-              DaiPermit$WildCards.buyAuctionWithPermit(web3Context.library, web3Context.account, spender, "0", "0", true, rsvSig.v, rsvSig.r, rsvSig.s, TokenId$WildCards.toString(tokenId), Web3Utils$WildCards.toWeiFromEth(newPrice), "150000", amountToSend.add(new BnJs.default("1000000000000000")).toString());
-              return Promise.resolve(undefined);
-            }));
-      
-    };
-    if (typeof priceStatus === "number") {
-      console.log("wrong buy auction function...");
-      return buyAuctionFunction(undefined);
-    }
-    if (priceStatus.tag) {
-      if (priceStatus[0].gt(new BnJs.default("0"))) {
-        var match = web3Context.library;
-        var match$1 = web3Context.account;
-        if (match === undefined) {
-          return ;
-        }
-        if (match$1 === undefined) {
-          return ;
-        }
-        var __x = DaiPermit$WildCards.createPermitSig(match.provider, verifyingContract, nonce, chainId, match$1, spender, match$1);
-        __x.then((function (rsvSig) {
-                DaiPermit$WildCards.buyWithPermit(web3Context.library, web3Context.account, spender, "0", "0", true, rsvSig.v, rsvSig.r, rsvSig.s, TokenId$WildCards.toString(tokenId), Web3Utils$WildCards.toWeiFromEth(newPrice), currentPriceWei$1.toString(), "150000", amountToSend.toString());
-                return Promise.resolve(undefined);
-              }));
-        return ;
-      }
-      console.log("buy with auction else");
-      buyAuctionFunction(undefined);
-      return ;
-    }
-    console.log("wrong buy auction function...");
-    return buyAuctionFunction(undefined);
-  };
-  var setNewPrice = function (value) {
-    var match = InputHelp$WildCards.onlyUpdateValueIfPositiveFloat(newPrice, setInitialPrice, value);
-    if (!match[1]) {
-      return ;
-    }
-    var value$1 = match[0];
-    var patronage = (Accounting$WildCards.defaultZeroF(Belt_Float.fromString(value$1)) * ratio).toString();
-    Curry._1(setPatronage, (function (param) {
-            return patronage;
-          }));
-    var timeInSeconds = calculateDepositDuration(Web3Utils$WildCards.toWeiFromEth(deposit), Web3Utils$WildCards.toWeiFromEth(value$1), numerator, denominator);
-    return Curry._1(setDepositTimeInSeconds, (function (param) {
-                  return timeInSeconds;
-                }));
-  };
-  var setDeposit = function (value) {
-    var match = InputHelp$WildCards.onlyUpdateValueIfInRangeFloat(0, Caml_format.caml_float_of_string(maxAvailableDeposit), deposit, setInitialDeposit, value);
-    if (!match[1]) {
-      return ;
-    }
-    var timeInSeconds = calculateDepositDuration(Web3Utils$WildCards.toWeiFromEth(match[0]), Web3Utils$WildCards.toWeiFromEth(newPrice), numerator, denominator);
-    return Curry._1(setDepositTimeInSeconds, (function (param) {
-                  return timeInSeconds;
-                }));
-  };
-  return React.createElement(TxTemplateMatic$WildCards.make, {
-              children: React.createElement(TxTemplateMatic$WildCards.make, {
-                    children: React.createElement(BuyInput$WildCards.make, {
-                          patronage: match$5[0],
-                          onSubmitBuy: onSubmitBuy,
-                          newPrice: newPrice,
-                          deposit: deposit,
-                          depositTimeInSeconds: match$7[0],
-                          maxAvailableDeposit: maxAvailableDeposit,
-                          setNewPrice: setNewPrice,
-                          setDeposit: setDeposit,
-                          tokenIdName: tokenIdName
-                        }),
-                    txHash: match[0],
-                    closeButtonText: "Back to view Animal"
-                  }),
-              txHash: match$1[0],
-              closeButtonText: "Back to view Animal"
-            });
-}
-
-var BuyMatic = {
-  make: Buy$BuyMatic
-};
-
 function Buy$1(Props) {
   var chain = Props.chain;
   var tokenId = Props.tokenId;
@@ -378,7 +211,6 @@ export {
   calculateDepositDuration ,
   calcRequiredDepositForTime ,
   Buy ,
-  BuyMatic ,
   make ,
   
 }

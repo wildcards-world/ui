@@ -99,6 +99,34 @@ module Contract = {
       "buyWithPermit";
 
     [@bs.send] [@bs.scope "methods"]
+    external buyAuctionWithPermit:
+      (
+        steward,
+        //   nonce,
+        BN.t,
+        //   expiry,
+        BN.t,
+        //   allowed,
+        bool,
+        //   v,
+        int,
+        //   r,
+        string,
+        //   s,
+        string,
+        //   tokenId,
+        string,
+        //   _newPrice,
+        string,
+        //   serviceProviderPercentage,
+        string,
+        //   depositAmount,
+        string
+      ) =>
+      contractMethod =
+      "buyAuctionWithPermit";
+
+    [@bs.send] [@bs.scope "methods"]
     external withdrawDeposit: (steward, ethAddress) => contractMethod =
       "withdrawDeposit";
 

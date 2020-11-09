@@ -277,7 +277,6 @@ let execDaiPermitMetaTx =
       daiNonce,
       stewardNonce,
       setTxState,
-      value,
       sendMetaTx,
       userAddress,
       spender,
@@ -293,8 +292,6 @@ let execDaiPermitMetaTx =
       chainId,
       verifyingContract,
     ) => {
-  setTxState(_ => DaiPermit(value->BN.new_));
-
   DaiPermit.createPermitSig(
     lib.provider,
     verifyingContract,
@@ -445,12 +442,10 @@ let useBuy =
             let stewardNonce = maticState##stewardNonce;
 
             setTxState(_ => DaiPermit(value->BN.new_));
-
             execDaiPermitMetaTx(
               daiNonce,
               stewardNonce,
               setTxState,
-              value,
               sendMetaTx,
               userAddress,
               spender,
@@ -529,56 +524,117 @@ let useBuy =
   };
 };
 
-let useBuyAuction = (animal: TokenId.t, isGsn) => {
-  let animalId = animal->TokenId.toString;
+let useBuyAuction =
+    (~chain, animal, isGsn, library: option(Web3.web3Library), account) => {
   let (txState, setTxState) = React.useState(() => UnInitialised);
+
+  let animalId = animal->TokenId.toString;
 
   let optSteward = useStewardContract(isGsn);
 
-  (
-    (newPrice, wildcardsPercentage, value: string) => {
-      let newPriceEncoded = parseUnits(. newPrice, 18);
+  let sendMetaTx = QlHooks.useMetaTx();
 
-      let value = parseUnits(. value, 0);
+  let maticState =
+    account->Option.flatMap(usersAddress => {
+      Js.log2("the users address", usersAddress);
+      QlHooks.useMaticState(~forceRefetch=false, usersAddress, "goerli");
+    });
 
-      setTxState(_ => Created);
-      switch (optSteward) {
-      | Some(steward) =>
-        // let buyPromise =
-        let buyPromise =
-          steward.buyAuction(.
-            animalId,
-            newPriceEncoded,
-            wildcardsPercentage,
-            {
-              gasLimit: "500302", //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
+  let verifyingContract = getDaiContractAddress(chain, 5);
+  let spender = getStewardAddress(chain, 5);
+  let chainId = BN.newInt_(5);
 
-              value,
-            },
-          )
-          ->Promise.Js.toResult;
-        buyPromise->Promise.getOk(tx => {
-          setTxState(_ => SignedAndSubmitted(tx.hash));
-          let txMinedPromise = tx.wait(.)->Promise.Js.toResult;
-          txMinedPromise->Promise.getOk(txOutcome => {
-            Js.log(txOutcome);
-            setTxState(_ => Complete(txOutcome));
-          });
-          txMinedPromise->Promise.getError(error => {
-            setTxState(_ => Failed);
-            Js.log(error);
-          });
-          ();
-        });
-        buyPromise->Promise.getError(error => {
-          setTxState(_ => Declined(error.message))
-        });
-        ();
-      | None => ()
-      };
-    },
-    txState,
-  );
+  switch (chain) {
+  | Client.Neither
+  | Client.MaticQuery => (
+      (
+        (newPrice, wildcardsPercentage, value: string) => {
+          switch (library, account, maticState) {
+          | (Some(lib), Some(userAddress), Some(maticState)) =>
+            let daiNonce = maticState##daiNonce;
+            let stewardNonce = maticState##stewardNonce;
+            setTxState(_ => DaiPermit(value->BN.new_));
+            execDaiPermitMetaTx(
+              daiNonce,
+              stewardNonce,
+              setTxState,
+              sendMetaTx,
+              userAddress,
+              spender,
+              lib,
+              (steward, v, r, s) =>
+                steward->Web3.Contract.MaticSteward.buyAuctionWithPermit(
+                  BN.new_(daiNonce),
+                  BN.new_("0"),
+                  true,
+                  v,
+                  r,
+                  s,
+                  animalId,
+                  newPrice,
+                  wildcardsPercentage,
+                  value,
+                ).
+                  encodeABI(),
+              chainId,
+              verifyingContract,
+            );
+
+          | _ =>
+            Js.log("something important is null");
+            Js.log3(library, account, maticState);
+            ();
+          };
+        }
+      ),
+      txState,
+    )
+  | Client.MainnetQuery => (
+      (
+        (newPrice, wildcardsPercentage, value: string) => {
+          let newPriceEncoded = parseUnits(. newPrice, 18);
+
+          let value = parseUnits(. value, 0);
+
+          setTxState(_ => Created);
+          switch (optSteward) {
+          | Some(steward) =>
+            // let buyPromise =
+            let buyPromise =
+              steward.buyAuction(.
+                animalId,
+                newPriceEncoded,
+                wildcardsPercentage,
+                {
+                  gasLimit: "500302", //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
+                  value,
+                },
+              )
+              ->Promise.Js.toResult;
+            buyPromise->Promise.getOk(tx => {
+              setTxState(_ => SignedAndSubmitted(tx.hash));
+              let txMinedPromise = tx.wait(.)->Promise.Js.toResult;
+              txMinedPromise->Promise.getOk(txOutcome => {
+                Js.log(txOutcome);
+                setTxState(_ => Complete(txOutcome));
+              });
+              txMinedPromise->Promise.getError(error => {
+                setTxState(_ => Failed);
+                Js.log(error);
+              });
+              ();
+            });
+            buyPromise->Promise.getError(error => {
+              setTxState(_ => Declined(error.message))
+            });
+            ();
+          | None => ()
+          };
+        }
+      ),
+      txState,
+    )
+  };
 };
 
 let useRedeemLoyaltyTokens = (animalId: string, isGsn) => {
@@ -797,106 +853,31 @@ let useUpdateDeposit =
           | (Some(lib), Some(userAddress), Some(maticState)) =>
             let daiNonce = maticState##daiNonce;
             let stewardNonce = maticState##stewardNonce;
-            setTxState(_ => Created);
-
-            DaiPermit.createPermitSig(
-              lib.provider,
-              verifyingContract,
+            setTxState(_ => DaiPermit(amountToAdd->BN.new_));
+            execDaiPermitMetaTx(
               daiNonce,
-              chainId,
+              stewardNonce,
+              setTxState,
+              sendMetaTx,
               userAddress,
               spender,
-              userAddress,
-            )
-            ->Js.Promise.then_(
-                rsvSig => {
-                  open ContractUtil;
-                  let {r, s, v} = rsvSig;
+              lib,
+              (steward, v, r, s) =>
+                steward->Web3.Contract.MaticSteward.depositWithPermit(
+                  BN.new_(daiNonce),
+                  BN.new_("0"),
+                  true,
+                  v,
+                  r,
+                  s,
+                  userAddress,
+                  BN.new_(amountToAdd),
+                ).
+                  encodeABI(),
+              chainId,
+              verifyingContract,
+            );
 
-                  let web3 = Web3.new_(lib.provider);
-
-                  let steward =
-                    Web3.Contract.MaticSteward.getStewardContract(
-                      web3,
-                      spender,
-                    );
-
-                  let functionSignature =
-                    steward->Web3.Contract.MaticSteward.depositWithPermit(
-                      BN.new_(daiNonce),
-                      BN.new_("0"),
-                      true,
-                      v,
-                      r,
-                      s,
-                      userAddress,
-                      BN.new_(amountToAdd),
-                    ).
-                      encodeABI();
-
-                  let messageToSign =
-                    ContractUtil.constructMetaTransactionMessage(
-                      stewardNonce,
-                      chainId->BN.toString,
-                      functionSignature,
-                      spender,
-                    );
-
-                  web3
-                  ->Web3.personalSign(messageToSign, userAddress)
-                  ->Js.Promise.then_(
-                      signature =>
-                        Js.Promise.resolve((functionSignature, signature)),
-                      _,
-                    );
-                },
-                _,
-              )
-            ->Js.Promise.then_(
-                ((functionSignature, signature)) => {
-                  open ContractUtil;
-                  let {r, s, v} = getEthSig(signature);
-                  let resultPromise =
-                    sendMetaTx(
-                      ~network="goerli",
-                      ~r,
-                      ~s,
-                      ~v,
-                      ~functionSignature,
-                      userAddress,
-                    );
-                  resultPromise;
-                },
-                _,
-              )
-            ->Js.Promise.then_(
-                result => {
-                  open ReasonApolloHooks;
-                  let (simple, _) = result;
-
-                  (
-                    switch (simple) {
-                    | ApolloHooksMutation.Errors(_)
-                    | ApolloHooksMutation.NoData => setTxState(_ => Failed)
-                    | ApolloHooksMutation.Data(data) =>
-                      setTxState(_ =>
-                        SignedAndSubmitted(data##metaTx##txHash)
-                      )
-                    }
-                  )
-                  ->ignore;
-                  Js.Promise.resolve();
-                },
-                _,
-              )
-            ->Js.Promise.catch(
-                err => {
-                  Js.log2("this error was caught", err);
-                  Js.Promise.resolve(""->Obj.magic);
-                },
-                _,
-              )
-            ->ignore;
           | _ =>
             Js.log("something important is null");
             Js.log3(library, account, maticState);
