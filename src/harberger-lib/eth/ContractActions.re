@@ -272,6 +272,141 @@ type transactionState =
   | Complete(txResult)
   | Failed;
 
+let execDaiPermitMetaTx =
+    (
+      daiNonce,
+      stewardNonce,
+      setTxState,
+      value,
+      sendMetaTx,
+      userAddress,
+      spender,
+      lib: Web3.web3Library,
+      generateFunctionSignature:
+        (
+          Web3.Contract.MaticSteward.steward,
+          DaiPermit.v,
+          DaiPermit.r,
+          DaiPermit.s
+        ) =>
+        string,
+      chainId,
+      verifyingContract,
+    ) => {
+  setTxState(_ => DaiPermit(value->BN.new_));
+
+  DaiPermit.createPermitSig(
+    lib.provider,
+    verifyingContract,
+    daiNonce,
+    chainId,
+    userAddress,
+    spender,
+    userAddress,
+  )
+  ->Js.Promise.then_(
+      rsvSig => {
+        setTxState(_ => SignMetaTx);
+        open ContractUtil;
+        let {r, s, v} = rsvSig;
+
+        let web3 = Web3.new_(lib.provider);
+
+        let steward =
+          Web3.Contract.MaticSteward.getStewardContract(web3, spender);
+
+        let functionSignature = generateFunctionSignature(steward, v, r, s);
+
+        let messageToSign =
+          ContractUtil.constructMetaTransactionMessage(
+            stewardNonce,
+            chainId->BN.toString,
+            functionSignature,
+            spender,
+          );
+
+        web3
+        ->Web3.personalSign(messageToSign, userAddress)
+        ->Js.Promise.then_(
+            signature => Js.Promise.resolve((functionSignature, signature)),
+            _,
+          );
+      },
+      _,
+    )
+  ->Js.Promise.then_(
+      ((functionSignature, signature)) => {
+        open ContractUtil;
+        let {r, s, v} = getEthSig(signature);
+        let resultPromise =
+          sendMetaTx(
+            ~network="goerli",
+            ~r,
+            ~s,
+            ~v,
+            ~functionSignature,
+            userAddress,
+          );
+        resultPromise;
+      },
+      _,
+    )
+  ->Js.Promise.then_(
+      result => {
+        open ReasonApolloHooks;
+        let (simple, _) = result;
+
+        setTxState(_ => SubmittedMetaTx);
+
+        (
+          switch (simple) {
+          | ApolloHooksMutation.Errors(_)
+          | ApolloHooksMutation.NoData => setTxState(_ => Failed)
+          | ApolloHooksMutation.Data(data) =>
+            let success = data##metaTx##success;
+            let errorMsg = data##metaTx##errorMsg;
+            let txHash = data##metaTx##txHash;
+            if (success) {
+              setTxState(_ => SignedAndSubmitted(txHash));
+
+              let providerUrl = "https://goerli.infura.io/v3/c401b8ee3a324619a453f2b5b2122d7a";
+              let maticProvider = Ethers.makeProvider(providerUrl);
+
+              let waitForTx =
+                maticProvider
+                ->Ethers.waitForTransaction(txHash)
+                ->Promise.Js.toResult;
+
+              waitForTx->Promise.getOk(tx => {setTxState(_ => Complete(tx))});
+              waitForTx->Promise.getError(error => {
+                setTxState(_ => Failed);
+                Js.log("GOT AN ERROR");
+                Js.log(error);
+              });
+            } else {
+              setTxState(_ =>
+                ServerError(errorMsg->Option.getWithDefault("Unknown error"))
+              );
+              ();
+            };
+          }
+        )
+        ->ignore;
+        Js.Promise.resolve();
+      },
+      _,
+    )
+  // TODO: This needs to be
+  ->Js.Promise.catch(
+      err => {
+        Js.log2("this error was caught", err);
+        Js.Promise.resolve(""->Obj.magic);
+      },
+      _,
+    )
+  ->ignore;
+};
+
 let useBuy =
     (
       ~chain,
@@ -304,164 +439,43 @@ let useBuy =
       (
         (newPrice, oldPrice, wildcardsPercentage, value: string) => {
           switch (library, account, maticState) {
+          // TODO: This function should not take in options of these values, they should be defined
           | (Some(lib), Some(userAddress), Some(maticState)) =>
-            /* START */
             let daiNonce = maticState##daiNonce;
             let stewardNonce = maticState##stewardNonce;
+
             setTxState(_ => DaiPermit(value->BN.new_));
 
-            DaiPermit.createPermitSig(
-              lib.provider,
-              verifyingContract,
+            execDaiPermitMetaTx(
               daiNonce,
-              chainId,
+              stewardNonce,
+              setTxState,
+              value,
+              sendMetaTx,
               userAddress,
               spender,
-              userAddress,
-            )
-            ->Js.Promise.then_(
-                rsvSig => {
-                  setTxState(_ => SignMetaTx);
-                  open ContractUtil;
-                  let {r, s, v} = rsvSig;
-
-                  let web3 = Web3.new_(lib.provider);
-
-                  let steward =
-                    Web3.Contract.MaticSteward.getStewardContract(
-                      web3,
-                      spender,
-                    );
-
-                  let functionSignature =
-                    steward->Web3.Contract.MaticSteward.buyWithPermit(
-                      BN.new_(daiNonce),
-                      BN.new_("0"),
-                      true,
-                      v,
-                      r,
-                      s,
-                      animalId,
-                      newPrice->Web3Utils.toWeiFromEth,
-                      oldPrice,
-                      wildcardsPercentage,
-                      value,
-                    ).
-                      encodeABI();
-
-                  let messageToSign =
-                    ContractUtil.constructMetaTransactionMessage(
-                      stewardNonce,
-                      chainId->BN.toString,
-                      functionSignature,
-                      spender,
-                    );
-
-                  web3
-                  ->Web3.personalSign(messageToSign, userAddress)
-                  ->Js.Promise.then_(
-                      signature =>
-                        Js.Promise.resolve((functionSignature, signature)),
-                      _,
-                    );
-                },
-                _,
-              )
-            ->Js.Promise.then_(
-                ((functionSignature, signature)) => {
-                  open ContractUtil;
-                  let {r, s, v} = getEthSig(signature);
-                  let resultPromise =
-                    sendMetaTx(
-                      ~network="goerli",
-                      ~r,
-                      ~s,
-                      ~v,
-                      ~functionSignature,
-                      userAddress,
-                    );
-                  resultPromise;
-                },
-                _,
-              )
-            // ->Js.Promise.then_(
-            //     txResult => {
-            //       Js.log2("THE TRANSACTION", txResult);
-            //       setTxState(_ => Complete(txResult->Obj.magic));
-            //       Js.log2("THE TRANSACTION", txResult)
-            //     },
-            //     _,
-            //   )
-            // ->ignore;
-            // Ethers.makeProvider("https://rpc-mumbai.matic.today");
-            ->Js.Promise.then_(
-                result => {
-                  open ReasonApolloHooks;
-                  let (simple, _) = result;
-
-                  setTxState(_ => SubmittedMetaTx);
-
-                  (
-                    switch (simple) {
-                    | ApolloHooksMutation.Errors(_)
-                    | ApolloHooksMutation.NoData => setTxState(_ => Failed)
-                    | ApolloHooksMutation.Data(data) =>
-                      let success = data##metaTx##success;
-                      let errorMsg = data##metaTx##errorMsg;
-                      let txHash = data##metaTx##txHash;
-                      if (success) {
-                        setTxState(_ => SignedAndSubmitted(txHash));
-                        Js.log("got the hash...");
-
-                        let providerUrl = "https://goerli.infura.io/v3/c401b8ee3a324619a453f2b5b2122d7a";
-                        let maticProvider = Ethers.makeProvider(providerUrl);
-                        Js.log("got matic provider");
-                        Js.log(maticProvider);
-                        let waitForTx =
-                          maticProvider
-                          ->Ethers.waitForTransaction(txHash)
-                          ->Promise.Js.toResult;
-                        Js.log("waitForTx");
-                        Js.log(waitForTx);
-                        waitForTx->Promise.getOk(tx => {
-                          Js.log("GOT OK");
-                          setTxState(_ => Complete(tx));
-                          Js.log(tx);
-                        });
-                        waitForTx->Promise.getError(error => {
-                          Js.log("GOT AN ERROR");
-                          setTxState(_ => Failed);
-                          Js.log(error);
-                        });
-                        ();
-                      } else {
-                        setTxState(_ =>
-                          ServerError(
-                            errorMsg->Option.getWithDefault("Unknown error"),
-                          )
-                        );
-                        ();
-                      };
-                    }
-                  )
-                  ->ignore;
-                  Js.Promise.resolve();
-                },
-                _,
-              )
-            ->Js.Promise.catch(
-                err => {
-                  Js.log2("this error was caught", err);
-                  Js.Promise.resolve(""->Obj.magic);
-                },
-                _,
-              )
-            ->ignore;
-
-          /* END */
+              lib,
+              (steward, v, r, s) => {
+                steward->Web3.Contract.MaticSteward.buyWithPermit(
+                  BN.new_(daiNonce),
+                  BN.new_("0"),
+                  true,
+                  v,
+                  r,
+                  s,
+                  animalId,
+                  newPrice->Web3Utils.toWeiFromEth,
+                  oldPrice,
+                  wildcardsPercentage,
+                  value,
+                ).
+                  encodeABI()
+              },
+              chainId,
+              verifyingContract,
+            );
           | _ => ()
           };
-          ();
         }
       ),
       txState,

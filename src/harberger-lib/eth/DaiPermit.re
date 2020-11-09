@@ -101,6 +101,9 @@ let createPermitSig =
   );
 };
 
+type v = int;
+type r = string;
+type s = string;
 [@bs.module "./biconomy-exec"]
 //   library,
 external buyWithPermit:
@@ -116,12 +119,9 @@ external buyWithPermit:
     string,
     //   allowed,
     bool,
-    //   v,
-    int,
-    //   r,
-    string,
-    //   s,
-    string,
+    v,
+    r,
+    s,
     //   tokenId,
     string,
     //   _newPrice,

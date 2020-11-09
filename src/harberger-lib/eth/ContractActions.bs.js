@@ -184,6 +184,83 @@ function useVoteContract(isGsn) {
             ]);
 }
 
+function execDaiPermitMetaTx(daiNonce, stewardNonce, setTxState, value, sendMetaTx, userAddress, spender, lib, generateFunctionSignature, chainId, verifyingContract) {
+  Curry._1(setTxState, (function (param) {
+          return /* DaiPermit */Block.__(0, [new BnJs.default(value)]);
+        }));
+  var __x = DaiPermit$WildCards.createPermitSig(lib.provider, verifyingContract, daiNonce, chainId, userAddress, spender, userAddress);
+  var __x$1 = __x.then((function (rsvSig) {
+          Curry._1(setTxState, (function (param) {
+                  return /* SignMetaTx */1;
+                }));
+          var web3 = new Web3.default(lib.provider);
+          var steward = Curry._2(Web3$WildCards.Contract.MaticSteward.getStewardContract, web3, spender);
+          var functionSignature = Curry._4(generateFunctionSignature, steward, rsvSig.v, rsvSig.r, rsvSig.s);
+          var messageToSign = ContractUtil$WildCards.constructMetaTransactionMessage(stewardNonce, chainId.toString(), functionSignature, spender);
+          var __x = web3.eth.personal.sign(messageToSign, userAddress);
+          return __x.then((function (signature) {
+                        return Promise.resolve(/* tuple */[
+                                    functionSignature,
+                                    signature
+                                  ]);
+                      }));
+        }));
+  var __x$2 = __x$1.then((function (param) {
+          var match = ContractUtil$WildCards.getEthSig(param[1]);
+          return Curry._6(sendMetaTx, "goerli", match.r, match.s, match.v, param[0], userAddress);
+        }));
+  var __x$3 = __x$2.then((function (result) {
+          var simple = result[0];
+          Curry._1(setTxState, (function (param) {
+                  return /* SubmittedMetaTx */3;
+                }));
+          var exit = 0;
+          if (typeof simple === "number" || simple.tag) {
+            exit = 1;
+          } else {
+            var data = simple[0];
+            var success = data.metaTx.success;
+            var errorMsg = data.metaTx.errorMsg;
+            var txHash = data.metaTx.txHash;
+            if (success) {
+              Curry._1(setTxState, (function (param) {
+                      return /* SignedAndSubmitted */Block.__(1, [txHash]);
+                    }));
+              var maticProvider = new (Ethers.providers.JsonRpcProvider)("https://goerli.infura.io/v3/c401b8ee3a324619a453f2b5b2122d7a");
+              var waitForTx = $$Promise.Js.toResult(maticProvider.waitForTransaction(txHash));
+              $$Promise.getOk(waitForTx, (function (tx) {
+                      return Curry._1(setTxState, (function (param) {
+                                    return /* Complete */Block.__(4, [tx]);
+                                  }));
+                    }));
+              $$Promise.getError(waitForTx, (function (error) {
+                      Curry._1(setTxState, (function (param) {
+                              return /* Failed */4;
+                            }));
+                      console.log("GOT AN ERROR");
+                      console.log(error);
+                      
+                    }));
+            } else {
+              Curry._1(setTxState, (function (param) {
+                      return /* ServerError */Block.__(3, [Belt_Option.getWithDefault(errorMsg, "Unknown error")]);
+                    }));
+            }
+          }
+          if (exit === 1) {
+            Curry._1(setTxState, (function (param) {
+                    return /* Failed */4;
+                  }));
+          }
+          return Promise.resolve(undefined);
+        }));
+  __x$3.catch((function (err) {
+          console.log("this error was caught", err);
+          return Promise.resolve("");
+        }));
+  
+}
+
 function useBuy(chain, animal, isGsn, library, account) {
   var animalId = TokenId$WildCards.toString(animal);
   var optSteward = useStewardContract(isGsn);
@@ -247,93 +324,24 @@ function useBuy(chain, animal, isGsn, library, account) {
   } else {
     return /* tuple */[
             (function (newPrice, oldPrice, wildcardsPercentage, value) {
-                if (library !== undefined && account !== undefined && maticState !== undefined) {
-                  var maticState$1 = Caml_option.valFromOption(maticState);
-                  var daiNonce = maticState$1.daiNonce;
-                  var stewardNonce = maticState$1.stewardNonce;
-                  Curry._1(setTxState, (function (param) {
-                          return /* DaiPermit */Block.__(0, [new BnJs.default(value)]);
-                        }));
-                  var __x = DaiPermit$WildCards.createPermitSig(library.provider, verifyingContract, daiNonce, chainId, account, spender, account);
-                  var __x$1 = __x.then((function (rsvSig) {
-                          Curry._1(setTxState, (function (param) {
-                                  return /* SignMetaTx */1;
-                                }));
-                          var web3 = new Web3.default(library.provider);
-                          var steward = Curry._2(Web3$WildCards.Contract.MaticSteward.getStewardContract, web3, spender);
-                          var functionSignature = Curry._1(steward.methods.buyWithPermit(new BnJs.default(daiNonce), new BnJs.default("0"), true, rsvSig.v, rsvSig.r, rsvSig.s, animalId, Web3Utils$WildCards.toWeiFromEth(newPrice), oldPrice, wildcardsPercentage, value).encodeABI, undefined);
-                          var messageToSign = ContractUtil$WildCards.constructMetaTransactionMessage(stewardNonce, chainId.toString(), functionSignature, spender);
-                          var __x = web3.eth.personal.sign(messageToSign, account);
-                          return __x.then((function (signature) {
-                                        return Promise.resolve(/* tuple */[
-                                                    functionSignature,
-                                                    signature
-                                                  ]);
-                                      }));
-                        }));
-                  var __x$2 = __x$1.then((function (param) {
-                          var match = ContractUtil$WildCards.getEthSig(param[1]);
-                          return Curry._6(sendMetaTx, "goerli", match.r, match.s, match.v, param[0], account);
-                        }));
-                  var __x$3 = __x$2.then((function (result) {
-                          var simple = result[0];
-                          Curry._1(setTxState, (function (param) {
-                                  return /* SubmittedMetaTx */3;
-                                }));
-                          var exit = 0;
-                          if (typeof simple === "number" || simple.tag) {
-                            exit = 1;
-                          } else {
-                            var data = simple[0];
-                            var success = data.metaTx.success;
-                            var errorMsg = data.metaTx.errorMsg;
-                            var txHash = data.metaTx.txHash;
-                            if (success) {
-                              Curry._1(setTxState, (function (param) {
-                                      return /* SignedAndSubmitted */Block.__(1, [txHash]);
-                                    }));
-                              console.log("got the hash...");
-                              var maticProvider = new (Ethers.providers.JsonRpcProvider)("https://goerli.infura.io/v3/c401b8ee3a324619a453f2b5b2122d7a");
-                              console.log("got matic provider");
-                              console.log(maticProvider);
-                              var waitForTx = $$Promise.Js.toResult(maticProvider.waitForTransaction(txHash));
-                              console.log("waitForTx");
-                              console.log(waitForTx);
-                              $$Promise.getOk(waitForTx, (function (tx) {
-                                      console.log("GOT OK");
-                                      Curry._1(setTxState, (function (param) {
-                                              return /* Complete */Block.__(4, [tx]);
-                                            }));
-                                      console.log(tx);
-                                      
-                                    }));
-                              $$Promise.getError(waitForTx, (function (error) {
-                                      console.log("GOT AN ERROR");
-                                      Curry._1(setTxState, (function (param) {
-                                              return /* Failed */4;
-                                            }));
-                                      console.log(error);
-                                      
-                                    }));
-                            } else {
-                              Curry._1(setTxState, (function (param) {
-                                      return /* ServerError */Block.__(3, [Belt_Option.getWithDefault(errorMsg, "Unknown error")]);
-                                    }));
-                            }
-                          }
-                          if (exit === 1) {
-                            Curry._1(setTxState, (function (param) {
-                                    return /* Failed */4;
-                                  }));
-                          }
-                          return Promise.resolve(undefined);
-                        }));
-                  __x$3.catch((function (err) {
-                          console.log("this error was caught", err);
-                          return Promise.resolve("");
-                        }));
+                if (library === undefined) {
+                  return ;
                 }
-                
+                if (account === undefined) {
+                  return ;
+                }
+                if (maticState === undefined) {
+                  return ;
+                }
+                var maticState$1 = Caml_option.valFromOption(maticState);
+                var daiNonce = maticState$1.daiNonce;
+                var stewardNonce = maticState$1.stewardNonce;
+                Curry._1(setTxState, (function (param) {
+                        return /* DaiPermit */Block.__(0, [new BnJs.default(value)]);
+                      }));
+                return execDaiPermitMetaTx(daiNonce, stewardNonce, setTxState, value, sendMetaTx, account, spender, library, (function (steward, v, r, s) {
+                              return Curry._1(steward.methods.buyWithPermit(new BnJs.default(daiNonce), new BnJs.default("0"), true, v, r, s, animalId, Web3Utils$WildCards.toWeiFromEth(newPrice), oldPrice, wildcardsPercentage, value).encodeABI, undefined);
+                            }), chainId, verifyingContract);
               }),
             txState
           ];
@@ -1191,6 +1199,7 @@ export {
   useStewardContract ,
   useLoyaltyTokenContract ,
   useVoteContract ,
+  execDaiPermitMetaTx ,
   useBuy ,
   useBuyAuction ,
   useRedeemLoyaltyTokens ,
