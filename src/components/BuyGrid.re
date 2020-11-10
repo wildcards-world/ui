@@ -48,20 +48,20 @@ module Grid = {
 
 let indexToType = tabIndex =>
   switch (tabIndex) {
-  | 0 => "1st-eddition"
-  | 1 => "2nd-eddition"
+  | 0 => "1st-edition"
+  | 1 => "2nd-edition"
   // | 2 => "coming-soon"
   | _ => "unknown"
   };
 
 [@react.component]
-let make = (~wildcardsEddition) => {
+let make = (~wildcardsEdition) => {
   let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
-  Js.log(wildcardsEddition);
+  Js.log(wildcardsEdition);
 
   let index =
-    switch (wildcardsEddition) {
+    switch (wildcardsEdition) {
     | Router.Gen1 => 0
     | Router.Gen2 => 1
     };
@@ -76,8 +76,8 @@ let make = (~wildcardsEddition) => {
       <h1 className=headingStyle> "Wildcards Kingdom"->restr </h1>
       <ReactTabs selectedIndex=index onSelect=selectLeaderBoard>
         <ReactTabs.TabList>
-          <ReactTabs.Tab> "First Eddition"->React.string </ReactTabs.Tab>
-          <ReactTabs.Tab> "Second Eddition"->React.string </ReactTabs.Tab>
+          <ReactTabs.Tab> "First edition"->React.string </ReactTabs.Tab>
+          <ReactTabs.Tab> "Second edition"->React.string </ReactTabs.Tab>
         </ReactTabs.TabList>
         // <ReactTabs.Tab> "Coming soon"->React.string </ReactTabs.Tab>
         <ReactTabs.TabPanel>

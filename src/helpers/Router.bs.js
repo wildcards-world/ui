@@ -9,196 +9,210 @@ import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.js";
 
 function useUrlState(param) {
   var url = ReasonReactRouter.useUrl(undefined, undefined);
-  return React.useMemo((function () {
-                var urlArray = url.hash.split("/");
-                var exit = 0;
-                var animalStr;
-                var tab;
-                var animalStr$1;
-                var len = urlArray.length;
-                if (len >= 6) {
-                  exit = 1;
+  return React.useMemo(
+    function () {
+      var urlArray = url.hash.split("/");
+      var exit = 0;
+      var animalStr;
+      var tab;
+      var animalStr$1;
+      var len = urlArray.length;
+      if (len >= 6) {
+        exit = 1;
+      } else {
+        switch (len) {
+          case 0:
+            exit = 1;
+            break;
+          case 1:
+            var match = urlArray[0];
+            switch (match) {
+              case "dao":
+                return /* VotePage */ 2;
+              case "increase-iteration":
+                return /* IncreaseVoteIteration */ 1;
+              default:
+                exit = 1;
+            }
+            break;
+          case 2:
+            var match$1 = urlArray[0];
+            switch (match$1) {
+              case "details":
+                var animalStr$2 = urlArray[1];
+                var optionAnimal = Animal$WildCards.getAnimal(animalStr$2);
+                return /* Home */ Block.__(4, [
+                  /* DetailView */ [optionAnimal],
+                ]);
+              case "leaderboards":
+                var leaderboardType = urlArray[1];
+                switch (leaderboardType) {
+                  case "days-held":
+                    return /* Leaderboards */ Block.__(3, [
+                      /* TotalDaysHeld */ 1,
+                    ]);
+                  case "monthly-contribution":
+                    return /* Leaderboards */ Block.__(3, [
+                      /* MonthlyContribution */ 3,
+                    ]);
+                  case "total-contribution":
+                    return /* Leaderboards */ Block.__(3, [
+                      /* TotalContribution */ 0,
+                    ]);
+                  default:
+                    return /* Leaderboards */ Block.__(3, [/* Unknown */ 2]);
+                }
+              case "org":
+                var orgId = urlArray[1];
+                return /* Org */ Block.__(1, [orgId.toLowerCase()]);
+              case "user":
+                var address = urlArray[1];
+                return /* User */ Block.__(0, [address.toLowerCase()]);
+              default:
+                exit = 1;
+            }
+            break;
+          case 3:
+            var match$2 = urlArray[0];
+            if (match$2 === "explorer") {
+              var match$3 = urlArray[1];
+              if (match$3 === "details") {
+                var animalStr$3 = urlArray[2];
+                animalStr = animalStr$3;
+                exit = 2;
+              } else {
+                exit = 1;
+              }
+            } else {
+              exit = 1;
+            }
+            break;
+          case 4:
+            var match$4 = urlArray[0];
+            if (match$4 === "explorer") {
+              var tab$1 = urlArray[1];
+              var exit$1 = 0;
+              if (tab$1 === "details") {
+                var animalStr$4 = urlArray[2];
+                var match$5 = urlArray[3];
+                if (match$5 === "") {
+                  animalStr = animalStr$4;
+                  exit = 2;
                 } else {
-                  switch (len) {
-                    case 0 :
-                        exit = 1;
-                        break;
-                    case 1 :
-                        var match = urlArray[0];
-                        switch (match) {
-                          case "dao" :
-                              return /* VotePage */2;
-                          case "increase-iteration" :
-                              return /* IncreaseVoteIteration */1;
-                          default:
-                            exit = 1;
-                        }
-                        break;
-                    case 2 :
-                        var match$1 = urlArray[0];
-                        switch (match$1) {
-                          case "details" :
-                              var animalStr$2 = urlArray[1];
-                              var optionAnimal = Animal$WildCards.getAnimal(animalStr$2);
-                              return /* Home */Block.__(4, [/* DetailView */[optionAnimal]]);
-                          case "leaderboards" :
-                              var leaderboardType = urlArray[1];
-                              switch (leaderboardType) {
-                                case "days-held" :
-                                    return /* Leaderboards */Block.__(3, [/* TotalDaysHeld */1]);
-                                case "monthly-contribution" :
-                                    return /* Leaderboards */Block.__(3, [/* MonthlyContribution */3]);
-                                case "total-contribution" :
-                                    return /* Leaderboards */Block.__(3, [/* TotalContribution */0]);
-                                default:
-                                  return /* Leaderboards */Block.__(3, [/* Unknown */2]);
-                              }
-                          case "org" :
-                              var orgId = urlArray[1];
-                              return /* Org */Block.__(1, [orgId.toLowerCase()]);
-                          case "user" :
-                              var address = urlArray[1];
-                              return /* User */Block.__(0, [address.toLowerCase()]);
-                          default:
-                            exit = 1;
-                        }
-                        break;
-                    case 3 :
-                        var match$2 = urlArray[0];
-                        if (match$2 === "explorer") {
-                          var match$3 = urlArray[1];
-                          if (match$3 === "details") {
-                            var animalStr$3 = urlArray[2];
-                            animalStr = animalStr$3;
-                            exit = 2;
-                          } else {
-                            exit = 1;
-                          }
-                        } else {
-                          exit = 1;
-                        }
-                        break;
-                    case 4 :
-                        var match$4 = urlArray[0];
-                        if (match$4 === "explorer") {
-                          var tab$1 = urlArray[1];
-                          var exit$1 = 0;
-                          if (tab$1 === "details") {
-                            var animalStr$4 = urlArray[2];
-                            var match$5 = urlArray[3];
-                            if (match$5 === "") {
-                              animalStr = animalStr$4;
-                              exit = 2;
-                            } else {
-                              exit$1 = 4;
-                            }
-                          } else {
-                            exit$1 = 4;
-                          }
-                          if (exit$1 === 4) {
-                            var match$6 = urlArray[2];
-                            if (match$6 === "details") {
-                              var animalStr$5 = urlArray[3];
-                              tab = tab$1;
-                              animalStr$1 = animalStr$5;
-                              exit = 3;
-                            } else {
-                              exit = 1;
-                            }
-                          }
-                          
-                        } else {
-                          exit = 1;
-                        }
-                        break;
-                    case 5 :
-                        var match$7 = urlArray[0];
-                        if (match$7 === "explorer") {
-                          var tab$2 = urlArray[1];
-                          var match$8 = urlArray[2];
-                          if (match$8 === "details") {
-                            var animalStr$6 = urlArray[3];
-                            var match$9 = urlArray[4];
-                            if (match$9 === "") {
-                              tab = tab$2;
-                              animalStr$1 = animalStr$6;
-                              exit = 3;
-                            } else {
-                              exit = 1;
-                            }
-                          } else {
-                            exit = 1;
-                          }
-                        } else {
-                          exit = 1;
-                        }
-                        break;
-                    
-                  }
+                  exit$1 = 4;
                 }
-                switch (exit) {
-                  case 1 :
-                      var match$10 = Globals$WildCards.$pipe$pipe$pipe$pipe(Belt_Array.get(urlArray, 0), "");
-                      switch (match$10) {
-                        case "explorer" :
-                            var match$11 = Globals$WildCards.$pipe$pipe$pipe$pipe(Belt_Array.get(urlArray, 1), "");
-                            var tmp;
-                            switch (match$11) {
-                              case "1st-eddition" :
-                                  tmp = /* Gen1 */0;
-                                  break;
-                              case "2nd-eddition" :
-                                  tmp = /* Gen2 */1;
-                                  break;
-                              default:
-                                tmp = /* Gen1 */0;
-                            }
-                            return /* Explorer */Block.__(2, [
-                                      tmp,
-                                      /* NormalView */0
-                                    ]);
-                        case "team" :
-                            return /* Team */0;
-                        default:
-                          return /* Home */Block.__(4, [/* NormalView */0]);
-                      }
-                  case 2 :
-                      var optionAnimal$1 = Animal$WildCards.getAnimal(animalStr);
-                      return /* Explorer */Block.__(2, [
-                                /* Gen2 */1,
-                                /* DetailView */[optionAnimal$1]
-                              ]);
-                  case 3 :
-                      var optionAnimal$2 = Animal$WildCards.getAnimal(animalStr$1);
-                      var tmp$1;
-                      switch (tab) {
-                        case "1st-eddition" :
-                            tmp$1 = /* Gen1 */0;
-                            break;
-                        case "2nd-eddition" :
-                            tmp$1 = /* Gen2 */1;
-                            break;
-                        default:
-                          tmp$1 = /* Gen1 */0;
-                      }
-                      return /* Explorer */Block.__(2, [
-                                tmp$1,
-                                /* DetailView */[optionAnimal$2]
-                              ]);
-                  
+              } else {
+                exit$1 = 4;
+              }
+              if (exit$1 === 4) {
+                var match$6 = urlArray[2];
+                if (match$6 === "details") {
+                  var animalStr$5 = urlArray[3];
+                  tab = tab$1;
+                  animalStr$1 = animalStr$5;
+                  exit = 3;
+                } else {
+                  exit = 1;
                 }
-              }), [url.hash]);
+              }
+            } else {
+              exit = 1;
+            }
+            break;
+          case 5:
+            var match$7 = urlArray[0];
+            if (match$7 === "explorer") {
+              var tab$2 = urlArray[1];
+              var match$8 = urlArray[2];
+              if (match$8 === "details") {
+                var animalStr$6 = urlArray[3];
+                var match$9 = urlArray[4];
+                if (match$9 === "") {
+                  tab = tab$2;
+                  animalStr$1 = animalStr$6;
+                  exit = 3;
+                } else {
+                  exit = 1;
+                }
+              } else {
+                exit = 1;
+              }
+            } else {
+              exit = 1;
+            }
+            break;
+        }
+      }
+      switch (exit) {
+        case 1:
+          var match$10 = Globals$WildCards.$pipe$pipe$pipe$pipe(
+            Belt_Array.get(urlArray, 0),
+            ""
+          );
+          switch (match$10) {
+            case "explorer":
+              var match$11 = Globals$WildCards.$pipe$pipe$pipe$pipe(
+                Belt_Array.get(urlArray, 1),
+                ""
+              );
+              var tmp;
+              switch (match$11) {
+                case "1st-edition":
+                  tmp = /* Gen1 */ 0;
+                  break;
+                case "2nd-edition":
+                  tmp = /* Gen2 */ 1;
+                  break;
+                default:
+                  tmp = /* Gen1 */ 0;
+              }
+              return /* Explorer */ Block.__(2, [tmp, /* NormalView */ 0]);
+            case "team":
+              return /* Team */ 0;
+            default:
+              return /* Home */ Block.__(4, [/* NormalView */ 0]);
+          }
+        case 2:
+          var optionAnimal$1 = Animal$WildCards.getAnimal(animalStr);
+          return /* Explorer */ Block.__(2, [
+            /* Gen2 */ 1,
+            /* DetailView */ [optionAnimal$1],
+          ]);
+        case 3:
+          var optionAnimal$2 = Animal$WildCards.getAnimal(animalStr$1);
+          var tmp$1;
+          switch (tab) {
+            case "1st-edition":
+              tmp$1 = /* Gen1 */ 0;
+              break;
+            case "2nd-edition":
+              tmp$1 = /* Gen2 */ 1;
+              break;
+            default:
+              tmp$1 = /* Gen1 */ 0;
+          }
+          return /* Explorer */ Block.__(2, [
+            tmp$1,
+            /* DetailView */ [optionAnimal$2],
+          ]);
+      }
+    },
+    [url.hash]
+  );
 }
 
 function useIsExplorer(param) {
   var urlState = useUrlState(undefined);
-  return React.useMemo((function () {
-                if (typeof urlState === "number" || urlState.tag !== /* Explorer */2) {
-                  return false;
-                } else {
-                  return true;
-                }
-              }), [urlState]);
+  return React.useMemo(
+    function () {
+      if (typeof urlState === "number" || urlState.tag !== /* Explorer */ 2) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+    [urlState]
+  );
 }
 
 function isDetailsAnimalPage(animalPageState) {
@@ -211,64 +225,71 @@ function isDetailsAnimalPage(animalPageState) {
 
 function useIsDetails(param) {
   var urlState = useUrlState(undefined);
-  return React.useMemo((function () {
-                if (typeof urlState === "number") {
-                  return false;
-                }
-                switch (urlState.tag | 0) {
-                  case /* Explorer */2 :
-                      return isDetailsAnimalPage(urlState[1]);
-                  case /* Home */4 :
-                      return isDetailsAnimalPage(urlState[0]);
-                  default:
-                    return false;
-                }
-              }), [urlState]);
+  return React.useMemo(
+    function () {
+      if (typeof urlState === "number") {
+        return false;
+      }
+      switch (urlState.tag | 0) {
+        case /* Explorer */ 2:
+          return isDetailsAnimalPage(urlState[1]);
+        case /* Home */ 4:
+          return isDetailsAnimalPage(urlState[0]);
+        default:
+          return false;
+      }
+    },
+    [urlState]
+  );
 }
 
 function useIsHome(param) {
   var urlState = useUrlState(undefined);
-  return React.useMemo((function () {
-                if (typeof urlState === "number" || urlState.tag !== /* Home */4) {
-                  return false;
-                } else {
-                  return true;
-                }
-              }), [urlState]);
+  return React.useMemo(
+    function () {
+      if (typeof urlState === "number" || urlState.tag !== /* Home */ 4) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+    [urlState]
+  );
 }
 
 function getAnimalFormAnimalPageState(animalPageState) {
   if (animalPageState) {
     return animalPageState[0];
   }
-  
 }
 
 function useAnimalForDetails(param) {
   var urlState = useUrlState(undefined);
-  return React.useMemo((function () {
-                if (typeof urlState === "number") {
-                  return ;
-                }
-                switch (urlState.tag | 0) {
-                  case /* Explorer */2 :
-                      return getAnimalFormAnimalPageState(urlState[1]);
-                  case /* Home */4 :
-                      return getAnimalFormAnimalPageState(urlState[0]);
-                  default:
-                    return ;
-                }
-              }), [urlState]);
+  return React.useMemo(
+    function () {
+      if (typeof urlState === "number") {
+        return;
+      }
+      switch (urlState.tag | 0) {
+        case /* Explorer */ 2:
+          return getAnimalFormAnimalPageState(urlState[1]);
+        case /* Home */ 4:
+          return getAnimalFormAnimalPageState(urlState[0]);
+        default:
+          return;
+      }
+    },
+    [urlState]
+  );
 }
 
 export {
-  useUrlState ,
-  useIsExplorer ,
-  isDetailsAnimalPage ,
-  useIsDetails ,
-  useIsHome ,
-  getAnimalFormAnimalPageState ,
-  useAnimalForDetails ,
-  
-}
+  useUrlState,
+  useIsExplorer,
+  isDetailsAnimalPage,
+  useIsDetails,
+  useIsHome,
+  getAnimalFormAnimalPageState,
+  useAnimalForDetails,
+};
 /* react Not a pure module */

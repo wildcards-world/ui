@@ -102,8 +102,7 @@ let make = () => {
     <div className=Css.(style([minHeight(vh(88.))]))>
       <Announcement announcementBannerColor="f49229">
         <span>
-          "New wildcards being launched on the MATIC network"
-          ->React.string
+          "New wildcards being launched on the MATIC network"->React.string
         </span>
       </Announcement>
       // <AnimalAnnouncement
@@ -240,11 +239,11 @@ let make = () => {
        | VotePage => <VotePage chain=Client.MainnetQuery />
        | Team => <Team />
        | IncreaseVoteIteration => <IncreaseIterationPage />
-       | Explorer(wildcardsEddition, subState) =>
+       | Explorer(wildcardsEdition, subState) =>
          switch (subState) {
          | DetailView(currentAnimal) =>
            <AnimalFocusDetails currentAnimal showForwardBackButtons=false />
-         | NormalView => <BuyGrid wildcardsEddition />
+         | NormalView => <BuyGrid wildcardsEdition />
          }
        | Home(animalPageState) =>
          switch (animalPageState) {

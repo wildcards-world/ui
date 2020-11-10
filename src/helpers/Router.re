@@ -48,8 +48,8 @@ let useUrlState = () => {
         let optionAnimal = Animal.getAnimal(animalStr);
         Explorer(
           switch (tab) {
-          | "2nd-eddition" => Gen2
-          | "1st-eddition"
+          | "2nd-edition" => Gen2
+          | "1st-edition"
           | _ =>
             /*Default is Gen1*/
             Gen1
@@ -68,8 +68,8 @@ let useUrlState = () => {
         | "explorer" =>
           Explorer(
             switch (urlArray[1] |||| "") {
-            | "2nd-eddition" => Gen2
-            | "1st-eddition"
+            | "2nd-edition" => Gen2
+            | "1st-edition"
             | _ =>
               /*Default is Gen1*/
               Gen1
