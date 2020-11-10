@@ -52,11 +52,11 @@ ReactDOMRe.renderToElementWithId(
             ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
           }
         | _ => {
-            mainnet: goerliApi |||| "https://api.wildcards.world/v1/graphq",
+            mainnet: mainnetApi |||| "https://api.wildcards.world/v1/graphq",
             matic:
               maticApi
               |||| "https://matic.graph.wildcards.world/subgraphs/name/wildcards-world/wildcards-matic",
-            ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
+            ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards",
           }
         };
       endpoints;
