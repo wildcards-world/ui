@@ -1,7 +1,12 @@
+open Globals;
+
 type previousNextAnimal = option((TokenId.t, TokenId.t));
 type animalPageState =
   | DetailView(option(TokenId.t))
   | NormalView;
+type explorerTab =
+  | Gen1
+  | Gen2;
 type leaderBoard =
   | TotalContribution
   | TotalDaysHeld
@@ -10,7 +15,7 @@ type leaderBoard =
 type urlState =
   | User(Web3.ethAddress)
   | Org(string)
-  | Explorer(animalPageState)
+  | Explorer(explorerTab, animalPageState)
   | Team
   | Leaderboards(leaderBoard)
   // | Unknown
@@ -37,7 +42,21 @@ let useUrlState = () => {
       | [|"explorer", "details", animalStr|]
       | [|"explorer", "details", animalStr, ""|] =>
         let optionAnimal = Animal.getAnimal(animalStr);
-        Explorer(DetailView(optionAnimal));
+        Explorer(Gen2, DetailView(optionAnimal));
+      | [|"explorer", tab, "details", animalStr|]
+      | [|"explorer", tab, "details", animalStr, ""|] =>
+        let optionAnimal = Animal.getAnimal(animalStr);
+        Explorer(
+          switch (tab) {
+          | "2nd-eddition" => Gen2
+          | "1st-eddition"
+          | _ =>
+            /*Default is Gen1*/
+            Gen1
+          },
+          DetailView(optionAnimal),
+        );
+      // Explorer(DetailView(optionAnimal));
       // | [|"details"|] => Home(NormalView)
       | [|"details", animalStr|] =>
         let optionAnimal = Animal.getAnimal(animalStr);
@@ -45,10 +64,18 @@ let useUrlState = () => {
       | [|"dao"|] => VotePage
       | [|"increase-iteration"|] => IncreaseVoteIteration
       | urlArray =>
-        switch (
-          Belt.Array.get(urlArray, 0)->Belt.Option.mapWithDefault("", a => a)
-        ) {
-        | "explorer" => Explorer(NormalView)
+        switch (urlArray[0] |||| "") {
+        | "explorer" =>
+          Explorer(
+            switch (urlArray[1] |||| "") {
+            | "2nd-eddition" => Gen2
+            | "1st-eddition"
+            | _ =>
+              /*Default is Gen1*/
+              Gen1
+            },
+            NormalView,
+          )
         | "team" => Team
         | _ => Home(NormalView)
         // | _ => Unknown
@@ -88,7 +115,7 @@ let useIsDetails = () => {
   React.useMemo1(
     () =>
       switch (urlState) {
-      | Explorer(inside) => isDetailsAnimalPage(inside)
+      | Explorer(_, inside) => isDetailsAnimalPage(inside)
       | Home(inside) => isDetailsAnimalPage(inside)
       | User(_)
       | Org(_)
@@ -131,7 +158,7 @@ let useAnimalForDetails = () => {
   React.useMemo1(
     () =>
       switch (urlState) {
-      | Explorer(animalPageState) =>
+      | Explorer(_, animalPageState) =>
         getAnimalFormAnimalPageState(animalPageState)
       | Home(animalPageState) =>
         getAnimalFormAnimalPageState(animalPageState)

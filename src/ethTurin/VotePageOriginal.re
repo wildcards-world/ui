@@ -50,8 +50,8 @@ let conservationPartners: array(conservationPartnerType) = [|
 //   | EligeableToVote;
 type organisationArrayIndex = int;
 // type currentVote = {
-//   vote: BN.bn,
-//   maxPossibleVote: BN.bn // This should be calculated at the beginning
+//   vote: BN.t,
+//   maxPossibleVote: BN.t // This should be calculated at the beginning
 // };
 type voteStep =
   | DefaultView // sub-states can either be loading data, ready, or user is not eligible to vote
@@ -123,6 +123,7 @@ module OrganisationVote = {
         currentIteration->string_of_int,
         currentUser,
         conservationPartner.index->string_of_int,
+        false,
       );
 
     <Rimble.Box width=[|1., 0.25|]>
@@ -172,7 +173,7 @@ module OrganisationVoteResult = {
           (
             (
               (proposalVotes |*| BN.new_("10000") |/| totalVotes)
-              ->BN.toStringGet(.)
+              ->BN.toString
               ->Float.fromString
               |||| 0.
             )
@@ -278,6 +279,10 @@ module ApproveLoyaltyTokens = {
              </a>
            </p>
          </>
+       | DaiPermit(_)
+       | SignMetaTx
+       | ServerError(_)
+       | SubmittedMetaTx
        | Created =>
          <>
            <Rimble.Loader />
@@ -313,7 +318,7 @@ module ApproveLoyaltyTokens = {
 };
 
 [@react.component]
-let make = () => {
+let make = (~chain) => {
   let (voteStep, setVoteStep) = React.useState(() => DefaultView);
   // let (voteStep, setVoteStep) = React.useState(() => ViewResults);
 
@@ -331,7 +336,7 @@ let make = () => {
           ->int_of_float
           ->Int.toString
           ->BN.new_
-          ->BN.mulGet(. BN.new_("10000"));
+          ->BN.mul(BN.new_("10000"));
 
         voteForProject(
           conservationVotedContractIndex->string_of_int,
@@ -357,10 +362,11 @@ let make = () => {
   let userAddressLowerCase =
     switch (currentUser) {
     | Some(currentUser) => currentUser->Js.String.toLowerCase
-    | _ => "0x0000000000000000000000000000000000000000"
+    | _ => CONSTANTS.nullEthAddress
     };
 
-  let patronQueryOpt = QlHooks.usePatronQuery(userAddressLowerCase);
+  let patronQueryOpt =
+    QlHooks.usePatronQuery(~chain=Client.MainnetQuery, userAddressLowerCase);
 
   let (optProposalDeadline, _reloadProposalDeadline) =
     ContractActions.useProposalDeadline();
@@ -424,8 +430,8 @@ let make = () => {
   };
 
   let glen = TokenId.makeFromInt(13);
-  let optCurrentPrice = PriceDisplay.usePrice(glen);
-  let (_, _, ratio, _) = QlHooks.usePledgeRateDetailed(glen);
+  let optCurrentPrice = PriceDisplay.usePrice(~chain, glen);
+  let (_, _, ratio, _) = QlHooks.usePledgeRateDetailed(~chain, glen);
   // TODO: investigate why the USD price doesn't load here.
   let (optMonthlyPledgeEth, optMonthlyPledgeUsd) =
     switch (optCurrentPrice) {
@@ -461,6 +467,10 @@ let make = () => {
       {switch (transactionStatus) {
        | UnInitialised =>
          <> <Rimble.Loader /> <p> "Starting Transaction"->restr </p> </>
+       | DaiPermit(_)
+       | SignMetaTx
+       | ServerError(_)
+       | SubmittedMetaTx
        | Created =>
          <> <Rimble.Loader /> <p> "Transaction Created"->restr </p> </>
        | SignedAndSubmitted(txHash) =>

@@ -34,15 +34,39 @@ module ClaimLoyaltyTokenButtons = {
   [@react.component]
   let make =
       (
-        ~id,
+        ~chain,
         ~userAddress: string,
+        ~id: string,
         ~refreshLoyaltyTokenBalance,
         ~numberOfTokens,
       ) => {
+    // let (redeemLoyaltyTokens, transactionStatus) =
+    //   ContractActions.useRedeemLoyaltyTokens(id, false);
+    // let balanceAvailableOnToken =
+    //   QlHooks.useUnredeemedLoyaltyTokenDueFromWildcard(
+    //     ~chain,
+    //     id->TokenId.makeWithDefault(0),
+    //   );
+    let tokenId = id->TokenId.fromStringUnsafe;
+
+    let tokenName = tokenId->QlHooks.useWildcardName |||| "loading";
+    // =======
+    //   let make =
+    //       (
+    //         ~id,
+    //         ~userAddress: string,
+    //         ~refreshLoyaltyTokenBalance,
+    //         ~numberOfTokens,
+    //       ) => {
     let (redeemLoyaltyTokens, transactionStatus) =
-      ContractActions.useRedeemLoyaltyTokens(userAddress);
+      ContractActions.useRedeemLoyaltyTokens(userAddress, false);
     let balanceAvailableOnTokens =
-      QlHooks.useUnredeemedLoyaltyTokenDueForUser(id, numberOfTokens);
+      QlHooks.useUnredeemedLoyaltyTokenDueForUser(
+        ~chain,
+        tokenId,
+        numberOfTokens,
+      );
+    // >>>>>>> origin
     let etherScanUrl = RootProvider.useEtherscanUrl();
 
     React.useEffect2(
@@ -51,6 +75,10 @@ module ClaimLoyaltyTokenButtons = {
         | Complete(_) => refreshLoyaltyTokenBalance()
         | UnInitialised
         | Created
+        | DaiPermit(_)
+        | SubmittedMetaTx
+        | SignMetaTx
+        | ServerError(_)
         | SignedAndSubmitted(_)
         | Declined(_)
         | Failed => ()
@@ -78,6 +106,10 @@ module ClaimLoyaltyTokenButtons = {
                 ->restr}
              </a>
            </p>
+         | DaiPermit(_)
+         | SignMetaTx
+         | ServerError(_)
+         | SubmittedMetaTx
          | Created => <p> "Transaction Created"->restr </p>
          | SignedAndSubmitted(txHash) =>
            <p>
@@ -107,11 +139,13 @@ module UserDetails = {
   [@react.component]
   let make =
       (
+        ~chain,
         ~patronQueryResult,
         ~optThreeBoxData: option(UserProvider.threeBoxUserInfo),
         ~userAddress: string,
       ) => {
-    let isForeclosed = QlHooks.useIsForeclosed(userAddress);
+    let isForeclosed =
+      QlHooks.useIsForeclosed(~chain=Client.MainnetQuery, userAddress);
     let isAddressCurrentUser =
       RootProvider.useIsAddressCurrentUser(userAddress);
 
@@ -176,9 +210,9 @@ module UserDetails = {
       <$> (
         patron =>
           patron##patronTokenCostScaledNumerator
-          ->BN.mulGet(. BN.new_("2592000")) // A month with 30 days has 2592000 seconds
-          ->BN.divGet(.
-              // BN.new_("1000000000000")->BN.mulGet(. BN.new_("31536000")),
+          ->BN.mul(BN.new_("2592000")) // A month with 30 days has 2592000 seconds
+          ->BN.div(
+              // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
               BN.new_("31536000000000000000"),
             )
       )
@@ -210,7 +244,7 @@ module UserDetails = {
 
     // This is the value of ALL tokens that this address has ever claimed, or is able to claim (even if they have spent those tokens)!
     let totalLoyaltyTokensAvailableAndClaimedOpt =
-      QlHooks.useTotalLoyaltyToken(userAddress);
+      QlHooks.useTotalLoyaltyToken(~chain=Client.MainnetQuery, userAddress);
 
     let nonUrlState = RootProvider.useNonUrlState();
     let clearNonUrlState = RootProvider.useClearNonUrlState();
@@ -262,7 +296,10 @@ module UserDetails = {
                  m=1
                  onClick={_ => clearNonUrlState()}
                />
-               <UpdateDeposit closeButtonText="Close" />
+               <UpdateDeposit
+                 chain=Client.MainnetQuery
+                 closeButtonText="Close"
+               />
              </div>
            | LoginScreen(_)
            | UpdatePriceScreen(_)
@@ -315,17 +352,24 @@ module UserDetails = {
                            ->restr}
                         </p>
                       </small>
-                      {let firstToken = currentlyOwnedTokens[0];
-                       switch (firstToken) {
-                       | None => React.null
-                       | Some(firstToken) =>
-                         <ClaimLoyaltyTokenButtons
-                           id={firstToken->TokenId.fromStringUnsafe}
-                           key=firstToken
-                           userAddress
-                           numberOfTokens={currentlyOwnedTokens->Array.length}
-                           refreshLoyaltyTokenBalance=updateFunction
-                         />
+                      // <<<<<<< HEAD
+                      {switch (currentlyOwnedTokens) {
+                       | [||] => React.null
+                       | currentlyOwnedTokens =>
+                         currentlyOwnedTokens
+                         ->Array.map(id =>
+                             <ClaimLoyaltyTokenButtons
+                               id
+                               chain
+                               key=id
+                               refreshLoyaltyTokenBalance=updateFunction
+                               userAddress
+                               numberOfTokens={
+                                 currentlyOwnedTokens->Array.length
+                               }
+                             />
+                           )
+                         ->React.array
                        }}
                       <a href="/#ethturin-quadratic-voting"> "vote"->restr </a>
                     </>
@@ -433,9 +477,10 @@ module UserDetails = {
 };
 
 [@react.component]
-let make = (~userAddress: string) => {
+let make = (~chain, ~userAddress: string) => {
   let userAddressLowerCase = userAddress->Js.String.toLowerCase;
-  let patronQuery = QlHooks.usePatronQuery(userAddressLowerCase);
+  let patronQuery =
+    QlHooks.usePatronQuery(~chain=Client.MainnetQuery, userAddressLowerCase);
   let userInfoContext = UserProvider.useUserInfoContext();
   let reloadUser = forceReload =>
     userInfoContext.update(userAddressLowerCase, forceReload); // double check that data is loaded.
@@ -445,7 +490,7 @@ let make = (~userAddress: string) => {
   <Rimble.Flex flexWrap="wrap" alignItems="center" className=Styles.topBody>
     {switch (patronQuery) {
      | Some(patronQueryResult) =>
-       <UserDetails optThreeBoxData patronQueryResult userAddress />
+       <UserDetails chain optThreeBoxData patronQueryResult userAddress />
      | None =>
        <div>
          <Rimble.Heading>

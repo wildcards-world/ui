@@ -12,13 +12,14 @@ let backgroundStyle =
   );
 let headingStyle = Css.(style([paddingTop(rem(5.)), textAlign(`center)]));
 
-[@react.component]
-let make = () => {
-  let isGqlLoaded = QlStateManager.useIsInitialized();
-  let allAnimals = QlHooks.useAnimalList();
+module Grid = {
+  [@react.component]
+  let make = (~chain) => {
+    // let isGqlLoaded = QlStateManager.useIsInitialized();
+    let allAnimals = QlHooks.useAnimalList(~chain);
 
-  <div className=backgroundStyle>
-    <div> <h1 className=headingStyle> "Wildcards Kingdom"->restr </h1> </div>
+    Js.log2("All animals", allAnimals);
+
     <Rimble.Flex
       flexWrap="wrap" justifyContent="space-around" alignItems="stretch" px=50>
       {allAnimals
@@ -29,7 +30,7 @@ let make = () => {
              p=3
              width=[|1., 1., 0.3|]>
              <Rimble.Card>
-               <Dapp.CarouselAnimal animal isGqlLoaded scalar=1. />
+               <Dapp.CarouselAnimal chain animal scalar=1. />
              </Rimble.Card>
            </Rimble.Box>
          })
@@ -41,6 +42,54 @@ let make = () => {
       <Rimble.Box fontSize=4 p=3 width=[|1., 1., 0.3|]>
         React.null
       </Rimble.Box>
-    </Rimble.Flex>
+    </Rimble.Flex>;
+  };
+};
+
+let indexToType = tabIndex =>
+  switch (tabIndex) {
+  | 0 => "1st-eddition"
+  | 1 => "2nd-eddition"
+  // | 2 => "coming-soon"
+  | _ => "unknown"
+  };
+
+[@react.component]
+let make = (~wildcardsEddition) => {
+  let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+
+  Js.log(wildcardsEddition);
+
+  let index =
+    switch (wildcardsEddition) {
+    | Router.Gen1 => 0
+    | Router.Gen2 => 1
+    };
+  let selectLeaderBoard = (newIndex, _oldIndex) => {
+    clearAndPush("#explorer/" ++ indexToType(newIndex));
+
+    true;
+  };
+
+  <div className=backgroundStyle>
+    <div>
+      <h1 className=headingStyle> "Wildcards Kingdom"->restr </h1>
+      <ReactTabs selectedIndex=index onSelect=selectLeaderBoard>
+        <ReactTabs.TabList>
+          <ReactTabs.Tab> "First Eddition"->React.string </ReactTabs.Tab>
+          <ReactTabs.Tab> "Second Eddition"->React.string </ReactTabs.Tab>
+        </ReactTabs.TabList>
+        // <ReactTabs.Tab> "Coming soon"->React.string </ReactTabs.Tab>
+        <ReactTabs.TabPanel>
+          <Grid chain=Client.MainnetQuery />
+        </ReactTabs.TabPanel>
+        <ReactTabs.TabPanel>
+          <Grid chain=Client.MaticQuery />
+        </ReactTabs.TabPanel>
+      </ReactTabs>
+    </div>
   </div>;
+  // <ReactTabs.TabPanel>
+  //   <TotalDaysHeld numberOfLeaders=10 />
+  // </ReactTabs.TabPanel>
 };

@@ -15,7 +15,7 @@ let make = (~clickAction=() => (), ~isMobile=false) => {
   let userAddressLowerCase =
     switch (currentUser) {
     | Some(currentUser) => currentUser->Js.String.toLowerCase //TODO - check with zuck this cant be a 3box name name
-    | _ => "0x0000000000000000000000000000000000000000"
+    | _ => CONSTANTS.nullEthAddress
     };
 
   let optThreeBoxData = UserProvider.use3BoxUserData(userAddressLowerCase);

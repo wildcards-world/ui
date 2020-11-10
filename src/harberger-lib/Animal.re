@@ -38,16 +38,35 @@ let useGetOrgBadgeImage: TokenId.t => string =
 
 type launchStatus =
   | Launched
+  | Loading
   | LaunchDate(MomentRe.Moment.t);
 
+// TODO: remove this variable...
 let nextLaunchDate = MomentRe.momentUtcDefaultFormat("2020-07-30T17:00:00");
 
-let isLaunched: TokenId.t => launchStatus =
-  animal =>
+let isLaunched: (~chain: Client.context, TokenId.t) => launchStatus =
+  (~chain, animal) => {
+    let optLaunchTime = QlHooks.useLaunchTimeBN(~chain, animal);
+    let currentTime = QlHooks.useCurrentTimestampBn();
+
     switch (animal->TokenId.toString) {
-    // | "25" => LaunchDate(nextLaunchDate)
+    | "26"
+    | "27"
+    | "28"
+    | "29" =>
+      // LaunchDate(nextLaunchDate)
+      switch (optLaunchTime) {
+      | Some(launchTime) =>
+        if (launchTime->BN.gt(currentTime)) {
+          LaunchDate(launchTime->BN.toNumber->MomentRe.momentWithUnix);
+        } else {
+          Launched;
+        }
+      | None => Loading
+      }
     | _ => Launched
     };
+  };
 
 type tokenStatus =
   | Loading
@@ -56,20 +75,20 @@ type tokenStatus =
   | Owned(Eth.t) // TODO put the owner and price as a parameter here
   | Foreclosed(MomentRe.Moment.t);
 
-let useTokenStatus: TokenId.t => tokenStatus =
-  animal => {
-    let optLaunchTime = QlHooks.useLaunchTimeBN(animal);
+let useTokenStatus: (~chain: Client.context, TokenId.t) => tokenStatus =
+  (~chain, animal) => {
+    let optLaunchTime = QlHooks.useLaunchTimeBN(~chain, animal);
     let currentTime = QlHooks.useCurrentTimestampBn();
-    let currentPriceWei = QlHooks.usePrice(animal);
+    let currentPriceWei = QlHooks.usePrice(~chain, animal);
 
     switch (optLaunchTime) {
     | Some(launchTime) =>
-      if (launchTime->BN.gtGet(. currentTime)) {
+      if (launchTime->BN.gt(currentTime)) {
         WaitingForLaunch(launchTime->BN.toNumber->MomentRe.momentWithUnix);
       } else {
         switch (currentPriceWei) {
         | Price(price) =>
-          if (price->BN.gtGet(. BN.new_("0"))) {
+          if (price->BN.gt(BN.new_("0"))) {
             Owned(price);
           } else {
             Launched(launchTime->BN.toNumber->MomentRe.momentWithUnix);
@@ -83,9 +102,9 @@ let useTokenStatus: TokenId.t => tokenStatus =
     };
   };
 
-let useIsOnAuction: TokenId.t => bool =
-  animal => {
-    let tokenStatus = useTokenStatus(animal);
+let useIsOnAuction: (~chain: Client.context, TokenId.t) => bool =
+  (~chain, animal) => {
+    let tokenStatus = useTokenStatus(~chain, animal);
 
     switch (tokenStatus) {
     | Loading
@@ -96,45 +115,60 @@ let useIsOnAuction: TokenId.t => bool =
     };
   };
 
-let useAuctionPriceWei = (animal, launchTime) => {
-  let tokenStatus = useTokenStatus(animal);
-  let auctionStartPrice = QlHooks.useAuctionStartPrice(animal);
-  let auctionEndPrice = QlHooks.useAuctionEndPrice(animal);
-  let auctionLength = QlHooks.useAuctioLength(animal);
+let useAuctionPriceWei = (~chain, animal, launchTime) => {
+  let tokenStatus = useTokenStatus(~chain, animal);
+  let auctionStartPrice = QlHooks.useAuctionStartPrice(~chain, animal);
+  let auctionEndPrice = QlHooks.useAuctionEndPrice(~chain, animal);
+  let auctionLength = QlHooks.useAuctioLength(~chain, animal);
   let currentTime = QlHooks.useCurrentTime();
 
-  // disable warning #4
-  [@ocaml.warning "-4"]
-  (
-    switch (tokenStatus) {
-    | Foreclosed(foreclosureTime) =>
-      let auctionStartTime =
-        foreclosureTime->MomentRe.Moment.toUnix->BN.newInt_;
+  switch (auctionStartPrice, auctionEndPrice, auctionLength) {
+  | (Some(auctionStartPrice), Some(auctionEndPrice), Some(auctionLength)) =>
+    // disable warning #4
+    [@ocaml.warning "-4"]
+    Some(
+      switch (tokenStatus) {
+      | Foreclosed(foreclosureTime) =>
+        let auctionStartTime =
+          foreclosureTime->MomentRe.Moment.toUnix->BN.newInt_;
 
-      if (BN.new_(currentTime) |<| (auctionStartTime |+| auctionLength)) {
-        auctionStartPrice
-        |-| (
+        if (BN.new_(currentTime) |<| (auctionStartTime |+| auctionLength)) {
           auctionStartPrice
-          |-| auctionEndPrice
-          |*| (BN.new_(currentTime) |-| auctionStartTime)
-          |/| auctionLength
-        );
-      } else {
-        auctionEndPrice;
-      };
-    | Launched(_) =>
-      if (BN.new_(currentTime) |<| (launchTime |+| auctionLength)) {
-        auctionStartPrice
-        |-| (
+          |-| (
+            auctionStartPrice
+            |-| auctionEndPrice
+            |*| (BN.new_(currentTime) |-| auctionStartTime)
+            |/| auctionLength
+          );
+        } else {
+          auctionEndPrice;
+        };
+      | Launched(_) =>
+        if (BN.new_(currentTime) |<| (launchTime |+| auctionLength)) {
           auctionStartPrice
-          |-| auctionEndPrice
-          |*| (BN.new_(currentTime) |-| launchTime)
-          |/| auctionLength
-        );
-      } else {
-        auctionEndPrice;
-      }
-    | _ => auctionEndPrice
-    }
-  );
+          |-| (
+            auctionStartPrice
+            |-| auctionEndPrice
+            |*| (BN.new_(currentTime) |-| launchTime)
+            |/| auctionLength
+          );
+        } else {
+          auctionEndPrice;
+        }
+      | _ => auctionEndPrice
+      },
+    )
+  | _ => None
+  };
+};
+
+let getChainIdFromAnimalId = animalId => {
+  switch (animalId->TokenId.toInt |||| 0) {
+  | a when a < 26 || a == 42 => Client.MainnetQuery
+  | _ => Client.MaticQuery
+  };
+};
+
+let useChainIdFromAnimalId = animalId => {
+  React.useMemo1(() => {animalId->getChainIdFromAnimalId}, [|animalId|]);
 };

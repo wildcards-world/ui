@@ -1,5 +1,5 @@
 import { InjectedConnector } from "@web3-react/injected-connector";
-// import { NetworkConnector } from "@web3-react/network-connector";
+import { NetworkConnector } from "@web3-react/network-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 // import { WalletLinkConnector } from "@web3-react/walletlink-connector";
 // import { LedgerConnector } from "@web3-react/ledger-connector";
@@ -19,15 +19,25 @@ const RPC_URLS = {
 
 export const injected = new InjectedConnector({
   // TODO: make this only accept 2 networks , mainnet and testnet. Then display a message when people use the wrong network.
-  //   supportedChainIds: [1, 5]
-  supportedChainIds: [1, 3, 4, 5, 42],
+  // QUESTION: should we allow them to connect to matic here (137/80001)? Maybe they should always use our connector?
+  supportedChainIds: [1, 3, 4, 5, 42, 137, 1337, 80001],
 });
 
-// export const network = new NetworkConnector({
-//   urls: { 1: RPC_URLS[1], 5: RPC_URLS[5] },
-//   defaultChainId: 1,
-//   pollingInterval: POLLING_INTERVAL
-// });
+export const sideChainNetwork = (defaultChainId) => {
+  return new NetworkConnector({
+    urls: {
+      137: "https://rpc-mainnet.matic.network",
+      80001: "https://rpc-mumbai.maticvigil.com/v1/d68927e8a4cc85eb49e23c93e63f3b018a90efc0",
+      // 80001: "https://ztjv2.csb.app",
+      // 80001: "https://rpc-mumbai.matic.today",
+      // 1337: "http://localhost:8545",
+      // 137: "http://localhost:8545",
+      // 80001: "http://localhost:8545",
+    },
+    defaultChainId,
+    pollingInterval: POLLING_INTERVAL,
+  });
+};
 
 export const walletconnect = new WalletConnectConnector({
   rpc: { 1: RPC_URLS[1] },

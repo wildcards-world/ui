@@ -4,7 +4,7 @@ open Globals;
 external fromWei: (string, string) => string = "fromWei";
 
 [@bs.module "web3-utils"]
-external fromWeiBN: (BN.bn, string) => string = "fromWei";
+external fromWeiBN: (BN.t, string) => string = "fromWei";
 
 [@bs.module "web3-utils"] external isBN: string => bool = "isBN";
 

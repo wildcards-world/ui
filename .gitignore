@@ -25,7 +25,7 @@ debug.log*
 
 
 # things relating to reasonml
-*.bs.js
+# *.bs.js
 lib
 .merlin
 .bsb.lock
@@ -49,3 +49,7 @@ package-lock.json
 /out/
 !public/
 public/index.backup.html
+
+# Ignore esy
+_esy
+esy.lock

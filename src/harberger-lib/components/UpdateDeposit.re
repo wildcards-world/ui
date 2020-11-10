@@ -1,3 +1,5 @@
+open Globals;
+
 module UpdateDepositInput = {
   [@bs.module "./UpdateDepositInput"] [@react.component]
   external make:
@@ -17,14 +19,33 @@ let getToDisplay = (label, value) =>
     label ++ ": " ++ value->Belt.Option.mapWithDefault("loading", a => a),
   );
 
-[@gentype]
 [@react.component]
-let make = (~closeButtonText) => {
+let make = (~closeButtonText, ~chain) => {
+  // TODO: We must use the correct client for updating the deposit
+  Js.log(
+    "The chain context in update deposit" ++ chain->Client.chainContextToStr,
+  );
   let (depositChange, setDepositChange) = React.useState(() => "");
   let (isAddDeposit, setIsAddDeposit) = React.useState(() => true);
 
-  let (depositFunc, txWithdrawObject) = ContractActions.useUpdateDeposit();
-  let (withdrawFunc, txDepositObject) = ContractActions.useWithdrawDeposit();
+  let web3Context = RootProvider.useWeb3React();
+
+  let (depositFunc, txWithdrawObject) =
+    ContractActions.useUpdateDeposit(
+      ~chain,
+      false,
+      web3Context.library,
+      web3Context.account,
+      web3Context.chainId->Option.getWithDefault(1),
+    );
+  let (withdrawFunc, txDepositObject) =
+    ContractActions.useWithdrawDeposit(
+      ~chain,
+      false,
+      web3Context.library,
+      web3Context.account,
+      web3Context.chainId->Option.getWithDefault(1),
+    );
 
   // let _availableDeposit =
   //   useDepositAbleToWithdrawWeiNew(currentUser)
@@ -52,8 +73,8 @@ let make = (~closeButtonText) => {
   let updateIsAddDeposit = isDeposit => {
     setIsAddDeposit(_ => isDeposit);
   };
-  <TxTemplate txState=txDepositObject closeButtonText>
-    <TxTemplate txState=txWithdrawObject closeButtonText>
+  <TxTemplate chain txState=txDepositObject closeButtonText>
+    <TxTemplate chain txState=txWithdrawObject closeButtonText>
       <UpdateDepositInput
         depositChange
         updateDepositChange

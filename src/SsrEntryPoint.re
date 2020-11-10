@@ -1,4 +1,5 @@
 // [%bs.raw {|require("./custom.css")|}];
+open Globals;
 
 module Router = {
   [@react.component]
@@ -23,24 +24,32 @@ module ApolloProvider = {
   };
 };
 
-[@bs.val] external mainnetApi: string = "process.env.REACT_APP_MAINNET_BE";
-[@bs.val] external goerliApi: string = "process.env.REACT_APP_GOERLI_BE";
+[@bs.val]
+external mainnetApi: option(string) = "process.env.REACT_APP_MAINNET_BE";
+[@bs.val]
+external goerliApi: option(string) = "process.env.REACT_APP_GOERLI_BE";
 
 // TODO: SSR doesn't work correctly here, need to use the external apollo client
 [@react.component]
 let make = () =>
   <WildcardsProvider
     getGraphEndpoints={(networkId, ()) => {
-      switch (networkId) {
-      | 5 => (
-          goerliApi,
-          "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards",
-        )
-      | _ => (
-          mainnetApi,
-          "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
-        )
-      }
+      open Client;
+      let endpoints =
+        switch (networkId) {
+        | 5 => {
+            mainnet:
+              goerliApi |||| "https://goerli.api.wildcards.world/v1/graphq",
+            matic: "https://mumbai.graph.wildcards.world/subgraphs/name/wildcards-world/wildcards-matic/graphql",
+            ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
+          }
+        | _ => {
+            mainnet: mainnetApi |||| "https://api.wildcards.world/v1/graphql",
+            matic: "https://mumbai.graph.wildcards.world/subgraphs/name/wildcards-world/wildcards-matic/graphql",
+            ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards",
+          }
+        };
+      endpoints;
     }}>
     <Router />
   </WildcardsProvider>;

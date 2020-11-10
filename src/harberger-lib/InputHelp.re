@@ -26,7 +26,7 @@ let onlyUpdateValueIfPositiveFloat = (currentValue, updateFunction, value) => {
     | None =>
       // If the new value is an empty string let it through.
       if (value == "") {
-        (value, true);
+        ("0", true);
       } else {
         (currentValue, false);
       }
@@ -37,6 +37,11 @@ let onlyUpdateValueIfPositiveFloat = (currentValue, updateFunction, value) => {
 
 let onlyUpdateValueIfInRangeFloat =
     (min, max, currentValue, updateFunction, value) => {
+  Js.log("THE MINNN");
+  Js.log("THE MINNN");
+  Js.log("THE MINNN");
+  Js.log("THE MINNN");
+  Js.log(min);
   let (newValue, didUpdate: bool) =
     // IF the new number isn't a float, don't update.
     switch (Float.fromString(value)) {
@@ -48,9 +53,9 @@ let onlyUpdateValueIfInRangeFloat =
         (currentValue, false);
       }
     | None =>
-      // If the new value is an empty string let it through.
+      // If the new value is empty, set it to the minimum
       if (value == "") {
-        (value, true);
+        (min->Js.Float.toString, true);
       } else {
         (currentValue, false);
       }

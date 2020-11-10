@@ -1704,6 +1704,61 @@
         "kind": "OBJECT",
         "possibleTypes": null,
         "interfaces": [],
+        "name": "DaiQueryOutput",
+        "enumValues": null,
+        "description": null,
+        "fields": [
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "balance",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "error",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "nonce",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "description": null
+          }
+        ]
+      },
+      {
+        "inputFields": null,
+        "kind": "OBJECT",
+        "possibleTypes": null,
+        "interfaces": [],
         "name": "EventCounter",
         "enumValues": null,
         "description": null,
@@ -2382,1409 +2437,6 @@
       },
       {
         "inputFields": null,
-        "kind": "OBJECT",
-        "possibleTypes": null,
-        "interfaces": [],
-        "name": "EventParam",
-        "enumValues": null,
-        "description": null,
-        "fields": [
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "ID",
-                "ofType": null
-              }
-            },
-            "description": null
-          },
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "index",
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              }
-            },
-            "description": null
-          },
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "param",
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "description": null
-          },
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "paramName",
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "description": null
-          },
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "paramType",
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "description": null
-          }
-        ]
-      },
-      {
-        "inputFields": [
-          {
-            "name": "id",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "id_gt",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "id_gte",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "id_in",
-            "defaultValue": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              }
-            },
-            "description": null
-          },
-          {
-            "name": "id_lt",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "id_lte",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "id_not",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "id_not_in",
-            "defaultValue": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              }
-            },
-            "description": null
-          },
-          {
-            "name": "index",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "index_gt",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "index_gte",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "index_in",
-            "defaultValue": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              }
-            },
-            "description": null
-          },
-          {
-            "name": "index_lt",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "index_lte",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "index_not",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "index_not_in",
-            "defaultValue": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              }
-            },
-            "description": null
-          },
-          {
-            "name": "param",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "paramName",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "paramName_contains",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "paramName_ends_with",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "paramName_gt",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "paramName_gte",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "paramName_in",
-            "defaultValue": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            "description": null
-          },
-          {
-            "name": "paramName_lt",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "paramName_lte",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "paramName_not",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "paramName_not_contains",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "paramName_not_ends_with",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "paramName_not_in",
-            "defaultValue": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            "description": null
-          },
-          {
-            "name": "paramName_not_starts_with",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "paramName_starts_with",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "paramType",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "paramType_contains",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "paramType_ends_with",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "paramType_gt",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "paramType_gte",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "paramType_in",
-            "defaultValue": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            "description": null
-          },
-          {
-            "name": "paramType_lt",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "paramType_lte",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "paramType_not",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "paramType_not_contains",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "paramType_not_ends_with",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "paramType_not_in",
-            "defaultValue": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            "description": null
-          },
-          {
-            "name": "paramType_not_starts_with",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "paramType_starts_with",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "param_contains",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "param_ends_with",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "param_gt",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "param_gte",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "param_in",
-            "defaultValue": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            "description": null
-          },
-          {
-            "name": "param_lt",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "param_lte",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "param_not",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "param_not_contains",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "param_not_ends_with",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "param_not_in",
-            "defaultValue": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            "description": null
-          },
-          {
-            "name": "param_not_starts_with",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "param_starts_with",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          }
-        ],
-        "kind": "INPUT_OBJECT",
-        "possibleTypes": null,
-        "interfaces": null,
-        "name": "EventParam_filter",
-        "enumValues": null,
-        "description": null,
-        "fields": null
-      },
-      {
-        "inputFields": null,
-        "kind": "ENUM",
-        "possibleTypes": null,
-        "interfaces": null,
-        "name": "EventParam_orderBy",
-        "enumValues": [
-          {
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "id",
-            "description": null
-          },
-          {
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "index",
-            "description": null
-          },
-          {
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "param",
-            "description": null
-          },
-          {
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "paramName",
-            "description": null
-          },
-          {
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "paramType",
-            "description": null
-          }
-        ],
-        "description": null,
-        "fields": null
-      },
-      {
-        "inputFields": null,
-        "kind": "OBJECT",
-        "possibleTypes": null,
-        "interfaces": [],
-        "name": "EventParams",
-        "enumValues": null,
-        "description": null,
-        "fields": [
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "eventName",
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "description": null
-          },
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "ID",
-                "ofType": null
-              }
-            },
-            "description": null
-          },
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "index",
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              }
-            },
-            "description": null
-          },
-          {
-            "args": [
-              {
-                "name": "first",
-                "defaultValue": "100",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "description": null
-              },
-              {
-                "name": "orderBy",
-                "defaultValue": null,
-                "type": {
-                  "kind": "ENUM",
-                  "name": "EventParam_orderBy",
-                  "ofType": null
-                },
-                "description": null
-              },
-              {
-                "name": "orderDirection",
-                "defaultValue": null,
-                "type": {
-                  "kind": "ENUM",
-                  "name": "OrderDirection",
-                  "ofType": null
-                },
-                "description": null
-              },
-              {
-                "name": "skip",
-                "defaultValue": "0",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "description": null
-              },
-              {
-                "name": "where",
-                "defaultValue": null,
-                "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "EventParam_filter",
-                  "ofType": null
-                },
-                "description": null
-              }
-            ],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "params",
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "EventParam",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "description": null
-          }
-        ]
-      },
-      {
-        "inputFields": [
-          {
-            "name": "eventName",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "eventName_contains",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "eventName_ends_with",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "eventName_gt",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "eventName_gte",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "eventName_in",
-            "defaultValue": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            "description": null
-          },
-          {
-            "name": "eventName_lt",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "eventName_lte",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "eventName_not",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "eventName_not_contains",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "eventName_not_ends_with",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "eventName_not_in",
-            "defaultValue": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            "description": null
-          },
-          {
-            "name": "eventName_not_starts_with",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "eventName_starts_with",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "id",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "id_gt",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "id_gte",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "id_in",
-            "defaultValue": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              }
-            },
-            "description": null
-          },
-          {
-            "name": "id_lt",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "id_lte",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "id_not",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "id_not_in",
-            "defaultValue": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              }
-            },
-            "description": null
-          },
-          {
-            "name": "index",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "index_gt",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "index_gte",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "index_in",
-            "defaultValue": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              }
-            },
-            "description": null
-          },
-          {
-            "name": "index_lt",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "index_lte",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "index_not",
-            "defaultValue": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "index_not_in",
-            "defaultValue": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              }
-            },
-            "description": null
-          },
-          {
-            "name": "params",
-            "defaultValue": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            "description": null
-          },
-          {
-            "name": "params_contains",
-            "defaultValue": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            "description": null
-          },
-          {
-            "name": "params_not",
-            "defaultValue": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            "description": null
-          },
-          {
-            "name": "params_not_contains",
-            "defaultValue": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            "description": null
-          }
-        ],
-        "kind": "INPUT_OBJECT",
-        "possibleTypes": null,
-        "interfaces": null,
-        "name": "EventParams_filter",
-        "enumValues": null,
-        "description": null,
-        "fields": null
-      },
-      {
-        "inputFields": null,
-        "kind": "ENUM",
-        "possibleTypes": null,
-        "interfaces": null,
-        "name": "EventParams_orderBy",
-        "enumValues": [
-          {
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "eventName",
-            "description": null
-          },
-          {
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "id",
-            "description": null
-          },
-          {
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "index",
-            "description": null
-          },
-          {
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "params",
-            "description": null
-          }
-        ],
-        "description": null,
-        "fields": null
-      },
-      {
-        "inputFields": null,
         "kind": "SCALAR",
         "possibleTypes": null,
         "interfaces": null,
@@ -3854,7 +2506,7 @@
             "args": [],
             "isDeprecated": false,
             "deprecationReason": null,
-            "name": "erc721Address",
+            "name": "erc20Address",
             "type": {
               "kind": "NON_NULL",
               "name": null,
@@ -4287,7 +2939,7 @@
             "description": null
           },
           {
-            "name": "erc721Address",
+            "name": "erc20Address",
             "defaultValue": null,
             "type": {
               "kind": "SCALAR",
@@ -4297,7 +2949,7 @@
             "description": null
           },
           {
-            "name": "erc721Address_contains",
+            "name": "erc20Address_contains",
             "defaultValue": null,
             "type": {
               "kind": "SCALAR",
@@ -4307,7 +2959,7 @@
             "description": null
           },
           {
-            "name": "erc721Address_in",
+            "name": "erc20Address_in",
             "defaultValue": null,
             "type": {
               "kind": "LIST",
@@ -4325,7 +2977,7 @@
             "description": null
           },
           {
-            "name": "erc721Address_not",
+            "name": "erc20Address_not",
             "defaultValue": null,
             "type": {
               "kind": "SCALAR",
@@ -4335,7 +2987,7 @@
             "description": null
           },
           {
-            "name": "erc721Address_not_contains",
+            "name": "erc20Address_not_contains",
             "defaultValue": null,
             "type": {
               "kind": "SCALAR",
@@ -4345,7 +2997,7 @@
             "description": null
           },
           {
-            "name": "erc721Address_not_in",
+            "name": "erc20Address_not_in",
             "defaultValue": null,
             "type": {
               "kind": "LIST",
@@ -5147,7 +3799,7 @@
           {
             "isDeprecated": false,
             "deprecationReason": null,
-            "name": "erc721Address",
+            "name": "erc20Address",
             "description": null
           },
           {
@@ -6318,6 +4970,132 @@
         ],
         "description": null,
         "fields": null
+      },
+      {
+        "inputFields": null,
+        "kind": "OBJECT",
+        "possibleTypes": null,
+        "interfaces": [],
+        "name": "MaticStateQueryOutput",
+        "enumValues": null,
+        "description": null,
+        "fields": [
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "balance",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "daiNonce",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "error",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "stewardNonce",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "description": null
+          }
+        ]
+      },
+      {
+        "inputFields": null,
+        "kind": "OBJECT",
+        "possibleTypes": null,
+        "interfaces": [],
+        "name": "MetaTxQueryOutput",
+        "enumValues": null,
+        "description": null,
+        "fields": [
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "errorMsg",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "success",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "txHash",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "description": null
+          }
+        ]
       },
       {
         "inputFields": null,
@@ -9315,128 +8093,6 @@
             ],
             "isDeprecated": false,
             "deprecationReason": null,
-            "name": "eventParam",
-            "type": {
-              "kind": "OBJECT",
-              "name": "EventParam",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "args": [
-              {
-                "name": "block",
-                "defaultValue": null,
-                "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "Block_height",
-                  "ofType": null
-                },
-                "description": "The block at which the query should be executed. Can either be an `{ number: Int }` containing the block number or a `{ hash: Bytes }` value containing a block hash. Defaults to the latest block when omitted."
-              },
-              {
-                "name": "first",
-                "defaultValue": "100",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "description": null
-              },
-              {
-                "name": "orderBy",
-                "defaultValue": null,
-                "type": {
-                  "kind": "ENUM",
-                  "name": "EventParams_orderBy",
-                  "ofType": null
-                },
-                "description": null
-              },
-              {
-                "name": "orderDirection",
-                "defaultValue": null,
-                "type": {
-                  "kind": "ENUM",
-                  "name": "OrderDirection",
-                  "ofType": null
-                },
-                "description": null
-              },
-              {
-                "name": "skip",
-                "defaultValue": "0",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "description": null
-              },
-              {
-                "name": "where",
-                "defaultValue": null,
-                "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "EventParams_filter",
-                  "ofType": null
-                },
-                "description": null
-              }
-            ],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "eventParams",
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "EventParams",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "description": null
-          },
-          {
-            "args": [
-              {
-                "name": "block",
-                "defaultValue": null,
-                "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "Block_height",
-                  "ofType": null
-                },
-                "description": "The block at which the query should be executed. Can either be an `{ number: Int }` containing the block number or a `{ hash: Bytes }` value containing a block hash. Defaults to the latest block when omitted."
-              },
-              {
-                "name": "id",
-                "defaultValue": null,
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  }
-                },
-                "description": null
-              }
-            ],
-            "isDeprecated": false,
-            "deprecationReason": null,
             "name": "global",
             "type": {
               "kind": "OBJECT",
@@ -10804,7 +9460,35 @@
             "args": [],
             "isDeprecated": false,
             "deprecationReason": null,
-            "name": "accessToken",
+            "name": "balance",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "error",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "nonce",
             "type": {
               "kind": "NON_NULL",
               "name": null,
@@ -10967,58 +9651,31 @@
             "description": null
           },
           {
-            "args": [
-              {
-                "name": "first",
-                "defaultValue": "100",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "description": null
-              },
-              {
-                "name": "orderBy",
-                "defaultValue": null,
-                "type": {
-                  "kind": "ENUM",
-                  "name": "EventParams_orderBy",
-                  "ofType": null
-                },
-                "description": null
-              },
-              {
-                "name": "orderDirection",
-                "defaultValue": null,
-                "type": {
-                  "kind": "ENUM",
-                  "name": "OrderDirection",
-                  "ofType": null
-                },
-                "description": null
-              },
-              {
-                "name": "skip",
-                "defaultValue": "0",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "description": null
-              },
-              {
-                "name": "where",
-                "defaultValue": null,
-                "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "EventParams_filter",
-                  "ofType": null
-                },
-                "description": null
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "txEventList",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
               }
-            ],
+            },
+            "description": null
+          },
+          {
+            "args": [],
             "isDeprecated": false,
             "deprecationReason": null,
             "name": "txEventParamList",
@@ -11032,8 +9689,8 @@
                   "kind": "NON_NULL",
                   "name": null,
                   "ofType": {
-                    "kind": "OBJECT",
-                    "name": "EventParams",
+                    "kind": "SCALAR",
+                    "name": "String",
                     "ofType": null
                   }
                 }
@@ -11577,6 +10234,78 @@
             "description": null
           },
           {
+            "name": "txEventList",
+            "defaultValue": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "description": null
+          },
+          {
+            "name": "txEventList_contains",
+            "defaultValue": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "description": null
+          },
+          {
+            "name": "txEventList_not",
+            "defaultValue": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "description": null
+          },
+          {
+            "name": "txEventList_not_contains",
+            "defaultValue": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "description": null
+          },
+          {
             "name": "txEventParamList",
             "defaultValue": null,
             "type": {
@@ -11764,6 +10493,12 @@
             "isDeprecated": false,
             "deprecationReason": null,
             "name": "timestamp",
+            "description": null
+          },
+          {
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "txEventList",
             "description": null
           },
           {
@@ -12337,128 +11072,6 @@
                   "ofType": {
                     "kind": "OBJECT",
                     "name": "EventCounter",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "description": null
-          },
-          {
-            "args": [
-              {
-                "name": "block",
-                "defaultValue": null,
-                "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "Block_height",
-                  "ofType": null
-                },
-                "description": "The block at which the query should be executed. Can either be an `{ number: Int }` containing the block number or a `{ hash: Bytes }` value containing a block hash. Defaults to the latest block when omitted."
-              },
-              {
-                "name": "id",
-                "defaultValue": null,
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  }
-                },
-                "description": null
-              }
-            ],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "eventParam",
-            "type": {
-              "kind": "OBJECT",
-              "name": "EventParam",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "args": [
-              {
-                "name": "block",
-                "defaultValue": null,
-                "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "Block_height",
-                  "ofType": null
-                },
-                "description": "The block at which the query should be executed. Can either be an `{ number: Int }` containing the block number or a `{ hash: Bytes }` value containing a block hash. Defaults to the latest block when omitted."
-              },
-              {
-                "name": "first",
-                "defaultValue": "100",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "description": null
-              },
-              {
-                "name": "orderBy",
-                "defaultValue": null,
-                "type": {
-                  "kind": "ENUM",
-                  "name": "EventParams_orderBy",
-                  "ofType": null
-                },
-                "description": null
-              },
-              {
-                "name": "orderDirection",
-                "defaultValue": null,
-                "type": {
-                  "kind": "ENUM",
-                  "name": "OrderDirection",
-                  "ofType": null
-                },
-                "description": null
-              },
-              {
-                "name": "skip",
-                "defaultValue": "0",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "description": null
-              },
-              {
-                "name": "where",
-                "defaultValue": null,
-                "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "EventParams_filter",
-                  "ofType": null
-                },
-                "description": null
-              }
-            ],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "eventParams",
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "EventParams",
                     "ofType": null
                   }
                 }
@@ -14138,6 +12751,49 @@
         ],
         "description": null,
         "fields": null
+      },
+      {
+        "inputFields": null,
+        "kind": "OBJECT",
+        "possibleTypes": null,
+        "interfaces": [],
+        "name": "TxOutput",
+        "enumValues": null,
+        "description": null,
+        "fields": [
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "success",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "txHash",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "description": null
+          }
+        ]
       },
       {
         "inputFields": null,
@@ -18949,6 +17605,118 @@
         "kind": "OBJECT",
         "possibleTypes": null,
         "interfaces": [],
+        "name": "mutation_root",
+        "enumValues": null,
+        "description": "mutation root",
+        "fields": [
+          {
+            "args": [
+              {
+                "name": "functionSignature",
+                "defaultValue": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "description": null
+              },
+              {
+                "name": "network",
+                "defaultValue": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "description": null
+              },
+              {
+                "name": "r",
+                "defaultValue": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "description": null
+              },
+              {
+                "name": "s",
+                "defaultValue": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "description": null
+              },
+              {
+                "name": "userAddress",
+                "defaultValue": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "description": null
+              },
+              {
+                "name": "v",
+                "defaultValue": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                "description": null
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "metaTx",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "MetaTxQueryOutput",
+                "ofType": null
+              }
+            },
+            "description": "perform the action: \"metaTx\""
+          }
+        ]
+      },
+      {
+        "inputFields": null,
+        "kind": "OBJECT",
+        "possibleTypes": null,
+        "interfaces": [],
         "name": "onboarding_status",
         "enumValues": null,
         "description": "columns and relationships of \"onboarding_status\"",
@@ -21293,128 +20061,6 @@
             ],
             "isDeprecated": false,
             "deprecationReason": null,
-            "name": "eventParam",
-            "type": {
-              "kind": "OBJECT",
-              "name": "EventParam",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "args": [
-              {
-                "name": "block",
-                "defaultValue": null,
-                "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "Block_height",
-                  "ofType": null
-                },
-                "description": "The block at which the query should be executed. Can either be an `{ number: Int }` containing the block number or a `{ hash: Bytes }` value containing a block hash. Defaults to the latest block when omitted."
-              },
-              {
-                "name": "first",
-                "defaultValue": "100",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "description": null
-              },
-              {
-                "name": "orderBy",
-                "defaultValue": null,
-                "type": {
-                  "kind": "ENUM",
-                  "name": "EventParams_orderBy",
-                  "ofType": null
-                },
-                "description": null
-              },
-              {
-                "name": "orderDirection",
-                "defaultValue": null,
-                "type": {
-                  "kind": "ENUM",
-                  "name": "OrderDirection",
-                  "ofType": null
-                },
-                "description": null
-              },
-              {
-                "name": "skip",
-                "defaultValue": "0",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "description": null
-              },
-              {
-                "name": "where",
-                "defaultValue": null,
-                "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "EventParams_filter",
-                  "ofType": null
-                },
-                "description": null
-              }
-            ],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "eventParams",
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "EventParams",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "description": null
-          },
-          {
-            "args": [
-              {
-                "name": "block",
-                "defaultValue": null,
-                "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "Block_height",
-                  "ofType": null
-                },
-                "description": "The block at which the query should be executed. Can either be an `{ number: Int }` containing the block number or a `{ hash: Bytes }` value containing a block hash. Defaults to the latest block when omitted."
-              },
-              {
-                "name": "id",
-                "defaultValue": null,
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  }
-                },
-                "description": null
-              }
-            ],
-            "isDeprecated": false,
-            "deprecationReason": null,
             "name": "global",
             "type": {
               "kind": "OBJECT",
@@ -21771,6 +20417,51 @@
               "ofType": null
             },
             "description": "fetch data from the table: \"launchedWildcards\" using primary key columns"
+          },
+          {
+            "args": [
+              {
+                "name": "address",
+                "defaultValue": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "description": null
+              },
+              {
+                "name": "network",
+                "defaultValue": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "description": null
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "maticState",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "MaticStateQueryOutput",
+                "ofType": null
+              }
+            },
+            "description": "perform the action: \"maticState\""
           },
           {
             "args": [
@@ -24214,128 +22905,6 @@
             ],
             "isDeprecated": false,
             "deprecationReason": null,
-            "name": "eventParam",
-            "type": {
-              "kind": "OBJECT",
-              "name": "EventParam",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "args": [
-              {
-                "name": "block",
-                "defaultValue": null,
-                "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "Block_height",
-                  "ofType": null
-                },
-                "description": "The block at which the query should be executed. Can either be an `{ number: Int }` containing the block number or a `{ hash: Bytes }` value containing a block hash. Defaults to the latest block when omitted."
-              },
-              {
-                "name": "first",
-                "defaultValue": "100",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "description": null
-              },
-              {
-                "name": "orderBy",
-                "defaultValue": null,
-                "type": {
-                  "kind": "ENUM",
-                  "name": "EventParams_orderBy",
-                  "ofType": null
-                },
-                "description": null
-              },
-              {
-                "name": "orderDirection",
-                "defaultValue": null,
-                "type": {
-                  "kind": "ENUM",
-                  "name": "OrderDirection",
-                  "ofType": null
-                },
-                "description": null
-              },
-              {
-                "name": "skip",
-                "defaultValue": "0",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "description": null
-              },
-              {
-                "name": "where",
-                "defaultValue": null,
-                "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "EventParams_filter",
-                  "ofType": null
-                },
-                "description": null
-              }
-            ],
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "name": "eventParams",
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "EventParams",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "description": null
-          },
-          {
-            "args": [
-              {
-                "name": "block",
-                "defaultValue": null,
-                "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "Block_height",
-                  "ofType": null
-                },
-                "description": "The block at which the query should be executed. Can either be an `{ number: Int }` containing the block number or a `{ hash: Bytes }` value containing a block hash. Defaults to the latest block when omitted."
-              },
-              {
-                "name": "id",
-                "defaultValue": null,
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  }
-                },
-                "description": null
-              }
-            ],
-            "isDeprecated": false,
-            "deprecationReason": null,
             "name": "global",
             "type": {
               "kind": "OBJECT",
@@ -24692,6 +23261,51 @@
               "ofType": null
             },
             "description": "fetch data from the table: \"launchedWildcards\" using primary key columns"
+          },
+          {
+            "args": [
+              {
+                "name": "address",
+                "defaultValue": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "description": null
+              },
+              {
+                "name": "network",
+                "defaultValue": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "description": null
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "maticState",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "MaticStateQueryOutput",
+                "ofType": null
+              }
+            },
+            "description": "perform the action: \"maticState\""
           },
           {
             "args": [
@@ -27177,6 +25791,8 @@
         "fields": null
       }
     ],
-    "mutationType": null
+    "mutationType": {
+      "name": "mutation_root"
+    }
   }
 }

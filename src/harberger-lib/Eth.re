@@ -1,6 +1,6 @@
 open Globals;
 
-type t = BN.bn;
+type t = BN.t;
 
 [@bs.deriving jsConverter]
 type ethUnit = [

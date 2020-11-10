@@ -1,6 +1,7 @@
 module GraphQl = {
   [@react.component]
-  let make = (~getGraphEndpoints, ~children) => {
+  let make =
+      (~getGraphEndpoints: (int, unit) => Client.qlEndpoints, ~children) => {
     let networkId =
       RootProvider.useNetworkId()->Belt.Option.mapWithDefault(1, a => a);
     let client =
@@ -11,10 +12,12 @@ module GraphQl = {
       );
 
     <ReasonApollo.Provider client>
-      <ReasonApolloHooks.ApolloHooks.Provider client>
-        <QlStateManager> children </QlStateManager>
-      </ReasonApolloHooks.ApolloHooks.Provider>
-    </ReasonApollo.Provider>;
+
+        <ReasonApolloHooks.ApolloHooks.Provider client>
+          children
+        </ReasonApolloHooks.ApolloHooks.Provider>
+      </ReasonApollo.Provider>;
+      // <QlStateManager> children </QlStateManager>
   };
 };
 
@@ -22,7 +25,7 @@ module GraphQl = {
 [@react.component]
 let make =
     (
-      ~getGraphEndpoints,
+      ~getGraphEndpoints: (int, unit) => Client.qlEndpoints,
       ~children,
       ~stewardContractAddress: option(Web3.ethAddress)=?,
       ~stewardAbi: option(Web3.abi)=?,

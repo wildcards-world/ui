@@ -34,10 +34,10 @@ module EditButton = {
 
 module Streak = {
   [@react.component]
-  let make = (~animal: TokenId.t) => {
+  let make = (~chain, ~animal: TokenId.t) => {
     let animalName = QlHooks.useWildcardName(animal) |||| "Loading";
 
-    let daysHeld = QlHooks.useDaysHeld(animal);
+    let daysHeld = QlHooks.useDaysHeld(~chain, animal);
 
     switch (daysHeld) {
     | Some((daysHeldFloat, _timeAquired)) =>
@@ -95,38 +95,54 @@ module DisplayAfterDate = {
 
 module AuctionDisplay = {
   [@react.component]
-  let make = (~launchTime, ~animal) => {
-    let currentPriceWei = Animal.useAuctionPriceWei(animal, launchTime);
+  let make = (~chain, ~launchTime, ~animal) => {
+    let currentPriceWei =
+      Animal.useAuctionPriceWei(~chain, animal, launchTime);
 
     let optCurrentUsdEthPrice = UsdPriceProvider.useUsdPrice();
 
-    let (priceEth, optPriceUsd) =
-      PriceDisplay.priceWeiToTuple(currentPriceWei, optCurrentUsdEthPrice);
-
     <>
-      <h3> "Auction "->React.string </h3>
-      <PriceDisplay.PurePriceDisplay priceEth optPriceUsd />
+      <h3> "Auction here"->React.string </h3>
+      {switch (chain) {
+       | Client.MaticQuery =>
+         <p className={Styles.noMarginTop ++ " " ++ Styles.noMarginBottom}>
+           {{
+              currentPriceWei->Option.mapWithDefault("Loading", price =>
+                price->Web3Utils.fromWeiBNToEthPrecision(~digits=4) ++ " USD"
+              );
+            }
+            ->restr}
+         </p>
+       | Client.Neither
+       | Client.MainnetQuery =>
+         let (priceEth, optPriceUsd) =
+           PriceDisplay.priceWeiToTuple(
+             currentPriceWei->Option.getWithDefault(BN.new_("0")),
+             optCurrentUsdEthPrice,
+           );
+         <PriceDisplay.PurePriceDisplay priceEth optPriceUsd />;
+       }}
       <ActionButtons.Auction animal />
     </>;
   };
 };
 module AuctionDetails = {
   [@react.component]
-  let make = (~animal: TokenId.t) => {
-    let launchTimeOpt = QlHooks.useLaunchTimeBN(animal);
+  let make = (~chain, ~animal: TokenId.t) => {
+    let launchTimeOpt = QlHooks.useLaunchTimeBN(~chain, animal);
     let foreclosureTimeOpt =
-      QlHooks.useForeclosureTimeBn(animal->TokenId.toString);
+      QlHooks.useForeclosureTimeBn(~chain, animal->TokenId.toString);
 
     switch (launchTimeOpt, foreclosureTimeOpt) {
     | (Some(launchTime), Some(foreclosurTime)) =>
-      if (foreclosurTime->BN.ltGet(. launchTime)) {
-        <AuctionDisplay animal launchTime />;
+      if (foreclosurTime->BN.lt(launchTime)) {
+        <AuctionDisplay chain animal launchTime />;
       } else {
-        <AuctionDisplay animal launchTime=foreclosurTime />;
+        <AuctionDisplay chain animal launchTime=foreclosurTime />;
       }
-    | (Some(launchTime), None) => <AuctionDisplay animal launchTime />
+    | (Some(launchTime), None) => <AuctionDisplay chain animal launchTime />
     | (None, Some(foreclosureTime)) =>
-      <AuctionDisplay animal launchTime=foreclosureTime />
+      <AuctionDisplay chain animal launchTime=foreclosureTime />
     | (None, None) => <p> "Loading"->React.string </p>
     };
   };
@@ -134,21 +150,21 @@ module AuctionDetails = {
 
 module BasicAnimalDisplay = {
   [@react.component]
-  let make = (~animal: TokenId.t) => {
-    let owned = animal->QlHooks.useIsAnimalOwened;
-    let currentPatron = QlHooks.usePatron(animal) |||| "Loading";
+  let make = (~chain, ~animal: TokenId.t) => {
+    let owned = animal->QlHooks.useIsAnimalOwened(~chain);
+    let currentPatron = QlHooks.usePatron(~chain, animal) |||| "Loading";
     let displayName = UserProvider.useDisplayName(currentPatron);
 
     let displayNameStr = UserProvider.displayNameToString(displayName);
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
     let nonUrlRouting = RootProvider.useNonUrlState();
 
-    let isOnAuction = Animal.useIsOnAuction(animal);
+    let isOnAuction = Animal.useIsOnAuction(~chain, animal);
 
     isOnAuction
-      ? <AuctionDetails animal />
+      ? <AuctionDetails chain animal />
       : <>
-          <PriceDisplay animal />
+          <PriceDisplay chain animal />
           <a
             onClick={e => {
               ReactEvent.Mouse.preventDefault(e);
@@ -165,7 +181,7 @@ module BasicAnimalDisplay = {
            | AuctionScreen(_) => React.null
            | LoginScreen(_)
            | NoExtraState =>
-             owned ? <EditButton animal /> : <ActionButtons.Buy animal />
+             owned ? <EditButton animal /> : <ActionButtons.Buy animal chain />
            }}
         </>;
   };
@@ -177,6 +193,7 @@ module AnimalOnLandingPage = {
       (
         ~animal: TokenId.t,
         ~scalar: float=1.,
+        ~chain,
         ~enlargement: float=1.,
         ~optionEndDateMoment: option(MomentRe.Moment.t),
         ~isGqlLoaded,
@@ -187,7 +204,7 @@ module AnimalOnLandingPage = {
     let orgBadge = Animal.useGetOrgBadgeImage(animal);
     let orgId = QlHooks.useWildcardOrgId(animal) |||| "";
 
-    let currentPriceWei = QlHooks.usePrice(animal);
+    let currentPriceWei = QlHooks.usePrice(~chain, animal);
 
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
     let image = Animal.useAvatar(animal);
@@ -209,7 +226,7 @@ module AnimalOnLandingPage = {
                     switch (currentPriceWei) {
                     | Price(_) =>
                       <div className=Styles.overlayFlameImg>
-                        <Streak animal />
+                        <Streak chain animal />
                       </div>
                     | Loading
                     | Foreclosed(_) => React.null
@@ -254,7 +271,8 @@ module AnimalOnLandingPage = {
            <CountDown endDateMoment displayUnits=false />
          </div>
        | None =>
-         isGqlLoaded ? <div> <BasicAnimalDisplay animal /> </div> : React.null
+         isGqlLoaded
+           ? <div> <BasicAnimalDisplay chain animal /> </div> : React.null
        }}
     </Rimble.Box>;
   };
@@ -263,25 +281,33 @@ module AnimalOnLandingPage = {
 module CarouselAnimal = {
   [@react.component]
   let make =
-      (~animal: TokenId.t, ~scalar, ~enlargement: float=1., ~isGqlLoaded) => {
-    let isLaunched = animal->Animal.isLaunched;
+      (
+        ~animal: TokenId.t,
+        ~scalar,
+        ~enlargement: float=1.,
+        ~isGqlLoaded=true,
+        ~chain=Client.MainnetQuery,
+      ) => {
+    let isLaunched = animal->Animal.isLaunched(~chain);
 
     let makeAnimalOnLandingPage = optionEndDateMoment =>
       <AnimalOnLandingPage
         animal
+        chain
         scalar
         optionEndDateMoment
         enlargement
         isGqlLoaded
       />;
     switch (isLaunched) {
-    | Animal.Launched => makeAnimalOnLandingPage(None)
     | Animal.LaunchDate(endDateMoment) =>
       <DisplayAfterDate
         endDateMoment
         afterComponent={makeAnimalOnLandingPage(None)}
         beforeComponent={makeAnimalOnLandingPage(Some(endDateMoment))}
       />
+    | Animal.Launched => makeAnimalOnLandingPage(None)
+    | Animal.Loading => makeAnimalOnLandingPage(None)
     };
   };
 };
@@ -372,21 +398,21 @@ module AnimalCarousel = {
 
 module AnimalActionsOnDetailsPage = {
   [@react.component]
-  let make = (~animal) => {
-    let owned = animal->QlHooks.useIsAnimalOwened;
+  let make = (~chain, ~animal) => {
+    let owned = animal->QlHooks.useIsAnimalOwened(~chain);
     // let currentAccount =
     //   RootProvider.useCurrentUser()->mapWithDefault("loading", a => a);
-    let currentPatron = QlHooks.usePatron(animal) |||| "Loading";
+    let currentPatron = QlHooks.usePatron(~chain, animal) |||| "Loading";
     let displayName = UserProvider.useDisplayName(currentPatron);
     let displayNameStr = UserProvider.displayNameToString(displayName);
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
     let nonUrlRouting = RootProvider.useNonUrlState();
-    let isOnAuction = Animal.useIsOnAuction(animal);
+    let isOnAuction = Animal.useIsOnAuction(~chain, animal);
 
     let price = () =>
       isOnAuction
-        ? <AuctionDetails animal />
+        ? <AuctionDetails chain animal />
         : <React.Fragment>
             <a
               onClick={e => {
@@ -395,7 +421,7 @@ module AnimalActionsOnDetailsPage = {
               }}>
               displayNameStr->restr
             </a>
-            <PriceDisplay animal />
+            <PriceDisplay chain animal />
             {switch (nonUrlRouting) {
              | UserVerificationScreen
              | UpdateDepositScreen
@@ -403,13 +429,13 @@ module AnimalActionsOnDetailsPage = {
              | BuyScreen(_)
              | AuctionScreen(_) => React.null
              | LoginScreen(_)
-             | NoExtraState => <ActionButtons.Buy animal />
+             | NoExtraState => <ActionButtons.Buy chain animal />
              }}
           </React.Fragment>;
 
     if (owned) {
       <React.Fragment>
-        <PriceDisplay animal />
+        <PriceDisplay animal chain />
         <ActionButtons.UpdatePrice animal />
         <br />
         <ActionButtons.UpdateDeposit />
@@ -420,9 +446,7 @@ module AnimalActionsOnDetailsPage = {
       </React.Fragment>;
     } else {
       <React.Fragment>
-        {switch (animal->Animal.isLaunched) {
-         | Launched => price()
-
+        {switch (animal->Animal.isLaunched(~chain)) {
          | LaunchDate(endDateMoment) =>
            <DisplayAfterDate
              endDateMoment
@@ -431,6 +455,8 @@ module AnimalActionsOnDetailsPage = {
                <React.Fragment> <CountDown endDateMoment /> </React.Fragment>
              }
            />
+         | Launched => price()
+         | Loading => <Rimble.Loader />
          }}
       </React.Fragment>;
     };
@@ -439,7 +465,7 @@ module AnimalActionsOnDetailsPage = {
 
 module DetailsViewAnimal = {
   [@react.component]
-  let make = (~animal: TokenId.t) => {
+  let make = (~chain, ~animal: TokenId.t) => {
     let orgId = QlHooks.useWildcardOrgId(animal) |||| "";
 
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
@@ -450,19 +476,24 @@ module DetailsViewAnimal = {
     // let optAlternateImage = Animal.getAlternateImage(animal);
     let orgBadge = Animal.useGetOrgBadgeImage(animal);
 
-    let isLaunched = animal->Animal.isLaunched;
+    let isLaunched = animal->Animal.isLaunched(~chain);
 
     let displayAnimal = animalImage =>
       <div className=Styles.positionRelative>
         {animalImage()}
         {switch (isLaunched) {
          | Animal.Launched =>
-           <div className=Styles.overlayFlameImg> <Streak animal /> </div>
+           <div className=Styles.overlayFlameImg>
+             <Streak chain animal />
+           </div>
+         | Animal.Loading => React.null
          | Animal.LaunchDate(endDateMoment) =>
            <DisplayAfterDate
              endDateMoment
              afterComponent={
-               <div className=Styles.overlayFlameImg> <Streak animal /> </div>
+               <div className=Styles.overlayFlameImg>
+                 <Streak chain animal />
+               </div>
              }
              beforeComponent=React.null
            />
@@ -486,14 +517,14 @@ module DetailsViewAnimal = {
          }
          ->restr}
       </h2>
-      <AnimalActionsOnDetailsPage animal />
+      <AnimalActionsOnDetailsPage chain animal />
     </React.Fragment>;
   };
 };
 
 module DetailsView = {
   [@react.component]
-  let make = (~optionAnimal: option(TokenId.t)) => {
+  let make = (~chain, ~optionAnimal: option(TokenId.t)) => {
     [%log.info "optionAnimal"; ("a", optionAnimal)];
 
     switch (optionAnimal) {
@@ -504,7 +535,7 @@ module DetailsView = {
         </h1>
         <p> "Please check the spelling and try again."->restr </p>
       </div>
-    | Some(animal) => <DetailsViewAnimal animal />
+    | Some(animal) => <DetailsViewAnimal chain animal />
     };
   };
 };
@@ -520,8 +551,14 @@ module DefaultLook = {
        | [|"explorer", "details", animalStr|]
        | [|"explorer", "details", animalStr, ""|] =>
          [%log.info "the animalString"; ("a", animalStr)];
+         let optionAnimal = TokenId.make(animalStr);
+         let chain =
+           optionAnimal->Option.mapWithDefault(
+             Client.MainnetQuery,
+             Animal.getChainIdFromAnimalId,
+           );
 
-         <DetailsView optionAnimal={TokenId.make(animalStr)} />;
+         <DetailsView chain optionAnimal={TokenId.make(animalStr)} />;
        | _ =>
          <React.Fragment>
            <AnimalCarousel isGqlLoaded />
@@ -577,12 +614,12 @@ type maybeDate =
 
 module AnimalInfoStats = {
   [@react.component]
-  let make = (~animal: TokenId.t) => {
+  let make = (~chain, ~animal: TokenId.t) => {
     let animalName = QlHooks.useWildcardName(animal) |||| "Loading";
 
-    let daysHeld = QlHooks.useDaysHeld(animal);
+    let daysHeld = QlHooks.useDaysHeld(~chain, animal);
 
-    let currentPatron = QlHooks.usePatron(animal) |||| "Loading";
+    let currentPatron = QlHooks.usePatron(~chain, animal) |||| "Loading";
     let userId = UserProvider.useDisplayName(currentPatron);
     let displayName = UserProvider.useDisplayName(currentPatron);
     let displayNameStr = UserProvider.displayNameToString(displayName);
@@ -596,7 +633,7 @@ module AnimalInfoStats = {
 
     let currentUsdEthPrice = UsdPriceProvider.useUsdPrice();
     let (depositAvailableToWithdrawEth, depositAvailableToWithdrawUsd) =
-      QlHooks.useRemainingDepositEth(currentPatron)
+      QlHooks.useRemainingDepositEth(~chain, currentPatron)
       ->mapd(("Loading", "Loading"), a =>
           (
             (a->Eth.get(Eth.Eth(`ether))->Float.fromString |||| 0.0)
@@ -608,7 +645,7 @@ module AnimalInfoStats = {
         );
 
     let (totalPatronage, totalPatronageUsd) =
-      QlHooks.useAmountRaisedToken(animal)
+      QlHooks.useAmountRaisedToken(~chain, animal)
       ->mapd(("Loading", "Loading"), a =>
           (
             (a->Eth.get(Eth.Eth(`ether))->Float.fromString |||| 0.0)
@@ -618,11 +655,11 @@ module AnimalInfoStats = {
             ),
           )
         );
-    let foreclosureTime = QlHooks.useForeclosureTime(currentPatron);
+    let foreclosureTime = QlHooks.useForeclosureTime(~chain, currentPatron);
     let definiteTime = foreclosureTime->mapd(Loading, a => Date(a));
-    let ratio = QlHooks.usePledgeRate(animal);
+    let ratio = QlHooks.usePledgeRate(~chain, animal);
 
-    let optCurrentPrice = PriceDisplay.usePrice(animal);
+    let optCurrentPrice = PriceDisplay.usePrice(~chain, animal);
 
     let (optMonthlyPledgeEth, optMonthlyPledgeUsd) =
       switch (optCurrentPrice) {
@@ -814,15 +851,15 @@ module AnimalInfoStats = {
 
 module UnlaunchedAnimalInfo = {
   [@react.component]
-  let make = (~endDateMoment, ~animal: TokenId.t) => {
+  let make = (~chain, ~endDateMoment, ~animal: TokenId.t) => {
     let animalName = QlHooks.useWildcardName(animal) |||| "Loading";
 
-    let ratio = QlHooks.usePledgeRate(animal);
+    let ratio = QlHooks.usePledgeRate(~chain, animal);
     let monthlyRate = Js.Float.toString(ratio *. 100.);
 
     <DisplayAfterDate
       endDateMoment
-      afterComponent={<AnimalInfoStats animal />}
+      afterComponent={<AnimalInfoStats chain animal />}
       beforeComponent={
         <React.Fragment>
           <h2> "This animal will launch in:"->React.string </h2>
@@ -862,12 +899,12 @@ module UnlaunchedAnimalInfo = {
 
 module AnimalInfo = {
   [@react.component]
-  let make = (~animal: TokenId.t) => {
+  let make = (~chain, ~animal: TokenId.t) => {
     let animalDescription =
       QlHooks.useWildcardDescription(animal) |||| [|"Loading"|];
     let optAnimalMedia = animal->Animal.useAlternateImage;
 
-    let animalStatus = animal->Animal.useTokenStatus;
+    let animalStatus = animal->Animal.useTokenStatus(~chain);
 
     // TODO: the ethereum address is really terribly displayed. But the default in Rimble UI includes a QR code scanner (which is really ugly).
     // https://rimble.consensys.design/components/rimble-ui/EthAddress#props
@@ -905,12 +942,22 @@ module AnimalInfo = {
           {switch (animalStatus) {
            | Loading => <Rimble.Loader />
            | WaitingForLaunch(endDateMoment) =>
-             <UnlaunchedAnimalInfo endDateMoment animal />
+             <UnlaunchedAnimalInfo chain endDateMoment animal />
            | Launched(auctionStartTime) =>
-             <Info.Auction auctionStartTime abandoned=false tokenId=animal />
+             <Info.Auction
+               chain
+               auctionStartTime
+               abandoned=false
+               tokenId=animal
+             />
            | Foreclosed(auctionStartTime) =>
-             <Info.Auction auctionStartTime abandoned=true tokenId=animal />
-           | Owned(_) => <Info tokenId=animal />
+             <Info.Auction
+               chain
+               auctionStartTime
+               abandoned=true
+               tokenId=animal
+             />
+           | Owned(_) => <Info chain tokenId=animal />
            }}
         </ReactTabs.TabPanel>
         <ReactTabs.TabPanel>
@@ -927,8 +974,9 @@ module AnimalInfo = {
 };
 
 [@react.component]
-let make = () => {
-  let isGqlLoaded = QlStateManager.useIsInitialized();
+let make = (~currentAnimal) => {
+  // let isGqlLoaded = QlStateManager.useIsInitialized();
+  let isGqlLoaded = true;
   let nonUrlRouting = RootProvider.useNonUrlState();
   let clearNonUrlState = RootProvider.useClearNonUrlState();
   let isDetailView = Router.useIsDetails();
@@ -952,7 +1000,10 @@ let make = () => {
                m=1
                onClick={_ => clearNonUrlState()}
              />
-             <Buy tokenId=animal />
+             <Buy
+               chain={Animal.getChainIdFromAnimalId(animal)}
+               tokenId=animal
+             />
            </div>
          | AuctionScreen(animal) =>
            <div className=Css.(style([position(`relative)]))>
@@ -966,7 +1017,10 @@ let make = () => {
                m=1
                onClick={_ => clearNonUrlState()}
              />
-             <Buy tokenId=animal />
+             <Buy
+               chain={Animal.getChainIdFromAnimalId(animal)}
+               tokenId=animal
+             />
            </div>
          | UserVerificationScreen =>
            <div className=Css.(style([position(`relative)]))>
@@ -996,7 +1050,15 @@ let make = () => {
                m=1
                onClick={_ => clearNonUrlState()}
              />
-             <UpdateDeposit closeButtonText="Back to view Animal" />
+             <UpdateDeposit
+               chain={
+                 currentAnimal->Option.mapWithDefault(
+                   Client.MainnetQuery,
+                   Animal.getChainIdFromAnimalId,
+                 )
+               }
+               closeButtonText="Back to view Animal"
+             />
            </div>
          | UpdatePriceScreen(animal) =>
            <div className=Css.(style([position(`relative)]))>
@@ -1010,11 +1072,18 @@ let make = () => {
                m=1
                onClick={_ => clearNonUrlState()}
              />
-             <UpdatePrice tokenId=animal />
+             <UpdatePrice
+               chain={Animal.getChainIdFromAnimalId(animal)}
+               tokenId=animal
+             />
            </div>
          | NoExtraState =>
            switch (optAnimalForDetails) {
-           | Some(animal) => <AnimalInfo animal />
+           | Some(animal) =>
+             <AnimalInfo
+               chain={Animal.getChainIdFromAnimalId(animal)}
+               animal
+             />
            | None => <DefaultLeftPanel />
            }
          }}

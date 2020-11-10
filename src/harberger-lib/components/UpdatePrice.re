@@ -5,10 +5,14 @@ let getToDisplay = (label, value) =>
 
 [@gentype]
 [@react.component]
-let make = (~tokenId: TokenId.t) => {
+let make = (~tokenId: TokenId.t, ~chain) => {
+  // TODO: We must use the correct client for updating the deposit
+  Js.log(chain);
+
   let (newBuyPrice, setNewBuyPrice) = React.useState(() => "");
 
-  let (updatePriceFunc, txState) = ContractActions.useChangePrice(tokenId);
+  let (updatePriceFunc, txState) =
+    ContractActions.useChangePrice(tokenId, false);
 
   let onSubmitBuy = event => {
     ReactEvent.Form.preventDefault(event);
@@ -16,7 +20,7 @@ let make = (~tokenId: TokenId.t) => {
     updatePriceFunc(Web3Utils.toWei(newBuyPrice, "ether"));
   };
 
-  <TxTemplate txState closeButtonText="Back to view Animal">
+  <TxTemplate chain txState closeButtonText="Back to view Animal">
     <Rimble.Box p=4 mb=3>
       <Rimble.HeadingS> "Update Price" </Rimble.HeadingS>
       <Rimble.TextS>

@@ -144,7 +144,7 @@ module OrganisationVoteResult = {
           (
             (
               (proposalVotes |*| BN.new_("10000") |/| totalVotes)
-              ->BN.toStringGet(.)
+              ->BN.toString
               ->Float.fromString
               |||| 0.
             )
@@ -250,6 +250,10 @@ module ApproveLoyaltyTokens = {
              </a>
            </p>
          </>
+       | DaiPermit(_)
+       | SignMetaTx
+       | ServerError(_)
+       | SubmittedMetaTx
        | Created =>
          <>
            <Rimble.Loader />
@@ -285,7 +289,7 @@ module ApproveLoyaltyTokens = {
 };
 
 [@react.component]
-let make = () => {
+let make = (~chain) => {
   let (voteStep, setVoteStep) = React.useState(() => DefaultView);
   // let (voteStep, setVoteStep) = React.useState(() => ViewResults);
 
@@ -303,7 +307,7 @@ let make = () => {
           ->int_of_float
           ->Int.toString
           ->BN.new_
-          ->BN.mulGet(. BN.new_("10000"));
+          ->BN.mul(BN.new_("10000"));
 
         voteForProject(
           conservationVotedContractIndex->string_of_int,
@@ -323,8 +327,8 @@ let make = () => {
   };
 
   let glen = TokenId.makeFromInt(13);
-  let optCurrentPrice = PriceDisplay.usePrice(glen);
-  let (_, _, ratio, _) = QlHooks.usePledgeRateDetailed(glen);
+  let optCurrentPrice = PriceDisplay.usePrice(~chain, glen);
+  let (_, _, ratio, _) = QlHooks.usePledgeRateDetailed(~chain, glen);
   // TODO: investigate why the USD price doesn't load here.
   let (optMonthlyPledgeEth, optMonthlyPledgeUsd) =
     switch (optCurrentPrice) {

@@ -3,108 +3,11 @@ type dataObject = {
   "__typename": string,
   "id": string,
 };
+open Globals;
 // createInMemoryCache(~dataIdFromObject=(obj: dataObject) => obj##id, ());
 
 /* Create an InMemoryCache */
-let inMemoryCache = () =>
-  ApolloInMemoryCache.createInMemoryCache(
-    // ~dataIdFromObject=
-    //   (obj: dataObject) => {
-    //     obj##id ++ obj##__typename;
-    //   },
-    ~cacheRedirects=[%raw
-      "{
-        HomeAnimal:
-        {
-          wildcardData: (_, args, { getCacheKey }) => {
-        let result = getCacheKey({ __typename: 'WildcardData', id: args.id })
-        console.log('getting wildcard data', result)
-        return result
-      }
-        },
-        HomeAnimals:
-        {
-          wildcardData: (_, args, { getCacheKey }) => {
-        let result = getCacheKey({ __typename: 'WildcardData', id: args.id })
-        console.log('getting wildcard data', result)
-        return result
-      }
-        },
-        homeAnimal:
-        {
-          wildcardData: (_, args, { getCacheKey }) => {
-        let result = getCacheKey({ __typename: 'WildcardData', id: args.id })
-        console.log('2getting wildcard data', result)
-        return result
-      }
-        },
-        homeAnimals:
-        {
-          wildcardData: (_, args, { getCacheKey }) => {
-        let result = getCacheKey({ __typename: 'WildcardData', id: args.id })
-        console.log('2getting wildcard data', result)
-        return result
-      }
-        },
-        AnimalId:
-        {
-          wildcardData: (_, args, { getCacheKey }) => {
-        let result = getCacheKey({ __typename: 'WildcardData', id: args.id })
-        console.log('2getting wildcard data', result)
-        return result
-      }},
-        AnimalIds:
-        {
-          wildcardData: (_, args, { getCacheKey }) => {
-        let result = getCacheKey({ __typename: 'WildcardData', id: args.id })
-        console.log('2getting wildcard data', result)
-        return result
-      }
-        },
-    Query: {
-          wildcardDatas: (_, args, { getCacheKey }) => {
-            console.log('datatttaaa');
-        let result = getCacheKey({ __typename: 'WildcardData', id: args.id })
-        console.log('2getting wildcard data', result)
-        return result
-      },
-          wildcardData: (_, args, { getCacheKey }) => {
-            console.log('datatttaaa');
-        let result = getCacheKey({ __typename: 'WildcardData', id: args.id })
-        console.log('2getting wildcard data', result)
-        return result
-      },
-      global: (_, args, { getCacheKey }) => {
-        let result = getCacheKey({ __typename: 'Global', id: args.id })
-        return result
-      },
-      wildcard: (_, args, { getCacheKey }) => {
-        const result = getCacheKey({ __typename: 'Wildcard', id: args.id})
-        return result
-      },
-      // global: (_, args, { getCacheKey }) => {
-      //   let result = getCacheKey({ __typename: 'Global', id: args.id + 'wc' })
-      //   // console.log(\"the result within\", result)
-      //   return result
-      // },
-      // wildcard: (_, args, { getCacheKey }) => {
-      //   return getCacheKey({ __typename: 'Wildcard', id: args.id + 'wc' })
-      // },
-    },
-    // Subscription: {
-    //   global: (_, args, { getCacheKey }) => {
-    //     let result = getCacheKey({ __typename: 'Global', id: args.id })
-    //     console.log(\"the result within\", result)
-    //     return result
-    //   },
-    //   wildcard: (_, args, { getCacheKey }) => {
-    //     return getCacheKey({ __typename: 'Wildcard', id: args.id })
-    //   },
-    // },
-  }"
-    ],
-    (),
-  );
+let inMemoryCache = () => ApolloInMemoryCache.createInMemoryCache();
 
 /* Create an HTTP Link */
 let httpLink = (~uri) => ApolloLinks.createHttpLink(~uri, ());
@@ -118,8 +21,24 @@ let wsLink = (~uri) =>
     },
   });
 
+type context =
+  | Neither
+  | MaticQuery
+  | MainnetQuery;
+let chainContextToStr = chain =>
+  switch (chain) {
+  | Neither => "neither"
+  | MaticQuery => "matic"
+  | MainnetQuery => "mainnet"
+  };
+type queryContext = {context};
+
+[@bs.send]
+external getContext: ReasonApolloTypes.splitTest => option(queryContext) =
+  "getContext";
+
 /* based on test, execute left or right */
-let webSocketHttpLink = (~uri, ~subscriptions) =>
+let webSocketHttpLink = (~uri, ~matic, ~subscriptions) =>
   ApolloLinks.split(
     operation => {
       let operationDefition =
@@ -128,14 +47,51 @@ let webSocketHttpLink = (~uri, ~subscriptions) =>
       && operationDefition.operation == "subscription";
     },
     wsLink(~uri=subscriptions),
-    httpLink(~uri),
+    ApolloLinks.split(
+      operation => {
+        // Js.log2("let", operation->getContext);
+        let context = operation->getContext;
+        Js.log2(
+          "Context",
+          context->Option.mapWithDefault("NOT DEFINED", a => a->Obj.magic),
+        );
+        // Js.log(context.context);
+        let usingMatic =
+          switch (operation->getContext) {
+          | Some({context}) =>
+            switch (context) {
+            | MaticQuery =>
+              Js.log("it was MATIC!!");
+              true;
+            | Neither =>
+              Js.log("it was neither");
+              false;
+            | MainnetQuery =>
+              Js.log("it was MAINNET");
+              false;
+            }
+          | None => false
+          };
+        Js.log2("USING MATIC", usingMatic);
+        usingMatic;
+      },
+      // true;
+      httpLink(~uri=matic),
+      httpLink(~uri),
+    ),
   );
 
-let instance = (~getGraphEndpoints) => {
-  let (graphEndpoint, subscriptions) = getGraphEndpoints();
+type qlEndpoints = {
+  mainnet: string,
+  matic: string,
+  ws: string,
+};
+
+let instance = (~getGraphEndpoints: unit => qlEndpoints) => {
+  let {mainnet, matic, ws} = getGraphEndpoints();
 
   ReasonApollo.createApolloClient(
-    ~link=webSocketHttpLink(~uri=graphEndpoint, ~subscriptions),
+    ~link=webSocketHttpLink(~uri=mainnet, ~matic, ~subscriptions=ws),
     ~cache=inMemoryCache(),
     (),
   );

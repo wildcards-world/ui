@@ -18,7 +18,7 @@ let uesTotalPatronage = () => {
   switch (optTotalPatronageWei) {
   | Some(totalPatronageWei) =>
     let totalPatronageEth =
-      totalPatronageWei->BN.toStringGet(.)->Web3Utils.fromWeiToEth;
+      totalPatronageWei->BN.toString->Web3Utils.fromWeiToEth;
 
     let optTotaPatronageUsd =
       optCurrentUsdEthPrice->Belt.Option.flatMap(currentUsdEthPrice =>

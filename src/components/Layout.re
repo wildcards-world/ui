@@ -58,7 +58,7 @@ module AnimalFocusDetails = {
               // style([width(`percent(animalCarousel->mapd(100., _ => 90.)))])
             ])
           )>
-          <Dapp />
+          <Dapp currentAnimal />
         </div>
         {showForwardBackButtons
            ? <div className=Css.(style([width(`percent(5.))]))>
@@ -100,9 +100,9 @@ let make = () => {
 
   <div className=Styles.app>
     <div className=Css.(style([minHeight(vh(88.))]))>
-      <Announcement announcementBannerColor="72D6B5">
+      <Announcement announcementBannerColor="f49229">
         <span>
-          "Due to the congestion on the Ethereum network, the next wildcards release will be delayed"
+          "New wildcards being launched on the MATIC network"
           ->React.string
         </span>
       </Announcement>
@@ -237,14 +237,14 @@ let make = () => {
         |]
       />
       {switch (urlState) {
-       | VotePage => <VotePage />
+       | VotePage => <VotePage chain=Client.MainnetQuery />
        | Team => <Team />
        | IncreaseVoteIteration => <IncreaseIterationPage />
-       | Explorer(animalPageState) =>
-         switch (animalPageState) {
+       | Explorer(wildcardsEddition, subState) =>
+         switch (subState) {
          | DetailView(currentAnimal) =>
            <AnimalFocusDetails currentAnimal showForwardBackButtons=false />
-         | NormalView => <BuyGrid />
+         | NormalView => <BuyGrid wildcardsEddition />
          }
        | Home(animalPageState) =>
          switch (animalPageState) {
@@ -265,7 +265,8 @@ let make = () => {
              <Partners />
            </React.Fragment>
          }
-       | User(userAddress) => <UserProfile userAddress />
+       | User(userAddress) =>
+         <UserProfile chain=Client.MainnetQuery userAddress />
        | Org(orgId) => <OrgProfile orgId />
        | Leaderboards(leaderboardType) =>
          <Rimble.Flex

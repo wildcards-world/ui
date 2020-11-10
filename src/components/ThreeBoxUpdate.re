@@ -36,7 +36,7 @@ type threeBoxStatus =
 
 [@bs.module "3box"]
 external openBox:
-  (. Web3.ethAddress, RootProviderTypes.rawProvider) =>
+  (. Web3.ethAddress, Web3.rawProvider) =>
   Promise.Js.t(threeBox, threeBoxError) =
   "openBox";
 

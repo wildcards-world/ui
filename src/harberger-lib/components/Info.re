@@ -2,10 +2,10 @@ open Globals;
 
 [@gentype]
 [@react.component]
-let make = (~tokenId: TokenId.t) => {
-  let daysHeld = QlHooks.useDaysHeld(tokenId);
+let make = (~chain, ~tokenId: TokenId.t) => {
+  let daysHeld = QlHooks.useDaysHeld(~chain, tokenId);
 
-  let currentPatron = QlHooks.usePatron(tokenId) |||| "Loading";
+  let currentPatron = QlHooks.usePatron(~chain, tokenId) |||| "Loading";
   let userId = UserProvider.useDisplayName(currentPatron);
   let displayName = UserProvider.useDisplayName(currentPatron);
   let displayNameStr = UserProvider.displayNameToString(displayName);
@@ -20,7 +20,7 @@ let make = (~tokenId: TokenId.t) => {
 
   let currentUsdEthPrice = UsdPriceProvider.useUsdPrice();
   let (depositAvailableToWithdrawEth, depositAvailableToWithdrawUsd) =
-    QlHooks.useRemainingDepositEth(currentPatron)
+    QlHooks.useRemainingDepositEth(~chain, currentPatron)
     ->mapd(("Loading", "Loading"), a =>
         (
           (a->Eth.get(Eth.Eth(`ether))->Float.fromString |||| 0.0)
@@ -32,7 +32,7 @@ let make = (~tokenId: TokenId.t) => {
       );
 
   let (totalPatronage, totalPatronageUsd) =
-    QlHooks.useAmountRaisedToken(tokenId)
+    QlHooks.useAmountRaisedToken(~chain, tokenId)
     ->mapd(("Loading", "Loading"), a =>
         (
           (a->Eth.get(Eth.Eth(`ether))->Float.fromString |||| 0.0)
@@ -42,12 +42,12 @@ let make = (~tokenId: TokenId.t) => {
           ),
         )
       );
-  let foreclosureTime = QlHooks.useForeclosureTime(currentPatron);
+  let foreclosureTime = QlHooks.useForeclosureTime(~chain, currentPatron);
   let definiteTime = foreclosureTime->mapd(None, a => Some(a));
 
-  let ratio = QlHooks.usePledgeRate(tokenId);
+  let ratio = QlHooks.usePledgeRate(~chain, tokenId);
 
-  let optCurrentPrice = PriceDisplay.usePrice(tokenId);
+  let optCurrentPrice = PriceDisplay.usePrice(~chain, tokenId);
 
   let (optMonthlyPledgeEth, optMonthlyPledgeUsd) =
     switch (optCurrentPrice) {
@@ -68,6 +68,14 @@ let make = (~tokenId: TokenId.t) => {
     };
 
   let monthlyRate = Js.Float.toString(ratio *. 100.);
+
+  let showEthWithUsdConversion =
+    switch (chain) {
+    | Client.MaticQuery => false
+    | Client.Neither
+    | Client.MainnetQuery => true
+    };
+  let unit = showEthWithUsdConversion ? "ETH" : "USD";
 
   <React.Fragment>
     <div>
@@ -92,22 +100,22 @@ let make = (~tokenId: TokenId.t) => {
       {switch (optMonthlyPledgeEth) {
        | Some(monthlyPledgeEth) =>
          {
-           monthlyPledgeEth ++ " ETH";
+           monthlyPledgeEth ++ " " ++ unit;
          }
          ->restr
        | None => <Rimble.Loader />
        }}
       <br />
-      <small>
-        {switch (optMonthlyPledgeUsd) {
-         | Some(monthlyPledgeUsd) =>
-           {
-             "(" ++ monthlyPledgeUsd ++ " USD)";
-           }
-           ->restr
-         | None => React.null
-         }}
-      </small>
+      {switch (showEthWithUsdConversion, optMonthlyPledgeUsd) {
+       | (true, Some(monthlyPledgeUsd)) =>
+         <small>
+           {{
+              "(" ++ monthlyPledgeUsd ++ " USD)";
+            }
+            ->restr}
+         </small>
+       | _ => React.null
+       }}
     </div>
     <p>
       <small>
@@ -142,16 +150,18 @@ let make = (~tokenId: TokenId.t) => {
       </small>
       <br />
       {{
-         depositAvailableToWithdrawEth ++ " ETH";
+         depositAvailableToWithdrawEth ++ " " ++ unit;
        }
        ->restr}
       <br />
-      <small>
-        {{
-           "(" ++ depositAvailableToWithdrawUsd ++ " USD)";
-         }
-         ->restr}
-      </small>
+      {showEthWithUsdConversion
+         ? <small>
+             {{
+                "(" ++ depositAvailableToWithdrawUsd ++ " USD)";
+              }
+              ->restr}
+           </small>
+         : React.null}
     </p>
     <p>
       <small>
@@ -172,16 +182,18 @@ let make = (~tokenId: TokenId.t) => {
       </small>
       <br />
       {{
-         totalPatronage ++ " ETH";
+         totalPatronage ++ " " ++ unit;
        }
        ->restr}
       <br />
-      <small>
-        {{
-           "(" ++ totalPatronageUsd ++ " USD)";
-         }
-         ->restr}
-      </small>
+      {showEthWithUsdConversion
+         ? <small>
+             {{
+                "(" ++ totalPatronageUsd ++ " USD)";
+              }
+              ->restr}
+           </small>
+         : React.null}
     </p>
     {switch (definiteTime) {
      | Some(date) =>
@@ -244,8 +256,9 @@ let make = (~tokenId: TokenId.t) => {
 
 module Auction = {
   [@react.component]
-  let make = (~tokenId: TokenId.t, ~abandoned: bool, ~auctionStartTime) => {
-    let currentPatron = QlHooks.usePatron(tokenId) |||| "Loading";
+  let make =
+      (~chain, ~tokenId: TokenId.t, ~abandoned: bool, ~auctionStartTime) => {
+    let currentPatron = QlHooks.usePatron(~chain, tokenId) |||| "Loading";
     let displayName = UserProvider.useDisplayName(currentPatron);
     let displayNameStr = UserProvider.displayNameToString(displayName);
 
@@ -255,7 +268,7 @@ module Auction = {
 
     let currentUsdEthPrice = UsdPriceProvider.useUsdPrice();
     let (totalPatronage, totalPatronageUsd) =
-      QlHooks.useAmountRaisedToken(tokenId)
+      QlHooks.useAmountRaisedToken(~chain, tokenId)
       ->mapd(("Loading", "Loading"), a =>
           (
             (a->Eth.get(Eth.Eth(`ether))->Float.fromString |||| 0.0)
@@ -266,9 +279,17 @@ module Auction = {
           )
         );
 
-    let ratio = QlHooks.usePledgeRate(tokenId);
+    let ratio = QlHooks.usePledgeRate(~chain, tokenId);
 
     let monthlyRate = Js.Float.toString(ratio *. 100.);
+
+    let showEthWithUsdConversion =
+      switch (chain) {
+      | Client.MaticQuery => false
+      | Client.Neither
+      | Client.MainnetQuery => true
+      };
+    let unit = showEthWithUsdConversion ? "ETH" : "USD";
 
     <React.Fragment>
       <div>
@@ -341,16 +362,18 @@ module Auction = {
         </small>
         <br />
         {{
-           totalPatronage ++ " ETH";
+           totalPatronage ++ " " ++ unit;
          }
          ->restr}
         <br />
-        <small>
-          {{
-             "(" ++ totalPatronageUsd ++ " USD)";
-           }
-           ->restr}
-        </small>
+        {showEthWithUsdConversion
+           ? <small>
+               {{
+                  "(" ++ totalPatronageUsd ++ " USD)";
+                }
+                ->restr}
+             </small>
+           : React.null}
       </p>
       {abandoned
          ? <>

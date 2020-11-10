@@ -27,18 +27,16 @@ let useLoadMostDaysHeldData = () => {
       |> Js.Array.map(patron => {
            let numberOfTokens = patron##tokens->Js.Array.length->string_of_int;
            let timeElapsed =
-             BN.new_(currentTimestamp)->BN.subGet(. patron##lastUpdated);
+             BN.new_(currentTimestamp)->BN.sub(patron##lastUpdated);
 
            let totalTimeHeldWei =
              patron##totalTimeHeld
-             ->BN.addGet(.
-                 timeElapsed->BN.mulGet(. BN.new_(numberOfTokens)),
-               );
+             ->BN.add(timeElapsed->BN.mul(BN.new_(numberOfTokens)));
 
            (patron##id, totalTimeHeldWei);
          });
     Array.sort(
-      ((_, first), (_, second)) => {second->BN.cmpGet(. first)},
+      ((_, first), (_, second)) => {second->BN.cmp(first)},
       dailyContributions,
     );
     Some(dailyContributions);
@@ -176,7 +174,7 @@ module MostDaysHeld = {
             amount={
               // ->BN.new_("86400")
               // There are 86400 seconds in a day.
-              amount->BN.divGet(. BN.new_("86400"))->BN.toStringGet(.)
+              amount->BN.div(BN.new_("86400"))->BN.toString
             }
             index
           />
