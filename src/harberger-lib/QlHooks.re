@@ -1122,8 +1122,7 @@ let useMetaTx = () => {
     );
   (~network, ~r, ~s, ~v, ~functionSignature, userAddress) => {
     let refetchQueries = _ => {
-      let query =
-        MaticStateQuery.make(~address=userAddress, ~network="goerli", ());
+      let query = MaticStateQuery.make(~address=userAddress, ~network, ());
       [|ApolloHooks.toQueryObj(query)|];
     };
     mutation(

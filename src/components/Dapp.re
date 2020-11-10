@@ -273,7 +273,7 @@ module CarouselAnimal = {
         ~isGqlLoaded=true,
         ~chain=Client.MainnetQuery,
       ) => {
-    let isLaunched = animal->Animal.isLaunched;
+    let isLaunched = animal->Animal.isLaunched(~chain);
 
     let makeAnimalOnLandingPage = optionEndDateMoment =>
       <AnimalOnLandingPage
@@ -285,13 +285,14 @@ module CarouselAnimal = {
         isGqlLoaded
       />;
     switch (isLaunched) {
-    | Animal.Launched => makeAnimalOnLandingPage(None)
     | Animal.LaunchDate(endDateMoment) =>
       <DisplayAfterDate
         endDateMoment
         afterComponent={makeAnimalOnLandingPage(None)}
         beforeComponent={makeAnimalOnLandingPage(Some(endDateMoment))}
       />
+    | Animal.Launched => makeAnimalOnLandingPage(None)
+    | Animal.Loading => makeAnimalOnLandingPage(None)
     };
   };
 };
@@ -430,9 +431,7 @@ module AnimalActionsOnDetailsPage = {
       </React.Fragment>;
     } else {
       <React.Fragment>
-        {switch (animal->Animal.isLaunched) {
-         | Launched => price()
-
+        {switch (animal->Animal.isLaunched(~chain)) {
          | LaunchDate(endDateMoment) =>
            <DisplayAfterDate
              endDateMoment
@@ -441,6 +440,8 @@ module AnimalActionsOnDetailsPage = {
                <React.Fragment> <CountDown endDateMoment /> </React.Fragment>
              }
            />
+         | Launched => price()
+         | Loading => <Rimble.Loader />
          }}
       </React.Fragment>;
     };
@@ -460,7 +461,7 @@ module DetailsViewAnimal = {
     // let optAlternateImage = Animal.getAlternateImage(animal);
     let orgBadge = Animal.useGetOrgBadgeImage(animal);
 
-    let isLaunched = animal->Animal.isLaunched;
+    let isLaunched = animal->Animal.isLaunched(~chain);
 
     let displayAnimal = animalImage =>
       <div className=Styles.positionRelative>
@@ -470,6 +471,7 @@ module DetailsViewAnimal = {
            <div className=Styles.overlayFlameImg>
              <Streak chain animal />
            </div>
+         | Animal.Loading => React.null
          | Animal.LaunchDate(endDateMoment) =>
            <DisplayAfterDate
              endDateMoment

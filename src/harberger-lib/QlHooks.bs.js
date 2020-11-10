@@ -2686,7 +2686,7 @@ function useMetaTx(param) {
   var mutation = match[0];
   return (function (network, r, s, v, functionSignature, userAddress) {
       var refetchQueries = function (param) {
-        var query = make$3(userAddress, "goerli", undefined);
+        var query = make$3(userAddress, network, undefined);
         return [ApolloHooks$ReasonApolloHooks.toQueryObj(query)];
       };
       return Curry._6(mutation, Caml_option.some(make$11(network, r, s, v, userAddress, functionSignature, undefined).variables), undefined, refetchQueries, undefined, undefined, undefined);

@@ -38,16 +38,35 @@ let useGetOrgBadgeImage: TokenId.t => string =
 
 type launchStatus =
   | Launched
+  | Loading
   | LaunchDate(MomentRe.Moment.t);
 
+// TODO: remove this variable...
 let nextLaunchDate = MomentRe.momentUtcDefaultFormat("2020-07-30T17:00:00");
 
-let isLaunched: TokenId.t => launchStatus =
-  animal =>
+let isLaunched: (~chain: Client.context, TokenId.t) => launchStatus =
+  (~chain, animal) => {
+    let optLaunchTime = QlHooks.useLaunchTimeBN(~chain, animal);
+    let currentTime = QlHooks.useCurrentTimestampBn();
+
     switch (animal->TokenId.toString) {
-    // | "25" => LaunchDate(nextLaunchDate)
+    | "26"
+    | "27"
+    | "28"
+    | "29" =>
+      // LaunchDate(nextLaunchDate)
+      switch (optLaunchTime) {
+      | Some(launchTime) =>
+        if (launchTime->BN.gt(currentTime)) {
+          LaunchDate(launchTime->BN.toNumber->MomentRe.momentWithUnix);
+        } else {
+          Launched;
+        }
+      | None => Loading
+      }
     | _ => Launched
     };
+  };
 
 type tokenStatus =
   | Loading

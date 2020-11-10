@@ -153,6 +153,14 @@ let getStewardAddress = (chain: Client.context, chainId) =>
   | MainnetQuery => "TODO"
   };
 
+let getMaticNetworkName = chainId =>
+  switch (chainId) {
+  | 137 => "matic"
+  | 80001 => "mumbai"
+  | 5
+  | _ => "goerli"
+  };
+
 let getChildChainId = parentChainId =>
   switch (parentChainId) {
   | 1 => 137
@@ -279,6 +287,7 @@ type transactionState =
 let execDaiPermitMetaTx =
     (
       daiNonce,
+      networkName,
       stewardNonce,
       setTxState,
       sendMetaTx,
@@ -341,7 +350,7 @@ let execDaiPermitMetaTx =
         let {r, s, v} = getEthSig(signature);
         let resultPromise =
           sendMetaTx(
-            ~network="goerli",
+            ~network=networkName,
             ~r,
             ~s,
             ~v,
@@ -424,15 +433,16 @@ let useBuy =
 
   let sendMetaTx = QlHooks.useMetaTx();
 
-  let maticState =
-    account->Option.flatMap(usersAddress => {
-      QlHooks.useMaticState(~forceRefetch=false, usersAddress, "goerli")
-    });
-
   let chainIdInt = parentChainId->getChildChainId;
   let chainId = chainIdInt->BN.newInt_;
   let verifyingContract = getDaiContractAddress(chain, chainIdInt);
   let spender = getStewardAddress(chain, chainIdInt);
+  let networkName = chainIdInt->getMaticNetworkName;
+
+  let maticState =
+    account
+    ->Option.getWithDefault(CONSTANTS.nullEthAddress)
+    ->QlHooks.useMaticState(~forceRefetch=false, networkName);
 
   switch (chain) {
   | Client.Neither
@@ -448,6 +458,7 @@ let useBuy =
             setTxState(_ => DaiPermit(value->BN.new_));
             execDaiPermitMetaTx(
               daiNonce,
+              networkName,
               stewardNonce,
               setTxState,
               sendMetaTx,
@@ -545,16 +556,17 @@ let useBuyAuction =
 
   let sendMetaTx = QlHooks.useMetaTx();
 
-  let maticState =
-    account->Option.flatMap(usersAddress => {
-      Js.log2("the users address", usersAddress);
-      QlHooks.useMaticState(~forceRefetch=false, usersAddress, "goerli");
-    });
-
   let chainIdInt = parentChainId->getChildChainId;
   let chainId = chainIdInt->BN.newInt_;
   let verifyingContract = getDaiContractAddress(chain, chainIdInt);
   let spender = getStewardAddress(chain, chainIdInt);
+  let networkName = chainIdInt->getMaticNetworkName;
+
+  let maticState =
+    account->Option.flatMap(usersAddress => {
+      Js.log2("the users address", usersAddress);
+      QlHooks.useMaticState(~forceRefetch=false, usersAddress, networkName);
+    });
 
   switch (chain) {
   | Client.Neither
@@ -568,6 +580,7 @@ let useBuyAuction =
             setTxState(_ => DaiPermit(value->BN.new_));
             execDaiPermitMetaTx(
               daiNonce,
+              networkName,
               stewardNonce,
               setTxState,
               sendMetaTx,
@@ -849,17 +862,17 @@ let useUpdateDeposit =
 
   let sendMetaTx = QlHooks.useMetaTx();
 
-  let maticState =
-    account->Option.flatMap(usersAddress => {
-      Js.log2("the users address", usersAddress);
-      QlHooks.useMaticState(~forceRefetch=false, usersAddress, "goerli");
-    });
-  Js.log2("Matic state", maticState);
-
   let chainIdInt = parentChainId->getChildChainId;
   let chainId = chainIdInt->BN.newInt_;
   let verifyingContract = getDaiContractAddress(chain, chainIdInt);
   let spender = getStewardAddress(chain, chainIdInt);
+  let networkName = chainIdInt->getMaticNetworkName;
+
+  let maticState =
+    account->Option.flatMap(usersAddress => {
+      Js.log2("the users address", usersAddress);
+      QlHooks.useMaticState(~forceRefetch=false, usersAddress, networkName);
+    });
 
   switch (chain) {
   | Client.Neither
@@ -873,6 +886,7 @@ let useUpdateDeposit =
             setTxState(_ => DaiPermit(amountToAdd->BN.new_));
             execDaiPermitMetaTx(
               daiNonce,
+              networkName,
               stewardNonce,
               setTxState,
               sendMetaTx,
@@ -960,9 +974,10 @@ let useWithdrawDeposit =
   // GOERLI:
 
   let chainIdInt = parentChainId->getChildChainId;
-  let chainId = chainIdInt->BN.newInt_;
-  let verifyingContract = getDaiContractAddress(chain, chainIdInt);
+  // let chainId = chainIdInt->BN.newInt_;
+  // let verifyingContract = getDaiContractAddress(chain, chainIdInt);
   let spender = getStewardAddress(chain, chainIdInt);
+  // let networkName = chainIdInt->getMaticNetworkName;
 
   // let chainId = BN.newInt_(5);
 

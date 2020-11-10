@@ -51,9 +51,28 @@ function useGetOrgBadgeImage(animal) {
 
 var nextLaunchDate = Moment.utc("2020-07-30T17:00:00");
 
-function isLaunched(animal) {
-  TokenId$WildCards.toString(animal);
-  return /* Launched */0;
+function isLaunched(chain, animal) {
+  var optLaunchTime = QlHooks$WildCards.useLaunchTimeBN(chain, animal);
+  var currentTime = QlHooks$WildCards.useCurrentTimestampBn(undefined);
+  var match = TokenId$WildCards.toString(animal);
+  switch (match) {
+    case "26" :
+    case "27" :
+    case "28" :
+    case "29" :
+        break;
+    default:
+      return /* Launched */0;
+  }
+  if (optLaunchTime === undefined) {
+    return /* Loading */1;
+  }
+  var launchTime = Caml_option.valFromOption(optLaunchTime);
+  if (launchTime.gt(currentTime)) {
+    return /* LaunchDate */[MomentRe.momentWithUnix(launchTime.toNumber())];
+  } else {
+    return /* Launched */0;
+  }
 }
 
 function useTokenStatus(chain, animal) {

@@ -90,6 +90,22 @@ function getStewardAddress(chain, chainId) {
   }
 }
 
+function getMaticNetworkName(chainId) {
+  if (chainId !== 5) {
+    if (chainId !== 137) {
+      if (chainId !== 80001) {
+        return "goerli";
+      } else {
+        return "mumbai";
+      }
+    } else {
+      return "matic";
+    }
+  } else {
+    return "goerli";
+  }
+}
+
 function getChildChainId(parentChainId) {
   switch (parentChainId) {
     case 1 :
@@ -219,7 +235,7 @@ function useVoteContract(isGsn) {
             ]);
 }
 
-function execDaiPermitMetaTx(daiNonce, stewardNonce, setTxState, sendMetaTx, userAddress, spender, lib, generateFunctionSignature, chainId, verifyingContract) {
+function execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, sendMetaTx, userAddress, spender, lib, generateFunctionSignature, chainId, verifyingContract) {
   var __x = DaiPermit$WildCards.createPermitSig(lib.provider, verifyingContract, daiNonce, chainId, userAddress, spender, userAddress);
   var __x$1 = __x.then((function (rsvSig) {
           Curry._1(setTxState, (function (param) {
@@ -239,7 +255,7 @@ function execDaiPermitMetaTx(daiNonce, stewardNonce, setTxState, sendMetaTx, use
         }));
   var __x$2 = __x$1.then((function (param) {
           var match = ContractUtil$WildCards.getEthSig(param[1]);
-          return Curry._6(sendMetaTx, "goerli", match.r, match.s, match.v, param[0], userAddress);
+          return Curry._6(sendMetaTx, networkName, match.r, match.s, match.v, param[0], userAddress);
         }));
   var __x$3 = __x$2.then((function (result) {
           var simple = result[0];
@@ -302,13 +318,17 @@ function useBuy(chain, animal, isGsn, library, account, parentChainId) {
   var setTxState = match[1];
   var txState = match[0];
   var sendMetaTx = QlHooks$WildCards.useMetaTx(undefined);
-  var maticState = Belt_Option.flatMap(account, (function (usersAddress) {
-          return QlHooks$WildCards.useMaticState(false, usersAddress, "goerli");
-        }));
   var chainIdInt = getChildChainId(parentChainId);
   var chainId = new BnJs.default(chainIdInt);
   var verifyingContract = getDaiContractAddress(chain, chainIdInt);
   var spender = getStewardAddress(chain, chainIdInt);
+  var networkName = getMaticNetworkName(chainIdInt);
+  var arg = Belt_Option.getWithDefault(account, CONSTANTS$WildCards.nullEthAddress);
+  var maticState = Curry._1((function (param) {
+            return (function (param$1) {
+                return QlHooks$WildCards.useMaticState(param, arg, param$1);
+              });
+          })(false), networkName);
   if (chain >= 2) {
     return /* tuple */[
             (function (newPrice, oldPrice, wildcardsPercentage, value) {
@@ -372,7 +392,7 @@ function useBuy(chain, animal, isGsn, library, account, parentChainId) {
                 Curry._1(setTxState, (function (param) {
                         return /* DaiPermit */Block.__(0, [new BnJs.default(value)]);
                       }));
-                return execDaiPermitMetaTx(daiNonce, stewardNonce, setTxState, sendMetaTx, account, spender, library, (function (steward, v, r, s) {
+                return execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, sendMetaTx, account, spender, library, (function (steward, v, r, s) {
                               return Curry._1(steward.methods.buyWithPermit(new BnJs.default(daiNonce), new BnJs.default("0"), true, v, r, s, animalId, Web3Utils$WildCards.toWeiFromEth(newPrice), oldPrice, wildcardsPercentage, value).encodeABI, undefined);
                             }), chainId, verifyingContract);
               }),
@@ -390,14 +410,15 @@ function useBuyAuction(chain, animal, isGsn, library, account, parentChainId) {
   var animalId = TokenId$WildCards.toString(animal);
   var optSteward = useStewardContract(isGsn);
   var sendMetaTx = QlHooks$WildCards.useMetaTx(undefined);
-  var maticState = Belt_Option.flatMap(account, (function (usersAddress) {
-          console.log("the users address", usersAddress);
-          return QlHooks$WildCards.useMaticState(false, usersAddress, "goerli");
-        }));
   var chainIdInt = getChildChainId(parentChainId);
   var chainId = new BnJs.default(chainIdInt);
   var verifyingContract = getDaiContractAddress(chain, chainIdInt);
   var spender = getStewardAddress(chain, chainIdInt);
+  var networkName = getMaticNetworkName(chainIdInt);
+  var maticState = Belt_Option.flatMap(account, (function (usersAddress) {
+          console.log("the users address", usersAddress);
+          return QlHooks$WildCards.useMaticState(false, usersAddress, networkName);
+        }));
   if (chain >= 2) {
     return /* tuple */[
             (function (newPrice, wildcardsPercentage, value) {
@@ -452,7 +473,7 @@ function useBuyAuction(chain, animal, isGsn, library, account, parentChainId) {
                   Curry._1(setTxState, (function (param) {
                           return /* DaiPermit */Block.__(0, [new BnJs.default(value)]);
                         }));
-                  return execDaiPermitMetaTx(daiNonce, stewardNonce, setTxState, sendMetaTx, account, spender, library, (function (steward, v, r, s) {
+                  return execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, sendMetaTx, account, spender, library, (function (steward, v, r, s) {
                                 return Curry._1(steward.methods.buyAuctionWithPermit(new BnJs.default(daiNonce), new BnJs.default("0"), true, v, r, s, animalId, newPrice, wildcardsPercentage, value).encodeABI, undefined);
                               }), chainId, verifyingContract);
                 }
@@ -686,15 +707,15 @@ function useUpdateDeposit(chain, isGsn, library, account, parentChainId) {
   var txState = match[0];
   var optSteward = useStewardContract(isGsn);
   var sendMetaTx = QlHooks$WildCards.useMetaTx(undefined);
-  var maticState = Belt_Option.flatMap(account, (function (usersAddress) {
-          console.log("the users address", usersAddress);
-          return QlHooks$WildCards.useMaticState(false, usersAddress, "goerli");
-        }));
-  console.log("Matic state", maticState);
   var chainIdInt = getChildChainId(parentChainId);
   var chainId = new BnJs.default(chainIdInt);
   var verifyingContract = getDaiContractAddress(chain, chainIdInt);
   var spender = getStewardAddress(chain, chainIdInt);
+  var networkName = getMaticNetworkName(chainIdInt);
+  var maticState = Belt_Option.flatMap(account, (function (usersAddress) {
+          console.log("the users address", usersAddress);
+          return QlHooks$WildCards.useMaticState(false, usersAddress, networkName);
+        }));
   if (chain >= 2) {
     return /* tuple */[
             (function (value) {
@@ -744,7 +765,7 @@ function useUpdateDeposit(chain, isGsn, library, account, parentChainId) {
                   Curry._1(setTxState, (function (param) {
                           return /* DaiPermit */Block.__(0, [new BnJs.default(amountToAdd)]);
                         }));
-                  return execDaiPermitMetaTx(daiNonce, stewardNonce, setTxState, sendMetaTx, account, spender, library, (function (steward, v, r, s) {
+                  return execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, sendMetaTx, account, spender, library, (function (steward, v, r, s) {
                                 return Curry._1(steward.methods.depositWithPermit(new BnJs.default(daiNonce), new BnJs.default("0"), true, v, r, s, account, new BnJs.default(amountToAdd)).encodeABI, undefined);
                               }), chainId, verifyingContract);
                 }
@@ -765,8 +786,6 @@ function useWithdrawDeposit(chain, isGsn, library, account, parentChainId) {
   var txState = match[0];
   var optSteward = useStewardContract(isGsn);
   var chainIdInt = getChildChainId(parentChainId);
-  new BnJs.default(chainIdInt);
-  getDaiContractAddress(chain, chainIdInt);
   var spender = getStewardAddress(chain, chainIdInt);
   if (chain >= 2) {
     return /* tuple */[
@@ -1222,6 +1241,7 @@ export {
   loyaltyTokenAddressMumbai ,
   getDaiContractAddress ,
   getStewardAddress ,
+  getMaticNetworkName ,
   getChildChainId ,
   useStewardAbi ,
   defaultStewardAddressFromChainId ,

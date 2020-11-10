@@ -17,6 +17,7 @@ import * as Globals$WildCards from "../Globals.bs.js";
 import * as QlHooks$WildCards from "../QlHooks.bs.js";
 import * as TokenId$WildCards from "../TokenId.bs.js";
 import * as BuyInput$WildCards from "./BuyInput.bs.js";
+import * as CONSTANTS$WildCards from "../../CONSTANTS.bs.js";
 import * as InputHelp$WildCards from "../InputHelp.bs.js";
 import * as Web3Utils$WildCards from "../Web3Utils.bs.js";
 import * as Accounting$WildCards from "../Accounting.bs.js";
@@ -176,10 +177,12 @@ function Buy$1(Props) {
   var chain = Props.chain;
   var tokenId = Props.tokenId;
   var web3Context = Core.useWeb3React();
-  var optMaticState = Belt_Option.flatMap(web3Context.account, (function (usersAddress) {
-          console.log("the users address", usersAddress);
-          return QlHooks$WildCards.useMaticState(false, usersAddress, "goerli");
-        }));
+  var arg = Belt_Option.getWithDefault(web3Context.account, CONSTANTS$WildCards.nullEthAddress);
+  var optMaticState = Curry._1((function (param) {
+            return (function (param$1) {
+                return QlHooks$WildCards.useMaticState(param, arg, param$1);
+              });
+          })(false), ContractActions$WildCards.getMaticNetworkName(ContractActions$WildCards.getChildChainId(Belt_Option.getWithDefault(web3Context.chainId, 1))));
   console.log(chain, tokenId);
   if (chain !== 1) {
     return React.createElement(Buy$Buy, {

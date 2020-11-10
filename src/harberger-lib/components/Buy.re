@@ -308,10 +308,15 @@ let make = (~chain, ~tokenId) => {
   let web3Context = RootProvider.useWeb3React();
   let optMaticState =
     web3Context.account
-    ->Option.flatMap(usersAddress => {
-        Js.log2("the users address", usersAddress);
-        QlHooks.useMaticState(~forceRefetch=false, usersAddress, "goerli");
-      });
+    ->Option.getWithDefault(CONSTANTS.nullEthAddress)
+    ->QlHooks.useMaticState(
+        ~forceRefetch=false,
+        web3Context.chainId
+        ->Option.getWithDefault(1)
+        ->ContractActions.getChildChainId
+        ->ContractActions.getMaticNetworkName,
+      );
+
   // let forceUpdateMaticState = QlHooks.useForceUpdateMaticStateFunc("goerli");
   // React.useMemo1(
   //   () => {

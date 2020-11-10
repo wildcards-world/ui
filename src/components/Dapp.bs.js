@@ -339,7 +339,7 @@ function Dapp$CarouselAnimal(Props) {
   var enlargement = enlargementOpt !== undefined ? enlargementOpt : 1;
   var isGqlLoaded = isGqlLoadedOpt !== undefined ? isGqlLoadedOpt : true;
   var chain = chainOpt !== undefined ? chainOpt : /* MainnetQuery */2;
-  var isLaunched = Animal$WildCards.isLaunched(animal);
+  var isLaunched = Animal$WildCards.isLaunched(chain, animal);
   var makeAnimalOnLandingPage = function (optionEndDateMoment) {
     return React.createElement(Dapp$AnimalOnLandingPage, {
                 animal: animal,
@@ -350,7 +350,7 @@ function Dapp$CarouselAnimal(Props) {
                 isGqlLoaded: isGqlLoaded
               });
   };
-  if (!isLaunched) {
+  if (typeof isLaunched === "number") {
     return makeAnimalOnLandingPage(undefined);
   }
   var endDateMoment = isLaunched[0];
@@ -506,9 +506,11 @@ function Dapp$AnimalActionsOnDetailsPage(Props) {
                     animal: animal
                   }), React.createElement("br", undefined), React.createElement(ActionButtons$WildCards.UpdateDeposit.make, { }), React.createElement("br", undefined), React.createElement(Validate$WildCards.make, { }));
   }
-  var endDateMoment = Animal$WildCards.isLaunched(animal);
+  var endDateMoment = Animal$WildCards.isLaunched(chain, animal);
   var tmp;
-  if (endDateMoment) {
+  if (typeof endDateMoment === "number") {
+    tmp = endDateMoment !== 0 ? React.createElement(RimbleUi.Loader, { }) : price(undefined);
+  } else {
     var endDateMoment$1 = endDateMoment[0];
     tmp = React.createElement(Dapp$DisplayAfterDate, {
           endDateMoment: endDateMoment$1,
@@ -519,8 +521,6 @@ function Dapp$AnimalActionsOnDetailsPage(Props) {
               }),
           afterComponent: price(undefined)
         });
-  } else {
-    tmp = price(undefined);
   }
   return React.createElement(React.Fragment, {
               children: tmp
@@ -538,11 +538,18 @@ function Dapp$DetailsViewAnimal(Props) {
   var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
   var image = Animal$WildCards.useAvatar(animal);
   var orgBadge = Animal$WildCards.useGetOrgBadgeImage(animal);
-  var isLaunched = Animal$WildCards.isLaunched(animal);
+  var isLaunched = Animal$WildCards.isLaunched(chain, animal);
   var displayAnimal = function (animalImage) {
     return React.createElement("div", {
                 className: Styles$WildCards.positionRelative
-              }, Curry._1(animalImage, undefined), isLaunched ? React.createElement(Dapp$DisplayAfterDate, {
+              }, Curry._1(animalImage, undefined), typeof isLaunched === "number" ? (
+                  isLaunched !== 0 ? null : React.createElement("div", {
+                          className: Styles$WildCards.overlayFlameImg
+                        }, React.createElement(Dapp$Streak, {
+                              chain: chain,
+                              animal: animal
+                            }))
+                ) : React.createElement(Dapp$DisplayAfterDate, {
                       endDateMoment: isLaunched[0],
                       beforeComponent: null,
                       afterComponent: React.createElement("div", {
@@ -551,12 +558,7 @@ function Dapp$DetailsViewAnimal(Props) {
                                 chain: chain,
                                 animal: animal
                               }))
-                    }) : React.createElement("div", {
-                      className: Styles$WildCards.overlayFlameImg
-                    }, React.createElement(Dapp$Streak, {
-                          chain: chain,
-                          animal: animal
-                        })), React.createElement("div", {
+                    }), React.createElement("div", {
                     className: Styles$WildCards.overlayBadgeImg,
                     onClick: (function (e) {
                         e.stopPropagation();
