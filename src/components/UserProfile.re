@@ -32,16 +32,41 @@ module Token = {
 
 module ClaimLoyaltyTokenButtons = {
   [@react.component]
-  let make = (~chain, ~id, ~refreshLoyaltyTokenBalance) => {
-    let (redeemLoyaltyTokens, transactionStatus) =
-      ContractActions.useRedeemLoyaltyTokens(id, false);
-    let balanceAvailableOnToken =
-      QlHooks.useUnredeemedLoyaltyTokenDueFromWildcard(
+  let make =
+      (
         ~chain,
-        id->TokenId.makeWithDefault(0),
+        ~userAddress: string,
+        ~id: string,
+        ~refreshLoyaltyTokenBalance,
+        ~numberOfTokens,
+      ) => {
+    // let (redeemLoyaltyTokens, transactionStatus) =
+    //   ContractActions.useRedeemLoyaltyTokens(id, false);
+    // let balanceAvailableOnToken =
+    //   QlHooks.useUnredeemedLoyaltyTokenDueFromWildcard(
+    //     ~chain,
+    //     id->TokenId.makeWithDefault(0),
+    //   );
+    let tokenId = id->TokenId.fromStringUnsafe;
+
+    let tokenName = tokenId->QlHooks.useWildcardName |||| "loading";
+    // =======
+    //   let make =
+    //       (
+    //         ~id,
+    //         ~userAddress: string,
+    //         ~refreshLoyaltyTokenBalance,
+    //         ~numberOfTokens,
+    //       ) => {
+    let (redeemLoyaltyTokens, transactionStatus) =
+      ContractActions.useRedeemLoyaltyTokens(userAddress, false);
+    let balanceAvailableOnTokens =
+      QlHooks.useUnredeemedLoyaltyTokenDueForUser(
+        ~chain,
+        tokenId,
+        numberOfTokens,
       );
-    let tokenName =
-      id->TokenId.fromStringUnsafe->QlHooks.useWildcardName |||| "loading";
+    // >>>>>>> origin
     let etherScanUrl = RootProvider.useEtherscanUrl();
 
     React.useEffect2(
@@ -63,21 +88,20 @@ module ClaimLoyaltyTokenButtons = {
       (transactionStatus, refreshLoyaltyTokenBalance),
     );
 
-    switch (balanceAvailableOnToken) {
+    switch (balanceAvailableOnTokens) {
     | None => React.null
-    | Some(balanceAvailableOnToken) =>
+    | Some(balanceAvailableOnTokens) =>
       <small>
         {switch (transactionStatus) {
          | UnInitialised =>
            <p>
              <a onClick={_ => {redeemLoyaltyTokens()}}>
                {(
-                  "redeem "
-                  ++ balanceAvailableOnToken->Web3Utils.fromWeiBNToEthPrecision(
+                  "Redeem "
+                  ++ balanceAvailableOnTokens->Web3Utils.fromWeiBNToEthPrecision(
                        ~digits=5,
                      )
-                  ++ " tokens for "
-                  ++ tokenName
+                  ++ " loyalty tokens"
                 )
                 ->restr}
              </a>
@@ -328,6 +352,7 @@ module UserDetails = {
                            ->restr}
                         </p>
                       </small>
+                      // <<<<<<< HEAD
                       {switch (currentlyOwnedTokens) {
                        | [||] => React.null
                        | currentlyOwnedTokens =>
@@ -338,6 +363,10 @@ module UserDetails = {
                                chain
                                key=id
                                refreshLoyaltyTokenBalance=updateFunction
+                               userAddress
+                               numberOfTokens={
+                                 currentlyOwnedTokens->Array.length
+                               }
                              />
                            )
                          ->React.array
@@ -363,11 +392,8 @@ module UserDetails = {
                     </small>}
                {if (isAddressCurrentUser) {
                   <React.Fragment>
-                    {if (isForeclosed) {
-                       React.null;
-                     } else {
-                       <> <br /> <ActionButtons.UpdateDeposit /> </>;
-                     }}
+                    <br />
+                    <ActionButtons.UpdateDeposit />
                     <br />
                     // {UserProvider.useIsUserValidated(currentAccount)
                     //    ? <ShareSocial /> : <Validate />}

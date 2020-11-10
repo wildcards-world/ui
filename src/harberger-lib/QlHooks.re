@@ -895,14 +895,22 @@ let useTimeSinceTokenWasLastSettled:
     };
   };
 
-let useUnredeemedLoyaltyTokenDueFromWildcard:
-  (~chain: Client.context, TokenId.t) => option(Eth.t) =
-  (~chain, animal) => {
+// <<<<<<< HEAD
+let useUnredeemedLoyaltyTokenDueForUser:
+  (~chain: Client.context, TokenId.t, int) => option(Eth.t) =
+  // let useUnredeemedLoyaltyTokenDueForUser: (TokenId.t, int) => option(Eth.t) =
+  (~chain, animal, numberOfTokens) => {
     switch (useTimeSinceTokenWasLastSettled(~chain, animal)) {
+    // =======
+    //   (animal, numberOfTokens) => {
+    //     switch (useTimeSinceTokenWasLastSettled(animal)) {
+    // >>>>>>> origin
     | Some(timeSinceTokenWasLastSettled) =>
       let totalLoyaltyTokensPerSecondPerAnimal = BN.new_("11574074074074");
       let totalLoyaltyTokensForAllAnimals =
-        timeSinceTokenWasLastSettled |*| totalLoyaltyTokensPerSecondPerAnimal;
+        timeSinceTokenWasLastSettled
+        |*| totalLoyaltyTokensPerSecondPerAnimal
+        |*| BN.newInt_(numberOfTokens);
       Some(totalLoyaltyTokensForAllAnimals);
     | None => None
     };

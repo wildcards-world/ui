@@ -69,13 +69,16 @@ var Token = {
 
 function UserProfile$ClaimLoyaltyTokenButtons(Props) {
   var chain = Props.chain;
+  var userAddress = Props.userAddress;
   var id = Props.id;
   var refreshLoyaltyTokenBalance = Props.refreshLoyaltyTokenBalance;
-  var match = ContractActions$WildCards.useRedeemLoyaltyTokens(id, false);
+  var numberOfTokens = Props.numberOfTokens;
+  var tokenId = TokenId$WildCards.fromStringUnsafe(id);
+  Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.useWildcardName(tokenId), "loading");
+  var match = ContractActions$WildCards.useRedeemLoyaltyTokens(userAddress, false);
   var transactionStatus = match[1];
   var redeemLoyaltyTokens = match[0];
-  var balanceAvailableOnToken = QlHooks$WildCards.useUnredeemedLoyaltyTokenDueFromWildcard(chain, TokenId$WildCards.makeWithDefault(id, 0));
-  var tokenName = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.useWildcardName(TokenId$WildCards.fromStringUnsafe(id)), "loading");
+  var balanceAvailableOnTokens = QlHooks$WildCards.useUnredeemedLoyaltyTokenDueForUser(chain, tokenId, numberOfTokens);
   var etherScanUrl = RootProvider$WildCards.useEtherscanUrl(undefined);
   React.useEffect((function () {
           if (typeof transactionStatus !== "number" && transactionStatus.tag === /* Complete */4) {
@@ -86,7 +89,7 @@ function UserProfile$ClaimLoyaltyTokenButtons(Props) {
         transactionStatus,
         refreshLoyaltyTokenBalance
       ]);
-  if (balanceAvailableOnToken === undefined) {
+  if (balanceAvailableOnTokens === undefined) {
     return null;
   }
   var tmp;
@@ -97,7 +100,7 @@ function UserProfile$ClaimLoyaltyTokenButtons(Props) {
                     onClick: (function (param) {
                         return Curry._1(redeemLoyaltyTokens, undefined);
                       })
-                  }, Globals$WildCards.restr("redeem " + (Web3Utils$WildCards.fromWeiBNToEthPrecision(Caml_option.valFromOption(balanceAvailableOnToken), 5) + (" tokens for " + tokenName)))));
+                  }, Globals$WildCards.restr("Redeem " + (Web3Utils$WildCards.fromWeiBNToEthPrecision(Caml_option.valFromOption(balanceAvailableOnTokens), 5) + " loyalty tokens"))));
           break;
       case /* Failed */4 :
           tmp = React.createElement("p", undefined, Globals$WildCards.restr("Transaction failed"));
@@ -275,8 +278,10 @@ function UserProfile$UserDetails(Props) {
                                   })) + " WLT")))), currentlyOwnedTokens.length !== 0 ? Belt_Array.map(currentlyOwnedTokens, (function (id) {
                         return React.createElement(UserProfile$ClaimLoyaltyTokenButtons, {
                                     chain: chain,
+                                    userAddress: userAddress,
                                     id: id,
                                     refreshLoyaltyTokenBalance: updateFunction,
+                                    numberOfTokens: currentlyOwnedTokens.length,
                                     key: id
                                   });
                       })) : null, React.createElement("a", {
@@ -285,7 +290,7 @@ function UserProfile$UserDetails(Props) {
                                 return Web3Utils$WildCards.fromWeiBNToEthPrecision(param[0], 5);
                               })) + " WLT")))), isAddressCurrentUser ? React.createElement(React.Fragment, {
                 children: null
-              }, isForeclosed ? null : React.createElement(React.Fragment, undefined, React.createElement("br", undefined), React.createElement(ActionButtons$WildCards.UpdateDeposit.make, { })), React.createElement("br", undefined), React.createElement(Validate$WildCards.make, { })) : null);
+              }, React.createElement("br", undefined), React.createElement(ActionButtons$WildCards.UpdateDeposit.make, { }), React.createElement("br", undefined), React.createElement(Validate$WildCards.make, { })) : null);
   }
   return React.createElement("div", {
               className: Curry._1(Css.style, /* :: */[

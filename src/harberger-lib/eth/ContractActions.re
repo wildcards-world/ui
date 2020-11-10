@@ -28,8 +28,7 @@ type stewardContract = {
     Promise.Js.t(tx, txError),
   depositWei: (. txOptions) => Promise.Js.t(tx, txError),
   withdrawDeposit: (. parsedUnits, txOptions) => Promise.Js.t(tx, txError),
-  _collectPatronage:
-    (. tokenIdString, txOptions) => Promise.Js.t(tx, txError),
+  _collectPatronagePatron: (. string, txOptions) => Promise.Js.t(tx, txError),
   changePrice:
     (. tokenIdString, parsedUnits, txOptions) => Promise.Js.t(tx, txError),
 };
@@ -662,7 +661,10 @@ let useBuyAuction =
   };
 };
 
-let useRedeemLoyaltyTokens = (animalId: string, isGsn) => {
+// <<<<<<< HEAD
+// let useRedeemLoyaltyTokens = (animalId: string, isGsn) => {
+// =======
+let useRedeemLoyaltyTokens = (patron: string, isGsn) => {
   let (txState, setTxState) = React.useState(() => UnInitialised);
   let optSteward = useStewardContract(isGsn);
   let buyFunction = () => {
@@ -672,8 +674,8 @@ let useRedeemLoyaltyTokens = (animalId: string, isGsn) => {
     switch (optSteward) {
     | Some(steward) =>
       let claimLoyaltyTokenPromise =
-        steward._collectPatronage(.
-          animalId,
+        steward._collectPatronagePatron(.
+          patron,
           {
             gasLimit: "500302", //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
 

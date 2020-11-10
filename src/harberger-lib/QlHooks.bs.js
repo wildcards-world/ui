@@ -2363,13 +2363,13 @@ function useTimeSinceTokenWasLastSettled(chain, animal) {
   
 }
 
-function useUnredeemedLoyaltyTokenDueFromWildcard(chain, animal) {
+function useUnredeemedLoyaltyTokenDueForUser(chain, animal, numberOfTokens) {
   var timeSinceTokenWasLastSettled = useTimeSinceTokenWasLastSettled(chain, animal);
   if (timeSinceTokenWasLastSettled === undefined) {
     return ;
   }
   var totalLoyaltyTokensPerSecondPerAnimal = new BnJs.default("11574074074074");
-  return Caml_option.some(Globals$WildCards.$pipe$star$pipe(Caml_option.valFromOption(timeSinceTokenWasLastSettled), totalLoyaltyTokensPerSecondPerAnimal));
+  return Caml_option.some(Globals$WildCards.$pipe$star$pipe(Globals$WildCards.$pipe$star$pipe(Caml_option.valFromOption(timeSinceTokenWasLastSettled), totalLoyaltyTokensPerSecondPerAnimal), new BnJs.default(numberOfTokens)));
 }
 
 function useTotalLoyaltyToken(chain, patron) {
@@ -2809,7 +2809,7 @@ export {
   calculateTotalRaised ,
   useTotalRaisedAnimalGroup ,
   useTimeSinceTokenWasLastSettled ,
-  useUnredeemedLoyaltyTokenDueFromWildcard ,
+  useUnredeemedLoyaltyTokenDueForUser ,
   useTotalLoyaltyToken ,
   useRemainingDeposit ,
   useRemainingDepositEth ,

@@ -486,7 +486,7 @@ function useBuyAuction(chain, animal, isGsn, library, account, parentChainId) {
   }
 }
 
-function useRedeemLoyaltyTokens(animalId, isGsn) {
+function useRedeemLoyaltyTokens(patron, isGsn) {
   var match = React.useState((function () {
           return /* UnInitialised */0;
         }));
@@ -500,7 +500,7 @@ function useRedeemLoyaltyTokens(animalId, isGsn) {
     if (optSteward === undefined) {
       return ;
     }
-    var claimLoyaltyTokenPromise = $$Promise.Js.toResult(optSteward._collectPatronage(animalId, {
+    var claimLoyaltyTokenPromise = $$Promise.Js.toResult(optSteward._collectPatronagePatron(patron, {
               gasLimit: "500302",
               value: value
             }));
