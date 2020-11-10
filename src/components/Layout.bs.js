@@ -175,7 +175,7 @@ function Layout(Props) {
                   currentAnimal: subState[0],
                   showForwardBackButtons: false
                 }) : React.createElement(BuyGrid$WildCards.make, {
-                  wildcardsEddition: urlState[0]
+                  wildcardsEdition: urlState[0]
                 });
           break;
       case /* Leaderboards */3 :

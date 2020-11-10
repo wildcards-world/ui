@@ -52,8 +52,7 @@ ReactDOMRe.renderToElementWithId(
             ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
           }
         | _ => {
-            mainnet:
-              goerliApi |||| "https://goerli.api.wildcards.world/v1/graphq",
+            mainnet: goerliApi |||| "https://api.wildcards.world/v1/graphq",
             matic:
               maticApi
               |||| "https://matic.graph.wildcards.world/subgraphs/name/wildcards-world/wildcards-matic",
