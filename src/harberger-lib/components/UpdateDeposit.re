@@ -1,3 +1,5 @@
+open Globals;
+
 module UpdateDepositInput = {
   [@bs.module "./UpdateDepositInput"] [@react.component]
   external make:
@@ -34,6 +36,7 @@ let make = (~closeButtonText, ~chain) => {
       false,
       web3Context.library,
       web3Context.account,
+      web3Context.chainId->Option.getWithDefault(1),
     );
   let (withdrawFunc, txDepositObject) =
     ContractActions.useWithdrawDeposit(
@@ -41,6 +44,7 @@ let make = (~closeButtonText, ~chain) => {
       false,
       web3Context.library,
       web3Context.account,
+      web3Context.chainId->Option.getWithDefault(1),
     );
 
   // let _availableDeposit =

@@ -55,18 +55,53 @@ var voteContractMainnet = "0x03e051b7e42480Cc9D54F1caB525D2Fea2cF4d83";
 var voteContractGoerli = "0x316C5f8867B21923db8A0Bd6890A6BFE0Ab6F9d2";
 
 function getDaiContractAddress(chain, chainId) {
-  if (chain >= 2 || chainId === 1) {
-    return "TODO";
+  if (chain >= 2) {
+    return "NEVER";
+  } else if (chainId !== 5) {
+    if (chainId !== 137) {
+      if (chainId !== 80001) {
+        return "0xba97BeC8d359D73c81D094421803D968A9FBf676";
+      } else {
+        return "0xeb37A6dF956F1997085498aDd98b25a2f633d83F";
+      }
+    } else {
+      return "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063";
+    }
   } else {
-    return "0xB014216fd1d2B46c4d0291f0Bee46350227a2C60";
+    return "0xba97BeC8d359D73c81D094421803D968A9FBf676";
   }
 }
 
 function getStewardAddress(chain, chainId) {
-  if (chain >= 2 || chainId === 1) {
+  if (chain >= 2) {
     return "TODO";
+  } else if (chainId !== 5) {
+    if (chainId !== 137) {
+      if (chainId !== 80001) {
+        return "0xF26F8B2c178a0DeBB176c6b18e3F6d243fEEf828";
+      } else {
+        return "0xE44056eff470b1e505c3776601685c97A6966887";
+      }
+    } else {
+      return "0x69895ba53B4CB7afaea2Ab519409F3d3C613a562";
+    }
   } else {
-    return "0x5FDcd5bE3b476f146DbF46d50e0374f17515292f";
+    return "0xF26F8B2c178a0DeBB176c6b18e3F6d243fEEf828";
+  }
+}
+
+function getChildChainId(parentChainId) {
+  switch (parentChainId) {
+    case 1 :
+        return 137;
+    case 2 :
+    case 3 :
+    case 4 :
+        return 5;
+    case 5 :
+        return 80001;
+    default:
+      return 5;
   }
 }
 
@@ -258,7 +293,7 @@ function execDaiPermitMetaTx(daiNonce, stewardNonce, setTxState, sendMetaTx, use
   
 }
 
-function useBuy(chain, animal, isGsn, library, account) {
+function useBuy(chain, animal, isGsn, library, account, parentChainId) {
   var animalId = TokenId$WildCards.toString(animal);
   var optSteward = useStewardContract(isGsn);
   var match = React.useState((function () {
@@ -270,9 +305,10 @@ function useBuy(chain, animal, isGsn, library, account) {
   var maticState = Belt_Option.flatMap(account, (function (usersAddress) {
           return QlHooks$WildCards.useMaticState(false, usersAddress, "goerli");
         }));
-  var verifyingContract = getDaiContractAddress(chain, 5);
-  var spender = getStewardAddress(chain, 5);
-  var chainId = new BnJs.default(5);
+  var chainIdInt = getChildChainId(parentChainId);
+  var chainId = new BnJs.default(chainIdInt);
+  var verifyingContract = getDaiContractAddress(chain, chainIdInt);
+  var spender = getStewardAddress(chain, chainIdInt);
   if (chain >= 2) {
     return /* tuple */[
             (function (newPrice, oldPrice, wildcardsPercentage, value) {
@@ -345,7 +381,7 @@ function useBuy(chain, animal, isGsn, library, account) {
   }
 }
 
-function useBuyAuction(chain, animal, isGsn, library, account) {
+function useBuyAuction(chain, animal, isGsn, library, account, parentChainId) {
   var match = React.useState((function () {
           return /* UnInitialised */0;
         }));
@@ -358,9 +394,10 @@ function useBuyAuction(chain, animal, isGsn, library, account) {
           console.log("the users address", usersAddress);
           return QlHooks$WildCards.useMaticState(false, usersAddress, "goerli");
         }));
-  var verifyingContract = getDaiContractAddress(chain, 5);
-  var spender = getStewardAddress(chain, 5);
-  var chainId = new BnJs.default(5);
+  var chainIdInt = getChildChainId(parentChainId);
+  var chainId = new BnJs.default(chainIdInt);
+  var verifyingContract = getDaiContractAddress(chain, chainIdInt);
+  var spender = getStewardAddress(chain, chainIdInt);
   if (chain >= 2) {
     return /* tuple */[
             (function (newPrice, wildcardsPercentage, value) {
@@ -641,7 +678,7 @@ function useIncreaseVoteIteration(param) {
         ];
 }
 
-function useUpdateDeposit(chain, isGsn, library, account) {
+function useUpdateDeposit(chain, isGsn, library, account, parentChainId) {
   var match = React.useState((function () {
           return /* UnInitialised */0;
         }));
@@ -654,9 +691,10 @@ function useUpdateDeposit(chain, isGsn, library, account) {
           return QlHooks$WildCards.useMaticState(false, usersAddress, "goerli");
         }));
   console.log("Matic state", maticState);
-  var verifyingContract = getDaiContractAddress(chain, 5);
-  var spender = getStewardAddress(chain, 5);
-  var chainId = new BnJs.default(5);
+  var chainIdInt = getChildChainId(parentChainId);
+  var chainId = new BnJs.default(chainIdInt);
+  var verifyingContract = getDaiContractAddress(chain, chainIdInt);
+  var spender = getStewardAddress(chain, chainIdInt);
   if (chain >= 2) {
     return /* tuple */[
             (function (value) {
@@ -719,14 +757,17 @@ function useUpdateDeposit(chain, isGsn, library, account) {
   }
 }
 
-function useWithdrawDeposit(chain, isGsn, library, account) {
+function useWithdrawDeposit(chain, isGsn, library, account, parentChainId) {
   var match = React.useState((function () {
           return /* UnInitialised */0;
         }));
   var setTxState = match[1];
   var txState = match[0];
   var optSteward = useStewardContract(isGsn);
-  var spender = getStewardAddress(chain, 5);
+  var chainIdInt = getChildChainId(parentChainId);
+  new BnJs.default(chainIdInt);
+  getDaiContractAddress(chain, chainIdInt);
+  var spender = getStewardAddress(chain, chainIdInt);
   if (chain >= 2) {
     return /* tuple */[
             (function (amountToWithdraw) {
@@ -1181,6 +1222,7 @@ export {
   loyaltyTokenAddressMumbai ,
   getDaiContractAddress ,
   getStewardAddress ,
+  getChildChainId ,
   useStewardAbi ,
   defaultStewardAddressFromChainId ,
   useStewardAddress ,

@@ -21,62 +21,46 @@ external goerliApi: option(string) = "process.env.REACT_APP_GOERLI_BE";
 external maticTestnetApi: option(string) =
   "process.env.REACT_APP_MATIC_TESTNET";
 [@bs.val]
+external maticAltTestnetApi: option(string) =
+  "process.env.REACT_APP_MATIC_TESTNET_ALT";
+[@bs.val]
 external maticApi: option(string) = "process.env.REACT_APP_MATIC_BE";
-// [@bs.val]
-// external rinkebyApi: option(string) = "process.env.REACT_APP_RINKEBY_BE";
+[@bs.val]
+external rinkebyApi: option(string) = "process.env.REACT_APP_RINKEBY_BE";
 
 ReactDOMRe.renderToElementWithId(
   <WildcardsProvider
     getGraphEndpoints={(networkId, ()) => {
       open Client;
 
-      let endpoints = {
-        mainnet:
-          goerliApi |||| "https://goerli.api.wildcards.world/v1/graphql",
-        // mainnet: goerliApi |||| "http://localhost:8080/v1/graphql",
-        matic:
-          {
-            Js.log(networkId);
-            "";
+      let endpoints =
+        switch (networkId) {
+        | 5 => {
+            mainnet:
+              goerliApi |||| "https://goerli.api.wildcards.world/v1/graphq",
+            matic:
+              maticTestnetApi
+              |||| "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai",
+            ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
           }
-          ++ "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-testnet",
-        // ++ "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai",
-        ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
-      };
-      // switch (networkId) {
-      // | 5 => {
-      //     mainnet:
-      //       goerliApi |||| "https://goerli.api.wildcards.world/v1/graphq",
-      //     matic:
-      //       maticTestnetApi
-      //       |||| "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai",
-      //     ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
-      //   }
-      // // | 4 => (
-      // //     rinkebyApi |||| "https://rinkeby.api.wildcards.world/v1/graphq",
-      // //     "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
-      // //   )
-      // // | _ => (
-      // //     goerliApi |||| "https://goerli.api.wildcards.world/v1/graphq",
-      // //     "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
-      // //   )
-      // | _ => {
-      //     mainnet:
-      //       goerliApi |||| "https://goerli.api.wildcards.world/v1/graphq",
-      //     matic:
-      //       maticTestnetApi
-      //       |||| "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai",
-      //     ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
-      //   }
-      // //   goerliApi |||| "https://goerli.api.wildcards.world/v1/graphq",
-      // //   "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
-      // // )
-      // // | _ => {
-      // //     mainnet: mainnetApi |||| "https://api.wildcards.world/v1/graphql",
-      // //     matic: maticApi |||| "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai/graphql",
-      // //     ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards",
-      // //   }
-      // };
+        | 4 => {
+            mainnet:
+              rinkebyApi |||| "https://rinkeby.api.wildcards.world/v1/graphq",
+            matic:
+              maticAltTestnetApi
+              |||| "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-testnet",
+            ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
+          }
+        | _ => {
+            mainnet:
+              goerliApi |||| "https://goerli.api.wildcards.world/v1/graphq",
+            matic:
+              // maticApi
+              // ||||
+              "https://matic.graph.wildcards.world/subgraphs/name/wildcards-world/wildcards-matic",
+            ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
+          }
+        };
       endpoints;
     }}>
     <UsdPriceProvider> <Router /> </UsdPriceProvider>

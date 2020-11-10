@@ -100,9 +100,9 @@ let make = () => {
 
   <div className=Styles.app>
     <div className=Css.(style([minHeight(vh(88.))]))>
-      <Announcement announcementBannerColor="72D6B5">
+      <Announcement announcementBannerColor="f49229">
         <span>
-          "Due to the congestion on the Ethereum network, the next wildcards release will be delayed"
+          "New wildcards being launched on the MATIC network"
           ->React.string
         </span>
       </Announcement>

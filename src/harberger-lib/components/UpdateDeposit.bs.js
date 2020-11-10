@@ -38,9 +38,9 @@ function UpdateDeposit(Props) {
   var setIsAddDeposit = match$1[1];
   var isAddDeposit = match$1[0];
   var web3Context = Core.useWeb3React();
-  var match$2 = ContractActions$WildCards.useUpdateDeposit(chain, false, web3Context.library, web3Context.account);
+  var match$2 = ContractActions$WildCards.useUpdateDeposit(chain, false, web3Context.library, web3Context.account, Belt_Option.getWithDefault(web3Context.chainId, 1));
   var depositFunc = match$2[0];
-  var match$3 = ContractActions$WildCards.useWithdrawDeposit(chain, false, web3Context.library, web3Context.account);
+  var match$3 = ContractActions$WildCards.useWithdrawDeposit(chain, false, web3Context.library, web3Context.account, Belt_Option.getWithDefault(web3Context.chainId, 1));
   var withdrawFunc = match$3[0];
   var onSubmitDepositChange = function ($$event) {
     $$event.preventDefault();

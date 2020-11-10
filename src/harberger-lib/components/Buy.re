@@ -54,6 +54,7 @@ module Buy = {
         false,
         web3Context.library,
         web3Context.account,
+        web3Context.chainId->Option.getWithDefault(1),
       );
     let (buyFuncAuction, txBuyAuctionState) =
       ContractActions.useBuyAuction(
@@ -62,6 +63,7 @@ module Buy = {
         false,
         web3Context.library,
         web3Context.account,
+        web3Context.chainId->Option.getWithDefault(1),
       );
 
     let userBalance =

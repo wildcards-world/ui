@@ -214,8 +214,8 @@ function Layout(Props) {
                         /* [] */0
                       ])
                 }, React.createElement(Announcement$WildCards.make, {
-                      announcementBannerColor: "72D6B5",
-                      children: React.createElement("span", undefined, "Due to the congestion on the Ethereum network, the next wildcards release will be delayed")
+                      announcementBannerColor: "f49229",
+                      children: React.createElement("span", undefined, "New wildcards being launched on the MATIC network")
                     }), React.createElement("div", {
                       className: Curry._1(Css.style, /* :: */[
                             Css.position(Css.relative),

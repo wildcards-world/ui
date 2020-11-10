@@ -132,14 +132,12 @@ let getDaiContractAddress = (chain: Client.context, chainId) =>
   | Neither
   | MaticQuery =>
     switch (chainId) {
-    | 1 => "TODO"
-    | _ =>
-      // Goerli-Mumbai
-      "0xB014216fd1d2B46c4d0291f0Bee46350227a2C60"
-    // Mumbai
-    // "0x6D725E5472D8c386D5759259b01278AA202130f0"
+    | 137 => "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063"
+    | 80001 => "0xeb37A6dF956F1997085498aDd98b25a2f633d83F"
+    | 5
+    | _ => "0xba97BeC8d359D73c81D094421803D968A9FBf676"
     }
-  | MainnetQuery => "TODO"
+  | MainnetQuery => "NEVER"
   };
 
 let getStewardAddress = (chain: Client.context, chainId) =>
@@ -147,14 +145,20 @@ let getStewardAddress = (chain: Client.context, chainId) =>
   | Neither
   | MaticQuery =>
     switch (chainId) {
-    | 1 => "TODO"
-    | _ =>
-      // Goerli-Mumbai
-      "0x5FDcd5bE3b476f146DbF46d50e0374f17515292f"
-    // Mumbai
-    // "0x90ED26DA8ceF71ab3ec6853572677D501Dcc670f"
+    | 137 => "0x69895ba53B4CB7afaea2Ab519409F3d3C613a562"
+    | 80001 => "0xE44056eff470b1e505c3776601685c97A6966887"
+    | 5
+    | _ => "0xF26F8B2c178a0DeBB176c6b18e3F6d243fEEf828"
     }
   | MainnetQuery => "TODO"
+  };
+
+let getChildChainId = parentChainId =>
+  switch (parentChainId) {
+  | 1 => 137
+  | 5 => 80001
+  | 4
+  | _ => 5
   };
 
 let useStewardAbi = () => {
@@ -411,6 +415,7 @@ let useBuy =
       isGsn,
       library: option(Web3.web3Library),
       account,
+      parentChainId,
     ) => {
   let animalId = animal->TokenId.toString;
 
@@ -424,11 +429,10 @@ let useBuy =
       QlHooks.useMaticState(~forceRefetch=false, usersAddress, "goerli")
     });
 
-  // GOERLI:
-  let verifyingContract = getDaiContractAddress(chain, 5);
-  let spender = getStewardAddress(chain, 5);
-  // BN.newInt_(80001),
-  let chainId = BN.newInt_(5);
+  let chainIdInt = parentChainId->getChildChainId;
+  let chainId = chainIdInt->BN.newInt_;
+  let verifyingContract = getDaiContractAddress(chain, chainIdInt);
+  let spender = getStewardAddress(chain, chainIdInt);
 
   switch (chain) {
   | Client.Neither
@@ -525,7 +529,14 @@ let useBuy =
 };
 
 let useBuyAuction =
-    (~chain, animal, isGsn, library: option(Web3.web3Library), account) => {
+    (
+      ~chain,
+      animal,
+      isGsn,
+      library: option(Web3.web3Library),
+      account,
+      parentChainId,
+    ) => {
   let (txState, setTxState) = React.useState(() => UnInitialised);
 
   let animalId = animal->TokenId.toString;
@@ -540,9 +551,10 @@ let useBuyAuction =
       QlHooks.useMaticState(~forceRefetch=false, usersAddress, "goerli");
     });
 
-  let verifyingContract = getDaiContractAddress(chain, 5);
-  let spender = getStewardAddress(chain, 5);
-  let chainId = BN.newInt_(5);
+  let chainIdInt = parentChainId->getChildChainId;
+  let chainId = chainIdInt->BN.newInt_;
+  let verifyingContract = getDaiContractAddress(chain, chainIdInt);
+  let spender = getStewardAddress(chain, chainIdInt);
 
   switch (chain) {
   | Client.Neither
@@ -824,7 +836,13 @@ let useIncreaseVoteIteration = () => {
 };
 
 let useUpdateDeposit =
-    (~chain, isGsn, library: option(Web3.web3Library), account) => {
+    (
+      ~chain,
+      isGsn,
+      library: option(Web3.web3Library),
+      account,
+      parentChainId,
+    ) => {
   let (txState, setTxState) = React.useState(() => UnInitialised);
 
   let optSteward = useStewardContract(isGsn);
@@ -838,11 +856,10 @@ let useUpdateDeposit =
     });
   Js.log2("Matic state", maticState);
 
-  // GOERLI:
-  let verifyingContract = getDaiContractAddress(chain, 5);
-  let spender = getStewardAddress(chain, 5);
-  // BN.newInt_(80001),
-  let chainId = BN.newInt_(5);
+  let chainIdInt = parentChainId->getChildChainId;
+  let chainId = chainIdInt->BN.newInt_;
+  let verifyingContract = getDaiContractAddress(chain, chainIdInt);
+  let spender = getStewardAddress(chain, chainIdInt);
 
   switch (chain) {
   | Client.Neither
@@ -927,7 +944,13 @@ let useUpdateDeposit =
 };
 
 let useWithdrawDeposit =
-    (~chain, isGsn, library: option(Web3.web3Library), account) => {
+    (
+      ~chain,
+      isGsn,
+      library: option(Web3.web3Library),
+      account,
+      parentChainId,
+    ) => {
   let (txState, setTxState) = React.useState(() => UnInitialised);
 
   let optSteward = useStewardContract(isGsn);
@@ -935,9 +958,12 @@ let useWithdrawDeposit =
   // let nonce = "";
 
   // GOERLI:
-  // let verifyingContract = getDaiContractAddress(chain, 5);
-  let spender = getStewardAddress(chain, 5);
-  // BN.newInt_(80001),
+
+  let chainIdInt = parentChainId->getChildChainId;
+  let chainId = chainIdInt->BN.newInt_;
+  let verifyingContract = getDaiContractAddress(chain, chainIdInt);
+  let spender = getStewardAddress(chain, chainIdInt);
+
   // let chainId = BN.newInt_(5);
 
   switch (chain) {

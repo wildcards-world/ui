@@ -49,9 +49,9 @@ function Buy$Buy(Props) {
   var tokenId = Props.tokenId;
   var availableBalance = Props.availableBalance;
   var web3Context = Core.useWeb3React();
-  var match = ContractActions$WildCards.useBuy(chain, tokenId, false, web3Context.library, web3Context.account);
+  var match = ContractActions$WildCards.useBuy(chain, tokenId, false, web3Context.library, web3Context.account, Belt_Option.getWithDefault(web3Context.chainId, 1));
   var buyFunc = match[0];
-  var match$1 = ContractActions$WildCards.useBuyAuction(chain, tokenId, false, web3Context.library, web3Context.account);
+  var match$1 = ContractActions$WildCards.useBuyAuction(chain, tokenId, false, web3Context.library, web3Context.account, Belt_Option.getWithDefault(web3Context.chainId, 1));
   var buyFuncAuction = match$1[0];
   var userBalance = Belt_Option.mapWithDefault(RootProvider$WildCards.useEthBalance(undefined), new BnJs.default("0"), (function (a) {
           return a;
