@@ -48,13 +48,13 @@ function SsrEntryPoint(Props) {
                   if (networkId !== 5) {
                     return {
                             mainnet: Globals$WildCards.$pipe$pipe$pipe$pipe(process.env.REACT_APP_MAINNET_BE, "https://api.wildcards.world/v1/graphql"),
-                            matic: "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai/graphql",
+                            matic: "https://mumbai.graph.wildcards.world/subgraphs/name/wildcards-world/wildcards-matic/graphql",
                             ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards"
                           };
                   } else {
                     return {
                             mainnet: Globals$WildCards.$pipe$pipe$pipe$pipe(process.env.REACT_APP_GOERLI_BE, "https://goerli.api.wildcards.world/v1/graphq"),
-                            matic: "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai/graphql",
+                            matic: "https://mumbai.graph.wildcards.world/subgraphs/name/wildcards-world/wildcards-matic/graphql",
                             ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli"
                           };
                   }

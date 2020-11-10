@@ -40,12 +40,12 @@ let make = () =>
         | 5 => {
             mainnet:
               goerliApi |||| "https://goerli.api.wildcards.world/v1/graphq",
-            matic: "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai/graphql",
+            matic: "https://mumbai.graph.wildcards.world/subgraphs/name/wildcards-world/wildcards-matic/graphql",
             ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
           }
         | _ => {
             mainnet: mainnetApi |||| "https://api.wildcards.world/v1/graphql",
-            matic: "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai/graphql",
+            matic: "https://mumbai.graph.wildcards.world/subgraphs/name/wildcards-world/wildcards-matic/graphql",
             ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards",
           }
         };

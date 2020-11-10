@@ -33,13 +33,13 @@ ReactDOMRe.renderToElementWithId(React.createElement(WildcardsProvider$WildCards
                 if (networkId !== 5) {
                   return {
                           mainnet: Globals$WildCards.$pipe$pipe$pipe$pipe(process.env.REACT_APP_GOERLI_BE, "https://goerli.api.wildcards.world/v1/graphq"),
-                          matic: "https://matic.graph.wildcards.world/subgraphs/name/wildcards-world/wildcards-matic",
+                          matic: Globals$WildCards.$pipe$pipe$pipe$pipe(process.env.REACT_APP_MATIC_BE, "https://matic.graph.wildcards.world/subgraphs/name/wildcards-world/wildcards-matic"),
                           ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli"
                         };
                 } else {
                   return {
                           mainnet: Globals$WildCards.$pipe$pipe$pipe$pipe(process.env.REACT_APP_GOERLI_BE, "https://goerli.api.wildcards.world/v1/graphq"),
-                          matic: Globals$WildCards.$pipe$pipe$pipe$pipe(process.env.REACT_APP_MATIC_TESTNET, "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai"),
+                          matic: Globals$WildCards.$pipe$pipe$pipe$pipe(process.env.REACT_APP_MATIC_TESTNET, "https://mumbai.graph.wildcards.world/subgraphs/name/wildcards-world/wildcards-matic"),
                           ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli"
                         };
                 }

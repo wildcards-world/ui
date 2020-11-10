@@ -40,7 +40,7 @@ ReactDOMRe.renderToElementWithId(
               goerliApi |||| "https://goerli.api.wildcards.world/v1/graphq",
             matic:
               maticTestnetApi
-              |||| "https://api.mumbai-graph.matic.today/subgraphs/name/wildcards-world/wildcards-mumbai",
+              |||| "https://mumbai.graph.wildcards.world/subgraphs/name/wildcards-world/wildcards-matic",
             ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
           }
         | 4 => {
@@ -55,9 +55,8 @@ ReactDOMRe.renderToElementWithId(
             mainnet:
               goerliApi |||| "https://goerli.api.wildcards.world/v1/graphq",
             matic:
-              // maticApi
-              // ||||
-              "https://matic.graph.wildcards.world/subgraphs/name/wildcards-world/wildcards-matic",
+              maticApi
+              |||| "https://matic.graph.wildcards.world/subgraphs/name/wildcards-world/wildcards-matic",
             ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
           }
         };
