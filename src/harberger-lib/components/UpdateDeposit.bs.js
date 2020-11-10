@@ -70,10 +70,12 @@ function UpdateDeposit(Props) {
                           onSubmitDepositChange: onSubmitDepositChange
                         }),
                     txState: match$2[1],
-                    closeButtonText: closeButtonText
+                    closeButtonText: closeButtonText,
+                    chain: chain
                   }),
               txState: match$3[1],
-              closeButtonText: closeButtonText
+              closeButtonText: closeButtonText,
+              chain: chain
             });
 }
 

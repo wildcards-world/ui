@@ -55,7 +55,7 @@ let decodeAddress: Js.Json.t => string =
 
 module InitialLoad = [%graphql
   {|
-       query($amount: Int) {
+       query($amount: Int!, $globalId: String!) {
          wildcards(first: $amount) {
            id
            animal: tokenId @bsDecoder(fn: "tokenIdToAnimal")
@@ -75,7 +75,7 @@ module InitialLoad = [%graphql
            auctionStartPrice @bsDecoder(fn: "decodeOptionBN")
            launchTime @bsDecoder(fn: "decodeBN")
          }
-         global(id: 1) {
+         global(id: $globalId) {
            id
            totalCollectedOrDueAccurate @bsDecoder(fn: "decodeBN")
            timeLastCollected @bsDecoder(fn: "decodeBN")
@@ -104,6 +104,12 @@ let useInitialDataLoad = (~chain) => {
             | Client.MaticQuery => 31
             | Client.Neither
             | Client.MainnetQuery => 30
+            },
+          ~globalId=
+            switch (chain) {
+            | Client.MaticQuery => "Matic-Global"
+            | Client.Neither
+            | Client.MainnetQuery => "1"
             },
           (),
         )##variables,
@@ -1016,20 +1022,26 @@ let useIsForeclosed = (~chain, currentPatron) => {
   });
 };
 
-let useAuctionStartPrice = (_tokenId: TokenId.t) => {
-  BN.new_(
-    "1000000000000000000" // auction starts at 1 eth
-  );
+let useAuctionStartPrice = (~chain, _tokenId: TokenId.t) => {
+  let optData = useInitialDataLoad(~chain);
+
+  optData
+  ->Option.flatMap(data => data##global)
+  ->Option.map(global => global##defaultAuctionStartPrice);
 };
-let useAuctionEndPrice = (_tokenId: TokenId.t) => {
-  BN.new_(
-    "20000000000000000" // auction ends at 0.02 eth
-  );
+let useAuctionEndPrice = (~chain, _tokenId: TokenId.t) => {
+  let optData = useInitialDataLoad(~chain);
+
+  optData
+  ->Option.flatMap(data => data##global)
+  ->Option.map(global => global##defaultAuctionEndPrice);
 };
-let useAuctioLength = (_tokenId: TokenId.t) => {
-  BN.new_(
-    "604800" // 1 week
-  );
+let useAuctioLength = (~chain, _tokenId: TokenId.t) => {
+  let optData = useInitialDataLoad(~chain);
+
+  optData
+  ->Option.flatMap(data => data##global)
+  ->Option.map(global => global##defaultAuctionLength);
 };
 let useLaunchTimeBN = (~chain, tokenId: TokenId.t) => {
   let (simple, _) = useWildcardQuery(~chain, tokenId);

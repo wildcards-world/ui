@@ -65,7 +65,7 @@ function Buy$Buy(Props) {
   var isOnAuction = Animal$WildCards.useIsOnAuction(chain, tokenId);
   var launchTimeOpt = QlHooks$WildCards.useLaunchTimeBN(chain, tokenId);
   var currentPriceWei = Animal$WildCards.useAuctionPriceWei(chain, tokenId, Belt_Option.getWithDefault(launchTimeOpt, new BnJs.default("5000")));
-  var currentPriceWei$1 = isOnAuction ? currentPriceWei : (
+  var currentPriceWei$1 = isOnAuction ? Belt_Option.getWithDefault(currentPriceWei, new BnJs.default("0")) : (
       typeof priceStatus === "number" ? new BnJs.default("0") : (
           priceStatus.tag ? priceStatus[0] : new BnJs.default("0")
         )
@@ -144,6 +144,7 @@ function Buy$Buy(Props) {
                   return timeInSeconds;
                 }));
   };
+  var currency = chain !== 1 ? "ether" : "DAI";
   return React.createElement(TxTemplate$WildCards.make, {
               children: React.createElement(TxTemplate$WildCards.make, {
                     children: isAbleToBuy ? React.createElement(BuyInput$WildCards.make, {
@@ -159,13 +160,15 @@ function Buy$Buy(Props) {
                           }) : React.createElement(RimbleUi.Box, {
                             children: React.createElement("p", {
                                   className: Styles$WildCards.textOnlyModalText
-                                }, "You do not have enough ether to buy " + (tokenIdName + "."))
+                                }, "You do not have enough " + (currency + (" to buy " + (tokenIdName + "."))))
                           }),
                     txState: match[1],
-                    closeButtonText: "Back to view Animal"
+                    closeButtonText: "Back to view Animal",
+                    chain: chain
                   }),
               txState: match$1[1],
-              closeButtonText: "Back to view Animal"
+              closeButtonText: "Back to view Animal",
+              chain: chain
             });
 }
 

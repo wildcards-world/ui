@@ -3,6 +3,7 @@
 import * as Css from "bs-css-emotion/src/Css.js";
 import * as Block from "bs-platform/lib/es6/block.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
+import * as BnJs from "bn.js";
 import * as React from "react";
 import * as Moment from "moment";
 import * as RimbleUi from "rimble-ui";
@@ -12,6 +13,7 @@ import * as Caml_int32 from "bs-platform/lib/es6/caml_int32.js";
 import * as ReactTabs from "react-tabs";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
+import * as BrowserLogger from "bs-log/src/BrowserLogger.bs.js";
 import * as Buy$WildCards from "../harberger-lib/components/Buy.bs.js";
 import * as Eth$WildCards from "../harberger-lib/Eth.bs.js";
 import * as Info$WildCards from "../harberger-lib/components/Info.bs.js";
@@ -27,6 +29,7 @@ import * as TokenId$WildCards from "../harberger-lib/TokenId.bs.js";
 import * as Validate$WildCards from "./Validate.bs.js";
 import * as CountDown$WildCards from "../harberger-lib/CountDown.bs.js";
 import * as InputHelp$WildCards from "../harberger-lib/InputHelp.bs.js";
+import * as Web3Utils$WildCards from "../harberger-lib/Web3Utils.bs.js";
 import * as Accounting$WildCards from "../harberger-lib/Accounting.bs.js";
 import * as TotalRaised$WildCards from "./components/TotalRaised.bs.js";
 import * as UpdatePrice$WildCards from "../harberger-lib/components/UpdatePrice.bs.js";
@@ -141,11 +144,21 @@ function Dapp$AuctionDisplay(Props) {
   var animal = Props.animal;
   var currentPriceWei = Animal$WildCards.useAuctionPriceWei(chain, animal, launchTime);
   var optCurrentUsdEthPrice = UsdPriceProvider$WildCards.useUsdPrice(undefined);
-  var match = PriceDisplay$WildCards.priceWeiToTuple(currentPriceWei, optCurrentUsdEthPrice);
-  return React.createElement(React.Fragment, undefined, React.createElement("h3", undefined, "Auction "), React.createElement(PriceDisplay$WildCards.PurePriceDisplay.make, {
-                  priceEth: match[0],
-                  optPriceUsd: match[1]
-                }), React.createElement(ActionButtons$WildCards.Auction.make, {
+  var tmp;
+  if (chain !== 1) {
+    var match = PriceDisplay$WildCards.priceWeiToTuple(Belt_Option.getWithDefault(currentPriceWei, new BnJs.default("0")), optCurrentUsdEthPrice);
+    tmp = React.createElement(PriceDisplay$WildCards.PurePriceDisplay.make, {
+          priceEth: match[0],
+          optPriceUsd: match[1]
+        });
+  } else {
+    tmp = React.createElement("p", {
+          className: Styles$WildCards.noMarginTop + (" " + Styles$WildCards.noMarginBottom)
+        }, Globals$WildCards.restr(Belt_Option.mapWithDefault(currentPriceWei, "Loading", (function (price) {
+                    return Web3Utils$WildCards.fromWeiBNToEthPrecision(price, 4) + " USD";
+                  }))));
+  }
+  return React.createElement(React.Fragment, undefined, React.createElement("h3", undefined, "Auction here"), tmp, React.createElement(ActionButtons$WildCards.Auction.make, {
                   animal: animal
                 }));
 }
@@ -590,6 +603,10 @@ var DetailsViewAnimal = {
 function Dapp$DetailsView(Props) {
   var chain = Props.chain;
   var optionAnimal = Props.optionAnimal;
+  BrowserLogger.infoWithData("Dapp-WildCards", "optionAnimal", /* tuple */[
+        "a",
+        optionAnimal
+      ]);
   if (optionAnimal !== undefined) {
     return React.createElement(Dapp$DetailsViewAnimal, {
                 chain: chain,
@@ -680,6 +697,10 @@ function Dapp$DefaultLook(Props) {
                 }));
         break;
     case 2 :
+        BrowserLogger.infoWithData("Dapp-WildCards", "the animalString", /* tuple */[
+              "a",
+              animalStr
+            ]);
         var optionAnimal = TokenId$WildCards.make(animalStr);
         var chain = Belt_Option.mapWithDefault(optionAnimal, /* MainnetQuery */2, Animal$WildCards.getChainIdFromAnimalId);
         tmp = React.createElement(Dapp$DetailsView, {

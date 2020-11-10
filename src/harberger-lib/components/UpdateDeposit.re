@@ -73,8 +73,8 @@ let make = (~closeButtonText, ~chain) => {
   let updateIsAddDeposit = isDeposit => {
     setIsAddDeposit(_ => isDeposit);
   };
-  <TxTemplate txState=txDepositObject closeButtonText>
-    <TxTemplate txState=txWithdrawObject closeButtonText>
+  <TxTemplate chain txState=txDepositObject closeButtonText>
+    <TxTemplate chain txState=txWithdrawObject closeButtonText>
       <UpdateDepositInput
         depositChange
         updateDepositChange

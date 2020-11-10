@@ -86,7 +86,7 @@ module Buy = {
 
     let currentPriceWei =
       isOnAuction
-        ? currentPriceWei
+        ? currentPriceWei->Option.getWithDefault(BN.new_("0"))
         : (
           switch (priceStatus) {
           | Price(price) => price
@@ -270,10 +270,17 @@ module Buy = {
         ();
       };
     };
+    let currency =
+      switch (chain) {
+      | Client.Neither
+      | Client.MainnetQuery => "ether"
+      | Client.MaticQuery => "DAI"
+      };
 
     <TxTemplate
-      txState=txBuyAuctionState closeButtonText="Back to view Animal">
-      <TxTemplate txState=txBuyState closeButtonText="Back to view Animal">
+      chain txState=txBuyAuctionState closeButtonText="Back to view Animal">
+      <TxTemplate
+        chain txState=txBuyState closeButtonText="Back to view Animal">
         {isAbleToBuy
            ? <BuyInput
                onSubmitBuy
@@ -292,7 +299,9 @@ module Buy = {
            : <Rimble.Box>
                <p className=Styles.textOnlyModalText>
                  {React.string(
-                    "You do not have enough ether to buy "
+                    "You do not have enough "
+                    ++ currency
+                    ++ " to buy "
                     ++ tokenIdName
                     ++ ".",
                   )}

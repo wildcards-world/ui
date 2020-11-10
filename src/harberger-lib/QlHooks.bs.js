@@ -65,7 +65,7 @@ function decodeAddress(address) {
               }));
 }
 
-var ppx_printed_query = "query ($amount: Int)  {\nwildcards(first: $amount)  {\nid  \nanimal: tokenId  \nowner  {\naddress  \nid  \n}\n\nprice  {\nprice  \nid  \n}\n\ntotalCollected  \ntimeCollected  \npatronageNumeratorPriceScaled  \ntimeAcquired  \nauctionStartPrice  \nlaunchTime  \n}\n\nglobal(id: 1)  {\nid  \ntotalCollectedOrDueAccurate  \ntimeLastCollected  \ntotalTokenCostScaledNumeratorAccurate  \ndefaultAuctionLength  \ndefaultAuctionEndPrice  \ndefaultAuctionStartPrice  \n}\n\n}\n";
+var ppx_printed_query = "query ($amount: Int!, $globalId: String!)  {\nwildcards(first: $amount)  {\nid  \nanimal: tokenId  \nowner  {\naddress  \nid  \n}\n\nprice  {\nprice  \nid  \n}\n\ntotalCollected  \ntimeCollected  \npatronageNumeratorPriceScaled  \ntimeAcquired  \nauctionStartPrice  \nlaunchTime  \n}\n\nglobal(id: $globalId)  {\nid  \ntotalCollectedOrDueAccurate  \ntimeLastCollected  \ntotalTokenCostScaledNumeratorAccurate  \ndefaultAuctionLength  \ndefaultAuctionEndPrice  \ndefaultAuctionStartPrice  \n}\n\n}\n";
 
 function parse(value) {
   var value$1 = Js_option.getExn(Js_json.decodeObject(value));
@@ -194,13 +194,19 @@ function parse(value) {
         };
 }
 
-function make(amount, param) {
+function make(amount, globalId, param) {
   return {
           query: ppx_printed_query,
-          variables: Js_dict.fromArray([/* tuple */[
+          variables: Js_dict.fromArray([
+                  /* tuple */[
                     "amount",
-                    amount !== undefined ? amount : null
-                  ]].filter((function (param) {
+                    amount
+                  ],
+                  /* tuple */[
+                    "globalId",
+                    globalId
+                  ]
+                ].filter((function (param) {
                       return !Js_json.test(param[1], /* Null */5);
                     }))),
           parse: parse
@@ -209,32 +215,51 @@ function make(amount, param) {
 
 function makeWithVariables(variables) {
   var amount = variables.amount;
+  var globalId = variables.globalId;
   return {
           query: ppx_printed_query,
-          variables: Js_dict.fromArray([/* tuple */[
+          variables: Js_dict.fromArray([
+                  /* tuple */[
                     "amount",
-                    amount !== undefined ? amount : null
-                  ]].filter((function (param) {
+                    amount
+                  ],
+                  /* tuple */[
+                    "globalId",
+                    globalId
+                  ]
+                ].filter((function (param) {
                       return !Js_json.test(param[1], /* Null */5);
                     }))),
           parse: parse
         };
 }
 
-function makeVariables(amount, param) {
-  return Js_dict.fromArray([/* tuple */[
+function makeVariables(amount, globalId, param) {
+  return Js_dict.fromArray([
+                /* tuple */[
                   "amount",
-                  amount !== undefined ? amount : null
-                ]].filter((function (param) {
+                  amount
+                ],
+                /* tuple */[
+                  "globalId",
+                  globalId
+                ]
+              ].filter((function (param) {
                     return !Js_json.test(param[1], /* Null */5);
                   })));
 }
 
-function definition_002(graphql_ppx_use_json_variables_fn, amount, param) {
-  return Curry._1(graphql_ppx_use_json_variables_fn, Js_dict.fromArray([/* tuple */[
+function definition_002(graphql_ppx_use_json_variables_fn, amount, globalId, param) {
+  return Curry._1(graphql_ppx_use_json_variables_fn, Js_dict.fromArray([
+                    /* tuple */[
                       "amount",
-                      amount !== undefined ? amount : null
-                    ]].filter((function (param) {
+                      amount
+                    ],
+                    /* tuple */[
+                      "globalId",
+                      globalId
+                    ]
+                  ].filter((function (param) {
                         return !Js_json.test(param[1], /* Null */5);
                       }))));
 }
@@ -268,7 +293,7 @@ function createContext(prim) {
 }
 
 function useInitialDataLoad(chain) {
-  var match = ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make(chain !== 1 ? 30 : 31, undefined).variables), true, /* CacheFirst */0, undefined, undefined, undefined, {
+  var match = ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make(chain !== 1 ? 30 : 31, chain !== 1 ? "1" : "Matic-Global", undefined).variables), true, /* CacheFirst */0, undefined, undefined, undefined, {
         context: chain
       }, definition);
   var simple = match[0];
@@ -2428,16 +2453,31 @@ function useIsForeclosed(chain, currentPatron) {
               }));
 }
 
-function useAuctionStartPrice(_tokenId) {
-  return new BnJs.default("1000000000000000000");
+function useAuctionStartPrice(chain, _tokenId) {
+  var optData = useInitialDataLoad(chain);
+  return Belt_Option.map(Belt_Option.flatMap(optData, (function (data) {
+                    return data.global;
+                  })), (function ($$global) {
+                return $$global.defaultAuctionStartPrice;
+              }));
 }
 
-function useAuctionEndPrice(_tokenId) {
-  return new BnJs.default("20000000000000000");
+function useAuctionEndPrice(chain, _tokenId) {
+  var optData = useInitialDataLoad(chain);
+  return Belt_Option.map(Belt_Option.flatMap(optData, (function (data) {
+                    return data.global;
+                  })), (function ($$global) {
+                return $$global.defaultAuctionEndPrice;
+              }));
 }
 
-function useAuctioLength(_tokenId) {
-  return new BnJs.default("604800");
+function useAuctioLength(chain, _tokenId) {
+  var optData = useInitialDataLoad(chain);
+  return Belt_Option.map(Belt_Option.flatMap(optData, (function (data) {
+                    return data.global;
+                  })), (function ($$global) {
+                return $$global.defaultAuctionLength;
+              }));
 }
 
 function useLaunchTimeBN(chain, tokenId) {

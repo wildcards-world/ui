@@ -116,30 +116,39 @@ function useIsOnAuction(chain, animal) {
 
 function useAuctionPriceWei(chain, animal, launchTime) {
   var tokenStatus = useTokenStatus(chain, animal);
-  var auctionStartPrice = QlHooks$WildCards.useAuctionStartPrice(animal);
-  var auctionEndPrice = QlHooks$WildCards.useAuctionEndPrice(animal);
-  var auctionLength = QlHooks$WildCards.useAuctioLength(animal);
+  var auctionStartPrice = QlHooks$WildCards.useAuctionStartPrice(chain, animal);
+  var auctionEndPrice = QlHooks$WildCards.useAuctionEndPrice(chain, animal);
+  var auctionLength = QlHooks$WildCards.useAuctioLength(chain, animal);
   var currentTime = QlHooks$WildCards.useCurrentTime(undefined);
+  if (auctionStartPrice === undefined) {
+    return ;
+  }
+  if (auctionEndPrice === undefined) {
+    return ;
+  }
+  if (auctionLength === undefined) {
+    return ;
+  }
+  var auctionLength$1 = Caml_option.valFromOption(auctionLength);
+  var auctionEndPrice$1 = Caml_option.valFromOption(auctionEndPrice);
+  var auctionStartPrice$1 = Caml_option.valFromOption(auctionStartPrice);
+  var tmp;
   if (typeof tokenStatus === "number") {
-    return auctionEndPrice;
+    tmp = auctionEndPrice$1;
+  } else {
+    switch (tokenStatus.tag | 0) {
+      case /* Launched */1 :
+          tmp = Globals$WildCards.$pipe$less$pipe(new BnJs.default(currentTime), Globals$WildCards.$pipe$plus$pipe(launchTime, auctionLength$1)) ? Globals$WildCards.$pipe$neg$pipe(auctionStartPrice$1, Globals$WildCards.$pipe$slash$pipe(Globals$WildCards.$pipe$star$pipe(Globals$WildCards.$pipe$neg$pipe(auctionStartPrice$1, auctionEndPrice$1), Globals$WildCards.$pipe$neg$pipe(new BnJs.default(currentTime), launchTime)), auctionLength$1)) : auctionEndPrice$1;
+          break;
+      case /* Foreclosed */3 :
+          var auctionStartTime = new BnJs.default(tokenStatus[0].unix());
+          tmp = Globals$WildCards.$pipe$less$pipe(new BnJs.default(currentTime), Globals$WildCards.$pipe$plus$pipe(auctionStartTime, auctionLength$1)) ? Globals$WildCards.$pipe$neg$pipe(auctionStartPrice$1, Globals$WildCards.$pipe$slash$pipe(Globals$WildCards.$pipe$star$pipe(Globals$WildCards.$pipe$neg$pipe(auctionStartPrice$1, auctionEndPrice$1), Globals$WildCards.$pipe$neg$pipe(new BnJs.default(currentTime), auctionStartTime)), auctionLength$1)) : auctionEndPrice$1;
+          break;
+      default:
+        tmp = auctionEndPrice$1;
+    }
   }
-  switch (tokenStatus.tag | 0) {
-    case /* Launched */1 :
-        if (Globals$WildCards.$pipe$less$pipe(new BnJs.default(currentTime), Globals$WildCards.$pipe$plus$pipe(launchTime, auctionLength))) {
-          return Globals$WildCards.$pipe$neg$pipe(auctionStartPrice, Globals$WildCards.$pipe$slash$pipe(Globals$WildCards.$pipe$star$pipe(Globals$WildCards.$pipe$neg$pipe(auctionStartPrice, auctionEndPrice), Globals$WildCards.$pipe$neg$pipe(new BnJs.default(currentTime), launchTime)), auctionLength));
-        } else {
-          return auctionEndPrice;
-        }
-    case /* Foreclosed */3 :
-        var auctionStartTime = new BnJs.default(tokenStatus[0].unix());
-        if (Globals$WildCards.$pipe$less$pipe(new BnJs.default(currentTime), Globals$WildCards.$pipe$plus$pipe(auctionStartTime, auctionLength))) {
-          return Globals$WildCards.$pipe$neg$pipe(auctionStartPrice, Globals$WildCards.$pipe$slash$pipe(Globals$WildCards.$pipe$star$pipe(Globals$WildCards.$pipe$neg$pipe(auctionStartPrice, auctionEndPrice), Globals$WildCards.$pipe$neg$pipe(new BnJs.default(currentTime), auctionStartTime)), auctionLength));
-        } else {
-          return auctionEndPrice;
-        }
-    default:
-      return auctionEndPrice;
-  }
+  return Caml_option.some(tmp);
 }
 
 function getChainIdFromAnimalId(animalId) {

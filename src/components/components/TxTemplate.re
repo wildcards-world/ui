@@ -6,10 +6,19 @@ let make =
       ~children: React.element,
       ~txState: ContractActions.transactionState,
       ~closeButtonText: string,
+      ~chain,
     ) => {
   let etherscanUrl = RootProvider.useEtherscanUrl();
+  let sidechainUrl = RootProvider.useSidechainEtherscanUrl();
   let clearNonUrlState = RootProvider.useClearNonUrlState();
 
+  let isSideChainTx =
+    switch (chain) {
+    | Client.Neither
+    | Client.MainnetQuery => false
+    | Client.MaticQuery => true
+    };
+  let txExplererUrl = isSideChainTx ? sidechainUrl : etherscanUrl;
   switch (txState) {
   | ContractActions.UnInitialised => children
   | DaiPermit(value) =>
@@ -69,10 +78,10 @@ let make =
       </Rimble.Heading>
       <Rimble.Text>
         <a
-          href={j|https://$etherscanUrl/tx/$txHash|j}
+          href={j|https://$txExplererUrl/tx/$txHash|j}
           target="_blank"
           rel="noopener noreferrer">
-          "View the transaction on etherscan.io"->restr
+          {("View the transaction on " ++ txExplererUrl)->restr}
         </a>
       </Rimble.Text>
       <Rimble.Loader className=Styles.centerItems size="80px" />
@@ -86,10 +95,10 @@ let make =
       </Rimble.Heading>
       <Rimble.Text>
         <a
-          href={j|https://$etherscanUrl/tx/$txHash|j}
+          href={j|https://$txExplererUrl/tx/$txHash|j}
           target="_blank"
           rel="noopener noreferrer">
-          "View the transaction on etherscan.io"->restr
+          {("View the transaction on " ++ txExplererUrl)->restr}
         </a>
       </Rimble.Text>
       <Rimble.Button onClick={_e => clearNonUrlState()}>

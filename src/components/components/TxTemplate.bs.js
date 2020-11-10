@@ -13,8 +13,12 @@ function TxTemplate(Props) {
   var children = Props.children;
   var txState = Props.txState;
   var closeButtonText = Props.closeButtonText;
+  var chain = Props.chain;
   var etherscanUrl = RootProvider$WildCards.useEtherscanUrl(undefined);
+  var sidechainUrl = RootProvider$WildCards.useSidechainEtherscanUrl(undefined);
   var clearNonUrlState = RootProvider$WildCards.useClearNonUrlState(undefined);
+  var isSideChainTx = chain === 1;
+  var txExplererUrl = isSideChainTx ? sidechainUrl : etherscanUrl;
   if (typeof txState === "number") {
     switch (txState) {
       case /* UnInitialised */0 :
@@ -86,10 +90,10 @@ function TxTemplate(Props) {
                           children: null
                         }, Globals$WildCards.restr("Processing Transaction "), React.createElement(WildcardsLoader$WildCards.make, { })), React.createElement(RimbleUi.Text, {
                           children: React.createElement("a", {
-                                href: "https://" + (String(etherscanUrl) + ("/tx/" + (String(txState[0]) + ""))),
+                                href: "https://" + (String(txExplererUrl) + ("/tx/" + (String(txState[0]) + ""))),
                                 rel: "noopener noreferrer",
                                 target: "_blank"
-                              }, Globals$WildCards.restr("View the transaction on etherscan.io"))
+                              }, Globals$WildCards.restr("View the transaction on " + txExplererUrl))
                         }), React.createElement(RimbleUi.Loader, {
                           className: Styles$WildCards.centerItems,
                           size: "80px"
@@ -114,10 +118,10 @@ function TxTemplate(Props) {
                           children: null
                         }, Globals$WildCards.restr("Transaction Complete "), React.createElement(WildcardsLoader$WildCards.make, { })), React.createElement(RimbleUi.Text, {
                           children: React.createElement("a", {
-                                href: "https://" + (String(etherscanUrl) + ("/tx/" + (String(txHash) + ""))),
+                                href: "https://" + (String(txExplererUrl) + ("/tx/" + (String(txHash) + ""))),
                                 rel: "noopener noreferrer",
                                 target: "_blank"
-                              }, Globals$WildCards.restr("View the transaction on etherscan.io"))
+                              }, Globals$WildCards.restr("View the transaction on " + txExplererUrl))
                         }), React.createElement(RimbleUi.Button, {
                           children: Globals$WildCards.restr(closeButtonText),
                           onClick: (function (_e) {

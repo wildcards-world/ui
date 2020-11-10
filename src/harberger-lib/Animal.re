@@ -117,45 +117,49 @@ let useIsOnAuction: (~chain: Client.context, TokenId.t) => bool =
 
 let useAuctionPriceWei = (~chain, animal, launchTime) => {
   let tokenStatus = useTokenStatus(~chain, animal);
-  let auctionStartPrice = QlHooks.useAuctionStartPrice(animal);
-  let auctionEndPrice = QlHooks.useAuctionEndPrice(animal);
-  let auctionLength = QlHooks.useAuctioLength(animal);
+  let auctionStartPrice = QlHooks.useAuctionStartPrice(~chain, animal);
+  let auctionEndPrice = QlHooks.useAuctionEndPrice(~chain, animal);
+  let auctionLength = QlHooks.useAuctioLength(~chain, animal);
   let currentTime = QlHooks.useCurrentTime();
 
-  // disable warning #4
-  [@ocaml.warning "-4"]
-  (
-    switch (tokenStatus) {
-    | Foreclosed(foreclosureTime) =>
-      let auctionStartTime =
-        foreclosureTime->MomentRe.Moment.toUnix->BN.newInt_;
+  switch (auctionStartPrice, auctionEndPrice, auctionLength) {
+  | (Some(auctionStartPrice), Some(auctionEndPrice), Some(auctionLength)) =>
+    // disable warning #4
+    [@ocaml.warning "-4"]
+    Some(
+      switch (tokenStatus) {
+      | Foreclosed(foreclosureTime) =>
+        let auctionStartTime =
+          foreclosureTime->MomentRe.Moment.toUnix->BN.newInt_;
 
-      if (BN.new_(currentTime) |<| (auctionStartTime |+| auctionLength)) {
-        auctionStartPrice
-        |-| (
+        if (BN.new_(currentTime) |<| (auctionStartTime |+| auctionLength)) {
           auctionStartPrice
-          |-| auctionEndPrice
-          |*| (BN.new_(currentTime) |-| auctionStartTime)
-          |/| auctionLength
-        );
-      } else {
-        auctionEndPrice;
-      };
-    | Launched(_) =>
-      if (BN.new_(currentTime) |<| (launchTime |+| auctionLength)) {
-        auctionStartPrice
-        |-| (
+          |-| (
+            auctionStartPrice
+            |-| auctionEndPrice
+            |*| (BN.new_(currentTime) |-| auctionStartTime)
+            |/| auctionLength
+          );
+        } else {
+          auctionEndPrice;
+        };
+      | Launched(_) =>
+        if (BN.new_(currentTime) |<| (launchTime |+| auctionLength)) {
           auctionStartPrice
-          |-| auctionEndPrice
-          |*| (BN.new_(currentTime) |-| launchTime)
-          |/| auctionLength
-        );
-      } else {
-        auctionEndPrice;
-      }
-    | _ => auctionEndPrice
-    }
-  );
+          |-| (
+            auctionStartPrice
+            |-| auctionEndPrice
+            |*| (BN.new_(currentTime) |-| launchTime)
+            |/| auctionLength
+          );
+        } else {
+          auctionEndPrice;
+        }
+      | _ => auctionEndPrice
+      },
+    )
+  | _ => None
+  };
 };
 
 let getChainIdFromAnimalId = animalId => {

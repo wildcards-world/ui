@@ -337,7 +337,18 @@ let useEtherscanUrl: unit => string =
 
     switch (networkId) {
     | Some(5) => "goerli.etherscan.io"
+    | Some(4) => "rinkeby.etherscan.io"
     | _ => "etherscan.io"
+    };
+  };
+let useSidechainEtherscanUrl: unit => string =
+  () => {
+    let networkId = useNetworkId();
+
+    switch (networkId) {
+    | Some(5) => "mumbai-explorer.matic.today"
+    | Some(4) => "goerli.etherscan.io"
+    | _ => "explorer.matic.network"
     };
   };
 let useDeactivateWeb3: (unit, unit) => unit =

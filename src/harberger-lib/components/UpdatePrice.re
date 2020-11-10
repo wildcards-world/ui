@@ -20,7 +20,7 @@ let make = (~tokenId: TokenId.t, ~chain) => {
     updatePriceFunc(Web3Utils.toWei(newBuyPrice, "ether"));
   };
 
-  <TxTemplate txState closeButtonText="Back to view Animal">
+  <TxTemplate chain txState closeButtonText="Back to view Animal">
     <Rimble.Box p=4 mb=3>
       <Rimble.HeadingS> "Update Price" </Rimble.HeadingS>
       <Rimble.TextS>

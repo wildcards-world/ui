@@ -357,10 +357,35 @@ function useNetworkId(param) {
 
 function useEtherscanUrl(param) {
   var networkId = Core.useWeb3React().chainId;
-  if (networkId === 5) {
-    return "goerli.etherscan.io";
+  if (networkId !== undefined) {
+    if (networkId !== 4) {
+      if (networkId !== 5) {
+        return "etherscan.io";
+      } else {
+        return "goerli.etherscan.io";
+      }
+    } else {
+      return "rinkeby.etherscan.io";
+    }
   } else {
     return "etherscan.io";
+  }
+}
+
+function useSidechainEtherscanUrl(param) {
+  var networkId = Core.useWeb3React().chainId;
+  if (networkId !== undefined) {
+    if (networkId !== 4) {
+      if (networkId !== 5) {
+        return "explorer.matic.network";
+      } else {
+        return "mumbai-explorer.matic.today";
+      }
+    } else {
+      return "goerli.etherscan.io";
+    }
+  } else {
+    return "explorer.matic.network";
   }
 }
 
@@ -512,6 +537,7 @@ export {
   useShowLogin ,
   useNetworkId ,
   useEtherscanUrl ,
+  useSidechainEtherscanUrl ,
   useDeactivateWeb3 ,
   useWeb3 ,
   useGoToBuy ,

@@ -53,7 +53,8 @@ function UpdatePrice(Props) {
                         onClick: onSubmitBuy
                       })),
               txState: match$1[1],
-              closeButtonText: "Back to view Animal"
+              closeButtonText: "Back to view Animal",
+              chain: chain
             });
 }
 
