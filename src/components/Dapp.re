@@ -291,7 +291,7 @@ module CarouselAnimal = {
         ~scalar,
         ~enlargement: float=1.,
         ~isGqlLoaded=true,
-        ~chain=Client.MainnetQuery,
+        ~chain,
       ) => {
     let isLaunched = animal->Animal.isLaunched(~chain);
 
@@ -389,6 +389,7 @@ module AnimalCarousel = {
                className={Styles.fadeOut(opacity)}>
                <CarouselAnimal
                  animal={animalInfo.id}
+                 chain={animalInfo.id->Animal.getChainIdFromAnimalId}
                  isGqlLoaded
                  scalar
                  enlargement=1.5
