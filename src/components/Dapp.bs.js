@@ -285,13 +285,16 @@ function Dapp$AnimalOnLandingPage(Props) {
                 src: image
               });
   };
+  var isOnAuction = Animal$WildCards.useIsOnAuction(chain, animal);
+  var isSitiriOnAuction = Animal$WildCards.useIsOnAuction(chain, TokenId$WildCards.makeFromInt(26));
+  console.log("Is sitiri on auction", isSitiriOnAuction);
   var componentWithoutImg = function (img, hideBadges) {
     var tmp;
     if (hideBadges) {
       tmp = null;
     } else {
       var tmp$1;
-      tmp$1 = isGqlLoaded && !(optionEndDateMoment !== undefined || typeof currentPriceWei === "number" || !currentPriceWei.tag) ? React.createElement("div", {
+      tmp$1 = isGqlLoaded && !(optionEndDateMoment !== undefined || isOnAuction || typeof currentPriceWei === "number" || !currentPriceWei.tag) ? React.createElement("div", {
               className: Styles$WildCards.overlayFlameImg
             }, React.createElement(Dapp$Streak, {
                   chain: chain,
@@ -552,11 +555,12 @@ function Dapp$DetailsViewAnimal(Props) {
   var image = Animal$WildCards.useAvatar(animal);
   var orgBadge = Animal$WildCards.useGetOrgBadgeImage(animal);
   var isLaunched = Animal$WildCards.isLaunched(chain, animal);
+  var isOnAuction = Animal$WildCards.useIsOnAuction(chain, animal);
   var displayAnimal = function (animalImage) {
     return React.createElement("div", {
                 className: Styles$WildCards.positionRelative
               }, Curry._1(animalImage, undefined), typeof isLaunched === "number" ? (
-                  isLaunched !== 0 ? null : React.createElement("div", {
+                  isLaunched !== 0 || isOnAuction ? null : React.createElement("div", {
                           className: Styles$WildCards.overlayFlameImg
                         }, React.createElement(Dapp$Streak, {
                               chain: chain,
@@ -565,12 +569,12 @@ function Dapp$DetailsViewAnimal(Props) {
                 ) : React.createElement(Dapp$DisplayAfterDate, {
                       endDateMoment: isLaunched[0],
                       beforeComponent: null,
-                      afterComponent: React.createElement("div", {
-                            className: Styles$WildCards.overlayFlameImg
-                          }, React.createElement(Dapp$Streak, {
-                                chain: chain,
-                                animal: animal
-                              }))
+                      afterComponent: isOnAuction ? null : React.createElement("div", {
+                              className: Styles$WildCards.overlayFlameImg
+                            }, React.createElement(Dapp$Streak, {
+                                  chain: chain,
+                                  animal: animal
+                                }))
                     }), React.createElement("div", {
                     className: Styles$WildCards.overlayBadgeImg,
                     onClick: (function (e) {

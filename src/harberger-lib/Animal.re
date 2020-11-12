@@ -107,9 +107,9 @@ let useIsOnAuction: (~chain: Client.context, TokenId.t) => bool =
     let tokenStatus = useTokenStatus(~chain, animal);
 
     switch (tokenStatus) {
+    | Owned(_) => false
     | Loading
     | WaitingForLaunch(_)
-    | Owned(_) => false
     | Launched(_)
     | Foreclosed(_) => true
     };

@@ -102,15 +102,10 @@ function useTokenStatus(chain, animal) {
 
 function useIsOnAuction(chain, animal) {
   var tokenStatus = useTokenStatus(chain, animal);
-  if (typeof tokenStatus === "number") {
+  if (typeof tokenStatus === "number" || tokenStatus.tag !== /* Owned */2) {
+    return true;
+  } else {
     return false;
-  }
-  switch (tokenStatus.tag | 0) {
-    case /* Launched */1 :
-    case /* Foreclosed */3 :
-        return true;
-    default:
-      return false;
   }
 }
 
