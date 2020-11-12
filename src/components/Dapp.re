@@ -217,6 +217,8 @@ module AnimalOnLandingPage = {
     let normalImage = () =>
       <img className={Styles.headerImg(enlargement, scalar)} src=image />;
 
+    let isOnAuction = Animal.useIsOnAuction(~chain, animal);
+
     let componentWithoutImg = (img, ~hideBadges: bool) => {
       <React.Fragment>
         {img()}
@@ -228,14 +230,18 @@ module AnimalOnLandingPage = {
                 ? switch (optionEndDateMoment) {
                   | Some(_endDateMoment) => React.null
                   | None =>
-                    switch (currentPriceWei) {
-                    | Price(_) =>
-                      <div className=Styles.overlayFlameImg>
-                        <Streak chain animal />
-                      </div>
-                    | Loading
-                    | Foreclosed(_) => React.null
-                    }
+                    isOnAuction
+                      ? React.null
+                      : (
+                        switch (currentPriceWei) {
+                        | Price(_) =>
+                          <div className=Styles.overlayFlameImg>
+                            <Streak chain animal />
+                          </div>
+                        | Loading
+                        | Foreclosed(_) => React.null
+                        }
+                      )
                   }
                 : React.null}
              {<div
@@ -483,23 +489,28 @@ module DetailsViewAnimal = {
     let orgBadge = Animal.useGetOrgBadgeImage(animal);
 
     let isLaunched = animal->Animal.isLaunched(~chain);
+    let isOnAuction = Animal.useIsOnAuction(~chain, animal);
 
     let displayAnimal = animalImage =>
       <div className=Styles.positionRelative>
         {animalImage()}
         {switch (isLaunched) {
          | Animal.Launched =>
-           <div className=Styles.overlayFlameImg>
-             <Streak chain animal />
-           </div>
+           isOnAuction
+             ? React.null
+             : <div className=Styles.overlayFlameImg>
+                 <Streak chain animal />
+               </div>
          | Animal.Loading => React.null
          | Animal.LaunchDate(endDateMoment) =>
            <DisplayAfterDate
              endDateMoment
              afterComponent={
-               <div className=Styles.overlayFlameImg>
-                 <Streak chain animal />
-               </div>
+               isOnAuction
+                 ? React.null
+                 : <div className=Styles.overlayFlameImg>
+                     <Streak chain animal />
+                   </div>
              }
              beforeComponent=React.null
            />
