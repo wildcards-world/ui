@@ -13,6 +13,7 @@ import * as Caml_int32 from "bs-platform/lib/es6/caml_int32.js";
 import * as ReactTabs from "react-tabs";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
+import * as BrowserLogger from "bs-log/src/BrowserLogger.bs.js";
 import * as Buy$WildCards from "../harberger-lib/components/Buy.bs.js";
 import * as Eth$WildCards from "../harberger-lib/Eth.bs.js";
 import * as Info$WildCards from "../harberger-lib/components/Info.bs.js";
@@ -347,10 +348,9 @@ function Dapp$CarouselAnimal(Props) {
   var scalar = Props.scalar;
   var enlargementOpt = Props.enlargement;
   var isGqlLoadedOpt = Props.isGqlLoaded;
-  var chainOpt = Props.chain;
+  var chain = Props.chain;
   var enlargement = enlargementOpt !== undefined ? enlargementOpt : 1;
   var isGqlLoaded = isGqlLoadedOpt !== undefined ? isGqlLoadedOpt : true;
-  var chain = chainOpt !== undefined ? chainOpt : /* MainnetQuery */2;
   var isLaunched = Animal$WildCards.isLaunched(chain, animal);
   var makeAnimalOnLandingPage = function (optionEndDateMoment) {
     return React.createElement(Dapp$AnimalOnLandingPage, {
@@ -413,7 +413,8 @@ function Dapp$AnimalCarousel(Props) {
                                             animal: animalInfo.id,
                                             scalar: match[1],
                                             enlargement: 1.5,
-                                            isGqlLoaded: isGqlLoaded
+                                            isGqlLoaded: isGqlLoaded,
+                                            chain: Animal$WildCards.getChainIdFromAnimalId(animalInfo.id)
                                           }));
                           })),
                     slidesPerPage: 5,
@@ -602,6 +603,10 @@ var DetailsViewAnimal = {
 function Dapp$DetailsView(Props) {
   var chain = Props.chain;
   var optionAnimal = Props.optionAnimal;
+  BrowserLogger.infoWithData("Dapp-WildCards", "optionAnimal", /* tuple */[
+        "a",
+        optionAnimal
+      ]);
   if (optionAnimal !== undefined) {
     return React.createElement(Dapp$DetailsViewAnimal, {
                 chain: chain,
@@ -692,6 +697,10 @@ function Dapp$DefaultLook(Props) {
                 }));
         break;
     case 2 :
+        BrowserLogger.infoWithData("Dapp-WildCards", "the animalString", /* tuple */[
+              "a",
+              animalStr
+            ]);
         var optionAnimal = TokenId$WildCards.make(animalStr);
         var chain = Belt_Option.mapWithDefault(optionAnimal, /* MainnetQuery */2, Animal$WildCards.getChainIdFromAnimalId);
         tmp = React.createElement(Dapp$DetailsView, {
