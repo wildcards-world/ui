@@ -102,7 +102,12 @@ let make = () => {
     <div className=Css.(style([minHeight(vh(88.))]))>
       <Announcement announcementBannerColor="f49229">
         <span>
-          "New wildcards being launched on the MATIC network"->React.string
+          "New wildcards being launched on the MATIC network. "->React.string
+          <a
+            href="/#explorer/2nd-edition"
+            className=AnimalAnnouncement.linkToAnimal>
+            "View them here."->restr
+          </a>
         </span>
       </Announcement>
       // <AnimalAnnouncement

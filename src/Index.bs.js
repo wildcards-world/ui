@@ -32,9 +32,9 @@ ReactDOMRe.renderToElementWithId(React.createElement(WildcardsProvider$WildCards
               if (networkId !== 4) {
                 if (networkId !== 5) {
                   return {
-                          mainnet: Globals$WildCards.$pipe$pipe$pipe$pipe(process.env.REACT_APP_GOERLI_BE, "https://goerli.api.wildcards.world/v1/graphq"),
+                          mainnet: Globals$WildCards.$pipe$pipe$pipe$pipe(process.env.REACT_APP_MAINNET_BE, "https://api.wildcards.world/v1/graphq"),
                           matic: Globals$WildCards.$pipe$pipe$pipe$pipe(process.env.REACT_APP_MATIC_BE, "https://matic.graph.wildcards.world/subgraphs/name/wildcards-world/wildcards-matic"),
-                          ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli"
+                          ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards"
                         };
                 } else {
                   return {
