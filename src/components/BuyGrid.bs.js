@@ -12,73 +12,73 @@ import * as QlHooks$WildCards from "../harberger-lib/QlHooks.bs.js";
 import * as TokenId$WildCards from "../harberger-lib/TokenId.bs.js";
 import * as RootProvider$WildCards from "../harberger-lib/RootProvider.bs.js";
 
-var backgroundStyle = Curry._1(
-  Css.style,
-  /* :: */ [
-    Css.paddingTop(Css.rem(1)),
-    /* :: */ [
-      Css.unsafe(
-        "backgroundImage",
-        "linear-gradient(to top, #74C7D7 0%, white 100%)"
-      ),
-      /* [] */ 0,
-    ],
-  ]
-);
+var backgroundStyle = Curry._1(Css.style, /* :: */[
+      Css.paddingTop(Css.rem(1)),
+      /* :: */[
+        Css.unsafe("backgroundImage", "linear-gradient(to top, #74C7D7 0%, white 100%)"),
+        /* [] */0
+      ]
+    ]);
 
-var headingStyle = Curry._1(
-  Css.style,
-  /* :: */ [
-    Css.paddingTop(Css.rem(5)),
-    /* :: */ [Css.textAlign(/* center */ 98248149), /* [] */ 0],
-  ]
-);
+var headingStyle = Curry._1(Css.style, /* :: */[
+      Css.paddingTop(Css.rem(5)),
+      /* :: */[
+        Css.textAlign(/* center */98248149),
+        /* [] */0
+      ]
+    ]);
 
 function BuyGrid$Grid(Props) {
   var chain = Props.chain;
   var allAnimals = QlHooks$WildCards.useAnimalList(chain);
   console.log("All animals", allAnimals);
-  return React.createElement(
-    RimbleUi.Flex,
-    {
-      children: null,
-      flexWrap: "wrap",
-      alignItems: "stretch",
-      justifyContent: "space-around",
-      px: 50,
-    },
-    Belt_Array.map(allAnimals, function (animal) {
-      return React.createElement(RimbleUi.Box, {
-        p: 3,
-        fontSize: 4,
-        children: React.createElement(RimbleUi.Card, {
-          children: React.createElement(Dapp$WildCards.CarouselAnimal.make, {
-            animal: animal,
-            scalar: 1,
-            chain: chain,
-          }),
-        }),
-        width: [1, 1, 0.3],
-        key: TokenId$WildCards.toString(animal),
-      });
-    }),
-    React.createElement(RimbleUi.Box, {
-      p: 3,
-      fontSize: 4,
-      children: null,
-      width: [1, 1, 0.3],
-    }),
-    React.createElement(RimbleUi.Box, {
-      p: 3,
-      fontSize: 4,
-      children: null,
-      width: [1, 1, 0.3],
-    })
-  );
+  return React.createElement(RimbleUi.Flex, {
+              children: null,
+              flexWrap: "wrap",
+              alignItems: "stretch",
+              justifyContent: "space-around",
+              px: 50
+            }, Belt_Array.map(allAnimals, (function (animal) {
+                    return React.createElement(RimbleUi.Box, {
+                                p: 3,
+                                fontSize: 4,
+                                children: React.createElement(RimbleUi.Card, {
+                                      children: React.createElement(Dapp$WildCards.CarouselAnimal.make, {
+                                            animal: animal,
+                                            scalar: 1,
+                                            chain: chain
+                                          })
+                                    }),
+                                width: [
+                                  1,
+                                  1,
+                                  0.3
+                                ],
+                                key: TokenId$WildCards.toString(animal)
+                              });
+                  })), React.createElement(RimbleUi.Box, {
+                  p: 3,
+                  fontSize: 4,
+                  children: null,
+                  width: [
+                    1,
+                    1,
+                    0.3
+                  ]
+                }), React.createElement(RimbleUi.Box, {
+                  p: 3,
+                  fontSize: 4,
+                  children: null,
+                  width: [
+                    1,
+                    1,
+                    0.3
+                  ]
+                }));
 }
 
 var Grid = {
-  make: BuyGrid$Grid,
+  make: BuyGrid$Grid
 };
 
 function indexToType(tabIndex) {
@@ -95,65 +95,46 @@ function indexToType(tabIndex) {
 
 function BuyGrid(Props) {
   var wildcardsEdition = Props.wildcardsEdition;
-  var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(
-    undefined
-  );
+  var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
   console.log(wildcardsEdition);
   var index = wildcardsEdition ? 1 : 0;
   var selectLeaderBoard = function (newIndex, _oldIndex) {
     Curry._1(clearAndPush, "#explorer/" + indexToType(newIndex));
     return true;
   };
-  return React.createElement(
-    "div",
-    {
-      className: backgroundStyle,
-    },
-    React.createElement(
-      "div",
-      undefined,
-      React.createElement(
-        "h1",
-        {
-          className: headingStyle,
-        },
-        Globals$WildCards.restr("Wildcards Kingdom")
-      ),
-      React.createElement(
-        ReactTabs.Tabs,
-        {
-          selectedIndex: index,
-          onSelect: selectLeaderBoard,
-          children: null,
-        },
-        React.createElement(
-          ReactTabs.TabList,
-          {
-            children: null,
-          },
-          React.createElement(ReactTabs.Tab, {
-            children: "First edition",
-          }),
-          React.createElement(ReactTabs.Tab, {
-            children: "Second edition",
-          })
-        ),
-        React.createElement(ReactTabs.TabPanel, {
-          children: React.createElement(BuyGrid$Grid, {
-            chain: /* MainnetQuery */ 2,
-          }),
-        }),
-        React.createElement(ReactTabs.TabPanel, {
-          children: React.createElement(BuyGrid$Grid, {
-            chain: /* MaticQuery */ 1,
-          }),
-        })
-      )
-    )
-  );
+  return React.createElement("div", {
+              className: backgroundStyle
+            }, React.createElement("div", undefined, React.createElement("h1", {
+                      className: headingStyle
+                    }, Globals$WildCards.restr("Wildcards Kingdom")), React.createElement(ReactTabs.Tabs, {
+                      selectedIndex: index,
+                      onSelect: selectLeaderBoard,
+                      children: null
+                    }, React.createElement(ReactTabs.TabList, {
+                          children: null
+                        }, React.createElement(ReactTabs.Tab, {
+                              children: "First edition"
+                            }), React.createElement(ReactTabs.Tab, {
+                              children: "Second edition"
+                            })), React.createElement(ReactTabs.TabPanel, {
+                          children: React.createElement(BuyGrid$Grid, {
+                                chain: /* MainnetQuery */2
+                              })
+                        }), React.createElement(ReactTabs.TabPanel, {
+                          children: React.createElement(BuyGrid$Grid, {
+                                chain: /* MaticQuery */1
+                              })
+                        }))));
 }
 
 var make = BuyGrid;
 
-export { backgroundStyle, headingStyle, Grid, indexToType, make };
+export {
+  backgroundStyle ,
+  headingStyle ,
+  Grid ,
+  indexToType ,
+  make ,
+  
+}
 /* backgroundStyle Not a pure module */

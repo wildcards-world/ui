@@ -102,16 +102,21 @@ module AuctionDisplay = {
     let optCurrentUsdEthPrice = UsdPriceProvider.useUsdPrice();
 
     <>
-      <h3> "Auction here"->React.string </h3>
+      <h3> "Auction"->React.string </h3>
       {switch (chain) {
        | Client.MaticQuery =>
          <p className={Styles.noMarginTop ++ " " ++ Styles.noMarginBottom}>
-           {{
-              currentPriceWei->Option.mapWithDefault("Loading", price =>
-                price->Web3Utils.fromWeiBNToEthPrecision(~digits=4) ++ " USD"
-              );
-            }
-            ->restr}
+           {currentPriceWei->Option.mapWithDefault(
+              "Loading"->React.string, price =>
+              <>
+                {(
+                   price->Web3Utils.fromWeiBNToEthPrecision(~digits=4)
+                   ++ " USD"
+                 )
+                 ->React.string}
+                <small> " (DAI)"->React.string </small>
+              </>
+            )}
          </p>
        | Client.Neither
        | Client.MainnetQuery =>

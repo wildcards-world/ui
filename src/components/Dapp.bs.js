@@ -154,11 +154,11 @@ function Dapp$AuctionDisplay(Props) {
   } else {
     tmp = React.createElement("p", {
           className: Styles$WildCards.noMarginTop + (" " + Styles$WildCards.noMarginBottom)
-        }, Globals$WildCards.restr(Belt_Option.mapWithDefault(currentPriceWei, "Loading", (function (price) {
-                    return Web3Utils$WildCards.fromWeiBNToEthPrecision(price, 4) + " USD";
-                  }))));
+        }, Belt_Option.mapWithDefault(currentPriceWei, "Loading", (function (price) {
+                return React.createElement(React.Fragment, undefined, Web3Utils$WildCards.fromWeiBNToEthPrecision(price, 4) + " USD", React.createElement("small", undefined, " (DAI)"));
+              })));
   }
-  return React.createElement(React.Fragment, undefined, React.createElement("h3", undefined, "Auction here"), tmp, React.createElement(ActionButtons$WildCards.Auction.make, {
+  return React.createElement(React.Fragment, undefined, React.createElement("h3", undefined, "Auction"), tmp, React.createElement(ActionButtons$WildCards.Auction.make, {
                   animal: animal
                 }));
 }
