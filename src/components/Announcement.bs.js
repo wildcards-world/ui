@@ -5,30 +5,26 @@ import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Globals$WildCards from "../harberger-lib/Globals.bs.js";
 
-function Announcement(Props) {
-  var announcementBannerColor = Props.announcementBannerColor;
-  var children = Props.children;
-  var announcement = function (displayVal) {
-    return Curry._1(Css.style, /* :: */[
-                Css.display(displayVal),
+function announcementStyle(displayVal, announcementBannerColor) {
+  return Curry._1(Css.style, /* :: */[
+              Css.display(displayVal),
+              /* :: */[
+                Css.position(Css.relative),
                 /* :: */[
-                  Css.position(Css.relative),
+                  Css.padding2(Css.rem(0.4), Css.rem(1)),
                   /* :: */[
-                    Css.padding2(Css.rem(0.4), Css.rem(1)),
+                    Css.color(Css.white),
                     /* :: */[
-                      Css.color(Css.white),
+                      Css.backgroundColor(Css.hex(announcementBannerColor)),
                       /* :: */[
-                        Css.backgroundColor(Css.hex(announcementBannerColor)),
+                        Css.textAlign(/* center */98248149),
                         /* :: */[
-                          Css.textAlign(/* center */98248149),
+                          Css.zIndex(2),
                           /* :: */[
-                            Css.zIndex(2),
+                            Css.fontSize(Css.px(14)),
                             /* :: */[
-                              Css.fontSize(Css.px(14)),
-                              /* :: */[
-                                Css.letterSpacing(Css.px(2)),
-                                /* [] */0
-                              ]
+                              Css.letterSpacing(Css.px(2)),
+                              /* [] */0
                             ]
                           ]
                         ]
@@ -36,8 +32,13 @@ function Announcement(Props) {
                     ]
                   ]
                 ]
-              ]);
-  };
+              ]
+            ]);
+}
+
+function Announcement(Props) {
+  var announcementBannerColor = Props.announcementBannerColor;
+  var children = Props.children;
   var closeButton = Curry._1(Css.style, /* :: */[
         Css.position(Css.absolute),
         /* :: */[
@@ -50,7 +51,7 @@ function Announcement(Props) {
         }));
   var setShowAnnouncement = match[1];
   return React.createElement("div", {
-              className: announcement(match[0])
+              className: announcementStyle(match[0], announcementBannerColor)
             }, children, React.createElement("span", {
                   className: closeButton,
                   onClick: (function (param) {
@@ -64,6 +65,7 @@ function Announcement(Props) {
 var make = Announcement;
 
 export {
+  announcementStyle ,
   make ,
   
 }

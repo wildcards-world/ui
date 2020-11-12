@@ -32,6 +32,7 @@ import * as LeaderBoards$WildCards from "./Leaderboards/LeaderBoards.bs.js";
 import * as RootProvider$WildCards from "../harberger-lib/RootProvider.bs.js";
 import * as ReactTranslate$WildCards from "../helpers/providers/ReactTranslate.bs.js";
 import * as CustomerBenefit$WildCards from "./StaticContent/CustomerBenefit.bs.js";
+import * as AnimalAnnouncement$WildCards from "./AnimalAnnouncement.bs.js";
 import * as HomepageLeaderBoard$WildCards from "./StaticContent/HomepageLeaderBoard.bs.js";
 import * as IncreaseIterationPage$WildCards from "../ethTurin/IncreaseIterationPage.bs.js";
 
@@ -215,7 +216,10 @@ function Layout(Props) {
                       ])
                 }, React.createElement(Announcement$WildCards.make, {
                       announcementBannerColor: "f49229",
-                      children: React.createElement("span", undefined, "New wildcards being launched on the MATIC network")
+                      children: React.createElement("span", undefined, "New wildcards being launched on the MATIC network.", React.createElement("a", {
+                                className: AnimalAnnouncement$WildCards.linkToAnimal,
+                                href: "/#explorer/2nd-edition"
+                              }, Globals$WildCards.restr("View them here.")))
                     }), React.createElement("div", {
                       className: Curry._1(Css.style, /* :: */[
                             Css.position(Css.relative),

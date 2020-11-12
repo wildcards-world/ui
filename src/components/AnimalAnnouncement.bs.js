@@ -10,62 +10,31 @@ import * as Globals$WildCards from "../harberger-lib/Globals.bs.js";
 import * as QlHooks$WildCards from "../harberger-lib/QlHooks.bs.js";
 import * as TokenId$WildCards from "../harberger-lib/TokenId.bs.js";
 import * as CountDown$WildCards from "../harberger-lib/CountDown.bs.js";
+import * as Announcement$WildCards from "./Announcement.bs.js";
+
+var linkToAnimal = Curry._1(Css.style, /* :: */[
+      Css.color(Css.white),
+      /* :: */[
+        Css.textDecoration(Css.underline),
+        /* :: */[
+          Css.selector(":visited", /* :: */[
+                Css.color(Css.hex("ffffff")),
+                /* [] */0
+              ]),
+          /* :: */[
+            Css.selector(":hover", /* :: */[
+                  Css.important(Css.color(Css.hex("6CAD3D"))),
+                  /* [] */0
+                ]),
+            /* [] */0
+          ]
+        ]
+      ]
+    ]);
 
 function AnimalAnnouncement(Props) {
   var nextReleasedAnimals = Props.nextReleasedAnimals;
   var announcementBannerColor = Props.announcementBannerColor;
-  var announcement = function (displayVal) {
-    return Curry._1(Css.style, /* :: */[
-                Css.display(displayVal),
-                /* :: */[
-                  Css.position(Css.relative),
-                  /* :: */[
-                    Css.padding2(Css.rem(0.4), Css.rem(1)),
-                    /* :: */[
-                      Css.color(Css.white),
-                      /* :: */[
-                        Css.backgroundColor(Css.hex(announcementBannerColor)),
-                        /* :: */[
-                          Css.textAlign(/* center */98248149),
-                          /* :: */[
-                            Css.zIndex(2),
-                            /* :: */[
-                              Css.fontSize(Css.px(18)),
-                              /* :: */[
-                                Css.textTransform(Css.uppercase),
-                                /* :: */[
-                                  Css.letterSpacing(Css.px(2)),
-                                  /* [] */0
-                                ]
-                              ]
-                            ]
-                          ]
-                        ]
-                      ]
-                    ]
-                  ]
-                ]
-              ]);
-  };
-  var linkToAnimal = Curry._1(Css.style, /* :: */[
-        Css.color(Css.white),
-        /* :: */[
-          Css.textDecoration(Css.underline),
-          /* :: */[
-            Css.selector(":visited", /* :: */[
-                  Css.color(Css.hex("ffffff")),
-                  /* [] */0
-                ]),
-            /* :: */[
-              Css.selector(":hover", /* :: */[
-                    Css.important(Css.color(Css.hex("6CAD3D"))),
-                    /* [] */0
-                  ]),
-              /* [] */0
-            ]
-          ]
-        ]
-      ]);
   var isLaunched = Animal$WildCards.nextLaunchDate.diff(Moment(), "seconds") < 0;
   var closeButton = Curry._1(Css.style, /* :: */[
         Css.position(Css.absolute),
@@ -81,7 +50,7 @@ function AnimalAnnouncement(Props) {
   var numberOfAnimalsToLaunch = nextReleasedAnimals.length;
   var isPlural = numberOfAnimalsToLaunch > 1;
   return React.createElement("div", {
-              className: announcement(match[0])
+              className: Announcement$WildCards.announcementStyle(match[0], announcementBannerColor)
             }, Globals$WildCards.restr("New Wildcard" + ((
                     isPlural ? "s" : ""
                   ) + " ")), Belt_Array.mapWithIndex(nextReleasedAnimals, (function (index, animal) {
@@ -112,7 +81,8 @@ function AnimalAnnouncement(Props) {
 var make = AnimalAnnouncement;
 
 export {
+  linkToAnimal ,
   make ,
   
 }
-/* Css Not a pure module */
+/* linkToAnimal Not a pure module */
