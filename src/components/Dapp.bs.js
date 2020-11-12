@@ -13,7 +13,6 @@ import * as Caml_int32 from "bs-platform/lib/es6/caml_int32.js";
 import * as ReactTabs from "react-tabs";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
-import * as BrowserLogger from "bs-log/src/BrowserLogger.bs.js";
 import * as Buy$WildCards from "../harberger-lib/components/Buy.bs.js";
 import * as Eth$WildCards from "../harberger-lib/Eth.bs.js";
 import * as Info$WildCards from "../harberger-lib/components/Info.bs.js";
@@ -603,10 +602,6 @@ var DetailsViewAnimal = {
 function Dapp$DetailsView(Props) {
   var chain = Props.chain;
   var optionAnimal = Props.optionAnimal;
-  BrowserLogger.infoWithData("Dapp-WildCards", "optionAnimal", /* tuple */[
-        "a",
-        optionAnimal
-      ]);
   if (optionAnimal !== undefined) {
     return React.createElement(Dapp$DetailsViewAnimal, {
                 chain: chain,
@@ -697,10 +692,6 @@ function Dapp$DefaultLook(Props) {
                 }));
         break;
     case 2 :
-        BrowserLogger.infoWithData("Dapp-WildCards", "the animalString", /* tuple */[
-              "a",
-              animalStr
-            ]);
         var optionAnimal = TokenId$WildCards.make(animalStr);
         var chain = Belt_Option.mapWithDefault(optionAnimal, /* MainnetQuery */2, Animal$WildCards.getChainIdFromAnimalId);
         tmp = React.createElement(Dapp$DetailsView, {

@@ -216,7 +216,7 @@ function Layout(Props) {
                       ])
                 }, React.createElement(Announcement$WildCards.make, {
                       announcementBannerColor: "f49229",
-                      children: React.createElement("span", undefined, "New wildcards being launched on the MATIC network.", React.createElement("a", {
+                      children: React.createElement("span", undefined, "New wildcards being launched on the MATIC network. ", React.createElement("a", {
                                 className: AnimalAnnouncement$WildCards.linkToAnimal,
                                 href: "/#explorer/2nd-edition"
                               }, Globals$WildCards.restr("View them here.")))
