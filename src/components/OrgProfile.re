@@ -140,10 +140,9 @@ module ComingSoonModal = {
                      )>
                      <div className=Css.(style([maxHeight(`vh(80.))]))>
                        <PhotoGallery
-                         onClick={(_, photoData) => {
-                           Js.log2("it was clicked", photoData);
-                           setOpenImage(_ => Some(photoData.index));
-                         }}
+                         onClick={(_, photoData) =>
+                           setOpenImage(_ => Some(photoData.index))
+                         }
                          targetRowHeight=30
                          photos={
                            animal##real_wc_photos

@@ -21,7 +21,6 @@ let useIsInitialized: unit => bool =
 let make = (~children) => {
   let result = QlHooks.useStateChangeSubscriptionData();
 
-  // let initialDataLoad = QlHooks.useInitialDataLoad(~chain=Client.MaticQuery);
   let initialDataLoad =
     QlHooks.useInitialDataLoad(~chain=Client.MainnetQuery);
   let hasLoadedInitialData =

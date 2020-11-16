@@ -7,7 +7,6 @@ let getProviderOrSigner =
   switch (account) {
   | Some(account) =>
     if (isGsn) {
-      // TODO: wrap this in the gsn stuff
       library.getSigner(. account);
     } else {
       library.getSigner(. account);

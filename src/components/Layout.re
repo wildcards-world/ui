@@ -100,13 +100,19 @@ let make = () => {
 
   <div className=Styles.app>
     <div className=Css.(style([minHeight(vh(88.))]))>
-      <Announcement announcementBannerColor="f49229">
+      <Announcement announcementBannerColor="72D6B5">
         <span>
-          "New wildcards being launched on the MATIC network. "->React.string
           <a
             href="/#explorer/2nd-edition"
             className=AnimalAnnouncement.linkToAnimal>
-            "View them here."->restr
+            "New wildcards"->restr
+          </a>
+          " launched on the "->React.string
+          <a
+            href="https://matic.network"
+            rel="noopener noreferrer"
+            className=AnimalAnnouncement.linkToAnimal>
+            "MATIC network. "->restr
           </a>
         </span>
       </Announcement>

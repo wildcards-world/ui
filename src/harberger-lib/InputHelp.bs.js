@@ -52,11 +52,6 @@ function onlyUpdateValueIfPositiveFloat(currentValue, updateFunction, value) {
 }
 
 function onlyUpdateValueIfInRangeFloat(min, max, currentValue, updateFunction, value) {
-  console.log("THE MINNN");
-  console.log("THE MINNN");
-  console.log("THE MINNN");
-  console.log("THE MINNN");
-  console.log(min);
   var valueFloat = Belt_Float.fromString(value);
   var match = valueFloat !== undefined ? (
       valueFloat >= min && valueFloat <= max ? /* tuple */[

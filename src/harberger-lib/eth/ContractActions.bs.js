@@ -607,10 +607,6 @@ function useVoteForProject(param) {
     if (optSteward === undefined) {
       return ;
     }
-    console.log("!!Voting - start!!");
-    console.log("<Proposal ID>, <loyalty tokens to use>, <number of votes (ie the square root)>");
-    console.log(proposalId, squareRoot.sqr().toString(), squareRoot.toString());
-    console.log("!!Voting - end!!");
     var claimLoyaltyTokenPromise = $$Promise.Js.toResult(optSteward.vote(proposalId, squareRoot.sqr().toString(), squareRoot.toString(), {
               gasLimit: "500302",
               value: value
@@ -713,7 +709,6 @@ function useUpdateDeposit(chain, isGsn, library, account, parentChainId) {
   var spender = getStewardAddress(chain, chainIdInt);
   var networkName = getMaticNetworkName(chainIdInt);
   var maticState = Belt_Option.flatMap(account, (function (usersAddress) {
-          console.log("the users address", usersAddress);
           return QlHooks$WildCards.useMaticState(false, usersAddress, networkName);
         }));
   if (chain >= 2) {
@@ -791,7 +786,6 @@ function useWithdrawDeposit(chain, isGsn, library, account, parentChainId) {
     return /* tuple */[
             (function (amountToWithdraw) {
                 var value = Ethers.utils.parseUnits("0", 0);
-                console.log(amountToWithdraw + " is the amount I'm trying to withdraw");
                 var amountToWithdrawEncoded = Ethers.utils.parseUnits(amountToWithdraw, 0);
                 Curry._1(setTxState, (function (param) {
                         return /* Created */2;

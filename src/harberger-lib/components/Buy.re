@@ -122,11 +122,6 @@ module Buy = {
         currentPriceFloatWithMinimum *. 1.5 *. ratio,
         ~digits=3,
       );
-    // let priceSliderInitialMax =
-    //   toFixedWithPrecisionNoTrailingZeros(
-    //     currentPriceFloatWithMinimum *. 3.,
-    //     ~digits=3,
-    //   );
     let defaultPriceWei = defaultPriceValue->Web3Utils.toWeiFromEth;
     let depositForAYear =
       calcRequiredDepositForTime(
@@ -157,7 +152,6 @@ module Buy = {
     let (patronage, setPatronage) =
       React.useState(() => defaultMonthlyPatronage);
 
-    // TODO: this should have a minimum value. Say 0.00001 ETH? Tranaction fails if it is zero!
     let (deposit, setInitialDeposit) = React.useState(() => defaultDeposit);
     let (depositTimeInSeconds, setDepositTimeInSeconds) =
       React.useState(() => defaultDepositTime);
@@ -326,20 +320,6 @@ let make = (~chain, ~tokenId) => {
         ->ContractActions.getMaticNetworkName,
       );
 
-  // let forceUpdateMaticState = QlHooks.useForceUpdateMaticStateFunc("goerli");
-  // React.useMemo1(
-  //   () => {
-  //     web3Context.account
-  //     ->Option.flatMap(usersAddress => {
-  //         Js.log("forcing refresh of blockcahin state");
-  //         forceUpdateMaticState(usersAddress);
-  //       })
-  //     ->ignore
-  //   },
-  //   [|web3Context.account|],
-  // );
-
-  Js.log2(chain, tokenId);
   switch (chain) {
   | Client.Neither
   | Client.MainnetQuery => <Buy chain tokenId />
