@@ -12,16 +12,13 @@ module GraphQl = {
       );
 
     <ReasonApollo.Provider client>
-
-        <ReasonApolloHooks.ApolloHooks.Provider client>
-          children
-        </ReasonApolloHooks.ApolloHooks.Provider>
-      </ReasonApollo.Provider>;
-      // <QlStateManager> children </QlStateManager>
+      <ReasonApolloHooks.ApolloHooks.Provider client>
+        children
+      </ReasonApolloHooks.ApolloHooks.Provider>
+    </ReasonApollo.Provider>;
   };
 };
 
-[@gentype]
 [@react.component]
 let make =
     (

@@ -19,7 +19,6 @@ let make =
 
   let isLaunched =
     MomentRe.diff(nextLaunchDate, MomentRe.momentNow(), `seconds) < 0.;
-  // let isLaunched = true;
 
   let closeButton = style([position(absolute), right(px(10))]);
 

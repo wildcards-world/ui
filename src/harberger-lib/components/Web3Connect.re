@@ -10,7 +10,6 @@ let infoModalStyle =
     ])
   );
 
-[@gentype]
 [@react.component]
 let make = (~clickAction=() => ()) => {
   let connectWeb3 = RootProvider.useConnectWeb3();
@@ -55,7 +54,6 @@ let make = (~clickAction=() => ()) => {
 };
 
 module Modal = {
-  [@gentype]
   [@react.component]
   let make = () => {
     let showLogin = RootProvider.useShowLogin();

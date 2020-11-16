@@ -176,7 +176,6 @@ function OrgProfile$ComingSoonModal(Props) {
                                     })),
                               targetRowHeight: 30,
                               onClick: (function (param, photoData) {
-                                  console.log("it was clicked", photoData);
                                   return Curry._1(setOpenImage, (function (param) {
                                                 return photoData.index;
                                               }));

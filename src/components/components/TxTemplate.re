@@ -25,9 +25,9 @@ let make =
     <React.Fragment>
       <Rimble.Heading>
         {(
-           "Please accept the signature in your signer to allow use of "
+           "Please sign the message to allow use of "
            ++ value->Web3Utils.fromWeiBNToEthPrecision(~digits=2)
-           ++ "."
+           ++ " DAI."
          )
          ->restr}
         <WildcardsLoader />
@@ -39,8 +39,7 @@ let make =
   | SignMetaTx =>
     <React.Fragment>
       <Rimble.Heading>
-        "Please accept the signature in your signer to submit this transaction."
-        ->restr
+        "Please sign the message to submit this transaction."->restr
         <WildcardsLoader />
       </Rimble.Heading>
       <Rimble.Flex justifyContent="center">
@@ -50,7 +49,7 @@ let make =
   | SubmittedMetaTx =>
     <React.Fragment>
       <Rimble.Heading>
-        "Transaction Sumbitted "->restr
+        "Transaction Submitted "->restr
         <WildcardsLoader />
       </Rimble.Heading>
       <Rimble.Text> "Awaiting transaction details."->restr </Rimble.Text>
@@ -64,12 +63,11 @@ let make =
         "Processing Transaction "->restr
         <WildcardsLoader />
       </Rimble.Heading>
-      <Rimble.Text> "Tx Created."->restr </Rimble.Text>
+      <Rimble.Text> "Tx created."->restr </Rimble.Text>
       <Rimble.Flex justifyContent="center">
         <Rimble.Loader size="80px" />
       </Rimble.Flex>
     </React.Fragment>
-  // TODO: make it show the link to the tx on etherscan.io!
   | ContractActions.SignedAndSubmitted(txHash) =>
     <React.Fragment>
       <Rimble.Heading>
@@ -108,8 +106,7 @@ let make =
   | ContractActions.Declined(message) =>
     <React.Fragment>
       <Rimble.Heading>
-        "The transaction was declined by signing device, please try again."
-        ->restr
+        "The transaction was declined by your wallet, please try again."->restr
       </Rimble.Heading>
       <p> {("Failure reason: " ++ message)->restr} </p>
       children
@@ -117,7 +114,7 @@ let make =
   | ServerError(message) =>
     <React.Fragment>
       <Rimble.Heading>
-        "There was server error when submitting that transaction."->restr
+        "There was a server error when submitting your transaction."->restr
       </Rimble.Heading>
       <p> {("Failure reason: " ++ message)->restr} </p>
       children

@@ -1,6 +1,5 @@
 open Globals;
 
-[@gentype]
 [@react.component]
 let make = (~chain, ~tokenId: TokenId.t) => {
   let daysHeld = QlHooks.useDaysHeld(~chain, tokenId);

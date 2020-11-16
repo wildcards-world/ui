@@ -18,7 +18,6 @@ function getToDisplay(label, value) {
 function UpdatePrice(Props) {
   var tokenId = Props.tokenId;
   var chain = Props.chain;
-  console.log(chain);
   var match = React.useState((function () {
           return "";
         }));
@@ -37,8 +36,6 @@ function UpdatePrice(Props) {
                     children: null
                   }, React.createElement(RimbleUi.Heading, {
                         children: "Update Price"
-                      }), React.createElement(RimbleUi.Text, {
-                        children: "Enter the desired values for the transaction."
                       }), React.createElement(RimbleUi.Input, {
                         type: "number",
                         placeholder: "New Sale Price",
@@ -53,7 +50,7 @@ function UpdatePrice(Props) {
                         onClick: onSubmitBuy
                       })),
               txState: match$1[1],
-              closeButtonText: "Back to view Animal",
+              closeButtonText: "Back to animal view",
               chain: chain
             });
 }

@@ -51,7 +51,6 @@ let getPrice = () =>
     }
   );
 
-[@gentype]
 [@react.component]
 let make = (~children) => {
   let (etherUsdPrice, setEtherUsdPrice) = React.useState(_ => None);

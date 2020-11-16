@@ -16,7 +16,7 @@ let priceWeiToTuple = (wei, optCurrentUsdEthPrice) => {
 };
 
 let usePrice = (~chain, animal) => {
-  let optPriceWei = QlHooks.usePrice(~chain, animal); //->Web3Utils.fromWeiBNToEth;
+  let optPriceWei = QlHooks.usePrice(~chain, animal);
   let optCurrentUsdEthPrice = UsdPriceProvider.useUsdPrice();
 
   switch (optPriceWei) {
@@ -56,7 +56,7 @@ module PurePriceDisplay = {
 module InUSD = {
   [@react.component]
   let make = (~chain, ~animal: TokenId.t) => {
-    let optPriceWei = QlHooks.usePrice(~chain, animal); //->Web3Utils.fromWeiBNToEth;
+    let optPriceWei = QlHooks.usePrice(~chain, animal);
 
     switch (optPriceWei) {
     | Price(totalPatronageWei) =>

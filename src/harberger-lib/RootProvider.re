@@ -134,11 +134,6 @@ module RootWithWeb3 = {
         },
       );
     let context = useWeb3React();
-    // let contextMatic = useWeb3ReactId("matic");
-    // Js.log("context.chainId");
-    // Js.log(context.chainId);
-    // Js.log("MATIC.chainId");
-    // Js.log(contextMatic.chainId);
 
     // This prevents repeated tries at logging in (or re-login after logout)
     let (triedLoginAlready, setTriedLoginAlready) =
@@ -466,13 +461,12 @@ let make =
       ~stewardAbi: option(Web3.abi),
     ) => {
   <Web3ReactProvider getLibrary>
-
-      <RootWithWeb3 stewardContractAddress stewardAbi>
-        <UserProvider>
-          <ThemeProvider> children </ThemeProvider>
-        </UserProvider>
-      </RootWithWeb3>
-    </Web3ReactProvider>;
-    // </Web3Connectors.Custom>
-    // <Web3Connectors.Custom id="matic" getLibrary>
+    <RootWithWeb3 stewardContractAddress stewardAbi>
+      <UserProvider> <ThemeProvider> children </ThemeProvider> </UserProvider>
+    </RootWithWeb3>
+  </Web3ReactProvider>;
 };
+
+// Used to create matic provider
+// </Web3Connectors.Custom>
+// <Web3Connectors.Custom id="matic" getLibrary>

@@ -3,11 +3,9 @@ open Belt.Option;
 let getToDisplay = (label, value) =>
   React.string(label ++ ": " ++ value->mapWithDefault("loading", a => a));
 
-[@gentype]
 [@react.component]
 let make = (~tokenId: TokenId.t, ~chain) => {
   // TODO: We must use the correct client for updating the deposit
-  Js.log(chain);
 
   let (newBuyPrice, setNewBuyPrice) = React.useState(() => "");
 
@@ -20,12 +18,9 @@ let make = (~tokenId: TokenId.t, ~chain) => {
     updatePriceFunc(Web3Utils.toWei(newBuyPrice, "ether"));
   };
 
-  <TxTemplate chain txState closeButtonText="Back to view Animal">
+  <TxTemplate chain txState closeButtonText="Back to animal view">
     <Rimble.Box p=4 mb=3>
       <Rimble.HeadingS> "Update Price" </Rimble.HeadingS>
-      <Rimble.TextS>
-        "Enter the desired values for the transaction."
-      </Rimble.TextS>
       <Rimble.Input
         _type="number"
         placeholder="New Sale Price"

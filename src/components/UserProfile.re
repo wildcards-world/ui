@@ -40,24 +40,8 @@ module ClaimLoyaltyTokenButtons = {
         ~refreshLoyaltyTokenBalance,
         ~numberOfTokens,
       ) => {
-    // let (redeemLoyaltyTokens, transactionStatus) =
-    //   ContractActions.useRedeemLoyaltyTokens(id, false);
-    // let balanceAvailableOnToken =
-    //   QlHooks.useUnredeemedLoyaltyTokenDueFromWildcard(
-    //     ~chain,
-    //     id->TokenId.makeWithDefault(0),
-    //   );
     let tokenId = id->TokenId.fromStringUnsafe;
 
-    let tokenName = tokenId->QlHooks.useWildcardName |||| "loading";
-    // =======
-    //   let make =
-    //       (
-    //         ~id,
-    //         ~userAddress: string,
-    //         ~refreshLoyaltyTokenBalance,
-    //         ~numberOfTokens,
-    //       ) => {
     let (redeemLoyaltyTokens, transactionStatus) =
       ContractActions.useRedeemLoyaltyTokens(userAddress, false);
     let balanceAvailableOnTokens =
@@ -66,7 +50,7 @@ module ClaimLoyaltyTokenButtons = {
         tokenId,
         numberOfTokens,
       );
-    // >>>>>>> origin
+
     let etherScanUrl = RootProvider.useEtherscanUrl();
 
     React.useEffect2(
@@ -352,7 +336,6 @@ module UserDetails = {
                            ->restr}
                         </p>
                       </small>
-                      // <<<<<<< HEAD
                       {switch (currentlyOwnedTokens) {
                        | [||] => React.null
                        | currentlyOwnedTokens =>

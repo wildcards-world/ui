@@ -3,7 +3,6 @@ type dataObject = {
   "__typename": string,
   "id": string,
 };
-open Globals;
 // createInMemoryCache(~dataIdFromObject=(obj: dataObject) => obj##id, ());
 
 /* Create an InMemoryCache */
@@ -49,33 +48,20 @@ let webSocketHttpLink = (~uri, ~matic, ~subscriptions) =>
     wsLink(~uri=subscriptions),
     ApolloLinks.split(
       operation => {
-        // Js.log2("let", operation->getContext);
         let context = operation->getContext;
-        Js.log2(
-          "Context",
-          context->Option.mapWithDefault("NOT DEFINED", a => a->Obj.magic),
-        );
-        // Js.log(context.context);
+
         let usingMatic =
-          switch (operation->getContext) {
+          switch (context) {
           | Some({context}) =>
             switch (context) {
-            | MaticQuery =>
-              Js.log("it was MATIC!!");
-              true;
-            | Neither =>
-              Js.log("it was neither");
-              false;
-            | MainnetQuery =>
-              Js.log("it was MAINNET");
-              false;
+            | MaticQuery => true
+            | Neither => false
+            | MainnetQuery => false
             }
           | None => false
           };
-        Js.log2("USING MATIC", usingMatic);
         usingMatic;
       },
-      // true;
       httpLink(~uri=matic),
       httpLink(~uri),
     ),

@@ -186,7 +186,6 @@ function Buy$1(Props) {
                 return QlHooks$WildCards.useMaticState(param, arg, param$1);
               });
           })(false), ContractActions$WildCards.getMaticNetworkName(ContractActions$WildCards.getChildChainId(Belt_Option.getWithDefault(web3Context.chainId, 1))));
-  console.log(chain, tokenId);
   if (chain !== 1) {
     return React.createElement(Buy$Buy, {
                 chain: chain,

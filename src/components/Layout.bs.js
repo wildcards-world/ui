@@ -215,11 +215,15 @@ function Layout(Props) {
                         /* [] */0
                       ])
                 }, React.createElement(Announcement$WildCards.make, {
-                      announcementBannerColor: "f49229",
-                      children: React.createElement("span", undefined, "New wildcards being launched on the MATIC network. ", React.createElement("a", {
+                      announcementBannerColor: "72D6B5",
+                      children: React.createElement("span", undefined, React.createElement("a", {
                                 className: AnimalAnnouncement$WildCards.linkToAnimal,
                                 href: "/#explorer/2nd-edition"
-                              }, Globals$WildCards.restr("View them here.")))
+                              }, Globals$WildCards.restr("New wildcards")), " launched on the ", React.createElement("a", {
+                                className: AnimalAnnouncement$WildCards.linkToAnimal,
+                                href: "https://matic.network",
+                                rel: "noopener noreferrer"
+                              }, Globals$WildCards.restr("MATIC network. ")))
                     }), React.createElement("div", {
                       className: Curry._1(Css.style, /* :: */[
                             Css.position(Css.relative),

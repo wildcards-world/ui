@@ -56,8 +56,6 @@ let useUrlState = () => {
           },
           DetailView(optionAnimal),
         );
-      // Explorer(DetailView(optionAnimal));
-      // | [|"details"|] => Home(NormalView)
       | [|"details", animalStr|] =>
         let optionAnimal = Animal.getAnimal(animalStr);
         Home(DetailView(optionAnimal));
