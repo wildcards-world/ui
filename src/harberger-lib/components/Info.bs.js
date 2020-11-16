@@ -5,6 +5,7 @@ import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Float from "bs-platform/lib/es6/belt_Float.js";
+import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as Eth$WildCards from "../Eth.bs.js";
 import * as Globals$WildCards from "../Globals.bs.js";
@@ -14,78 +15,26 @@ import * as Accounting$WildCards from "../Accounting.bs.js";
 import * as PriceDisplay$WildCards from "../PriceDisplay.bs.js";
 import * as RootProvider$WildCards from "../RootProvider.bs.js";
 import * as UserProvider$WildCards from "../js/user-provider/UserProvider.bs.js";
+import * as ReactTranslate$WildCards from "../../helpers/providers/ReactTranslate.bs.js";
 import * as UsdPriceProvider$WildCards from "./UsdPriceProvider.bs.js";
 
-function Info(Props) {
-  var chain = Props.chain;
-  var tokenId = Props.tokenId;
-  var daysHeld = QlHooks$WildCards.useDaysHeld(chain, tokenId);
-  var currentPatron = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.usePatron(chain, tokenId), "Loading");
-  var userId = UserProvider$WildCards.useDisplayName(currentPatron);
-  var displayName = UserProvider$WildCards.useDisplayName(currentPatron);
-  var displayNameStr = UserProvider$WildCards.displayNameToString(displayName);
-  var tokenName = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.useWildcardName(tokenId), "loading name");
-  var userIdType;
-  switch (userId.tag | 0) {
-    case /* TwitterHandle */0 :
-        userIdType = "verified twitter account";
-        break;
-    case /* ThreeBoxName */1 :
-        userIdType = "3box name";
-        break;
-    case /* EthAddress */2 :
-        userIdType = "public address";
-        break;
-    
-  }
+function Info$ExpertView(Props) {
+  var monthlyRate = Props.monthlyRate;
+  var tokenName = Props.tokenName;
+  var optMonthlyPledgeEth = Props.optMonthlyPledgeEth;
+  var unit = Props.unit;
+  var showEthWithUsdConversion = Props.showEthWithUsdConversion;
+  var optMonthlyPledgeUsd = Props.optMonthlyPledgeUsd;
+  var userIdType = Props.userIdType;
+  var currentPatron = Props.currentPatron;
+  var displayNameStr = Props.displayNameStr;
+  var depositAvailableToWithdrawEth = Props.depositAvailableToWithdrawEth;
+  var depositAvailableToWithdrawUsd = Props.depositAvailableToWithdrawUsd;
+  var totalPatronage = Props.totalPatronage;
+  var totalPatronageUsd = Props.totalPatronageUsd;
+  var definiteTime = Props.definiteTime;
+  var daysHeld = Props.daysHeld;
   var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
-  var currentUsdEthPrice = UsdPriceProvider$WildCards.useUsdPrice(undefined);
-  var match = Globals$WildCards.mapd(QlHooks$WildCards.useRemainingDepositEth(chain, currentPatron), /* tuple */[
-        "Loading",
-        "Loading"
-      ], (function (a) {
-          return /* tuple */[
-                  Globals$WildCards.toFixedWithPrecisionNoTrailingZeros(Globals$WildCards.$pipe$pipe$pipe$pipe(Belt_Float.fromString(Eth$WildCards.get(a, /* Eth */Block.__(0, [/* ether */-193685050]))), 0.0), 9),
-                  Globals$WildCards.mapd(currentUsdEthPrice, "Loading", (function (usdEthRate) {
-                          return Eth$WildCards.get(a, /* Usd */Block.__(1, [
-                                        usdEthRate,
-                                        2
-                                      ]));
-                        }))
-                ];
-        }));
-  var match$1 = Globals$WildCards.mapd(QlHooks$WildCards.useAmountRaisedToken(chain, tokenId), /* tuple */[
-        "Loading",
-        "Loading"
-      ], (function (a) {
-          return /* tuple */[
-                  Globals$WildCards.toFixedWithPrecisionNoTrailingZeros(Globals$WildCards.$pipe$pipe$pipe$pipe(Belt_Float.fromString(Eth$WildCards.get(a, /* Eth */Block.__(0, [/* ether */-193685050]))), 0.0), 9),
-                  Globals$WildCards.mapd(currentUsdEthPrice, "Loading", (function (usdEthRate) {
-                          return Eth$WildCards.get(a, /* Usd */Block.__(1, [
-                                        usdEthRate,
-                                        2
-                                      ]));
-                        }))
-                ];
-        }));
-  var foreclosureTime = QlHooks$WildCards.useForeclosureTime(chain, currentPatron);
-  var definiteTime = Globals$WildCards.mapd(foreclosureTime, undefined, (function (a) {
-          return Caml_option.some(a);
-        }));
-  var ratio = QlHooks$WildCards.usePledgeRate(chain, tokenId);
-  var optCurrentPrice = PriceDisplay$WildCards.usePrice(chain, tokenId);
-  var match$2 = optCurrentPrice !== undefined ? /* tuple */[
-      Globals$WildCards.toFixedWithPrecisionNoTrailingZeros(Accounting$WildCards.defaultZeroF(Belt_Float.fromString(optCurrentPrice[0])) * ratio, 4),
-      undefined
-    ] : /* tuple */[
-      undefined,
-      undefined
-    ];
-  var optMonthlyPledgeUsd = match$2[1];
-  var optMonthlyPledgeEth = match$2[0];
-  var monthlyRate = (ratio * 100).toString();
-  var showEthWithUsdConversion = chain !== 1;
-  var unit = showEthWithUsdConversion ? "ETH" : "USD";
   var tmp;
   if (definiteTime !== undefined) {
     var date = Caml_option.valFromOption(definiteTime);
@@ -116,7 +65,7 @@ function Info(Props) {
                               message: "This is the monthly percentage contribution of " + (tokenName + "'s sale price that will go towards conservation of at risk animals. This is deducted continuously from the deposit and paid by the owner of the animal"),
                               placement: "top",
                               children: React.createElement("span", undefined, Globals$WildCards.restr("ⓘ"))
-                            }))), React.createElement("br", undefined), optMonthlyPledgeEth !== undefined ? Globals$WildCards.restr(optMonthlyPledgeEth + (" " + unit)) : React.createElement(RimbleUi.Loader, { }), React.createElement("br", undefined), showEthWithUsdConversion && optMonthlyPledgeUsd !== undefined ? React.createElement("small", undefined, Globals$WildCards.restr("(" + (Caml_option.valFromOption(optMonthlyPledgeUsd) + " USD)"))) : null), React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, Globals$WildCards.restr("Current Patron: "), React.createElement(RimbleUi.Tooltip, {
+                            }))), React.createElement("br", undefined), optMonthlyPledgeEth !== undefined ? Globals$WildCards.restr(optMonthlyPledgeEth + (" " + unit)) : React.createElement(RimbleUi.Loader, { }), React.createElement("br", undefined), showEthWithUsdConversion && optMonthlyPledgeUsd !== undefined ? React.createElement("small", undefined, Globals$WildCards.restr("(" + (optMonthlyPledgeUsd + " USD)"))) : null), React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, Globals$WildCards.restr("Current Patron: "), React.createElement(RimbleUi.Tooltip, {
                               message: "This is the " + (String(userIdType) + " of the current owner"),
                               placement: "top",
                               children: React.createElement("span", undefined, Globals$WildCards.restr("ⓘ"))
@@ -129,11 +78,147 @@ function Info(Props) {
                               message: "This is the amount the owner has deposited to pay their monthly contribution",
                               placement: "top",
                               children: React.createElement("span", undefined, Globals$WildCards.restr("ⓘ"))
-                            }))), React.createElement("br", undefined), Globals$WildCards.restr(match[0] + (" " + unit)), React.createElement("br", undefined), showEthWithUsdConversion ? React.createElement("small", undefined, Globals$WildCards.restr("(" + (match[1] + " USD)"))) : null), React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, Globals$WildCards.restr(tokenName + "'s Patronage: "), React.createElement(RimbleUi.Tooltip, {
+                            }))), React.createElement("br", undefined), Globals$WildCards.restr(depositAvailableToWithdrawEth + (" " + unit)), React.createElement("br", undefined), showEthWithUsdConversion ? React.createElement("small", undefined, Globals$WildCards.restr("(" + (depositAvailableToWithdrawUsd + " USD)"))) : null), React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, Globals$WildCards.restr(tokenName + "'s Patronage: "), React.createElement(RimbleUi.Tooltip, {
                               message: "This is the total contribution that has been raised thanks to the wildcard, " + tokenName,
                               placement: "top",
                               children: React.createElement("span", undefined, Globals$WildCards.restr("ⓘ"))
-                            }))), React.createElement("br", undefined), Globals$WildCards.restr(match$1[0] + (" " + unit)), React.createElement("br", undefined), showEthWithUsdConversion ? React.createElement("small", undefined, Globals$WildCards.restr("(" + (match$1[1] + " USD)"))) : null), tmp, tmp$1);
+                            }))), React.createElement("br", undefined), Globals$WildCards.restr(totalPatronage + (" " + unit)), React.createElement("br", undefined), showEthWithUsdConversion ? React.createElement("small", undefined, Globals$WildCards.restr("(" + (totalPatronageUsd + " USD)"))) : null), tmp, tmp$1);
+}
+
+var ExpertView = {
+  make: Info$ExpertView
+};
+
+function Info$SimpleView(Props) {
+  var monthlyRate = Props.monthlyRate;
+  var tokenName = Props.tokenName;
+  var optMonthlyPledgeEth = Props.optMonthlyPledgeEth;
+  var unit = Props.unit;
+  var displayNameStr = Props.displayNameStr;
+  var totalPatronage = Props.totalPatronage;
+  var definiteTime = Props.definiteTime;
+  var daysHeld = Props.daysHeld;
+  var orgName = Props.orgName;
+  var priceString = Props.priceString;
+  var optionalSpecies = Props.optionalSpecies;
+  return React.createElement(React.Fragment, {
+              children: null
+            }, React.createElement("p", undefined, tokenName + (" is currently protected by " + (displayNameStr + (". " + (displayNameStr + (" values their guardianship of " + (tokenName + (" at " + (priceString + (" and " + (tokenName + (" has a monthly pledge rate of " + (monthlyRate + ("%. This means " + (displayNameStr + (" has to contribute " + ((
+                                                  optMonthlyPledgeEth !== undefined ? optMonthlyPledgeEth + (" " + unit) : "Loading"
+                                                ) + (" monthly to " + (orgName + (" for the protection of " + (tokenName + Belt_Option.mapWithDefault(optionalSpecies, "", (function (species) {
+                                                                return " the " + species;
+                                                              }))))))))))))))))))))))), daysHeld !== undefined ? React.createElement("p", undefined, displayNameStr + (" has been the guardian of " + (tokenName + (" for " + (daysHeld[0].toFixed() + " days")))), definiteTime !== undefined ? React.createElement(React.Fragment, undefined, "and has enough deposit to last ", React.createElement(CountDown$WildCards.make, {
+                              endDateMoment: Caml_option.valFromOption(definiteTime)
+                            }), " - remember to keep topping up that deposit (winky face emoji).") : null) : null, React.createElement("p", undefined, "" + (tokenName + (" has earned " + (totalPatronage + (" " + (unit + (" for " + (orgName + (". Congratulations to all the honourable and loyal patrons of " + (tokenName + "!")))))))))));
+}
+
+var SimpleView = {
+  make: Info$SimpleView
+};
+
+function Info(Props) {
+  var chain = Props.chain;
+  var tokenId = Props.tokenId;
+  var daysHeld = QlHooks$WildCards.useDaysHeld(chain, tokenId);
+  var currentPatron = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.usePatron(chain, tokenId), "Loading");
+  var userId = UserProvider$WildCards.useDisplayName(currentPatron);
+  var displayName = UserProvider$WildCards.useDisplayName(currentPatron);
+  var displayNameStr = UserProvider$WildCards.displayNameToString(displayName);
+  var tokenName = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.useWildcardName(tokenId), "loading name");
+  var userIdType;
+  switch (userId.tag | 0) {
+    case /* TwitterHandle */0 :
+        userIdType = "verified twitter account";
+        break;
+    case /* ThreeBoxName */1 :
+        userIdType = "3box name";
+        break;
+    case /* EthAddress */2 :
+        userIdType = "public address";
+        break;
+    
+  }
+  var currentUsdEthPrice = UsdPriceProvider$WildCards.useUsdPrice(undefined);
+  var match = Globals$WildCards.mapd(QlHooks$WildCards.useRemainingDepositEth(chain, currentPatron), /* tuple */[
+        "Loading",
+        "Loading"
+      ], (function (a) {
+          return /* tuple */[
+                  Globals$WildCards.toFixedWithPrecisionNoTrailingZeros(Globals$WildCards.$pipe$pipe$pipe$pipe(Belt_Float.fromString(Eth$WildCards.get(a, /* Eth */Block.__(0, [/* ether */-193685050]))), 0.0), 9),
+                  Globals$WildCards.mapd(currentUsdEthPrice, "Loading", (function (usdEthRate) {
+                          return Eth$WildCards.get(a, /* Usd */Block.__(1, [
+                                        usdEthRate,
+                                        2
+                                      ]));
+                        }))
+                ];
+        }));
+  var match$1 = Globals$WildCards.mapd(QlHooks$WildCards.useAmountRaisedToken(chain, tokenId), /* tuple */[
+        "Loading",
+        "Loading"
+      ], (function (a) {
+          return /* tuple */[
+                  Globals$WildCards.toFixedWithPrecisionNoTrailingZeros(Globals$WildCards.$pipe$pipe$pipe$pipe(Belt_Float.fromString(Eth$WildCards.get(a, /* Eth */Block.__(0, [/* ether */-193685050]))), 0.0), 9),
+                  Globals$WildCards.mapd(currentUsdEthPrice, "Loading", (function (usdEthRate) {
+                          return Eth$WildCards.get(a, /* Usd */Block.__(1, [
+                                        usdEthRate,
+                                        2
+                                      ]));
+                        }))
+                ];
+        }));
+  var totalPatronage = match$1[0];
+  var foreclosureTime = QlHooks$WildCards.useForeclosureTime(chain, currentPatron);
+  var definiteTime = Globals$WildCards.mapd(foreclosureTime, undefined, (function (a) {
+          return Caml_option.some(a);
+        }));
+  var ratio = QlHooks$WildCards.usePledgeRate(chain, tokenId);
+  var optCurrentPrice = PriceDisplay$WildCards.usePrice(chain, tokenId);
+  var match$2 = optCurrentPrice !== undefined ? /* tuple */[
+      Globals$WildCards.toFixedWithPrecisionNoTrailingZeros(Accounting$WildCards.defaultZeroF(Belt_Float.fromString(optCurrentPrice[0])) * ratio, 4),
+      undefined
+    ] : /* tuple */[
+      undefined,
+      undefined
+    ];
+  var optMonthlyPledgeEth = match$2[0];
+  var monthlyRate = (ratio * 100).toString();
+  var showEthWithUsdConversion = chain !== 1;
+  var unit = showEthWithUsdConversion ? "ETH" : "USD";
+  var translationModeContext = ReactTranslate$WildCards.useTranslationModeContext(undefined);
+  if (translationModeContext.translationModeCrypto) {
+    return React.createElement(Info$ExpertView, {
+                monthlyRate: monthlyRate,
+                tokenName: tokenName,
+                optMonthlyPledgeEth: optMonthlyPledgeEth,
+                unit: unit,
+                showEthWithUsdConversion: showEthWithUsdConversion,
+                optMonthlyPledgeUsd: match$2[1],
+                userIdType: userIdType,
+                currentPatron: currentPatron,
+                displayNameStr: displayNameStr,
+                depositAvailableToWithdrawEth: match[0],
+                depositAvailableToWithdrawUsd: match[1],
+                totalPatronage: totalPatronage,
+                totalPatronageUsd: match$1[1],
+                definiteTime: definiteTime,
+                daysHeld: daysHeld
+              });
+  } else {
+    return React.createElement(Info$SimpleView, {
+                monthlyRate: monthlyRate,
+                tokenName: tokenName,
+                optMonthlyPledgeEth: optMonthlyPledgeEth,
+                unit: unit,
+                displayNameStr: displayNameStr,
+                totalPatronage: totalPatronage,
+                definiteTime: definiteTime,
+                daysHeld: daysHeld,
+                orgName: "TODO",
+                priceString: "TODO",
+                optionalSpecies: undefined
+              });
+  }
 }
 
 function Info$Auction(Props) {
@@ -198,6 +283,8 @@ var Auction = {
 var make = Info;
 
 export {
+  ExpertView ,
+  SimpleView ,
   make ,
   Auction ,
   

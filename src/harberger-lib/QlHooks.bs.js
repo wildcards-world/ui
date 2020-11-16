@@ -490,7 +490,7 @@ var SubWildcardQuery = {
   MT_Ret: MT_Ret$1
 };
 
-var ppx_printed_query$2 = "query ($tokenId: String!)  {\nlaunchedWildcards_by_pk(id: $tokenId)  {\nwildcard  {\nid  \nname  \ndescription  \norganisationId  \nimage  \nreal_wc_photos  {\nimage  \nphotographer  \n}\n\n}\n\n}\n\n}\n";
+var ppx_printed_query$2 = "query ($tokenId: String!)  {\nlaunchedWildcards_by_pk(id: $tokenId)  {\nwildcard  {\nid  \nname  \ndescription  \norganization  {\nname  \nid  \n}\n\nimage  \nreal_wc_photos  {\nimage  \nphotographer  \n}\n\n}\n\n}\n\n}\n";
 
 function parse$2(value) {
   var value$1 = Js_option.getExn(Js_json.decodeObject(value));
@@ -536,7 +536,7 @@ function parse$2(value) {
           tmp$3 = undefined;
         }
         var value$13 = Js_dict.get(value$6, "description");
-        var value$14 = Js_dict.get(value$6, "organisationId");
+        var value$14 = Js_dict.get(value$6, "organization");
         var tmp$4;
         if (value$14 !== undefined) {
           var value$15 = Caml_option.valFromOption(value$14);
@@ -544,34 +544,55 @@ function parse$2(value) {
           if (match$3 !== undefined) {
             tmp$4 = undefined;
           } else {
-            var value$16 = Js_json.decodeString(value$15);
-            tmp$4 = value$16 !== undefined ? value$16 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$15));
+            var value$16 = Js_option.getExn(Js_json.decodeObject(value$15));
+            var value$17 = Js_dict.get(value$16, "name");
+            var tmp$5;
+            if (value$17 !== undefined) {
+              var value$18 = Caml_option.valFromOption(value$17);
+              var value$19 = Js_json.decodeString(value$18);
+              tmp$5 = value$19 !== undefined ? value$19 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$18));
+            } else {
+              tmp$5 = Js_exn.raiseError("graphql_ppx: Field name on type organisations is missing");
+            }
+            var value$20 = Js_dict.get(value$16, "id");
+            var tmp$6;
+            if (value$20 !== undefined) {
+              var value$21 = Caml_option.valFromOption(value$20);
+              var value$22 = Js_json.decodeString(value$21);
+              tmp$6 = value$22 !== undefined ? value$22 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$21));
+            } else {
+              tmp$6 = Js_exn.raiseError("graphql_ppx: Field id on type organisations is missing");
+            }
+            tmp$4 = {
+              name: tmp$5,
+              id: tmp$6
+            };
           }
         } else {
           tmp$4 = undefined;
         }
-        var value$17 = Js_dict.get(value$6, "image");
-        var tmp$5;
-        if (value$17 !== undefined) {
-          var value$18 = Caml_option.valFromOption(value$17);
-          var match$4 = Js_json.decodeNull(value$18);
+        var value$23 = Js_dict.get(value$6, "image");
+        var tmp$7;
+        if (value$23 !== undefined) {
+          var value$24 = Caml_option.valFromOption(value$23);
+          var match$4 = Js_json.decodeNull(value$24);
           if (match$4 !== undefined) {
-            tmp$5 = undefined;
+            tmp$7 = undefined;
           } else {
-            var value$19 = Js_json.decodeString(value$18);
-            tmp$5 = value$19 !== undefined ? value$19 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$18));
+            var value$25 = Js_json.decodeString(value$24);
+            tmp$7 = value$25 !== undefined ? value$25 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$24));
           }
         } else {
-          tmp$5 = undefined;
+          tmp$7 = undefined;
         }
-        var value$20 = Js_dict.get(value$6, "real_wc_photos");
+        var value$26 = Js_dict.get(value$6, "real_wc_photos");
         tmp$1 = {
           id: tmp$2,
           name: tmp$3,
           description: value$13 !== undefined ? Caml_option.valFromOption(value$13) : Js_exn.raiseError("graphql_ppx: Field description on type wildcardData is missing"),
-          organisationId: tmp$4,
-          image: tmp$5,
-          real_wc_photos: value$20 !== undefined ? Js_option.getExn(Js_json.decodeArray(Caml_option.valFromOption(value$20))).map((function (value) {
+          organization: tmp$4,
+          image: tmp$7,
+          real_wc_photos: value$26 !== undefined ? Js_option.getExn(Js_json.decodeArray(Caml_option.valFromOption(value$26))).map((function (value) {
                     var value$1 = Js_option.getExn(Js_json.decodeObject(value));
                     var value$2 = Js_dict.get(value$1, "image");
                     var tmp;
@@ -2098,8 +2119,21 @@ function useRealImages(tokenId) {
 function useWildcardOrgId(tokenId) {
   var match = useWildcardDataQuery(tokenId);
   return queryResultOptionFlatMap(match[0], (function (a) {
-                return Belt_Option.flatMap(a.launchedWildcards_by_pk, (function (b) {
-                              return b.wildcard.organisationId;
+                return Belt_Option.map(Belt_Option.flatMap(a.launchedWildcards_by_pk, (function (b) {
+                                  return b.wildcard.organization;
+                                })), (function (org) {
+                              return org.id;
+                            }));
+              }));
+}
+
+function useWildcardOrgName(tokenId) {
+  var match = useWildcardDataQuery(tokenId);
+  return queryResultOptionFlatMap(match[0], (function (a) {
+                return Belt_Option.map(Belt_Option.flatMap(a.launchedWildcards_by_pk, (function (b) {
+                                  return b.wildcard.organization;
+                                })), (function (org) {
+                              return org.name;
                             }));
               }));
 }
@@ -2782,6 +2816,7 @@ export {
   useWildcardAvatar ,
   useRealImages ,
   useWildcardOrgId ,
+  useWildcardOrgName ,
   useLoadTopContributors ,
   useLoadTopContributorsData ,
   usePatron ,

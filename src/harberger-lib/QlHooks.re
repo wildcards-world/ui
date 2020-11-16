@@ -171,7 +171,10 @@ module WildcardDataQuery = [%graphql
           id
           name
           description
-          organisationId
+          organization {
+            name
+            id
+          }
           image
           real_wc_photos {
             image
@@ -556,9 +559,19 @@ let useWildcardOrgId = tokenId => {
   let (simple, _) = useWildcardDataQuery(tokenId);
   queryResultOptionFlatMap(simple, a =>
     a##launchedWildcards_by_pk
-    ->Option.flatMap(b => b##wildcard##organisationId)
+    ->Option.flatMap(b => b##wildcard##organization)
+    ->Option.map(org => org##id)
   );
 };
+let useWildcardOrgName = tokenId => {
+  let (simple, _) = useWildcardDataQuery(tokenId);
+  queryResultOptionFlatMap(simple, a =>
+    a##launchedWildcards_by_pk
+    ->Option.flatMap(b => b##wildcard##organization)
+    ->Option.map(org => org##name)
+  );
+};
+
 let useLoadTopContributors = numberOfLeaders =>
   ApolloHooks.useSubscription(
     ~variables=LoadTopContributors.make(~numberOfLeaders, ())##variables,

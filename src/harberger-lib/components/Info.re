@@ -1,6 +1,301 @@
 open Globals;
 
-[@gentype]
+module ExpertView = {
+  [@react.component]
+  let make =
+      (
+        ~monthlyRate,
+        ~tokenName,
+        ~optMonthlyPledgeEth,
+        ~unit,
+        ~showEthWithUsdConversion,
+        ~optMonthlyPledgeUsd,
+        ~userIdType,
+        ~currentPatron,
+        ~displayNameStr,
+        ~depositAvailableToWithdrawEth,
+        ~depositAvailableToWithdrawUsd,
+        ~totalPatronage,
+        ~totalPatronageUsd,
+        ~definiteTime,
+        ~daysHeld,
+      ) => {
+    let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+
+    <React.Fragment>
+      <div>
+        <small>
+          <strong>
+            {{
+               "Monthly Pledge (at " ++ monthlyRate ++ "%): ";
+             }
+             ->restr}
+            <Rimble.Tooltip
+              message={
+                "This is the monthly percentage contribution of "
+                ++ tokenName
+                ++ "'s sale price that will go towards conservation of at risk animals. This is deducted continuously from the deposit and paid by the owner of the animal"
+              }
+              placement="top">
+              <span> {js|ⓘ|js}->restr </span>
+            </Rimble.Tooltip>
+          </strong>
+        </small>
+        <br />
+        {switch (optMonthlyPledgeEth) {
+         | Some(monthlyPledgeEth) =>
+           {
+             monthlyPledgeEth ++ " " ++ unit;
+           }
+           ->restr
+         | None => <Rimble.Loader />
+         }}
+        <br />
+        {switch (showEthWithUsdConversion, optMonthlyPledgeUsd) {
+         | (true, Some(monthlyPledgeUsd)) =>
+           <small>
+             {{
+                "(" ++ monthlyPledgeUsd ++ " USD)";
+              }
+              ->restr}
+           </small>
+         | _ => React.null
+         }}
+      </div>
+      <p>
+        <small>
+          <strong>
+            "Current Patron: "->restr
+            <Rimble.Tooltip
+              message={j|This is the $userIdType of the current owner|j}
+              placement="top">
+              <span> {js|ⓘ|js}->restr </span>
+            </Rimble.Tooltip>
+          </strong>
+        </small>
+        <br />
+        <a
+          onClick={e => {
+            ReactEvent.Mouse.preventDefault(e);
+            clearAndPush({j|/#user/$currentPatron|j});
+          }}>
+          displayNameStr->restr
+        </a>
+      </p>
+      <p>
+        <small>
+          <strong>
+            "Available Deposit: "->restr
+            <Rimble.Tooltip
+              message="This is the amount the owner has deposited to pay their monthly contribution"
+              placement="top">
+              <span> {js|ⓘ|js}->restr </span>
+            </Rimble.Tooltip>
+          </strong>
+        </small>
+        <br />
+        {{
+           depositAvailableToWithdrawEth ++ " " ++ unit;
+         }
+         ->restr}
+        <br />
+        {showEthWithUsdConversion
+           ? <small>
+               {{
+                  "(" ++ depositAvailableToWithdrawUsd ++ " USD)";
+                }
+                ->restr}
+             </small>
+           : React.null}
+      </p>
+      <p>
+        <small>
+          <strong>
+            {{
+               tokenName ++ "'s Patronage: ";
+             }
+             ->restr}
+            <Rimble.Tooltip
+              message={
+                "This is the total contribution that has been raised thanks to the wildcard, "
+                ++ tokenName
+              }
+              placement="top">
+              <span> {js|ⓘ|js}->restr </span>
+            </Rimble.Tooltip>
+          </strong>
+        </small>
+        <br />
+        {{
+           totalPatronage ++ " " ++ unit;
+         }
+         ->restr}
+        <br />
+        {showEthWithUsdConversion
+           ? <small>
+               {{
+                  "(" ++ totalPatronageUsd ++ " USD)";
+                }
+                ->restr}
+             </small>
+           : React.null}
+      </p>
+      {switch (definiteTime) {
+       | Some(date) =>
+         <p>
+           <small>
+             <strong>
+               "Foreclosure date: "->restr
+               <Rimble.Tooltip
+                 message={
+                   "This is the date the deposit will run out and the current owner will lose guardianship of "
+                   ++ tokenName
+                 }
+                 placement="top">
+                 <span> {js|ⓘ|js}->restr </span>
+               </Rimble.Tooltip>
+             </strong>
+           </small>
+           <br />
+           {{
+              MomentRe.Moment.format("LLLL", date);
+            }
+            ->restr}
+           <br />
+           <small>
+             "( "->restr
+             <CountDown endDateMoment=date />
+             ")"->restr
+           </small>
+         </p>
+       | None => React.null
+       }}
+      {switch (daysHeld) {
+       | Some((daysHeldFloat, timeAquired)) =>
+         let timeAcquiredString = timeAquired->MomentRe.Moment.toISOString;
+         <p>
+           <small>
+             <strong>
+               "Days Held: "->restr
+               <Rimble.Tooltip
+                 message={
+                   "This is the amount of time "
+                   ++ tokenName
+                   ++ " has been held. It was acquired on the "
+                   ++ timeAcquiredString
+                   ++ "."
+                 }
+                 placement="top">
+                 <span> {js|ⓘ|js}->restr </span>
+               </Rimble.Tooltip>
+             </strong>
+           </small>
+           <br />
+           {daysHeldFloat->Js.Float.toFixed->restr}
+           <br />
+         </p>;
+       | None => React.null
+       }}
+    </React.Fragment>;
+  };
+};
+module SimpleView = {
+  [@react.component]
+  let make =
+      (
+        ~monthlyRate,
+        ~tokenName,
+        ~optMonthlyPledgeEth,
+        ~unit,
+        ~displayNameStr,
+        ~totalPatronage,
+        ~definiteTime,
+        ~daysHeld,
+        ~orgName,
+        ~priceString,
+        ~optionalSpecies,
+      ) => {
+    <React.Fragment>
+
+        <p>
+          {(
+             tokenName
+             ++ " is currently protected by "
+             ++ displayNameStr
+             ++ ". "
+             ++ displayNameStr
+             ++ " values their guardianship of "
+             ++ tokenName
+             ++ " at "
+             ++ priceString
+             ++ " and "
+             ++ tokenName
+             ++ " has a monthly pledge rate of "
+             ++ monthlyRate
+             ++ "%. This means "
+             ++ displayNameStr
+             ++ " has to contribute "
+             ++ (
+               switch (optMonthlyPledgeEth) {
+               | Some(monthlyPledgeEth) => monthlyPledgeEth ++ " " ++ unit
+               | None => "Loading"
+               }
+             )
+             ++ " monthly to "
+             ++ orgName
+             ++ " for the protection of "
+             ++ tokenName
+             ++ optionalSpecies->Option.mapWithDefault("", species =>
+                  " the " ++ species
+                )
+           )
+           ->React.string}
+        </p>
+        {switch (daysHeld) {
+         | Some((daysHeldFloat, _timeAquired)) =>
+           <p>
+             {(
+                displayNameStr
+                ++ " has been the guardian of "
+                ++ tokenName
+                ++ " for "
+                ++ daysHeldFloat->Js.Float.toFixed
+                ++ " days"
+              )
+              ->React.string}
+             {switch (definiteTime) {
+              | Some(date) =>
+                <>
+                  "and has enough deposit to last "->React.string
+                  <CountDown endDateMoment=date />
+                  " - remember to keep topping up that deposit (winky face emoji)."
+                  ->React.string
+                </>
+              | None => React.null
+              }}
+           </p>
+         | None => React.null
+         }}
+        <p>
+          {(
+             ""
+             ++ tokenName
+             ++ " has earned "
+             ++ totalPatronage
+             ++ " "
+             ++ unit
+             ++ " for "
+             ++ orgName
+             ++ ". Congratulations to all the honourable and loyal patrons of "
+             ++ tokenName
+             ++ "!"
+           )
+           ->React.string}
+        </p>
+      </React.Fragment>;
+      // let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+  };
+};
 [@react.component]
 let make = (~chain, ~tokenId: TokenId.t) => {
   let daysHeld = QlHooks.useDaysHeld(~chain, tokenId);
@@ -16,7 +311,6 @@ let make = (~chain, ~tokenId: TokenId.t) => {
     | TwitterHandle(_) => "verified twitter account"
     | ThreeBoxName(_) => "3box name"
     };
-  let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
   let currentUsdEthPrice = UsdPriceProvider.useUsdPrice();
   let (depositAvailableToWithdrawEth, depositAvailableToWithdrawUsd) =
@@ -76,182 +370,39 @@ let make = (~chain, ~tokenId: TokenId.t) => {
     | Client.MainnetQuery => true
     };
   let unit = showEthWithUsdConversion ? "ETH" : "USD";
+  let translationModeContext = ReactTranslate.useTranslationModeContext();
 
-  <React.Fragment>
-    <div>
-      <small>
-        <strong>
-          {{
-             "Monthly Pledge (at " ++ monthlyRate ++ "%): ";
-           }
-           ->restr}
-          <Rimble.Tooltip
-            message={
-              "This is the monthly percentage contribution of "
-              ++ tokenName
-              ++ "'s sale price that will go towards conservation of at risk animals. This is deducted continuously from the deposit and paid by the owner of the animal"
-            }
-            placement="top">
-            <span> {js|ⓘ|js}->restr </span>
-          </Rimble.Tooltip>
-        </strong>
-      </small>
-      <br />
-      {switch (optMonthlyPledgeEth) {
-       | Some(monthlyPledgeEth) =>
-         {
-           monthlyPledgeEth ++ " " ++ unit;
-         }
-         ->restr
-       | None => <Rimble.Loader />
-       }}
-      <br />
-      {switch (showEthWithUsdConversion, optMonthlyPledgeUsd) {
-       | (true, Some(monthlyPledgeUsd)) =>
-         <small>
-           {{
-              "(" ++ monthlyPledgeUsd ++ " USD)";
-            }
-            ->restr}
-         </small>
-       | _ => React.null
-       }}
-    </div>
-    <p>
-      <small>
-        <strong>
-          "Current Patron: "->restr
-          <Rimble.Tooltip
-            message={j|This is the $userIdType of the current owner|j}
-            placement="top">
-            <span> {js|ⓘ|js}->restr </span>
-          </Rimble.Tooltip>
-        </strong>
-      </small>
-      <br />
-      <a
-        onClick={e => {
-          ReactEvent.Mouse.preventDefault(e);
-          clearAndPush({j|/#user/$currentPatron|j});
-        }}>
-        displayNameStr->restr
-      </a>
-    </p>
-    <p>
-      <small>
-        <strong>
-          "Available Deposit: "->restr
-          <Rimble.Tooltip
-            message="This is the amount the owner has deposited to pay their monthly contribution"
-            placement="top">
-            <span> {js|ⓘ|js}->restr </span>
-          </Rimble.Tooltip>
-        </strong>
-      </small>
-      <br />
-      {{
-         depositAvailableToWithdrawEth ++ " " ++ unit;
-       }
-       ->restr}
-      <br />
-      {showEthWithUsdConversion
-         ? <small>
-             {{
-                "(" ++ depositAvailableToWithdrawUsd ++ " USD)";
-              }
-              ->restr}
-           </small>
-         : React.null}
-    </p>
-    <p>
-      <small>
-        <strong>
-          {{
-             tokenName ++ "'s Patronage: ";
-           }
-           ->restr}
-          <Rimble.Tooltip
-            message={
-              "This is the total contribution that has been raised thanks to the wildcard, "
-              ++ tokenName
-            }
-            placement="top">
-            <span> {js|ⓘ|js}->restr </span>
-          </Rimble.Tooltip>
-        </strong>
-      </small>
-      <br />
-      {{
-         totalPatronage ++ " " ++ unit;
-       }
-       ->restr}
-      <br />
-      {showEthWithUsdConversion
-         ? <small>
-             {{
-                "(" ++ totalPatronageUsd ++ " USD)";
-              }
-              ->restr}
-           </small>
-         : React.null}
-    </p>
-    {switch (definiteTime) {
-     | Some(date) =>
-       <p>
-         <small>
-           <strong>
-             "Foreclosure date: "->restr
-             <Rimble.Tooltip
-               message={
-                 "This is the date the deposit will run out and the current owner will lose guardianship of "
-                 ++ tokenName
-               }
-               placement="top">
-               <span> {js|ⓘ|js}->restr </span>
-             </Rimble.Tooltip>
-           </strong>
-         </small>
-         <br />
-         {{
-            MomentRe.Moment.format("LLLL", date);
-          }
-          ->restr}
-         <br />
-         <small>
-           "( "->restr
-           <CountDown endDateMoment=date />
-           ")"->restr
-         </small>
-       </p>
-     | None => React.null
-     }}
-    {switch (daysHeld) {
-     | Some((daysHeldFloat, timeAquired)) =>
-       let timeAcquiredString = timeAquired->MomentRe.Moment.toISOString;
-       <p>
-         <small>
-           <strong>
-             "Days Held: "->restr
-             <Rimble.Tooltip
-               message={
-                 "This is the amount of time "
-                 ++ tokenName
-                 ++ " has been held. It was acquired on the "
-                 ++ timeAcquiredString
-                 ++ "."
-               }
-               placement="top">
-               <span> {js|ⓘ|js}->restr </span>
-             </Rimble.Tooltip>
-           </strong>
-         </small>
-         <br />
-         {daysHeldFloat->Js.Float.toFixed->restr}
-         <br />
-       </p>;
-     | None => React.null
-     }}
-  </React.Fragment>;
+  translationModeContext.translationModeCrypto
+    ? <ExpertView
+        monthlyRate
+        tokenName
+        optMonthlyPledgeEth
+        unit
+        showEthWithUsdConversion
+        optMonthlyPledgeUsd
+        userIdType
+        currentPatron
+        displayNameStr
+        depositAvailableToWithdrawEth
+        depositAvailableToWithdrawUsd
+        totalPatronage
+        totalPatronageUsd
+        definiteTime
+        daysHeld
+      />
+    : <SimpleView
+        monthlyRate
+        tokenName
+        optMonthlyPledgeEth
+        unit
+        displayNameStr
+        totalPatronage
+        definiteTime
+        daysHeld
+        orgName="TODO"
+        priceString="TODO"
+        optionalSpecies=None
+      />;
 };
 
 module Auction = {
