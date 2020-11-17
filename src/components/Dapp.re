@@ -833,7 +833,7 @@ let make = (~currentAnimal) => {
                    Animal.getChainIdFromAnimalId,
                  )
                }
-               closeButtonText="Back to view Animal"
+               closeButtonText="Back to animal view"
              />
            </div>
          | UpdatePriceScreen(animal) =>

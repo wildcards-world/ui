@@ -661,9 +661,6 @@ let useBuyAuction =
   };
 };
 
-// <<<<<<< HEAD
-// let useRedeemLoyaltyTokens = (animalId: string, isGsn) => {
-// =======
 let useRedeemLoyaltyTokens = (patron: string, isGsn) => {
   let (txState, setTxState) = React.useState(() => UnInitialised);
   let optSteward = useStewardContract(isGsn);
@@ -765,16 +762,6 @@ let useVoteForProject = () => {
     setTxState(_ => Created);
     switch (optSteward) {
     | Some(steward) =>
-      Js.log("!!Voting - start!!");
-      Js.log(
-        "<Proposal ID>, <loyalty tokens to use>, <number of votes (ie the square root)>",
-      );
-      Js.log3(
-        proposalId,
-        squareRoot->BN.sqr->BN.toString,
-        squareRoot->BN.toString,
-      );
-      Js.log("!!Voting - end!!");
       let claimLoyaltyTokenPromise =
         steward.vote(.
           proposalId,
@@ -872,8 +859,7 @@ let useUpdateDeposit =
 
   let maticState =
     account->Option.flatMap(usersAddress => {
-      Js.log2("the users address", usersAddress);
-      QlHooks.useMaticState(~forceRefetch=false, usersAddress, networkName);
+      QlHooks.useMaticState(~forceRefetch=false, usersAddress, networkName)
     });
 
   switch (chain) {
@@ -971,17 +957,8 @@ let useWithdrawDeposit =
 
   let optSteward = useStewardContract(isGsn);
 
-  // let nonce = "";
-
-  // GOERLI:
-
   let chainIdInt = parentChainId->getChildChainId;
-  // let chainId = chainIdInt->BN.newInt_;
-  // let verifyingContract = getDaiContractAddress(chain, chainIdInt);
   let spender = getStewardAddress(chain, chainIdInt);
-  // let networkName = chainIdInt->getMaticNetworkName;
-
-  // let chainId = BN.newInt_(5);
 
   switch (chain) {
   | Client.Neither
@@ -1021,7 +998,6 @@ let useWithdrawDeposit =
       (
         amountToWithdraw => {
           let value = parseUnits(. "0", 0);
-          Js.log(amountToWithdraw ++ " is the amount I'm trying to withdraw");
           let amountToWithdrawEncoded = parseUnits(. amountToWithdraw, 0);
 
           setTxState(_ => Created);

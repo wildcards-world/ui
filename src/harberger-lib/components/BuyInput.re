@@ -20,7 +20,6 @@ let infoIcon =
 
 open Globals;
 
-[@gentype]
 [@react.component]
 let make =
     (

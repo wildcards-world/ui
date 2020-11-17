@@ -15,10 +15,7 @@ let headingStyle = Css.(style([paddingTop(rem(5.)), textAlign(`center)]));
 module Grid = {
   [@react.component]
   let make = (~chain) => {
-    // let isGqlLoaded = QlStateManager.useIsInitialized();
     let allAnimals = QlHooks.useAnimalList(~chain);
-
-    Js.log2("All animals", allAnimals);
 
     <Rimble.Flex
       flexWrap="wrap" justifyContent="space-around" alignItems="stretch" px=50>
@@ -58,8 +55,6 @@ let indexToType = tabIndex =>
 let make = (~wildcardsEdition) => {
   let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
-  Js.log(wildcardsEdition);
-
   let index =
     switch (wildcardsEdition) {
     | Router.Gen1 => 0
@@ -79,7 +74,6 @@ let make = (~wildcardsEdition) => {
           <ReactTabs.Tab> "First edition"->React.string </ReactTabs.Tab>
           <ReactTabs.Tab> "Second edition"->React.string </ReactTabs.Tab>
         </ReactTabs.TabList>
-        // <ReactTabs.Tab> "Coming soon"->React.string </ReactTabs.Tab>
         <ReactTabs.TabPanel>
           <Grid chain=Client.MainnetQuery />
         </ReactTabs.TabPanel>
@@ -89,7 +83,4 @@ let make = (~wildcardsEdition) => {
       </ReactTabs>
     </div>
   </div>;
-  // <ReactTabs.TabPanel>
-  //   <TotalDaysHeld numberOfLeaders=10 />
-  // </ReactTabs.TabPanel>
 };

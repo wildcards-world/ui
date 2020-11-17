@@ -2,7 +2,6 @@
 
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as ApolloLinks from "@wildcards/reason-apollo/src/ApolloLinks.bs.js";
-import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as ApolloLink from "apollo-link";
 import * as ReasonApollo from "@wildcards/reason-apollo/src/ReasonApollo.bs.js";
 import * as ApolloLinkWs from "apollo-link-ws";
@@ -49,32 +48,11 @@ function webSocketHttpLink(uri, matic, subscriptions) {
                 }
               }), wsLink(subscriptions), ApolloLink.split((function (operation) {
                     var context = operation.getContext();
-                    console.log("Context", Belt_Option.mapWithDefault(context, "NOT DEFINED", (function (a) {
-                                return a;
-                              })));
-                    var match = operation.getContext();
-                    var usingMatic;
-                    if (match !== undefined) {
-                      switch (match.context) {
-                        case /* Neither */0 :
-                            console.log("it was neither");
-                            usingMatic = false;
-                            break;
-                        case /* MaticQuery */1 :
-                            console.log("it was MATIC!!");
-                            usingMatic = true;
-                            break;
-                        case /* MainnetQuery */2 :
-                            console.log("it was MAINNET");
-                            usingMatic = false;
-                            break;
-                        
-                      }
+                    if (context !== undefined) {
+                      return context.context === 1;
                     } else {
-                      usingMatic = false;
+                      return false;
                     }
-                    console.log("USING MATIC", usingMatic);
-                    return usingMatic;
                   }), httpLink(matic), httpLink(uri)));
 }
 

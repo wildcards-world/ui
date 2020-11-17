@@ -28,7 +28,7 @@ function TxTemplate(Props) {
                       children: null
                     }, React.createElement(RimbleUi.Heading, {
                           children: null
-                        }, Globals$WildCards.restr("Please accept the signature in your signer to submit this transaction."), React.createElement(WildcardsLoader$WildCards.make, { })), React.createElement(RimbleUi.Flex, {
+                        }, Globals$WildCards.restr("Please sign the message to submit this transaction."), React.createElement(WildcardsLoader$WildCards.make, { })), React.createElement(RimbleUi.Flex, {
                           children: React.createElement(RimbleUi.Loader, {
                                 size: "80px"
                               }),
@@ -40,7 +40,7 @@ function TxTemplate(Props) {
                     }, React.createElement(RimbleUi.Heading, {
                           children: null
                         }, Globals$WildCards.restr("Processing Transaction "), React.createElement(WildcardsLoader$WildCards.make, { })), React.createElement(RimbleUi.Text, {
-                          children: Globals$WildCards.restr("Tx Created.")
+                          children: Globals$WildCards.restr("Tx created.")
                         }), React.createElement(RimbleUi.Flex, {
                           children: React.createElement(RimbleUi.Loader, {
                                 size: "80px"
@@ -52,7 +52,7 @@ function TxTemplate(Props) {
                       children: null
                     }, React.createElement(RimbleUi.Heading, {
                           children: null
-                        }, Globals$WildCards.restr("Transaction Sumbitted "), React.createElement(WildcardsLoader$WildCards.make, { })), React.createElement(RimbleUi.Text, {
+                        }, Globals$WildCards.restr("Transaction Submitted "), React.createElement(WildcardsLoader$WildCards.make, { })), React.createElement(RimbleUi.Text, {
                           children: Globals$WildCards.restr("Awaiting transaction details.")
                         }), React.createElement(RimbleUi.Flex, {
                           children: React.createElement(RimbleUi.Loader, {
@@ -77,7 +77,7 @@ function TxTemplate(Props) {
                       children: null
                     }, React.createElement(RimbleUi.Heading, {
                           children: null
-                        }, Globals$WildCards.restr("Please accept the signature in your signer to allow use of " + (Web3Utils$WildCards.fromWeiBNToEthPrecision(txState[0], 2) + ".")), React.createElement(WildcardsLoader$WildCards.make, { })), React.createElement(RimbleUi.Flex, {
+                        }, Globals$WildCards.restr("Please sign the message to allow use of " + (Web3Utils$WildCards.fromWeiBNToEthPrecision(txState[0], 2) + " DAI.")), React.createElement(WildcardsLoader$WildCards.make, { })), React.createElement(RimbleUi.Flex, {
                           children: React.createElement(RimbleUi.Loader, {
                                 size: "80px"
                               }),
@@ -102,13 +102,13 @@ function TxTemplate(Props) {
           return React.createElement(React.Fragment, {
                       children: null
                     }, React.createElement(RimbleUi.Heading, {
-                          children: Globals$WildCards.restr("The transaction was declined by signing device, please try again.")
+                          children: Globals$WildCards.restr("The transaction was declined by your wallet, please try again.")
                         }), React.createElement("p", undefined, Globals$WildCards.restr("Failure reason: " + txState[0])), children);
       case /* ServerError */3 :
           return React.createElement(React.Fragment, {
                       children: null
                     }, React.createElement(RimbleUi.Heading, {
-                          children: Globals$WildCards.restr("There was server error when submitting that transaction.")
+                          children: Globals$WildCards.restr("There was a server error when submitting your transaction.")
                         }), React.createElement("p", undefined, Globals$WildCards.restr("Failure reason: " + txState[0])), children);
       case /* Complete */4 :
           var txHash = txState[0].transactionHash;

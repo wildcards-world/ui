@@ -1,6 +1,5 @@
 open Globals;
 
-[@gentype]
 [@react.component]
 let make = (~clickAction=() => (), ~isMobile=false) => {
   let currentUser = RootProvider.useCurrentUser();

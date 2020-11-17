@@ -21,10 +21,8 @@ let getToDisplay = (label, value) =>
 
 [@react.component]
 let make = (~closeButtonText, ~chain) => {
-  // TODO: We must use the correct client for updating the deposit
-  Js.log(
-    "The chain context in update deposit" ++ chain->Client.chainContextToStr,
-  );
+  // TODO: We must use the correct chain client for updating the deposit
+
   let (depositChange, setDepositChange) = React.useState(() => "");
   let (isAddDeposit, setIsAddDeposit) = React.useState(() => true);
 

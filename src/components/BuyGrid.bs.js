@@ -31,7 +31,6 @@ var headingStyle = Curry._1(Css.style, /* :: */[
 function BuyGrid$Grid(Props) {
   var chain = Props.chain;
   var allAnimals = QlHooks$WildCards.useAnimalList(chain);
-  console.log("All animals", allAnimals);
   return React.createElement(RimbleUi.Flex, {
               children: null,
               flexWrap: "wrap",
@@ -96,7 +95,6 @@ function indexToType(tabIndex) {
 function BuyGrid(Props) {
   var wildcardsEdition = Props.wildcardsEdition;
   var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
-  console.log(wildcardsEdition);
   var index = wildcardsEdition ? 1 : 0;
   var selectLeaderBoard = function (newIndex, _oldIndex) {
     Curry._1(clearAndPush, "#explorer/" + indexToType(newIndex));

@@ -74,7 +74,6 @@ function UserProfile$ClaimLoyaltyTokenButtons(Props) {
   var refreshLoyaltyTokenBalance = Props.refreshLoyaltyTokenBalance;
   var numberOfTokens = Props.numberOfTokens;
   var tokenId = TokenId$WildCards.fromStringUnsafe(id);
-  Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.useWildcardName(tokenId), "loading");
   var match = ContractActions$WildCards.useRedeemLoyaltyTokens(userAddress, false);
   var transactionStatus = match[1];
   var redeemLoyaltyTokens = match[0];

@@ -3,7 +3,6 @@
 import * as Ethers from "ethers";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as DaiJson from "./abi/dai.json";
-import * as BiconomyExec from "./biconomy-exec";
 import * as Erc712$WildCards from "./Erc712.bs.js";
 import * as ContractUtil$WildCards from "./ContractUtil.bs.js";
 
@@ -12,20 +11,6 @@ function getDaiContract(daiAddress, stewardAbi, library, account) {
 }
 
 var daiAbi = DaiJson.dai;
-
-function getNonce(daiContractAddress, library, account) {
-  var daiContract = getDaiContract(daiContractAddress, daiAbi, library, account);
-  var callDai = (async (daiContract) => {
-      try {
-        let result = await daiContract.getNonce("0xd3Cbce59318B2E570883719c8165F9390A12BdD6");
-        console.log("the result", result)
-      } catch (e) {
-        console.log("the error:", e);
-      }
-    });
-  callDai(daiContract);
-  return daiContract.getNonce(Belt_Option.getWithDefault(account, "0x0"));
-}
 
 function createPermitSig(provider, verifyingContract, nonce, chainId, holder, spender, from) {
   var domain_salt = "0x" + chainId.toString(16).padStart(64, "0");
@@ -74,17 +59,10 @@ function createPermitSig(provider, verifyingContract, nonce, chainId, holder, sp
               }));
 }
 
-var buyWithPermit = BiconomyExec.buyWithPermit;
-
-var buyAuctionWithPermit = BiconomyExec.buyAuctionWithPermit;
-
 export {
   getDaiContract ,
   daiAbi ,
-  getNonce ,
   createPermitSig ,
-  buyWithPermit ,
-  buyAuctionWithPermit ,
   
 }
 /* daiAbi Not a pure module */

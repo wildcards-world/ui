@@ -919,7 +919,7 @@ function Dapp(Props) {
                     right: 0,
                     m: 1
                   }), React.createElement(UpdateDeposit$WildCards.make, {
-                    closeButtonText: "Back to view Animal",
+                    closeButtonText: "Back to animal view",
                     chain: Belt_Option.mapWithDefault(currentAnimal, /* MainnetQuery */2, Animal$WildCards.getChainIdFromAnimalId)
                   }));
           break;

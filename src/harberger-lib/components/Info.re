@@ -336,6 +336,7 @@ module SimpleView = {
     // let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
   };
 };
+
 [@react.component]
 let make = (~chain, ~tokenId: TokenId.t) => {
   let daysHeld = QlHooks.useDaysHeld(~chain, tokenId);
