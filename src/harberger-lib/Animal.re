@@ -30,11 +30,10 @@ let useGetOrgBadge: string => string =
     QlHooks.useLoadOrganisationLogo(org)->Option.map(path => cdnBase ++ path)
     |||| "https://dd2wadt5nc0o7.cloudfront.net/conservations/OGBage.png";
 
-let useGetOrgBadgeImage: TokenId.t => string =
-  animal => {
-    let org = QlHooks.useWildcardOrgId(animal) |||| "";
-    useGetOrgBadge(org);
-  };
+let useGetOrgBadgeImage = (~tokenId) => {
+  let org = QlHooks.useWildcardOrgId(~tokenId) |||| "";
+  useGetOrgBadge(org);
+};
 
 type launchStatus =
   | Launched

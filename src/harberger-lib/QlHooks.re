@@ -555,7 +555,7 @@ let useRealImages = tokenId => {
     a##launchedWildcards_by_pk->Option.map(b => b##wildcard##real_wc_photos)
   );
 };
-let useWildcardOrgId = tokenId => {
+let useWildcardOrgId = (~tokenId) => {
   let (simple, _) = useWildcardDataQuery(tokenId);
   queryResultOptionFlatMap(simple, a =>
     a##launchedWildcards_by_pk
@@ -563,7 +563,7 @@ let useWildcardOrgId = tokenId => {
     ->Option.map(org => org##id)
   );
 };
-let useWildcardOrgName = tokenId => {
+let useWildcardOrgName = (~tokenId) => {
   let (simple, _) = useWildcardDataQuery(tokenId);
   queryResultOptionFlatMap(simple, a =>
     a##launchedWildcards_by_pk

@@ -206,8 +206,8 @@ module AnimalOnLandingPage = {
     let name = QlHooks.useWildcardName(animal) |||| "Loading";
     let isExplorer = Router.useIsExplorer();
 
-    let orgBadge = Animal.useGetOrgBadgeImage(animal);
-    let orgId = QlHooks.useWildcardOrgId(animal) |||| "";
+    let orgBadge = Animal.useGetOrgBadgeImage(~tokenId=animal);
+    let orgId = QlHooks.useWildcardOrgId(~tokenId=animal) |||| "";
 
     let currentPriceWei = QlHooks.usePrice(~chain, animal);
 
@@ -478,7 +478,7 @@ module AnimalActionsOnDetailsPage = {
 module DetailsViewAnimal = {
   [@react.component]
   let make = (~chain, ~animal: TokenId.t) => {
-    let orgId = QlHooks.useWildcardOrgId(animal) |||| "";
+    let orgId = QlHooks.useWildcardOrgId(~tokenId=animal) |||| "";
 
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
@@ -486,7 +486,7 @@ module DetailsViewAnimal = {
 
     let normalImage = () => <img className=Styles.ownedAnimalImg src=image />;
     // let optAlternateImage = Animal.getAlternateImage(animal);
-    let orgBadge = Animal.useGetOrgBadgeImage(animal);
+    let orgBadge = Animal.useGetOrgBadgeImage(~tokenId=animal);
 
     let isLaunched = animal->Animal.isLaunched(~chain);
     let isOnAuction = Animal.useIsOnAuction(~chain, animal);

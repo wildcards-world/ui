@@ -11,6 +11,7 @@ import * as Eth$WildCards from "../Eth.bs.js";
 import * as Globals$WildCards from "../Globals.bs.js";
 import * as QlHooks$WildCards from "../QlHooks.bs.js";
 import * as CountDown$WildCards from "../CountDown.bs.js";
+import * as Web3Utils$WildCards from "../Web3Utils.bs.js";
 import * as Accounting$WildCards from "../Accounting.bs.js";
 import * as PriceDisplay$WildCards from "../PriceDisplay.bs.js";
 import * as RootProvider$WildCards from "../RootProvider.bs.js";
@@ -94,22 +95,50 @@ function Info$SimpleView(Props) {
   var tokenName = Props.tokenName;
   var optMonthlyPledgeEth = Props.optMonthlyPledgeEth;
   var unit = Props.unit;
+  var currentPatron = Props.currentPatron;
   var displayNameStr = Props.displayNameStr;
   var totalPatronage = Props.totalPatronage;
   var definiteTime = Props.definiteTime;
   var daysHeld = Props.daysHeld;
+  var orgId = Props.orgId;
   var orgName = Props.orgName;
   var priceString = Props.priceString;
   var optionalSpecies = Props.optionalSpecies;
+  var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
   return React.createElement(React.Fragment, {
               children: null
-            }, React.createElement("p", undefined, tokenName + (" is currently protected by " + (displayNameStr + (". " + (displayNameStr + (" values their guardianship of " + (tokenName + (" at " + (priceString + (" and " + (tokenName + (" has a monthly pledge rate of " + (monthlyRate + ("%. This means " + (displayNameStr + (" has to contribute " + ((
-                                                  optMonthlyPledgeEth !== undefined ? optMonthlyPledgeEth + (" " + unit) : "Loading"
-                                                ) + (" monthly to " + (orgName + (" for the protection of " + (tokenName + Belt_Option.mapWithDefault(optionalSpecies, "", (function (species) {
-                                                                return " the " + species;
-                                                              }))))))))))))))))))))))), daysHeld !== undefined ? React.createElement("p", undefined, displayNameStr + (" has been the guardian of " + (tokenName + (" for " + (daysHeld[0].toFixed() + " days")))), definiteTime !== undefined ? React.createElement(React.Fragment, undefined, "and has enough deposit to last ", React.createElement(CountDown$WildCards.make, {
+            }, React.createElement("p", undefined, tokenName + " is currently protected by ", React.createElement("a", {
+                      onClick: (function (e) {
+                          e.preventDefault();
+                          return Curry._1(clearAndPush, "/#user/" + (String(currentPatron) + ""));
+                        })
+                    }, Globals$WildCards.restr(displayNameStr)), " who values their guardianship of " + (tokenName + (" at " + (priceString + (". " + (tokenName + (" has a monthly pledge rate of " + (monthlyRate + "%. This means "))))))), React.createElement("a", {
+                      onClick: (function (e) {
+                          e.preventDefault();
+                          return Curry._1(clearAndPush, "/#user/" + (String(currentPatron) + ""));
+                        })
+                    }, Globals$WildCards.restr(displayNameStr)), " has to contribute " + ((
+                    optMonthlyPledgeEth !== undefined ? optMonthlyPledgeEth + (" " + unit) : "Loading"
+                  ) + " monthly to "), React.createElement("a", {
+                      onClick: (function (e) {
+                          e.preventDefault();
+                          return Curry._1(clearAndPush, "/#org/" + (String(orgId) + ""));
+                        })
+                    }, Globals$WildCards.restr(orgName)), " for the protection of " + (tokenName + (Belt_Option.mapWithDefault(optionalSpecies, "", (function (species) {
+                            return " the " + species;
+                          })) + "."))), daysHeld !== undefined ? React.createElement("p", undefined, React.createElement("a", {
+                        onClick: (function (e) {
+                            e.preventDefault();
+                            return Curry._1(clearAndPush, "/#user/" + (String(currentPatron) + ""));
+                          })
+                      }, Globals$WildCards.restr(displayNameStr)), " has been the guardian of " + (tokenName + (" for " + (daysHeld[0].toFixed() + " days"))), definiteTime !== undefined ? React.createElement(React.Fragment, undefined, "and has enough deposit to last ", React.createElement(CountDown$WildCards.make, {
                               endDateMoment: Caml_option.valFromOption(definiteTime)
-                            }), " - remember to keep topping up that deposit (winky face emoji).") : null) : null, React.createElement("p", undefined, "" + (tokenName + (" has earned " + (totalPatronage + (" " + (unit + (" for " + (orgName + (". Congratulations to all the honourable and loyal patrons of " + (tokenName + "!")))))))))));
+                            }), " - remember to keep topping up that deposit 😉.") : null) : null, React.createElement("p", undefined, "" + (tokenName + (" has earned " + (totalPatronage + (" " + (unit + " for "))))), React.createElement("a", {
+                      onClick: (function (e) {
+                          e.preventDefault();
+                          return Curry._1(clearAndPush, "/#org/" + (String(orgId) + ""));
+                        })
+                    }, Globals$WildCards.restr(orgName)), ". Congratulations to all the honourable and loyal patrons of " + (tokenName + "!")));
 }
 
 var SimpleView = {
@@ -186,6 +215,10 @@ function Info(Props) {
   var showEthWithUsdConversion = chain !== 1;
   var unit = showEthWithUsdConversion ? "ETH" : "USD";
   var translationModeContext = ReactTranslate$WildCards.useTranslationModeContext(undefined);
+  var orgName = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.useWildcardOrgName(tokenId), " the organisation");
+  var orgId = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.useWildcardOrgId(tokenId), " the organisation");
+  var currentPriceWei = QlHooks$WildCards.usePrice(chain, tokenId);
+  var priceString = typeof currentPriceWei === "number" ? "Loading" : Web3Utils$WildCards.fromWeiBNToEthPrecision(currentPriceWei[0], 4) + " USD";
   if (translationModeContext.translationModeCrypto) {
     return React.createElement(Info$ExpertView, {
                 monthlyRate: monthlyRate,
@@ -210,12 +243,14 @@ function Info(Props) {
                 tokenName: tokenName,
                 optMonthlyPledgeEth: optMonthlyPledgeEth,
                 unit: unit,
+                currentPatron: currentPatron,
                 displayNameStr: displayNameStr,
                 totalPatronage: totalPatronage,
                 definiteTime: definiteTime,
                 daysHeld: daysHeld,
-                orgName: "TODO",
-                priceString: "TODO",
+                orgId: orgId,
+                orgName: orgName,
+                priceString: priceString,
                 optionalSpecies: undefined
               });
   }

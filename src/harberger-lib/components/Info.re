@@ -207,93 +207,133 @@ module SimpleView = {
         ~tokenName,
         ~optMonthlyPledgeEth,
         ~unit,
+        ~currentPatron,
         ~displayNameStr,
         ~totalPatronage,
         ~definiteTime,
         ~daysHeld,
+        ~orgId,
         ~orgName,
         ~priceString,
         ~optionalSpecies,
       ) => {
-    <React.Fragment>
+    let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
-        <p>
-          {(
-             tokenName
-             ++ " is currently protected by "
-             ++ displayNameStr
-             ++ ". "
-             ++ displayNameStr
-             ++ " values their guardianship of "
-             ++ tokenName
-             ++ " at "
-             ++ priceString
-             ++ " and "
-             ++ tokenName
-             ++ " has a monthly pledge rate of "
-             ++ monthlyRate
-             ++ "%. This means "
-             ++ displayNameStr
-             ++ " has to contribute "
-             ++ (
-               switch (optMonthlyPledgeEth) {
-               | Some(monthlyPledgeEth) => monthlyPledgeEth ++ " " ++ unit
-               | None => "Loading"
-               }
-             )
-             ++ " monthly to "
-             ++ orgName
-             ++ " for the protection of "
-             ++ tokenName
-             ++ optionalSpecies->Option.mapWithDefault("", species =>
-                  " the " ++ species
-                )
+    <React.Fragment>
+      <p>
+        {(tokenName ++ " is currently protected by ")->React.string}
+        <a
+          onClick={e => {
+            ReactEvent.Mouse.preventDefault(e);
+            clearAndPush({j|/#user/$currentPatron|j});
+          }}>
+          displayNameStr->restr
+        </a>
+        {(
+           " who values their guardianship of "
+           ++ tokenName
+           ++ " at "
+           ++ priceString
+           ++ ". "
+           ++ tokenName
+           ++ " has a monthly pledge rate of "
+           ++ monthlyRate
+           ++ "%. This means "
+         )
+         ->React.string}
+        <a
+          onClick={e => {
+            ReactEvent.Mouse.preventDefault(e);
+            clearAndPush({j|/#user/$currentPatron|j});
+          }}>
+          displayNameStr->restr
+        </a>
+        {(
+           " has to contribute "
+           ++ (
+             switch (optMonthlyPledgeEth) {
+             | Some(monthlyPledgeEth) => monthlyPledgeEth ++ " " ++ unit
+             | None => "Loading"
+             }
            )
-           ->React.string}
-        </p>
-        {switch (daysHeld) {
-         | Some((daysHeldFloat, _timeAquired)) =>
-           <p>
-             {(
-                displayNameStr
-                ++ " has been the guardian of "
-                ++ tokenName
-                ++ " for "
-                ++ daysHeldFloat->Js.Float.toFixed
-                ++ " days"
+           ++ " monthly to "
+         )
+         ->React.string}
+        <a
+          onClick={e => {
+            ReactEvent.Mouse.preventDefault(e);
+            clearAndPush({j|/#org/$orgId|j});
+          }}>
+          orgName->restr
+        </a>
+        {(
+           " for the protection of "
+           ++ tokenName
+           ++ optionalSpecies->Option.mapWithDefault("", species =>
+                " the " ++ species
               )
-              ->React.string}
-             {switch (definiteTime) {
-              | Some(date) =>
-                <>
-                  "and has enough deposit to last "->React.string
-                  <CountDown endDateMoment=date />
-                  " - remember to keep topping up that deposit (winky face emoji)."
-                  ->React.string
-                </>
-              | None => React.null
-              }}
-           </p>
-         | None => React.null
-         }}
-        <p>
-          {(
-             ""
-             ++ tokenName
-             ++ " has earned "
-             ++ totalPatronage
-             ++ " "
-             ++ unit
-             ++ " for "
-             ++ orgName
-             ++ ". Congratulations to all the honourable and loyal patrons of "
-             ++ tokenName
-             ++ "!"
-           )
-           ->React.string}
-        </p>
-      </React.Fragment>;
-      // let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+           ++ "."
+         )
+         ->React.string}
+      </p>
+      {switch (daysHeld) {
+       | Some((daysHeldFloat, _timeAquired)) =>
+         <p>
+           <a
+             onClick={e => {
+               ReactEvent.Mouse.preventDefault(e);
+               clearAndPush({j|/#user/$currentPatron|j});
+             }}>
+             displayNameStr->restr
+           </a>
+           {(
+              " has been the guardian of "
+              ++ tokenName
+              ++ " for "
+              ++ daysHeldFloat->Js.Float.toFixed
+              ++ " days"
+            )
+            ->React.string}
+           {switch (definiteTime) {
+            | Some(date) =>
+              <>
+                "and has enough deposit to last "->React.string
+                <CountDown endDateMoment=date />
+                {j| - remember to keep topping up that deposit 😉.|j}
+                ->React.string
+              </>
+            | None => React.null
+            }}
+         </p>
+       | None => React.null
+       }}
+      <p>
+        {(
+           ""
+           ++ tokenName
+           ++ " has earned "
+           ++ totalPatronage
+           ++ " "
+           ++ unit
+           ++ " for "
+         )
+         ->React.string}
+        <a
+          onClick={e => {
+            ReactEvent.Mouse.preventDefault(e);
+            clearAndPush({j|/#org/$orgId|j});
+          }}>
+          orgName->restr
+        </a>
+        {(
+           ". Congratulations to all the honourable and loyal patrons of "
+           ++ tokenName
+           ++ "!"
+         )
+         ->React.string}
+      </p>
+    </React.Fragment>;
+    // let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
   };
 };
 [@react.component]
@@ -371,6 +411,17 @@ let make = (~chain, ~tokenId: TokenId.t) => {
     };
   let unit = showEthWithUsdConversion ? "ETH" : "USD";
   let translationModeContext = ReactTranslate.useTranslationModeContext();
+  let orgName = QlHooks.useWildcardOrgName(~tokenId) |||| " the organisation";
+  let orgId = QlHooks.useWildcardOrgId(~tokenId) |||| " the organisation";
+
+  let currentPriceWei = QlHooks.usePrice(~chain, tokenId);
+  let priceString =
+    switch (currentPriceWei) {
+    | Foreclosed(price)
+    | Price(price) =>
+      price->Web3Utils.fromWeiBNToEthPrecision(~digits=4) ++ " USD"
+    | Loading => "Loading"
+    };
 
   translationModeContext.translationModeCrypto
     ? <ExpertView
@@ -395,12 +446,14 @@ let make = (~chain, ~tokenId: TokenId.t) => {
         tokenName
         optMonthlyPledgeEth
         unit
+        currentPatron
         displayNameStr
         totalPatronage
         definiteTime
         daysHeld
-        orgName="TODO"
-        priceString="TODO"
+        orgName
+        orgId
+        priceString
         optionalSpecies=None
       />;
 };
