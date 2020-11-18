@@ -11,7 +11,16 @@ function isPositiveStringInteger(str) {
 
 function elipsify(inputString, maxLength) {
   if (inputString.length > maxLength) {
-    return $$String.sub("" + (String(inputString) + ""), 0, maxLength - 3 | 0) + "...";
+    return $$String.sub(inputString, 0, maxLength - 3 | 0) + "...";
+  } else {
+    return inputString;
+  }
+}
+
+function elipsifyMiddle(inputString, maxLength, trailingCharacters) {
+  var stringLength = inputString.length;
+  if (stringLength > maxLength && (trailingCharacters + maxLength | 0) < stringLength) {
+    return $$String.sub(inputString, 0, maxLength - 3 | 0) + ("..." + $$String.sub(inputString, Math.abs(stringLength - trailingCharacters | 0), trailingCharacters));
   } else {
     return inputString;
   }
@@ -24,6 +33,7 @@ function bnToMoment(bn) {
 export {
   isPositiveStringInteger ,
   elipsify ,
+  elipsifyMiddle ,
   bnToMoment ,
   
 }

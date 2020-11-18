@@ -229,7 +229,7 @@ function useIsDetails(param) {
 function useIsHome(param) {
   var urlState = useUrlState(undefined);
   return React.useMemo((function () {
-                if (typeof urlState === "number" || urlState.tag !== /* Home */4) {
+                if (typeof urlState === "number" || !(urlState.tag === /* Home */4 && !urlState[0])) {
                   return false;
                 } else {
                   return true;

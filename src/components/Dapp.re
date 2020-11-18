@@ -206,8 +206,8 @@ module AnimalOnLandingPage = {
     let name = QlHooks.useWildcardName(animal) |||| "Loading";
     let isExplorer = Router.useIsExplorer();
 
-    let orgBadge = Animal.useGetOrgBadgeImage(animal);
-    let orgId = QlHooks.useWildcardOrgId(animal) |||| "";
+    let orgBadge = Animal.useGetOrgBadgeImage(~tokenId=animal);
+    let orgId = QlHooks.useWildcardOrgId(~tokenId=animal) |||| "";
 
     let currentPriceWei = QlHooks.usePrice(~chain, animal);
 
@@ -478,7 +478,7 @@ module AnimalActionsOnDetailsPage = {
 module DetailsViewAnimal = {
   [@react.component]
   let make = (~chain, ~animal: TokenId.t) => {
-    let orgId = QlHooks.useWildcardOrgId(animal) |||| "";
+    let orgId = QlHooks.useWildcardOrgId(~tokenId=animal) |||| "";
 
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
@@ -486,7 +486,7 @@ module DetailsViewAnimal = {
 
     let normalImage = () => <img className=Styles.ownedAnimalImg src=image />;
     // let optAlternateImage = Animal.getAlternateImage(animal);
-    let orgBadge = Animal.useGetOrgBadgeImage(animal);
+    let orgBadge = Animal.useGetOrgBadgeImage(~tokenId=animal);
 
     let isLaunched = animal->Animal.isLaunched(~chain);
     let isOnAuction = Animal.useIsOnAuction(~chain, animal);
@@ -625,247 +625,6 @@ module DefaultLeftPanel = {
   };
 };
 
-type maybeDate =
-  | Loading
-  | Date(MomentRe.Moment.t);
-
-module AnimalInfoStats = {
-  [@react.component]
-  let make = (~chain, ~animal: TokenId.t) => {
-    let animalName = QlHooks.useWildcardName(animal) |||| "Loading";
-
-    let daysHeld = QlHooks.useDaysHeld(~chain, animal);
-
-    let currentPatron = QlHooks.usePatron(~chain, animal) |||| "Loading";
-    let userId = UserProvider.useDisplayName(currentPatron);
-    let displayName = UserProvider.useDisplayName(currentPatron);
-    let displayNameStr = UserProvider.displayNameToString(displayName);
-    let userIdType =
-      switch (userId) {
-      | EthAddress(_) => "public address"
-      | TwitterHandle(_) => "verified twitter account"
-      | ThreeBoxName(_) => "3box name"
-      };
-    let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
-
-    let currentUsdEthPrice = UsdPriceProvider.useUsdPrice();
-    let (depositAvailableToWithdrawEth, depositAvailableToWithdrawUsd) =
-      QlHooks.useRemainingDepositEth(~chain, currentPatron)
-      ->mapd(("Loading", "Loading"), a =>
-          (
-            (a->Eth.get(Eth.Eth(`ether))->Float.fromString |||| 0.0)
-            ->toFixedWithPrecisionNoTrailingZeros(~digits=9),
-            currentUsdEthPrice->mapd("Loading", usdEthRate =>
-              a->Eth.get(Eth.Usd(usdEthRate, 2))
-            ),
-          )
-        );
-
-    let (totalPatronage, totalPatronageUsd) =
-      QlHooks.useAmountRaisedToken(~chain, animal)
-      ->mapd(("Loading", "Loading"), a =>
-          (
-            (a->Eth.get(Eth.Eth(`ether))->Float.fromString |||| 0.0)
-            ->toFixedWithPrecisionNoTrailingZeros(~digits=9),
-            currentUsdEthPrice->mapd("Loading", usdEthRate =>
-              a->Eth.get(Eth.Usd(usdEthRate, 2))
-            ),
-          )
-        );
-    let foreclosureTime = QlHooks.useForeclosureTime(~chain, currentPatron);
-    let definiteTime = foreclosureTime->mapd(Loading, a => Date(a));
-    let ratio = QlHooks.usePledgeRate(~chain, animal);
-
-    let optCurrentPrice = PriceDisplay.usePrice(~chain, animal);
-
-    let (optMonthlyPledgeEth, optMonthlyPledgeUsd) =
-      switch (optCurrentPrice) {
-      | Some((priceEth, optPriceUsd)) => (
-          Some(
-            toFixedWithPrecisionNoTrailingZeros(
-              Float.fromString(priceEth)->Accounting.defaultZeroF *. ratio,
-              ~digits=4,
-            ),
-          ),
-          switch (optPriceUsd) {
-          | Some(_priceUsd) => None
-
-          | None => None
-          },
-        )
-      | None => (None, None)
-      };
-
-    let monthlyRate = Js.Float.toString(ratio *. 100.);
-
-    <React.Fragment>
-      <div>
-        <small>
-          <strong>
-            {{
-               "Monthly Pledge (at " ++ monthlyRate ++ "%): ";
-             }
-             ->restr}
-            <Rimble.Tooltip
-              message={
-                "This is the monthly percentage contribution of "
-                ++ animalName
-                ++ "'s sale price that will go towards conservation of at risk animals. This is deducted continuously from the deposit and paid by the owner of the animal"
-              }
-              placement="top">
-              <span> {js|ⓘ|js}->restr </span>
-            </Rimble.Tooltip>
-          </strong>
-        </small>
-        <br />
-        {switch (optMonthlyPledgeEth) {
-         | Some(monthlyPledgeEth) =>
-           {
-             monthlyPledgeEth ++ " ETH";
-           }
-           ->restr
-         | None => <Rimble.Loader />
-         }}
-        <br />
-        <small>
-          {switch (optMonthlyPledgeUsd) {
-           | Some(monthlyPledgeUsd) =>
-             {
-               "(" ++ monthlyPledgeUsd ++ " USD)";
-             }
-             ->restr
-           | None => React.null
-           }}
-        </small>
-      </div>
-      <p>
-        <small>
-          <strong>
-            "Current Patron: "->restr
-            <Rimble.Tooltip
-              message={j|This is the $userIdType of the current owner|j}
-              placement="top">
-              <span> {js|ⓘ|js}->restr </span>
-            </Rimble.Tooltip>
-          </strong>
-        </small>
-        <br />
-        <a
-          onClick={e => {
-            ReactEvent.Mouse.preventDefault(e);
-            clearAndPush({j|/#user/$currentPatron|j});
-          }}>
-          displayNameStr->restr
-        </a>
-      </p>
-      <p>
-        <small>
-          <strong>
-            "Available Deposit: "->restr
-            <Rimble.Tooltip
-              message="This is the amount the owner has deposited to pay their monthly contribution"
-              placement="top">
-              <span> {js|ⓘ|js}->restr </span>
-            </Rimble.Tooltip>
-          </strong>
-        </small>
-        <br />
-        {{
-           depositAvailableToWithdrawEth ++ " ETH";
-         }
-         ->restr}
-        <br />
-        <small>
-          {{
-             "(" ++ depositAvailableToWithdrawUsd ++ " USD)";
-           }
-           ->restr}
-        </small>
-      </p>
-      <p>
-        <small>
-          <strong>
-            {{
-               animalName ++ "'s Patronage: ";
-             }
-             ->restr}
-            <Rimble.Tooltip
-              message={
-                "This is the total contribution that has been raised thanks to the wildcard, "
-                ++ animalName
-              }
-              placement="top">
-              <span> {js|ⓘ|js}->restr </span>
-            </Rimble.Tooltip>
-          </strong>
-        </small>
-        <br />
-        {{
-           totalPatronage ++ " ETH";
-         }
-         ->restr}
-        <br />
-        <small>
-          {{
-             "(" ++ totalPatronageUsd ++ " USD)";
-           }
-           ->restr}
-        </small>
-      </p>
-      {switch (definiteTime) {
-       | Date(date) =>
-         <p>
-           <small>
-             <strong>
-               "Foreclosure date: "->restr
-               <Rimble.Tooltip
-                 message={
-                   "This is the date the deposit will run out and the animal and the current owner will lose ownership of "
-                   ++ animalName
-                 }
-                 placement="top">
-                 <span> {js|ⓘ|js}->restr </span>
-               </Rimble.Tooltip>
-             </strong>
-           </small>
-           <br />
-           {{
-              MomentRe.Moment.format("LLLL", date);
-            }
-            ->restr}
-           <br />
-           <small>
-             "( "->restr
-             <CountDown endDateMoment=date />
-             ")"->restr
-           </small>
-         </p>
-       | Loading => React.null
-       }}
-      {switch (daysHeld) {
-       | Some((daysHeldFloat, timeAquired)) =>
-         let timeAquiredString = timeAquired->MomentRe.Moment.toISOString;
-         <p>
-           <small>
-             <strong>
-               "Days Held: "->restr
-               <Rimble.Tooltip
-                 message={j|This is the amount of time $animalName has been held. It was acquired on the $timeAquiredString.|j}
-                 placement="top">
-                 <span> {js|ⓘ|js}->restr </span>
-               </Rimble.Tooltip>
-             </strong>
-           </small>
-           <br />
-           {daysHeldFloat->Js.Float.toFixed->restr}
-           <br />
-         </p>;
-       | None => React.null
-       }}
-    </React.Fragment>;
-  };
-};
-
 module UnlaunchedAnimalInfo = {
   [@react.component]
   let make = (~chain, ~endDateMoment, ~animal: TokenId.t) => {
@@ -876,7 +635,7 @@ module UnlaunchedAnimalInfo = {
 
     <DisplayAfterDate
       endDateMoment
-      afterComponent={<AnimalInfoStats chain animal />}
+      afterComponent={<Info chain tokenId=animal />}
       beforeComponent={
         <React.Fragment>
           <h2> "This animal will launch in:"->React.string </h2>

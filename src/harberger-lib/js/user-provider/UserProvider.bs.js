@@ -65,7 +65,7 @@ function displayNameToString(displayName) {
     case /* ThreeBoxName */1 :
         return displayName[0];
     case /* EthAddress */2 :
-        return Helper$WildCards.elipsify(displayName[0], 12);
+        return Helper$WildCards.elipsifyMiddle(displayName[0], 8, 2);
     
   }
 }

@@ -45,8 +45,8 @@ function useGetOrgBadge(org) {
                   })), "https://dd2wadt5nc0o7.cloudfront.net/conservations/OGBage.png");
 }
 
-function useGetOrgBadgeImage(animal) {
-  return useGetOrgBadge(Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.useWildcardOrgId(animal), ""));
+function useGetOrgBadgeImage(tokenId) {
+  return useGetOrgBadge(Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.useWildcardOrgId(tokenId), ""));
 }
 
 var nextLaunchDate = Moment.utc("2020-07-30T17:00:00");
