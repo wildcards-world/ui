@@ -95,7 +95,7 @@ let useIsUserValidated: string => bool =
 
 let displayNameToString = displayName => {
   switch (displayName) {
-  | EthAddress(addr) => addr->Helper.elipsify(12)
+  | EthAddress(addr) => addr->Helper.elipsifyMiddle(8, 2)
   | TwitterHandle(handle) => handle
   | ThreeBoxName(name) => name
   };

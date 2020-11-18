@@ -11,10 +11,29 @@ let isPositiveStringInteger = str => {
 let elipsify: (string, int) => string =
   (inputString, maxLength) =>
     if (inputString->String.length > maxLength) {
-      String.sub({j|$inputString|j}, 0, maxLength - 3) ++ "...";
+      String.sub(inputString, 0, maxLength - 3) ++ "...";
     } else {
-      inputString /* */;
+      inputString;
     };
+
+let elipsifyMiddle: (string, int, int) => string =
+  (inputString, maxLength, trailingCharacters) => {
+    let stringLength = inputString->String.length;
+
+    if (stringLength > maxLength
+        && trailingCharacters
+        + maxLength < stringLength) {
+      String.sub(inputString, 0, maxLength - 3)
+      ++ "..."
+      ++ String.sub(
+           inputString,
+           Js.Math.abs_int(stringLength - trailingCharacters),
+           trailingCharacters,
+         );
+    } else {
+      inputString;
+    };
+  };
 
 let bnToMoment = bn =>
   bn

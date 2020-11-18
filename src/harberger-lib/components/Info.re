@@ -219,16 +219,31 @@ module SimpleView = {
       ) => {
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
+    let linkStyle = Css.(style([textDecoration(underline)]));
+    let userLink =
+      <a
+        className=linkStyle
+        onClick={e => {
+          ReactEvent.Mouse.preventDefault(e);
+          clearAndPush({j|/#user/$currentPatron|j});
+        }}>
+        displayNameStr->restr
+      </a>;
+
+    let orgLink =
+      <a
+        className=linkStyle
+        onClick={e => {
+          ReactEvent.Mouse.preventDefault(e);
+          clearAndPush({j|/#org/$orgId|j});
+        }}>
+        orgName->restr
+      </a>;
+
     <React.Fragment>
       <p>
         {(tokenName ++ " is currently protected by ")->React.string}
-        <a
-          onClick={e => {
-            ReactEvent.Mouse.preventDefault(e);
-            clearAndPush({j|/#user/$currentPatron|j});
-          }}>
-          displayNameStr->restr
-        </a>
+        userLink
         {(
            " who values their guardianship of "
            ++ tokenName
@@ -241,13 +256,7 @@ module SimpleView = {
            ++ "%. This means "
          )
          ->React.string}
-        <a
-          onClick={e => {
-            ReactEvent.Mouse.preventDefault(e);
-            clearAndPush({j|/#user/$currentPatron|j});
-          }}>
-          displayNameStr->restr
-        </a>
+        userLink
         {(
            " has to contribute "
            ++ (
@@ -259,13 +268,7 @@ module SimpleView = {
            ++ " monthly to "
          )
          ->React.string}
-        <a
-          onClick={e => {
-            ReactEvent.Mouse.preventDefault(e);
-            clearAndPush({j|/#org/$orgId|j});
-          }}>
-          orgName->restr
-        </a>
+        orgLink
         {(
            " for the protection of "
            ++ tokenName
@@ -279,19 +282,13 @@ module SimpleView = {
       {switch (daysHeld) {
        | Some((daysHeldFloat, _timeAquired)) =>
          <p>
-           <a
-             onClick={e => {
-               ReactEvent.Mouse.preventDefault(e);
-               clearAndPush({j|/#user/$currentPatron|j});
-             }}>
-             displayNameStr->restr
-           </a>
+           userLink
            {(
               " has been the guardian of "
               ++ tokenName
               ++ " for "
               ++ daysHeldFloat->Js.Float.toFixed
-              ++ " days"
+              ++ " days "
             )
             ->React.string}
            {switch (definiteTime) {
@@ -318,13 +315,7 @@ module SimpleView = {
            ++ " for "
          )
          ->React.string}
-        <a
-          onClick={e => {
-            ReactEvent.Mouse.preventDefault(e);
-            clearAndPush({j|/#org/$orgId|j});
-          }}>
-          orgName->restr
-        </a>
+        orgLink
         {(
            ". Congratulations to all the honourable and loyal patrons of "
            ++ tokenName
@@ -420,43 +411,82 @@ let make = (~chain, ~tokenId: TokenId.t) => {
     switch (currentPriceWei) {
     | Foreclosed(price)
     | Price(price) =>
-      price->Web3Utils.fromWeiBNToEthPrecision(~digits=4) ++ " USD"
+      price->Web3Utils.fromWeiBNToEthPrecision(~digits=2) ++ " " ++ unit
     | Loading => "Loading"
     };
 
-  translationModeContext.translationModeCrypto
-    ? <ExpertView
-        monthlyRate
-        tokenName
-        optMonthlyPledgeEth
-        unit
-        showEthWithUsdConversion
-        optMonthlyPledgeUsd
-        userIdType
-        currentPatron
-        displayNameStr
-        depositAvailableToWithdrawEth
-        depositAvailableToWithdrawUsd
-        totalPatronage
-        totalPatronageUsd
-        definiteTime
-        daysHeld
+  <>
+    <div
+      className=Css.(
+        style([
+          color(grey),
+          cursor(`pointer),
+          display(`flex),
+          justifyContent(`right),
+          alignItems(`right),
+        ])
+      )>
+      <small
+        onClick={event => {
+          event->ReactEvent.Mouse.preventDefault;
+          translationModeContext.setTranslationModeCrypto(
+            !translationModeContext.translationModeCrypto,
+          );
+        }}>
+        (
+          translationModeContext.translationModeCrypto
+            ? "EXPERT MODE " : "DEFAULT MODE "
+        )
+        ->restr
+      </small>
+      <ReactSwitch
+        onChange={translationModeContext.setTranslationModeCrypto}
+        checked={translationModeContext.translationModeCrypto}
+        height=16
+        handleDiameter=18
+        width=30
+        onColor="#6BAD3F"
+        onHandleColor="#346D4C"
+        offHandleColor="#aaaaaa"
+        uncheckedIcon=false
+        checkedIcon=false
+        className=Styles.translationSwitch
       />
-    : <SimpleView
-        monthlyRate
-        tokenName
-        optMonthlyPledgeEth
-        unit
-        currentPatron
-        displayNameStr
-        totalPatronage
-        definiteTime
-        daysHeld
-        orgName
-        orgId
-        priceString
-        optionalSpecies=None
-      />;
+    </div>
+    {translationModeContext.translationModeCrypto
+       ? <ExpertView
+           monthlyRate
+           tokenName
+           optMonthlyPledgeEth
+           unit
+           showEthWithUsdConversion
+           optMonthlyPledgeUsd
+           userIdType
+           currentPatron
+           displayNameStr
+           depositAvailableToWithdrawEth
+           depositAvailableToWithdrawUsd
+           totalPatronage
+           totalPatronageUsd
+           definiteTime
+           daysHeld
+         />
+       : <SimpleView
+           monthlyRate
+           tokenName
+           optMonthlyPledgeEth
+           unit
+           currentPatron
+           displayNameStr
+           totalPatronage
+           definiteTime
+           daysHeld
+           orgName
+           orgId
+           priceString
+           optionalSpecies=None
+         />}
+  </>;
 };
 
 module Auction = {

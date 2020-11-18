@@ -131,7 +131,8 @@ let useIsHome = () => {
   React.useMemo1(
     () =>
       switch (urlState) {
-      | Home(_) => true
+      | Home(NormalView) => true
+      | Home(DetailView(_))
       | User(_)
       | Org(_)
       | Explorer(_)
