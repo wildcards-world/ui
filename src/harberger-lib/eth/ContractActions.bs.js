@@ -236,7 +236,7 @@ function useVoteContract(isGsn) {
 }
 
 function execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, sendMetaTx, userAddress, spender, lib, generateFunctionSignature, chainId, verifyingContract) {
-  var __x = DaiPermit$WildCards.createPermitSig(lib.provider, verifyingContract, daiNonce, chainId, userAddress, spender, userAddress);
+  var __x = DaiPermit$WildCards.createPermitSig(lib.provider, verifyingContract, daiNonce, chainId, userAddress, spender);
   var __x$1 = __x.then((function (rsvSig) {
           Curry._1(setTxState, (function (param) {
                   return /* SignMetaTx */1;

@@ -311,7 +311,6 @@ let execDaiPermitMetaTx =
     chainId,
     userAddress,
     spender,
-    userAddress,
   )
   ->Js.Promise.then_(
       rsvSig => {

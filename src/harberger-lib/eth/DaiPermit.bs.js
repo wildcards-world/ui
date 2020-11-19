@@ -12,7 +12,7 @@ function getDaiContract(daiAddress, stewardAbi, library, account) {
 
 var daiAbi = DaiJson.dai;
 
-function createPermitSig(provider, verifyingContract, nonce, chainId, holder, spender, from) {
+function createPermitSig(provider, verifyingContract, nonce, chainId, holder, spender) {
   var domain_salt = "0x" + chainId.toString(16).padStart(64, "0");
   var domain = {
     name: "(PoS) Dai Stablecoin",
@@ -38,13 +38,13 @@ function createPermitSig(provider, verifyingContract, nonce, chainId, holder, sp
   };
   var dataString = Belt_Option.getWithDefault(JSON.stringify(data), "");
   var exampleRpcDefinition_params = [
-    from,
+    holder,
     dataString
   ];
   var exampleRpcDefinition = {
     method: "eth_signTypedData_v3",
     params: exampleRpcDefinition_params,
-    from: from
+    from: holder
   };
   return new Promise((function (resolve, reject) {
                 provider.sendAsync(exampleRpcDefinition, (function (err, result) {

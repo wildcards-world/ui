@@ -22,7 +22,7 @@ let getDaiContract = (daiAddress, stewardAbi, library, account) => {
 
 [@bs.send] external padStart: (string, int, string) => string = "padStart";
 let createPermitSig =
-    (provider, verifyingContract, nonce, chainId, holder, spender, from) => {
+    (provider, verifyingContract, nonce, chainId, holder, spender) => {
   open Web3;
   open Erc712;
 
@@ -59,8 +59,8 @@ let createPermitSig =
     // method: "eth_signTypedData",
     method: "eth_signTypedData_v3",
     // params: [|from, data|],
-    params: [|from, dataString|],
-    from,
+    params: [|holder, dataString|],
+    from: holder,
   };
 
   Js.Promise.make((~resolve, ~reject) =>
