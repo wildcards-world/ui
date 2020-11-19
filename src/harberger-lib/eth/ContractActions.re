@@ -562,10 +562,9 @@ let useBuyAuction =
   let networkName = chainIdInt->getMaticNetworkName;
 
   let maticState =
-    account->Option.flatMap(usersAddress => {
-      Js.log2("the users address", usersAddress);
-      QlHooks.useMaticState(~forceRefetch=false, usersAddress, networkName);
-    });
+    account
+    ->Option.getWithDefault(CONSTANTS.nullEthAddress)
+    ->QlHooks.useMaticState(~forceRefetch=false, networkName);
 
   switch (chain) {
   | Client.Neither
@@ -595,7 +594,7 @@ let useBuyAuction =
                   r,
                   s,
                   animalId,
-                  newPrice,
+                  newPrice->Web3Utils.toWeiFromEth,
                   wildcardsPercentage,
                   value,
                 ).
@@ -858,9 +857,9 @@ let useUpdateDeposit =
   let networkName = chainIdInt->getMaticNetworkName;
 
   let maticState =
-    account->Option.flatMap(usersAddress => {
-      QlHooks.useMaticState(~forceRefetch=false, usersAddress, networkName)
-    });
+    account
+    ->Option.getWithDefault(CONSTANTS.nullEthAddress)
+    ->QlHooks.useMaticState(~forceRefetch=false, networkName);
 
   switch (chain) {
   | Client.Neither

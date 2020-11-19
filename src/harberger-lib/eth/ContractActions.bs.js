@@ -415,10 +415,12 @@ function useBuyAuction(chain, animal, isGsn, library, account, parentChainId) {
   var verifyingContract = getDaiContractAddress(chain, chainIdInt);
   var spender = getStewardAddress(chain, chainIdInt);
   var networkName = getMaticNetworkName(chainIdInt);
-  var maticState = Belt_Option.flatMap(account, (function (usersAddress) {
-          console.log("the users address", usersAddress);
-          return QlHooks$WildCards.useMaticState(false, usersAddress, networkName);
-        }));
+  var arg = Belt_Option.getWithDefault(account, CONSTANTS$WildCards.nullEthAddress);
+  var maticState = Curry._1((function (param) {
+            return (function (param$1) {
+                return QlHooks$WildCards.useMaticState(param, arg, param$1);
+              });
+          })(false), networkName);
   if (chain >= 2) {
     return /* tuple */[
             (function (newPrice, wildcardsPercentage, value) {
@@ -474,7 +476,7 @@ function useBuyAuction(chain, animal, isGsn, library, account, parentChainId) {
                           return /* DaiPermit */Block.__(0, [new BnJs.default(value)]);
                         }));
                   return execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, sendMetaTx, account, spender, library, (function (steward, v, r, s) {
-                                return Curry._1(steward.methods.buyAuctionWithPermit(new BnJs.default(daiNonce), new BnJs.default("0"), true, v, r, s, animalId, newPrice, wildcardsPercentage, value).encodeABI, undefined);
+                                return Curry._1(steward.methods.buyAuctionWithPermit(new BnJs.default(daiNonce), new BnJs.default("0"), true, v, r, s, animalId, Web3Utils$WildCards.toWeiFromEth(newPrice), wildcardsPercentage, value).encodeABI, undefined);
                               }), chainId, verifyingContract);
                 }
                 console.log("something important is null");
@@ -708,9 +710,12 @@ function useUpdateDeposit(chain, isGsn, library, account, parentChainId) {
   var verifyingContract = getDaiContractAddress(chain, chainIdInt);
   var spender = getStewardAddress(chain, chainIdInt);
   var networkName = getMaticNetworkName(chainIdInt);
-  var maticState = Belt_Option.flatMap(account, (function (usersAddress) {
-          return QlHooks$WildCards.useMaticState(false, usersAddress, networkName);
-        }));
+  var arg = Belt_Option.getWithDefault(account, CONSTANTS$WildCards.nullEthAddress);
+  var maticState = Curry._1((function (param) {
+            return (function (param$1) {
+                return QlHooks$WildCards.useMaticState(param, arg, param$1);
+              });
+          })(false), networkName);
   if (chain >= 2) {
     return /* tuple */[
             (function (value) {
