@@ -2,7 +2,6 @@
 
 import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
-import BnJs from "bn.js";
 import * as React from "react";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
@@ -12,11 +11,8 @@ import * as Styles$WildCards from "../Styles.bs.js";
 import * as Globals$WildCards from "../harberger-lib/Globals.bs.js";
 import * as QlHooks$WildCards from "../harberger-lib/QlHooks.bs.js";
 import * as TokenId$WildCards from "../harberger-lib/TokenId.bs.js";
-import * as Web3Utils$WildCards from "../harberger-lib/Web3Utils.bs.js";
 import * as Accounting$WildCards from "../harberger-lib/Accounting.bs.js";
 import * as PriceDisplay$WildCards from "../harberger-lib/PriceDisplay.bs.js";
-import * as RootProvider$WildCards from "../harberger-lib/RootProvider.bs.js";
-import * as ContractActions$WildCards from "../harberger-lib/eth/ContractActions.bs.js";
 
 var dragonImg = "/img/animals/Glen.svg";
 
@@ -170,157 +166,14 @@ var OrganisationVote = {
   make: VotePage$OrganisationVote
 };
 
-function VotePage$OrganisationVoteResult(Props) {
-  var conservationPartner = Props.conservationPartner;
-  var currentIteration = Props.currentIteration;
-  var totalVotes = Props.totalVotes;
-  var match = ContractActions$WildCards.useProposalVotes(currentIteration, String(conservationPartner.index));
-  var proposal1Votes = match[0];
-  var displayText = proposal1Votes !== undefined ? Globals$WildCards.restr(String(Globals$WildCards.$pipe$pipe$pipe$pipe(Belt_Float.fromString(Globals$WildCards.$pipe$slash$pipe(Globals$WildCards.$pipe$star$pipe(Caml_option.valFromOption(proposal1Votes), new BnJs("10000")), totalVotes).toString()), 0) / 100) + "%") : React.createElement(RimbleUi.Loader, {});
-  var numberOfVotes = proposal1Votes !== undefined ? "with " + (Web3Utils$WildCards.fromWeiBNToEthPrecision(Globals$WildCards.$pipe$star$pipe(Caml_option.valFromOption(proposal1Votes), new BnJs("1000000000")), 2) + " votes in total") : "";
-  return React.createElement(RimbleUi.Box, {
-              children: null,
-              width: [
-                1,
-                0.25
-              ]
-            }, React.createElement("a", {
-                  href: conservationPartner.link,
-                  target: "_blank"
-                }, React.createElement("img", {
-                      className: Curry._1(Css.style, {
-                            hd: Css.display("block"),
-                            tl: {
-                              hd: Css.width({
-                                    NAME: "percent",
-                                    VAL: 70
-                                  }),
-                              tl: {
-                                hd: Css.maxWidth({
-                                      NAME: "px",
-                                      VAL: 800
-                                    }),
-                                tl: {
-                                  hd: Css.margin(Css.auto),
-                                  tl: /* [] */0
-                                }
-                              }
-                            }
-                          }),
-                      src: conservationPartner.image
-                    })), React.createElement("p", undefined, displayText), React.createElement("p", undefined, Globals$WildCards.restr(numberOfVotes)));
-}
-
-var OrganisationVoteResult = {
-  make: VotePage$OrganisationVoteResult
-};
-
-function VotePage$VoteResults(Props) {
-  var currentIteration = Props.currentIteration;
-  var match = ContractActions$WildCards.useTotalVotes(undefined);
-  var totalVotes = match[0];
-  var currentIteration$1 = String(currentIteration);
-  var match$1 = ContractActions$WildCards.useCurrentWinner(undefined);
-  var currentWinner = match$1[0];
-  var tmp;
-  if (totalVotes !== undefined) {
-    var totalVotes$1 = Caml_option.valFromOption(totalVotes);
-    tmp = React.createElement(RimbleUi.Flex, {
-          children: Belt_Array.map(conservationPartners, (function (conservationPartner) {
-                  return React.createElement(VotePage$OrganisationVoteResult, {
-                              conservationPartner: conservationPartner,
-                              currentIteration: currentIteration$1,
-                              totalVotes: totalVotes$1,
-                              key: conservationPartner.name
-                            });
-                })),
-          flexWrap: "wrap",
-          alignItems: "center"
-        });
-  } else {
-    tmp = React.createElement("p", undefined, React.createElement(RimbleUi.Loader, {}), Globals$WildCards.restr("loading current standings"));
-  }
-  return React.createElement(React.Fragment, undefined, tmp, currentWinner !== undefined ? React.createElement("p", {
-                    className: Curry._1(Css.style, {
-                          hd: Css.fontSize(Css.em(2)),
-                          tl: /* [] */0
-                        })
-                  }, React.createElement("strong", undefined, Globals$WildCards.restr(Globals$WildCards.$pipe$pipe$pipe$pipe(Globals$WildCards.$less$$great(Belt_Array.get(conservationPartners, currentWinner - 1 | 0), (function (partner) {
-                                      return partner.name;
-                                    })), "Unknown"))), Globals$WildCards.restr(" is currently winning")) : null);
-}
-
-var VoteResults = {
-  make: VotePage$VoteResults
-};
-
-function VotePage$ApproveLoyaltyTokens(Props) {
-  var reloadFunction = Props.reloadFunction;
-  var match = ContractActions$WildCards.useApproveLoyaltyTokens(undefined);
-  var transactionStatus = match[1];
-  var approveLoyaltyTokens = match[0];
-  var etherScanUrl = RootProvider$WildCards.useEtherscanUrl(undefined);
-  var tmp;
-  var exit = 0;
-  if (typeof transactionStatus === "number") {
-    switch (transactionStatus) {
-      case /* UnInitialised */0 :
-          tmp = React.createElement(React.Fragment, undefined, React.createElement(RimbleUi.Loader, {}), React.createElement("p", undefined, React.createElement("a", {
-                        onClick: (function (param) {
-                            return Curry._1(approveLoyaltyTokens, undefined);
-                          })
-                      }, Globals$WildCards.restr(">>Click here to enable wildcards vote with your tokens<<"))));
-          break;
-      case /* Failed */4 :
-          tmp = React.createElement("p", undefined, Globals$WildCards.restr("Transaction failed"));
-          break;
-      default:
-        exit = 1;
-    }
-  } else {
-    switch (transactionStatus.TAG | 0) {
-      case /* SignedAndSubmitted */1 :
-          tmp = React.createElement(React.Fragment, undefined, React.createElement(RimbleUi.Loader, {}), React.createElement("p", undefined, Globals$WildCards.restr("Processing: "), React.createElement("a", {
-                        href: "https://" + (etherScanUrl + ("/tx/" + transactionStatus._0)),
-                        rel: "noopener noreferrer",
-                        target: "_blank"
-                      }, Globals$WildCards.restr("view transaction"))));
-          break;
-      case /* Declined */2 :
-          tmp = React.createElement("p", undefined, Globals$WildCards.restr("Submitting transaction failed: " + transactionStatus._0));
-          break;
-      case /* Complete */4 :
-          tmp = React.createElement("p", undefined, React.createElement(VotePage$HackyComponentThatCallsAFunctionOnce, {
-                    reloadFunction: reloadFunction
-                  }), Globals$WildCards.restr("You are now ready to vote :)"));
-          break;
-      default:
-        exit = 1;
-    }
-  }
-  if (exit === 1) {
-    tmp = React.createElement(React.Fragment, undefined, React.createElement(RimbleUi.Loader, {}), React.createElement("p", undefined, Globals$WildCards.restr("Transaction Created - please check the details and confirm.")));
-  }
-  return React.createElement("div", undefined, tmp);
-}
-
-var ApproveLoyaltyTokens = {
-  make: VotePage$ApproveLoyaltyTokens
-};
-
 function VotePage(Props) {
   var chain = Props.chain;
   var match = React.useState(function () {
         return /* DefaultView */0;
       });
   var setVoteStep = match[1];
-  var match$1 = ContractActions$WildCards.useVoteForProject(undefined);
-  var voteForProject = match$1[0];
   var selectConservation = function (conservationArrayIndex) {
-    var submitVoteFunction = function (votes) {
-      var conservationVotedContractIndex = conservationPartners[conservationArrayIndex].index;
-      var numberOfVotes = new BnJs(String(votes * 100000 | 0)).mul(new BnJs("10000"));
-      Curry._2(voteForProject, String(conservationVotedContractIndex), numberOfVotes);
+    var submitVoteFunction = function (param) {
       return Curry._1(setVoteStep, (function (param) {
                     return /* ProcessTransaction */1;
                   }));
@@ -334,16 +187,16 @@ function VotePage(Props) {
   };
   var glen = TokenId$WildCards.makeFromInt(13);
   var optCurrentPrice = PriceDisplay$WildCards.usePrice(chain, glen);
-  var match$2 = QlHooks$WildCards.usePledgeRateDetailed(chain, glen);
-  var match$3 = optCurrentPrice !== undefined ? [
-      Globals$WildCards.toFixedWithPrecisionNoTrailingZeros(Accounting$WildCards.defaultZeroF(Belt_Float.fromString(optCurrentPrice[0])) * match$2[2], 5),
+  var match$1 = QlHooks$WildCards.usePledgeRateDetailed(chain, glen);
+  var match$2 = optCurrentPrice !== undefined ? [
+      Globals$WildCards.toFixedWithPrecisionNoTrailingZeros(Accounting$WildCards.defaultZeroF(Belt_Float.fromString(optCurrentPrice[0])) * match$1[2], 5),
       undefined
     ] : [
       undefined,
       undefined
     ];
-  var optMonthlyPledgeUsd = match$3[1];
-  var optMonthlyPledgeEth = match$3[0];
+  var optMonthlyPledgeUsd = match$2[1];
+  var optMonthlyPledgeEth = match$2[0];
   return React.createElement(RimbleUi.Box, {
               children: React.createElement(RimbleUi.Box, {
                     children: React.createElement(RimbleUi.Flex, {
@@ -463,9 +316,6 @@ export {
   HackyComponentThatCallsAFunctionOnce ,
   HackyComponentThatReloadsOnTimeout ,
   OrganisationVote ,
-  OrganisationVoteResult ,
-  VoteResults ,
-  ApproveLoyaltyTokens ,
   make ,
   
 }

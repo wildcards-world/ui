@@ -249,7 +249,7 @@ let make = () => {
       {switch (urlState) {
        | VotePage => <VotePage chain=Client.MainnetQuery />
        | Team => <Team />
-       | IncreaseVoteIteration => <IncreaseIterationPage />
+       | IncreaseVoteIteration => React.null // DEPRECATED FUNCTIONALITY. // <IncreaseIterationPage />
        | Explorer(wildcardsEdition, subState) =>
          switch (subState) {
          | DetailView(currentAnimal) =>

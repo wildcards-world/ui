@@ -23,7 +23,7 @@ function UpdatePrice(Props) {
       });
   var setNewBuyPrice = match[1];
   var newBuyPrice = match[0];
-  var match$1 = ContractActions$WildCards.useChangePrice(tokenId, false);
+  var match$1 = ContractActions$WildCards.useChangePrice(tokenId);
   var updatePriceFunc = match$1[0];
   var onSubmitBuy = function ($$event) {
     $$event.preventDefault();

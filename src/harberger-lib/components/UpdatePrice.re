@@ -9,8 +9,7 @@ let make = (~tokenId: TokenId.t, ~chain) => {
 
   let (newBuyPrice, setNewBuyPrice) = React.useState(() => "");
 
-  let (updatePriceFunc, txState) =
-    ContractActions.useChangePrice(tokenId, false);
+  let (updatePriceFunc, txState) = ContractActions.useChangePrice(tokenId);
 
   let onSubmitBuy = event => {
     ReactEvent.Form.preventDefault(event);

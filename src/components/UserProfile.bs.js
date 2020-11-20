@@ -74,7 +74,7 @@ function UserProfile$ClaimLoyaltyTokenButtons(Props) {
   var refreshLoyaltyTokenBalance = Props.refreshLoyaltyTokenBalance;
   var numberOfTokens = Props.numberOfTokens;
   var tokenId = TokenId$WildCards.fromStringUnsafe(id);
-  var match = ContractActions$WildCards.useRedeemLoyaltyTokens(userAddress, false);
+  var match = ContractActions$WildCards.useRedeemLoyaltyTokens(userAddress);
   var transactionStatus = match[1];
   var redeemLoyaltyTokens = match[0];
   var balanceAvailableOnTokens = QlHooks$WildCards.useUnredeemedLoyaltyTokenDueForUser(chain, tokenId, numberOfTokens);

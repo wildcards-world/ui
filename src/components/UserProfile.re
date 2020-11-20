@@ -43,7 +43,7 @@ module ClaimLoyaltyTokenButtons = {
     let tokenId = id->TokenId.fromStringUnsafe;
 
     let (redeemLoyaltyTokens, transactionStatus) =
-      ContractActions.useRedeemLoyaltyTokens(userAddress, false);
+      ContractActions.useRedeemLoyaltyTokens(userAddress);
     let balanceAvailableOnTokens =
       QlHooks.useUnredeemedLoyaltyTokenDueForUser(
         ~chain,

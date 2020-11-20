@@ -31,7 +31,6 @@ let make = (~closeButtonText, ~chain) => {
   let (depositFunc, txWithdrawObject) =
     ContractActions.useUpdateDeposit(
       ~chain,
-      false,
       web3Context.library,
       web3Context.account,
       web3Context.chainId->Option.getWithDefault(1),
@@ -39,7 +38,6 @@ let make = (~closeButtonText, ~chain) => {
   let (withdrawFunc, txDepositObject) =
     ContractActions.useWithdrawDeposit(
       ~chain,
-      false,
       web3Context.library,
       web3Context.account,
       web3Context.chainId->Option.getWithDefault(1),

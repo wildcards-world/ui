@@ -6,7 +6,6 @@ import BnJs from "bn.js";
 import * as React from "react";
 import * as Ethers from "ethers";
 import * as $$Promise from "reason-promise/src/js/promise.bs.js";
-import * as Belt_Int from "bs-platform/lib/es6/belt_Int.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as Web3$WildCards from "../Web3.bs.js";
@@ -21,22 +20,15 @@ import * as Web3Utils$WildCards from "../Web3Utils.bs.js";
 import * as ContractUtil$WildCards from "./ContractUtil.bs.js";
 import * as RootProvider$WildCards from "../RootProvider.bs.js";
 import * as LoyaltyTokenJson from "./abi/loyaltyToken.json";
-import * as VoteContractJson from "./abi/voteContract.json";
-
-var voteContract = VoteContractJson.voteContract;
 
 var loyaltyTokenAbi = LoyaltyTokenJson.loyaltyToken;
 
-function getExchangeContract(stewardAddress, stewardAbi, library, account, isGsn) {
-  return new Ethers.Contract(stewardAddress, stewardAbi, ContractUtil$WildCards.getProviderOrSigner(library, account, isGsn));
+function getExchangeContract(stewardAddress, stewardAbi, library, account) {
+  return new Ethers.Contract(stewardAddress, stewardAbi, ContractUtil$WildCards.getProviderOrSigner(library, account));
 }
 
-function getLoyaltyTokenContract(stewardAddress, library, account, isGsn) {
-  return new Ethers.Contract(stewardAddress, loyaltyTokenAbi, ContractUtil$WildCards.getProviderOrSigner(library, account, isGsn));
-}
-
-function getVotingContract(stewardAddress, library, account, isGsn) {
-  return new Ethers.Contract(stewardAddress, voteContract, ContractUtil$WildCards.getProviderOrSigner(library, account, isGsn));
+function getLoyaltyTokenContract(stewardAddress, library, account) {
+  return new Ethers.Contract(stewardAddress, loyaltyTokenAbi, ContractUtil$WildCards.getProviderOrSigner(library, account));
 }
 
 var stewardAddressMainnet = "0x6D47CF86F6A490c6410fC082Fd1Ad29CF61492d0";
@@ -48,10 +40,6 @@ var stewardAddressRinkeby = "0x229Cb219F056A9097b2744594Bc37597380854E8";
 var loyaltyTokenAddressMainnet = "0x773c75c2277eD3e402BDEfd28Ec3b51A3AfbD8a4";
 
 var loyaltyTokenAddressGoerli = "0xd7d8c42ab5b83aa3d4114e5297989dc27bdfb715";
-
-var voteContractMainnet = "0x03e051b7e42480Cc9D54F1caB525D2Fea2cF4d83";
-
-var voteContractGoerli = "0x316C5f8867B21923db8A0Bd6890A6BFE0Ab6F9d2";
 
 function getDaiContractAddress(chain, chainId) {
   if (chain >= 2) {
@@ -166,19 +154,7 @@ function loyaltyTokenAddressFromChainId(param) {
   }
 }
 
-function voteAddressFromChainId(param) {
-  if (param !== 1) {
-    if (param !== 5) {
-      return ;
-    } else {
-      return voteContractGoerli;
-    }
-  } else {
-    return voteContractMainnet;
-  }
-}
-
-function useStewardContract(isGsn) {
+function useStewardContract(param) {
   var context = Core.useWeb3React();
   var stewardContractAddress = useStewardAddress(undefined);
   var stewardAbi = useStewardAbi(undefined);
@@ -187,7 +163,7 @@ function useStewardContract(isGsn) {
                 var match$1 = context.chainId;
                 if (match !== undefined && match$1 !== undefined) {
                   return Globals$WildCards.oMap(Curry._1(stewardContractAddress, match$1), (function (__x) {
-                                return getExchangeContract(__x, stewardAbi, match, context.account, isGsn);
+                                return getExchangeContract(__x, stewardAbi, match, context.account);
                               }));
                 }
                 
@@ -198,32 +174,14 @@ function useStewardContract(isGsn) {
             ]);
 }
 
-function useLoyaltyTokenContract(isGsn) {
+function useLoyaltyTokenContract(param) {
   var context = Core.useWeb3React();
   return React.useMemo((function () {
                 var match = context.library;
                 var match$1 = context.chainId;
                 if (match !== undefined && match$1 !== undefined) {
                   return Globals$WildCards.oMap(loyaltyTokenAddressFromChainId(match$1), (function (__x) {
-                                return getLoyaltyTokenContract(__x, match, context.account, isGsn);
-                              }));
-                }
-                
-              }), [
-              context.library,
-              context.account,
-              context.chainId
-            ]);
-}
-
-function useVoteContract(isGsn) {
-  var context = Core.useWeb3React();
-  return React.useMemo((function () {
-                var match = context.library;
-                var match$1 = context.chainId;
-                if (match !== undefined && match$1 !== undefined) {
-                  return Globals$WildCards.oMap(voteAddressFromChainId(match$1), (function (__x) {
-                                return getVotingContract(__x, match, context.account, isGsn);
+                                return getLoyaltyTokenContract(__x, match, context.account);
                               }));
                 }
                 
@@ -317,9 +275,9 @@ function execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, se
   
 }
 
-function useBuy(chain, animal, isGsn, library, account, parentChainId) {
+function useBuy(chain, animal, library, account, parentChainId) {
   var animalId = TokenId$WildCards.toString(animal);
-  var optSteward = useStewardContract(isGsn);
+  var optSteward = useStewardContract(undefined);
   var match = React.useState(function () {
         return /* UnInitialised */0;
       });
@@ -421,14 +379,14 @@ function useBuy(chain, animal, isGsn, library, account, parentChainId) {
   }
 }
 
-function useBuyAuction(chain, animal, isGsn, library, account, parentChainId) {
+function useBuyAuction(chain, animal, library, account, parentChainId) {
   var match = React.useState(function () {
         return /* UnInitialised */0;
       });
   var setTxState = match[1];
   var txState = match[0];
   var animalId = TokenId$WildCards.toString(animal);
-  var optSteward = useStewardContract(isGsn);
+  var optSteward = useStewardContract(undefined);
   var sendMetaTx = QlHooks$WildCards.useMetaTx(undefined);
   var chainIdInt = getChildChainId(parentChainId);
   var chainId = new BnJs(chainIdInt);
@@ -520,12 +478,12 @@ function useBuyAuction(chain, animal, isGsn, library, account, parentChainId) {
   }
 }
 
-function useRedeemLoyaltyTokens(patron, isGsn) {
+function useRedeemLoyaltyTokens(patron) {
   var match = React.useState(function () {
         return /* UnInitialised */0;
       });
   var setTxState = match[1];
-  var optSteward = useStewardContract(isGsn);
+  var optSteward = useStewardContract(undefined);
   var buyFunction = function (param) {
     var value = Ethers.utils.parseUnits("0", 0);
     Curry._1(setTxState, (function (param) {
@@ -580,198 +538,13 @@ function useRedeemLoyaltyTokens(patron, isGsn) {
         ];
 }
 
-function useApproveLoyaltyTokens(param) {
-  var match = React.useState(function () {
-        return /* UnInitialised */0;
-      });
-  var setTxState = match[1];
-  var optLoyaltyTokens = useLoyaltyTokenContract(false);
-  var optNetworkId = Core.useWeb3React().chainId;
-  var buyFunction = function (param) {
-    var value = Ethers.utils.parseUnits("0", 0);
-    Curry._1(setTxState, (function (param) {
-            return /* Created */2;
-          }));
-    if (optLoyaltyTokens === undefined) {
-      return ;
-    }
-    if (optNetworkId === undefined) {
-      return ;
-    }
-    var voteContractAddress = Globals$WildCards.$pipe$pipe$pipe$pipe(voteAddressFromChainId(optNetworkId), CONSTANTS$WildCards.nullEthAddress);
-    var claimLoyaltyTokenPromise = $$Promise.Js.toResult(optLoyaltyTokens.approve(voteContractAddress, "100000000000000000000000", {
-              gasLimit: "500302",
-              value: value
-            }));
-    $$Promise.getOk(claimLoyaltyTokenPromise, (function (tx) {
-            Curry._1(setTxState, (function (param) {
-                    return {
-                            TAG: /* SignedAndSubmitted */1,
-                            _0: tx.hash
-                          };
-                  }));
-            var txMinedPromise = $$Promise.Js.toResult(tx.wait());
-            $$Promise.getOk(txMinedPromise, (function (txOutcome) {
-                    return Curry._1(setTxState, (function (param) {
-                                  return {
-                                          TAG: /* Complete */4,
-                                          _0: txOutcome
-                                        };
-                                }));
-                  }));
-            $$Promise.getError(txMinedPromise, (function (error) {
-                    Curry._1(setTxState, (function (param) {
-                            return /* Failed */4;
-                          }));
-                    console.log(error);
-                    
-                  }));
-            
-          }));
-    $$Promise.getError(claimLoyaltyTokenPromise, (function (error) {
-            return Curry._1(setTxState, (function (param) {
-                          return {
-                                  TAG: /* Declined */2,
-                                  _0: error.message
-                                };
-                        }));
-          }));
-    
-  };
-  return [
-          buyFunction,
-          match[0]
-        ];
-}
-
-function useVoteForProject(param) {
-  var match = React.useState(function () {
-        return /* UnInitialised */0;
-      });
-  var setTxState = match[1];
-  var optSteward = useVoteContract(false);
-  var buyFunction = function (proposalId, squareRoot) {
-    console.log("ProposalId" + proposalId);
-    var value = Ethers.utils.parseUnits("0", 0);
-    Curry._1(setTxState, (function (param) {
-            return /* Created */2;
-          }));
-    if (optSteward === undefined) {
-      return ;
-    }
-    var claimLoyaltyTokenPromise = $$Promise.Js.toResult(optSteward.vote(proposalId, squareRoot.sqr().toString(), squareRoot.toString(), {
-              gasLimit: "500302",
-              value: value
-            }));
-    $$Promise.getOk(claimLoyaltyTokenPromise, (function (tx) {
-            Curry._1(setTxState, (function (param) {
-                    return {
-                            TAG: /* SignedAndSubmitted */1,
-                            _0: tx.hash
-                          };
-                  }));
-            var txMinedPromise = $$Promise.Js.toResult(tx.wait());
-            $$Promise.getOk(txMinedPromise, (function (txOutcome) {
-                    console.log(txOutcome);
-                    return Curry._1(setTxState, (function (param) {
-                                  return {
-                                          TAG: /* Complete */4,
-                                          _0: txOutcome
-                                        };
-                                }));
-                  }));
-            $$Promise.getError(txMinedPromise, (function (error) {
-                    Curry._1(setTxState, (function (param) {
-                            return /* Failed */4;
-                          }));
-                    console.log(error);
-                    
-                  }));
-            
-          }));
-    $$Promise.getError(claimLoyaltyTokenPromise, (function (error) {
-            return Curry._1(setTxState, (function (param) {
-                          return {
-                                  TAG: /* Declined */2,
-                                  _0: error.message
-                                };
-                        }));
-          }));
-    
-  };
-  return [
-          buyFunction,
-          match[0]
-        ];
-}
-
-function useIncreaseVoteIteration(param) {
-  var match = React.useState(function () {
-        return /* UnInitialised */0;
-      });
-  var setTxState = match[1];
-  var optSteward = useVoteContract(false);
-  var buyFunction = function (param) {
-    var value = Ethers.utils.parseUnits("0", 0);
-    Curry._1(setTxState, (function (param) {
-            return /* Created */2;
-          }));
-    if (optSteward === undefined) {
-      return ;
-    }
-    var claimLoyaltyTokenPromise = $$Promise.Js.toResult(optSteward.distributeFunds({
-              gasLimit: "500302",
-              value: value
-            }));
-    $$Promise.getOk(claimLoyaltyTokenPromise, (function (tx) {
-            Curry._1(setTxState, (function (param) {
-                    return {
-                            TAG: /* SignedAndSubmitted */1,
-                            _0: tx.hash
-                          };
-                  }));
-            var txMinedPromise = $$Promise.Js.toResult(tx.wait());
-            $$Promise.getOk(txMinedPromise, (function (txOutcome) {
-                    console.log(txOutcome);
-                    return Curry._1(setTxState, (function (param) {
-                                  return {
-                                          TAG: /* Complete */4,
-                                          _0: txOutcome
-                                        };
-                                }));
-                  }));
-            $$Promise.getError(txMinedPromise, (function (error) {
-                    Curry._1(setTxState, (function (param) {
-                            return /* Failed */4;
-                          }));
-                    console.log(error);
-                    
-                  }));
-            
-          }));
-    $$Promise.getError(claimLoyaltyTokenPromise, (function (error) {
-            return Curry._1(setTxState, (function (param) {
-                          return {
-                                  TAG: /* Declined */2,
-                                  _0: error.message
-                                };
-                        }));
-          }));
-    
-  };
-  return [
-          buyFunction,
-          match[0]
-        ];
-}
-
-function useUpdateDeposit(chain, isGsn, library, account, parentChainId) {
+function useUpdateDeposit(chain, library, account, parentChainId) {
   var match = React.useState(function () {
         return /* UnInitialised */0;
       });
   var setTxState = match[1];
   var txState = match[0];
-  var optSteward = useStewardContract(isGsn);
+  var optSteward = useStewardContract(undefined);
   var sendMetaTx = QlHooks$WildCards.useMetaTx(undefined);
   var chainIdInt = getChildChainId(parentChainId);
   var chainId = new BnJs(chainIdInt);
@@ -855,13 +628,13 @@ function useUpdateDeposit(chain, isGsn, library, account, parentChainId) {
   }
 }
 
-function useWithdrawDeposit(chain, isGsn, library, account, parentChainId) {
+function useWithdrawDeposit(chain, library, account, parentChainId) {
   var match = React.useState(function () {
         return /* UnInitialised */0;
       });
   var setTxState = match[1];
   var txState = match[0];
-  var optSteward = useStewardContract(isGsn);
+  var optSteward = useStewardContract(undefined);
   var chainIdInt = getChildChainId(parentChainId);
   var spender = getStewardAddress(chain, chainIdInt);
   if (chain >= 2) {
@@ -952,7 +725,7 @@ function useUserLoyaltyTokenBalance(address) {
       });
   var setCounter = match$1[1];
   var counter = match$1[0];
-  var optSteward = useLoyaltyTokenContract(false);
+  var optSteward = useLoyaltyTokenContract(undefined);
   React.useEffect((function () {
           if (optSteward !== undefined) {
             Async$WildCards.let_(optSteward.balanceOf(address), (function (balance) {
@@ -980,280 +753,13 @@ function useUserLoyaltyTokenBalance(address) {
         ];
 }
 
-function useVoteApprovedTokens(owner) {
-  var match = React.useState(function () {
-        
-      });
-  var setResult = match[1];
-  var match$1 = React.useState(function () {
-        return 0;
-      });
-  var setCounter = match$1[1];
-  var counter = match$1[0];
-  var optLoyaltyTokens = useLoyaltyTokenContract(false);
-  var optNetworkId = Core.useWeb3React().chainId;
-  React.useEffect((function () {
-          if (optLoyaltyTokens !== undefined && optNetworkId !== undefined) {
-            var voteContractAddress = Globals$WildCards.$pipe$pipe$pipe$pipe(voteAddressFromChainId(optNetworkId), CONSTANTS$WildCards.nullEthAddress);
-            Async$WildCards.let_(optLoyaltyTokens.allowance(owner, voteContractAddress), (function (allowance) {
-                    var allowanceString = allowance.toString();
-                    Curry._1(setResult, (function (param) {
-                            return Caml_option.some(new BnJs(allowanceString));
-                          }));
-                    return Globals$WildCards.async(undefined);
-                  }));
-          }
-          
-        }), [
-        counter,
-        setResult,
-        optLoyaltyTokens,
-        owner,
-        optNetworkId
-      ]);
-  return [
-          match[0],
-          (function (param) {
-              return Curry._1(setCounter, (function (param) {
-                            return counter + 1 | 0;
-                          }));
-            })
-        ];
-}
-
-function useCurrentIteration(param) {
-  var match = React.useState(function () {
-        
-      });
-  var setResult = match[1];
-  var match$1 = React.useState(function () {
-        return 0;
-      });
-  var setCounter = match$1[1];
-  var counter = match$1[0];
-  var optVoteContract = useVoteContract(false);
-  React.useEffect((function () {
-          if (optVoteContract !== undefined) {
-            Async$WildCards.let_(optVoteContract.proposalIteration(), (function (currentIteration) {
-                    var currentIterationString = currentIteration.toString();
-                    Curry._1(setResult, (function (param) {
-                            return Belt_Int.fromString(currentIterationString);
-                          }));
-                    return Globals$WildCards.async(undefined);
-                  }));
-          }
-          
-        }), [
-        counter,
-        setResult,
-        optVoteContract
-      ]);
-  return [
-          match[0],
-          (function (param) {
-              return Curry._1(setCounter, (function (param) {
-                            return counter + 1 | 0;
-                          }));
-            })
-        ];
-}
-
-function useCurrentWinner(param) {
-  var match = React.useState(function () {
-        
-      });
-  var setResult = match[1];
-  var match$1 = React.useState(function () {
-        return 0;
-      });
-  var setCounter = match$1[1];
-  var counter = match$1[0];
-  var optVoteContract = useVoteContract(false);
-  React.useEffect((function () {
-          if (optVoteContract !== undefined) {
-            Async$WildCards.let_(optVoteContract.currentWinner(), (function (currentWinnerBn) {
-                    var currentWinnerString = currentWinnerBn.toString();
-                    Curry._1(setResult, (function (param) {
-                            return Belt_Int.fromString(currentWinnerString);
-                          }));
-                    return Globals$WildCards.async(undefined);
-                  }));
-          }
-          
-        }), [
-        counter,
-        setResult,
-        optVoteContract
-      ]);
-  return [
-          match[0],
-          (function (param) {
-              return Curry._1(setCounter, (function (param) {
-                            return counter + 1 | 0;
-                          }));
-            })
-        ];
-}
-
-function useProposalVotes(iteration, projectId) {
-  var match = React.useState(function () {
-        
-      });
-  var setResult = match[1];
-  var match$1 = React.useState(function () {
-        return 0;
-      });
-  var setCounter = match$1[1];
-  var counter = match$1[0];
-  var optVoteContract = useVoteContract(false);
-  React.useEffect((function () {
-          if (optVoteContract !== undefined) {
-            Async$WildCards.let_(optVoteContract.proposalVotes(iteration, projectId), (function (proposalVotes) {
-                    var propsalVotesString = proposalVotes.toString();
-                    Curry._1(setResult, (function (param) {
-                            return Caml_option.some(new BnJs(propsalVotesString));
-                          }));
-                    return Globals$WildCards.async(undefined);
-                  }));
-          }
-          
-        }), [
-        counter,
-        setResult,
-        optVoteContract,
-        iteration,
-        projectId
-      ]);
-  return [
-          match[0],
-          (function (param) {
-              return Curry._1(setCounter, (function (param) {
-                            return counter + 1 | 0;
-                          }));
-            })
-        ];
-}
-
-function useHasUserVotedForProposalIteration(iteration, userAddress, projectId, isGsn) {
-  var match = React.useState(function () {
-        
-      });
-  var setResult = match[1];
-  var match$1 = React.useState(function () {
-        return 0;
-      });
-  var setCounter = match$1[1];
-  var counter = match$1[0];
-  var optVoteContract = useVoteContract(isGsn);
-  React.useEffect((function () {
-          if (optVoteContract !== undefined) {
-            Async$WildCards.let_(optVoteContract.hasUserVotedForProposalIteration(iteration, userAddress, projectId), (function (hasVotedForProposal) {
-                    Curry._1(setResult, (function (param) {
-                            return hasVotedForProposal;
-                          }));
-                    return Globals$WildCards.async(undefined);
-                  }));
-          }
-          
-        }), [
-        counter,
-        setResult,
-        optVoteContract,
-        iteration,
-        projectId,
-        userAddress
-      ]);
-  return [
-          match[0],
-          (function (param) {
-              return Curry._1(setCounter, (function (param) {
-                            return counter + 1 | 0;
-                          }));
-            })
-        ];
-}
-
-function useTotalVotes(param) {
-  var match = React.useState(function () {
-        
-      });
-  var setResult = match[1];
-  var match$1 = React.useState(function () {
-        return 0;
-      });
-  var setCounter = match$1[1];
-  var counter = match$1[0];
-  var optVoteContract = useVoteContract(false);
-  React.useEffect((function () {
-          if (optVoteContract !== undefined) {
-            Async$WildCards.let_(optVoteContract.totalVotes(), (function (totalVotes) {
-                    var totalVotesString = totalVotes.toString();
-                    Curry._1(setResult, (function (param) {
-                            return Caml_option.some(new BnJs(totalVotesString));
-                          }));
-                    return Globals$WildCards.async(undefined);
-                  }));
-          }
-          
-        }), [
-        counter,
-        setResult,
-        optVoteContract
-      ]);
-  return [
-          match[0],
-          (function (param) {
-              return Curry._1(setCounter, (function (param) {
-                            return counter + 1 | 0;
-                          }));
-            })
-        ];
-}
-
-function useProposalDeadline(param) {
-  var match = React.useState(function () {
-        
-      });
-  var setResult = match[1];
-  var match$1 = React.useState(function () {
-        return 0;
-      });
-  var setCounter = match$1[1];
-  var counter = match$1[0];
-  var optSteward = useVoteContract(false);
-  React.useEffect((function () {
-          if (optSteward !== undefined) {
-            Async$WildCards.let_(optSteward.proposalDeadline(), (function (currentIteration) {
-                    var currentIterationString = currentIteration.toString();
-                    Curry._1(setResult, (function (param) {
-                            return Belt_Int.fromString(currentIterationString);
-                          }));
-                    return Globals$WildCards.async(undefined);
-                  }));
-          }
-          
-        }), [
-        counter,
-        setResult,
-        optSteward
-      ]);
-  return [
-          match[0],
-          (function (param) {
-              return Curry._1(setCounter, (function (param) {
-                            return counter + 1 | 0;
-                          }));
-            })
-        ];
-}
-
-function useChangePrice(animal, isGsn) {
+function useChangePrice(animal) {
   var animalId = TokenId$WildCards.toString(animal);
   var match = React.useState(function () {
         return /* UnInitialised */0;
       });
   var setTxState = match[1];
-  var optSteward = useStewardContract(isGsn);
+  var optSteward = useStewardContract(undefined);
   return [
           (function (newPrice) {
               var value = Ethers.utils.parseUnits("0", 0);
@@ -1317,18 +823,14 @@ var loyaltyTokenAddressMaticMain = "0x773c75c2277eD3e402BDEfd28Ec3b51A3AfbD8a4";
 var loyaltyTokenAddressMumbai = "0xd7d8c42ab5b83aa3d4114e5297989dc27bdfb715";
 
 export {
-  voteContract ,
   loyaltyTokenAbi ,
   getExchangeContract ,
   getLoyaltyTokenContract ,
-  getVotingContract ,
   stewardAddressMainnet ,
   stewardAddressGoerli ,
   stewardAddressRinkeby ,
   loyaltyTokenAddressMainnet ,
   loyaltyTokenAddressGoerli ,
-  voteContractMainnet ,
-  voteContractGoerli ,
   stewardAddressMaticMain ,
   stewardAddressMumbai ,
   loyaltyTokenAddressMaticMain ,
@@ -1341,28 +843,16 @@ export {
   defaultStewardAddressFromChainId ,
   useStewardAddress ,
   loyaltyTokenAddressFromChainId ,
-  voteAddressFromChainId ,
   useStewardContract ,
   useLoyaltyTokenContract ,
-  useVoteContract ,
   execDaiPermitMetaTx ,
   useBuy ,
   useBuyAuction ,
   useRedeemLoyaltyTokens ,
-  useApproveLoyaltyTokens ,
-  useVoteForProject ,
-  useIncreaseVoteIteration ,
   useUpdateDeposit ,
   useWithdrawDeposit ,
   useUserLoyaltyTokenBalance ,
-  useVoteApprovedTokens ,
-  useCurrentIteration ,
-  useCurrentWinner ,
-  useProposalVotes ,
-  useHasUserVotedForProposalIteration ,
-  useTotalVotes ,
-  useProposalDeadline ,
   useChangePrice ,
   
 }
-/* voteContract Not a pure module */
+/* loyaltyTokenAbi Not a pure module */

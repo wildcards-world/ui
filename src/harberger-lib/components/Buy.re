@@ -51,7 +51,6 @@ module Buy = {
       ContractActions.useBuy(
         ~chain,
         tokenId,
-        false,
         web3Context.library,
         web3Context.account,
         web3Context.chainId->Option.getWithDefault(1),
@@ -60,7 +59,6 @@ module Buy = {
       ContractActions.useBuyAuction(
         ~chain,
         tokenId,
-        false,
         web3Context.library,
         web3Context.account,
         web3Context.chainId->Option.getWithDefault(1),

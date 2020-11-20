@@ -32,26 +32,10 @@ type stewardContract = {
   changePrice:
     (. tokenIdString, parsedUnits, txOptions) => Promise.Js.t(tx, txError),
 };
-[@bs.send]
-external buyOld:
-  (stewardContract, tokenIdString, parsedUnits, txOptions) =>
-  Promise.Js.t(tx, txError) =
-  "buy";
 
 type ethersBnFormat;
 [@bs.send] external ethersBnToString: ethersBnFormat => string = "toString";
-type voteContract = {
-  // vote(uint256 proposalIdToVoteFor, uint256 amount, uint256 sqrt)
-  vote: (. string, string, string, txOptions) => Promise.Js.t(tx, txError),
-  distributeFunds: (. txOptions) => Promise.Js.t(tx, txError),
-  proposalIteration: (. unit) => Js.Promise.t(ethersBnFormat),
-  currentWinner: (. unit) => Js.Promise.t(ethersBnFormat),
-  proposalDeadline: (. unit) => Js.Promise.t(ethersBnFormat),
-  proposalVotes: (. string, string) => Js.Promise.t(ethersBnFormat), // iteration -> proposalId -> num votes
-  hasUserVotedForProposalIteration:
-    (. string, string, string) => Js.Promise.t(bool), // iteration -> proposalId -> num votes
-  totalVotes: (. unit) => Js.Promise.t(ethersBnFormat),
-};
+
 type loyaltyTokenContract = {
   // approve(address to, uint256 tokenId)
   allowance:
@@ -71,42 +55,27 @@ external getLoyaltyTokenContract:
   (Web3.ethAddress, Web3.abi, Web3.web3Library) => loyaltyTokenContract =
   "Contract";
 
-[@bs.new] [@bs.module "ethers"]
-external getVotingContract:
-  (Web3.ethAddress, Web3.abi, Web3.web3Library) => voteContract =
-  "Contract";
-
-[@bs.module "./abi/voteContract.json"]
-external voteContract: Web3.abi = "voteContract";
-
 [@bs.module "./abi/loyaltyToken.json"]
 external loyaltyTokenAbi: Web3.abi = "loyaltyToken";
 
 [@bs.module "ethers"] [@bs.scope "utils"]
 external parseUnits: (. string, int) => parsedUnits = "parseUnits";
 
-let getExchangeContract =
-    (stewardAddress, stewardAbi, library, account, isGsn) => {
+let getExchangeContract = (stewardAddress, stewardAbi, library, account) => {
   getContract(
     stewardAddress,
     stewardAbi,
-    ContractUtil.getProviderOrSigner(library, account, isGsn),
+    ContractUtil.getProviderOrSigner(library, account),
   );
 };
-let getLoyaltyTokenContract = (stewardAddress, library, account, isGsn) => {
+let getLoyaltyTokenContract = (stewardAddress, library, account) => {
   getLoyaltyTokenContract(
     stewardAddress,
     loyaltyTokenAbi,
-    ContractUtil.getProviderOrSigner(library, account, isGsn),
+    ContractUtil.getProviderOrSigner(library, account),
   );
 };
-let getVotingContract = (stewardAddress, library, account, isGsn) => {
-  getVotingContract(
-    stewardAddress,
-    voteContract,
-    ContractUtil.getProviderOrSigner(library, account, isGsn),
-  );
-};
+
 let stewardAddressMainnet = "0x6D47CF86F6A490c6410fC082Fd1Ad29CF61492d0";
 let stewardAddressGoerli = "0x0C00CFE8EbB34fE7C31d4915a43Cde211e9F0F3B";
 let stewardAddressRinkeby = "0x229Cb219F056A9097b2744594Bc37597380854E8";
@@ -114,10 +83,6 @@ let stewardAddressRinkeby = "0x229Cb219F056A9097b2744594Bc37597380854E8";
 let loyaltyTokenAddressMainnet = "0x773c75c2277eD3e402BDEfd28Ec3b51A3AfbD8a4";
 let loyaltyTokenAddressGoerli = "0xd7d8c42ab5b83aa3d4114e5297989dc27bdfb715";
 // let loyaltyTokenAddressRinkbey = "0xd7d8c42ab5b83aa3d4114e5297989dc27bdfb715";
-
-let voteContractMainnet = "0x03e051b7e42480Cc9D54F1caB525D2Fea2cF4d83";
-let voteContractGoerli = "0x316C5f8867B21923db8A0Bd6890A6BFE0Ab6F9d2";
-// let voteContractRinkeby = "0x316C5f8867B21923db8A0Bd6890A6BFE0Ab6F9d2";
 
 let stewardAddressMaticMain = "0x6D47CF86F6A490c6410fC082Fd1Ad29CF61492d0";
 let stewardAddressMumbai = "0x0C00CFE8EbB34fE7C31d4915a43Cde211e9F0F3B";
@@ -197,13 +162,8 @@ let loyaltyTokenAddressFromChainId =
   | 1 => Some(loyaltyTokenAddressMainnet)
   | 5 => Some(loyaltyTokenAddressGoerli)
   | _ => None;
-let voteAddressFromChainId =
-  fun
-  | 1 => Some(voteContractMainnet)
-  | 5 => Some(voteContractGoerli)
-  | _ => None;
 
-let useStewardContract = isGsn => {
+let useStewardContract = () => {
   let context = RootProvider.useWeb3React();
   let stewardContractAddress = useStewardAddress();
   let stewardAbi = useStewardAbi();
@@ -213,15 +173,7 @@ let useStewardContract = isGsn => {
       switch (context.library, context.chainId) {
       | (Some(library), Some(chainId)) =>
         stewardContractAddress(chainId)
-        ->oMap(
-            getExchangeContract(
-              _,
-              stewardAbi,
-              library,
-              context.account,
-              isGsn,
-            ),
-          )
+        ->oMap(getExchangeContract(_, stewardAbi, library, context.account))
 
       | _ => None
       }
@@ -230,7 +182,7 @@ let useStewardContract = isGsn => {
   );
 };
 
-let useLoyaltyTokenContract = isGsn => {
+let useLoyaltyTokenContract = () => {
   let context = RootProvider.useWeb3React();
 
   React.useMemo3(
@@ -239,25 +191,7 @@ let useLoyaltyTokenContract = isGsn => {
       | (Some(library), Some(chainId)) =>
         chainId
         ->loyaltyTokenAddressFromChainId
-        ->oMap(getLoyaltyTokenContract(_, library, context.account, isGsn))
-
-      | _ => None
-      }
-    },
-    (context.library, context.account, context.chainId),
-  );
-};
-
-let useVoteContract = isGsn => {
-  let context = RootProvider.useWeb3React();
-
-  React.useMemo3(
-    () => {
-      switch (context.library, context.chainId) {
-      | (Some(library), Some(chainId)) =>
-        chainId
-        ->voteAddressFromChainId
-        ->oMap(getVotingContract(_, library, context.account, isGsn))
+        ->oMap(getLoyaltyTokenContract(_, library, context.account))
 
       | _ => None
       }
@@ -419,14 +353,13 @@ let useBuy =
     (
       ~chain,
       animal: TokenId.t,
-      isGsn,
       library: option(Web3.web3Library),
       account,
       parentChainId,
     ) => {
   let animalId = animal->TokenId.toString;
 
-  let optSteward = useStewardContract(isGsn);
+  let optSteward = useStewardContract();
   let (txState, setTxState) = React.useState(() => UnInitialised);
 
   let sendMetaTx = QlHooks.useMetaTx();
@@ -541,7 +474,6 @@ let useBuyAuction =
     (
       ~chain,
       animal,
-      isGsn,
       library: option(Web3.web3Library),
       account,
       parentChainId,
@@ -550,7 +482,7 @@ let useBuyAuction =
 
   let animalId = animal->TokenId.toString;
 
-  let optSteward = useStewardContract(isGsn);
+  let optSteward = useStewardContract();
 
   let sendMetaTx = QlHooks.useMetaTx();
 
@@ -659,9 +591,9 @@ let useBuyAuction =
   };
 };
 
-let useRedeemLoyaltyTokens = (patron: string, isGsn) => {
+let useRedeemLoyaltyTokens = (patron: string) => {
   let (txState, setTxState) = React.useState(() => UnInitialised);
-  let optSteward = useStewardContract(isGsn);
+  let optSteward = useStewardContract();
   let buyFunction = () => {
     let value = parseUnits(. "0", 0);
 
@@ -702,150 +634,11 @@ let useRedeemLoyaltyTokens = (patron: string, isGsn) => {
   (buyFunction, txState);
 };
 
-let useApproveLoyaltyTokens = () => {
-  let (txState, setTxState) = React.useState(() => UnInitialised);
-  let optLoyaltyTokens = useLoyaltyTokenContract(false);
-  let optNetworkId = RootProvider.useWeb3React().chainId;
-
-  let buyFunction = () => {
-    let value = parseUnits(. "0", 0);
-
-    setTxState(_ => Created);
-
-    switch (optLoyaltyTokens, optNetworkId) {
-    | (Some(loyaltyTokenCotract), Some(networkId)) =>
-      let voteContractAddress =
-        networkId->voteAddressFromChainId |||| CONSTANTS.nullEthAddress;
-
-      let claimLoyaltyTokenPromise =
-        loyaltyTokenCotract.approve(.
-          voteContractAddress,
-          "100000000000000000000000",
-          {
-            gasLimit: "500302", //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
-
-            value,
-          },
-        )
-        ->Promise.Js.toResult;
-      claimLoyaltyTokenPromise->Promise.getOk(tx => {
-        setTxState(_ => SignedAndSubmitted(tx.hash));
-        let txMinedPromise = tx.wait(.)->Promise.Js.toResult;
-        txMinedPromise->Promise.getOk(txOutcome => {
-          setTxState(_ => Complete(txOutcome))
-        });
-        txMinedPromise->Promise.getError(error => {
-          setTxState(_ => Failed);
-          Js.log(error);
-        });
-        ();
-      });
-      claimLoyaltyTokenPromise->Promise.getError(error => {
-        setTxState(_ => Declined(error.message))
-      });
-      ();
-    | _ => ()
-    };
-  };
-
-  (buyFunction, txState);
-};
-let useVoteForProject = () => {
-  let (txState, setTxState) = React.useState(() => UnInitialised);
-  let optSteward = useVoteContract(false);
-  let buyFunction = (proposalId: string, squareRoot: BN.t) => {
-    Js.log("ProposalId" ++ proposalId);
-    let value = parseUnits(. "0", 0);
-
-    setTxState(_ => Created);
-    switch (optSteward) {
-    | Some(steward) =>
-      let claimLoyaltyTokenPromise =
-        steward.vote(.
-          proposalId,
-          squareRoot->BN.sqr->BN.toString,
-          squareRoot->BN.toString,
-          {
-            gasLimit: "500302", //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
-            value,
-          },
-        )
-        ->Promise.Js.toResult;
-      claimLoyaltyTokenPromise->Promise.getOk(tx => {
-        setTxState(_ => SignedAndSubmitted(tx.hash));
-        let txMinedPromise = tx.wait(.)->Promise.Js.toResult;
-        txMinedPromise->Promise.getOk(txOutcome => {
-          Js.log(txOutcome);
-          setTxState(_ => Complete(txOutcome));
-        });
-        txMinedPromise->Promise.getError(error => {
-          setTxState(_ => Failed);
-          Js.log(error);
-        });
-        ();
-      });
-      claimLoyaltyTokenPromise->Promise.getError(error => {
-        setTxState(_ => Declined(error.message))
-      });
-      ();
-    | None => ()
-    };
-  };
-
-  (buyFunction, txState);
-};
-
-let useIncreaseVoteIteration = () => {
-  let (txState, setTxState) = React.useState(() => UnInitialised);
-  let optSteward = useVoteContract(false);
-  let buyFunction = () => {
-    let value = parseUnits(. "0", 0);
-
-    setTxState(_ => Created);
-    switch (optSteward) {
-    | Some(voteContract) =>
-      let claimLoyaltyTokenPromise =
-        voteContract.distributeFunds(. {
-          gasLimit: "500302", //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
-
-          value,
-        })
-        ->Promise.Js.toResult;
-      claimLoyaltyTokenPromise->Promise.getOk(tx => {
-        setTxState(_ => SignedAndSubmitted(tx.hash));
-        let txMinedPromise = tx.wait(.)->Promise.Js.toResult;
-        txMinedPromise->Promise.getOk(txOutcome => {
-          Js.log(txOutcome);
-          setTxState(_ => Complete(txOutcome));
-        });
-        txMinedPromise->Promise.getError(error => {
-          setTxState(_ => Failed);
-          Js.log(error);
-        });
-        ();
-      });
-      claimLoyaltyTokenPromise->Promise.getError(error => {
-        setTxState(_ => Declined(error.message))
-      });
-      ();
-    | None => ()
-    };
-  };
-
-  (buyFunction, txState);
-};
-
 let useUpdateDeposit =
-    (
-      ~chain,
-      isGsn,
-      library: option(Web3.web3Library),
-      account,
-      parentChainId,
-    ) => {
+    (~chain, library: option(Web3.web3Library), account, parentChainId) => {
   let (txState, setTxState) = React.useState(() => UnInitialised);
 
-  let optSteward = useStewardContract(isGsn);
+  let optSteward = useStewardContract();
 
   let sendMetaTx = QlHooks.useMetaTx();
 
@@ -944,16 +737,10 @@ let useUpdateDeposit =
 };
 
 let useWithdrawDeposit =
-    (
-      ~chain,
-      isGsn,
-      library: option(Web3.web3Library),
-      account,
-      parentChainId,
-    ) => {
+    (~chain, library: option(Web3.web3Library), account, parentChainId) => {
   let (txState, setTxState) = React.useState(() => UnInitialised);
 
-  let optSteward = useStewardContract(isGsn);
+  let optSteward = useStewardContract();
 
   let chainIdInt = parentChainId->getChildChainId;
   let spender = getStewardAddress(chain, chainIdInt);
@@ -1041,7 +828,7 @@ let useUserLoyaltyTokenBalance = (address: Web3.ethAddress) => {
   let (result, setResult) = React.useState(() => None);
   let (counter, setCounter) = React.useState(() => 0);
 
-  let optSteward = useLoyaltyTokenContract(false);
+  let optSteward = useLoyaltyTokenContract();
 
   React.useEffect4(
     () => {
@@ -1064,212 +851,11 @@ let useUserLoyaltyTokenBalance = (address: Web3.ethAddress) => {
   (result, () => setCounter(_ => counter + 1));
 };
 
-let useVoteApprovedTokens = (owner: Web3.ethAddress) => {
-  let (result, setResult) = React.useState(() => None);
-  let (counter, setCounter) = React.useState(() => 0);
-
-  let optLoyaltyTokens = useLoyaltyTokenContract(false);
-  let optNetworkId = RootProvider.useWeb3React().chainId;
-
-  React.useEffect5(
-    () => {
-      switch (optLoyaltyTokens, optNetworkId) {
-      | (Some(loyaltyToken), Some(networkId)) =>
-        let _ = {
-          let voteContractAddress =
-            networkId->voteAddressFromChainId |||| CONSTANTS.nullEthAddress;
-          // Js.log3("getting the allowance", owner, voteContractAddress);
-          let%Async allowance =
-            loyaltyToken.allowance(. owner, voteContractAddress);
-          let allowanceString = allowance->ethersBnToString;
-          setResult(_ => Some(BN.new_(allowanceString)));
-          ()->async;
-        };
-        ();
-      | _ => ()
-      };
-      None;
-    },
-    (counter, setResult, optLoyaltyTokens, owner, optNetworkId),
-  );
-
-  (result, () => setCounter(_ => counter + 1));
-};
-
-let useCurrentIteration = () => {
-  let (result, setResult) = React.useState(() => None);
-  let (counter, setCounter) = React.useState(() => 0);
-
-  let optVoteContract = useVoteContract(false);
-
-  React.useEffect3(
-    () => {
-      switch (optVoteContract) {
-      | Some(voteContract) =>
-        let _ = {
-          let%Async currentIteration = voteContract.proposalIteration(.);
-          let currentIterationString = currentIteration->ethersBnToString;
-          setResult(_ => currentIterationString->Int.fromString);
-          ()->async;
-        };
-        ();
-      | None => ()
-      };
-      None;
-    },
-    (counter, setResult, optVoteContract),
-  );
-
-  (result, () => setCounter(_ => counter + 1));
-};
-
-let useCurrentWinner = () => {
-  let (result, setResult) = React.useState(() => None);
-  let (counter, setCounter) = React.useState(() => 0);
-
-  let optVoteContract = useVoteContract(false);
-
-  React.useEffect3(
-    () => {
-      switch (optVoteContract) {
-      | Some(voteContract) =>
-        let _ = {
-          let%Async currentWinnerBn = voteContract.currentWinner(.);
-          let currentWinnerString = currentWinnerBn->ethersBnToString;
-          setResult(_ => currentWinnerString->Int.fromString);
-          ()->async;
-        };
-        ();
-      | None => ()
-      };
-      None;
-    },
-    (counter, setResult, optVoteContract),
-  );
-
-  (result, () => setCounter(_ => counter + 1));
-};
-
-let useProposalVotes = (iteration, projectId) => {
-  let (result, setResult) = React.useState(() => None);
-  let (counter, setCounter) = React.useState(() => 0);
-
-  let optVoteContract = useVoteContract(false);
-
-  React.useEffect5(
-    () => {
-      switch (optVoteContract) {
-      | Some(voteContract) =>
-        let _ = {
-          let%Async proposalVotes =
-            voteContract.proposalVotes(. iteration, projectId);
-          let propsalVotesString = proposalVotes->ethersBnToString;
-          setResult(_ => Some(propsalVotesString->BN.new_));
-          ()->async;
-        };
-        ();
-      | None => ()
-      };
-      None;
-    },
-    (counter, setResult, optVoteContract, iteration, projectId),
-  );
-
-  (result, () => setCounter(_ => counter + 1));
-};
-
-let useHasUserVotedForProposalIteration =
-    (iteration, userAddress, projectId, isGsn) => {
-  let (result, setResult) = React.useState(() => None);
-  let (counter, setCounter) = React.useState(() => 0);
-
-  let optVoteContract = useVoteContract(isGsn);
-
-  React.useEffect6(
-    () => {
-      switch (optVoteContract) {
-      | Some(voteContract) =>
-        let _ = {
-          let%Async hasVotedForProposal =
-            voteContract.hasUserVotedForProposalIteration(.
-              iteration,
-              userAddress,
-              projectId,
-            );
-          setResult(_ => Some(hasVotedForProposal));
-          ()->async;
-        };
-        ();
-      | None => ()
-      };
-      None;
-    },
-    (counter, setResult, optVoteContract, iteration, projectId, userAddress),
-  );
-
-  (result, () => setCounter(_ => counter + 1));
-};
-
-// totalVotes: unit => Js.Promise.t(ethersBnFormat),
-let useTotalVotes = () => {
-  let (result, setResult) = React.useState(() => None);
-  let (counter, setCounter) = React.useState(() => 0);
-
-  let optVoteContract = useVoteContract(false);
-
-  React.useEffect3(
-    () => {
-      switch (optVoteContract) {
-      | Some(voteContract) =>
-        let _ = {
-          let%Async totalVotes = voteContract.totalVotes(.);
-          let totalVotesString = totalVotes->ethersBnToString;
-          setResult(_ => Some(totalVotesString->BN.new_));
-          ()->async;
-        };
-        ();
-      | None => ()
-      };
-      None;
-    },
-    (counter, setResult, optVoteContract),
-  );
-
-  (result, () => setCounter(_ => counter + 1));
-};
-
-let useProposalDeadline = () => {
-  let (result, setResult) = React.useState(() => None);
-  let (counter, setCounter) = React.useState(() => 0);
-
-  let optSteward = useVoteContract(false);
-
-  React.useEffect3(
-    () => {
-      switch (optSteward) {
-      | Some(steward) =>
-        let _ = {
-          let%Async currentIteration = steward.proposalDeadline(.);
-          let currentIterationString = currentIteration->ethersBnToString;
-          setResult(_ => currentIterationString->Int.fromString);
-          ()->async;
-        };
-        ();
-      | None => ()
-      };
-      None;
-    },
-    (counter, setResult, optSteward),
-  );
-
-  (result, () => setCounter(_ => counter + 1));
-};
-
-let useChangePrice = (animal, isGsn) => {
+let useChangePrice = animal => {
   let animalId = TokenId.toString(animal);
   let (txState, setTxState) = React.useState(() => UnInitialised);
 
-  let optSteward = useStewardContract(isGsn);
+  let optSteward = useStewardContract();
 
   (
     newPrice => {

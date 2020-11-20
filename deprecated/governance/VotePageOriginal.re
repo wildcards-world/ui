@@ -123,7 +123,6 @@ module OrganisationVote = {
         currentIteration->string_of_int,
         currentUser,
         conservationPartner.index->string_of_int,
-        false,
       );
 
     <Rimble.Box width=[|1., 0.25|]>

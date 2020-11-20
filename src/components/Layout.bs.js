@@ -34,7 +34,6 @@ import * as ReactTranslate$WildCards from "../helpers/providers/ReactTranslate.b
 import * as CustomerBenefit$WildCards from "./StaticContent/CustomerBenefit.bs.js";
 import * as AnimalAnnouncement$WildCards from "./AnimalAnnouncement.bs.js";
 import * as HomepageLeaderBoard$WildCards from "./StaticContent/HomepageLeaderBoard.bs.js";
-import * as IncreaseIterationPage$WildCards from "../ethTurin/IncreaseIterationPage.bs.js";
 
 var betaBanner = "/img/beta-banner.png";
 
@@ -148,7 +147,7 @@ function Layout(Props) {
           tmp = React.createElement(Team$WildCards.make, {});
           break;
       case /* IncreaseVoteIteration */1 :
-          tmp = React.createElement(IncreaseIterationPage$WildCards.make, {});
+          tmp = null;
           break;
       case /* VotePage */2 :
           tmp = React.createElement(VotePage$WildCards.make, {
