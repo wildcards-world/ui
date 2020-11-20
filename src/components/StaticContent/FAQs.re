@@ -47,6 +47,8 @@ module Chevron = {
   };
 };
 
+[@bs.get] external scrollHeight: Dom.element => int = "scrollHeight";
+
 module FaqItem = {
   [@react.component]
   let make = (~isOpen, ~toggleAccordion, ~title, ~content) => {
@@ -58,7 +60,7 @@ module FaqItem = {
         let optHeight =
           Ref.current(accordianContentRef)
           |> Js.Nullable.toOption
-          |> Belt.Option.map(_, Webapi.Dom.Element.scrollHeight);
+          |> Belt.Option.map(_, scrollHeight);
 
         let height =
           switch (optHeight) {

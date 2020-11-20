@@ -3,7 +3,9 @@
   "reason": {
     "react-jsx": 3
   },
-  "bsc-flags": ["-bs-super-errors"],
+  "bsc-flags": [
+    "-bs-super-errors"
+  ],
   "sources": [
     {
       "dir": "src",
@@ -25,7 +27,6 @@
     "bs-dynamic-import",
     "bs-fetch",
     "bs-moment",
-    "bs-webapi",
     "decco",
     "reason-loadable",
     "reason-promise",
@@ -33,14 +34,14 @@
     "re-classnames",
     "@wildcards/reason-apollo",
     "@wildcards/reason-apollo-hooks",
-    "bs-log",
+    "rescript-logger",
     "@glennsl/bs-jest"
   ],
   "ppx-flags": [
     "@baransu/graphql_ppx_re/ppx",
     "bs-let/ppx",
     "decco/ppx",
-    "bs-log/ppx"
+    "rescript-logger/ppx"
   ],
   // referenc: https://dev.to/yawaramin/ocaml-reasonml-best-practice-warnings-and-errors-4mkm
   // TODO: when you get time, go through and remove "-40-42-4-11-12-32-33" fixing the issues as you go.

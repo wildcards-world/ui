@@ -95,11 +95,7 @@ module Input = {
 module Loader = {
   [@bs.module "rimble-ui"] [@react.component]
   external make:
-    (
-      ~className: string=?,
-      ~color: [@bs.string] [ | `green]=?,
-      ~size: string=?
-    ) =>
+    (~className: string=?, ~color: [ | `green]=?, ~size: string=?) =>
     React.element =
     "Loader";
 };
