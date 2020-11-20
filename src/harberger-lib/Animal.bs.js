@@ -50,7 +50,7 @@ function useGetOrgBadgeImage(tokenId) {
 
 var nextLaunchDate = Moment.utc("2020-07-30T17:00:00");
 
-function isLaunched(chain, animal) {
+function useIsLaunched(chain, animal) {
   var optLaunchTime = QlHooks$WildCards.useLaunchTimeBN(chain, animal);
   var currentTime = QlHooks$WildCards.useCurrentTimestampBn(undefined);
   var match = TokenId$WildCards.toString(animal);
@@ -183,7 +183,7 @@ export {
   useGetOrgBadge ,
   useGetOrgBadgeImage ,
   nextLaunchDate ,
-  isLaunched ,
+  useIsLaunched ,
   useTokenStatus ,
   useIsOnAuction ,
   useAuctionPriceWei ,

@@ -299,7 +299,7 @@ module CarouselAnimal = {
         ~isGqlLoaded=true,
         ~chain,
       ) => {
-    let isLaunched = animal->Animal.isLaunched(~chain);
+    let isLaunched = animal->Animal.useIsLaunched(~chain);
 
     let makeAnimalOnLandingPage = optionEndDateMoment =>
       <AnimalOnLandingPage
@@ -409,6 +409,26 @@ module AnimalCarousel = {
 };
 
 module AnimalActionsOnDetailsPage = {
+  module Unowned = {
+    [@react.component]
+    let make = (~chain, ~animal, ~price) => {
+      <>
+        {switch (animal->Animal.useIsLaunched(~chain)) {
+         | LaunchDate(endDateMoment) =>
+           <DisplayAfterDate
+             endDateMoment
+             afterComponent={price()}
+             beforeComponent={
+               <React.Fragment> <CountDown endDateMoment /> </React.Fragment>
+             }
+           />
+         | Launched => price()
+         | Loading => <Rimble.Loader />
+         }}
+      </>;
+    };
+  };
+
   [@react.component]
   let make = (~chain, ~animal) => {
     let owned = animal->QlHooks.useIsAnimalOwened(~chain);
@@ -457,20 +477,7 @@ module AnimalActionsOnDetailsPage = {
         <Validate />
       </React.Fragment>;
     } else {
-      <React.Fragment>
-        {switch (animal->Animal.isLaunched(~chain)) {
-         | LaunchDate(endDateMoment) =>
-           <DisplayAfterDate
-             endDateMoment
-             afterComponent={price()}
-             beforeComponent={
-               <React.Fragment> <CountDown endDateMoment /> </React.Fragment>
-             }
-           />
-         | Launched => price()
-         | Loading => <Rimble.Loader />
-         }}
-      </React.Fragment>;
+      <Unowned chain animal price />;
     };
   };
 };
@@ -488,7 +495,7 @@ module DetailsViewAnimal = {
     // let optAlternateImage = Animal.getAlternateImage(animal);
     let orgBadge = Animal.useGetOrgBadgeImage(~tokenId=animal);
 
-    let isLaunched = animal->Animal.isLaunched(~chain);
+    let isLaunched = animal->Animal.useIsLaunched(~chain);
     let isOnAuction = Animal.useIsOnAuction(~chain, animal);
 
     let displayAnimal = animalImage =>

@@ -347,7 +347,7 @@ function Dapp$CarouselAnimal(Props) {
   var chain = Props.chain;
   var enlargement = enlargementOpt !== undefined ? enlargementOpt : 1;
   var isGqlLoaded = isGqlLoadedOpt !== undefined ? isGqlLoadedOpt : true;
-  var isLaunched = Animal$WildCards.isLaunched(chain, animal);
+  var isLaunched = Animal$WildCards.useIsLaunched(chain, animal);
   var makeAnimalOnLandingPage = function (optionEndDateMoment) {
     return React.createElement(Dapp$AnimalOnLandingPage, {
                 animal: animal,
@@ -457,6 +457,33 @@ var AnimalCarousel = {
   make: Dapp$AnimalCarousel
 };
 
+function Dapp$AnimalActionsOnDetailsPage$Unowned(Props) {
+  var chain = Props.chain;
+  var animal = Props.animal;
+  var price = Props.price;
+  var endDateMoment = Animal$WildCards.useIsLaunched(chain, animal);
+  var tmp;
+  if (typeof endDateMoment === "number") {
+    tmp = endDateMoment !== 0 ? React.createElement(RimbleUi.Loader, {}) : Curry._1(price, undefined);
+  } else {
+    var endDateMoment$1 = endDateMoment._0;
+    tmp = React.createElement(Dapp$DisplayAfterDate, {
+          endDateMoment: endDateMoment$1,
+          beforeComponent: React.createElement(React.Fragment, {
+                children: React.createElement(CountDown$WildCards.make, {
+                      endDateMoment: endDateMoment$1
+                    })
+              }),
+          afterComponent: Curry._1(price, undefined)
+        });
+  }
+  return React.createElement(React.Fragment, undefined, tmp);
+}
+
+var Unowned = {
+  make: Dapp$AnimalActionsOnDetailsPage$Unowned
+};
+
 function Dapp$AnimalActionsOnDetailsPage(Props) {
   var chain = Props.chain;
   var animal = Props.animal;
@@ -514,29 +541,17 @@ function Dapp$AnimalActionsOnDetailsPage(Props) {
                   }), React.createElement(ActionButtons$WildCards.UpdatePrice.make, {
                     animal: animal
                   }), React.createElement("br", undefined), React.createElement(ActionButtons$WildCards.UpdateDeposit.make, {}), React.createElement("br", undefined), React.createElement(Validate$WildCards.make, {}));
-  }
-  var endDateMoment = Animal$WildCards.isLaunched(chain, animal);
-  var tmp;
-  if (typeof endDateMoment === "number") {
-    tmp = endDateMoment !== 0 ? React.createElement(RimbleUi.Loader, {}) : price(undefined);
   } else {
-    var endDateMoment$1 = endDateMoment._0;
-    tmp = React.createElement(Dapp$DisplayAfterDate, {
-          endDateMoment: endDateMoment$1,
-          beforeComponent: React.createElement(React.Fragment, {
-                children: React.createElement(CountDown$WildCards.make, {
-                      endDateMoment: endDateMoment$1
-                    })
-              }),
-          afterComponent: price(undefined)
-        });
+    return React.createElement(Dapp$AnimalActionsOnDetailsPage$Unowned, {
+                chain: chain,
+                animal: animal,
+                price: price
+              });
   }
-  return React.createElement(React.Fragment, {
-              children: tmp
-            });
 }
 
 var AnimalActionsOnDetailsPage = {
+  Unowned: Unowned,
   make: Dapp$AnimalActionsOnDetailsPage
 };
 
@@ -547,7 +562,7 @@ function Dapp$DetailsViewAnimal(Props) {
   var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
   var image = Animal$WildCards.useAvatar(animal);
   var orgBadge = Animal$WildCards.useGetOrgBadgeImage(animal);
-  var isLaunched = Animal$WildCards.isLaunched(chain, animal);
+  var isLaunched = Animal$WildCards.useIsLaunched(chain, animal);
   var isOnAuction = Animal$WildCards.useIsOnAuction(chain, animal);
   var displayAnimal = function (animalImage) {
     return React.createElement("div", {

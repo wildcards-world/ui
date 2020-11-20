@@ -43,7 +43,7 @@ type launchStatus =
 // TODO: remove this variable...
 let nextLaunchDate = MomentRe.momentUtcDefaultFormat("2020-07-30T17:00:00");
 
-let isLaunched: (~chain: Client.context, TokenId.t) => launchStatus =
+let useIsLaunched: (~chain: Client.context, TokenId.t) => launchStatus =
   (~chain, animal) => {
     let optLaunchTime = QlHooks.useLaunchTimeBN(~chain, animal);
     let currentTime = QlHooks.useCurrentTimestampBn();
