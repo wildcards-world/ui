@@ -20,6 +20,7 @@ import * as BuyInput$WildCards from "./BuyInput.bs.js";
 import * as CONSTANTS$WildCards from "../../CONSTANTS.bs.js";
 import * as InputHelp$WildCards from "../InputHelp.bs.js";
 import * as Web3Utils$WildCards from "../Web3Utils.bs.js";
+import TransakSdk from "@transak/transak-sdk";
 import * as Accounting$WildCards from "../Accounting.bs.js";
 import * as TxTemplate$WildCards from "../../components/components/TxTemplate.bs.js";
 import * as RootProvider$WildCards from "../RootProvider.bs.js";
@@ -145,27 +146,76 @@ function Buy$Buy(Props) {
                 }));
   };
   var currency = chain !== 1 ? "ether" : "DAI";
+  var transakConfig_hostURL = window.location.origin;
+  var transakConfig_defaultCryptoCurrency = "MATIC";
+  var transakConfig_walletAddress = web3Context.account;
+  var transakConfig_defaultNetwork = "matic";
+  var transakConfig_themeColor = "#6BAD3E";
+  var transakConfig_exchangeScreenTitle = "Top up your balance for Wildcards";
+  var transakConfig = {
+    environment: "STAGING",
+    apiKey: "e2c87df4-4d03-49a2-8b1c-899a8bcf13eb",
+    hostURL: transakConfig_hostURL,
+    cryptoCurrencyCode: undefined,
+    defaultCryptoCurrency: transakConfig_defaultCryptoCurrency,
+    cryptoCurrencyList: undefined,
+    networks: undefined,
+    walletAddress: transakConfig_walletAddress,
+    walletAddressesData: undefined,
+    fiatCurrency: undefined,
+    countryCode: undefined,
+    fiatAmount: undefined,
+    defaultNetwork: transakConfig_defaultNetwork,
+    defaultFiatAmount: undefined,
+    paymentMethod: undefined,
+    defaultPaymentMethod: undefined,
+    disablePaymentMethods: undefined,
+    email: undefined,
+    userData: undefined,
+    partnerOrderId: undefined,
+    partnerCustomerId: undefined,
+    accessToken: undefined,
+    redirectURL: undefined,
+    disableWalletAddressForm: undefined,
+    isAutoFillUserData: undefined,
+    themeColor: transakConfig_themeColor,
+    height: undefined,
+    width: undefined,
+    hideMenu: undefined,
+    hideExchangeScreen: undefined,
+    isDisableCrypto: undefined,
+    isFeeCalculationHidden: undefined,
+    exchangeScreenTitle: transakConfig_exchangeScreenTitle
+  };
+  var transak = new TransakSdk(transakConfig);
   return React.createElement(TxTemplate$WildCards.make, {
               children: React.createElement(TxTemplate$WildCards.make, {
-                    children: isAbleToBuy ? React.createElement(BuyInput$WildCards.make, {
-                            patronage: match$5[0],
-                            onSubmitBuy: onSubmitBuy,
-                            newPrice: newPrice,
-                            deposit: deposit,
-                            depositTimeInSeconds: match$7[0],
-                            maxAvailableDeposit: maxAvailableDeposit,
-                            setNewPrice: setNewPrice,
-                            setDeposit: setDeposit,
-                            tokenIdName: tokenIdName
-                          }) : React.createElement(RimbleUi.Box, {
-                            children: React.createElement("p", {
-                                  className: Styles$WildCards.textOnlyModalText
-                                }, "You do not have enough " + (currency + (" to buy " + (tokenIdName + "."))))
-                          }),
+                    children: null,
                     txState: match[1],
                     closeButtonText: "Back to view Animal",
                     chain: chain
-                  }),
+                  }, React.createElement("p", undefined, "This wildcard uses " + currency), React.createElement("button", {
+                        onClick: (function (param) {
+                            transak.init();
+                            
+                          })
+                      }, "Buy More Crypto"), isAbleToBuy ? React.createElement(React.Fragment, undefined, React.createElement("p", undefined, "Your available balance is:"), React.createElement(RimbleUi.Button, {
+                              children: "Buy More " + currency
+                            }), React.createElement(BuyInput$WildCards.make, {
+                              patronage: match$5[0],
+                              onSubmitBuy: onSubmitBuy,
+                              newPrice: newPrice,
+                              deposit: deposit,
+                              depositTimeInSeconds: match$7[0],
+                              maxAvailableDeposit: maxAvailableDeposit,
+                              setNewPrice: setNewPrice,
+                              setDeposit: setDeposit,
+                              tokenIdName: tokenIdName
+                            })) : React.createElement(RimbleUi.Box, {
+                          children: React.createElement("p", {
+                                className: Styles$WildCards.textOnlyModalText
+                              }, "You do not have enough " + (currency + (" to buy " + (tokenIdName + "."))))
+                        })),
               txState: match$1[1],
               closeButtonText: "Back to view Animal",
               chain: chain
