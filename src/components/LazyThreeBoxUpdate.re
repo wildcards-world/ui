@@ -1,21 +1,16 @@
-/* LazyHelloWorld.re */
 module type T = (module type of ThreeBoxUpdate.Main);
 
 /*
    Needed for BuckleScript to not import the original component :
    See https://github.com/BuckleScript/bucklescript/issues/3543
  */
-[@bs.val] external component: (module T) = "undefined";
+let unsafePlaceholder: module T = [%raw {|{}|}];
 
-/* Module annotation needed to make sure `make` has the same type as the original component. */
-module Lazy: T = {
-  /* Includes `makeProps` at the type level without adding `import` of the original component. */
-  include (val component);
-  /* 100% unsafe due to `import` typedef :) but will be unified by the explicit type annotation above. */
-  let make =
-    ReLoadable.lazy_(() => DynamicImport.import("./ThreeBoxUpdate.bs.js"));
-  /* All bindings in the original component have to be added here (`makeProps` is external, so no need). */
-  /* Shallowing them here removes invalid access to undefined[1], undefined[n] in the resulting output. */
-  [@ocaml.warning "-32"]
-  let default = make;
-};
+module UnsafePlaceholder = (val unsafePlaceholder);
+
+let makeProps = UnsafePlaceholder.makeProps;
+
+let make =
+  ReLoadable.lazy_(() =>
+    ReLoadable.import(UnsafePlaceholder.make, "./ThreeBoxUpdate.bs.js")
+  );

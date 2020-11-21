@@ -24,7 +24,6 @@
   "bs-dependencies": [
     "bs-css",
     "bs-css-emotion",
-    "bs-dynamic-import",
     "bs-fetch",
     "bs-moment",
     "decco",

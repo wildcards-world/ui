@@ -265,7 +265,7 @@ module UserDetails = {
                  onClick={_ => clearNonUrlState()}
                />
                <React.Suspense fallback={<Rimble.Loader />}>
-                 <LazyThreeBoxUpdate.Lazy />
+                 <LazyThreeBoxUpdate />
                </React.Suspense>
              </div>
            | UpdateDepositScreen =>

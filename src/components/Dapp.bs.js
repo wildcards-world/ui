@@ -903,7 +903,7 @@ function Dapp(Props) {
                     right: 0,
                     m: 1
                   }), React.createElement(React.Suspense, {
-                    children: React.createElement(LazyThreeBoxUpdate$WildCards.Lazy.make, {}),
+                    children: React.createElement(LazyThreeBoxUpdate$WildCards.make, LazyThreeBoxUpdate$WildCards.makeProps(undefined, undefined)),
                     fallback: React.createElement(RimbleUi.Loader, {})
                   }));
           break;
