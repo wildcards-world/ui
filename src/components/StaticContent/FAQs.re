@@ -58,7 +58,7 @@ module FaqItem = {
     useEffect2(
       () => {
         let optHeight =
-          Ref.current(accordianContentRef)
+          accordianContentRef.current
           |> Js.Nullable.toOption
           |> Belt.Option.map(_, scrollHeight);
 

@@ -41,9 +41,7 @@
     "moment": "^2.24.0",
     "node-sass": "^4.14.0",
     "re-classnames": "^4.1.0",
-    "react": "^16.13.1",
     "react-countup": "^4.3.3",
-    "react-dom": "^16.13.1",
     "react-images": "^1.1.7",
     "react-photo-gallery": "^8.0.0",
     "react-responsive-carousel": "^3.2.9",
@@ -53,7 +51,6 @@
     "react-translate": "^7.0.1",
     "reason-loadable": "^1.0.0",
     "reason-promise": "^1.0.2",
-    "reason-react": "^0.7.1",
     "rescript-logger": "^2.0.0",
     "rimble-ui": "^0.14.0",
     "source-map-explorer": "^2.4.2",
@@ -106,32 +103,12 @@
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babel-preset-react-app": "^9.1.2",
     "bs-let": "^0.1.16",
-    "file-loader": "^6.0.0"
+    "file-loader": "^6.0.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "reason-react": "^0.9.1"
   },
   "homepage": ".",
-  "eslintConfig": {
-    "extends": "react-app",
-    "overrides": [
-      {
-        "files": [
-          "**/*.js?(x)"
-        ],
-        "rules": {
-          "react-hooks/rules-of-hooks": "error"
-        }
-      },
-      {
-        "files": [
-          "**/*.bs.js?(x)"
-        ],
-        "rules": {
-          "default-case": "off",
-          "react-hooks/rules-of-hooks": "error",
-          "strict": "off"
-        }
-      }
-    ]
-  },
   "main": "index.js",
   "repository": "git@github.com:wild-cards/ui.git",
   "author": "Jason Smythe <jason@smythemail.za.net>",
