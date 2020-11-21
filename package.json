@@ -8,6 +8,7 @@
     "@apollo/react-ssr": "^3.1.5",
     "@baransu/graphql_ppx_re": "^0.7.1",
     "@polkadot/util": "^2.8.1",
+    "@transak/transak-sdk": "^1.0.26",
     "@web3-react/core": "^6.1.1",
     "@web3-react/fortmatic-connector": "^6.0.9",
     "@web3-react/injected-connector": "^6.0.7",

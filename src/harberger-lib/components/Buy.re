@@ -41,6 +41,8 @@ let calcRequiredDepositForTime = (time, price, numerator, denominator) => {
 
   requiredDeposit->Web3Utils.fromWeiToEth;
 };
+[@bs.val] [@bs.scope ("window", "location")]
+external windowLocation: string = "origin";
 
 module Buy = {
   [@react.component]
@@ -269,25 +271,78 @@ module Buy = {
       | Client.MaticQuery => "DAI"
       };
 
+    let transakConfig: Transak.initParams = {
+      environment: "STAGING",
+      apiKey: "e2c87df4-4d03-49a2-8b1c-899a8bcf13eb",
+      // apiKey: "e7f543f7-e12e-4257-ad04-682679f0404c",
+      hostURL: windowLocation,
+      cryptoCurrencyCode: None,
+      defaultCryptoCurrency: Some("MATIC"),
+      cryptoCurrencyList: None,
+      networks: None,
+      walletAddress: web3Context.account,
+      walletAddressesData: None,
+      fiatCurrency: None, // TODO
+      countryCode: None,
+      fiatAmount: None,
+      defaultNetwork: Some("matic"),
+      defaultFiatAmount: None,
+      paymentMethod: None,
+      defaultPaymentMethod: None,
+      disablePaymentMethods: None,
+      email: None,
+      userData: None,
+      partnerOrderId: None,
+      partnerCustomerId: None,
+      accessToken: None,
+      redirectURL: None,
+      disableWalletAddressForm: None,
+      isAutoFillUserData: None,
+      themeColor: Some("#6BAD3E"),
+      height: None,
+      width: None,
+      hideMenu: None,
+      hideExchangeScreen: None,
+      isDisableCrypto: None, // This could be interesting...
+      isFeeCalculationHidden: None,
+      exchangeScreenTitle: Some("Top up your balance for Wildcards"),
+    };
+    let transak = Transak.new_(transakConfig);
+
     <TxTemplate
       chain txState=txBuyAuctionState closeButtonText="Back to view Animal">
       <TxTemplate
         chain txState=txBuyState closeButtonText="Back to view Animal">
+        <p> {("This wildcard uses " ++ currency)->React.string} </p>
+        // TODO: add link to an explainer of what "ether" or "DAI" is.
+        <button
+          onClick={_ => {
+            transak->Transak.init();
+            ();
+          }}>
+          // transak.init();
+           "Buy More Crypto"->React.string </button>
         {isAbleToBuy
-           ? <BuyInput
-               onSubmitBuy
-               setNewPrice
-               newPrice
-               deposit
-               depositTimeInSeconds
-               setDeposit
-               patronage
-               tokenIdName
-               //  priceSliderInitialMax
-               //  depositForAYear
-               maxAvailableDeposit
-               //  updatePatronage
-             />
+           ? <>
+               <p> "Your available balance is:"->React.string </p>
+               <Rimble.Button>
+                 {("Buy More " ++ currency)->React.string}
+               </Rimble.Button>
+               <BuyInput
+                 onSubmitBuy
+                 setNewPrice
+                 newPrice
+                 deposit
+                 depositTimeInSeconds
+                 setDeposit
+                 patronage
+                 tokenIdName
+                 //  priceSliderInitialMax
+                 //  depositForAYear
+                 maxAvailableDeposit
+                 //  updatePatronage
+               />
+             </>
            : <Rimble.Box>
                <p className=Styles.textOnlyModalText>
                  {React.string(
