@@ -215,6 +215,30 @@ module HomeAnimalsQuery = [%graphql
     }
   |}
 ];
+
+module ArtistQuery = [%graphql
+  {|
+    query ($artistIdentifier: String!) {
+      artist_by_pk(id: $artistIdentifier) {
+        eth_address
+        id
+        name
+        website
+        wildcardData {
+          key
+          id
+          name
+          image
+          organization {
+            id
+            name
+            logo
+          }
+        }
+      }
+    }
+  |}
+];
 // NOTE: If multiple transactions happen in the same block they may get missed, maybe one day that will be a problem for us ;)
 module SubStateChangeEvents = [%graphql
   {|
@@ -1173,4 +1197,76 @@ let useMetaTx = () => {
       (),
     );
   };
+};
+
+let useArtistQuery = (~artistIdentifier) =>
+  ApolloHooks.useQuery(
+    ~variables=ArtistQuery.make(~artistIdentifier, ())##variables,
+    ArtistQuery.definition,
+  );
+let useArtistData = (~artistIdentifier) => {
+  // TODO: when this doesn't load it will just be `None` if there is a failure or if the artist doesn't exist...
+  let (simple, _) = useArtistQuery(~artistIdentifier);
+  switch (simple) {
+  | Data(response) => response##artist_by_pk
+  | Error(_)
+  | Loading
+  | NoData => None
+  };
+};
+let useArtistEthAddress = (~artistIdentifier) => {
+  let artistData = useArtistData(~artistIdentifier);
+  artistData->Option.map(data => data##eth_address);
+};
+let useArtistName = (~artistIdentifier) => {
+  let artistData = useArtistData(~artistIdentifier);
+  artistData->Option.map(data => data##name);
+};
+let useArtistWebsite = (~artistIdentifier) => {
+  let artistData = useArtistData(~artistIdentifier);
+  artistData->Option.map(data => data##website);
+};
+let useArtistWildcards = (~artistIdentifier) => {
+  let artistData = useArtistData(~artistIdentifier);
+  artistData->Option.map(data => data##wildcardData);
+};
+type wildcardKey = int;
+type artistOrg = {
+  id: string,
+  name: string,
+  logo: string,
+  wildcards: array(wildcardKey),
+};
+let useArtistOrgs = (~artistIdentifier) => {
+  let artistData = useArtistData(~artistIdentifier);
+  artistData->Option.map(data => {
+    let dict = Js.Dict.empty();
+    data##wildcardData
+    ->Array.map(wildcard => {
+        switch (wildcard##organization) {
+        | Some(org) =>
+          let orgId = org##id;
+          switch (dict->Js.Dict.get(orgId)) {
+          | Some(orgObj) =>
+            let newOrgObj = {
+              ...orgObj,
+              wildcards: orgObj.wildcards->Array.concat([|wildcard##key|]),
+            };
+            dict->Js.Dict.set(orgId, newOrgObj);
+          | None =>
+            dict->Js.Dict.set(
+              orgId,
+              {
+                id: orgId,
+                name: org##name,
+                logo: org##logo,
+                wildcards: [|wildcard##key|],
+              },
+            )
+          };
+        | None => ()
+        };
+        ();
+      });
+  });
 };

@@ -1,6 +1,5 @@
 // module Styles = {
 /* Open the Css module, so we can access the style properties below without prefixing them with Css. */
-[@ocaml.warning "-44"]
 open Css;
 
 let backgroundImageGorilla = "/img/wildcardsimages/wild-jungle-background.jpg";
@@ -30,7 +29,7 @@ let app =
 let textOnlyModalText = style([padding(em(2.))]);
 let totalRaisedText = size => style([fontSize(em(size))]);
 
-let copyButton = style([float(`right), zIndex(50)]);
+let copyButton = style([Css.float(`right), zIndex(50)]);
 
 // Use flex box to center
 let centerItems =
