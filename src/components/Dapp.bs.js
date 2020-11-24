@@ -23,6 +23,7 @@ import * as QlHooks$WildCards from "../harberger-lib/QlHooks.bs.js";
 import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.bs.js";
 import * as TokenId$WildCards from "../harberger-lib/TokenId.bs.js";
 import * as Validate$WildCards from "./Validate.bs.js";
+import * as CONSTANTS$WildCards from "../CONSTANTS.bs.js";
 import * as CountDown$WildCards from "../harberger-lib/CountDown.bs.js";
 import * as InputHelp$WildCards from "../harberger-lib/InputHelp.bs.js";
 import * as Web3Utils$WildCards from "../harberger-lib/Web3Utils.bs.js";
@@ -865,7 +866,7 @@ function Dapp$AnimalInfo(Props) {
                                                       }),
                                                   tl: /* [] */0
                                                 }),
-                                            src: Animal$WildCards.cdnBase + media
+                                            src: CONSTANTS$WildCards.cdnBase + media
                                           });
                               }))
                       }))

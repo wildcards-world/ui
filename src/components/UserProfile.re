@@ -18,7 +18,7 @@ module Token = {
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
     let image = Animal.useAvatar(tokenId);
 
-    <div className=Css.(style([width(vh(12.))]))>
+    <div className=Css.(style([width(vh(12.)), cursor(`pointer)]))>
       <img
         className=Css.(style([width(`percent(100.))]))
         onClick={_e =>

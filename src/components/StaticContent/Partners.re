@@ -97,7 +97,7 @@ module OrgDetails = {
               ]),
             ])
           )
-          src={Animal.cdnBase ++ logo}
+          src={CONSTANTS.cdnBase ++ logo}
           alt=name
         />
       </a>

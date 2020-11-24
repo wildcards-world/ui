@@ -10,68 +10,18 @@ let centreAlignOnMobile =
     ])
   );
 
-// TODO:: check that the address is valid:
-// Something like this maybe? https://docs.ethers.io/ethers.js/html/api-utils.html
-module Token = {
-  [@react.component]
-  let make = (~tokenId: TokenId.t) => {
-    let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
-    let image = Animal.useAvatar(tokenId);
-
-    <div className=Css.(style([width(vh(12.))]))>
-      <img
-        className=Css.(style([width(`percent(100.))]))
-        onClick={_e =>
-          clearAndPush("/#details/" ++ tokenId->TokenId.toString)
-        }
-        src=image
-      />
-    </div>;
-  };
-};
-
 module ArtistDetails = {
   [@react.component]
   let make =
       (
-        ~patronQueryResult,
         ~optThreeBoxData: option(UserProvider.threeBoxUserInfo),
-        ~artistAddress: string,
+        ~artistEthAddress: string,
+        ~optArtistName,
+        ~optArtistWebsite,
+        ~optArtistWildcards,
+        ~optArtistOrgs,
       ) => {
-    let isForeclosed =
-      QlHooks.useIsForeclosed(~chain=Client.MainnetQuery, artistAddress);
-
-    /**
-     * 1 of four scenarios for each user:
-     * User has never owned a wildcard.
-     * User owns a wildcard(s), hasn't owned others in the past.
-     * User owns a wildcard(s), has owned others in the past.
-     * User owned (past tense) wildcards, but they have foreclosed / been bought from them.
-     *
-     * TODO: It might make the code more readable to encode the above for options into an variant.
-     *       It is hard to reason about if we are just checking if the array is null, or not etc.
-     */
-    let currentlyOwnedTokens =
-      isForeclosed
-        ? [||]
-        : patronQueryResult##patron
-          ->oMap(patron => patron##tokens->Array.map(token => token##id))
-          |||| [||];
-
-    let allPreviouslyOwnedTokens =
-      patronQueryResult##patron
-      ->oMap(patron =>
-          patron##previouslyOwnedTokens->Array.map(token => token##id)
-        )
-      |||| [||];
-
-    let uniquePreviouslyOwnedTokens =
-      isForeclosed
-        ? allPreviouslyOwnedTokens
-        : Set.String.fromArray(allPreviouslyOwnedTokens)
-          ->Set.String.removeMany(currentlyOwnedTokens)
-          ->Set.String.toArray;
-
+    let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
     let optProfile = optThreeBoxData >>= (a => a.profile);
     let image: string =
       (
@@ -81,7 +31,7 @@ module ArtistDetails = {
         <$> (a => a.contentUrl)
         >>= (content => Js.Dict.get(content, "/"))
       )
-      ->Option.mapWithDefault(Blockie.makeBlockie(. artistAddress), hash =>
+      ->Option.mapWithDefault(Blockie.makeBlockie(. artistEthAddress), hash =>
           "https://ipfs.infura.io/ipfs/" ++ hash
         );
     let optName = optProfile >>= (a => a.name);
@@ -95,40 +45,31 @@ module ArtistDetails = {
       );
     let etherScanUrl = RootProvider.useEtherscanUrl();
 
-    let optUsdPrice = UsdPriceProvider.useUsdPrice();
-
-    let optMonthlyCotribution = {
-      patronQueryResult##patron
-      <$> (
-        patron =>
-          patron##patronTokenCostScaledNumerator
-          ->BN.mul(BN.new_("2592000")) // A month with 30 days has 2592000 seconds
-          ->BN.div(
-              // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
-              BN.new_("31536000000000000000"),
-            )
-      )
-      <$> (
-        monthlyContributionWei => {
-          let monthlyContributionEth =
-            monthlyContributionWei->Web3Utils.fromWeiBNToEthPrecision(
-              ~digits=4,
-            );
-          let optMonthlyContributionUsd =
-            optUsdPrice
-            <$> (
-              currentUsdEthPrice =>
-                toFixedWithPrecisionNoTrailingZeros(
-                  Float.fromString(monthlyContributionEth)
-                  ->Option.mapWithDefault(0., a => a)
-                  *. currentUsdEthPrice,
-                  ~digits=2,
-                )
-            );
-          (monthlyContributionEth, optMonthlyContributionUsd);
-        }
+    let artistsAnimalsArray =
+      optArtistWildcards->Option.mapWithDefault([||], animals =>
+        animals->Array.map(animal => animal##id)
       );
-    };
+    let currentUsdEthPrice = UsdPriceProvider.useUsdPrice();
+    let (totalCollectedMainnetEth, totalCollectMaticDai) =
+      QlHooks.useTotalRaisedAnimalGroup(artistsAnimalsArray);
+
+    let (totalPatronageUsd, totalBreakdownString) =
+      switch (totalCollectedMainnetEth, totalCollectMaticDai) {
+      | (Some(mainnetEth), Some(maticDai)) => (
+          (
+            currentUsdEthPrice->Option.mapWithDefault(0., usdEthRate =>
+              mainnetEth->Eth.getFloat(Eth.Usd(usdEthRate, 2))
+            )
+            +. maticDai->Eth.getFloat(Eth.Eth(`ether))
+          )
+          ->Js.Float.toFixedWithPrecision(~digits=6),
+          mainnetEth->Web3Utils.fromWeiBNToEthPrecision(~digits=4)
+          ++ " ETH + "
+          ++ maticDai->Web3Utils.fromWeiBNToEthPrecision(~digits=2)
+          ++ " DAI",
+        )
+      | _ => ("loading", "loading")
+      };
 
     let nonUrlState = RootProvider.useNonUrlState();
     let clearNonUrlState = RootProvider.useClearNonUrlState();
@@ -168,119 +109,118 @@ module ArtistDetails = {
                  <LazyThreeBoxUpdate />
                </React.Suspense>
              </div>
-           | UpdateDepositScreen =>
-             <div className=Css.(style([position(`relative)]))>
-               <Rimble.Button.Text
-                 icononly=true
-                 icon="Close"
-                 color="moon-gray"
-                 position="absolute"
-                 top=0
-                 right=0
-                 m=1
-                 onClick={_ => clearNonUrlState()}
-               />
-               <UpdateDeposit
-                 chain=Client.MainnetQuery
-                 closeButtonText="Close"
-               />
-             </div>
+           | UpdateDepositScreen
            | LoginScreen(_)
            | UpdatePriceScreen(_)
            | BuyScreen(_)
            | AuctionScreen(_)
            | NoExtraState =>
              <>
-               {optName->reactMap(name => <h2> name->restr </h2>)}
+               {<h2>
+                  {optName
+                   ->Option.getWithDefault(
+                       optArtistName |||| "Loading artist name",
+                     )
+                   ->React.string}
+                </h2>}
                {optTwitter->reactMap(twitterHandle =>
                   <a
                     className=Styles.navListText
                     target="_blank"
                     rel="noopener noreferrer"
                     href={"https://twitter.com/" ++ twitterHandle}>
-                    {("@" ++ twitterHandle)->restr}
+                    {("@" ++ twitterHandle)->React.string}
                   </a>
                 )}
                <br />
                {optDescription->reactMap(description =>
-                  <p> description->restr </p>
+                  <p> description->React.string </p>
                 )}
+               {optArtistWebsite->Option.mapWithDefault(React.null, website =>
+                  <a
+                    className=Styles.navListText
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href=website>
+                    "Artists website"->React.string
+                  </a>
+                )}
+               <br />
+               <br />
                <a
                  className=Styles.navListText
                  target="_blank"
                  rel="noopener noreferrer"
                  href={
-                   "https://" ++ etherScanUrl ++ "/address/" ++ artistAddress
+                   "https://"
+                   ++ etherScanUrl
+                   ++ "/address/"
+                   ++ artistEthAddress
                  }>
-                 {Helper.elipsify(artistAddress, 10)->restr}
+                 {Helper.elipsify(artistEthAddress, 10)->React.string}
                </a>
                <br />
              </>
            }}
         </Rimble.Box>
         <Rimble.Box p=1 width=[|1., 1., 0.3333|]>
-          <h2> "Monthly Contribution"->restr </h2>
-          <p>
-            {optMonthlyCotribution->reactMapWithDefault(
-               {
-                 "0 ETH";
-               }
-               ->restr,
-               ((ethValue, optUsdValue)) =>
-               <React.Fragment>
-                 {j|$ethValue ETH\xa0|j}->restr
-                 {optUsdValue->reactMap(usdValue =>
-                    <small> {j|($usdValue USD)|j}->restr </small>
-                  )}
-               </React.Fragment>
-             )}
-          </p>
+          <h2> "Total contributed by artist"->React.string </h2>
+          {(totalPatronageUsd ++ "USD")->React.string}
+          <br />
+          <small> totalBreakdownString->React.string </small>
+          {switch (optArtistOrgs) {
+           | None => <h2> "Loading orgs"->React.string </h2>
+           | Some([||]) => React.null
+           | Some(orgList) =>
+             <>
+               <br />
+               <br />
+               <h4>
+                 "Organisations this artist has contributed to:"->React.string
+               </h4>
+               {orgList
+                ->Array.map(org =>
+                    QlHooks.(
+                      <div
+                        className=Css.(
+                          style([width(vh(12.)), cursor(`pointer)])
+                        )>
+                        <img
+                          className=Css.(style([width(`percent(100.))]))
+                          onClick={_e => clearAndPush("/#org/" ++ org.id)}
+                          src={CONSTANTS.cdnBase ++ org.logo}
+                        />
+                      </div>
+                    )
+                  )
+                ->React.array}
+             </>
+           }}
         </Rimble.Box>
         <Rimble.Box p=1 width=[|1., 1., 0.3333|]>
-          {switch (currentlyOwnedTokens) {
-           | [||] =>
-             uniquePreviouslyOwnedTokens->Array.length > 0
-               ? <p>
-                   "User currently doesn't currently own a wildcard."->restr
-                 </p>
-               : <p> "User has never owned a wildcard."->restr </p>
-           | currentlyOwnedTokens =>
+          {switch (optArtistWildcards) {
+           | None => <p> "loading artists wildcards"->React.string </p>
+           | Some([||]) =>
+             <p> "Artist hasn't created any wildcards yet"->React.string </p>
+           | Some(currentlyOwnedTokens) =>
              <React.Fragment>
                <Rimble.Heading>
-                 "Currently owned tokens"->React.string
+                 "Wildcards created by artist"->React.string
                </Rimble.Heading>
                <Rimble.Flex flexWrap="wrap" className=centreAlignOnMobile>
                  {React.array(
-                    currentlyOwnedTokens->Array.map(tokenId =>
-                      <Token
-                        key=tokenId
-                        tokenId={TokenId.fromStringUnsafe(tokenId)}
-                      />
-                    ),
-                  )}
-               </Rimble.Flex>
-               <br />
-               <br />
-               <br />
-             </React.Fragment>
-           }}
-          {switch (uniquePreviouslyOwnedTokens) {
-           | [||] => React.null
-           | uniquePreviouslyOwnedTokens =>
-             <React.Fragment>
-               <Rimble.Heading>
-                 "Previously owned tokens"->React.string
-               </Rimble.Heading>
-               <Rimble.Flex flexWrap="wrap" className=centreAlignOnMobile>
-                 {React.array(
-                    uniquePreviouslyOwnedTokens->Array.map(tokenId => {
-                      <Token
-                        key=tokenId
-                        tokenId={TokenId.fromStringUnsafe(tokenId)}
-                      />
+                    currentlyOwnedTokens->Array.map(token => {
+                      let id = token##id->TokenId.toString;
+                      <UserProfile.Token
+                        key=id
+                        tokenId={TokenId.fromStringUnsafe(id)}
+                      />;
                     }),
                   )}
                </Rimble.Flex>
+               <br />
+               <br />
+               <br />
              </React.Fragment>
            }}
         </Rimble.Box>
@@ -294,31 +234,30 @@ let make = (~artistIdentifier: string) => {
   // let artistAddress =
   Js.log(artistIdentifier);
 
+  let artistEthAddress =
+    (
+      QlHooks.useArtistEthAddress(~artistIdentifier)
+      |||| CONSTANTS.nullEthAddress
+    )
+    ->Js.String.toLowerCase;
+  let optArtistName = QlHooks.useArtistName(~artistIdentifier);
+  let optArtistWebsite = QlHooks.useArtistWebsite(~artistIdentifier);
+  let optArtistWildcards = QlHooks.useArtistWildcards(~artistIdentifier);
+  let optArtistOrgs = QlHooks.useArtistOrgs(~artistIdentifier);
+
+  let userInfoContext = UserProvider.useUserInfoContext();
+  let reloadUser = forceReload =>
+    userInfoContext.update(artistEthAddress, forceReload);
+  reloadUser(false);
+  let optThreeBoxData = UserProvider.use3BoxUserData(artistEthAddress);
   <Rimble.Flex flexWrap="wrap" alignItems="center" className=Styles.topBody>
-    "WIP"->React.string
+    <ArtistDetails
+      artistEthAddress
+      optArtistName
+      optArtistWebsite
+      optArtistWildcards
+      optArtistOrgs
+      optThreeBoxData
+    />
   </Rimble.Flex>;
-  // let artistAddressLowerCase = artistAddress->Js.String.toLowerCase;
-  // let patronQuery =
-  //   QlHooks.usePatronQuery(
-  //     ~chain=Client.MainnetQuery,
-  //     artistAddressLowerCase,
-  //   );
-  // let userInfoContext = UserProvider.useUserInfoContext();
-  // let reloadUser = forceReload =>
-  //   userInfoContext.update(artistAddressLowerCase, forceReload); // double check that data is loaded.
-  // reloadUser(false);
-  // let optThreeBoxData = UserProvider.use3BoxUserData(artistAddressLowerCase);
-  // <Rimble.Flex flexWrap="wrap" alignItems="center" className=Styles.topBody>
-  //   {switch (patronQuery) {
-  //    | Some(patronQueryResult) =>
-  //      <ArtistDetails optThreeBoxData patronQueryResult artistAddress />
-  //    | None =>
-  //      <div>
-  //        <Rimble.Heading>
-  //          "Loading user profile:"->React.string
-  //        </Rimble.Heading>
-  //        <Rimble.Loader />
-  //      </div>
-  //    }}
-  // </Rimble.Flex>;
 };

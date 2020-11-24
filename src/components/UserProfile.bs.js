@@ -46,7 +46,10 @@ function UserProfile$Token(Props) {
   return React.createElement("div", {
               className: Curry._1(Css.style, {
                     hd: Css.width(Css.vh(12)),
-                    tl: /* [] */0
+                    tl: {
+                      hd: Css.cursor("pointer"),
+                      tl: /* [] */0
+                    }
                   })
             }, React.createElement("img", {
                   className: Curry._1(Css.style, {

@@ -44,9 +44,8 @@ let decodeBN: Js.Json.t => BN.t =
 let decodeOptionBN: option(Js.Json.t) => option(BN.t) =
   optionalNumber => optionalNumber->Option.map(num => decodeBN(num));
 
-let toTokenId: string => TokenId.t = Obj.magic;
 let toTokenIdWithDefault = optTokenId =>
-  optTokenId->Option.getWithDefault("9999")->toTokenId;
+  optTokenId->Option.getWithDefault("9999")->TokenId.fromStringUnsafe;
 
 // TODO: make a real address string
 let decodeAddress: Js.Json.t => string =
@@ -226,7 +225,7 @@ module ArtistQuery = [%graphql
         website
         wildcardData {
           key
-          id
+          id @bsDecoder(fn: "toTokenIdWithDefault")
           name
           image
           organization {
@@ -311,8 +310,8 @@ module LoadPatron = [%graphql
 
 module LoadTokenDataArray = [%graphql
   {|
-        query ($orgArray: [String!]!) {
-          wildcards (where: {id_in: $orgArray}) {
+        query ($wildcardIdArray: [String!]!) {
+          wildcards (where: {id_in: $wildcardIdArray}) {
             # totalCollected
             # patronageNumeratorPriceScaled
             # timeCollected
@@ -428,13 +427,14 @@ let useWildcardQuery = (~chain, tokenId) =>
     SubWildcardQuery.definition,
   );
 
-let useLoadTokenDataArrayQuery = tokenIdArray =>
+let useLoadTokenDataArrayQuery = (~chain, tokenIdArray) =>
   ApolloHooks.useQuery(
     ~variables=
       LoadTokenDataArray.make(
-        ~orgArray=tokenIdArray->Array.map(id => id->TokenId.toString),
+        ~wildcardIdArray=tokenIdArray->Array.map(id => id->TokenId.toString),
         (),
       )##variables,
+    ~context={context: chain}->createContext,
     LoadTokenDataArray.definition,
   );
 let useWildcardDataQuery = tokenId => {
@@ -779,8 +779,8 @@ let useTotalCollectedToken:
     simple->queryResultOptionFlatMap(getTotalCollectedData);
   };
 
-let useTotalCollectedTokenArray = animalArray => {
-  let (simple, _) = useLoadTokenDataArrayQuery(animalArray);
+let useTotalCollectedTokenArray = (~chain, animalArray) => {
+  let (simple, _) = useLoadTokenDataArrayQuery(~chain, animalArray);
   simple->queryResultToOption;
 };
 
@@ -892,30 +892,57 @@ let calculateTotalRaised =
 
   amountCollectedOrDue->BN.add(amountRaisedSinceLastCollection);
 };
-let useTotalRaisedAnimalGroup: array(TokenId.t) => option(Eth.t) =
+let useTotalRaisedAnimalGroup:
+  array(TokenId.t) => (option(Eth.t), option(Eth.t)) =
   animals => {
     let currentTimestamp = useCurrentTime();
 
-    let details = useTotalCollectedTokenArray(animals);
-    // let detailsArray = details##wildcards;
-    switch (details) {
-    | Some(detailsArray) =>
-      Some(
-        detailsArray##wildcards
-        ->Array.reduce(BN.new_("0"), (acc, animalDetails) =>
-            calculateTotalRaised(
-              currentTimestamp,
-              (
-                animalDetails##totalCollected,
-                animalDetails##timeCollected,
-                animalDetails##patronageNumeratorPriceScaled,
-              ),
-            )
-            |+| acc
-          ),
-      )
-    | None => None
-    };
+    let detailsMainnet =
+      useTotalCollectedTokenArray(~chain=Client.MainnetQuery, animals);
+    let detailsMatic =
+      useTotalCollectedTokenArray(
+        ~chain=Client.MaticQuery,
+        animals->Array.map(id => ("matic" ++ id->Obj.magic)->Obj.magic),
+      );
+
+    (
+      switch (detailsMainnet) {
+      | Some(detailsArray) =>
+        Some(
+          detailsArray##wildcards
+          ->Array.reduce(BN.new_("0"), (acc, animalDetails) =>
+              calculateTotalRaised(
+                currentTimestamp,
+                (
+                  animalDetails##totalCollected,
+                  animalDetails##timeCollected,
+                  animalDetails##patronageNumeratorPriceScaled,
+                ),
+              )
+              |+| acc
+            ),
+        )
+      | None => None
+      },
+      switch (detailsMatic) {
+      | Some(detailsArray) =>
+        Some(
+          detailsArray##wildcards
+          ->Array.reduce(BN.new_("0"), (acc, animalDetails) =>
+              calculateTotalRaised(
+                currentTimestamp,
+                (
+                  animalDetails##totalCollected,
+                  animalDetails##timeCollected,
+                  animalDetails##patronageNumeratorPriceScaled,
+                ),
+              )
+              |+| acc
+            ),
+        )
+      | None => None
+      },
+    );
   };
 
 let useTimeSinceTokenWasLastSettled:
@@ -1216,7 +1243,7 @@ let useArtistData = (~artistIdentifier) => {
 };
 let useArtistEthAddress = (~artistIdentifier) => {
   let artistData = useArtistData(~artistIdentifier);
-  artistData->Option.map(data => data##eth_address);
+  artistData->Option.flatMap(data => data##eth_address);
 };
 let useArtistName = (~artistIdentifier) => {
   let artistData = useArtistData(~artistIdentifier);
@@ -1224,7 +1251,7 @@ let useArtistName = (~artistIdentifier) => {
 };
 let useArtistWebsite = (~artistIdentifier) => {
   let artistData = useArtistData(~artistIdentifier);
-  artistData->Option.map(data => data##website);
+  artistData->Option.flatMap(data => data##website);
 };
 let useArtistWildcards = (~artistIdentifier) => {
   let artistData = useArtistData(~artistIdentifier);
@@ -1264,9 +1291,11 @@ let useArtistOrgs = (~artistIdentifier) => {
               },
             )
           };
+
         | None => ()
-        };
-        ();
-      });
+        }
+      })
+    ->ignore;
+    dict->Js.Dict.values;
   });
 };

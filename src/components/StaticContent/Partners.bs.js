@@ -11,9 +11,9 @@ import * as Js_option from "bs-platform/lib/es6/js_option.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
-import * as Animal$WildCards from "../../harberger-lib/Animal.bs.js";
 import * as Styles$WildCards from "../../Styles.bs.js";
 import * as Globals$WildCards from "../../harberger-lib/Globals.bs.js";
+import * as CONSTANTS$WildCards from "../../CONSTANTS.bs.js";
 import * as RootProvider$WildCards from "../../harberger-lib/RootProvider.bs.js";
 import * as ApolloHooks$ReasonApolloHooks from "@wildcards/reason-apollo-hooks/src/ApolloHooks.bs.js";
 
@@ -259,7 +259,7 @@ function Partners$OrgDetails(Props) {
                               }
                             }),
                         alt: conservation.name,
-                        src: Animal$WildCards.cdnBase + conservation.logo
+                        src: CONSTANTS$WildCards.cdnBase + conservation.logo
                       }))
             });
 }

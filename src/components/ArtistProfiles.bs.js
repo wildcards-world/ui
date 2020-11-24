@@ -2,24 +2,24 @@
 
 import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
-import BnJs from "bn.js";
 import * as React from "react";
 import * as Js_dict from "bs-platform/lib/es6/js_dict.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
-import * as Belt_Float from "bs-platform/lib/es6/belt_Float.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
-import * as Belt_SetString from "bs-platform/lib/es6/belt_SetString.js";
-import * as Animal$WildCards from "../harberger-lib/Animal.bs.js";
+import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
+import * as Eth$WildCards from "../harberger-lib/Eth.bs.js";
 import * as Helper$WildCards from "../harberger-lib/Helper.bs.js";
 import * as Styles$WildCards from "../Styles.bs.js";
 import * as Blockie$WildCards from "../harberger-lib/bindings/ethereum-blockies-base64/Blockie.bs.js";
 import * as Globals$WildCards from "../harberger-lib/Globals.bs.js";
 import * as QlHooks$WildCards from "../harberger-lib/QlHooks.bs.js";
 import * as TokenId$WildCards from "../harberger-lib/TokenId.bs.js";
+import * as CONSTANTS$WildCards from "../CONSTANTS.bs.js";
 import * as Web3Utils$WildCards from "../harberger-lib/Web3Utils.bs.js";
+import * as UserProfile$WildCards from "./UserProfile.bs.js";
 import * as RootProvider$WildCards from "../harberger-lib/RootProvider.bs.js";
-import * as UpdateDeposit$WildCards from "../harberger-lib/components/UpdateDeposit.bs.js";
+import * as UserProvider$WildCards from "../harberger-lib/js/user-provider/UserProvider.bs.js";
 import * as UsdPriceProvider$WildCards from "../harberger-lib/components/UsdPriceProvider.bs.js";
 import * as LazyThreeBoxUpdate$WildCards from "./LazyThreeBoxUpdate.bs.js";
 
@@ -34,50 +34,14 @@ var centreAlignOnMobile = Curry._1(Css.style, {
       tl: /* [] */0
     });
 
-function ArtistProfiles$Token(Props) {
-  var tokenId = Props.tokenId;
-  var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
-  var image = Animal$WildCards.useAvatar(tokenId);
-  return React.createElement("div", {
-              className: Curry._1(Css.style, {
-                    hd: Css.width(Css.vh(12)),
-                    tl: /* [] */0
-                  })
-            }, React.createElement("img", {
-                  className: Curry._1(Css.style, {
-                        hd: Css.width({
-                              NAME: "percent",
-                              VAL: 100
-                            }),
-                        tl: /* [] */0
-                      }),
-                  src: image,
-                  onClick: (function (_e) {
-                      return Curry._1(clearAndPush, "/#details/" + TokenId$WildCards.toString(tokenId));
-                    })
-                }));
-}
-
-var Token = {
-  make: ArtistProfiles$Token
-};
-
 function ArtistProfiles$ArtistDetails(Props) {
-  var patronQueryResult = Props.patronQueryResult;
   var optThreeBoxData = Props.optThreeBoxData;
-  var artistAddress = Props.artistAddress;
-  var isForeclosed = QlHooks$WildCards.useIsForeclosed(/* MainnetQuery */2, artistAddress);
-  var currentlyOwnedTokens = isForeclosed ? [] : Globals$WildCards.$pipe$pipe$pipe$pipe(Globals$WildCards.oMap(patronQueryResult.patron, (function (patron) {
-                return Belt_Array.map(patron.tokens, (function (token) {
-                              return token.id;
-                            }));
-              })), []);
-  var allPreviouslyOwnedTokens = Globals$WildCards.$pipe$pipe$pipe$pipe(Globals$WildCards.oMap(patronQueryResult.patron, (function (patron) {
-              return Belt_Array.map(patron.previouslyOwnedTokens, (function (token) {
-                            return token.id;
-                          }));
-            })), []);
-  var uniquePreviouslyOwnedTokens = isForeclosed ? allPreviouslyOwnedTokens : Belt_SetString.toArray(Belt_SetString.removeMany(Belt_SetString.fromArray(allPreviouslyOwnedTokens), currentlyOwnedTokens));
+  var artistEthAddress = Props.artistEthAddress;
+  var optArtistName = Props.optArtistName;
+  var optArtistWebsite = Props.optArtistWebsite;
+  var optArtistWildcards = Props.optArtistWildcards;
+  var optArtistOrgs = Props.optArtistOrgs;
+  var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
   var optProfile = Globals$WildCards.$great$great$eq(optThreeBoxData, (function (a) {
           return a.profile;
         }));
@@ -89,7 +53,7 @@ function ArtistProfiles$ArtistDetails(Props) {
                   return a.contentUrl;
                 })), (function (content) {
               return Js_dict.get(content, "/");
-            })), Blockie$WildCards.makeBlockie(artistAddress), (function (hash) {
+            })), Blockie$WildCards.makeBlockie(artistEthAddress), (function (hash) {
           return "https://ipfs.infura.io/ipfs/" + hash;
         }));
   var optName = Globals$WildCards.$great$great$eq(optProfile, (function (a) {
@@ -106,97 +70,89 @@ function ArtistProfiles$ArtistDetails(Props) {
           return a.username;
         }));
   var etherScanUrl = RootProvider$WildCards.useEtherscanUrl(undefined);
-  var optUsdPrice = UsdPriceProvider$WildCards.useUsdPrice(undefined);
-  var optMonthlyCotribution = Globals$WildCards.$less$$great(Globals$WildCards.$less$$great(patronQueryResult.patron, (function (patron) {
-              return patron.patronTokenCostScaledNumerator.mul(new BnJs("2592000")).div(new BnJs("31536000000000000000"));
-            })), (function (monthlyContributionWei) {
-          var monthlyContributionEth = Web3Utils$WildCards.fromWeiBNToEthPrecision(monthlyContributionWei, 4);
-          var optMonthlyContributionUsd = Globals$WildCards.$less$$great(optUsdPrice, (function (currentUsdEthPrice) {
-                  return Globals$WildCards.toFixedWithPrecisionNoTrailingZeros(Belt_Option.mapWithDefault(Belt_Float.fromString(monthlyContributionEth), 0, (function (a) {
-                                    return a;
-                                  })) * currentUsdEthPrice, 2);
-                }));
-          return [
-                  monthlyContributionEth,
-                  optMonthlyContributionUsd
-                ];
+  var artistsAnimalsArray = Belt_Option.mapWithDefault(optArtistWildcards, [], (function (animals) {
+          return Belt_Array.map(animals, (function (animal) {
+                        return animal.id;
+                      }));
         }));
+  var currentUsdEthPrice = UsdPriceProvider$WildCards.useUsdPrice(undefined);
+  var match = QlHooks$WildCards.useTotalRaisedAnimalGroup(artistsAnimalsArray);
+  var totalCollectMaticDai = match[1];
+  var totalCollectedMainnetEth = match[0];
+  var match$1;
+  if (totalCollectedMainnetEth !== undefined && totalCollectMaticDai !== undefined) {
+    var maticDai = Caml_option.valFromOption(totalCollectMaticDai);
+    var mainnetEth = Caml_option.valFromOption(totalCollectedMainnetEth);
+    match$1 = [
+      (Belt_Option.mapWithDefault(currentUsdEthPrice, 0, (function (usdEthRate) {
+                  return Eth$WildCards.getFloat(mainnetEth, {
+                              TAG: /* Usd */1,
+                              _0: usdEthRate,
+                              _1: 2
+                            });
+                })) + Eth$WildCards.getFloat(maticDai, {
+                TAG: /* Eth */0,
+                _0: "ether"
+              })).toFixed(6),
+      Web3Utils$WildCards.fromWeiBNToEthPrecision(mainnetEth, 4) + (" ETH + " + (Web3Utils$WildCards.fromWeiBNToEthPrecision(maticDai, 2) + " DAI"))
+    ];
+  } else {
+    match$1 = [
+      "loading",
+      "loading"
+    ];
+  }
   var nonUrlState = RootProvider$WildCards.useNonUrlState(undefined);
   var clearNonUrlState = RootProvider$WildCards.useClearNonUrlState(undefined);
   var tmp;
   var exit = 0;
-  if (typeof nonUrlState === "number") {
-    switch (nonUrlState) {
-      case /* UserVerificationScreen */0 :
-          tmp = React.createElement("div", {
-                className: Curry._1(Css.style, {
-                      hd: Css.position("relative"),
-                      tl: /* [] */0
-                    })
-              }, React.createElement(RimbleUi.Button.Text, {
-                    onClick: (function (param) {
-                        return Curry._1(clearNonUrlState, undefined);
-                      }),
-                    icononly: true,
-                    icon: "Close",
-                    color: "moon-gray",
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    m: 1
-                  }), React.createElement(React.Suspense, {
-                    children: React.createElement(LazyThreeBoxUpdate$WildCards.make, LazyThreeBoxUpdate$WildCards.makeProps(undefined, undefined)),
-                    fallback: React.createElement(RimbleUi.Loader, {})
-                  }));
-          break;
-      case /* UpdateDepositScreen */1 :
-          tmp = React.createElement("div", {
-                className: Curry._1(Css.style, {
-                      hd: Css.position("relative"),
-                      tl: /* [] */0
-                    })
-              }, React.createElement(RimbleUi.Button.Text, {
-                    onClick: (function (param) {
-                        return Curry._1(clearNonUrlState, undefined);
-                      }),
-                    icononly: true,
-                    icon: "Close",
-                    color: "moon-gray",
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    m: 1
-                  }), React.createElement(UpdateDeposit$WildCards.make, {
-                    closeButtonText: "Close",
-                    chain: /* MainnetQuery */2
-                  }));
-          break;
-      case /* NoExtraState */2 :
-          exit = 1;
-          break;
-      
-    }
+  if (typeof nonUrlState === "number" && nonUrlState === 0) {
+    tmp = React.createElement("div", {
+          className: Curry._1(Css.style, {
+                hd: Css.position("relative"),
+                tl: /* [] */0
+              })
+        }, React.createElement(RimbleUi.Button.Text, {
+              onClick: (function (param) {
+                  return Curry._1(clearNonUrlState, undefined);
+                }),
+              icononly: true,
+              icon: "Close",
+              color: "moon-gray",
+              position: "absolute",
+              top: 0,
+              right: 0,
+              m: 1
+            }), React.createElement(React.Suspense, {
+              children: React.createElement(LazyThreeBoxUpdate$WildCards.make, LazyThreeBoxUpdate$WildCards.makeProps(undefined, undefined)),
+              fallback: React.createElement(RimbleUi.Loader, {})
+            }));
   } else {
     exit = 1;
   }
   if (exit === 1) {
-    tmp = React.createElement(React.Fragment, undefined, Globals$WildCards.reactMap(optName, (function (name) {
-                return React.createElement("h2", undefined, Globals$WildCards.restr(name));
-              })), Globals$WildCards.reactMap(optTwitter, (function (twitterHandle) {
+    tmp = React.createElement(React.Fragment, undefined, React.createElement("h2", undefined, Belt_Option.getWithDefault(optName, Globals$WildCards.$pipe$pipe$pipe$pipe(optArtistName, "Loading artist name"))), Globals$WildCards.reactMap(optTwitter, (function (twitterHandle) {
                 return React.createElement("a", {
                             className: Styles$WildCards.navListText,
                             href: "https://twitter.com/" + twitterHandle,
                             rel: "noopener noreferrer",
                             target: "_blank"
-                          }, Globals$WildCards.restr("@" + twitterHandle));
+                          }, "@" + twitterHandle);
               })), React.createElement("br", undefined), Globals$WildCards.reactMap(optDescription, (function (description) {
-                return React.createElement("p", undefined, Globals$WildCards.restr(description));
-              })), React.createElement("a", {
+                return React.createElement("p", undefined, description);
+              })), Belt_Option.mapWithDefault(optArtistWebsite, null, (function (website) {
+                return React.createElement("a", {
+                            className: Styles$WildCards.navListText,
+                            href: website,
+                            rel: "noopener noreferrer",
+                            target: "_blank"
+                          }, "Artists website");
+              })), React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("a", {
               className: Styles$WildCards.navListText,
-              href: "https://" + (etherScanUrl + ("/address/" + artistAddress)),
+              href: "https://" + (etherScanUrl + ("/address/" + artistEthAddress)),
               rel: "noopener noreferrer",
               target: "_blank"
-            }, Globals$WildCards.restr(Helper$WildCards.elipsify(artistAddress, 10))), React.createElement("br", undefined));
+            }, Helper$WildCards.elipsify(artistEthAddress, 10)), React.createElement("br", undefined));
   }
   return React.createElement("div", {
               className: Curry._1(Css.style, {
@@ -254,49 +210,55 @@ function ArtistProfiles$ArtistDetails(Props) {
                         1,
                         0.3333
                       ]
-                    }, React.createElement("h2", undefined, Globals$WildCards.restr("Monthly Contribution")), React.createElement("p", undefined, Globals$WildCards.reactMapWithDefault(optMonthlyCotribution, Globals$WildCards.restr("0 ETH"), (function (param) {
-                                return React.createElement(React.Fragment, {
-                                            children: null
-                                          }, Globals$WildCards.restr("" + param[0] + " ETH\xa0"), Globals$WildCards.reactMap(param[1], (function (usdValue) {
-                                                  return React.createElement("small", undefined, Globals$WildCards.restr("(" + usdValue + " USD)"));
-                                                })));
-                              })))), React.createElement(RimbleUi.Box, {
+                    }, React.createElement("h2", undefined, "Total contributed by artist"), match$1[0] + "USD", React.createElement("br", undefined), React.createElement("small", undefined, match$1[1]), optArtistOrgs !== undefined ? (
+                        optArtistOrgs.length !== 0 ? React.createElement(React.Fragment, undefined, React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("h4", undefined, "Organisations this artist has contributed to:"), Belt_Array.map(optArtistOrgs, (function (org) {
+                                      return React.createElement("div", {
+                                                  className: Curry._1(Css.style, {
+                                                        hd: Css.width(Css.vh(12)),
+                                                        tl: {
+                                                          hd: Css.cursor("pointer"),
+                                                          tl: /* [] */0
+                                                        }
+                                                      })
+                                                }, React.createElement("img", {
+                                                      className: Curry._1(Css.style, {
+                                                            hd: Css.width({
+                                                                  NAME: "percent",
+                                                                  VAL: 100
+                                                                }),
+                                                            tl: /* [] */0
+                                                          }),
+                                                      src: CONSTANTS$WildCards.cdnBase + org.logo,
+                                                      onClick: (function (_e) {
+                                                          return Curry._1(clearAndPush, "/#org/" + org.id);
+                                                        })
+                                                    }));
+                                    }))) : null
+                      ) : React.createElement("h2", undefined, "Loading orgs")), React.createElement(RimbleUi.Box, {
                       p: 1,
-                      children: null,
+                      children: optArtistWildcards !== undefined ? (
+                          optArtistWildcards.length !== 0 ? React.createElement(React.Fragment, {
+                                  children: null
+                                }, React.createElement(RimbleUi.Heading, {
+                                      children: "Wildcards created by artist"
+                                    }), React.createElement(RimbleUi.Flex, {
+                                      children: Belt_Array.map(optArtistWildcards, (function (token) {
+                                              var id = TokenId$WildCards.toString(token.id);
+                                              return React.createElement(UserProfile$WildCards.Token.make, {
+                                                          tokenId: TokenId$WildCards.fromStringUnsafe(id),
+                                                          key: id
+                                                        });
+                                            })),
+                                      flexWrap: "wrap",
+                                      className: centreAlignOnMobile
+                                    }), React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("br", undefined)) : React.createElement("p", undefined, "Artist hasn't created any wildcards yet")
+                        ) : React.createElement("p", undefined, "loading artists wildcards"),
                       width: [
                         1,
                         1,
                         0.3333
                       ]
-                    }, currentlyOwnedTokens.length !== 0 ? React.createElement(React.Fragment, {
-                            children: null
-                          }, React.createElement(RimbleUi.Heading, {
-                                children: "Currently owned tokens"
-                              }), React.createElement(RimbleUi.Flex, {
-                                children: Belt_Array.map(currentlyOwnedTokens, (function (tokenId) {
-                                        return React.createElement(ArtistProfiles$Token, {
-                                                    tokenId: TokenId$WildCards.fromStringUnsafe(tokenId),
-                                                    key: tokenId
-                                                  });
-                                      })),
-                                flexWrap: "wrap",
-                                className: centreAlignOnMobile
-                              }), React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("br", undefined)) : (
-                        uniquePreviouslyOwnedTokens.length !== 0 ? React.createElement("p", undefined, Globals$WildCards.restr("User currently doesn't currently own a wildcard.")) : React.createElement("p", undefined, Globals$WildCards.restr("User has never owned a wildcard."))
-                      ), uniquePreviouslyOwnedTokens.length !== 0 ? React.createElement(React.Fragment, {
-                            children: null
-                          }, React.createElement(RimbleUi.Heading, {
-                                children: "Previously owned tokens"
-                              }), React.createElement(RimbleUi.Flex, {
-                                children: Belt_Array.map(uniquePreviouslyOwnedTokens, (function (tokenId) {
-                                        return React.createElement(ArtistProfiles$Token, {
-                                                    tokenId: TokenId$WildCards.fromStringUnsafe(tokenId),
-                                                    key: tokenId
-                                                  });
-                                      })),
-                                flexWrap: "wrap",
-                                className: centreAlignOnMobile
-                              })) : null)));
+                    })));
 }
 
 var ArtistDetails = {
@@ -306,8 +268,23 @@ var ArtistDetails = {
 function ArtistProfiles(Props) {
   var artistIdentifier = Props.artistIdentifier;
   console.log(artistIdentifier);
+  var artistEthAddress = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.useArtistEthAddress(artistIdentifier), CONSTANTS$WildCards.nullEthAddress).toLowerCase();
+  var optArtistName = QlHooks$WildCards.useArtistName(artistIdentifier);
+  var optArtistWebsite = QlHooks$WildCards.useArtistWebsite(artistIdentifier);
+  var optArtistWildcards = QlHooks$WildCards.useArtistWildcards(artistIdentifier);
+  var optArtistOrgs = QlHooks$WildCards.useArtistOrgs(artistIdentifier);
+  var userInfoContext = UserProvider$WildCards.useUserInfoContext(undefined);
+  Curry._2(userInfoContext.update, artistEthAddress, false);
+  var optThreeBoxData = UserProvider$WildCards.use3BoxUserData(artistEthAddress);
   return React.createElement(RimbleUi.Flex, {
-              children: "WIP",
+              children: React.createElement(ArtistProfiles$ArtistDetails, {
+                    optThreeBoxData: optThreeBoxData,
+                    artistEthAddress: artistEthAddress,
+                    optArtistName: optArtistName,
+                    optArtistWebsite: optArtistWebsite,
+                    optArtistWildcards: optArtistWildcards,
+                    optArtistOrgs: optArtistOrgs
+                  }),
               flexWrap: "wrap",
               alignItems: "center",
               className: Styles$WildCards.topBody
@@ -318,7 +295,6 @@ var make = ArtistProfiles;
 
 export {
   centreAlignOnMobile ,
-  Token ,
   ArtistDetails ,
   make ,
   

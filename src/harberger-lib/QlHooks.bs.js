@@ -50,12 +50,8 @@ function decodeOptionBN(optionalNumber) {
   return Belt_Option.map(optionalNumber, decodeBN);
 }
 
-function toTokenId(prim) {
-  return prim;
-}
-
 function toTokenIdWithDefault(optTokenId) {
-  return Belt_Option.getWithDefault(optTokenId, "9999");
+  return TokenId$WildCards.fromStringUnsafe(Belt_Option.getWithDefault(optTokenId, "9999"));
 }
 
 function decodeAddress(address) {
@@ -1099,14 +1095,16 @@ function parse$5(value) {
                 if (value$5 !== undefined) {
                   var value$6 = Caml_option.valFromOption(value$5);
                   var match = Js_json.decodeNull(value$6);
+                  var optTokenId;
                   if (match !== undefined) {
-                    tmp$1 = undefined;
+                    optTokenId = undefined;
                   } else {
                     var value$7 = Js_json.decodeString(value$6);
-                    tmp$1 = value$7 !== undefined ? value$7 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$6));
+                    optTokenId = value$7 !== undefined ? value$7 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$6));
                   }
+                  tmp$1 = TokenId$WildCards.fromStringUnsafe(Belt_Option.getWithDefault(optTokenId, "9999"));
                 } else {
-                  tmp$1 = undefined;
+                  tmp$1 = Js_exn.raiseError("graphql_ppx: Field id on type wildcardData is missing");
                 }
                 var value$8 = Js_dict.get(value$1, "name");
                 var tmp$2;
@@ -1633,7 +1631,7 @@ var LoadPatron = {
   MT_Ret: MT_Ret$7
 };
 
-var ppx_printed_query$8 = "query ($orgArray: [String!]!)  {\nwildcards(where: {id_in: $orgArray})  {\nid  \ntotalCollected  \npatronageNumeratorPriceScaled  \ntimeCollected  \n}\n\n}\n";
+var ppx_printed_query$8 = "query ($wildcardIdArray: [String!]!)  {\nwildcards(where: {id_in: $wildcardIdArray})  {\nid  \ntotalCollected  \npatronageNumeratorPriceScaled  \ntimeCollected  \n}\n\n}\n";
 
 function parse$8(value) {
   var value$1 = Js_option.getExn(Js_json.decodeObject(value));
@@ -1663,12 +1661,12 @@ function parse$8(value) {
         };
 }
 
-function make$8(orgArray, param) {
+function make$8(wildcardIdArray, param) {
   return {
           query: ppx_printed_query$8,
           variables: Js_dict.fromArray([[
-                    "orgArray",
-                    orgArray.map(function (prim) {
+                    "wildcardIdArray",
+                    wildcardIdArray.map(function (prim) {
                           return prim;
                         })
                   ]].filter(function (param) {
@@ -1679,12 +1677,12 @@ function make$8(orgArray, param) {
 }
 
 function makeWithVariables$8(variables) {
-  var orgArray = variables.orgArray;
+  var wildcardIdArray = variables.wildcardIdArray;
   return {
           query: ppx_printed_query$8,
           variables: Js_dict.fromArray([[
-                    "orgArray",
-                    orgArray.map(function (prim) {
+                    "wildcardIdArray",
+                    wildcardIdArray.map(function (prim) {
                           return prim;
                         })
                   ]].filter(function (param) {
@@ -1694,10 +1692,10 @@ function makeWithVariables$8(variables) {
         };
 }
 
-function makeVariables$8(orgArray, param) {
+function makeVariables$8(wildcardIdArray, param) {
   return Js_dict.fromArray([[
-                  "orgArray",
-                  orgArray.map(function (prim) {
+                  "wildcardIdArray",
+                  wildcardIdArray.map(function (prim) {
                         return prim;
                       })
                 ]].filter(function (param) {
@@ -1705,10 +1703,10 @@ function makeVariables$8(orgArray, param) {
                 }));
 }
 
-function definition_2$8(graphql_ppx_use_json_variables_fn, orgArray, param) {
+function definition_2$8(graphql_ppx_use_json_variables_fn, wildcardIdArray, param) {
   return Curry._1(graphql_ppx_use_json_variables_fn, Js_dict.fromArray([[
-                      "orgArray",
-                      orgArray.map(function (prim) {
+                      "wildcardIdArray",
+                      wildcardIdArray.map(function (prim) {
                             return prim;
                           })
                     ]].filter(function (param) {
@@ -1829,7 +1827,7 @@ function parse$9(value) {
                     var value$4 = Js_json.decodeString(value$3);
                     optTokenId = value$4 !== undefined ? value$4 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$3));
                   }
-                  tmp = Belt_Option.getWithDefault(optTokenId, "9999");
+                  tmp = TokenId$WildCards.fromStringUnsafe(Belt_Option.getWithDefault(optTokenId, "9999"));
                 } else {
                   tmp = Js_exn.raiseError("graphql_ppx: Field id on type wildcardData is missing");
                 }
@@ -2230,8 +2228,10 @@ function useWildcardQuery(chain, tokenId) {
             }, definition$1);
 }
 
-function useLoadTokenDataArrayQuery(tokenIdArray) {
-  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$8(Belt_Array.map(tokenIdArray, TokenId$WildCards.toString), undefined).variables), undefined, undefined, undefined, undefined, undefined, undefined, definition$8);
+function useLoadTokenDataArrayQuery(chain, tokenIdArray) {
+  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$8(Belt_Array.map(tokenIdArray, TokenId$WildCards.toString), undefined).variables), undefined, undefined, undefined, undefined, undefined, {
+              context: chain
+            }, definition$8);
 }
 
 function useWildcardDataQuery(tokenId) {
@@ -2543,8 +2543,8 @@ function useTotalCollectedToken(chain, animal) {
   return queryResultOptionFlatMap(match[0], getTotalCollectedData);
 }
 
-function useTotalCollectedTokenArray(animalArray) {
-  var match = useLoadTokenDataArrayQuery(animalArray);
+function useTotalCollectedTokenArray(chain, animalArray) {
+  var match = useLoadTokenDataArrayQuery(chain, animalArray);
   return queryResultOptionMap(match[0], (function (a) {
                 return a;
               }));
@@ -2624,17 +2624,26 @@ function calculateTotalRaised(currentTimestamp, param) {
 
 function useTotalRaisedAnimalGroup(animals) {
   var currentTimestamp = useCurrentTime(undefined);
-  var details = useTotalCollectedTokenArray(animals);
-  if (details !== undefined) {
-    return Caml_option.some(Belt_Array.reduce(Caml_option.valFromOption(details).wildcards, new BnJs("0"), (function (acc, animalDetails) {
-                      return Globals$WildCards.$pipe$plus$pipe(calculateTotalRaised(currentTimestamp, [
-                                      animalDetails.totalCollected,
-                                      animalDetails.timeCollected,
-                                      animalDetails.patronageNumeratorPriceScaled
-                                    ]), acc);
-                    })));
-  }
-  
+  var detailsMainnet = useTotalCollectedTokenArray(/* MainnetQuery */2, animals);
+  var detailsMatic = useTotalCollectedTokenArray(/* MaticQuery */1, Belt_Array.map(animals, (function (id) {
+              return "matic" + id;
+            })));
+  return [
+          detailsMainnet !== undefined ? Caml_option.some(Belt_Array.reduce(Caml_option.valFromOption(detailsMainnet).wildcards, new BnJs("0"), (function (acc, animalDetails) {
+                        return Globals$WildCards.$pipe$plus$pipe(calculateTotalRaised(currentTimestamp, [
+                                        animalDetails.totalCollected,
+                                        animalDetails.timeCollected,
+                                        animalDetails.patronageNumeratorPriceScaled
+                                      ]), acc);
+                      }))) : undefined,
+          detailsMatic !== undefined ? Caml_option.some(Belt_Array.reduce(Caml_option.valFromOption(detailsMatic).wildcards, new BnJs("0"), (function (acc, animalDetails) {
+                        return Globals$WildCards.$pipe$plus$pipe(calculateTotalRaised(currentTimestamp, [
+                                        animalDetails.totalCollected,
+                                        animalDetails.timeCollected,
+                                        animalDetails.patronageNumeratorPriceScaled
+                                      ]), acc);
+                      }))) : undefined
+        ];
 }
 
 function useTimeSinceTokenWasLastSettled(chain, animal) {
@@ -3041,7 +3050,7 @@ function useArtistData(artistIdentifier) {
 
 function useArtistEthAddress(artistIdentifier) {
   var artistData = useArtistData(artistIdentifier);
-  return Belt_Option.map(artistData, (function (data) {
+  return Belt_Option.flatMap(artistData, (function (data) {
                 return data.eth_address;
               }));
 }
@@ -3055,7 +3064,7 @@ function useArtistName(artistIdentifier) {
 
 function useArtistWebsite(artistIdentifier) {
   var artistData = useArtistData(artistIdentifier);
-  return Belt_Option.map(artistData, (function (data) {
+  return Belt_Option.flatMap(artistData, (function (data) {
                 return data.website;
               }));
 }
@@ -3071,35 +3080,37 @@ function useArtistOrgs(artistIdentifier) {
   var artistData = useArtistData(artistIdentifier);
   return Belt_Option.map(artistData, (function (data) {
                 var dict = {};
-                return Belt_Array.map(data.wildcardData, (function (wildcard) {
-                              var org = wildcard.organization;
-                              if (org !== undefined) {
-                                var org$1 = Caml_option.valFromOption(org);
-                                var orgId = org$1.id;
-                                var orgObj = Js_dict.get(dict, orgId);
-                                if (orgObj !== undefined) {
-                                  var newOrgObj_id = orgObj.id;
-                                  var newOrgObj_name = orgObj.name;
-                                  var newOrgObj_logo = orgObj.logo;
-                                  var newOrgObj_wildcards = Belt_Array.concat(orgObj.wildcards, [wildcard.key]);
-                                  var newOrgObj = {
-                                    id: newOrgObj_id,
-                                    name: newOrgObj_name,
-                                    logo: newOrgObj_logo,
-                                    wildcards: newOrgObj_wildcards
-                                  };
-                                  dict[orgId] = newOrgObj;
-                                } else {
-                                  dict[orgId] = {
-                                    id: orgId,
-                                    name: org$1.name,
-                                    logo: org$1.logo,
-                                    wildcards: [wildcard.key]
-                                  };
-                                }
-                              }
-                              
-                            }));
+                Belt_Array.map(data.wildcardData, (function (wildcard) {
+                        var org = wildcard.organization;
+                        if (org === undefined) {
+                          return ;
+                        }
+                        var org$1 = Caml_option.valFromOption(org);
+                        var orgId = org$1.id;
+                        var orgObj = Js_dict.get(dict, orgId);
+                        if (orgObj !== undefined) {
+                          var newOrgObj_id = orgObj.id;
+                          var newOrgObj_name = orgObj.name;
+                          var newOrgObj_logo = orgObj.logo;
+                          var newOrgObj_wildcards = Belt_Array.concat(orgObj.wildcards, [wildcard.key]);
+                          var newOrgObj = {
+                            id: newOrgObj_id,
+                            name: newOrgObj_name,
+                            logo: newOrgObj_logo,
+                            wildcards: newOrgObj_wildcards
+                          };
+                          dict[orgId] = newOrgObj;
+                          return ;
+                        }
+                        dict[orgId] = {
+                          id: orgId,
+                          name: org$1.name,
+                          logo: org$1.logo,
+                          wildcards: [wildcard.key]
+                        };
+                        
+                      }));
+                return Js_dict.values(dict);
               }));
 }
 
@@ -3109,7 +3120,6 @@ export {
   decodeMoment ,
   decodeBN ,
   decodeOptionBN ,
-  toTokenId ,
   toTokenIdWithDefault ,
   decodeAddress ,
   InitialLoad ,

@@ -4,10 +4,8 @@ let getAnimal: string => option(TokenId.t) =
   // TODO: add a lookup to the `deprecated_id` field (or just let old links be broken...)
   animal => TokenId.make(animal);
 
-let cdnBase = "https://dd2wadt5nc0o7.cloudfront.net";
-
 let useAvatar = animal => {
-  QlHooks.useWildcardAvatar(animal)->Option.map(a => cdnBase ++ a)
+  QlHooks.useWildcardAvatar(animal)->Option.map(a => CONSTANTS.cdnBase ++ a)
   |||| "./img/animals/comingsoon.png"; // TODO: use the loading gif as default (but with better resolution! As svg?)
                                      // |||| "./img/loading.gif";
 };
@@ -22,12 +20,14 @@ let useAlternateImage: TokenId.t => option(string) =
 
 let useGetOrgImage: string => string =
   org =>
-    QlHooks.useLoadOrganisationLogo(org)->Option.map(path => cdnBase ++ path)
+    QlHooks.useLoadOrganisationLogo(org)
+    ->Option.map(path => CONSTANTS.cdnBase ++ path)
     |||| "https://dd2wadt5nc0o7.cloudfront.net/conservations/OGBage.png";
 
 let useGetOrgBadge: string => string =
   org =>
-    QlHooks.useLoadOrganisationLogo(org)->Option.map(path => cdnBase ++ path)
+    QlHooks.useLoadOrganisationLogo(org)
+    ->Option.map(path => CONSTANTS.cdnBase ++ path)
     |||| "https://dd2wadt5nc0o7.cloudfront.net/conservations/OGBage.png";
 
 let useGetOrgBadgeImage = (~tokenId) => {

@@ -11,14 +11,13 @@ import * as Helper$WildCards from "./Helper.bs.js";
 import * as Globals$WildCards from "./Globals.bs.js";
 import * as QlHooks$WildCards from "./QlHooks.bs.js";
 import * as TokenId$WildCards from "./TokenId.bs.js";
+import * as CONSTANTS$WildCards from "../CONSTANTS.bs.js";
 
 var getAnimal = TokenId$WildCards.make;
 
-var cdnBase = "https://dd2wadt5nc0o7.cloudfront.net";
-
 function useAvatar(animal) {
   return Globals$WildCards.$pipe$pipe$pipe$pipe(Belt_Option.map(QlHooks$WildCards.useWildcardAvatar(animal), (function (a) {
-                    return cdnBase + a;
+                    return CONSTANTS$WildCards.cdnBase + a;
                   })), "./img/animals/comingsoon.png");
 }
 
@@ -34,13 +33,13 @@ function useAlternateImage(animal) {
 
 function useGetOrgImage(org) {
   return Globals$WildCards.$pipe$pipe$pipe$pipe(Belt_Option.map(QlHooks$WildCards.useLoadOrganisationLogo(org), (function (path) {
-                    return cdnBase + path;
+                    return CONSTANTS$WildCards.cdnBase + path;
                   })), "https://dd2wadt5nc0o7.cloudfront.net/conservations/OGBage.png");
 }
 
 function useGetOrgBadge(org) {
   return Globals$WildCards.$pipe$pipe$pipe$pipe(Belt_Option.map(QlHooks$WildCards.useLoadOrganisationLogo(org), (function (path) {
-                    return cdnBase + path;
+                    return CONSTANTS$WildCards.cdnBase + path;
                   })), "https://dd2wadt5nc0o7.cloudfront.net/conservations/OGBage.png");
 }
 
@@ -176,7 +175,6 @@ function useChainIdFromAnimalId(animalId) {
 
 export {
   getAnimal ,
-  cdnBase ,
   useAvatar ,
   useAlternateImage ,
   useGetOrgImage ,

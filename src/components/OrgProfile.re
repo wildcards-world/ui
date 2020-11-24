@@ -43,7 +43,7 @@ module ImageCarousel = {
            ->Option.mapWithDefault(React.null, photos =>
                <img
                  key={key->string_of_int}
-                 src={Animal.cdnBase ++ photos##image}
+                 src={CONSTANTS.cdnBase ++ photos##image}
                />
              )
          }),
@@ -148,7 +148,7 @@ module ComingSoonModal = {
                            animal##real_wc_photos
                            ->Array.map(photo =>
                                PhotoGallery.{
-                                 src: Animal.cdnBase ++ photo##image,
+                                 src: CONSTANTS.cdnBase ++ photo##image,
                                  width: 4,
                                  height: 3,
                                }
@@ -179,18 +179,33 @@ module OrgPage = {
       React.useState(() => None);
     let orgAnimalsArray = orgAnimals->Array.map(animal => animal##id);
     let currentUsdEthPrice = UsdPriceProvider.useUsdPrice();
-    let totalCollected = QlHooks.useTotalRaisedAnimalGroup(orgAnimalsArray);
+    let (totalCollectedMainnetEth, totalCollectMaticDai) =
+      QlHooks.useTotalRaisedAnimalGroup(orgAnimalsArray);
 
-    let (totalPatronage, totalPatronageUsd) =
-      totalCollected->mapd(("Loading", "Loading"), a =>
-        (
-          (a->Eth.get(Eth.Eth(`ether))->Float.fromString |||| 0.0)
-          ->toFixedWithPrecisionNoTrailingZeros(~digits=9),
-          currentUsdEthPrice->mapd("Loading", usdEthRate =>
-            a->Eth.get(Eth.Usd(usdEthRate, 2))
-          ),
+    let (totalPatronageUsd, totalBreakdownString) =
+      switch (totalCollectedMainnetEth, totalCollectMaticDai) {
+      | (Some(mainnetEth), Some(maticDai)) => (
+          (
+            currentUsdEthPrice->Option.mapWithDefault(0., usdEthRate =>
+              mainnetEth->Eth.getFloat(Eth.Usd(usdEthRate, 2))
+            )
+            +. maticDai->Eth.getFloat(Eth.Eth(`ether))
+          )
+          ->Js.Float.toFixedWithPrecision(~digits=6),
+          mainnetEth->Web3Utils.fromWeiBNToEthPrecision(~digits=4)
+          ++ " ETH + "
+          ++ maticDai->Web3Utils.fromWeiBNToEthPrecision(~digits=2)
+          ++ " DAI",
         )
-      );
+      | _ => ("loading", "loading")
+      };
+    // totalCollectedMainnetEth->Option.mapWithDefault(
+    //   ("Loading", "Loading"), a =>
+    //   (
+    //     (a->Eth.get(Eth.Eth(`ether))->Float.fromString |||| 0.0)
+    //     ->toFixedWithPrecisionNoTrailingZeros(~digits=9),
+    //   )
+    // );
 
     let orgWebsite = orgData##website;
     let optOrgYoutubeVid = orgData##youtube_vid;
@@ -282,9 +297,9 @@ module OrgPage = {
              | None => React.null
              }}
             <h2> "Total Raised"->restr </h2>
-            {(totalPatronage ++ "ETH")->restr}
+            {(totalPatronageUsd ++ "USD")->restr}
             <br />
-            <small> {(totalPatronageUsd ++ "USD")->restr} </small>
+            <small> totalBreakdownString->restr </small>
           </Rimble.Box>
           <Rimble.Box
             width=[|1., 1., 0.3333|]
@@ -327,7 +342,7 @@ module OrgPage = {
                         ->Option.mapWithDefault(React.null, photos =>
                             <ComingSoonAnimal
                               key={key->string_of_int}
-                              image={Animal.cdnBase ++ photos##image}
+                              image={CONSTANTS.cdnBase ++ photos##image}
                               onClick={() =>
                                 setSelectedComingSoonAnimal(_ => Some(key))
                               }
