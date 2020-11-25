@@ -4,6 +4,7 @@ import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Js_dict from "bs-platform/lib/es6/js_dict.js";
+import BadWords from "bad-words";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
@@ -145,7 +146,7 @@ function ArtistProfiles$ArtistDetails(Props) {
                             target: "_blank"
                           }, "@" + twitterHandle);
               })), React.createElement("br", undefined), Globals$WildCards.reactMap(optDescription, (function (description) {
-                return React.createElement("p", undefined, description);
+                return React.createElement("p", undefined, new BadWords().clean(description));
               })), Belt_Option.mapWithDefault(optArtistWebsite, null, (function (website) {
                 return React.createElement("a", {
                             className: Styles$WildCards.navListText,

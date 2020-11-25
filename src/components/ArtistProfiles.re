@@ -151,7 +151,12 @@ module ArtistDetails = {
                 )}
                <br />
                {optDescription->reactMap(description =>
-                  <p> description->React.string </p>
+                  <p>
+                    {{
+                       BadWords.make()->BadWords.clean(description);
+                     }
+                     ->React.string}
+                  </p>
                 )}
                {optArtistWebsite->Option.mapWithDefault(React.null, website =>
                   <a
