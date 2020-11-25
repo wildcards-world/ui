@@ -199,13 +199,6 @@ module OrgPage = {
         )
       | _ => ("loading", "loading")
       };
-    // totalCollectedMainnetEth->Option.mapWithDefault(
-    //   ("Loading", "Loading"), a =>
-    //   (
-    //     (a->Eth.get(Eth.Eth(`ether))->Float.fromString |||| 0.0)
-    //     ->toFixedWithPrecisionNoTrailingZeros(~digits=9),
-    //   )
-    // );
 
     let orgWebsite = orgData##website;
     let optOrgYoutubeVid = orgData##youtube_vid;
@@ -278,15 +271,6 @@ module OrgPage = {
                | Error(_) => <p> "error loading description"->restr </p>
                }}
             </div>
-            // {optTwitter->reactMap(twitterHandle =>
-            //    <a
-            //      className=Styles.navListText
-            //      target="_blank"
-            //      rel="noopener noreferrer"
-            //      href={"https://twitter.com/" ++ twitterHandle}>
-            //      {("@" ++ twitterHandle)->restr}
-            //    </a>
-            //  )}
             <br />
           </Rimble.Box>
           <Rimble.Box

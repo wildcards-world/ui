@@ -44,7 +44,6 @@ let decodeBN: Js.Json.t => BN.t =
 let decodeOptionBN: option(Js.Json.t) => option(BN.t) =
   optionalNumber => optionalNumber->Option.map(num => decodeBN(num));
 
-// let toTokenIdWithDefault = optTokenId =>
 let toTokenIdWithDefault = optTokenId =>
   optTokenId->Option.getWithDefault("9999")->TokenId.fromStringUnsafe;
 
