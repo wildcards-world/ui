@@ -17,6 +17,7 @@ import * as QlHooks$WildCards from "../harberger-lib/QlHooks.bs.js";
 import * as TokenId$WildCards from "../harberger-lib/TokenId.bs.js";
 import * as CONSTANTS$WildCards from "../CONSTANTS.bs.js";
 import * as Web3Utils$WildCards from "../harberger-lib/Web3Utils.bs.js";
+import * as OrgProfile$WildCards from "./OrgProfile.bs.js";
 import * as UserProfile$WildCards from "./UserProfile.bs.js";
 import * as RootProvider$WildCards from "../harberger-lib/RootProvider.bs.js";
 import * as UserProvider$WildCards from "../harberger-lib/js/user-provider/UserProvider.bs.js";
@@ -35,13 +36,17 @@ var centreAlignOnMobile = Curry._1(Css.style, {
     });
 
 function ArtistProfiles$ArtistDetails(Props) {
-  var optThreeBoxData = Props.optThreeBoxData;
-  var artistEthAddress = Props.artistEthAddress;
+  var optArtistEthAddress = Props.optArtistEthAddress;
   var optArtistName = Props.optArtistName;
   var optArtistWebsite = Props.optArtistWebsite;
-  var optArtistWildcards = Props.optArtistWildcards;
+  var optArtistLaunchedWildcards = Props.optArtistLaunchedWildcards;
+  var optArtistUnlaunchedWildcards = Props.optArtistUnlaunchedWildcards;
   var optArtistOrgs = Props.optArtistOrgs;
   var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
+  var artistEthAddress = Globals$WildCards.$pipe$pipe$pipe$pipe(optArtistEthAddress, CONSTANTS$WildCards.nullEthAddress).toLowerCase();
+  var userInfoContext = UserProvider$WildCards.useUserInfoContext(undefined);
+  Curry._2(userInfoContext.update, artistEthAddress, false);
+  var optThreeBoxData = UserProvider$WildCards.use3BoxUserData(artistEthAddress);
   var optProfile = Globals$WildCards.$great$great$eq(optThreeBoxData, (function (a) {
           return a.profile;
         }));
@@ -70,13 +75,14 @@ function ArtistProfiles$ArtistDetails(Props) {
           return a.username;
         }));
   var etherScanUrl = RootProvider$WildCards.useEtherscanUrl(undefined);
-  var artistsAnimalsArray = Belt_Option.mapWithDefault(optArtistWildcards, [], (function (animals) {
-          return Belt_Array.map(animals, (function (animal) {
-                        return animal.id;
+  var artistsAnimalsArrayLaunched = Belt_Option.mapWithDefault(optArtistLaunchedWildcards, [], (function (tokens) {
+          return Belt_Array.map(tokens, (function (token) {
+                        return TokenId$WildCards.fromStringUnsafe(Belt_Option.getWithDefault(token.id, "_"));
                       }));
         }));
+  console.log(optArtistUnlaunchedWildcards);
   var currentUsdEthPrice = UsdPriceProvider$WildCards.useUsdPrice(undefined);
-  var match = QlHooks$WildCards.useTotalRaisedAnimalGroup(artistsAnimalsArray);
+  var match = QlHooks$WildCards.useTotalRaisedAnimalGroup(artistsAnimalsArrayLaunched);
   var totalCollectMaticDai = match[1];
   var totalCollectedMainnetEth = match[0];
   var match$1;
@@ -147,12 +153,14 @@ function ArtistProfiles$ArtistDetails(Props) {
                             rel: "noopener noreferrer",
                             target: "_blank"
                           }, "Artists website");
-              })), React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("a", {
-              className: Styles$WildCards.navListText,
-              href: "https://" + (etherScanUrl + ("/address/" + artistEthAddress)),
-              rel: "noopener noreferrer",
-              target: "_blank"
-            }, Helper$WildCards.elipsify(artistEthAddress, 10)), React.createElement("br", undefined));
+              })), React.createElement("br", undefined), React.createElement("br", undefined), Globals$WildCards.reactMap(optArtistEthAddress, (function (param) {
+                return React.createElement(React.Fragment, undefined, React.createElement("a", {
+                                className: Styles$WildCards.navListText,
+                                href: "https://" + (etherScanUrl + ("/address/" + artistEthAddress)),
+                                rel: "noopener noreferrer",
+                                target: "_blank"
+                              }, Helper$WildCards.elipsify(artistEthAddress, 10)), React.createElement("br", undefined));
+              })));
   }
   return React.createElement("div", {
               className: Curry._1(Css.style, {
@@ -178,31 +186,33 @@ function ArtistProfiles$ArtistDetails(Props) {
                             hd: Css.textAlign("center"),
                             tl: /* [] */0
                           })
-                    }, React.createElement("img", {
-                          className: Curry._1(Css.style, {
-                                hd: Css.borderRadius({
-                                      NAME: "percent",
-                                      VAL: 100
-                                    }),
-                                tl: {
-                                  hd: Css.width({
-                                        NAME: "vh",
-                                        VAL: 25
-                                      }),
-                                  tl: {
-                                    hd: Css.height({
-                                          NAME: "vh",
-                                          VAL: 25
-                                        }),
-                                    tl: {
-                                      hd: Css.objectFit("cover"),
-                                      tl: /* [] */0
-                                    }
-                                  }
-                                }
-                              }),
-                          src: image
-                        }), React.createElement("br", undefined), tmp), React.createElement(RimbleUi.Box, {
+                    }, Globals$WildCards.reactMap(optArtistEthAddress, (function (param) {
+                            return React.createElement(React.Fragment, undefined, React.createElement("img", {
+                                            className: Curry._1(Css.style, {
+                                                  hd: Css.borderRadius({
+                                                        NAME: "percent",
+                                                        VAL: 100
+                                                      }),
+                                                  tl: {
+                                                    hd: Css.width({
+                                                          NAME: "vh",
+                                                          VAL: 25
+                                                        }),
+                                                    tl: {
+                                                      hd: Css.height({
+                                                            NAME: "vh",
+                                                            VAL: 25
+                                                          }),
+                                                      tl: {
+                                                        hd: Css.objectFit("cover"),
+                                                        tl: /* [] */0
+                                                      }
+                                                    }
+                                                  }
+                                                }),
+                                            src: image
+                                          }), React.createElement("br", undefined));
+                          })), tmp), React.createElement(RimbleUi.Box, {
                       p: 1,
                       children: null,
                       width: [
@@ -236,29 +246,47 @@ function ArtistProfiles$ArtistDetails(Props) {
                                     }))) : null
                       ) : React.createElement("h2", undefined, "Loading orgs")), React.createElement(RimbleUi.Box, {
                       p: 1,
-                      children: optArtistWildcards !== undefined ? (
-                          optArtistWildcards.length !== 0 ? React.createElement(React.Fragment, {
-                                  children: null
-                                }, React.createElement(RimbleUi.Heading, {
-                                      children: "Wildcards created by artist"
-                                    }), React.createElement(RimbleUi.Flex, {
-                                      children: Belt_Array.map(optArtistWildcards, (function (token) {
-                                              var id = TokenId$WildCards.toString(token.id);
-                                              return React.createElement(UserProfile$WildCards.Token.make, {
-                                                          tokenId: TokenId$WildCards.fromStringUnsafe(id),
-                                                          key: id
-                                                        });
-                                            })),
-                                      flexWrap: "wrap",
-                                      className: centreAlignOnMobile
-                                    }), React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("br", undefined)) : React.createElement("p", undefined, "Artist hasn't created any wildcards yet")
-                        ) : React.createElement("p", undefined, "loading artists wildcards"),
+                      children: null,
                       width: [
                         1,
                         1,
                         0.3333
                       ]
-                    })));
+                    }, optArtistLaunchedWildcards !== undefined ? (
+                        optArtistLaunchedWildcards.length !== 0 ? React.createElement(React.Fragment, {
+                                children: null
+                              }, React.createElement(RimbleUi.Heading, {
+                                    children: "Wildcards created by artist"
+                                  }), React.createElement(RimbleUi.Flex, {
+                                    children: Belt_Array.map(artistsAnimalsArrayLaunched, (function (token) {
+                                            var id = TokenId$WildCards.toString(token);
+                                            return React.createElement(UserProfile$WildCards.Token.make, {
+                                                        tokenId: token,
+                                                        key: id
+                                                      });
+                                          })),
+                                    flexWrap: "wrap",
+                                    className: centreAlignOnMobile
+                                  }), React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("br", undefined)) : React.createElement("p", undefined, "Artist doesn't have any launched wildcards")
+                      ) : React.createElement("p", undefined, "loading artists wildcards"), optArtistUnlaunchedWildcards !== undefined && optArtistUnlaunchedWildcards.length !== 0 ? React.createElement(React.Fragment, {
+                            children: null
+                          }, React.createElement(RimbleUi.Heading, {
+                                children: "Coming soon"
+                              }), React.createElement(RimbleUi.Flex, {
+                                children: Belt_Array.map(optArtistUnlaunchedWildcards, (function (token) {
+                                        return Belt_Option.mapWithDefault(token.image, null, (function (image) {
+                                                      return React.createElement(OrgProfile$WildCards.ComingSoonAnimal.make, {
+                                                                  image: CONSTANTS$WildCards.cdnBase + image,
+                                                                  onClick: (function (param) {
+                                                                      
+                                                                    }),
+                                                                  key: String(token.key)
+                                                                });
+                                                    }));
+                                      })),
+                                flexWrap: "wrap",
+                                className: centreAlignOnMobile
+                              })) : null)));
 }
 
 var ArtistDetails = {
@@ -268,21 +296,19 @@ var ArtistDetails = {
 function ArtistProfiles(Props) {
   var artistIdentifier = Props.artistIdentifier;
   console.log(artistIdentifier);
-  var artistEthAddress = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.useArtistEthAddress(artistIdentifier), CONSTANTS$WildCards.nullEthAddress).toLowerCase();
+  var optArtistEthAddress = QlHooks$WildCards.useArtistEthAddress(artistIdentifier);
   var optArtistName = QlHooks$WildCards.useArtistName(artistIdentifier);
   var optArtistWebsite = QlHooks$WildCards.useArtistWebsite(artistIdentifier);
-  var optArtistWildcards = QlHooks$WildCards.useArtistWildcards(artistIdentifier);
+  var optArtistLaunchedWildcards = QlHooks$WildCards.useArtistLaunchedWildcards(artistIdentifier);
+  var optArtistUnlaunchedWildcards = QlHooks$WildCards.useArtistUnlaunchedWildcards(artistIdentifier);
   var optArtistOrgs = QlHooks$WildCards.useArtistOrgs(artistIdentifier);
-  var userInfoContext = UserProvider$WildCards.useUserInfoContext(undefined);
-  Curry._2(userInfoContext.update, artistEthAddress, false);
-  var optThreeBoxData = UserProvider$WildCards.use3BoxUserData(artistEthAddress);
   return React.createElement(RimbleUi.Flex, {
               children: React.createElement(ArtistProfiles$ArtistDetails, {
-                    optThreeBoxData: optThreeBoxData,
-                    artistEthAddress: artistEthAddress,
+                    optArtistEthAddress: optArtistEthAddress,
                     optArtistName: optArtistName,
                     optArtistWebsite: optArtistWebsite,
-                    optArtistWildcards: optArtistWildcards,
+                    optArtistLaunchedWildcards: optArtistLaunchedWildcards,
+                    optArtistUnlaunchedWildcards: optArtistUnlaunchedWildcards,
                     optArtistOrgs: optArtistOrgs
                   }),
               flexWrap: "wrap",

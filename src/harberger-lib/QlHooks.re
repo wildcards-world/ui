@@ -44,6 +44,7 @@ let decodeBN: Js.Json.t => BN.t =
 let decodeOptionBN: option(Js.Json.t) => option(BN.t) =
   optionalNumber => optionalNumber->Option.map(num => decodeBN(num));
 
+// let toTokenIdWithDefault = optTokenId =>
 let toTokenIdWithDefault = optTokenId =>
   optTokenId->Option.getWithDefault("9999")->TokenId.fromStringUnsafe;
 
@@ -223,9 +224,19 @@ module ArtistQuery = [%graphql
         id
         name
         website
-        wildcardData {
+        launchedWildcards: wildcardData (where: {id: { _is_null: false}}) {
           key
-          id @bsDecoder(fn: "toTokenIdWithDefault")
+          id
+          name
+          image
+          organization {
+            id
+            name
+            logo
+          }
+        }
+        unlaunchedWildcards: wildcardData (where: {id: { _is_null: true}}) {
+          key
           name
           image
           organization {
@@ -1253,9 +1264,13 @@ let useArtistWebsite = (~artistIdentifier) => {
   let artistData = useArtistData(~artistIdentifier);
   artistData->Option.flatMap(data => data##website);
 };
-let useArtistWildcards = (~artistIdentifier) => {
+let useArtistLaunchedWildcards = (~artistIdentifier) => {
   let artistData = useArtistData(~artistIdentifier);
-  artistData->Option.map(data => data##wildcardData);
+  artistData->Option.map(data => data##launchedWildcards);
+};
+let useArtistUnlaunchedWildcards = (~artistIdentifier) => {
+  let artistData = useArtistData(~artistIdentifier);
+  artistData->Option.map(data => data##unlaunchedWildcards);
 };
 type wildcardKey = int;
 type artistOrg = {
@@ -1268,7 +1283,7 @@ let useArtistOrgs = (~artistIdentifier) => {
   let artistData = useArtistData(~artistIdentifier);
   artistData->Option.map(data => {
     let dict = Js.Dict.empty();
-    data##wildcardData
+    data##launchedWildcards
     ->Array.map(wildcard => {
         switch (wildcard##organization) {
         | Some(org) =>

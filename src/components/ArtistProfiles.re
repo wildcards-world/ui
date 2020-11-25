@@ -14,15 +14,24 @@ module ArtistDetails = {
   [@react.component]
   let make =
       (
-        ~optThreeBoxData: option(UserProvider.threeBoxUserInfo),
-        ~artistEthAddress: string,
+        ~optArtistEthAddress,
         ~optArtistName,
         ~optArtistWebsite,
-        ~optArtistWildcards,
+        ~optArtistLaunchedWildcards,
+        ~optArtistUnlaunchedWildcards,
         ~optArtistOrgs,
       ) => {
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
+    let artistEthAddress =
+      (optArtistEthAddress |||| CONSTANTS.nullEthAddress)
+      ->Js.String.toLowerCase;
+    let userInfoContext = UserProvider.useUserInfoContext();
+    let reloadUser = forceReload =>
+      userInfoContext.update(artistEthAddress, forceReload);
+    reloadUser(false);
+    let optThreeBoxData = UserProvider.use3BoxUserData(artistEthAddress);
     let optProfile = optThreeBoxData >>= (a => a.profile);
+
     let image: string =
       (
         optProfile
@@ -45,13 +54,17 @@ module ArtistDetails = {
       );
     let etherScanUrl = RootProvider.useEtherscanUrl();
 
-    let artistsAnimalsArray =
-      optArtistWildcards->Option.mapWithDefault([||], animals =>
-        animals->Array.map(animal => animal##id)
+    let artistsAnimalsArrayLaunched =
+      optArtistLaunchedWildcards->Option.mapWithDefault([||], tokens =>
+        tokens->Array.map(token =>
+          token##id->Option.getWithDefault("_")->TokenId.fromStringUnsafe
+        )
       );
+    Js.log(optArtistUnlaunchedWildcards);
+
     let currentUsdEthPrice = UsdPriceProvider.useUsdPrice();
     let (totalCollectedMainnetEth, totalCollectMaticDai) =
-      QlHooks.useTotalRaisedAnimalGroup(artistsAnimalsArray);
+      QlHooks.useTotalRaisedAnimalGroup(artistsAnimalsArrayLaunched);
 
     let (totalPatronageUsd, totalBreakdownString) =
       switch (totalCollectedMainnetEth, totalCollectMaticDai) {
@@ -80,18 +93,22 @@ module ArtistDetails = {
           p=1
           width=[|1., 1., 0.3333|]
           className=Css.(style([textAlign(`center)]))>
-          <img
-            className=Css.(
-              style([
-                borderRadius(`percent(100.)),
-                width(`vh(25.)),
-                height(`vh(25.)),
-                objectFit(`cover),
-              ])
-            )
-            src=image
-          />
-          <br />
+          {optArtistEthAddress->reactMap(_ =>
+             <>
+               <img
+                 className=Css.(
+                   style([
+                     borderRadius(`percent(100.)),
+                     width(`vh(25.)),
+                     height(`vh(25.)),
+                     objectFit(`cover),
+                   ])
+                 )
+                 src=image
+               />
+               <br />
+             </>
+           )}
           {switch (nonUrlState) {
            | UserVerificationScreen =>
              <div className=Css.(style([position(`relative)]))>
@@ -147,19 +164,23 @@ module ArtistDetails = {
                 )}
                <br />
                <br />
-               <a
-                 className=Styles.navListText
-                 target="_blank"
-                 rel="noopener noreferrer"
-                 href={
-                   "https://"
-                   ++ etherScanUrl
-                   ++ "/address/"
-                   ++ artistEthAddress
-                 }>
-                 {Helper.elipsify(artistEthAddress, 10)->React.string}
-               </a>
-               <br />
+               {optArtistEthAddress->reactMap(_ =>
+                  <>
+                    <a
+                      className=Styles.navListText
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={
+                        "https://"
+                        ++ etherScanUrl
+                        ++ "/address/"
+                        ++ artistEthAddress
+                      }>
+                      {Helper.elipsify(artistEthAddress, 10)->React.string}
+                    </a>
+                    <br />
+                  </>
+                )}
              </>
            }}
         </Rimble.Box>
@@ -198,29 +219,53 @@ module ArtistDetails = {
            }}
         </Rimble.Box>
         <Rimble.Box p=1 width=[|1., 1., 0.3333|]>
-          {switch (optArtistWildcards) {
+          {switch (optArtistLaunchedWildcards) {
            | None => <p> "loading artists wildcards"->React.string </p>
            | Some([||]) =>
-             <p> "Artist hasn't created any wildcards yet"->React.string </p>
-           | Some(currentlyOwnedTokens) =>
+             <p>
+               "Artist doesn't have any launched wildcards"->React.string
+             </p>
+           | Some(_) =>
              <React.Fragment>
                <Rimble.Heading>
                  "Wildcards created by artist"->React.string
                </Rimble.Heading>
                <Rimble.Flex flexWrap="wrap" className=centreAlignOnMobile>
                  {React.array(
-                    currentlyOwnedTokens->Array.map(token => {
-                      let id = token##id->TokenId.toString;
-                      <UserProfile.Token
-                        key=id
-                        tokenId={TokenId.fromStringUnsafe(id)}
-                      />;
+                    artistsAnimalsArrayLaunched->Array.map(token => {
+                      let id = token->TokenId.toString;
+                      <UserProfile.Token key=id tokenId=token />;
                     }),
                   )}
                </Rimble.Flex>
                <br />
                <br />
                <br />
+             </React.Fragment>
+           }}
+          {switch (optArtistUnlaunchedWildcards) {
+           | None
+           | Some([||]) => React.null
+           | Some(unlaunchedWildcards) =>
+             <React.Fragment>
+               <Rimble.Heading> "Coming soon"->React.string </Rimble.Heading>
+               <Rimble.Flex flexWrap="wrap" className=centreAlignOnMobile>
+                 {React.array(
+                    unlaunchedWildcards->Array.map(token => {
+                      token##image
+                      ->Option.mapWithDefault(React.null, image =>
+                          <OrgProfile.ComingSoonAnimal
+                            key={token##key->string_of_int}
+                            image={CONSTANTS.cdnBase ++ image}
+                            onClick={() => {
+                              // TODO: add proper onclick
+                              ()
+                            }}
+                          />
+                        )
+                    }),
+                  )}
+               </Rimble.Flex>
              </React.Fragment>
            }}
         </Rimble.Box>
@@ -234,30 +279,23 @@ let make = (~artistIdentifier: string) => {
   // let artistAddress =
   Js.log(artistIdentifier);
 
-  let artistEthAddress =
-    (
-      QlHooks.useArtistEthAddress(~artistIdentifier)
-      |||| CONSTANTS.nullEthAddress
-    )
-    ->Js.String.toLowerCase;
+  let optArtistEthAddress = QlHooks.useArtistEthAddress(~artistIdentifier);
   let optArtistName = QlHooks.useArtistName(~artistIdentifier);
   let optArtistWebsite = QlHooks.useArtistWebsite(~artistIdentifier);
-  let optArtistWildcards = QlHooks.useArtistWildcards(~artistIdentifier);
+  let optArtistLaunchedWildcards =
+    QlHooks.useArtistLaunchedWildcards(~artistIdentifier);
+  let optArtistUnlaunchedWildcards =
+    QlHooks.useArtistUnlaunchedWildcards(~artistIdentifier);
   let optArtistOrgs = QlHooks.useArtistOrgs(~artistIdentifier);
 
-  let userInfoContext = UserProvider.useUserInfoContext();
-  let reloadUser = forceReload =>
-    userInfoContext.update(artistEthAddress, forceReload);
-  reloadUser(false);
-  let optThreeBoxData = UserProvider.use3BoxUserData(artistEthAddress);
   <Rimble.Flex flexWrap="wrap" alignItems="center" className=Styles.topBody>
     <ArtistDetails
-      artistEthAddress
+      optArtistEthAddress
       optArtistName
       optArtistWebsite
-      optArtistWildcards
+      optArtistLaunchedWildcards
+      optArtistUnlaunchedWildcards
       optArtistOrgs
-      optThreeBoxData
     />
   </Rimble.Flex>;
 };
