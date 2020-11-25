@@ -562,13 +562,21 @@ function Dapp$DetailsViewAnimal(Props) {
   var orgId = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.useWildcardOrgId(animal), "");
   var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
   var image = Animal$WildCards.useAvatar(animal);
+  var optArtistInfo = QlHooks$WildCards.useWildcardArtist(animal);
   var orgBadge = Animal$WildCards.useGetOrgBadgeImage(animal);
   var isLaunched = Animal$WildCards.useIsLaunched(chain, animal);
   var isOnAuction = Animal$WildCards.useIsOnAuction(chain, animal);
   var displayAnimal = function (animalImage) {
     return React.createElement("div", {
                 className: Styles$WildCards.positionRelative
-              }, Curry._1(animalImage, undefined), typeof isLaunched === "number" ? (
+              }, Curry._1(animalImage, undefined), Belt_Option.mapWithDefault(optArtistInfo, null, (function (artistInfo) {
+                      return React.createElement("p", undefined, "Art by: ", React.createElement("a", {
+                                      onClick: (function (e) {
+                                          e.preventDefault();
+                                          return Curry._1(clearAndPush, "/#artist/" + artistInfo.id);
+                                        })
+                                    }, artistInfo.name));
+                    })), typeof isLaunched === "number" ? (
                   isLaunched !== 0 || isOnAuction ? null : React.createElement("div", {
                           className: Styles$WildCards.overlayFlameImg
                         }, React.createElement(Dapp$Streak, {

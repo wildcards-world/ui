@@ -490,6 +490,7 @@ module DetailsViewAnimal = {
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute();
 
     let image = Animal.useAvatar(animal);
+    let optArtistInfo = QlHooks.useWildcardArtist(animal);
 
     let normalImage = () => <img className=Styles.ownedAnimalImg src=image />;
     // let optAlternateImage = Animal.getAlternateImage(animal);
@@ -501,6 +502,18 @@ module DetailsViewAnimal = {
     let displayAnimal = animalImage =>
       <div className=Styles.positionRelative>
         {animalImage()}
+        {optArtistInfo->Option.mapWithDefault(React.null, artistInfo =>
+           <p>
+             "Art by: "->React.string
+             <a
+               onClick={e => {
+                 ReactEvent.Mouse.preventDefault(e);
+                 clearAndPush("/#artist/" ++ artistInfo##id);
+               }}>
+               {artistInfo##name->React.string}
+             </a>
+           </p>
+         )}
         {switch (isLaunched) {
          | Animal.Launched =>
            isOnAuction

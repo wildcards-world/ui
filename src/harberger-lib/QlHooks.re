@@ -180,6 +180,10 @@ module WildcardDataQuery = [%graphql
             image
             photographer
           }
+          artistOfWildcard {
+            name
+            id
+          }
         }
       }
     }
@@ -582,6 +586,13 @@ let useWildcardAvatar = tokenId => {
   let (simple, _) = useWildcardDataQuery(tokenId);
   queryResultOptionFlatMap(simple, a =>
     a##launchedWildcards_by_pk->Option.flatMap(b => b##wildcard##image)
+  );
+};
+let useWildcardArtist = tokenId => {
+  let (simple, _) = useWildcardDataQuery(tokenId);
+  queryResultOptionFlatMap(simple, a =>
+    a##launchedWildcards_by_pk
+    ->Option.flatMap(b => b##wildcard##artistOfWildcard)
   );
 };
 let useRealImages = tokenId => {

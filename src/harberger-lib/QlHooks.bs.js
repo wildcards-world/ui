@@ -485,7 +485,7 @@ var SubWildcardQuery = {
   MT_Ret: MT_Ret$1
 };
 
-var ppx_printed_query$2 = "query ($tokenId: String!)  {\nlaunchedWildcards_by_pk(id: $tokenId)  {\nwildcard  {\nid  \nname  \ndescription  \norganization  {\nname  \nid  \n}\n\nimage  \nreal_wc_photos  {\nimage  \nphotographer  \n}\n\n}\n\n}\n\n}\n";
+var ppx_printed_query$2 = "query ($tokenId: String!)  {\nlaunchedWildcards_by_pk(id: $tokenId)  {\nwildcard  {\nid  \nname  \ndescription  \norganization  {\nname  \nid  \n}\n\nimage  \nreal_wc_photos  {\nimage  \nphotographer  \n}\n\nartistOfWildcard  {\nname  \nid  \n}\n\n}\n\n}\n\n}\n";
 
 function parse$2(value) {
   var value$1 = Js_option.getExn(Js_json.decodeObject(value));
@@ -581,6 +581,41 @@ function parse$2(value) {
           tmp$7 = undefined;
         }
         var value$26 = Js_dict.get(value$6, "real_wc_photos");
+        var value$27 = Js_dict.get(value$6, "artistOfWildcard");
+        var tmp$8;
+        if (value$27 !== undefined) {
+          var value$28 = Caml_option.valFromOption(value$27);
+          var match$5 = Js_json.decodeNull(value$28);
+          if (match$5 !== undefined) {
+            tmp$8 = undefined;
+          } else {
+            var value$29 = Js_option.getExn(Js_json.decodeObject(value$28));
+            var value$30 = Js_dict.get(value$29, "name");
+            var tmp$9;
+            if (value$30 !== undefined) {
+              var value$31 = Caml_option.valFromOption(value$30);
+              var value$32 = Js_json.decodeString(value$31);
+              tmp$9 = value$32 !== undefined ? value$32 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$31));
+            } else {
+              tmp$9 = Js_exn.raiseError("graphql_ppx: Field name on type artist is missing");
+            }
+            var value$33 = Js_dict.get(value$29, "id");
+            var tmp$10;
+            if (value$33 !== undefined) {
+              var value$34 = Caml_option.valFromOption(value$33);
+              var value$35 = Js_json.decodeString(value$34);
+              tmp$10 = value$35 !== undefined ? value$35 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$34));
+            } else {
+              tmp$10 = Js_exn.raiseError("graphql_ppx: Field id on type artist is missing");
+            }
+            tmp$8 = {
+              name: tmp$9,
+              id: tmp$10
+            };
+          }
+        } else {
+          tmp$8 = undefined;
+        }
         tmp$1 = {
           id: tmp$2,
           name: tmp$3,
@@ -616,7 +651,8 @@ function parse$2(value) {
                           image: tmp,
                           photographer: tmp$1
                         };
-                }) : Js_exn.raiseError("graphql_ppx: Field real_wc_photos on type wildcardData is missing")
+                }) : Js_exn.raiseError("graphql_ppx: Field real_wc_photos on type wildcardData is missing"),
+          artistOfWildcard: tmp$8
         };
       } else {
         tmp$1 = Js_exn.raiseError("graphql_ppx: Field wildcard on type launchedWildcards is missing");
@@ -2446,6 +2482,15 @@ function useWildcardAvatar(tokenId) {
               }));
 }
 
+function useWildcardArtist(tokenId) {
+  var match = useWildcardDataQuery(tokenId);
+  return queryResultOptionFlatMap(match[0], (function (a) {
+                return Belt_Option.flatMap(a.launchedWildcards_by_pk, (function (b) {
+                              return b.wildcard.artistOfWildcard;
+                            }));
+              }));
+}
+
 function useRealImages(tokenId) {
   var match = useWildcardDataQuery(tokenId);
   return queryResultOptionFlatMap(match[0], (function (a) {
@@ -3258,6 +3303,7 @@ export {
   useWildcardDescription ,
   useWildcardName ,
   useWildcardAvatar ,
+  useWildcardArtist ,
   useRealImages ,
   useWildcardOrgId ,
   useWildcardOrgName ,
