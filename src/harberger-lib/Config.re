@@ -11,9 +11,9 @@ module Transak = {
       };
     let (environment, apiKey) =
       switch (web3Context.chainId) {
-      | Some(1) => ("PRODUCTION", "e7f543f7-e12e-4257-ad04-682679f0404c")
+      | Some(1) => ("PRODUCTION", "03e872c1-35c8-436a-8577-134c87912956")
       | Some(_)
-      | None => ("STAGING", "e2c87df4-4d03-49a2-8b1c-899a8bcf13eb")
+      | None => ("STAGING", "95d4e321-7e4e-4a87-92ea-7daac496de7e")
       };
 
     let transakConfig: Transak.initParams = {
