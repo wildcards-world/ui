@@ -275,10 +275,37 @@ module Buy = {
       };
 
     let openTransak = _ => {
+      Js.log(Config.Transak.getConfig(~chain, web3Context));
       let transak =
         Transak.new_(Config.Transak.getConfig(~chain, web3Context));
       transak->Transak.init();
     };
+
+    let (showTransakWarning, setShowTransakWarning) =
+      React.useState(_ => false);
+
+    let transakSteps = defaultView =>
+      showTransakWarning
+        ? <>
+            <p>
+              "This service currently only works for pure ethereum wallets."
+              ->React.string
+            </p>
+            <p>
+              "The following wallets are safe: Metamask, Portis, Torus, any wallet that uses words as a passphrase."
+              ->React.string
+            </p>
+            <p>
+              "The following wallets aren't safe: Argent, Authereum, gnosis safe."
+              ->React.string
+            </p>
+            <p> "If you are unsure, please contact us."->React.string </p>
+            <button onClick=openTransak> "Continue"->React.string </button>
+            <button onClick={_ => setShowTransakWarning(_ => false)}>
+              "Cancel"->React.string
+            </button>
+          </>
+        : defaultView;
 
     <TxTemplate
       chain txState=txBuyAuctionState closeButtonText="Back to view Animal">
@@ -288,9 +315,6 @@ module Buy = {
         // TODO: add link to an explainer of what "ether" or "DAI" is.
         {isAbleToBuy
            ? <>
-               <button onClick=openTransak>
-                 // transak.init();
-                  "Buy More Crypto"->React.string </button>
                <p>
                  {(
                     "Your available balance is: "
@@ -300,9 +324,12 @@ module Buy = {
                   )
                   ->React.string}
                </p>
-               <Rimble.Button>
-                 {("Buy More " ++ currency)->React.string}
-               </Rimble.Button>
+               {transakSteps(
+                  <Rimble.Button
+                    onClick={_ => setShowTransakWarning(_ => true)}>
+                    {("Buy More " ++ currency)->React.string}
+                  </Rimble.Button>,
+                )}
                <BuyInput
                  onSubmitBuy
                  setNewPrice
@@ -337,9 +364,12 @@ module Buy = {
                   )
                   ->React.string}
                </p>
-               <button onClick=openTransak>
-                 {("Buy " ++ currency)->React.string}
-               </button>
+               {transakSteps(
+                  <Rimble.Button
+                    onClick={_ => setShowTransakWarning(_ => true)}>
+                    {("Buy " ++ currency)->React.string}
+                  </Rimble.Button>,
+                )}
              </Rimble.Box>}
       </TxTemplate>
     </TxTemplate>;

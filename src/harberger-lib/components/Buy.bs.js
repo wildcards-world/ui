@@ -149,9 +149,30 @@ function Buy$Buy(Props) {
   };
   var currency = chain !== 1 ? "ether" : "DAI";
   var openTransak = function (param) {
+    console.log(Config$WildCards.Transak.getConfig(chain, web3Context));
     var transak = new TransakSdk(Config$WildCards.Transak.getConfig(chain, web3Context));
     transak.init();
     
+  };
+  var match$8 = React.useState(function () {
+        return false;
+      });
+  var setShowTransakWarning = match$8[1];
+  var showTransakWarning = match$8[0];
+  var transakSteps = function (defaultView) {
+    if (showTransakWarning) {
+      return React.createElement(React.Fragment, undefined, React.createElement("p", undefined, "This service currently only works for pure ethereum wallets."), React.createElement("p", undefined, "The following wallets are safe: Metamask, Portis, Torus, any wallet that uses words as a passphrase."), React.createElement("p", undefined, "The following wallets aren't safe: Argent, Authereum, gnosis safe."), React.createElement("p", undefined, "If you are unsure, please contact us."), React.createElement("button", {
+                      onClick: openTransak
+                    }, "Continue"), React.createElement("button", {
+                      onClick: (function (param) {
+                          return Curry._1(setShowTransakWarning, (function (param) {
+                                        return false;
+                                      }));
+                        })
+                    }, "Cancel"));
+    } else {
+      return defaultView;
+    }
   };
   return React.createElement(TxTemplate$WildCards.make, {
               children: React.createElement(TxTemplate$WildCards.make, {
@@ -159,11 +180,14 @@ function Buy$Buy(Props) {
                     txState: match[1],
                     closeButtonText: "Back to view Animal",
                     chain: chain
-                  }, React.createElement("p", undefined, "This wildcard uses " + currency), isAbleToBuy ? React.createElement(React.Fragment, undefined, React.createElement("button", {
-                              onClick: openTransak
-                            }, "Buy More Crypto"), React.createElement("p", undefined, "Your available balance is: " + (paymentTokenBalance + (" " + currency))), React.createElement(RimbleUi.Button, {
-                              children: "Buy More " + currency
-                            }), React.createElement(BuyInput$WildCards.make, {
+                  }, React.createElement("p", undefined, "This wildcard uses " + currency), isAbleToBuy ? React.createElement(React.Fragment, undefined, React.createElement("p", undefined, "Your available balance is: " + (paymentTokenBalance + (" " + currency))), transakSteps(React.createElement(RimbleUi.Button, {
+                                  children: "Buy More " + currency,
+                                  onClick: (function (param) {
+                                      return Curry._1(setShowTransakWarning, (function (param) {
+                                                    return true;
+                                                  }));
+                                    })
+                                })), React.createElement(BuyInput$WildCards.make, {
                               patronage: match$5[0],
                               onSubmitBuy: onSubmitBuy,
                               newPrice: newPrice,
@@ -177,9 +201,14 @@ function Buy$Buy(Props) {
                           children: null
                         }, React.createElement("p", {
                               className: Styles$WildCards.textOnlyModalText
-                            }, "You do not have enough " + (currency + (" to buy " + (tokenIdName + ".")))), React.createElement("p", undefined, "Your current balance is: " + (paymentTokenBalance + (" " + currency))), React.createElement("button", {
-                              onClick: openTransak
-                            }, "Buy " + currency))),
+                            }, "You do not have enough " + (currency + (" to buy " + (tokenIdName + ".")))), React.createElement("p", undefined, "Your current balance is: " + (paymentTokenBalance + (" " + currency))), transakSteps(React.createElement(RimbleUi.Button, {
+                                  children: "Buy " + currency,
+                                  onClick: (function (param) {
+                                      return Curry._1(setShowTransakWarning, (function (param) {
+                                                    return true;
+                                                  }));
+                                    })
+                                })))),
               txState: match$1[1],
               closeButtonText: "Back to view Animal",
               chain: chain
