@@ -164,7 +164,8 @@ module ArtistDetails = {
                     target="_blank"
                     rel="noopener noreferrer"
                     href=website>
-                    "Artists website"->React.string
+                    {((optArtistName |||| "Artist") ++ "'s website")
+                     ->React.string}
                   </a>
                 )}
                <br />

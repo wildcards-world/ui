@@ -153,7 +153,7 @@ function ArtistProfiles$ArtistDetails(Props) {
                             href: website,
                             rel: "noopener noreferrer",
                             target: "_blank"
-                          }, "Artists website");
+                          }, Globals$WildCards.$pipe$pipe$pipe$pipe(optArtistName, "Artist") + "'s website");
               })), React.createElement("br", undefined), React.createElement("br", undefined), Globals$WildCards.reactMap(optArtistEthAddress, (function (param) {
                 return React.createElement(React.Fragment, undefined, React.createElement("a", {
                                 className: Styles$WildCards.navListText,
