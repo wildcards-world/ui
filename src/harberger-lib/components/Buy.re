@@ -95,6 +95,11 @@ module Buy = {
 
     let tokenIdName = "token#" ++ tokenId->TokenId.toString;
 
+    let paymentTokenBalance =
+      availableBalance
+      ->Option.getWithDefault(userBalance)
+      ->Web3Utils.fromWeiBNToEthPrecision(~digits=4);
+
     let maxAvailableDepositBN =
       availableBalance->Option.getWithDefault(
         userBalance
@@ -269,25 +274,77 @@ module Buy = {
       | Client.MaticQuery => "DAI"
       };
 
+    let openTransak = _ => {
+      Js.log(Config.Transak.getConfig(~chain, web3Context));
+      let transak =
+        Transak.new_(Config.Transak.getConfig(~chain, web3Context));
+      transak->Transak.init();
+    };
+
+    let (showTransakWarning, setShowTransakWarning) =
+      React.useState(_ => false);
+
+    let transakSteps = defaultView =>
+      showTransakWarning
+        ? <>
+            <p>
+              "This service currently only works for pure ethereum wallets."
+              ->React.string
+            </p>
+            <p>
+              "The following wallets are safe: Metamask, Portis, Torus, any wallet that uses words as a passphrase."
+              ->React.string
+            </p>
+            <p>
+              "The following wallets aren't safe: Argent, Authereum, gnosis safe."
+              ->React.string
+            </p>
+            <p> "If you are unsure, please contact us."->React.string </p>
+            <button onClick=openTransak> "Continue"->React.string </button>
+            <button onClick={_ => setShowTransakWarning(_ => false)}>
+              "Cancel"->React.string
+            </button>
+          </>
+        : defaultView;
+
     <TxTemplate
       chain txState=txBuyAuctionState closeButtonText="Back to view Animal">
       <TxTemplate
         chain txState=txBuyState closeButtonText="Back to view Animal">
+        <p> {("This wildcard uses " ++ currency)->React.string} </p>
+        // TODO: add link to an explainer of what "ether" or "DAI" is.
         {isAbleToBuy
-           ? <BuyInput
-               onSubmitBuy
-               setNewPrice
-               newPrice
-               deposit
-               depositTimeInSeconds
-               setDeposit
-               patronage
-               tokenIdName
-               //  priceSliderInitialMax
-               //  depositForAYear
-               maxAvailableDeposit
-               //  updatePatronage
-             />
+           ? <>
+               <p>
+                 {(
+                    "Your available balance is: "
+                    ++ paymentTokenBalance
+                    ++ " "
+                    ++ currency
+                  )
+                  ->React.string}
+               </p>
+               {transakSteps(
+                  <Rimble.Button
+                    onClick={_ => setShowTransakWarning(_ => true)}>
+                    {("Buy More " ++ currency)->React.string}
+                  </Rimble.Button>,
+                )}
+               <BuyInput
+                 onSubmitBuy
+                 setNewPrice
+                 newPrice
+                 deposit
+                 depositTimeInSeconds
+                 setDeposit
+                 patronage
+                 tokenIdName
+                 //  priceSliderInitialMax
+                 //  depositForAYear
+                 maxAvailableDeposit
+                 //  updatePatronage
+               />
+             </>
            : <Rimble.Box>
                <p className=Styles.textOnlyModalText>
                  {React.string(
@@ -298,6 +355,21 @@ module Buy = {
                     ++ ".",
                   )}
                </p>
+               <p>
+                 {(
+                    "Your current balance is: "
+                    ++ paymentTokenBalance
+                    ++ " "
+                    ++ currency
+                  )
+                  ->React.string}
+               </p>
+               {transakSteps(
+                  <Rimble.Button
+                    onClick={_ => setShowTransakWarning(_ => true)}>
+                    {("Buy " ++ currency)->React.string}
+                  </Rimble.Button>,
+                )}
              </Rimble.Box>}
       </TxTemplate>
     </TxTemplate>;
