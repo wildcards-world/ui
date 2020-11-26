@@ -12,8 +12,10 @@ type leaderBoard =
   | TotalDaysHeld
   | Unknown
   | MonthlyContribution;
+type artistId = string;
 type urlState =
   | User(Web3.ethAddress)
+  | Artist(artistId)
   | Org(string)
   | Explorer(explorerTab, animalPageState)
   | Team
@@ -30,6 +32,7 @@ let useUrlState = () => {
     () => {
       switch (Js.String.split("/", url.hash)) {
       | [|"user", address|] => User(address->Js.String.toLowerCase)
+      | [|"artist", id|] => Artist(id)
       | [|"org", orgId|] => Org(orgId->Js.String.toLowerCase)
       | [|"leaderboards", leaderboardType|] =>
         switch (leaderboardType) {
@@ -91,6 +94,7 @@ let useIsExplorer = () => {
       switch (urlState) {
       | Explorer(_) => true
       | User(_)
+      | Artist(_)
       | Leaderboards(_)
       | Home(_)
       | Org(_)
@@ -116,6 +120,7 @@ let useIsDetails = () => {
       | Explorer(_, inside) => isDetailsAnimalPage(inside)
       | Home(inside) => isDetailsAnimalPage(inside)
       | User(_)
+      | Artist(_)
       | Org(_)
       | Leaderboards(_)
       | IncreaseVoteIteration
@@ -134,6 +139,7 @@ let useIsHome = () => {
       | Home(NormalView) => true
       | Home(DetailView(_))
       | User(_)
+      | Artist(_)
       | Org(_)
       | Explorer(_)
       | Leaderboards(_)
@@ -163,6 +169,7 @@ let useAnimalForDetails = () => {
         getAnimalFormAnimalPageState(animalPageState)
       // | DetailView(_, optAnimal) => optAnimal
       | User(_)
+      | Artist(_)
       | Org(_)
       | Leaderboards(_)
       | Team

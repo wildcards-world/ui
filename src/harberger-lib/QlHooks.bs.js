@@ -50,12 +50,8 @@ function decodeOptionBN(optionalNumber) {
   return Belt_Option.map(optionalNumber, decodeBN);
 }
 
-function toTokenId(prim) {
-  return prim;
-}
-
 function toTokenIdWithDefault(optTokenId) {
-  return Belt_Option.getWithDefault(optTokenId, "9999");
+  return TokenId$WildCards.fromStringUnsafe(Belt_Option.getWithDefault(optTokenId, "9999"));
 }
 
 function decodeAddress(address) {
@@ -489,7 +485,7 @@ var SubWildcardQuery = {
   MT_Ret: MT_Ret$1
 };
 
-var ppx_printed_query$2 = "query ($tokenId: String!)  {\nlaunchedWildcards_by_pk(id: $tokenId)  {\nwildcard  {\nid  \nname  \ndescription  \norganization  {\nname  \nid  \n}\n\nimage  \nreal_wc_photos  {\nimage  \nphotographer  \n}\n\n}\n\n}\n\n}\n";
+var ppx_printed_query$2 = "query ($tokenId: String!)  {\nlaunchedWildcards_by_pk(id: $tokenId)  {\nwildcard  {\nid  \nname  \ndescription  \norganization  {\nname  \nid  \n}\n\nimage  \nreal_wc_photos  {\nimage  \nphotographer  \n}\n\nartistOfWildcard  {\nname  \nid  \n}\n\n}\n\n}\n\n}\n";
 
 function parse$2(value) {
   var value$1 = Js_option.getExn(Js_json.decodeObject(value));
@@ -585,6 +581,41 @@ function parse$2(value) {
           tmp$7 = undefined;
         }
         var value$26 = Js_dict.get(value$6, "real_wc_photos");
+        var value$27 = Js_dict.get(value$6, "artistOfWildcard");
+        var tmp$8;
+        if (value$27 !== undefined) {
+          var value$28 = Caml_option.valFromOption(value$27);
+          var match$5 = Js_json.decodeNull(value$28);
+          if (match$5 !== undefined) {
+            tmp$8 = undefined;
+          } else {
+            var value$29 = Js_option.getExn(Js_json.decodeObject(value$28));
+            var value$30 = Js_dict.get(value$29, "name");
+            var tmp$9;
+            if (value$30 !== undefined) {
+              var value$31 = Caml_option.valFromOption(value$30);
+              var value$32 = Js_json.decodeString(value$31);
+              tmp$9 = value$32 !== undefined ? value$32 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$31));
+            } else {
+              tmp$9 = Js_exn.raiseError("graphql_ppx: Field name on type artist is missing");
+            }
+            var value$33 = Js_dict.get(value$29, "id");
+            var tmp$10;
+            if (value$33 !== undefined) {
+              var value$34 = Caml_option.valFromOption(value$33);
+              var value$35 = Js_json.decodeString(value$34);
+              tmp$10 = value$35 !== undefined ? value$35 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$34));
+            } else {
+              tmp$10 = Js_exn.raiseError("graphql_ppx: Field id on type artist is missing");
+            }
+            tmp$8 = {
+              name: tmp$9,
+              id: tmp$10
+            };
+          }
+        } else {
+          tmp$8 = undefined;
+        }
         tmp$1 = {
           id: tmp$2,
           name: tmp$3,
@@ -620,7 +651,8 @@ function parse$2(value) {
                           image: tmp,
                           photographer: tmp$1
                         };
-                }) : Js_exn.raiseError("graphql_ppx: Field real_wc_photos on type wildcardData is missing")
+                }) : Js_exn.raiseError("graphql_ppx: Field real_wc_photos on type wildcardData is missing"),
+          artistOfWildcard: tmp$8
         };
       } else {
         tmp$1 = Js_exn.raiseError("graphql_ppx: Field wildcard on type launchedWildcards is missing");
@@ -1018,9 +1050,351 @@ var HomeAnimalsQuery = {
   MT_Ret: MT_Ret$4
 };
 
-var ppx_printed_query$5 = "subscription   {\nstateChanges(first: 1, orderBy: timestamp, orderDirection: desc)  {\nid  \ntimestamp  \nwildcardChanges  {\nid  \ntokenId  \ntimeAcquired  \ntotalCollected  \npatronageNumeratorPriceScaled  \ntimeCollected  \nprice  {\nid  \nprice  \n}\n\nowner  {\naddress  \nid  \n}\n\n}\n\npatronChanges  {\nid  \naddress  \nlastUpdated  \npreviouslyOwnedTokens  {\nid  \n}\n\ntokens  {\nid  \n}\n\navailableDeposit  \npatronTokenCostScaledNumerator  \nforeclosureTime  \n}\n\n}\n\n}\n";
+var ppx_printed_query$5 = "query ($artistIdentifier: String!)  {\nartist_by_pk(id: $artistIdentifier)  {\neth_address  \nid  \nname  \nwebsite  \nlaunchedWildcards: wildcardData(where: {id: {_is_null: false}})  {\nkey  \nid  \nname  \nimage  \norganization  {\nid  \nname  \nlogo  \n}\n\n}\n\nunlaunchedWildcards: wildcardData(where: {id: {_is_null: true}})  {\nkey  \nname  \nimage  \norganization  {\nid  \nname  \nlogo  \n}\n\n}\n\n}\n\n}\n";
 
 function parse$5(value) {
+  var value$1 = Js_option.getExn(Js_json.decodeObject(value));
+  var value$2 = Js_dict.get(value$1, "artist_by_pk");
+  var tmp;
+  if (value$2 !== undefined) {
+    var value$3 = Caml_option.valFromOption(value$2);
+    var match = Js_json.decodeNull(value$3);
+    if (match !== undefined) {
+      tmp = undefined;
+    } else {
+      var value$4 = Js_option.getExn(Js_json.decodeObject(value$3));
+      var value$5 = Js_dict.get(value$4, "eth_address");
+      var tmp$1;
+      if (value$5 !== undefined) {
+        var value$6 = Caml_option.valFromOption(value$5);
+        var match$1 = Js_json.decodeNull(value$6);
+        if (match$1 !== undefined) {
+          tmp$1 = undefined;
+        } else {
+          var value$7 = Js_json.decodeString(value$6);
+          tmp$1 = value$7 !== undefined ? value$7 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$6));
+        }
+      } else {
+        tmp$1 = undefined;
+      }
+      var value$8 = Js_dict.get(value$4, "id");
+      var tmp$2;
+      if (value$8 !== undefined) {
+        var value$9 = Caml_option.valFromOption(value$8);
+        var value$10 = Js_json.decodeString(value$9);
+        tmp$2 = value$10 !== undefined ? value$10 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$9));
+      } else {
+        tmp$2 = Js_exn.raiseError("graphql_ppx: Field id on type artist is missing");
+      }
+      var value$11 = Js_dict.get(value$4, "name");
+      var tmp$3;
+      if (value$11 !== undefined) {
+        var value$12 = Caml_option.valFromOption(value$11);
+        var value$13 = Js_json.decodeString(value$12);
+        tmp$3 = value$13 !== undefined ? value$13 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$12));
+      } else {
+        tmp$3 = Js_exn.raiseError("graphql_ppx: Field name on type artist is missing");
+      }
+      var value$14 = Js_dict.get(value$4, "website");
+      var tmp$4;
+      if (value$14 !== undefined) {
+        var value$15 = Caml_option.valFromOption(value$14);
+        var match$2 = Js_json.decodeNull(value$15);
+        if (match$2 !== undefined) {
+          tmp$4 = undefined;
+        } else {
+          var value$16 = Js_json.decodeString(value$15);
+          tmp$4 = value$16 !== undefined ? value$16 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$15));
+        }
+      } else {
+        tmp$4 = undefined;
+      }
+      var value$17 = Js_dict.get(value$4, "launchedWildcards");
+      var value$18 = Js_dict.get(value$4, "unlaunchedWildcards");
+      tmp = {
+        eth_address: tmp$1,
+        id: tmp$2,
+        name: tmp$3,
+        website: tmp$4,
+        launchedWildcards: value$17 !== undefined ? Js_option.getExn(Js_json.decodeArray(Caml_option.valFromOption(value$17))).map(function (value) {
+                var value$1 = Js_option.getExn(Js_json.decodeObject(value));
+                var value$2 = Js_dict.get(value$1, "key");
+                var tmp;
+                if (value$2 !== undefined) {
+                  var value$3 = Caml_option.valFromOption(value$2);
+                  var value$4 = Js_json.decodeNumber(value$3);
+                  tmp = value$4 !== undefined ? value$4 | 0 : Js_exn.raiseError("graphql_ppx: Expected int, got " + JSON.stringify(value$3));
+                } else {
+                  tmp = Js_exn.raiseError("graphql_ppx: Field key on type wildcardData is missing");
+                }
+                var value$5 = Js_dict.get(value$1, "id");
+                var tmp$1;
+                if (value$5 !== undefined) {
+                  var value$6 = Caml_option.valFromOption(value$5);
+                  var match = Js_json.decodeNull(value$6);
+                  if (match !== undefined) {
+                    tmp$1 = undefined;
+                  } else {
+                    var value$7 = Js_json.decodeString(value$6);
+                    tmp$1 = value$7 !== undefined ? value$7 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$6));
+                  }
+                } else {
+                  tmp$1 = undefined;
+                }
+                var value$8 = Js_dict.get(value$1, "name");
+                var tmp$2;
+                if (value$8 !== undefined) {
+                  var value$9 = Caml_option.valFromOption(value$8);
+                  var match$1 = Js_json.decodeNull(value$9);
+                  if (match$1 !== undefined) {
+                    tmp$2 = undefined;
+                  } else {
+                    var value$10 = Js_json.decodeString(value$9);
+                    tmp$2 = value$10 !== undefined ? value$10 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$9));
+                  }
+                } else {
+                  tmp$2 = undefined;
+                }
+                var value$11 = Js_dict.get(value$1, "image");
+                var tmp$3;
+                if (value$11 !== undefined) {
+                  var value$12 = Caml_option.valFromOption(value$11);
+                  var match$2 = Js_json.decodeNull(value$12);
+                  if (match$2 !== undefined) {
+                    tmp$3 = undefined;
+                  } else {
+                    var value$13 = Js_json.decodeString(value$12);
+                    tmp$3 = value$13 !== undefined ? value$13 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$12));
+                  }
+                } else {
+                  tmp$3 = undefined;
+                }
+                var value$14 = Js_dict.get(value$1, "organization");
+                var tmp$4;
+                if (value$14 !== undefined) {
+                  var value$15 = Caml_option.valFromOption(value$14);
+                  var match$3 = Js_json.decodeNull(value$15);
+                  if (match$3 !== undefined) {
+                    tmp$4 = undefined;
+                  } else {
+                    var value$16 = Js_option.getExn(Js_json.decodeObject(value$15));
+                    var value$17 = Js_dict.get(value$16, "id");
+                    var tmp$5;
+                    if (value$17 !== undefined) {
+                      var value$18 = Caml_option.valFromOption(value$17);
+                      var value$19 = Js_json.decodeString(value$18);
+                      tmp$5 = value$19 !== undefined ? value$19 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$18));
+                    } else {
+                      tmp$5 = Js_exn.raiseError("graphql_ppx: Field id on type organisations is missing");
+                    }
+                    var value$20 = Js_dict.get(value$16, "name");
+                    var tmp$6;
+                    if (value$20 !== undefined) {
+                      var value$21 = Caml_option.valFromOption(value$20);
+                      var value$22 = Js_json.decodeString(value$21);
+                      tmp$6 = value$22 !== undefined ? value$22 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$21));
+                    } else {
+                      tmp$6 = Js_exn.raiseError("graphql_ppx: Field name on type organisations is missing");
+                    }
+                    var value$23 = Js_dict.get(value$16, "logo");
+                    var tmp$7;
+                    if (value$23 !== undefined) {
+                      var value$24 = Caml_option.valFromOption(value$23);
+                      var value$25 = Js_json.decodeString(value$24);
+                      tmp$7 = value$25 !== undefined ? value$25 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$24));
+                    } else {
+                      tmp$7 = Js_exn.raiseError("graphql_ppx: Field logo on type organisations is missing");
+                    }
+                    tmp$4 = {
+                      id: tmp$5,
+                      name: tmp$6,
+                      logo: tmp$7
+                    };
+                  }
+                } else {
+                  tmp$4 = undefined;
+                }
+                return {
+                        key: tmp,
+                        id: tmp$1,
+                        name: tmp$2,
+                        image: tmp$3,
+                        organization: tmp$4
+                      };
+              }) : Js_exn.raiseError("graphql_ppx: Field launchedWildcards on type artist is missing"),
+        unlaunchedWildcards: value$18 !== undefined ? Js_option.getExn(Js_json.decodeArray(Caml_option.valFromOption(value$18))).map(function (value) {
+                var value$1 = Js_option.getExn(Js_json.decodeObject(value));
+                var value$2 = Js_dict.get(value$1, "key");
+                var tmp;
+                if (value$2 !== undefined) {
+                  var value$3 = Caml_option.valFromOption(value$2);
+                  var value$4 = Js_json.decodeNumber(value$3);
+                  tmp = value$4 !== undefined ? value$4 | 0 : Js_exn.raiseError("graphql_ppx: Expected int, got " + JSON.stringify(value$3));
+                } else {
+                  tmp = Js_exn.raiseError("graphql_ppx: Field key on type wildcardData is missing");
+                }
+                var value$5 = Js_dict.get(value$1, "name");
+                var tmp$1;
+                if (value$5 !== undefined) {
+                  var value$6 = Caml_option.valFromOption(value$5);
+                  var match = Js_json.decodeNull(value$6);
+                  if (match !== undefined) {
+                    tmp$1 = undefined;
+                  } else {
+                    var value$7 = Js_json.decodeString(value$6);
+                    tmp$1 = value$7 !== undefined ? value$7 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$6));
+                  }
+                } else {
+                  tmp$1 = undefined;
+                }
+                var value$8 = Js_dict.get(value$1, "image");
+                var tmp$2;
+                if (value$8 !== undefined) {
+                  var value$9 = Caml_option.valFromOption(value$8);
+                  var match$1 = Js_json.decodeNull(value$9);
+                  if (match$1 !== undefined) {
+                    tmp$2 = undefined;
+                  } else {
+                    var value$10 = Js_json.decodeString(value$9);
+                    tmp$2 = value$10 !== undefined ? value$10 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$9));
+                  }
+                } else {
+                  tmp$2 = undefined;
+                }
+                var value$11 = Js_dict.get(value$1, "organization");
+                var tmp$3;
+                if (value$11 !== undefined) {
+                  var value$12 = Caml_option.valFromOption(value$11);
+                  var match$2 = Js_json.decodeNull(value$12);
+                  if (match$2 !== undefined) {
+                    tmp$3 = undefined;
+                  } else {
+                    var value$13 = Js_option.getExn(Js_json.decodeObject(value$12));
+                    var value$14 = Js_dict.get(value$13, "id");
+                    var tmp$4;
+                    if (value$14 !== undefined) {
+                      var value$15 = Caml_option.valFromOption(value$14);
+                      var value$16 = Js_json.decodeString(value$15);
+                      tmp$4 = value$16 !== undefined ? value$16 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$15));
+                    } else {
+                      tmp$4 = Js_exn.raiseError("graphql_ppx: Field id on type organisations is missing");
+                    }
+                    var value$17 = Js_dict.get(value$13, "name");
+                    var tmp$5;
+                    if (value$17 !== undefined) {
+                      var value$18 = Caml_option.valFromOption(value$17);
+                      var value$19 = Js_json.decodeString(value$18);
+                      tmp$5 = value$19 !== undefined ? value$19 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$18));
+                    } else {
+                      tmp$5 = Js_exn.raiseError("graphql_ppx: Field name on type organisations is missing");
+                    }
+                    var value$20 = Js_dict.get(value$13, "logo");
+                    var tmp$6;
+                    if (value$20 !== undefined) {
+                      var value$21 = Caml_option.valFromOption(value$20);
+                      var value$22 = Js_json.decodeString(value$21);
+                      tmp$6 = value$22 !== undefined ? value$22 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$21));
+                    } else {
+                      tmp$6 = Js_exn.raiseError("graphql_ppx: Field logo on type organisations is missing");
+                    }
+                    tmp$3 = {
+                      id: tmp$4,
+                      name: tmp$5,
+                      logo: tmp$6
+                    };
+                  }
+                } else {
+                  tmp$3 = undefined;
+                }
+                return {
+                        key: tmp,
+                        name: tmp$1,
+                        image: tmp$2,
+                        organization: tmp$3
+                      };
+              }) : Js_exn.raiseError("graphql_ppx: Field unlaunchedWildcards on type artist is missing")
+      };
+    }
+  } else {
+    tmp = undefined;
+  }
+  return {
+          artist_by_pk: tmp
+        };
+}
+
+function make$5(artistIdentifier, param) {
+  return {
+          query: ppx_printed_query$5,
+          variables: Js_dict.fromArray([[
+                    "artistIdentifier",
+                    artistIdentifier
+                  ]].filter(function (param) {
+                    return !Js_json.test(param[1], /* Null */5);
+                  })),
+          parse: parse$5
+        };
+}
+
+function makeWithVariables$5(variables) {
+  var artistIdentifier = variables.artistIdentifier;
+  return {
+          query: ppx_printed_query$5,
+          variables: Js_dict.fromArray([[
+                    "artistIdentifier",
+                    artistIdentifier
+                  ]].filter(function (param) {
+                    return !Js_json.test(param[1], /* Null */5);
+                  })),
+          parse: parse$5
+        };
+}
+
+function makeVariables$5(artistIdentifier, param) {
+  return Js_dict.fromArray([[
+                  "artistIdentifier",
+                  artistIdentifier
+                ]].filter(function (param) {
+                  return !Js_json.test(param[1], /* Null */5);
+                }));
+}
+
+function definition_2$5(graphql_ppx_use_json_variables_fn, artistIdentifier, param) {
+  return Curry._1(graphql_ppx_use_json_variables_fn, Js_dict.fromArray([[
+                      "artistIdentifier",
+                      artistIdentifier
+                    ]].filter(function (param) {
+                      return !Js_json.test(param[1], /* Null */5);
+                    })));
+}
+
+var definition$5 = [
+  parse$5,
+  ppx_printed_query$5,
+  definition_2$5
+];
+
+function ret_type$5(f) {
+  return {};
+}
+
+var MT_Ret$5 = {};
+
+var ArtistQuery = {
+  ppx_printed_query: ppx_printed_query$5,
+  query: ppx_printed_query$5,
+  parse: parse$5,
+  make: make$5,
+  makeWithVariables: makeWithVariables$5,
+  makeVariables: makeVariables$5,
+  definition: definition$5,
+  ret_type: ret_type$5,
+  MT_Ret: MT_Ret$5
+};
+
+var ppx_printed_query$6 = "subscription   {\nstateChanges(first: 1, orderBy: timestamp, orderDirection: desc)  {\nid  \ntimestamp  \nwildcardChanges  {\nid  \ntokenId  \ntimeAcquired  \ntotalCollected  \npatronageNumeratorPriceScaled  \ntimeCollected  \nprice  {\nid  \nprice  \n}\n\nowner  {\naddress  \nid  \n}\n\n}\n\npatronChanges  {\nid  \naddress  \nlastUpdated  \npreviouslyOwnedTokens  {\nid  \n}\n\ntokens  {\nid  \n}\n\navailableDeposit  \npatronTokenCostScaledNumerator  \nforeclosureTime  \n}\n\n}\n\n}\n";
+
+function parse$6(value) {
   var value$1 = Js_option.getExn(Js_json.decodeObject(value));
   var value$2 = Js_dict.get(value$1, "stateChanges");
   return {
@@ -1172,57 +1546,57 @@ function parse$5(value) {
         };
 }
 
-function make$5(param) {
+function make$6(param) {
   return {
-          query: ppx_printed_query$5,
+          query: ppx_printed_query$6,
           variables: null,
-          parse: parse$5
+          parse: parse$6
         };
 }
 
-function makeWithVariables$5(param) {
+function makeWithVariables$6(param) {
   return {
-          query: ppx_printed_query$5,
+          query: ppx_printed_query$6,
           variables: null,
-          parse: parse$5
+          parse: parse$6
         };
 }
 
-function makeVariables$5(param) {
+function makeVariables$6(param) {
   return null;
 }
 
-function definition_2$5(graphql_ppx_use_json_variables_fn) {
+function definition_2$6(graphql_ppx_use_json_variables_fn) {
   return 0;
 }
 
-var definition$5 = [
-  parse$5,
-  ppx_printed_query$5,
-  definition_2$5
+var definition$6 = [
+  parse$6,
+  ppx_printed_query$6,
+  definition_2$6
 ];
 
-function ret_type$5(f) {
+function ret_type$6(f) {
   return {};
 }
 
-var MT_Ret$5 = {};
+var MT_Ret$6 = {};
 
 var SubStateChangeEvents = {
-  ppx_printed_query: ppx_printed_query$5,
-  query: ppx_printed_query$5,
-  parse: parse$5,
-  make: make$5,
-  makeWithVariables: makeWithVariables$5,
-  makeVariables: makeVariables$5,
-  definition: definition$5,
-  ret_type: ret_type$5,
-  MT_Ret: MT_Ret$5
+  ppx_printed_query: ppx_printed_query$6,
+  query: ppx_printed_query$6,
+  parse: parse$6,
+  make: make$6,
+  makeWithVariables: makeWithVariables$6,
+  makeVariables: makeVariables$6,
+  definition: definition$6,
+  ret_type: ret_type$6,
+  MT_Ret: MT_Ret$6
 };
 
-var ppx_printed_query$6 = "query ($patronId: String!)  {\npatron(id: $patronId)  {\nid  \naddress  \nlastUpdated  \npreviouslyOwnedTokens  {\nid  \n}\n\ntokens  {\nid  \n}\n\navailableDeposit  \npatronTokenCostScaledNumerator  \nforeclosureTime  \nid  \naddress  \nlastUpdated  \ntotalLoyaltyTokens  \ntotalLoyaltyTokensIncludingUnRedeemed  \n}\n\n}\n";
+var ppx_printed_query$7 = "query ($patronId: String!)  {\npatron(id: $patronId)  {\nid  \naddress  \nlastUpdated  \npreviouslyOwnedTokens  {\nid  \n}\n\ntokens  {\nid  \n}\n\navailableDeposit  \npatronTokenCostScaledNumerator  \nforeclosureTime  \nid  \naddress  \nlastUpdated  \ntotalLoyaltyTokens  \ntotalLoyaltyTokensIncludingUnRedeemed  \n}\n\n}\n";
 
-function parse$6(value) {
+function parse$7(value) {
   var value$1 = Js_option.getExn(Js_json.decodeObject(value));
   var value$2 = Js_dict.get(value$1, "patron");
   var tmp;
@@ -1314,34 +1688,34 @@ function parse$6(value) {
         };
 }
 
-function make$6(patronId, param) {
+function make$7(patronId, param) {
   return {
-          query: ppx_printed_query$6,
+          query: ppx_printed_query$7,
           variables: Js_dict.fromArray([[
                     "patronId",
                     patronId
                   ]].filter(function (param) {
                     return !Js_json.test(param[1], /* Null */5);
                   })),
-          parse: parse$6
+          parse: parse$7
         };
 }
 
-function makeWithVariables$6(variables) {
+function makeWithVariables$7(variables) {
   var patronId = variables.patronId;
   return {
-          query: ppx_printed_query$6,
+          query: ppx_printed_query$7,
           variables: Js_dict.fromArray([[
                     "patronId",
                     patronId
                   ]].filter(function (param) {
                     return !Js_json.test(param[1], /* Null */5);
                   })),
-          parse: parse$6
+          parse: parse$7
         };
 }
 
-function makeVariables$6(patronId, param) {
+function makeVariables$7(patronId, param) {
   return Js_dict.fromArray([[
                   "patronId",
                   patronId
@@ -1350,7 +1724,7 @@ function makeVariables$6(patronId, param) {
                 }));
 }
 
-function definition_2$6(graphql_ppx_use_json_variables_fn, patronId, param) {
+function definition_2$7(graphql_ppx_use_json_variables_fn, patronId, param) {
   return Curry._1(graphql_ppx_use_json_variables_fn, Js_dict.fromArray([[
                       "patronId",
                       patronId
@@ -1359,33 +1733,33 @@ function definition_2$6(graphql_ppx_use_json_variables_fn, patronId, param) {
                     })));
 }
 
-var definition$6 = [
-  parse$6,
-  ppx_printed_query$6,
-  definition_2$6
+var definition$7 = [
+  parse$7,
+  ppx_printed_query$7,
+  definition_2$7
 ];
 
-function ret_type$6(f) {
+function ret_type$7(f) {
   return {};
 }
 
-var MT_Ret$6 = {};
+var MT_Ret$7 = {};
 
 var LoadPatron = {
-  ppx_printed_query: ppx_printed_query$6,
-  query: ppx_printed_query$6,
-  parse: parse$6,
-  make: make$6,
-  makeWithVariables: makeWithVariables$6,
-  makeVariables: makeVariables$6,
-  definition: definition$6,
-  ret_type: ret_type$6,
-  MT_Ret: MT_Ret$6
+  ppx_printed_query: ppx_printed_query$7,
+  query: ppx_printed_query$7,
+  parse: parse$7,
+  make: make$7,
+  makeWithVariables: makeWithVariables$7,
+  makeVariables: makeVariables$7,
+  definition: definition$7,
+  ret_type: ret_type$7,
+  MT_Ret: MT_Ret$7
 };
 
-var ppx_printed_query$7 = "query ($orgArray: [String!]!)  {\nwildcards(where: {id_in: $orgArray})  {\nid  \ntotalCollected  \npatronageNumeratorPriceScaled  \ntimeCollected  \n}\n\n}\n";
+var ppx_printed_query$8 = "query ($wildcardIdArray: [String!]!)  {\nwildcards(where: {id_in: $wildcardIdArray})  {\nid  \ntotalCollected  \npatronageNumeratorPriceScaled  \ntimeCollected  \n}\n\n}\n";
 
-function parse$7(value) {
+function parse$8(value) {
   var value$1 = Js_option.getExn(Js_json.decodeObject(value));
   var value$2 = Js_dict.get(value$1, "wildcards");
   return {
@@ -1413,41 +1787,41 @@ function parse$7(value) {
         };
 }
 
-function make$7(orgArray, param) {
+function make$8(wildcardIdArray, param) {
   return {
-          query: ppx_printed_query$7,
+          query: ppx_printed_query$8,
           variables: Js_dict.fromArray([[
-                    "orgArray",
-                    orgArray.map(function (prim) {
+                    "wildcardIdArray",
+                    wildcardIdArray.map(function (prim) {
                           return prim;
                         })
                   ]].filter(function (param) {
                     return !Js_json.test(param[1], /* Null */5);
                   })),
-          parse: parse$7
+          parse: parse$8
         };
 }
 
-function makeWithVariables$7(variables) {
-  var orgArray = variables.orgArray;
+function makeWithVariables$8(variables) {
+  var wildcardIdArray = variables.wildcardIdArray;
   return {
-          query: ppx_printed_query$7,
+          query: ppx_printed_query$8,
           variables: Js_dict.fromArray([[
-                    "orgArray",
-                    orgArray.map(function (prim) {
+                    "wildcardIdArray",
+                    wildcardIdArray.map(function (prim) {
                           return prim;
                         })
                   ]].filter(function (param) {
                     return !Js_json.test(param[1], /* Null */5);
                   })),
-          parse: parse$7
+          parse: parse$8
         };
 }
 
-function makeVariables$7(orgArray, param) {
+function makeVariables$8(wildcardIdArray, param) {
   return Js_dict.fromArray([[
-                  "orgArray",
-                  orgArray.map(function (prim) {
+                  "wildcardIdArray",
+                  wildcardIdArray.map(function (prim) {
                         return prim;
                       })
                 ]].filter(function (param) {
@@ -1455,10 +1829,10 @@ function makeVariables$7(orgArray, param) {
                 }));
 }
 
-function definition_2$7(graphql_ppx_use_json_variables_fn, orgArray, param) {
+function definition_2$8(graphql_ppx_use_json_variables_fn, wildcardIdArray, param) {
   return Curry._1(graphql_ppx_use_json_variables_fn, Js_dict.fromArray([[
-                      "orgArray",
-                      orgArray.map(function (prim) {
+                      "wildcardIdArray",
+                      wildcardIdArray.map(function (prim) {
                             return prim;
                           })
                     ]].filter(function (param) {
@@ -1466,33 +1840,33 @@ function definition_2$7(graphql_ppx_use_json_variables_fn, orgArray, param) {
                     })));
 }
 
-var definition$7 = [
-  parse$7,
-  ppx_printed_query$7,
-  definition_2$7
+var definition$8 = [
+  parse$8,
+  ppx_printed_query$8,
+  definition_2$8
 ];
 
-function ret_type$7(f) {
+function ret_type$8(f) {
   return {};
 }
 
-var MT_Ret$7 = {};
+var MT_Ret$8 = {};
 
 var LoadTokenDataArray = {
-  ppx_printed_query: ppx_printed_query$7,
-  query: ppx_printed_query$7,
-  parse: parse$7,
-  make: make$7,
-  makeWithVariables: makeWithVariables$7,
-  makeVariables: makeVariables$7,
-  definition: definition$7,
-  ret_type: ret_type$7,
-  MT_Ret: MT_Ret$7
+  ppx_printed_query: ppx_printed_query$8,
+  query: ppx_printed_query$8,
+  parse: parse$8,
+  make: make$8,
+  makeWithVariables: makeWithVariables$8,
+  makeVariables: makeVariables$8,
+  definition: definition$8,
+  ret_type: ret_type$8,
+  MT_Ret: MT_Ret$8
 };
 
-var ppx_printed_query$8 = "query ($orgId: String!)  {\norganisations_by_pk(id: $orgId)  {\ndescription  \nname  \nwebsite  \nwildcard(where: {id: {_is_null: false}})  {\nid  \n}\n\nunlaunched: wildcard(where: {id: {_is_null: true}, real_wc_photos: {image: {_is_null: false}}})  {\nkey  \nreal_wc_photos  {\nimage  \nphotographer  \n}\n\nname  \ncommonName  \ndescription  \n}\n\nlogo  \nlogo_badge  \nyoutube_vid  \n}\n\n}\n";
+var ppx_printed_query$9 = "query ($orgId: String!)  {\norganisations_by_pk(id: $orgId)  {\ndescription  \nname  \nwebsite  \nwildcard(where: {id: {_is_null: false}})  {\nid  \n}\n\nunlaunched: wildcard(where: {id: {_is_null: true}, real_wc_photos: {image: {_is_null: false}}})  {\nkey  \nreal_wc_photos  {\nimage  \nphotographer  \n}\n\nname  \ncommonName  \ndescription  \n}\n\nlogo  \nlogo_badge  \nyoutube_vid  \n}\n\n}\n";
 
-function parse$8(value) {
+function parse$9(value) {
   var value$1 = Js_option.getExn(Js_json.decodeObject(value));
   var value$2 = Js_dict.get(value$1, "organisations_by_pk");
   var tmp;
@@ -1579,7 +1953,7 @@ function parse$8(value) {
                     var value$4 = Js_json.decodeString(value$3);
                     optTokenId = value$4 !== undefined ? value$4 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$3));
                   }
-                  tmp = Belt_Option.getWithDefault(optTokenId, "9999");
+                  tmp = TokenId$WildCards.fromStringUnsafe(Belt_Option.getWithDefault(optTokenId, "9999"));
                 } else {
                   tmp = Js_exn.raiseError("graphql_ppx: Field id on type wildcardData is missing");
                 }
@@ -1678,34 +2052,34 @@ function parse$8(value) {
         };
 }
 
-function make$8(orgId, param) {
+function make$9(orgId, param) {
   return {
-          query: ppx_printed_query$8,
+          query: ppx_printed_query$9,
           variables: Js_dict.fromArray([[
                     "orgId",
                     orgId
                   ]].filter(function (param) {
                     return !Js_json.test(param[1], /* Null */5);
                   })),
-          parse: parse$8
+          parse: parse$9
         };
 }
 
-function makeWithVariables$8(variables) {
+function makeWithVariables$9(variables) {
   var orgId = variables.orgId;
   return {
-          query: ppx_printed_query$8,
+          query: ppx_printed_query$9,
           variables: Js_dict.fromArray([[
                     "orgId",
                     orgId
                   ]].filter(function (param) {
                     return !Js_json.test(param[1], /* Null */5);
                   })),
-          parse: parse$8
+          parse: parse$9
         };
 }
 
-function makeVariables$8(orgId, param) {
+function makeVariables$9(orgId, param) {
   return Js_dict.fromArray([[
                   "orgId",
                   orgId
@@ -1714,7 +2088,7 @@ function makeVariables$8(orgId, param) {
                 }));
 }
 
-function definition_2$8(graphql_ppx_use_json_variables_fn, orgId, param) {
+function definition_2$9(graphql_ppx_use_json_variables_fn, orgId, param) {
   return Curry._1(graphql_ppx_use_json_variables_fn, Js_dict.fromArray([[
                       "orgId",
                       orgId
@@ -1723,33 +2097,33 @@ function definition_2$8(graphql_ppx_use_json_variables_fn, orgId, param) {
                     })));
 }
 
-var definition$8 = [
-  parse$8,
-  ppx_printed_query$8,
-  definition_2$8
+var definition$9 = [
+  parse$9,
+  ppx_printed_query$9,
+  definition_2$9
 ];
 
-function ret_type$8(f) {
+function ret_type$9(f) {
   return {};
 }
 
-var MT_Ret$8 = {};
+var MT_Ret$9 = {};
 
 var LoadOrganisationData = {
-  ppx_printed_query: ppx_printed_query$8,
-  query: ppx_printed_query$8,
-  parse: parse$8,
-  make: make$8,
-  makeWithVariables: makeWithVariables$8,
-  makeVariables: makeVariables$8,
-  definition: definition$8,
-  ret_type: ret_type$8,
-  MT_Ret: MT_Ret$8
+  ppx_printed_query: ppx_printed_query$9,
+  query: ppx_printed_query$9,
+  parse: parse$9,
+  make: make$9,
+  makeWithVariables: makeWithVariables$9,
+  makeVariables: makeVariables$9,
+  definition: definition$9,
+  ret_type: ret_type$9,
+  MT_Ret: MT_Ret$9
 };
 
-var ppx_printed_query$9 = "query ($numberOfLeaders: Int!)  {\npatrons(first: $numberOfLeaders, orderBy: patronTokenCostScaledNumerator, orderDirection: desc, where: {id_not: \"NO_OWNER\"})  {\nid  \npatronTokenCostScaledNumerator  \n}\n\n}\n";
+var ppx_printed_query$10 = "query ($numberOfLeaders: Int!)  {\npatrons(first: $numberOfLeaders, orderBy: patronTokenCostScaledNumerator, orderDirection: desc, where: {id_not: \"NO_OWNER\"})  {\nid  \npatronTokenCostScaledNumerator  \n}\n\n}\n";
 
-function parse$9(value) {
+function parse$10(value) {
   var value$1 = Js_option.getExn(Js_json.decodeObject(value));
   var value$2 = Js_dict.get(value$1, "patrons");
   return {
@@ -1773,34 +2147,34 @@ function parse$9(value) {
         };
 }
 
-function make$9(numberOfLeaders, param) {
+function make$10(numberOfLeaders, param) {
   return {
-          query: ppx_printed_query$9,
+          query: ppx_printed_query$10,
           variables: Js_dict.fromArray([[
                     "numberOfLeaders",
                     numberOfLeaders
                   ]].filter(function (param) {
                     return !Js_json.test(param[1], /* Null */5);
                   })),
-          parse: parse$9
+          parse: parse$10
         };
 }
 
-function makeWithVariables$9(variables) {
+function makeWithVariables$10(variables) {
   var numberOfLeaders = variables.numberOfLeaders;
   return {
-          query: ppx_printed_query$9,
+          query: ppx_printed_query$10,
           variables: Js_dict.fromArray([[
                     "numberOfLeaders",
                     numberOfLeaders
                   ]].filter(function (param) {
                     return !Js_json.test(param[1], /* Null */5);
                   })),
-          parse: parse$9
+          parse: parse$10
         };
 }
 
-function makeVariables$9(numberOfLeaders, param) {
+function makeVariables$10(numberOfLeaders, param) {
   return Js_dict.fromArray([[
                   "numberOfLeaders",
                   numberOfLeaders
@@ -1809,7 +2183,7 @@ function makeVariables$9(numberOfLeaders, param) {
                 }));
 }
 
-function definition_2$9(graphql_ppx_use_json_variables_fn, numberOfLeaders, param) {
+function definition_2$10(graphql_ppx_use_json_variables_fn, numberOfLeaders, param) {
   return Curry._1(graphql_ppx_use_json_variables_fn, Js_dict.fromArray([[
                       "numberOfLeaders",
                       numberOfLeaders
@@ -1818,33 +2192,33 @@ function definition_2$9(graphql_ppx_use_json_variables_fn, numberOfLeaders, para
                     })));
 }
 
-var definition$9 = [
-  parse$9,
-  ppx_printed_query$9,
-  definition_2$9
+var definition$10 = [
+  parse$10,
+  ppx_printed_query$10,
+  definition_2$10
 ];
 
-function ret_type$9(f) {
+function ret_type$10(f) {
   return {};
 }
 
-var MT_Ret$9 = {};
+var MT_Ret$10 = {};
 
 var LoadTopContributors = {
-  ppx_printed_query: ppx_printed_query$9,
-  query: ppx_printed_query$9,
-  parse: parse$9,
-  make: make$9,
-  makeWithVariables: makeWithVariables$9,
-  makeVariables: makeVariables$9,
-  definition: definition$9,
-  ret_type: ret_type$9,
-  MT_Ret: MT_Ret$9
+  ppx_printed_query: ppx_printed_query$10,
+  query: ppx_printed_query$10,
+  parse: parse$10,
+  make: make$10,
+  makeWithVariables: makeWithVariables$10,
+  makeVariables: makeVariables$10,
+  definition: definition$10,
+  ret_type: ret_type$10,
+  MT_Ret: MT_Ret$10
 };
 
-var ppx_printed_query$10 = "query   {\nglobal(id: 1)  {\nid  \ntotalCollectedOrDueAccurate  \ntimeLastCollected  \ntotalTokenCostScaledNumeratorAccurate  \n}\n\n}\n";
+var ppx_printed_query$11 = "query   {\nglobal(id: 1)  {\nid  \ntotalCollectedOrDueAccurate  \ntimeLastCollected  \ntotalTokenCostScaledNumeratorAccurate  \n}\n\n}\n";
 
-function parse$10(value) {
+function parse$11(value) {
   var value$1 = Js_option.getExn(Js_json.decodeObject(value));
   var value$2 = Js_dict.get(value$1, "global");
   var tmp;
@@ -1882,52 +2256,52 @@ function parse$10(value) {
         };
 }
 
-function make$10(param) {
+function make$11(param) {
   return {
-          query: ppx_printed_query$10,
+          query: ppx_printed_query$11,
           variables: null,
-          parse: parse$10
+          parse: parse$11
         };
 }
 
-function makeWithVariables$10(param) {
+function makeWithVariables$11(param) {
   return {
-          query: ppx_printed_query$10,
+          query: ppx_printed_query$11,
           variables: null,
-          parse: parse$10
+          parse: parse$11
         };
 }
 
-function makeVariables$10(param) {
+function makeVariables$11(param) {
   return null;
 }
 
-function definition_2$10(graphql_ppx_use_json_variables_fn) {
+function definition_2$11(graphql_ppx_use_json_variables_fn) {
   return 0;
 }
 
-var definition$10 = [
-  parse$10,
-  ppx_printed_query$10,
-  definition_2$10
+var definition$11 = [
+  parse$11,
+  ppx_printed_query$11,
+  definition_2$11
 ];
 
-function ret_type$10(f) {
+function ret_type$11(f) {
   return {};
 }
 
-var MT_Ret$10 = {};
+var MT_Ret$11 = {};
 
 var SubTotalRaisedOrDueQuery = {
-  ppx_printed_query: ppx_printed_query$10,
-  query: ppx_printed_query$10,
-  parse: parse$10,
-  make: make$10,
-  makeWithVariables: makeWithVariables$10,
-  makeVariables: makeVariables$10,
-  definition: definition$10,
-  ret_type: ret_type$10,
-  MT_Ret: MT_Ret$10
+  ppx_printed_query: ppx_printed_query$11,
+  query: ppx_printed_query$11,
+  parse: parse$11,
+  make: make$11,
+  makeWithVariables: makeWithVariables$11,
+  makeVariables: makeVariables$11,
+  definition: definition$11,
+  ret_type: ret_type$11,
+  MT_Ret: MT_Ret$11
 };
 
 function getQueryPrefix(chain) {
@@ -1980,8 +2354,10 @@ function useWildcardQuery(chain, tokenId) {
             }, definition$1);
 }
 
-function useLoadTokenDataArrayQuery(tokenIdArray) {
-  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$7(Belt_Array.map(tokenIdArray, TokenId$WildCards.toString), undefined).variables), undefined, undefined, undefined, undefined, undefined, undefined, definition$7);
+function useLoadTokenDataArrayQuery(chain, tokenIdArray) {
+  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$8(Belt_Array.map(tokenIdArray, TokenId$WildCards.toString), undefined).variables), undefined, undefined, undefined, undefined, undefined, {
+              context: chain
+            }, definition$8);
 }
 
 function useWildcardDataQuery(tokenId) {
@@ -1993,11 +2369,11 @@ function useHomeAnimalsQuery(param) {
 }
 
 function useStateChangeSubscription(param) {
-  return ApolloHooks$ReasonApolloHooks.useSubscription(Caml_option.some(make$5(undefined).variables), undefined, undefined, definition$5);
+  return ApolloHooks$ReasonApolloHooks.useSubscription(Caml_option.some(make$6(undefined).variables), undefined, undefined, definition$6);
 }
 
 function useLoadOrganisationQuery(orgId) {
-  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$8(orgId, undefined).variables), undefined, undefined, undefined, undefined, undefined, undefined, definition$8);
+  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$9(orgId, undefined).variables), undefined, undefined, undefined, undefined, undefined, undefined, definition$9);
 }
 
 function useStateChangeSubscriptionData(param) {
@@ -2106,6 +2482,15 @@ function useWildcardAvatar(tokenId) {
               }));
 }
 
+function useWildcardArtist(tokenId) {
+  var match = useWildcardDataQuery(tokenId);
+  return queryResultOptionFlatMap(match[0], (function (a) {
+                return Belt_Option.flatMap(a.launchedWildcards_by_pk, (function (b) {
+                              return b.wildcard.artistOfWildcard;
+                            }));
+              }));
+}
+
 function useRealImages(tokenId) {
   var match = useWildcardDataQuery(tokenId);
   return queryResultOptionFlatMap(match[0], (function (a) {
@@ -2138,7 +2523,7 @@ function useWildcardOrgName(tokenId) {
 }
 
 function useLoadTopContributors(numberOfLeaders) {
-  return ApolloHooks$ReasonApolloHooks.useSubscription(Caml_option.some(make$9(numberOfLeaders, undefined).variables), undefined, undefined, definition$9);
+  return ApolloHooks$ReasonApolloHooks.useSubscription(Caml_option.some(make$10(numberOfLeaders, undefined).variables), undefined, undefined, definition$10);
 }
 
 function useLoadTopContributorsData(numberOfLeaders) {
@@ -2186,13 +2571,13 @@ function useTimeAcquired(chain, animal) {
 }
 
 function useQueryPatron(chain, patron) {
-  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$6(getQueryPrefix(chain) + patron, undefined).variables), undefined, undefined, undefined, undefined, undefined, {
+  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$7(getQueryPrefix(chain) + patron, undefined).variables), undefined, undefined, undefined, undefined, undefined, {
               context: chain
-            }, definition$6);
+            }, definition$7);
 }
 
 function useQueryPatronNew(patron) {
-  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$6(patron, undefined).variables), undefined, undefined, undefined, undefined, undefined, undefined, definition$6);
+  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$7(patron, undefined).variables), undefined, undefined, undefined, undefined, undefined, undefined, definition$7);
 }
 
 function useForeclosureTimeBn(chain, patron) {
@@ -2230,7 +2615,7 @@ function useDaysHeld(chain, tokenId) {
 }
 
 function useTotalCollectedOrDue(param) {
-  var match = ApolloHooks$ReasonApolloHooks.useQuery(undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, definition$10);
+  var match = ApolloHooks$ReasonApolloHooks.useQuery(undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, definition$11);
   var getTotalCollected = function (response) {
     return Globals$WildCards.oMap(response.global, (function ($$global) {
                   return [
@@ -2293,8 +2678,8 @@ function useTotalCollectedToken(chain, animal) {
   return queryResultOptionFlatMap(match[0], getTotalCollectedData);
 }
 
-function useTotalCollectedTokenArray(animalArray) {
-  var match = useLoadTokenDataArrayQuery(animalArray);
+function useTotalCollectedTokenArray(chain, animalArray) {
+  var match = useLoadTokenDataArrayQuery(chain, animalArray);
   return queryResultOptionMap(match[0], (function (a) {
                 return a;
               }));
@@ -2374,17 +2759,26 @@ function calculateTotalRaised(currentTimestamp, param) {
 
 function useTotalRaisedAnimalGroup(animals) {
   var currentTimestamp = useCurrentTime(undefined);
-  var details = useTotalCollectedTokenArray(animals);
-  if (details !== undefined) {
-    return Caml_option.some(Belt_Array.reduce(Caml_option.valFromOption(details).wildcards, new BnJs("0"), (function (acc, animalDetails) {
-                      return Globals$WildCards.$pipe$plus$pipe(calculateTotalRaised(currentTimestamp, [
-                                      animalDetails.totalCollected,
-                                      animalDetails.timeCollected,
-                                      animalDetails.patronageNumeratorPriceScaled
-                                    ]), acc);
-                    })));
-  }
-  
+  var detailsMainnet = useTotalCollectedTokenArray(/* MainnetQuery */2, animals);
+  var detailsMatic = useTotalCollectedTokenArray(/* MaticQuery */1, Belt_Array.map(animals, (function (id) {
+              return "matic" + id;
+            })));
+  return [
+          detailsMainnet !== undefined ? Caml_option.some(Belt_Array.reduce(Caml_option.valFromOption(detailsMainnet).wildcards, new BnJs("0"), (function (acc, animalDetails) {
+                        return Globals$WildCards.$pipe$plus$pipe(calculateTotalRaised(currentTimestamp, [
+                                        animalDetails.totalCollected,
+                                        animalDetails.timeCollected,
+                                        animalDetails.patronageNumeratorPriceScaled
+                                      ]), acc);
+                      }))) : undefined,
+          detailsMatic !== undefined ? Caml_option.some(Belt_Array.reduce(Caml_option.valFromOption(detailsMatic).wildcards, new BnJs("0"), (function (acc, animalDetails) {
+                        return Globals$WildCards.$pipe$plus$pipe(calculateTotalRaised(currentTimestamp, [
+                                        animalDetails.totalCollected,
+                                        animalDetails.timeCollected,
+                                        animalDetails.patronageNumeratorPriceScaled
+                                      ]), acc);
+                      }))) : undefined
+        ];
 }
 
 function useTimeSinceTokenWasLastSettled(chain, animal) {
@@ -2548,9 +2942,9 @@ function useMaticState(forceRefetch, address, network) {
   }
 }
 
-var ppx_printed_query$11 = "mutation ($network: String!, $r: String!, $s: String!, $v: Int!, $userAddress: String!, $functionSignature: String!)  {\nmetaTx(functionSignature: $functionSignature, network: $network, r: $r, s: $s, userAddress: $userAddress, v: $v)  {\ntxHash  \nsuccess  \nerrorMsg  \n}\n\n}\n";
+var ppx_printed_query$12 = "mutation ($network: String!, $r: String!, $s: String!, $v: Int!, $userAddress: String!, $functionSignature: String!)  {\nmetaTx(functionSignature: $functionSignature, network: $network, r: $r, s: $s, userAddress: $userAddress, v: $v)  {\ntxHash  \nsuccess  \nerrorMsg  \n}\n\n}\n";
 
-function parse$11(value) {
+function parse$12(value) {
   var value$1 = Js_option.getExn(Js_json.decodeObject(value));
   var value$2 = Js_dict.get(value$1, "metaTx");
   var tmp;
@@ -2601,9 +2995,9 @@ function parse$11(value) {
         };
 }
 
-function make$11(network, r, s, v, userAddress, functionSignature, param) {
+function make$12(network, r, s, v, userAddress, functionSignature, param) {
   return {
-          query: ppx_printed_query$11,
+          query: ppx_printed_query$12,
           variables: Js_dict.fromArray([
                   [
                     "network",
@@ -2632,11 +3026,11 @@ function make$11(network, r, s, v, userAddress, functionSignature, param) {
                 ].filter(function (param) {
                     return !Js_json.test(param[1], /* Null */5);
                   })),
-          parse: parse$11
+          parse: parse$12
         };
 }
 
-function makeWithVariables$11(variables) {
+function makeWithVariables$12(variables) {
   var network = variables.network;
   var r = variables.r;
   var s = variables.s;
@@ -2644,7 +3038,7 @@ function makeWithVariables$11(variables) {
   var userAddress = variables.userAddress;
   var functionSignature = variables.functionSignature;
   return {
-          query: ppx_printed_query$11,
+          query: ppx_printed_query$12,
           variables: Js_dict.fromArray([
                   [
                     "network",
@@ -2673,11 +3067,11 @@ function makeWithVariables$11(variables) {
                 ].filter(function (param) {
                     return !Js_json.test(param[1], /* Null */5);
                   })),
-          parse: parse$11
+          parse: parse$12
         };
 }
 
-function makeVariables$11(network, r, s, v, userAddress, functionSignature, param) {
+function makeVariables$12(network, r, s, v, userAddress, functionSignature, param) {
   return Js_dict.fromArray([
                 [
                   "network",
@@ -2708,7 +3102,7 @@ function makeVariables$11(network, r, s, v, userAddress, functionSignature, para
                 }));
 }
 
-function definition_2$11(graphql_ppx_use_json_variables_fn, network, r, s, v, userAddress, functionSignature, param) {
+function definition_2$12(graphql_ppx_use_json_variables_fn, network, r, s, v, userAddress, functionSignature, param) {
   return Curry._1(graphql_ppx_use_json_variables_fn, Js_dict.fromArray([
                     [
                       "network",
@@ -2739,40 +3133,127 @@ function definition_2$11(graphql_ppx_use_json_variables_fn, network, r, s, v, us
                     })));
 }
 
-var definition$11 = [
-  parse$11,
-  ppx_printed_query$11,
-  definition_2$11
+var definition$12 = [
+  parse$12,
+  ppx_printed_query$12,
+  definition_2$12
 ];
 
-function ret_type$11(f) {
+function ret_type$12(f) {
   return {};
 }
 
-var MT_Ret$11 = {};
+var MT_Ret$12 = {};
 
 var ExecuteMetaTxMutation = {
-  ppx_printed_query: ppx_printed_query$11,
-  query: ppx_printed_query$11,
-  parse: parse$11,
-  make: make$11,
-  makeWithVariables: makeWithVariables$11,
-  makeVariables: makeVariables$11,
-  definition: definition$11,
-  ret_type: ret_type$11,
-  MT_Ret: MT_Ret$11
+  ppx_printed_query: ppx_printed_query$12,
+  query: ppx_printed_query$12,
+  parse: parse$12,
+  make: make$12,
+  makeWithVariables: makeWithVariables$12,
+  makeVariables: makeVariables$12,
+  definition: definition$12,
+  ret_type: ret_type$12,
+  MT_Ret: MT_Ret$12
 };
 
 function useMetaTx(param) {
-  var match = ApolloHooks$ReasonApolloHooks.useMutation(undefined, undefined, undefined, undefined, undefined, undefined, definition$11);
+  var match = ApolloHooks$ReasonApolloHooks.useMutation(undefined, undefined, undefined, undefined, undefined, undefined, definition$12);
   var mutation = match[0];
   return function (network, r, s, v, functionSignature, userAddress) {
     var refetchQueries = function (param) {
       var query = make$3(userAddress, network, undefined);
       return [ApolloHooks$ReasonApolloHooks.toQueryObj(query)];
     };
-    return Curry._6(mutation, Caml_option.some(make$11(network, r, s, v, userAddress, functionSignature, undefined).variables), undefined, refetchQueries, undefined, undefined, undefined);
+    return Curry._6(mutation, Caml_option.some(make$12(network, r, s, v, userAddress, functionSignature, undefined).variables), undefined, refetchQueries, undefined, undefined, undefined);
   };
+}
+
+function useArtistQuery(artistIdentifier) {
+  return ApolloHooks$ReasonApolloHooks.useQuery(undefined, Caml_option.some(make$5(artistIdentifier, undefined).variables), undefined, undefined, undefined, undefined, undefined, undefined, definition$5);
+}
+
+function useArtistData(artistIdentifier) {
+  var match = useArtistQuery(artistIdentifier);
+  var simple = match[0];
+  if (typeof simple === "number" || simple.TAG) {
+    return ;
+  } else {
+    return simple._0.artist_by_pk;
+  }
+}
+
+function useArtistEthAddress(artistIdentifier) {
+  var artistData = useArtistData(artistIdentifier);
+  return Belt_Option.flatMap(artistData, (function (data) {
+                return data.eth_address;
+              }));
+}
+
+function useArtistName(artistIdentifier) {
+  var artistData = useArtistData(artistIdentifier);
+  return Belt_Option.map(artistData, (function (data) {
+                return data.name;
+              }));
+}
+
+function useArtistWebsite(artistIdentifier) {
+  var artistData = useArtistData(artistIdentifier);
+  return Belt_Option.flatMap(artistData, (function (data) {
+                return data.website;
+              }));
+}
+
+function useArtistLaunchedWildcards(artistIdentifier) {
+  var artistData = useArtistData(artistIdentifier);
+  return Belt_Option.map(artistData, (function (data) {
+                return data.launchedWildcards;
+              }));
+}
+
+function useArtistUnlaunchedWildcards(artistIdentifier) {
+  var artistData = useArtistData(artistIdentifier);
+  return Belt_Option.map(artistData, (function (data) {
+                return data.unlaunchedWildcards;
+              }));
+}
+
+function useArtistOrgs(artistIdentifier) {
+  var artistData = useArtistData(artistIdentifier);
+  return Belt_Option.map(artistData, (function (data) {
+                var dict = {};
+                Belt_Array.map(data.launchedWildcards, (function (wildcard) {
+                        var org = wildcard.organization;
+                        if (org === undefined) {
+                          return ;
+                        }
+                        var org$1 = Caml_option.valFromOption(org);
+                        var orgId = org$1.id;
+                        var orgObj = Js_dict.get(dict, orgId);
+                        if (orgObj !== undefined) {
+                          var newOrgObj_id = orgObj.id;
+                          var newOrgObj_name = orgObj.name;
+                          var newOrgObj_logo = orgObj.logo;
+                          var newOrgObj_wildcards = Belt_Array.concat(orgObj.wildcards, [wildcard.key]);
+                          var newOrgObj = {
+                            id: newOrgObj_id,
+                            name: newOrgObj_name,
+                            logo: newOrgObj_logo,
+                            wildcards: newOrgObj_wildcards
+                          };
+                          dict[orgId] = newOrgObj;
+                          return ;
+                        }
+                        dict[orgId] = {
+                          id: orgId,
+                          name: org$1.name,
+                          logo: org$1.logo,
+                          wildcards: [wildcard.key]
+                        };
+                        
+                      }));
+                return Js_dict.values(dict);
+              }));
 }
 
 export {
@@ -2781,7 +3262,6 @@ export {
   decodeMoment ,
   decodeBN ,
   decodeOptionBN ,
-  toTokenId ,
   toTokenIdWithDefault ,
   decodeAddress ,
   InitialLoad ,
@@ -2792,6 +3272,7 @@ export {
   WildcardDataQuery ,
   MaticStateQuery ,
   HomeAnimalsQuery ,
+  ArtistQuery ,
   SubStateChangeEvents ,
   LoadPatron ,
   LoadTokenDataArray ,
@@ -2822,6 +3303,7 @@ export {
   useWildcardDescription ,
   useWildcardName ,
   useWildcardAvatar ,
+  useWildcardArtist ,
   useRealImages ,
   useWildcardOrgId ,
   useWildcardOrgName ,
@@ -2866,6 +3348,14 @@ export {
   useMaticState ,
   ExecuteMetaTxMutation ,
   useMetaTx ,
+  useArtistQuery ,
+  useArtistData ,
+  useArtistEthAddress ,
+  useArtistName ,
+  useArtistWebsite ,
+  useArtistLaunchedWildcards ,
+  useArtistUnlaunchedWildcards ,
+  useArtistOrgs ,
   
 }
 /* bn.js Not a pure module */

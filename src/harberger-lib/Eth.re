@@ -26,6 +26,13 @@ type getUnit =
   | Eth(ethUnit)
   | Usd(float, int);
 
+let getFloat = (value, unit) => {
+  switch (unit) {
+  | Eth(unit) => fromWei(value, unit->ethUnitToJs)->Js.Float.fromString
+  | Usd(conversion, _) =>
+    fromWei(value, `ether->ethUnitToJs)->Js.Float.fromString *. conversion
+  };
+};
 let get = (value, unit) => {
   switch (unit) {
   | Eth(unit) => fromWei(value, unit->ethUnitToJs)

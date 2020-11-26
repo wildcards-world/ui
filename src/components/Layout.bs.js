@@ -30,6 +30,7 @@ import * as Web3Connect$WildCards from "../harberger-lib/components/Web3Connect.
 import * as Announcement$WildCards from "./Announcement.bs.js";
 import * as LeaderBoards$WildCards from "./Leaderboards/LeaderBoards.bs.js";
 import * as RootProvider$WildCards from "../harberger-lib/RootProvider.bs.js";
+import * as ArtistProfiles$WildCards from "./ArtistProfiles.bs.js";
 import * as ReactTranslate$WildCards from "../helpers/providers/ReactTranslate.bs.js";
 import * as CustomerBenefit$WildCards from "./StaticContent/CustomerBenefit.bs.js";
 import * as AnimalAnnouncement$WildCards from "./AnimalAnnouncement.bs.js";
@@ -164,12 +165,17 @@ function Layout(Props) {
                 userAddress: urlState._0
               });
           break;
-      case /* Org */1 :
+      case /* Artist */1 :
+          tmp = React.createElement(ArtistProfiles$WildCards.make, {
+                artistIdentifier: urlState._0
+              });
+          break;
+      case /* Org */2 :
           tmp = React.createElement(OrgProfile$WildCards.make, {
                 orgId: urlState._0
               });
           break;
-      case /* Explorer */2 :
+      case /* Explorer */3 :
           var subState = urlState._1;
           tmp = subState ? React.createElement(Layout$AnimalFocusDetails, {
                   currentAnimal: subState._0,
@@ -178,7 +184,7 @@ function Layout(Props) {
                   wildcardsEdition: urlState._0
                 });
           break;
-      case /* Leaderboards */3 :
+      case /* Leaderboards */4 :
           tmp = React.createElement(RimbleUi.Flex, {
                 children: React.createElement(LeaderBoards$WildCards.make, {
                       leaderboardType: urlState._0
@@ -191,7 +197,7 @@ function Layout(Props) {
                     })
               });
           break;
-      case /* Home */4 :
+      case /* Home */5 :
           var animalPageState = urlState._0;
           tmp = animalPageState ? React.createElement(Layout$AnimalFocusDetails, {
                   currentAnimal: animalPageState._0,

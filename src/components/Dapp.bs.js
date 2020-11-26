@@ -23,6 +23,7 @@ import * as QlHooks$WildCards from "../harberger-lib/QlHooks.bs.js";
 import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.bs.js";
 import * as TokenId$WildCards from "../harberger-lib/TokenId.bs.js";
 import * as Validate$WildCards from "./Validate.bs.js";
+import * as CONSTANTS$WildCards from "../CONSTANTS.bs.js";
 import * as CountDown$WildCards from "../harberger-lib/CountDown.bs.js";
 import * as InputHelp$WildCards from "../harberger-lib/InputHelp.bs.js";
 import * as Web3Utils$WildCards from "../harberger-lib/Web3Utils.bs.js";
@@ -561,13 +562,21 @@ function Dapp$DetailsViewAnimal(Props) {
   var orgId = Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.useWildcardOrgId(animal), "");
   var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
   var image = Animal$WildCards.useAvatar(animal);
+  var optArtistInfo = QlHooks$WildCards.useWildcardArtist(animal);
   var orgBadge = Animal$WildCards.useGetOrgBadgeImage(animal);
   var isLaunched = Animal$WildCards.useIsLaunched(chain, animal);
   var isOnAuction = Animal$WildCards.useIsOnAuction(chain, animal);
   var displayAnimal = function (animalImage) {
     return React.createElement("div", {
                 className: Styles$WildCards.positionRelative
-              }, Curry._1(animalImage, undefined), typeof isLaunched === "number" ? (
+              }, Curry._1(animalImage, undefined), Belt_Option.mapWithDefault(optArtistInfo, null, (function (artistInfo) {
+                      return React.createElement("p", undefined, "Art by: ", React.createElement("a", {
+                                      onClick: (function (e) {
+                                          e.preventDefault();
+                                          return Curry._1(clearAndPush, "/#artist/" + artistInfo.id);
+                                        })
+                                    }, artistInfo.name));
+                    })), typeof isLaunched === "number" ? (
                   isLaunched !== 0 || isOnAuction ? null : React.createElement("div", {
                           className: Styles$WildCards.overlayFlameImg
                         }, React.createElement(Dapp$Streak, {
@@ -865,7 +874,7 @@ function Dapp$AnimalInfo(Props) {
                                                       }),
                                                   tl: /* [] */0
                                                 }),
-                                            src: Animal$WildCards.cdnBase + media
+                                            src: CONSTANTS$WildCards.cdnBase + media
                                           });
                               }))
                       }))

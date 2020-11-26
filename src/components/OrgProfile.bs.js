@@ -7,7 +7,6 @@ import * as Decco from "decco/src/Decco.bs.js";
 import * as React from "react";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
-import * as Belt_Float from "bs-platform/lib/es6/belt_Float.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Belt_Result from "bs-platform/lib/es6/belt_Result.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
@@ -17,6 +16,8 @@ import * as Styles$WildCards from "../Styles.bs.js";
 import * as Globals$WildCards from "../harberger-lib/Globals.bs.js";
 import * as QlHooks$WildCards from "../harberger-lib/QlHooks.bs.js";
 import * as TokenId$WildCards from "../harberger-lib/TokenId.bs.js";
+import * as CONSTANTS$WildCards from "../CONSTANTS.bs.js";
+import * as Web3Utils$WildCards from "../harberger-lib/Web3Utils.bs.js";
 import ReactPhotoGallery from "react-photo-gallery";
 import * as UserProfile$WildCards from "./UserProfile.bs.js";
 import ReactResponsiveCarousel from "react-responsive-carousel";
@@ -71,7 +72,7 @@ function OrgProfile$ImageCarousel(Props) {
                       return Belt_Option.mapWithDefault(Belt_Array.get(animal.real_wc_photos, 0), null, (function (photos) {
                                     return React.createElement("img", {
                                                 key: String(key),
-                                                src: Animal$WildCards.cdnBase + photos.image
+                                                src: CONSTANTS$WildCards.cdnBase + photos.image
                                               });
                                   }));
                     })),
@@ -168,7 +169,7 @@ function OrgProfile$ComingSoonModal(Props) {
                         }, React.createElement(ReactPhotoGallery, {
                               photos: Belt_Array.map(animal.real_wc_photos, (function (photo) {
                                       return {
-                                              src: Animal$WildCards.cdnBase + photo.image,
+                                              src: CONSTANTS$WildCards.cdnBase + photo.image,
                                               width: 4,
                                               height: 3
                                             };
@@ -256,25 +257,32 @@ function OrgProfile$OrgPage(Props) {
           return animal.id;
         }));
   var currentUsdEthPrice = UsdPriceProvider$WildCards.useUsdPrice(undefined);
-  var totalCollected = QlHooks$WildCards.useTotalRaisedAnimalGroup(orgAnimalsArray);
-  var match$1 = Globals$WildCards.mapd(totalCollected, [
-        "Loading",
-        "Loading"
-      ], (function (a) {
-          return [
-                  Globals$WildCards.toFixedWithPrecisionNoTrailingZeros(Globals$WildCards.$pipe$pipe$pipe$pipe(Belt_Float.fromString(Eth$WildCards.get(a, {
-                                    TAG: /* Eth */0,
-                                    _0: "ether"
-                                  })), 0.0), 9),
-                  Globals$WildCards.mapd(currentUsdEthPrice, "Loading", (function (usdEthRate) {
-                          return Eth$WildCards.get(a, {
-                                      TAG: /* Usd */1,
-                                      _0: usdEthRate,
-                                      _1: 2
-                                    });
-                        }))
-                ];
-        }));
+  var match$1 = QlHooks$WildCards.useTotalRaisedAnimalGroup(orgAnimalsArray);
+  var totalCollectMaticDai = match$1[1];
+  var totalCollectedMainnetEth = match$1[0];
+  var match$2;
+  if (totalCollectedMainnetEth !== undefined && totalCollectMaticDai !== undefined) {
+    var maticDai = Caml_option.valFromOption(totalCollectMaticDai);
+    var mainnetEth = Caml_option.valFromOption(totalCollectedMainnetEth);
+    match$2 = [
+      (Belt_Option.mapWithDefault(currentUsdEthPrice, 0, (function (usdEthRate) {
+                  return Eth$WildCards.getFloat(mainnetEth, {
+                              TAG: /* Usd */1,
+                              _0: usdEthRate,
+                              _1: 2
+                            });
+                })) + Eth$WildCards.getFloat(maticDai, {
+                TAG: /* Eth */0,
+                _0: "ether"
+              })).toFixed(6),
+      Web3Utils$WildCards.fromWeiBNToEthPrecision(mainnetEth, 4) + (" ETH + " + (Web3Utils$WildCards.fromWeiBNToEthPrecision(maticDai, 2) + " DAI"))
+    ];
+  } else {
+    match$2 = [
+      "loading",
+      "loading"
+    ];
+  }
   var orgWebsite = orgData.website;
   var optOrgYoutubeVid = orgData.youtube_vid;
   var orgImage = Animal$WildCards.useGetOrgImage(orgId);
@@ -391,7 +399,7 @@ function OrgProfile$OrgPage(Props) {
                               })
                         }, optOrgYoutubeVid !== undefined ? React.createElement(make, {
                                 videoCode: optOrgYoutubeVid
-                              }) : null, React.createElement("h2", undefined, Globals$WildCards.restr("Total Raised")), Globals$WildCards.restr(match$1[0] + "ETH"), React.createElement("br", undefined), React.createElement("small", undefined, Globals$WildCards.restr(match$1[1] + "USD"))), React.createElement(RimbleUi.Box, {
+                              }) : null, React.createElement("h2", undefined, Globals$WildCards.restr("Total Raised")), Globals$WildCards.restr(match$2[0] + "USD"), React.createElement("br", undefined), React.createElement("small", undefined, Globals$WildCards.restr(match$2[1]))), React.createElement(RimbleUi.Box, {
                           children: null,
                           width: [
                             1,
@@ -429,7 +437,7 @@ function OrgProfile$OrgPage(Props) {
                                   }, null, Belt_Array.mapWithIndex(orgComingSoon, (function (key, animal) {
                                           return Belt_Option.mapWithDefault(Belt_Array.get(animal.real_wc_photos, 0), null, (function (photos) {
                                                         return React.createElement(OrgProfile$ComingSoonAnimal, {
-                                                                    image: Animal$WildCards.cdnBase + photos.image,
+                                                                    image: CONSTANTS$WildCards.cdnBase + photos.image,
                                                                     onClick: (function (param) {
                                                                         return Curry._1(setSelectedComingSoonAnimal, (function (param) {
                                                                                       return key;

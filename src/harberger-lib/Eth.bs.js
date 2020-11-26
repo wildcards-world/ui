@@ -22,6 +22,14 @@ function fromWeiEth(value) {
   return Web3Utils.fromWei(value, "ether");
 }
 
+function getFloat(value, unit) {
+  if (unit.TAG) {
+    return Number(Web3Utils.fromWei(value, "ether")) * unit._0;
+  } else {
+    return Number(Web3Utils.fromWei(value, unit._0));
+  }
+}
+
 function get(value, unit) {
   if (unit.TAG) {
     return Globals$WildCards.toFixedWithPrecisionNoTrailingZeros(Number(Web3Utils.fromWei(value, "ether")) * unit._0, unit._1);
@@ -65,6 +73,7 @@ export {
   ethUnitToJs ,
   ethUnitFromJs ,
   fromWeiEth ,
+  getFloat ,
   get ,
   make ,
   makeWithDefault ,
