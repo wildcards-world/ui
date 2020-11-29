@@ -198,7 +198,6 @@ function UserProfile$UserDetails(Props) {
                 ];
         }));
   var match = ContractActions$WildCards.useUserLoyaltyTokenBalance(userAddress);
-  var updateFunction = match[1];
   var totalLoyaltyTokensAvailableAndClaimedOpt = QlHooks$WildCards.useTotalLoyaltyToken(/* MainnetQuery */2, userAddress);
   var nonUrlState = RootProvider$WildCards.useNonUrlState(undefined);
   var clearNonUrlState = RootProvider$WildCards.useClearNonUrlState(undefined);
@@ -277,16 +276,13 @@ function UserProfile$UserDetails(Props) {
               target: "_blank"
             }, Globals$WildCards.restr(Helper$WildCards.elipsify(userAddress, 10))), React.createElement("br", undefined), isAddressCurrentUser ? React.createElement(React.Fragment, undefined, React.createElement("small", undefined, React.createElement("p", undefined, Globals$WildCards.restr("Claimed Loyalty Token Balance: " + (Belt_Option.mapWithDefault(match[0], "Loading", (function (claimedLoyaltyTokens) {
                                     return Web3Utils$WildCards.fromWeiBNToEthPrecision(claimedLoyaltyTokens, 6);
-                                  })) + " WLT")))), currentlyOwnedTokens.length !== 0 ? Belt_Array.map(currentlyOwnedTokens, (function (id) {
-                        return React.createElement(UserProfile$ClaimLoyaltyTokenButtons, {
-                                    chain: chain,
-                                    userAddress: userAddress,
-                                    id: id,
-                                    refreshLoyaltyTokenBalance: updateFunction,
-                                    numberOfTokens: currentlyOwnedTokens.length,
-                                    key: id
-                                  });
-                      })) : null, React.createElement("a", {
+                                  })) + " WLT")))), currentlyOwnedTokens.length !== 0 ? React.createElement(UserProfile$ClaimLoyaltyTokenButtons, {
+                      chain: chain,
+                      userAddress: userAddress,
+                      id: currentlyOwnedTokens[0],
+                      refreshLoyaltyTokenBalance: match[1],
+                      numberOfTokens: currentlyOwnedTokens.length
+                    }) : null, React.createElement("a", {
                     href: "/#ethturin-quadratic-voting"
                   }, Globals$WildCards.restr("vote"))) : React.createElement("small", undefined, React.createElement("p", undefined, Globals$WildCards.restr("Loyalty Token Balance Generated: " + (Belt_Option.mapWithDefault(totalLoyaltyTokensAvailableAndClaimedOpt, "Loading", (function (param) {
                                 return Web3Utils$WildCards.fromWeiBNToEthPrecision(param[0], 5);

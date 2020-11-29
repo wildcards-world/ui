@@ -339,20 +339,13 @@ module UserDetails = {
                       {switch (currentlyOwnedTokens) {
                        | [||] => React.null
                        | currentlyOwnedTokens =>
-                         currentlyOwnedTokens
-                         ->Array.map(id =>
-                             <ClaimLoyaltyTokenButtons
-                               id
-                               chain
-                               key=id
-                               refreshLoyaltyTokenBalance=updateFunction
-                               userAddress
-                               numberOfTokens={
-                                 currentlyOwnedTokens->Array.length
-                               }
-                             />
-                           )
-                         ->React.array
+                         <ClaimLoyaltyTokenButtons
+                           id={currentlyOwnedTokens->Array.getUnsafe(0)}
+                           chain
+                           refreshLoyaltyTokenBalance=updateFunction
+                           userAddress
+                           numberOfTokens={currentlyOwnedTokens->Array.length}
+                         />
                        }}
                       <a href="/#ethturin-quadratic-voting"> "vote"->restr </a>
                     </>
