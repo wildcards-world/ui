@@ -980,16 +980,10 @@ let useTimeSinceTokenWasLastSettled:
     };
   };
 
-// <<<<<<< HEAD
 let useUnredeemedLoyaltyTokenDueForUser:
   (~chain: Client.context, TokenId.t, int) => option(Eth.t) =
-  // let useUnredeemedLoyaltyTokenDueForUser: (TokenId.t, int) => option(Eth.t) =
   (~chain, animal, numberOfTokens) => {
     switch (useTimeSinceTokenWasLastSettled(~chain, animal)) {
-    // =======
-    //   (animal, numberOfTokens) => {
-    //     switch (useTimeSinceTokenWasLastSettled(animal)) {
-    // >>>>>>> origin
     | Some(timeSinceTokenWasLastSettled) =>
       let totalLoyaltyTokensPerSecondPerAnimal = BN.new_("11574074074074");
       let totalLoyaltyTokensForAllAnimals =
