@@ -69,11 +69,11 @@ let useUrlState = () => {
         | "explorer" =>
           Explorer(
             switch (urlArray[1] |||| "") {
-            | "2nd-edition" => Gen2
-            | "1st-edition"
+            | "1st-edition" => Gen1
+            | "2nd-edition"
             | _ =>
               /*Default is Gen1*/
-              Gen1
+              Gen2
             },
             NormalView,
           )
