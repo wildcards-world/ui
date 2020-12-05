@@ -52,15 +52,12 @@ var nextLaunchDate = Moment.utc("2020-07-30T17:00:00");
 function useIsLaunched(chain, animal) {
   var optLaunchTime = QlHooks$WildCards.useLaunchTimeBN(chain, animal);
   var currentTime = QlHooks$WildCards.useCurrentTimestampBn(undefined);
-  var match = TokenId$WildCards.toString(animal);
-  switch (match) {
-    case "26" :
-    case "27" :
-    case "28" :
-    case "29" :
-        break;
-    default:
-      return /* Launched */0;
+  var id = TokenId$WildCards.toInt(animal);
+  if (id === undefined) {
+    return /* Launched */0;
+  }
+  if (id <= 29) {
+    return /* Launched */0;
   }
   if (optLaunchTime === undefined) {
     return /* Loading */1;

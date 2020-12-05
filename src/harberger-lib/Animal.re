@@ -48,11 +48,8 @@ let useIsLaunched: (~chain: Client.context, TokenId.t) => launchStatus =
     let optLaunchTime = QlHooks.useLaunchTimeBN(~chain, animal);
     let currentTime = QlHooks.useCurrentTimestampBn();
 
-    switch (animal->TokenId.toString) {
-    | "26"
-    | "27"
-    | "28"
-    | "29" =>
+    switch (animal->TokenId.toInt) {
+    | Some(id) when id > 29 =>
       // LaunchDate(nextLaunchDate)
       switch (optLaunchTime) {
       | Some(launchTime) =>
