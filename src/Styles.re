@@ -103,7 +103,7 @@ let overlayImg = (topPosition, leftPosition) =>
     minWidth(px(50)),
     minHeight(px(50)),
   ]);
-let overlayFlameImg = overlayImg(30., 0.);
+let overlayFlameImg = overlayImg(20., 0.);
 let prettyTransparent = rgba(255, 255, 255, 0.5);
 let imageHoverStyle =
   hover([
@@ -114,9 +114,9 @@ let imageHoverStyle =
     transform(scale(1.3, 1.3)),
     transition(~duration=100, ~delay=0, ~timingFunction=ease, "all"),
   ]);
-let overlayBadgeImg =
+let overlayBadgeImg = (~x, ~y) =>
   Cn.make([
-    overlayImg(60., 70.),
+    overlayImg(x, y),
     style([borderRadius(`percent(100.)), imageHoverStyle]),
   ]);
 
@@ -124,11 +124,11 @@ let streakText =
   style([
     position(absolute),
     zIndex(100),
-    bottom(`percent(-10.)),
+    bottom(`percent(-30.)),
     right(`percent(50.)),
     transform(translateX(`percent(50.))),
   ]);
-let flameImg = style([width(`percent(100.)), maxWidth(px(70))]);
+let flameImg = style([width(`percent(100.)), maxWidth(em(2.1))]);
 
 let navListItem = style([display(inlineBlock)]);
 
@@ -173,15 +173,6 @@ let colorBlue = style([color(wildCardBlue)]);
 let colorGrey = style([color(wildCardGrey)]);
 
 let animalBox = style([marginRight(`percent(12.))]);
-
-let ownedAnimalImg =
-  style([
-    position(relative),
-    zIndex(1),
-    maxWidth(`percent(100.)),
-    textAlign(center),
-    // transform(translateX(`percent(-25.))),
-  ]);
 
 let clickableLink =
   style([
