@@ -179,7 +179,7 @@ function useUrlState(param) {
                                   tmp = /* Gen2 */1;
                                   break;
                               default:
-                                tmp = /* Gen1 */0;
+                                tmp = /* Gen2 */1;
                             }
                             return {
                                     TAG: /* Explorer */3,

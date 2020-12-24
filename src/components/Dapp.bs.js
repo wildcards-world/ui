@@ -76,15 +76,9 @@ function Dapp$Streak(Props) {
   var numDaysStr = daysHeld[0].toFixed();
   return React.createElement(RimbleUi.Tooltip, {
               message: "" + animalName + " has been held for " + numDaysStr + " days by the same owner.",
-              className: Curry._1(Css.style, {
-                    hd: Css.width({
-                          NAME: "em",
-                          VAL: 20
-                        }),
-                    tl: /* [] */0
-                  }),
               children: React.createElement("div", {
-                    className: Styles$WildCards.positionRelative
+                    className: Styles$WildCards.positionRelative,
+                    id: "inner"
                   }, React.createElement("img", {
                         className: Styles$WildCards.flameImg,
                         src: flameImg
@@ -259,6 +253,58 @@ var BasicAnimalDisplay = {
   make: Dapp$BasicAnimalDisplay
 };
 
+function Dapp$SquareBox(Props) {
+  var children = Props.children;
+  return React.createElement("div", {
+              className: Curry._1(Css.style, {
+                    hd: Css.width({
+                          NAME: "percent",
+                          VAL: 100
+                        }),
+                    tl: {
+                      hd: Css.position(Css.relative),
+                      tl: {
+                        hd: Css.after({
+                              hd: Css.unsafe("content", "\"\""),
+                              tl: {
+                                hd: Css.display(Css.block),
+                                tl: {
+                                  hd: Css.paddingBottom({
+                                        NAME: "percent",
+                                        VAL: 100
+                                      }),
+                                  tl: /* [] */0
+                                }
+                              }
+                            }),
+                        tl: /* [] */0
+                      }
+                    }
+                  })
+            }, React.createElement("div", {
+                  className: Curry._1(Css.style, {
+                        hd: Css.position(Css.absolute),
+                        tl: {
+                          hd: Css.width({
+                                NAME: "percent",
+                                VAL: 100
+                              }),
+                          tl: {
+                            hd: Css.height({
+                                  NAME: "percent",
+                                  VAL: 100
+                                }),
+                            tl: /* [] */0
+                          }
+                        }
+                      })
+                }, children));
+}
+
+var SquareBox = {
+  make: Dapp$SquareBox
+};
+
 function Dapp$AnimalOnLandingPage(Props) {
   var animal = Props.animal;
   var scalarOpt = Props.scalar;
@@ -276,9 +322,26 @@ function Dapp$AnimalOnLandingPage(Props) {
   var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
   var image = Animal$WildCards.useAvatar(animal);
   var normalImage = function (param) {
-    return React.createElement("img", {
-                className: Styles$WildCards.headerImg(enlargement, scalar),
-                src: image
+    return React.createElement(Dapp$SquareBox, {
+                children: React.createElement("img", {
+                      className: Curry._1(Css.style, {
+                            hd: Css.width({
+                                  NAME: "percent",
+                                  VAL: 100
+                                }),
+                            tl: {
+                              hd: Css.height({
+                                    NAME: "percent",
+                                    VAL: 100
+                                  }),
+                              tl: {
+                                hd: Css.objectFit("contain"),
+                                tl: /* [] */0
+                              }
+                            }
+                          }),
+                      src: image
+                    })
               });
   };
   var isOnAuction = Animal$WildCards.useIsOnAuction(chain, animal);
@@ -294,10 +357,8 @@ function Dapp$AnimalOnLandingPage(Props) {
                   chain: chain,
                   animal: animal
                 })) : null;
-      tmp = React.createElement(React.Fragment, {
-            children: null
-          }, tmp$1, React.createElement("div", {
-                className: Styles$WildCards.overlayBadgeImg,
+      tmp = React.createElement(React.Fragment, undefined, tmp$1, React.createElement("div", {
+                className: Styles$WildCards.overlayBadgeImg(100, 80),
                 onClick: (function (e) {
                     e.stopPropagation();
                     e.preventDefault();
@@ -308,22 +369,30 @@ function Dapp$AnimalOnLandingPage(Props) {
                     src: orgBadge
                   })));
     }
-    return React.createElement(React.Fragment, {
+    return React.createElement(Dapp$SquareBox, {
                 children: null
-              }, Curry._1(img, undefined), tmp);
+              }, React.createElement("div", {
+                    className: Curry._1(Css.style, {
+                          hd: Css.padding({
+                                NAME: "percent",
+                                VAL: 20
+                              }),
+                          tl: /* [] */0
+                        })
+                  }, React.createElement("div", {
+                        className: Styles$WildCards.headerImg(enlargement, scalar)
+                      }, Curry._1(img, undefined))), tmp);
   };
   return React.createElement(RimbleUi.Box, {
               children: null,
               className: Styles$WildCards.centerText
-            }, React.createElement("div", {
-                  className: Styles$WildCards.positionRelative
-                }, React.createElement("a", {
-                      className: Styles$WildCards.clickableLink,
-                      onClick: (function ($$event) {
-                          $$event.preventDefault();
-                          return Curry._1(clearAndPush, "#" + (InputHelp$WildCards.getPagePrefix(isExplorer) + ("details/" + TokenId$WildCards.toString(animal))));
-                        })
-                    }, componentWithoutImg(normalImage, false), React.createElement("div", undefined, React.createElement("h2", undefined, name)))), optionEndDateMoment !== undefined ? React.createElement("div", undefined, React.createElement("h3", {
+            }, React.createElement("a", {
+                  className: Styles$WildCards.clickableLink,
+                  onClick: (function ($$event) {
+                      $$event.preventDefault();
+                      return Curry._1(clearAndPush, "#" + (InputHelp$WildCards.getPagePrefix(isExplorer) + ("details/" + TokenId$WildCards.toString(animal))));
+                    })
+                }, componentWithoutImg(normalImage, false), React.createElement("div", undefined, React.createElement("h2", undefined, name))), optionEndDateMoment !== undefined ? React.createElement("div", undefined, React.createElement("h3", {
                         className: Styles$WildCards.colorGreen
                       }, "COMING IN"), React.createElement(CountDown$WildCards.make, {
                         endDateMoment: Caml_option.valFromOption(optionEndDateMoment),
@@ -563,37 +632,73 @@ function Dapp$DetailsViewAnimal(Props) {
   var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
   var image = Animal$WildCards.useAvatar(animal);
   var optArtistInfo = QlHooks$WildCards.useWildcardArtist(animal);
+  var ownedAnimalImg = Curry._1(Css.style, {
+        hd: Css.position(Css.absolute),
+        tl: {
+          hd: Css.zIndex(1),
+          tl: {
+            hd: Css.maxWidth({
+                  NAME: "percent",
+                  VAL: 100
+                }),
+            tl: {
+              hd: Css.top({
+                    NAME: "percent",
+                    VAL: 50
+                  }),
+              tl: {
+                hd: Css.transform(Css.translate({
+                          NAME: "percent",
+                          VAL: -50
+                        }, {
+                          NAME: "percent",
+                          VAL: -50
+                        })),
+                tl: {
+                  hd: Css.left({
+                        NAME: "percent",
+                        VAL: 50
+                      }),
+                  tl: /* [] */0
+                }
+              }
+            }
+          }
+        }
+      });
   var orgBadge = Animal$WildCards.useGetOrgBadgeImage(animal);
-  var isLaunched = Animal$WildCards.useIsLaunched(chain, animal);
-  var isOnAuction = Animal$WildCards.useIsOnAuction(chain, animal);
   var displayAnimal = function (animalImage) {
-    return React.createElement("div", {
-                className: Styles$WildCards.positionRelative
+    return React.createElement(Dapp$SquareBox, {
+                children: null
               }, Curry._1(animalImage, undefined), Belt_Option.mapWithDefault(optArtistInfo, null, (function (artistInfo) {
-                      return React.createElement("p", undefined, "Art by: ", React.createElement("a", {
+                      return React.createElement("p", {
+                                  className: Curry._1(Css.style, {
+                                        hd: Css.position(Css.absolute),
+                                        tl: {
+                                          hd: Css.bottom({
+                                                NAME: "percent",
+                                                VAL: 2
+                                              }),
+                                          tl: {
+                                            hd: Css.textAlign(Css.center),
+                                            tl: {
+                                              hd: Css.width({
+                                                    NAME: "percent",
+                                                    VAL: 100
+                                                  }),
+                                              tl: /* [] */0
+                                            }
+                                          }
+                                        }
+                                      })
+                                }, "Art by: ", React.createElement("a", {
                                       onClick: (function (e) {
                                           e.preventDefault();
                                           return Curry._1(clearAndPush, "/#artist/" + artistInfo.id);
                                         })
                                     }, artistInfo.name));
-                    })), typeof isLaunched === "number" ? (
-                  isLaunched !== 0 || isOnAuction ? null : React.createElement("div", {
-                          className: Styles$WildCards.overlayFlameImg
-                        }, React.createElement(Dapp$Streak, {
-                              chain: chain,
-                              animal: animal
-                            }))
-                ) : React.createElement(Dapp$DisplayAfterDate, {
-                      endDateMoment: isLaunched._0,
-                      beforeComponent: null,
-                      afterComponent: isOnAuction ? null : React.createElement("div", {
-                              className: Styles$WildCards.overlayFlameImg
-                            }, React.createElement(Dapp$Streak, {
-                                  chain: chain,
-                                  animal: animal
-                                }))
-                    }), React.createElement("div", {
-                    className: Styles$WildCards.overlayBadgeImg,
+                    })), React.createElement("div", {
+                    className: Styles$WildCards.overlayBadgeImg(80, 80),
                     onClick: (function (e) {
                         e.stopPropagation();
                         e.preventDefault();
@@ -608,7 +713,7 @@ function Dapp$DetailsViewAnimal(Props) {
               children: null
             }, displayAnimal(function (param) {
                   return React.createElement("img", {
-                              className: Styles$WildCards.ownedAnimalImg,
+                              className: ownedAnimalImg,
                               src: image
                             });
                 }), React.createElement("h2", undefined, Globals$WildCards.restr(Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.useWildcardName(animal), "Loading"))), React.createElement(Dapp$AnimalActionsOnDetailsPage, {
@@ -1073,6 +1178,7 @@ export {
   AuctionDisplay ,
   AuctionDetails ,
   BasicAnimalDisplay ,
+  SquareBox ,
   AnimalOnLandingPage ,
   CarouselAnimal ,
   AnimalCarousel ,

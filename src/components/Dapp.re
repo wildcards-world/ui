@@ -44,17 +44,14 @@ module Streak = {
       let numDaysStr = daysHeldFloat->Js.Float.toFixed;
 
       <Rimble.Tooltip
-        className=Css.(style([width(`em(20.))]))
         message={j|$animalName has been held for $numDaysStr days by the same owner.|j}>
-        // placement="bottom"
-
-          <div className=Styles.positionRelative>
-            <img className=Styles.flameImg src=flameImg />
-            <p className=Styles.streakText>
-              <strong> {React.string(numDaysStr)} </strong>
-            </p>
-          </div>
-        </Rimble.Tooltip>;
+        <div id="inner" className=Styles.positionRelative>
+          <img className=Styles.flameImg src=flameImg />
+          <p className=Styles.streakText>
+            <strong> {React.string(numDaysStr)} </strong>
+          </p>
+        </div>
+      </Rimble.Tooltip>;
     | None => React.null
     };
   };
@@ -192,6 +189,36 @@ module BasicAnimalDisplay = {
   };
 };
 
+module SquareBox = {
+  // Css taken from here: https://spin.atomicobject.com/2015/07/14/css-responsive-square/
+  [@react.component]
+  let make = (~children) => {
+    <div
+      className=Css.(
+        style([
+          width(`percent(100.)),
+          position(relative),
+          after([
+            unsafe("content", "\"\""),
+            display(block),
+            paddingBottom(`percent(100.)),
+          ]),
+        ])
+      )>
+      <div
+        className=Css.(
+          style([
+            position(absolute),
+            width(`percent(100.)),
+            height(`percent(100.)),
+          ])
+        )>
+        children
+      </div>
+    </div>;
+  };
+};
+
 module AnimalOnLandingPage = {
   [@react.component]
   let make =
@@ -215,17 +242,32 @@ module AnimalOnLandingPage = {
     let image = Animal.useAvatar(animal);
 
     let normalImage = () =>
-      <img className={Styles.headerImg(enlargement, scalar)} src=image />;
+      <SquareBox>
+        <img
+          className=Css.(
+            style([
+              width(`percent(100.)),
+              height(`percent(100.)),
+              objectFit(`contain),
+            ])
+          )
+          src=image
+        />
+      </SquareBox>;
 
     let isOnAuction = Animal.useIsOnAuction(~chain, animal);
 
     let componentWithoutImg = (img, ~hideBadges: bool) => {
-      <React.Fragment>
-        {img()}
+      <SquareBox>
+        <div className=Css.(style([padding(`percent(20.))]))>
+          <div className={Styles.headerImg(enlargement, scalar)}>
+            {img()}
+          </div>
+        </div>
         {if (hideBadges) {
            React.null;
          } else {
-           <React.Fragment>
+           <>
              {isGqlLoaded
                 ? switch (optionEndDateMoment) {
                   | Some(_endDateMoment) => React.null
@@ -250,31 +292,29 @@ module AnimalOnLandingPage = {
                   ReactEvent.Mouse.preventDefault(e);
                   clearAndPush("#org/" ++ orgId);
                 }}
-                className=Styles.overlayBadgeImg>
+                className={Styles.overlayBadgeImg(~x=100., ~y=80.)}>
                 <img className=Styles.flameImg src=orgBadge />
               </div>}
-           </React.Fragment>;
+           </>;
          }}
-      </React.Fragment>;
+      </SquareBox>;
     };
 
     <Rimble.Box className=Styles.centerText>
-      <div className=Styles.positionRelative>
-        <a
-          className=Styles.clickableLink
-          onClick={event => {
-            ReactEvent.Mouse.preventDefault(event);
-            clearAndPush(
-              "#"
-              ++ InputHelp.getPagePrefix(isExplorer)
-              ++ "details/"
-              ++ animal->TokenId.toString,
-            );
-          }}>
-          {componentWithoutImg(normalImage, ~hideBadges=false)}
-          <div> <h2> {React.string(name)} </h2> </div>
-        </a>
-      </div>
+      <a
+        className=Styles.clickableLink
+        onClick={event => {
+          ReactEvent.Mouse.preventDefault(event);
+          clearAndPush(
+            "#"
+            ++ InputHelp.getPagePrefix(isExplorer)
+            ++ "details/"
+            ++ animal->TokenId.toString,
+          );
+        }}>
+        {componentWithoutImg(normalImage, ~hideBadges=false)}
+        <div> <h2> {React.string(name)} </h2> </div>
+      </a>
       {switch (optionEndDateMoment) {
        | Some(endDateMoment) =>
          <div>
@@ -492,18 +532,34 @@ module DetailsViewAnimal = {
     let image = Animal.useAvatar(animal);
     let optArtistInfo = QlHooks.useWildcardArtist(animal);
 
-    let normalImage = () => <img className=Styles.ownedAnimalImg src=image />;
-    // let optAlternateImage = Animal.getAlternateImage(animal);
+    let ownedAnimalImg =
+      Css.(
+        style([
+          position(absolute),
+          zIndex(1),
+          maxWidth(`percent(100.)),
+          top(`percent(50.)),
+          transform(translate(`percent(-50.), `percent(-50.))),
+          left(`percent(50.)),
+        ])
+      );
+
+    let normalImage = () => <img className=ownedAnimalImg src=image />;
     let orgBadge = Animal.useGetOrgBadgeImage(~tokenId=animal);
 
-    let isLaunched = animal->Animal.useIsLaunched(~chain);
-    let isOnAuction = Animal.useIsOnAuction(~chain, animal);
-
     let displayAnimal = animalImage =>
-      <div className=Styles.positionRelative>
+      <SquareBox>
         {animalImage()}
         {optArtistInfo->Option.mapWithDefault(React.null, artistInfo =>
-           <p>
+           <p
+             className=Css.(
+               style([
+                 position(absolute),
+                 bottom(`percent(2.)),
+                 textAlign(center),
+                 width(`percent(100.)),
+               ])
+             )>
              "Art by: "->React.string
              <a
                onClick={e => {
@@ -514,37 +570,16 @@ module DetailsViewAnimal = {
              </a>
            </p>
          )}
-        {switch (isLaunched) {
-         | Animal.Launched =>
-           isOnAuction
-             ? React.null
-             : <div className=Styles.overlayFlameImg>
-                 <Streak chain animal />
-               </div>
-         | Animal.Loading => React.null
-         | Animal.LaunchDate(endDateMoment) =>
-           <DisplayAfterDate
-             endDateMoment
-             afterComponent={
-               isOnAuction
-                 ? React.null
-                 : <div className=Styles.overlayFlameImg>
-                     <Streak chain animal />
-                   </div>
-             }
-             beforeComponent=React.null
-           />
-         }}
         {<div
            onClick={e => {
              ReactEvent.Mouse.stopPropagation(e);
              ReactEvent.Mouse.preventDefault(e);
              clearAndPush("#org/" ++ orgId);
            }}
-           className=Styles.overlayBadgeImg>
+           className={Styles.overlayBadgeImg(~x=80., ~y=80.)}>
            <img className=Styles.flameImg src=orgBadge />
          </div>}
-      </div>;
+      </SquareBox>;
 
     <React.Fragment>
       {displayAnimal(() => normalImage())}

@@ -262,7 +262,7 @@ function overlayImg(topPosition, leftPosition) {
             });
 }
 
-var overlayFlameImg = overlayImg(30, 0);
+var overlayFlameImg = overlayImg(20, 0);
 
 var prettyTransparent = Css.rgba(255, 255, 255, 0.5);
 
@@ -298,22 +298,24 @@ var imageHoverStyle = Css.hover({
       }
     });
 
-var overlayBadgeImg = Cn.make({
-      hd: overlayImg(60, 70),
-      tl: {
-        hd: Curry._1(Css.style, {
-              hd: Css.borderRadius({
-                    NAME: "percent",
-                    VAL: 100
-                  }),
+function overlayBadgeImg(x, y) {
+  return Cn.make({
+              hd: overlayImg(x, y),
               tl: {
-                hd: imageHoverStyle,
+                hd: Curry._1(Css.style, {
+                      hd: Css.borderRadius({
+                            NAME: "percent",
+                            VAL: 100
+                          }),
+                      tl: {
+                        hd: imageHoverStyle,
+                        tl: /* [] */0
+                      }
+                    }),
                 tl: /* [] */0
               }
-            }),
-        tl: /* [] */0
-      }
-    });
+            });
+}
 
 var streakText = Curry._1(Css.style, {
       hd: Css.position(Css.absolute),
@@ -322,7 +324,7 @@ var streakText = Curry._1(Css.style, {
         tl: {
           hd: Css.bottom({
                 NAME: "percent",
-                VAL: -10
+                VAL: -30
               }),
           tl: {
             hd: Css.right({
@@ -347,7 +349,7 @@ var flameImg = Curry._1(Css.style, {
             VAL: 100
           }),
       tl: {
-        hd: Css.maxWidth(Css.px(70)),
+        hd: Css.maxWidth(Css.em(2.1)),
         tl: /* [] */0
       }
     });
@@ -466,23 +468,6 @@ var animalBox = Curry._1(Css.style, {
             VAL: 12
           }),
       tl: /* [] */0
-    });
-
-var ownedAnimalImg = Curry._1(Css.style, {
-      hd: Css.position(Css.relative),
-      tl: {
-        hd: Css.zIndex(1),
-        tl: {
-          hd: Css.maxWidth({
-                NAME: "percent",
-                VAL: 100
-              }),
-          tl: {
-            hd: Css.textAlign(Css.center),
-            tl: /* [] */0
-          }
-        }
-      }
     });
 
 var clickableLink = Curry._1(Css.style, {
@@ -1124,7 +1109,6 @@ export {
   colorBlue ,
   colorGrey ,
   animalBox ,
-  ownedAnimalImg ,
   clickableLink ,
   mainImageHoverStyle ,
   headerImg ,
