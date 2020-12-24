@@ -148,9 +148,9 @@ function Dapp$AuctionDisplay(Props) {
                 return React.createElement(React.Fragment, undefined, Web3Utils$WildCards.fromWeiBNToEthPrecision(price, 4) + " USD", React.createElement("small", undefined, " (DAI)"));
               })));
   }
-  return React.createElement(React.Fragment, undefined, React.createElement("h3", undefined, "Auction"), tmp, React.createElement(ActionButtons$WildCards.Auction.make, {
+  return React.createElement(React.Fragment, undefined, React.createElement(ActionButtons$WildCards.Auction.make, {
                   animal: animal
-                }));
+                }), React.createElement("br", undefined), React.createElement("br", undefined), tmp);
 }
 
 var AuctionDisplay = {
@@ -238,7 +238,7 @@ function Dapp$BasicAnimalDisplay(Props) {
             animal: animal
           });
   }
-  return React.createElement(React.Fragment, undefined, React.createElement(PriceDisplay$WildCards.make, {
+  return React.createElement(React.Fragment, undefined, tmp, React.createElement("br", undefined), React.createElement("br", undefined), React.createElement(PriceDisplay$WildCards.make, {
                   chain: chain,
                   animal: animal
                 }), React.createElement("a", {
@@ -246,7 +246,7 @@ function Dapp$BasicAnimalDisplay(Props) {
                       e.preventDefault();
                       return Curry._1(clearAndPush, "/#user/" + currentPatron);
                     })
-                }, Globals$WildCards.restr(displayNameStr)), React.createElement("br", undefined), tmp);
+                }, Globals$WildCards.restr(displayNameStr)));
 }
 
 var BasicAnimalDisplay = {
@@ -372,20 +372,15 @@ function Dapp$AnimalOnLandingPage(Props) {
     return React.createElement(Dapp$SquareBox, {
                 children: null
               }, React.createElement("div", {
-                    className: Curry._1(Css.style, {
-                          hd: Css.padding({
-                                NAME: "percent",
-                                VAL: 20
-                              }),
-                          tl: /* [] */0
-                        })
-                  }, React.createElement("div", {
-                        className: Styles$WildCards.headerImg(enlargement, scalar)
-                      }, Curry._1(img, undefined))), tmp);
+                    className: Styles$WildCards.headerImg(enlargement, scalar)
+                  }, Curry._1(img, undefined)), tmp);
   };
-  return React.createElement(RimbleUi.Box, {
-              children: null,
-              className: Styles$WildCards.centerText
+  return React.createElement("div", {
+              className: Curry._1(Css.style, {
+                    hd: Css.textAlign(Css.center),
+                    tl: /* [] */0
+                  }),
+              id: "animalBox"
             }, React.createElement("a", {
                   className: Styles$WildCards.clickableLink,
                   onClick: (function ($$event) {
@@ -478,7 +473,7 @@ function Dapp$AnimalCarousel(Props) {
                                       }, React.createElement(Dapp$CarouselAnimal, {
                                             animal: animalInfo.id,
                                             scalar: match[1],
-                                            enlargement: 1.5,
+                                            enlargement: 1,
                                             isGqlLoaded: isGqlLoaded,
                                             chain: Animal$WildCards.getChainIdFromAnimalId(animalInfo.id)
                                           }));

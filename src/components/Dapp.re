@@ -1,12 +1,7 @@
 open Globals;
 
-// Load styles for the carousel and react-tabs
-// [%bs.raw {|require('@wildcards/react-carousel/lib/style.css')|}];
-// [%bs.raw {|require('react-tabs/style/react-tabs.css')|}];
-
 let flameImg = "/img/streak-flame.png";
 
-// TODO: there must be a better way of importing images in reason react...
 module ShareSocial = {
   [@bs.module "./components/shareSocialMedia"] [@react.component]
   external make: unit => React.element = "default";
@@ -99,7 +94,9 @@ module AuctionDisplay = {
     let optCurrentUsdEthPrice = UsdPriceProvider.useUsdPrice();
 
     <>
-      <h3> "Auction"->React.string </h3>
+      <ActionButtons.Auction animal />
+      <br />
+      <br />
       {switch (chain) {
        | Client.MaticQuery =>
          <p className={Styles.noMarginTop ++ " " ++ Styles.noMarginBottom}>
@@ -124,7 +121,6 @@ module AuctionDisplay = {
            );
          <PriceDisplay.PurePriceDisplay priceEth optPriceUsd />;
        }}
-      <ActionButtons.Auction animal />
     </>;
   };
 };
@@ -166,15 +162,6 @@ module BasicAnimalDisplay = {
     isOnAuction
       ? <AuctionDetails chain animal />
       : <>
-          <PriceDisplay chain animal />
-          <a
-            onClick={e => {
-              ReactEvent.Mouse.preventDefault(e);
-              clearAndPush({j|/#user/$currentPatron|j});
-            }}>
-            displayNameStr->restr
-          </a>
-          <br />
           {switch (nonUrlRouting) {
            | UserVerificationScreen
            | UpdateDepositScreen
@@ -185,6 +172,16 @@ module BasicAnimalDisplay = {
            | NoExtraState =>
              owned ? <EditButton animal /> : <ActionButtons.Buy animal chain />
            }}
+          <br />
+          <br />
+          <PriceDisplay chain animal />
+          <a
+            onClick={e => {
+              ReactEvent.Mouse.preventDefault(e);
+              clearAndPush({j|/#user/$currentPatron|j});
+            }}>
+            displayNameStr->restr
+          </a>
         </>;
   };
 };
@@ -259,11 +256,7 @@ module AnimalOnLandingPage = {
 
     let componentWithoutImg = (img, ~hideBadges: bool) => {
       <SquareBox>
-        <div className=Css.(style([padding(`percent(20.))]))>
-          <div className={Styles.headerImg(enlargement, scalar)}>
-            {img()}
-          </div>
-        </div>
+        <div className={Styles.headerImg(enlargement, scalar)}> {img()} </div>
         {if (hideBadges) {
            React.null;
          } else {
@@ -300,7 +293,7 @@ module AnimalOnLandingPage = {
       </SquareBox>;
     };
 
-    <Rimble.Box className=Styles.centerText>
+    <div id="animalBox" className=Css.(style([textAlign(center)]))>
       <a
         className=Styles.clickableLink
         onClick={event => {
@@ -325,7 +318,7 @@ module AnimalOnLandingPage = {
          isGqlLoaded
            ? <div> <BasicAnimalDisplay chain animal /> </div> : React.null
        }}
-    </Rimble.Box>;
+    </div>;
   };
 };
 
@@ -438,7 +431,7 @@ module AnimalCarousel = {
                  chain={animalInfo.id->Animal.getChainIdFromAnimalId}
                  isGqlLoaded
                  scalar
-                 enlargement=1.5
+                 enlargement=1.
                />
              </div>;
            }),
