@@ -7,6 +7,7 @@ import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import * as Belt_Float from "bs-platform/lib/es6/belt_Float.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
+import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as Helper$WildCards from "../../harberger-lib/Helper.bs.js";
 import * as Globals$WildCards from "../../harberger-lib/Globals.bs.js";
 import * as QlHooks$WildCards from "../../harberger-lib/QlHooks.bs.js";
@@ -188,7 +189,7 @@ function MonthlyContribution(Props) {
                   className: leaderboardTable
                 }, React.createElement("thead", {
                       className: leaderboardHeader
-                    }, React.createElement("tr", undefined, React.createElement("th", undefined, "Rank"), React.createElement("th", undefined, "Guardian"), React.createElement("th", undefined, "Monthly Contribution"))), React.createElement("tbody", undefined, topContributorsOpt !== undefined ? Belt_Array.mapWithIndex(topContributorsOpt, (function (index, param) {
+                    }, React.createElement("tr", undefined, React.createElement("th", undefined, "Rank"), React.createElement("th", undefined, "Guardian"), React.createElement("th", undefined, "Monthly Contribution"))), React.createElement("tbody", undefined, topContributorsOpt !== undefined ? Belt_Array.mapWithIndex(Caml_option.valFromOption(topContributorsOpt), (function (index, param) {
                               var amount = param[1];
                               var contributor = param[0];
                               var amountRaisedFloat = Globals$WildCards.$pipe$pipe$pipe$pipe(Belt_Float.fromString(amount), 0);

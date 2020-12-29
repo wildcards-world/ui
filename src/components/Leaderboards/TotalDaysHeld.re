@@ -1,49 +1,50 @@
-open ReasonApolloHooks;
+open GqlConverters;
 
 module LoadMostDaysHeld = [%graphql
   {|
     query {
       patrons(first: 20, orderBy: totalTimeHeld, orderDirection: desc,  where: {id_not: "NO_OWNER"}) {
         id
-        totalTimeHeld @bsDecoder(fn: "QlHooks.decodeBN")
+        totalTimeHeld @ppxCustom(module: "BigInt")
         tokens{
           id
         }
-        lastUpdated @bsDecoder(fn: "QlHooks.decodeBN")
+        lastUpdated @ppxCustom(module: "BigInt")
       }
     }
   |}
 ];
 
-let useLoadMostDaysHeld = () =>
-  ApolloHooks.useSubscription(LoadMostDaysHeld.definition);
+let useLoadMostDaysHeld = () => Obj.magic();
+// ApolloHooks.useSubscription(LoadMostDaysHeld.definition);
 let useLoadMostDaysHeldData = () => {
-  let (simple, _) = useLoadMostDaysHeld();
-  let currentTimestamp = QlHooks.useCurrentTime();
-  switch (simple) {
-  | Data(largestContributors) =>
-    let dailyContributions =
-      largestContributors##patrons
-      |> Js.Array.map(patron => {
-           let numberOfTokens = patron##tokens->Js.Array.length->string_of_int;
-           let timeElapsed =
-             BN.new_(currentTimestamp)->BN.sub(patron##lastUpdated);
+  None;
+      /*  let (simple, _) = useLoadMostDaysHeld();
+          let currentTimestamp = QlHooks.useCurrentTime();
+          switch (simple) {
+          | Data(largestContributors) =>
+            let dailyContributions =
+              largestContributors##patrons
+              |> Js.Array.map(patron => {
+                   let numberOfTokens = patron##tokens->Js.Array.length->string_of_int;
+                   let timeElapsed =
+                     BN.new_(currentTimestamp)->BN.sub(patron##lastUpdated);
 
-           let totalTimeHeldWei =
-             patron##totalTimeHeld
-             ->BN.add(timeElapsed->BN.mul(BN.new_(numberOfTokens)));
+                   let totalTimeHeldWei =
+                     patron##totalTimeHeld
+                     ->BN.add(timeElapsed->BN.mul(BN.new_(numberOfTokens)));
 
-           (patron##id, totalTimeHeldWei);
-         });
-    Array.sort(
-      ((_, first), (_, second)) => {second->BN.cmp(first)},
-      dailyContributions,
-    );
-    Some(dailyContributions);
-  | Error(_)
-  | Loading
-  | NoData => None
-  };
+                   (patron##id, totalTimeHeldWei);
+                 });
+            Array.sort(
+              ((_, first), (_, second)) => {second->BN.cmp(first)},
+              dailyContributions,
+            );
+            Some(dailyContributions);
+          | Error(_)
+          | Loading
+          | NoData => None
+          }; */
 };
 
 open Css;

@@ -1,5 +1,4 @@
 open Globals;
-open ReasonApolloHooks;
 
 let ubisoftLogo = "/img/logos/Ubisoft.png";
 let ethCapeTownLogo = "/img/logos/EthCapeTown.png";
@@ -22,18 +21,21 @@ type partner = {
   id: string,
   name: string,
 };
-let usePartners = () => {
-  let (simple, _) = ApolloHooks.useQuery(LoadPatronNoDecode.definition);
-  switch (simple) {
-  | Data(orgs) =>
-    orgs##organisations
-    ->Array.map(org => {logo: org##logo, id: org##id, name: org##name})
-    ->Some
-  | Error(_)
-  | Loading
-  | NoData => None
+let usePartners = () =>
+  // let (simple, _) = ApolloHooks.useQuery(LoadPatronNoDecode.definition);
+  // switch (simple) {
+  // | Data(orgs) =>
+  //   orgs##organisations
+  //   ->Array.map(org => {logo: org##logo, id: org##id, name: org##name})
+  //   ->Some
+  // | Error(_)
+  // | Loading
+  // | NoData => None
+  // };
+  /**TODO: fix me */
+  {
+    None;
   };
-};
 
 let blueBackground = Css.(style([backgroundColor(`hex("73C8D7"))]));
 let cardStyle =

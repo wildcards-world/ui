@@ -5,139 +5,89 @@ import * as $$Array from "bs-platform/lib/es6/array.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import BnJs from "bn.js";
 import * as React from "react";
-import * as Js_exn from "bs-platform/lib/es6/js_exn.js";
-import * as Js_dict from "bs-platform/lib/es6/js_dict.js";
-import * as Js_json from "bs-platform/lib/es6/js_json.js";
-import * as Js_option from "bs-platform/lib/es6/js_option.js";
 import * as RimbleUi from "rimble-ui";
-import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
-import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as Helper$WildCards from "../../harberger-lib/Helper.bs.js";
-import * as QlHooks$WildCards from "../../harberger-lib/QlHooks.bs.js";
 import * as RootProvider$WildCards from "../../harberger-lib/RootProvider.bs.js";
 import * as UserProvider$WildCards from "../../harberger-lib/js/user-provider/UserProvider.bs.js";
-import * as ApolloHooks$ReasonApolloHooks from "@wildcards/reason-apollo-hooks/src/ApolloHooks.bs.js";
+import * as GqlConverters$WildCards from "../../gql/GqlConverters.bs.js";
 
-var ppx_printed_query = "query   {\npatrons(first: 20, orderBy: totalTimeHeld, orderDirection: desc, where: {id_not: \"NO_OWNER\"})  {\nid  \ntotalTimeHeld  \ntokens  {\nid  \n}\n\nlastUpdated  \n}\n\n}\n";
+var Raw = {};
 
 function parse(value) {
-  var value$1 = Js_option.getExn(Js_json.decodeObject(value));
-  var value$2 = Js_dict.get(value$1, "patrons");
+  var value$1 = value.patrons;
   return {
-          patrons: value$2 !== undefined ? Js_option.getExn(Js_json.decodeArray(Caml_option.valFromOption(value$2))).map(function (value) {
-                  var value$1 = Js_option.getExn(Js_json.decodeObject(value));
-                  var value$2 = Js_dict.get(value$1, "id");
-                  var tmp;
-                  if (value$2 !== undefined) {
-                    var value$3 = Caml_option.valFromOption(value$2);
-                    var value$4 = Js_json.decodeString(value$3);
-                    tmp = value$4 !== undefined ? value$4 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$3));
-                  } else {
-                    tmp = Js_exn.raiseError("graphql_ppx: Field id on type Patron is missing");
-                  }
-                  var value$5 = Js_dict.get(value$1, "totalTimeHeld");
-                  var value$6 = Js_dict.get(value$1, "tokens");
-                  var value$7 = Js_dict.get(value$1, "lastUpdated");
-                  return {
-                          id: tmp,
-                          totalTimeHeld: value$5 !== undefined ? QlHooks$WildCards.decodeBN(Caml_option.valFromOption(value$5)) : Js_exn.raiseError("graphql_ppx: Field totalTimeHeld on type Patron is missing"),
-                          tokens: value$6 !== undefined ? Js_option.getExn(Js_json.decodeArray(Caml_option.valFromOption(value$6))).map(function (value) {
-                                  var value$1 = Js_option.getExn(Js_json.decodeObject(value));
-                                  var value$2 = Js_dict.get(value$1, "id");
-                                  var tmp;
-                                  if (value$2 !== undefined) {
-                                    var value$3 = Caml_option.valFromOption(value$2);
-                                    var value$4 = Js_json.decodeString(value$3);
-                                    tmp = value$4 !== undefined ? value$4 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$3));
-                                  } else {
-                                    tmp = Js_exn.raiseError("graphql_ppx: Field id on type Wildcard is missing");
-                                  }
-                                  return {
-                                          id: tmp
-                                        };
-                                }) : Js_exn.raiseError("graphql_ppx: Field tokens on type Patron is missing"),
-                          lastUpdated: value$7 !== undefined ? QlHooks$WildCards.decodeBN(Caml_option.valFromOption(value$7)) : Js_exn.raiseError("graphql_ppx: Field lastUpdated on type Patron is missing")
-                        };
-                }) : Js_exn.raiseError("graphql_ppx: Field patrons on type query_root is missing")
+          patrons: value$1.map(function (value) {
+                var value$1 = value.tokens;
+                return {
+                        id: value.id,
+                        totalTimeHeld: GqlConverters$WildCards.$$BigInt.parse(value.totalTimeHeld),
+                        tokens: value$1.map(function (value) {
+                              return {
+                                      id: value.id
+                                    };
+                            }),
+                        lastUpdated: GqlConverters$WildCards.$$BigInt.parse(value.lastUpdated)
+                      };
+              })
         };
 }
 
-function make(param) {
+function serialize(value) {
+  var value$1 = value.patrons;
+  var patrons = value$1.map(function (value) {
+        var value$1 = value.lastUpdated;
+        var value$2 = GqlConverters$WildCards.$$BigInt.serialize(value$1);
+        var value$3 = value.tokens;
+        var tokens = value$3.map(function (value) {
+              var value$1 = value.id;
+              return {
+                      id: value$1
+                    };
+            });
+        var value$4 = value.totalTimeHeld;
+        var value$5 = GqlConverters$WildCards.$$BigInt.serialize(value$4);
+        var value$6 = value.id;
+        return {
+                id: value$6,
+                totalTimeHeld: value$5,
+                tokens: tokens,
+                lastUpdated: value$2
+              };
+      });
   return {
-          query: ppx_printed_query,
-          variables: null,
-          parse: parse
+          patrons: patrons
         };
 }
 
-function makeWithVariables(param) {
-  return {
-          query: ppx_printed_query,
-          variables: null,
-          parse: parse
-        };
+function serializeVariables(param) {
+  
 }
 
 function makeVariables(param) {
-  return null;
+  
 }
 
-function definition_2(graphql_ppx_use_json_variables_fn) {
-  return 0;
+function makeDefaultVariables(param) {
+  
 }
-
-var definition = [
-  parse,
-  ppx_printed_query,
-  definition_2
-];
-
-function ret_type(f) {
-  return {};
-}
-
-var MT_Ret = {};
 
 var LoadMostDaysHeld = {
-  ppx_printed_query: ppx_printed_query,
-  query: ppx_printed_query,
+  Raw: Raw,
+  query: "query   {\npatrons(first: 20, orderBy: totalTimeHeld, orderDirection: desc, where: {id_not: \"NO_OWNER\"})  {\nid  \ntotalTimeHeld  \ntokens  {\nid  \n}\n\nlastUpdated  \n}\n\n}\n",
   parse: parse,
-  make: make,
-  makeWithVariables: makeWithVariables,
+  serialize: serialize,
+  serializeVariables: serializeVariables,
   makeVariables: makeVariables,
-  definition: definition,
-  ret_type: ret_type,
-  MT_Ret: MT_Ret
+  makeDefaultVariables: makeDefaultVariables
 };
 
 function useLoadMostDaysHeld(param) {
-  return ApolloHooks$ReasonApolloHooks.useSubscription(undefined, undefined, undefined, definition);
+  
 }
 
 function useLoadMostDaysHeldData(param) {
-  var match = useLoadMostDaysHeld(undefined);
-  var simple = match[0];
-  var currentTimestamp = QlHooks$WildCards.useCurrentTime(undefined);
-  if (typeof simple === "number") {
-    return ;
-  }
-  if (simple.TAG) {
-    return ;
-  }
-  var dailyContributions = simple._0.patrons.map(function (patron) {
-        var numberOfTokens = String(patron.tokens.length);
-        var timeElapsed = new BnJs(currentTimestamp).sub(patron.lastUpdated);
-        var totalTimeHeldWei = patron.totalTimeHeld.add(timeElapsed.mul(new BnJs(numberOfTokens)));
-        return [
-                patron.id,
-                totalTimeHeldWei
-              ];
-      });
-  $$Array.sort((function (param, param$1) {
-          return param$1[1].cmp(param[1]);
-        }), dailyContributions);
-  return dailyContributions;
+  
 }
 
 var goldTrophyImg = "/img/icons/gold-trophy.png";
@@ -347,17 +297,8 @@ var MostDaysHeld = {
 };
 
 function TotalDaysHeld(Props) {
-  var numberOfLeaders = Props.numberOfLeaders;
-  var mostDaysHeldOpt = useLoadMostDaysHeldData(undefined);
   var tmp;
-  if (mostDaysHeldOpt !== undefined) {
-    var mostDaysHeld = Belt_Array.slice(mostDaysHeldOpt, 0, numberOfLeaders);
-    tmp = React.createElement(TotalDaysHeld$MostDaysHeld, {
-          mostDaysHeld: mostDaysHeld
-        });
-  } else {
-    tmp = null;
-  }
+  tmp = null;
   return React.createElement("div", undefined, React.createElement(RimbleUi.Heading, {
                   children: "Wildcards Accumulative Days Held Leaderboard"
                 }), React.createElement("br", undefined), React.createElement(RimbleUi.Table, {
@@ -370,7 +311,7 @@ function TotalDaysHeld(Props) {
 
 var flameImg = "/img/streak-flame.png";
 
-var make$1 = TotalDaysHeld;
+var make = TotalDaysHeld;
 
 export {
   LoadMostDaysHeld ,
@@ -391,7 +332,7 @@ export {
   rankingColor ,
   ContributorsRow ,
   MostDaysHeld ,
-  make$1 as make,
+  make ,
   
 }
 /* leaderboardTable Not a pure module */

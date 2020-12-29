@@ -11,11 +11,9 @@ module GraphQl = {
         (getGraphEndpoints, networkId),
       );
 
-    <ReasonApollo.Provider client>
-      <ReasonApolloHooks.ApolloHooks.Provider client>
-        children
-      </ReasonApolloHooks.ApolloHooks.Provider>
-    </ReasonApollo.Provider>;
+    <ApolloClient.React.ApolloProvider client>
+      children
+    </ApolloClient.React.ApolloProvider>;
   };
 };
 

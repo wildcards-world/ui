@@ -3,128 +3,83 @@
 import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as $$Array from "bs-platform/lib/es6/array.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
-import BnJs from "bn.js";
 import * as React from "react";
-import * as Js_exn from "bs-platform/lib/es6/js_exn.js";
-import * as Js_dict from "bs-platform/lib/es6/js_dict.js";
-import * as Js_json from "bs-platform/lib/es6/js_json.js";
-import * as Js_option from "bs-platform/lib/es6/js_option.js";
 import * as RimbleUi from "rimble-ui";
-import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
-import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as Helper$WildCards from "../../harberger-lib/Helper.bs.js";
-import * as QlHooks$WildCards from "../../harberger-lib/QlHooks.bs.js";
 import * as Web3Utils$WildCards from "../../harberger-lib/Web3Utils.bs.js";
 import * as RootProvider$WildCards from "../../harberger-lib/RootProvider.bs.js";
 import * as UserProvider$WildCards from "../../harberger-lib/js/user-provider/UserProvider.bs.js";
-import * as ApolloHooks$ReasonApolloHooks from "@wildcards/reason-apollo-hooks/src/ApolloHooks.bs.js";
+import * as GqlConverters$WildCards from "../../gql/GqlConverters.bs.js";
 
-var ppx_printed_query = "query   {\npatrons(first: 30, orderBy: totalContributed, orderDirection: desc, where: {id_not: \"0x6d47cf86f6a490c6410fc082fd1ad29cf61492d0\"})  {\nid  \npatronTokenCostScaledNumerator  \ntotalContributed  \nlastUpdated  \n}\n\n}\n";
+var Raw = {};
 
 function parse(value) {
-  var value$1 = Js_option.getExn(Js_json.decodeObject(value));
-  var value$2 = Js_dict.get(value$1, "patrons");
+  var value$1 = value.patrons;
   return {
-          patrons: value$2 !== undefined ? Js_option.getExn(Js_json.decodeArray(Caml_option.valFromOption(value$2))).map(function (value) {
-                  var value$1 = Js_option.getExn(Js_json.decodeObject(value));
-                  var value$2 = Js_dict.get(value$1, "id");
-                  var tmp;
-                  if (value$2 !== undefined) {
-                    var value$3 = Caml_option.valFromOption(value$2);
-                    var value$4 = Js_json.decodeString(value$3);
-                    tmp = value$4 !== undefined ? value$4 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$3));
-                  } else {
-                    tmp = Js_exn.raiseError("graphql_ppx: Field id on type Patron is missing");
-                  }
-                  var value$5 = Js_dict.get(value$1, "patronTokenCostScaledNumerator");
-                  var value$6 = Js_dict.get(value$1, "totalContributed");
-                  var value$7 = Js_dict.get(value$1, "lastUpdated");
-                  return {
-                          id: tmp,
-                          patronTokenCostScaledNumerator: value$5 !== undefined ? QlHooks$WildCards.decodeBN(Caml_option.valFromOption(value$5)) : Js_exn.raiseError("graphql_ppx: Field patronTokenCostScaledNumerator on type Patron is missing"),
-                          totalContributed: value$6 !== undefined ? QlHooks$WildCards.decodeBN(Caml_option.valFromOption(value$6)) : Js_exn.raiseError("graphql_ppx: Field totalContributed on type Patron is missing"),
-                          lastUpdated: value$7 !== undefined ? QlHooks$WildCards.decodeBN(Caml_option.valFromOption(value$7)) : Js_exn.raiseError("graphql_ppx: Field lastUpdated on type Patron is missing")
-                        };
-                }) : Js_exn.raiseError("graphql_ppx: Field patrons on type query_root is missing")
+          patrons: value$1.map(function (value) {
+                return {
+                        id: value.id,
+                        patronTokenCostScaledNumerator: GqlConverters$WildCards.$$BigInt.parse(value.patronTokenCostScaledNumerator),
+                        totalContributed: GqlConverters$WildCards.$$BigInt.parse(value.totalContributed),
+                        lastUpdated: GqlConverters$WildCards.$$BigInt.parse(value.lastUpdated)
+                      };
+              })
         };
 }
 
-function make(param) {
+function serialize(value) {
+  var value$1 = value.patrons;
+  var patrons = value$1.map(function (value) {
+        var value$1 = value.lastUpdated;
+        var value$2 = GqlConverters$WildCards.$$BigInt.serialize(value$1);
+        var value$3 = value.totalContributed;
+        var value$4 = GqlConverters$WildCards.$$BigInt.serialize(value$3);
+        var value$5 = value.patronTokenCostScaledNumerator;
+        var value$6 = GqlConverters$WildCards.$$BigInt.serialize(value$5);
+        var value$7 = value.id;
+        return {
+                id: value$7,
+                patronTokenCostScaledNumerator: value$6,
+                totalContributed: value$4,
+                lastUpdated: value$2
+              };
+      });
   return {
-          query: ppx_printed_query,
-          variables: null,
-          parse: parse
+          patrons: patrons
         };
 }
 
-function makeWithVariables(param) {
-  return {
-          query: ppx_printed_query,
-          variables: null,
-          parse: parse
-        };
+function serializeVariables(param) {
+  
 }
 
 function makeVariables(param) {
-  return null;
+  
 }
 
-function definition_2(graphql_ppx_use_json_variables_fn) {
-  return 0;
+function makeDefaultVariables(param) {
+  
 }
-
-var definition = [
-  parse,
-  ppx_printed_query,
-  definition_2
-];
-
-function ret_type(f) {
-  return {};
-}
-
-var MT_Ret = {};
 
 var LoadMostContributed = {
-  ppx_printed_query: ppx_printed_query,
-  query: ppx_printed_query,
+  Raw: Raw,
+  query: "query   {\npatrons(first: 30, orderBy: totalContributed, orderDirection: desc, where: {id_not: \"0x6d47cf86f6a490c6410fc082fd1ad29cf61492d0\"})  {\nid  \npatronTokenCostScaledNumerator  \ntotalContributed  \nlastUpdated  \n}\n\n}\n",
   parse: parse,
-  make: make,
-  makeWithVariables: makeWithVariables,
+  serialize: serialize,
+  serializeVariables: serializeVariables,
   makeVariables: makeVariables,
-  definition: definition,
-  ret_type: ret_type,
-  MT_Ret: MT_Ret
+  makeDefaultVariables: makeDefaultVariables
 };
 
 function useLoadMostContributed(param) {
-  return ApolloHooks$ReasonApolloHooks.useSubscription(undefined, undefined, undefined, definition);
+  return function (prim) {
+    return prim;
+  };
 }
 
 function useLoadMostContributedData(param) {
-  var match = useLoadMostContributed(undefined);
-  var simple = match[0];
-  var currentTimestamp = QlHooks$WildCards.useCurrentTime(undefined);
-  if (typeof simple === "number") {
-    return ;
-  }
-  if (simple.TAG) {
-    return ;
-  }
-  var dailyContributions = simple._0.patrons.map(function (patron) {
-        var timeElapsed = new BnJs(currentTimestamp).sub(patron.lastUpdated);
-        var amountContributedSinceLastUpdate = patron.patronTokenCostScaledNumerator.mul(timeElapsed).div(new BnJs("31536000000000000000"));
-        var totalContributedWei = patron.totalContributed.add(amountContributedSinceLastUpdate);
-        return [
-                patron.id,
-                totalContributedWei
-              ];
-      });
-  $$Array.sort((function (param, param$1) {
-          return param$1[1].cmp(param[1]);
-        }), dailyContributions);
-  return dailyContributions;
+  
 }
 
 var goldTrophyImg = "/img/icons/gold-trophy.png";
@@ -334,17 +289,8 @@ var MostContributed = {
 };
 
 function TotalContribution(Props) {
-  var numberOfLeaders = Props.numberOfLeaders;
-  var highestContributorsOpt = useLoadMostContributedData(undefined);
   var tmp;
-  if (highestContributorsOpt !== undefined) {
-    var highestContributors = Belt_Array.slice(highestContributorsOpt, 0, numberOfLeaders);
-    tmp = React.createElement(TotalContribution$MostContributed, {
-          highestContributors: highestContributors
-        });
-  } else {
-    tmp = null;
-  }
+  tmp = null;
   return React.createElement("div", undefined, React.createElement(RimbleUi.Heading, {
                   children: "Wildcards Total Contribution Leaderboard"
                 }), React.createElement("br", undefined), React.createElement(RimbleUi.Table, {
@@ -357,7 +303,7 @@ function TotalContribution(Props) {
 
 var flameImg = "/img/streak-flame.png";
 
-var make$1 = TotalContribution;
+var make = TotalContribution;
 
 export {
   LoadMostContributed ,
@@ -378,7 +324,7 @@ export {
   rankingColor ,
   ContributorsRow ,
   MostContributed ,
-  make$1 as make,
+  make ,
   
 }
 /* leaderboardTable Not a pure module */

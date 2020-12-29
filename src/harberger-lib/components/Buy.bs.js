@@ -241,7 +241,7 @@ function Buy$1(Props) {
   var maticState = Caml_option.valFromOption(optMaticState);
   var error = maticState.error;
   if (error !== undefined) {
-    console.log("matic state fetch error", error);
+    console.log("matic state fetch error", Caml_option.valFromOption(error));
     return React.createElement("p", undefined, "Error: Unable to get matic state - please try again or contact the Wildcards Team.");
   } else {
     return React.createElement(Buy$Buy, {

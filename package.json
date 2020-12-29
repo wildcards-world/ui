@@ -4,9 +4,6 @@
   "private": true,
   "dependencies": {
     "3box": "^1.20.1",
-    "@apollo/react-hooks": "^3.1.5",
-    "@apollo/react-ssr": "^3.1.5",
-    "@baransu/graphql_ppx_re": "^0.7.1",
     "@polkadot/util": "^2.8.1",
     "@transak/transak-sdk": "^1.0.26",
     "@web3-react/core": "^6.1.1",
@@ -19,8 +16,6 @@
     "@web3-react/walletconnect-connector": "^6.1.4",
     "@wildcards/react-carousel": "^1.10.28-working1",
     "@wildcards/react-social-icons": "^4.1.0",
-    "@wildcards/reason-apollo": "0.20.0-latest1",
-    "@wildcards/reason-apollo-hooks": "6.0.1-latest1",
     "bad-words": "^3.0.4",
     "bluebird": "^3.7.2",
     "bn.js": "^5.1.1",
@@ -99,8 +94,11 @@
     ]
   },
   "devDependencies": {
+    "@apollo/client": "^3.3.6",
     "@babel/plugin-transform-modules-commonjs": "^7.9.6",
     "@glennsl/bs-jest": "^0.5.1",
+    "@reasonml-community/graphql-ppx": "^1.0.0-beta.22",
+    "add": "^2.0.6",
     "babel-plugin-styled-components": "^1.10.7",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babel-preset-react-app": "^9.1.2",
@@ -108,7 +106,9 @@
     "file-loader": "^6.0.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "reason-react": "^0.9.1"
+    "reason-apollo-client": "^1.0.0",
+    "reason-react": "^0.9.1",
+    "yarn": "^1.22.10"
   },
   "homepage": ".",
   "main": "index.js",

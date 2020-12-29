@@ -1,54 +1,55 @@
-open ReasonApolloHooks;
+open GqlConverters;
 
 module LoadMostContributed = [%graphql
   {|
     query {
       patrons(first: 30, orderBy: totalContributed, orderDirection: desc, where: {id_not: "0x6d47cf86f6a490c6410fc082fd1ad29cf61492d0"}) {
         id
-        patronTokenCostScaledNumerator  @bsDecoder(fn: "QlHooks.decodeBN")
-        totalContributed @bsDecoder(fn: "QlHooks.decodeBN")
-        lastUpdated @bsDecoder(fn: "QlHooks.decodeBN")
+        patronTokenCostScaledNumerator  @ppxCustom(module: "BigInt")
+        totalContributed @ppxCustom(module: "BigInt")
+        lastUpdated @ppxCustom(module: "BigInt")
       }
     }
   |}
 ];
 
-let useLoadMostContributed = () =>
-  ApolloHooks.useSubscription(LoadMostContributed.definition);
+let useLoadMostContributed = () => Obj.magic;
+// ApolloHooks.useSubscription(LoadMostContributed.definition);
 let useLoadMostContributedData = () => {
-  let (simple, _) = useLoadMostContributed();
-  let currentTimestamp = QlHooks.useCurrentTime();
-  switch (simple) {
-  | Data(largestContributors) =>
-    let dailyContributions =
-      largestContributors##patrons
-      |> Js.Array.map(patron => {
-           let timeElapsed =
-             BN.new_(currentTimestamp)->BN.sub(patron##lastUpdated);
+  None;
+      /* let (simple, _) = useLoadMostContributed();
+         let currentTimestamp = QlHooks.useCurrentTime();
+         switch (simple) {
+         | Data(largestContributors) =>
+           let dailyContributions =
+             largestContributors##patrons
+             |> Js.Array.map(patron => {
+                  let timeElapsed =
+                    BN.new_(currentTimestamp)->BN.sub(patron##lastUpdated);
 
-           let amountContributedSinceLastUpdate =
-             patron##patronTokenCostScaledNumerator
-             ->BN.mul(timeElapsed) // A month with 30 days has 2592000 seconds
-             ->BN.div(
-                 // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
-                 BN.new_("31536000000000000000"),
-               );
+                  let amountContributedSinceLastUpdate =
+                    patron##patronTokenCostScaledNumerator
+                    ->BN.mul(timeElapsed) // A month with 30 days has 2592000 seconds
+                    ->BN.div(
+                        // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
+                        BN.new_("31536000000000000000"),
+                      );
 
-           let totalContributedWei =
-             patron##totalContributed
-             ->BN.add(amountContributedSinceLastUpdate);
+                  let totalContributedWei =
+                    patron##totalContributed
+                    ->BN.add(amountContributedSinceLastUpdate);
 
-           (patron##id, totalContributedWei);
-         });
-    Array.sort(
-      ((_, first), (_, second)) => {second->BN.cmp(first)},
-      dailyContributions,
-    );
-    Some(dailyContributions);
-  | Error(_)
-  | Loading
-  | NoData => None
-  };
+                  (patron##id, totalContributedWei);
+                });
+           Array.sort(
+             ((_, first), (_, second)) => {second->BN.cmp(first)},
+             dailyContributions,
+           );
+           Some(dailyContributions);
+         | Error(_)
+         | Loading
+         | NoData => None
+         }; */
 };
 
 open Css;

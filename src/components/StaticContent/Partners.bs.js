@@ -3,19 +3,12 @@
 import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
-import * as Js_exn from "bs-platform/lib/es6/js_exn.js";
-import * as Js_dict from "bs-platform/lib/es6/js_dict.js";
-import * as Js_json from "bs-platform/lib/es6/js_json.js";
 import * as Css_Core from "bs-css/src/Css_Core.bs.js";
-import * as Js_option from "bs-platform/lib/es6/js_option.js";
 import * as RimbleUi from "rimble-ui";
-import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
-import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as Styles$WildCards from "../../Styles.bs.js";
 import * as Globals$WildCards from "../../harberger-lib/Globals.bs.js";
 import * as CONSTANTS$WildCards from "../../CONSTANTS.bs.js";
 import * as RootProvider$WildCards from "../../harberger-lib/RootProvider.bs.js";
-import * as ApolloHooks$ReasonApolloHooks from "@wildcards/reason-apollo-hooks/src/ApolloHooks.bs.js";
 
 var ubisoftLogo = "/img/logos/Ubisoft.png";
 
@@ -25,112 +18,62 @@ var cvLabsLogo = "/img/logos/cvlabszug.jpg";
 
 var kernelLogo = "/img/logos/kernel.gif";
 
-var ppx_printed_query = "query ActivePartners  {\norganisations(where: {onboarding_status: {_in: [live, signed, listed]}})  {\nlogo  \nid  \nname  \n}\n\n}\n";
+var Raw = {};
 
 function parse(value) {
-  var value$1 = Js_option.getExn(Js_json.decodeObject(value));
-  var value$2 = Js_dict.get(value$1, "organisations");
+  var value$1 = value.organisations;
   return {
-          organisations: value$2 !== undefined ? Js_option.getExn(Js_json.decodeArray(Caml_option.valFromOption(value$2))).map(function (value) {
-                  var value$1 = Js_option.getExn(Js_json.decodeObject(value));
-                  var value$2 = Js_dict.get(value$1, "logo");
-                  var tmp;
-                  if (value$2 !== undefined) {
-                    var value$3 = Caml_option.valFromOption(value$2);
-                    var value$4 = Js_json.decodeString(value$3);
-                    tmp = value$4 !== undefined ? value$4 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$3));
-                  } else {
-                    tmp = Js_exn.raiseError("graphql_ppx: Field logo on type organisations is missing");
-                  }
-                  var value$5 = Js_dict.get(value$1, "id");
-                  var tmp$1;
-                  if (value$5 !== undefined) {
-                    var value$6 = Caml_option.valFromOption(value$5);
-                    var value$7 = Js_json.decodeString(value$6);
-                    tmp$1 = value$7 !== undefined ? value$7 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$6));
-                  } else {
-                    tmp$1 = Js_exn.raiseError("graphql_ppx: Field id on type organisations is missing");
-                  }
-                  var value$8 = Js_dict.get(value$1, "name");
-                  var tmp$2;
-                  if (value$8 !== undefined) {
-                    var value$9 = Caml_option.valFromOption(value$8);
-                    var value$10 = Js_json.decodeString(value$9);
-                    tmp$2 = value$10 !== undefined ? value$10 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$9));
-                  } else {
-                    tmp$2 = Js_exn.raiseError("graphql_ppx: Field name on type organisations is missing");
-                  }
-                  return {
-                          logo: tmp,
-                          id: tmp$1,
-                          name: tmp$2
-                        };
-                }) : Js_exn.raiseError("graphql_ppx: Field organisations on type query_root is missing")
+          organisations: value$1.map(function (value) {
+                return {
+                        logo: value.logo,
+                        id: value.id,
+                        name: value.name
+                      };
+              })
         };
 }
 
-function make(param) {
+function serialize(value) {
+  var value$1 = value.organisations;
+  var organisations = value$1.map(function (value) {
+        var value$1 = value.name;
+        var value$2 = value.id;
+        var value$3 = value.logo;
+        return {
+                logo: value$3,
+                id: value$2,
+                name: value$1
+              };
+      });
   return {
-          query: ppx_printed_query,
-          variables: null,
-          parse: parse
+          organisations: organisations
         };
 }
 
-function makeWithVariables(param) {
-  return {
-          query: ppx_printed_query,
-          variables: null,
-          parse: parse
-        };
+function serializeVariables(param) {
+  
 }
 
 function makeVariables(param) {
-  return null;
+  
 }
 
-function definition_2(graphql_ppx_use_json_variables_fn) {
-  return 0;
+function makeDefaultVariables(param) {
+  
 }
-
-var definition = [
-  parse,
-  ppx_printed_query,
-  definition_2
-];
-
-function ret_type(f) {
-  return {};
-}
-
-var MT_Ret = {};
 
 var LoadPatronNoDecode = {
-  ppx_printed_query: ppx_printed_query,
-  query: ppx_printed_query,
+  Raw: Raw,
+  query: "query ActivePartners  {\norganisations(where: {onboarding_status: {_in: [live, signed, listed]}})  {\nlogo  \nid  \nname  \n}\n\n}\n",
   parse: parse,
-  make: make,
-  makeWithVariables: makeWithVariables,
+  serialize: serialize,
+  serializeVariables: serializeVariables,
   makeVariables: makeVariables,
-  definition: definition,
-  ret_type: ret_type,
-  MT_Ret: MT_Ret
+  makeDefaultVariables: makeDefaultVariables
 };
 
 function usePartners(param) {
-  var match = ApolloHooks$ReasonApolloHooks.useQuery(undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, definition);
-  var simple = match[0];
-  if (typeof simple === "number" || simple.TAG) {
-    return ;
-  } else {
-    return Belt_Array.map(simple._0.organisations, (function (org) {
-                  return {
-                          logo: org.logo,
-                          id: org.id,
-                          name: org.name
-                        };
-                }));
-  }
+  
 }
 
 var blueBackground = Curry._1(Css.style, {
@@ -269,21 +212,6 @@ var OrgDetails = {
 };
 
 function Partners(Props) {
-  var newConservationPartners = usePartners(undefined);
-  var orgBox = function (content, key) {
-    return React.createElement(RimbleUi.Box, {
-                mb: 20,
-                mt: 20,
-                children: content,
-                width: [
-                  0.45,
-                  0.45,
-                  0.18
-                ],
-                color: "black",
-                key: key
-              });
-  };
   return React.createElement("div", {
               width: "100%"
             }, React.createElement(RimbleUi.Flex, {
@@ -295,11 +223,7 @@ function Partners(Props) {
                   pt: 50,
                   className: blueBackground
                 }), React.createElement(RimbleUi.Flex, {
-                  children: newConservationPartners !== undefined ? React.createElement(React.Fragment, undefined, Belt_Array.map(newConservationPartners, (function (conservation) {
-                                return orgBox(React.createElement(Partners$OrgDetails, {
-                                                conservation: conservation
-                                              }), conservation.id);
-                              })), orgBox(null, "a"), orgBox(null, "b"), orgBox(null, "c"), orgBox(null, "d")) : null,
+                  children: null,
                   flexWrap: "wrap",
                   alignItems: "stretch",
                   justifyContent: "space-around",
@@ -404,7 +328,7 @@ function Partners(Props) {
                     })));
 }
 
-var make$1 = Partners;
+var make = Partners;
 
 export {
   ubisoftLogo ,
@@ -418,7 +342,7 @@ export {
   logoStyle ,
   centerText ,
   OrgDetails ,
-  make$1 as make,
+  make ,
   
 }
 /* blueBackground Not a pure module */

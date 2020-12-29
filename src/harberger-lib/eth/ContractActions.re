@@ -293,47 +293,47 @@ let execDaiPermitMetaTx =
       },
       _,
     )
+  /* let (simple, _) = result;
+
+     setTxState(_ => SubmittedMetaTx);
+
+     (
+       switch (simple) {
+       | ApolloHooksMutation.Errors(_)
+       | ApolloHooksMutation.NoData => setTxState(_ => Failed)
+       | ApolloHooksMutation.Data(data) =>
+         let success = data##metaTx##success;
+         let errorMsg = data##metaTx##errorMsg;
+         let txHash = data##metaTx##txHash;
+         if (success) {
+           setTxState(_ => SignedAndSubmitted(txHash));
+
+           let providerUrl = "https://goerli.infura.io/v3/c401b8ee3a324619a453f2b5b2122d7a";
+           let maticProvider = Ethers.makeProvider(providerUrl);
+
+           let waitForTx =
+             maticProvider
+             ->Ethers.waitForTransaction(txHash)
+             ->Promise.Js.toResult;
+
+           waitForTx->Promise.getOk(tx => {setTxState(_ => Complete(tx))});
+           waitForTx->Promise.getError(error => {
+             setTxState(_ => Failed);
+             Js.log("GOT AN ERROR");
+             Js.log(error);
+           });
+         } else {
+           setTxState(_ =>
+             ServerError(errorMsg->Option.getWithDefault("Unknown error"))
+           );
+           ();
+         };
+       }
+     )
+     ->ignore; */
   ->Js.Promise.then_(
       result => {
-        open ReasonApolloHooks;
-        let (simple, _) = result;
-
-        setTxState(_ => SubmittedMetaTx);
-
-        (
-          switch (simple) {
-          | ApolloHooksMutation.Errors(_)
-          | ApolloHooksMutation.NoData => setTxState(_ => Failed)
-          | ApolloHooksMutation.Data(data) =>
-            let success = data##metaTx##success;
-            let errorMsg = data##metaTx##errorMsg;
-            let txHash = data##metaTx##txHash;
-            if (success) {
-              setTxState(_ => SignedAndSubmitted(txHash));
-
-              let providerUrl = "https://goerli.infura.io/v3/c401b8ee3a324619a453f2b5b2122d7a";
-              let maticProvider = Ethers.makeProvider(providerUrl);
-
-              let waitForTx =
-                maticProvider
-                ->Ethers.waitForTransaction(txHash)
-                ->Promise.Js.toResult;
-
-              waitForTx->Promise.getOk(tx => {setTxState(_ => Complete(tx))});
-              waitForTx->Promise.getError(error => {
-                setTxState(_ => Failed);
-                Js.log("GOT AN ERROR");
-                Js.log(error);
-              });
-            } else {
-              setTxState(_ =>
-                ServerError(errorMsg->Option.getWithDefault("Unknown error"))
-              );
-              ();
-            };
-          }
-        )
-        ->ignore;
+        Js.log(result);
         Js.Promise.resolve();
       },
       _,

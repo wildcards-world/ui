@@ -215,57 +215,7 @@ function execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, se
         return Curry._6(sendMetaTx, networkName, match.r, match.s, match.v, param[0], userAddress);
       });
   var __x$3 = __x$2.then(function (result) {
-        var simple = result[0];
-        Curry._1(setTxState, (function (param) {
-                return /* SubmittedMetaTx */3;
-              }));
-        var exit = 0;
-        if (typeof simple === "number" || simple.TAG) {
-          exit = 1;
-        } else {
-          var data = simple._0;
-          var success = data.metaTx.success;
-          var errorMsg = data.metaTx.errorMsg;
-          var txHash = data.metaTx.txHash;
-          if (success) {
-            Curry._1(setTxState, (function (param) {
-                    return {
-                            TAG: /* SignedAndSubmitted */1,
-                            _0: txHash
-                          };
-                  }));
-            var maticProvider = new (Ethers.providers.JsonRpcProvider)("https://goerli.infura.io/v3/c401b8ee3a324619a453f2b5b2122d7a");
-            var waitForTx = $$Promise.Js.toResult(maticProvider.waitForTransaction(txHash));
-            $$Promise.getOk(waitForTx, (function (tx) {
-                    return Curry._1(setTxState, (function (param) {
-                                  return {
-                                          TAG: /* Complete */4,
-                                          _0: tx
-                                        };
-                                }));
-                  }));
-            $$Promise.getError(waitForTx, (function (error) {
-                    Curry._1(setTxState, (function (param) {
-                            return /* Failed */4;
-                          }));
-                    console.log("GOT AN ERROR");
-                    console.log(error);
-                    
-                  }));
-          } else {
-            Curry._1(setTxState, (function (param) {
-                    return {
-                            TAG: /* ServerError */3,
-                            _0: Belt_Option.getWithDefault(errorMsg, "Unknown error")
-                          };
-                  }));
-          }
-        }
-        if (exit === 1) {
-          Curry._1(setTxState, (function (param) {
-                  return /* Failed */4;
-                }));
-        }
+        console.log(result);
         return Promise.resolve(undefined);
       });
   __x$3.catch(function (err) {

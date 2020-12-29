@@ -31,13 +31,22 @@
     "reason-promise",
     "reason-react",
     "re-classnames",
-    "@wildcards/reason-apollo",
-    "@wildcards/reason-apollo-hooks",
     "rescript-logger",
-    "@glennsl/bs-jest"
+    "@glennsl/bs-jest",
+    "@reasonml-community/graphql-ppx",
+    "reason-apollo-client"
   ],
+  "graphql": {
+    "apolloMode": true,
+    "extendMutation": "ApolloClient.GraphQL_PPX.ExtendMutation",
+    "extendQuery": "ApolloClient.GraphQL_PPX.ExtendQuery",
+    "extendSubscription": "ApolloClient.GraphQL_PPX.ExtendSubscription",
+    "templateTagReturnType": "ApolloClient.GraphQL_PPX.templateTagReturnType",
+    "templateTagImport": "gql",
+    "templateTagLocation": "@apollo/client"
+  },
   "ppx-flags": [
-    "@baransu/graphql_ppx_re/ppx",
+    "@reasonml-community/graphql-ppx/ppx",
     "bs-let/ppx",
     "decco/ppx",
     "rescript-logger/ppx"
