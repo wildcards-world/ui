@@ -20,6 +20,7 @@ import * as ContractUtil from "./ContractUtil.bs.js";
 import * as RootProvider from "../RootProvider.bs.js";
 import * as Core from "@web3-react/core";
 import * as LoyaltyTokenJson from "./abi/loyaltyToken.json";
+import * as ApolloClient__React_Hooks_UseMutation from "reason-apollo-client/src/@apollo/client/react/hooks/ApolloClient__React_Hooks_UseMutation.bs.js";
 
 var loyaltyTokenAbi = LoyaltyTokenJson.loyaltyToken;
 
@@ -192,6 +193,105 @@ function useLoyaltyTokenContract(param) {
             ]);
 }
 
+var Raw = {};
+
+var query = (require("@apollo/client").gql`
+  mutation ($network: String!, $r: String!, $s: String!, $v: Int!, $userAddress: String!, $functionSignature: String!)  {
+    metaTx(functionSignature: $functionSignature, network: $network, r: $r, s: $s, userAddress: $userAddress, v: $v)  {
+      __typename
+      txHash
+      success
+      errorMsg
+    }
+  }
+`);
+
+function parse(value) {
+  var value$1 = value.metaTx;
+  var value$2 = value$1.errorMsg;
+  return {
+          metaTx: {
+            __typename: value$1.__typename,
+            txHash: value$1.txHash,
+            success: value$1.success,
+            errorMsg: !(value$2 == null) ? value$2 : undefined
+          }
+        };
+}
+
+function serialize(value) {
+  var value$1 = value.metaTx;
+  var value$2 = value$1.errorMsg;
+  var errorMsg = value$2 !== undefined ? value$2 : null;
+  var value$3 = value$1.success;
+  var value$4 = value$1.txHash;
+  var value$5 = value$1.__typename;
+  var metaTx = {
+    __typename: value$5,
+    txHash: value$4,
+    success: value$3,
+    errorMsg: errorMsg
+  };
+  return {
+          metaTx: metaTx
+        };
+}
+
+function serializeVariables(inp) {
+  return {
+          network: inp.network,
+          r: inp.r,
+          s: inp.s,
+          v: inp.v,
+          userAddress: inp.userAddress,
+          functionSignature: inp.functionSignature
+        };
+}
+
+function makeVariables(network, r, s, v, userAddress, functionSignature, param) {
+  return {
+          network: network,
+          r: r,
+          s: s,
+          v: v,
+          userAddress: userAddress,
+          functionSignature: functionSignature
+        };
+}
+
+var ExecuteMetaTxMutation_inner = {
+  Raw: Raw,
+  query: query,
+  parse: parse,
+  serialize: serialize,
+  serializeVariables: serializeVariables,
+  makeVariables: makeVariables
+};
+
+var include = ApolloClient__React_Hooks_UseMutation.Extend({
+      query: query,
+      Raw: Raw,
+      parse: parse,
+      serialize: serialize,
+      serializeVariables: serializeVariables
+    });
+
+var use = include.use;
+
+var ExecuteMetaTxMutation_useWithVariables = include.useWithVariables;
+
+var ExecuteMetaTxMutation = {
+  ExecuteMetaTxMutation_inner: ExecuteMetaTxMutation_inner,
+  Raw: Raw,
+  query: query,
+  parse: parse,
+  serialize: serialize,
+  serializeVariables: serializeVariables,
+  makeVariables: makeVariables,
+  use: use,
+  useWithVariables: ExecuteMetaTxMutation_useWithVariables
+};
+
 function execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, sendMetaTx, userAddress, spender, lib, generateFunctionSignature, chainId, verifyingContract) {
   var __x = DaiPermit.createPermitSig(lib.provider, verifyingContract, daiNonce, chainId, userAddress, spender);
   var __x$1 = __x.then(function (rsvSig) {
@@ -212,7 +312,7 @@ function execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, se
       });
   var __x$2 = __x$1.then(function (param) {
         var match = ContractUtil.getEthSig(param[1]);
-        return Promise.resolve(Curry._6(sendMetaTx, networkName, match.r, match.s, match.v, param[0], userAddress));
+        return Promise.resolve(Curry._8(sendMetaTx, undefined, undefined, undefined, undefined, undefined, undefined, undefined, makeVariables(networkName, match.r, match.s, match.v, userAddress, param[0], undefined)));
       });
   __x$2.catch(function (err) {
         console.log("this error was caught", err);
@@ -221,36 +321,7 @@ function execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, se
   
 }
 
-function useBuy(chain, animal, library, account, parentChainId) {
-  var animalId = TokenId.toString(animal);
-  var optSteward = useStewardContract(undefined);
-  var match = React.useState(function () {
-        return /* UnInitialised */0;
-      });
-  var setTxState = match[1];
-  var txState = match[0];
-  var match$1 = Curry.app(QlHooks.ExecuteMetaTxMutation.use, [
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined
-      ]);
-  var result = match$1[1];
-  var mutate = match$1[0];
-  var sendMetaTx = function (network, r, s, v, functionSignature, userAddress) {
-    Curry._8(mutate, undefined, undefined, undefined, undefined, undefined, undefined, undefined, QlHooks.ExecuteMetaTxMutation.makeVariables(network, r, s, v, userAddress, functionSignature, undefined));
-    
-  };
-  var exit = 0;
+function handleMetaTxSumbissionState(result, setTxState) {
   var data = result.data;
   if (data !== undefined && result.error === undefined) {
     var success = data.metaTx.success;
@@ -273,33 +344,56 @@ function useBuy(chain, animal, library, account, parentChainId) {
                                   };
                           }));
             }));
-      $$Promise.getError(waitForTx, (function (error) {
-              Curry._1(setTxState, (function (param) {
-                      return /* Failed */4;
-                    }));
-              console.log("GOT AN ERROR");
-              console.log(error);
-              
-            }));
-    } else {
-      Curry._1(setTxState, (function (param) {
-              return {
-                      TAG: /* ServerError */3,
-                      _0: Belt_Option.getWithDefault(errorMsg, "Unknown error")
-                    };
-            }));
+      return $$Promise.getError(waitForTx, (function (error) {
+                    Curry._1(setTxState, (function (param) {
+                            return /* Failed */4;
+                          }));
+                    console.log("GOT AN ERROR");
+                    console.log(error);
+                    
+                  }));
     }
-  } else {
-    exit = 1;
-  }
-  if (exit === 1) {
     Curry._1(setTxState, (function (param) {
             return {
                     TAG: /* ServerError */3,
-                    _0: "Query Error"
+                    _0: Belt_Option.getWithDefault(errorMsg, "Unknown error")
                   };
           }));
+    return ;
   }
+  return Curry._1(setTxState, (function (param) {
+                return {
+                        TAG: /* ServerError */3,
+                        _0: "Query Error"
+                      };
+              }));
+}
+
+function useBuy(chain, animal, library, account, parentChainId) {
+  var animalId = TokenId.toString(animal);
+  var optSteward = useStewardContract(undefined);
+  var match = React.useState(function () {
+        return /* UnInitialised */0;
+      });
+  var setTxState = match[1];
+  var txState = match[0];
+  var match$1 = Curry.app(use, [
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+      ]);
+  var mutate = match$1[0];
+  handleMetaTxSumbissionState(match$1[1], setTxState);
   var chainIdInt = getChildChainId(parentChainId);
   var chainId = new BnJs(chainIdInt);
   var verifyingContract = getDaiContractAddress(chain, chainIdInt);
@@ -386,7 +480,7 @@ function useBuy(chain, animal, library, account, parentChainId) {
                                 _0: new BnJs(value)
                               };
                       }));
-                return execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, sendMetaTx, account, spender, library, (function (steward, v, r, s) {
+                return execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, mutate, account, spender, library, (function (steward, v, r, s) {
                               return Curry._1(steward.methods.buyWithPermit(new BnJs(daiNonce), new BnJs("0"), true, v, r, s, animalId, Web3Utils.toWeiFromEth(newPrice), oldPrice, wildcardsPercentage, value).encodeABI, undefined);
                             }), chainId, verifyingContract);
               }),
@@ -403,7 +497,23 @@ function useBuyAuction(chain, animal, library, account, parentChainId) {
   var txState = match[0];
   var animalId = TokenId.toString(animal);
   var optSteward = useStewardContract(undefined);
-  var sendMetaTx = QlHooks.useMetaTx(undefined);
+  var match$1 = Curry.app(use, [
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+      ]);
+  var mutate = match$1[0];
+  handleMetaTxSumbissionState(match$1[1], setTxState);
   var chainIdInt = getChildChainId(parentChainId);
   var chainId = new BnJs(chainIdInt);
   var verifyingContract = getDaiContractAddress(chain, chainIdInt);
@@ -481,7 +591,7 @@ function useBuyAuction(chain, animal, library, account, parentChainId) {
                                   _0: new BnJs(value)
                                 };
                         }));
-                  return execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, sendMetaTx, account, spender, library, (function (steward, v, r, s) {
+                  return execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, mutate, account, spender, library, (function (steward, v, r, s) {
                                 return Curry._1(steward.methods.buyAuctionWithPermit(new BnJs(daiNonce), new BnJs("0"), true, v, r, s, animalId, Web3Utils.toWeiFromEth(newPrice), wildcardsPercentage, value).encodeABI, undefined);
                               }), chainId, verifyingContract);
                 }
@@ -561,7 +671,23 @@ function useUpdateDeposit(chain, library, account, parentChainId) {
   var setTxState = match[1];
   var txState = match[0];
   var optSteward = useStewardContract(undefined);
-  var sendMetaTx = QlHooks.useMetaTx(undefined);
+  var match$1 = Curry.app(use, [
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+      ]);
+  var mutate = match$1[0];
+  handleMetaTxSumbissionState(match$1[1], setTxState);
   var chainIdInt = getChildChainId(parentChainId);
   var chainId = new BnJs(chainIdInt);
   var verifyingContract = getDaiContractAddress(chain, chainIdInt);
@@ -631,7 +757,7 @@ function useUpdateDeposit(chain, library, account, parentChainId) {
                                   _0: new BnJs(amountToAdd)
                                 };
                         }));
-                  return execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, sendMetaTx, account, spender, library, (function (steward, v, r, s) {
+                  return execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, mutate, account, spender, library, (function (steward, v, r, s) {
                                 return Curry._1(steward.methods.depositWithPermit(new BnJs(daiNonce), new BnJs("0"), true, v, r, s, account, new BnJs(amountToAdd)).encodeABI, undefined);
                               }), chainId, verifyingContract);
                 }
@@ -861,7 +987,9 @@ export {
   loyaltyTokenAddressFromChainId ,
   useStewardContract ,
   useLoyaltyTokenContract ,
+  ExecuteMetaTxMutation ,
   execDaiPermitMetaTx ,
+  handleMetaTxSumbissionState ,
   useBuy ,
   useBuyAuction ,
   useRedeemLoyaltyTokens ,

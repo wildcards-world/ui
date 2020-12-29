@@ -217,13 +217,44 @@ type transactionState =
   | Complete(txResult)
   | Failed;
 
+module ExecuteMetaTxMutation = [%graphql
+  {|
+    mutation (
+      $network: String!,
+      $r: String!,
+      $s: String!,
+      $v: Int!,
+      $userAddress: String!,
+      $functionSignature: String!
+    ) {
+      metaTx(
+        functionSignature: $functionSignature,
+        network: $network ,
+        r: $r,
+        s: $s,
+        userAddress: $userAddress,
+        v: $v
+      ) {
+        txHash
+        success
+        errorMsg
+      }
+    }
+  |}
+];
+
 let execDaiPermitMetaTx =
     (
       daiNonce,
       networkName,
       stewardNonce,
       setTxState,
-      sendMetaTx,
+      sendMetaTx:
+        ApolloClient__React_Hooks_UseMutation.MutationTuple.t_mutationFn(
+          ExecuteMetaTxMutation.ExecuteMetaTxMutation_inner.t,
+          ExecuteMetaTxMutation.ExecuteMetaTxMutation_inner.t_variables,
+          ExecuteMetaTxMutation.ExecuteMetaTxMutation_inner.Raw.t_variables,
+        ),
       userAddress,
       spender,
       lib: Web3.web3Library,
@@ -281,12 +312,15 @@ let execDaiPermitMetaTx =
         open ContractUtil;
         let {r, s, v} = getEthSig(signature);
         sendMetaTx(
-          ~network=networkName,
-          ~r,
-          ~s,
-          ~v,
-          ~functionSignature,
-          userAddress,
+          ExecuteMetaTxMutation.makeVariables(
+            ~network=networkName,
+            ~r,
+            ~s,
+            ~v,
+            ~functionSignature,
+            ~userAddress,
+            (),
+          ),
         )
         ->Js.Promise.resolve;
       },
@@ -303,35 +337,14 @@ let execDaiPermitMetaTx =
   ->ignore;
 };
 
-let useBuy =
+let handleMetaTxSumbissionState =
     (
-      ~chain,
-      animal: TokenId.t,
-      library: option(Web3.web3Library),
-      account,
-      parentChainId,
-    ) => {
-  let animalId = animal->TokenId.toString;
-
-  let optSteward = useStewardContract();
-  let (txState, setTxState) = React.useState(() => UnInitialised);
-
-  // let sendMetaTx = QlHooks.useMetaTx();
-  let (mutate, result) = QlHooks.ExecuteMetaTxMutation.use();
-  let sendMetaTx = (~network, ~r, ~s, ~v, ~functionSignature, userAddress) =>
-    mutate(
-      QlHooks.ExecuteMetaTxMutation.makeVariables(
-        ~network,
-        ~r,
-        ~s,
-        ~v,
-        ~functionSignature,
-        ~userAddress,
-        (),
-      ),
-    )
-    ->ignore;
-
+      result:
+        ApolloClient__React_Types.MutationResult.t(
+          ExecuteMetaTxMutation.ExecuteMetaTxMutation_inner.t,
+        ),
+      setTxState,
+    ) =>
   switch (result) {
   //  | {called: true} =>
   //  | {loading: true} =>
@@ -364,6 +377,22 @@ let useBuy =
   | {error: _, _} => setTxState(_ => ServerError("Query Error"))
   };
 
+let useBuy =
+    (
+      ~chain,
+      animal: TokenId.t,
+      library: option(Web3.web3Library),
+      account,
+      parentChainId,
+    ) => {
+  let animalId = animal->TokenId.toString;
+
+  let optSteward = useStewardContract();
+  let (txState, setTxState) = React.useState(() => UnInitialised);
+
+  let (mutate, result) = ExecuteMetaTxMutation.use();
+  handleMetaTxSumbissionState(result, setTxState);
+
   let chainIdInt = parentChainId->getChildChainId;
   let chainId = chainIdInt->BN.newInt_;
   let verifyingContract = getDaiContractAddress(chain, chainIdInt);
@@ -392,7 +421,7 @@ let useBuy =
               networkName,
               stewardNonce,
               setTxState,
-              sendMetaTx,
+              mutate,
               userAddress,
               spender,
               lib,
@@ -484,7 +513,8 @@ let useBuyAuction =
 
   let optSteward = useStewardContract();
 
-  let sendMetaTx = QlHooks.useMetaTx();
+  let (mutate, result) = ExecuteMetaTxMutation.use();
+  handleMetaTxSumbissionState(result, setTxState);
 
   let chainIdInt = parentChainId->getChildChainId;
   let chainId = chainIdInt->BN.newInt_;
@@ -512,7 +542,7 @@ let useBuyAuction =
               networkName,
               stewardNonce,
               setTxState,
-              sendMetaTx,
+              mutate,
               userAddress,
               spender,
               lib,
@@ -640,7 +670,8 @@ let useUpdateDeposit =
 
   let optSteward = useStewardContract();
 
-  let sendMetaTx = QlHooks.useMetaTx();
+  let (mutate, result) = ExecuteMetaTxMutation.use();
+  handleMetaTxSumbissionState(result, setTxState);
 
   let chainIdInt = parentChainId->getChildChainId;
   let chainId = chainIdInt->BN.newInt_;
@@ -668,7 +699,7 @@ let useUpdateDeposit =
               networkName,
               stewardNonce,
               setTxState,
-              sendMetaTx,
+              mutate,
               userAddress,
               spender,
               lib,

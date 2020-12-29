@@ -18,7 +18,6 @@ import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as RootProvider from "./RootProvider.bs.js";
 import * as GqlConverters from "../gql/GqlConverters.bs.js";
 import * as ApolloClient__React_Hooks_UseQuery from "reason-apollo-client/src/@apollo/client/react/hooks/ApolloClient__React_Hooks_UseQuery.bs.js";
-import * as ApolloClient__React_Hooks_UseMutation from "reason-apollo-client/src/@apollo/client/react/hooks/ApolloClient__React_Hooks_UseMutation.bs.js";
 
 function decodeBN(number) {
   return new BnJs(Belt_Option.mapWithDefault(Js_json.decodeString(number), "0", (function (a) {
@@ -1024,109 +1023,6 @@ function useMaticState(forceRefetch, address, network) {
   
 }
 
-var Raw$2 = {};
-
-var query$2 = (require("@apollo/client").gql`
-  mutation ($network: String!, $r: String!, $s: String!, $v: Int!, $userAddress: String!, $functionSignature: String!)  {
-    metaTx(functionSignature: $functionSignature, network: $network, r: $r, s: $s, userAddress: $userAddress, v: $v)  {
-      __typename
-      txHash
-      success
-      errorMsg
-    }
-  }
-`);
-
-function parse$2(value) {
-  var value$1 = value.metaTx;
-  var value$2 = value$1.errorMsg;
-  return {
-          metaTx: {
-            __typename: value$1.__typename,
-            txHash: value$1.txHash,
-            success: value$1.success,
-            errorMsg: !(value$2 == null) ? value$2 : undefined
-          }
-        };
-}
-
-function serialize$2(value) {
-  var value$1 = value.metaTx;
-  var value$2 = value$1.errorMsg;
-  var errorMsg = value$2 !== undefined ? value$2 : null;
-  var value$3 = value$1.success;
-  var value$4 = value$1.txHash;
-  var value$5 = value$1.__typename;
-  var metaTx = {
-    __typename: value$5,
-    txHash: value$4,
-    success: value$3,
-    errorMsg: errorMsg
-  };
-  return {
-          metaTx: metaTx
-        };
-}
-
-function serializeVariables$2(inp) {
-  return {
-          network: inp.network,
-          r: inp.r,
-          s: inp.s,
-          v: inp.v,
-          userAddress: inp.userAddress,
-          functionSignature: inp.functionSignature
-        };
-}
-
-function makeVariables$2(network, r, s, v, userAddress, functionSignature, param) {
-  return {
-          network: network,
-          r: r,
-          s: s,
-          v: v,
-          userAddress: userAddress,
-          functionSignature: functionSignature
-        };
-}
-
-var ExecuteMetaTxMutation_inner = {
-  Raw: Raw$2,
-  query: query$2,
-  parse: parse$2,
-  serialize: serialize$2,
-  serializeVariables: serializeVariables$2,
-  makeVariables: makeVariables$2
-};
-
-var include$2 = ApolloClient__React_Hooks_UseMutation.Extend({
-      query: query$2,
-      Raw: Raw$2,
-      parse: parse$2,
-      serialize: serialize$2,
-      serializeVariables: serializeVariables$2
-    });
-
-var ExecuteMetaTxMutation_use = include$2.use;
-
-var ExecuteMetaTxMutation_useWithVariables = include$2.useWithVariables;
-
-var ExecuteMetaTxMutation = {
-  ExecuteMetaTxMutation_inner: ExecuteMetaTxMutation_inner,
-  Raw: Raw$2,
-  query: query$2,
-  parse: parse$2,
-  serialize: serialize$2,
-  serializeVariables: serializeVariables$2,
-  makeVariables: makeVariables$2,
-  use: ExecuteMetaTxMutation_use,
-  useWithVariables: ExecuteMetaTxMutation_useWithVariables
-};
-
-function useMetaTx(param) {
-  
-}
-
 function useArtistData(artistIdentifier) {
   var artistQuery = Curry.app(use, [
         undefined,
@@ -1300,8 +1196,6 @@ export {
   useLaunchTimeBN ,
   useMaticStateQuery ,
   useMaticState ,
-  ExecuteMetaTxMutation ,
-  useMetaTx ,
   useArtistData ,
   useArtistEthAddress ,
   useArtistName ,
