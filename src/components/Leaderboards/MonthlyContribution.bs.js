@@ -3,16 +3,16 @@
 import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
+import * as Helper from "../../harberger-lib/Helper.bs.js";
+import * as Globals from "../../harberger-lib/Globals.bs.js";
+import * as QlHooks from "../../harberger-lib/QlHooks.bs.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import * as Belt_Float from "bs-platform/lib/es6/belt_Float.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
-import * as Helper$WildCards from "../../harberger-lib/Helper.bs.js";
-import * as Globals$WildCards from "../../harberger-lib/Globals.bs.js";
-import * as QlHooks$WildCards from "../../harberger-lib/QlHooks.bs.js";
-import * as RootProvider$WildCards from "../../harberger-lib/RootProvider.bs.js";
-import * as UserProvider$WildCards from "../../harberger-lib/js/user-provider/UserProvider.bs.js";
+import * as RootProvider from "../../harberger-lib/RootProvider.bs.js";
+import * as UserProvider from "../../harberger-lib/js/user-provider/UserProvider.bs.js";
 
 var goldTrophyImg = "/img/icons/gold-trophy.png";
 
@@ -159,20 +159,20 @@ function rankingColor(index) {
 
 function MonthlyContribution$ContributorName(Props) {
   var contributor = Props.contributor;
-  Curry._2(UserProvider$WildCards.useUserInfoContext(undefined).update, contributor, false);
-  var optThreeBoxData = UserProvider$WildCards.use3BoxUserData(contributor);
+  Curry._2(UserProvider.useUserInfoContext(undefined).update, contributor, false);
+  var optThreeBoxData = UserProvider.use3BoxUserData(contributor);
   var optUserName = Belt_Option.flatMap(Belt_Option.flatMap(optThreeBoxData, (function (threeBoxData) {
               return threeBoxData.profile;
             })), (function (threeBoxData) {
           return threeBoxData.name;
         }));
-  var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
+  var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   return React.createElement("span", undefined, React.createElement("a", {
                   onClick: (function (e) {
                       e.preventDefault();
                       return Curry._1(clearAndPush, "/#user/" + contributor);
                     })
-                }, optUserName !== undefined ? React.createElement("span", undefined, optUserName) : React.createElement("span", undefined, Helper$WildCards.elipsify(contributor, 20))));
+                }, optUserName !== undefined ? React.createElement("span", undefined, optUserName) : React.createElement("span", undefined, Helper.elipsify(contributor, 20))));
 }
 
 var ContributorName = {
@@ -181,7 +181,7 @@ var ContributorName = {
 
 function MonthlyContribution(Props) {
   var numberOfLeaders = Props.numberOfLeaders;
-  var topContributorsOpt = QlHooks$WildCards.useLoadTopContributorsData(numberOfLeaders);
+  var topContributorsOpt = QlHooks.useLoadTopContributorsData(numberOfLeaders);
   return React.createElement("div", undefined, React.createElement(RimbleUi.Heading, {
                   children: "Wildcards Monthly Contribution Leaderboard"
                 }), React.createElement("br", undefined), React.createElement(RimbleUi.Table, {
@@ -192,7 +192,7 @@ function MonthlyContribution(Props) {
                     }, React.createElement("tr", undefined, React.createElement("th", undefined, "Rank"), React.createElement("th", undefined, "Guardian"), React.createElement("th", undefined, "Monthly Contribution"))), React.createElement("tbody", undefined, topContributorsOpt !== undefined ? Belt_Array.mapWithIndex(Caml_option.valFromOption(topContributorsOpt), (function (index, param) {
                               var amount = param[1];
                               var contributor = param[0];
-                              var amountRaisedFloat = Globals$WildCards.$pipe$pipe$pipe$pipe(Belt_Float.fromString(amount), 0);
+                              var amountRaisedFloat = Globals.$pipe$pipe$pipe$pipe(Belt_Float.fromString(amount), 0);
                               if (amountRaisedFloat < 0.0000001) {
                                 return null;
                               } else {

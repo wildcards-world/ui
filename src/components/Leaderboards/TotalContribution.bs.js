@@ -4,25 +4,39 @@ import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as $$Array from "bs-platform/lib/es6/array.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
+import * as Helper from "../../harberger-lib/Helper.bs.js";
+import * as Web3Utils from "../../harberger-lib/Web3Utils.bs.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
-import * as Helper$WildCards from "../../harberger-lib/Helper.bs.js";
-import * as Web3Utils$WildCards from "../../harberger-lib/Web3Utils.bs.js";
-import * as RootProvider$WildCards from "../../harberger-lib/RootProvider.bs.js";
-import * as UserProvider$WildCards from "../../harberger-lib/js/user-provider/UserProvider.bs.js";
-import * as GqlConverters$WildCards from "../../gql/GqlConverters.bs.js";
+import * as RootProvider from "../../harberger-lib/RootProvider.bs.js";
+import * as UserProvider from "../../harberger-lib/js/user-provider/UserProvider.bs.js";
+import * as GqlConverters from "../../gql/GqlConverters.bs.js";
+import * as ApolloClient__React_Hooks_UseQuery from "reason-apollo-client/src/@apollo/client/react/hooks/ApolloClient__React_Hooks_UseQuery.bs.js";
 
 var Raw = {};
+
+var query = (require("@apollo/client").gql`
+  query   {
+    patrons(first: 30, orderBy: totalContributed, orderDirection: desc, where: {id_not: "0x6d47cf86f6a490c6410fc082fd1ad29cf61492d0"})  {
+      __typename
+      id
+      patronTokenCostScaledNumerator
+      totalContributed
+      lastUpdated
+    }
+  }
+`);
 
 function parse(value) {
   var value$1 = value.patrons;
   return {
           patrons: value$1.map(function (value) {
                 return {
+                        __typename: value.__typename,
                         id: value.id,
-                        patronTokenCostScaledNumerator: GqlConverters$WildCards.$$BigInt.parse(value.patronTokenCostScaledNumerator),
-                        totalContributed: GqlConverters$WildCards.$$BigInt.parse(value.totalContributed),
-                        lastUpdated: GqlConverters$WildCards.$$BigInt.parse(value.lastUpdated)
+                        patronTokenCostScaledNumerator: GqlConverters.$$BigInt.parse(value.patronTokenCostScaledNumerator),
+                        totalContributed: GqlConverters.$$BigInt.parse(value.totalContributed),
+                        lastUpdated: GqlConverters.$$BigInt.parse(value.lastUpdated)
                       };
               })
         };
@@ -32,13 +46,15 @@ function serialize(value) {
   var value$1 = value.patrons;
   var patrons = value$1.map(function (value) {
         var value$1 = value.lastUpdated;
-        var value$2 = GqlConverters$WildCards.$$BigInt.serialize(value$1);
+        var value$2 = GqlConverters.$$BigInt.serialize(value$1);
         var value$3 = value.totalContributed;
-        var value$4 = GqlConverters$WildCards.$$BigInt.serialize(value$3);
+        var value$4 = GqlConverters.$$BigInt.serialize(value$3);
         var value$5 = value.patronTokenCostScaledNumerator;
-        var value$6 = GqlConverters$WildCards.$$BigInt.serialize(value$5);
+        var value$6 = GqlConverters.$$BigInt.serialize(value$5);
         var value$7 = value.id;
+        var value$8 = value.__typename;
         return {
+                __typename: value$8,
                 id: value$7,
                 patronTokenCostScaledNumerator: value$6,
                 totalContributed: value$4,
@@ -62,14 +78,45 @@ function makeDefaultVariables(param) {
   
 }
 
-var LoadMostContributed = {
+var LoadMostContributed_inner = {
   Raw: Raw,
-  query: "query   {\npatrons(first: 30, orderBy: totalContributed, orderDirection: desc, where: {id_not: \"0x6d47cf86f6a490c6410fc082fd1ad29cf61492d0\"})  {\nid  \npatronTokenCostScaledNumerator  \ntotalContributed  \nlastUpdated  \n}\n\n}\n",
+  query: query,
   parse: parse,
   serialize: serialize,
   serializeVariables: serializeVariables,
   makeVariables: makeVariables,
   makeDefaultVariables: makeDefaultVariables
+};
+
+var include = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query,
+      Raw: Raw,
+      parse: parse,
+      serialize: serialize,
+      serializeVariables: serializeVariables
+    });
+
+var LoadMostContributed_refetchQueryDescription = include.refetchQueryDescription;
+
+var LoadMostContributed_use = include.use;
+
+var LoadMostContributed_useLazy = include.useLazy;
+
+var LoadMostContributed_useLazyWithVariables = include.useLazyWithVariables;
+
+var LoadMostContributed = {
+  LoadMostContributed_inner: LoadMostContributed_inner,
+  Raw: Raw,
+  query: query,
+  parse: parse,
+  serialize: serialize,
+  serializeVariables: serializeVariables,
+  makeVariables: makeVariables,
+  makeDefaultVariables: makeDefaultVariables,
+  refetchQueryDescription: LoadMostContributed_refetchQueryDescription,
+  use: LoadMostContributed_use,
+  useLazy: LoadMostContributed_useLazy,
+  useLazyWithVariables: LoadMostContributed_useLazyWithVariables
 };
 
 function useLoadMostContributed(param) {
@@ -229,14 +276,14 @@ function TotalContribution$ContributorsRow(Props) {
   var contributor = Props.contributor;
   var amount = Props.amount;
   var index = Props.index;
-  Curry._2(UserProvider$WildCards.useUserInfoContext(undefined).update, contributor, false);
-  var optThreeBoxData = UserProvider$WildCards.use3BoxUserData(contributor);
+  Curry._2(UserProvider.useUserInfoContext(undefined).update, contributor, false);
+  var optThreeBoxData = UserProvider.use3BoxUserData(contributor);
   var optUserName = Belt_Option.flatMap(Belt_Option.flatMap(optThreeBoxData, (function (threeBoxData) {
               return threeBoxData.profile;
             })), (function (threeBoxData) {
           return threeBoxData.name;
         }));
-  var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
+  var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   return React.createElement("tr", {
               key: contributor,
               className: rankingColor(index)
@@ -264,7 +311,7 @@ function TotalContribution$ContributorsRow(Props) {
                           e.preventDefault();
                           return Curry._1(clearAndPush, "/#user/" + contributor);
                         })
-                    }, optUserName !== undefined ? React.createElement("span", undefined, optUserName) : React.createElement("span", undefined, Helper$WildCards.elipsify(contributor, 20)))), React.createElement("td", {
+                    }, optUserName !== undefined ? React.createElement("span", undefined, optUserName) : React.createElement("span", undefined, Helper.elipsify(contributor, 20)))), React.createElement("td", {
                   className: rankMetric
                 }, amount + " ETH"));
 }
@@ -278,7 +325,7 @@ function TotalContribution$MostContributed(Props) {
   return $$Array.mapi((function (index, param) {
                 return React.createElement(TotalContribution$ContributorsRow, {
                             contributor: param[0],
-                            amount: Web3Utils$WildCards.fromWeiBNToEthPrecision(param[1], 4),
+                            amount: Web3Utils.fromWeiBNToEthPrecision(param[1], 4),
                             index: index
                           });
               }), highestContributors);
@@ -327,4 +374,4 @@ export {
   make ,
   
 }
-/* leaderboardTable Not a pure module */
+/* query Not a pure module */

@@ -3,10 +3,10 @@
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as ReactTabs from "react-tabs";
-import * as RootProvider$WildCards from "../../harberger-lib/RootProvider.bs.js";
-import * as TotalDaysHeld$WildCards from "./TotalDaysHeld.bs.js";
-import * as TotalContribution$WildCards from "./TotalContribution.bs.js";
-import * as MonthlyContribution$WildCards from "./MonthlyContribution.bs.js";
+import * as RootProvider from "../../harberger-lib/RootProvider.bs.js";
+import * as TotalDaysHeld from "./TotalDaysHeld.bs.js";
+import * as TotalContribution from "./TotalContribution.bs.js";
+import * as MonthlyContribution from "./MonthlyContribution.bs.js";
 
 function indexToType(tabIndex) {
   switch (tabIndex) {
@@ -23,7 +23,7 @@ function indexToType(tabIndex) {
 
 function LeaderBoards(Props) {
   var leaderboardType = Props.leaderboardType;
-  var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
+  var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   var index;
   switch (leaderboardType) {
     case /* TotalContribution */0 :
@@ -57,15 +57,15 @@ function LeaderBoards(Props) {
                     }), React.createElement(ReactTabs.Tab, {
                       children: "Days Held"
                     })), React.createElement(ReactTabs.TabPanel, {
-                  children: React.createElement(MonthlyContribution$WildCards.make, {
+                  children: React.createElement(MonthlyContribution.make, {
                         numberOfLeaders: 10
                       })
                 }), React.createElement(ReactTabs.TabPanel, {
-                  children: React.createElement(TotalContribution$WildCards.make, {
+                  children: React.createElement(TotalContribution.make, {
                         numberOfLeaders: 10
                       })
                 }), React.createElement(ReactTabs.TabPanel, {
-                  children: React.createElement(TotalDaysHeld$WildCards.make, {
+                  children: React.createElement(TotalDaysHeld.make, {
                         numberOfLeaders: 10
                       })
                 }));

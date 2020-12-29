@@ -4,10 +4,10 @@ import * as Cn from "re-classnames/src/Cn.bs.js";
 import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
+import * as Styles from "../Styles.bs.js";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
-import * as Styles$WildCards from "../Styles.bs.js";
-import * as RootProvider$WildCards from "../harberger-lib/RootProvider.bs.js";
-import * as WildcardsLogo$WildCards from "../img/logos/WildcardsLogo.bs.js";
+import * as RootProvider from "../harberger-lib/RootProvider.bs.js";
+import * as WildcardsLogo from "../img/logos/WildcardsLogo.bs.js";
 
 var hambergerMenu = Curry._1(Css.style, {
       hd: Css.display("none"),
@@ -53,7 +53,7 @@ var navItemStyles = Curry._1(Css.style, {
           hd: Css.borderBottom(Css.px(1), "solid", "transparent"),
           tl: {
             hd: Css.selector(":hover", {
-                  hd: Css.borderBottom(Css.px(1), "solid", Styles$WildCards.wildCardGreen),
+                  hd: Css.borderBottom(Css.px(1), "solid", Styles.wildCardGreen),
                   tl: /* [] */0
                 }),
             tl: {
@@ -62,7 +62,7 @@ var navItemStyles = Curry._1(Css.style, {
                     tl: {
                       hd: Css.fontSize(Css.rem(1.4)),
                       tl: {
-                        hd: Css.color(Styles$WildCards.wildCardGreen),
+                        hd: Css.color(Styles.wildCardGreen),
                         tl: {
                           hd: Css.fontWeight({
                                 NAME: "num",
@@ -129,7 +129,7 @@ function floatingMenu(shouldDisplay) {
                                                           VAL: 50
                                                         }),
                                                     tl: {
-                                                      hd: Css.border(Css.px(1), "solid", Styles$WildCards.wildCardGreen),
+                                                      hd: Css.border(Css.px(1), "solid", Styles.wildCardGreen),
                                                       tl: {
                                                         hd: Css.display("flex"),
                                                         tl: {
@@ -244,7 +244,7 @@ function Header(Props) {
                             }
                           }
                         }
-                      }) : Styles$WildCards.navList
+                      }) : Styles.navList
               }, Belt_Array.mapWithIndex(navItems, (function (index, param) {
                       if (param.shouldDisplay && !isMobile || param.shouldDisplayMobile && isMobile) {
                         return React.createElement("li", {
@@ -255,7 +255,7 @@ function Header(Props) {
                                             hd: Cn.ifTrue(Curry._1(Css.style, {
                                                       hd: Css.backgroundColor(Css.white),
                                                       tl: {
-                                                        hd: Css.borderBottom(Css.px(1), "solid", Styles$WildCards.wildCardGreen),
+                                                        hd: Css.borderBottom(Css.px(1), "solid", Styles.wildCardGreen),
                                                         tl: {
                                                           hd: Css.display("block"),
                                                           tl: {
@@ -265,17 +265,17 @@ function Header(Props) {
                                                                 }),
                                                             tl: {
                                                               hd: Css.selector(":hover", {
-                                                                    hd: Css.backgroundColor(Styles$WildCards.wildCardBlue),
+                                                                    hd: Css.backgroundColor(Styles.wildCardBlue),
                                                                     tl: /* [] */0
                                                                   }),
                                                               tl: {
                                                                 hd: Css.selector(":focus", {
-                                                                      hd: Css.backgroundColor(Styles$WildCards.wildCardBlue),
+                                                                      hd: Css.backgroundColor(Styles.wildCardBlue),
                                                                       tl: /* [] */0
                                                                     }),
                                                                 tl: {
                                                                   hd: Css.selector(":active", {
-                                                                        hd: Css.backgroundColor(Styles$WildCards.wildCardGreen),
+                                                                        hd: Css.backgroundColor(Styles.wildCardGreen),
                                                                         tl: {
                                                                           hd: Css.selector("a", {
                                                                                 hd: Css.color(Css.white),
@@ -317,14 +317,14 @@ function Header(Props) {
                       }
                     })));
   };
-  var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
+  var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   return React.createElement("header", {
-              className: Styles$WildCards.header
+              className: Styles.header
             }, React.createElement("div", {
-                  className: Styles$WildCards.navBox
+                  className: Styles.navBox
                 }, React.createElement("a", {
                       className: Cn.make({
-                            hd: Styles$WildCards.clickableLink,
+                            hd: Styles.clickableLink,
                             tl: {
                               hd: Curry._1(Css.style, {
                                     hd: Css.marginLeft({
@@ -344,8 +344,8 @@ function Header(Props) {
                           return Curry._1(clearAndPush, "#");
                         })
                     }, React.createElement("div", {
-                          className: Styles$WildCards.headerLogo
-                        }, React.createElement(WildcardsLogo$WildCards.make, {
+                          className: Styles.headerLogo
+                        }, React.createElement(WildcardsLogo.make, {
                               maxWidth: "258px"
                             }))), React.createElement("nav", {
                       className: Cn.make({

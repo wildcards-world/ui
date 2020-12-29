@@ -3,10 +3,10 @@
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as RimbleUi from "rimble-ui";
-import * as RootProvider$WildCards from "../harberger-lib/RootProvider.bs.js";
+import * as RootProvider from "../harberger-lib/RootProvider.bs.js";
 
 function Validate(Props) {
-  var goToVerifyUser = RootProvider$WildCards.useVerifyUser(undefined);
+  var goToVerifyUser = RootProvider.useVerifyUser(undefined);
   return React.createElement(React.Fragment, {
               children: React.createElement(RimbleUi.Box, {
                     p: 1,

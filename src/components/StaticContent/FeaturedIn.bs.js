@@ -3,10 +3,10 @@
 import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
+import * as Styles from "../../Styles.bs.js";
+import * as Globals from "../../harberger-lib/Globals.bs.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
-import * as Styles$WildCards from "../../Styles.bs.js";
-import * as Globals$WildCards from "../../harberger-lib/Globals.bs.js";
 
 var featuredMediaContent = [
   {
@@ -66,10 +66,10 @@ var featuredContainerStyles = Curry._1(Css.style, {
 function FeaturedIn(Props) {
   return React.createElement(RimbleUi.Box, {
               children: null,
-              className: Styles$WildCards.horizantalBlueTile
+              className: Styles.horizantalBlueTile
             }, React.createElement("p", {
-                  className: Styles$WildCards.explainerLargeText
-                }, Globals$WildCards.restr("Featured in ")), React.createElement(RimbleUi.Flex, {
+                  className: Styles.explainerLargeText
+                }, Globals.restr("Featured in ")), React.createElement(RimbleUi.Flex, {
                   children: Belt_Array.mapWithIndex(featuredMediaContent, (function (index, x) {
                           return React.createElement(RimbleUi.Box, {
                                       p: 2,

@@ -2,12 +2,12 @@
 
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
+import * as InputHelp from "../InputHelp.bs.js";
 import * as RimbleUi from "rimble-ui";
+import * as TxTemplate from "../../components/components/TxTemplate.bs.js";
 import * as Web3Utils from "web3-utils";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
-import * as InputHelp$WildCards from "../InputHelp.bs.js";
-import * as TxTemplate$WildCards from "../../components/components/TxTemplate.bs.js";
-import * as ContractActions$WildCards from "../eth/ContractActions.bs.js";
+import * as ContractActions from "../eth/ContractActions.bs.js";
 
 function getToDisplay(label, value) {
   return label + (": " + Belt_Option.mapWithDefault(value, "loading", (function (a) {
@@ -23,13 +23,13 @@ function UpdatePrice(Props) {
       });
   var setNewBuyPrice = match[1];
   var newBuyPrice = match[0];
-  var match$1 = ContractActions$WildCards.useChangePrice(tokenId);
+  var match$1 = ContractActions.useChangePrice(tokenId);
   var updatePriceFunc = match$1[0];
   var onSubmitBuy = function ($$event) {
     $$event.preventDefault();
     return Curry._1(updatePriceFunc, Web3Utils.toWei(newBuyPrice, "ether"));
   };
-  return React.createElement(TxTemplate$WildCards.make, {
+  return React.createElement(TxTemplate.make, {
               children: React.createElement(RimbleUi.Box, {
                     p: 4,
                     mb: 3,
@@ -41,7 +41,7 @@ function UpdatePrice(Props) {
                         placeholder: "New Sale Price",
                         onChange: (function ($$event) {
                             var value = Belt_Option.getWithDefault($$event.target.value, "");
-                            InputHelp$WildCards.onlyUpdateValueIfPositiveFloat(newBuyPrice, setNewBuyPrice, value);
+                            InputHelp.onlyUpdateValueIfPositiveFloat(newBuyPrice, setNewBuyPrice, value);
                             
                           }),
                         value: newBuyPrice

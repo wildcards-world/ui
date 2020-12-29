@@ -4,19 +4,21 @@ import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as Decco from "decco/src/Decco.bs.js";
 import BnJs from "bn.js";
 import * as React from "react";
+import * as Helper from "./Helper.bs.js";
 import * as Moment from "moment";
+import * as Globals from "./Globals.bs.js";
 import * as Js_dict from "bs-platform/lib/es6/js_dict.js";
 import * as Js_json from "bs-platform/lib/es6/js_json.js";
 import * as Js_math from "bs-platform/lib/es6/js_math.js";
+import * as TokenId from "./TokenId.bs.js";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Belt_Result from "bs-platform/lib/es6/belt_Result.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
-import * as Helper$WildCards from "./Helper.bs.js";
-import * as Globals$WildCards from "./Globals.bs.js";
-import * as TokenId$WildCards from "./TokenId.bs.js";
-import * as RootProvider$WildCards from "./RootProvider.bs.js";
-import * as GqlConverters$WildCards from "../gql/GqlConverters.bs.js";
+import * as RootProvider from "./RootProvider.bs.js";
+import * as GqlConverters from "../gql/GqlConverters.bs.js";
+import * as ApolloClient__React_Hooks_UseQuery from "reason-apollo-client/src/@apollo/client/react/hooks/ApolloClient__React_Hooks_UseQuery.bs.js";
+import * as ApolloClient__React_Hooks_UseMutation from "reason-apollo-client/src/@apollo/client/react/hooks/ApolloClient__React_Hooks_UseMutation.bs.js";
 
 function decodeBN(number) {
   return new BnJs(Belt_Option.mapWithDefault(Js_json.decodeString(number), "0", (function (a) {
@@ -25,6 +27,42 @@ function decodeBN(number) {
 }
 
 var Raw = {};
+
+var query = (require("@apollo/client").gql`
+  query ($amount: Int!, $globalId: String!)  {
+    wildcards(first: $amount)  {
+      __typename
+      id
+      animal: tokenId
+      owner  {
+        __typename
+        address
+        id
+      }
+      price  {
+        __typename
+        price
+        id
+      }
+      totalCollected
+      timeCollected
+      patronageNumeratorPriceScaled
+      timeAcquired
+      auctionStartPrice
+      launchTime
+    }
+    global(id: $globalId)  {
+      __typename
+      id
+      totalCollectedOrDueAccurate
+      timeLastCollected
+      totalTokenCostScaledNumeratorAccurate
+      defaultAuctionLength
+      defaultAuctionEndPrice
+      defaultAuctionStartPrice
+    }
+  }
+`);
 
 function parse(value) {
   var value$1 = value.wildcards;
@@ -35,32 +73,36 @@ function parse(value) {
                 var value$2 = value.price;
                 var value$3 = value.auctionStartPrice;
                 return {
+                        __typename: value.__typename,
                         id: value.id,
-                        animal: GqlConverters$WildCards.GqlTokenId.parse(value.animal),
+                        animal: GqlConverters.GqlTokenId.parse(value.animal),
                         owner: {
+                          __typename: value$1.__typename,
                           address: value$1.address,
                           id: value$1.id
                         },
                         price: {
-                          price: GqlConverters$WildCards.Price.parse(value$2.price),
+                          __typename: value$2.__typename,
+                          price: GqlConverters.Price.parse(value$2.price),
                           id: value$2.id
                         },
-                        totalCollected: GqlConverters$WildCards.Price.parse(value.totalCollected),
-                        timeCollected: GqlConverters$WildCards.$$BigInt.parse(value.timeCollected),
-                        patronageNumeratorPriceScaled: GqlConverters$WildCards.$$BigInt.parse(value.patronageNumeratorPriceScaled),
-                        timeAcquired: GqlConverters$WildCards.GqlMoment.parse(value.timeAcquired),
-                        auctionStartPrice: !(value$3 == null) ? Caml_option.some(GqlConverters$WildCards.$$BigInt.parse(value$3)) : undefined,
-                        launchTime: GqlConverters$WildCards.$$BigInt.parse(value.launchTime)
+                        totalCollected: GqlConverters.Price.parse(value.totalCollected),
+                        timeCollected: GqlConverters.$$BigInt.parse(value.timeCollected),
+                        patronageNumeratorPriceScaled: GqlConverters.$$BigInt.parse(value.patronageNumeratorPriceScaled),
+                        timeAcquired: GqlConverters.GqlMoment.parse(value.timeAcquired),
+                        auctionStartPrice: !(value$3 == null) ? Caml_option.some(GqlConverters.$$BigInt.parse(value$3)) : undefined,
+                        launchTime: GqlConverters.$$BigInt.parse(value.launchTime)
                       };
               }),
           global: !(value$2 == null) ? ({
+                __typename: value$2.__typename,
                 id: value$2.id,
-                totalCollectedOrDueAccurate: GqlConverters$WildCards.$$BigInt.parse(value$2.totalCollectedOrDueAccurate),
-                timeLastCollected: GqlConverters$WildCards.$$BigInt.parse(value$2.timeLastCollected),
-                totalTokenCostScaledNumeratorAccurate: GqlConverters$WildCards.$$BigInt.parse(value$2.totalTokenCostScaledNumeratorAccurate),
-                defaultAuctionLength: GqlConverters$WildCards.$$BigInt.parse(value$2.defaultAuctionLength),
-                defaultAuctionEndPrice: GqlConverters$WildCards.$$BigInt.parse(value$2.defaultAuctionEndPrice),
-                defaultAuctionStartPrice: GqlConverters$WildCards.$$BigInt.parse(value$2.defaultAuctionStartPrice)
+                totalCollectedOrDueAccurate: GqlConverters.$$BigInt.parse(value$2.totalCollectedOrDueAccurate),
+                timeLastCollected: GqlConverters.$$BigInt.parse(value$2.timeLastCollected),
+                totalTokenCostScaledNumeratorAccurate: GqlConverters.$$BigInt.parse(value$2.totalTokenCostScaledNumeratorAccurate),
+                defaultAuctionLength: GqlConverters.$$BigInt.parse(value$2.defaultAuctionLength),
+                defaultAuctionEndPrice: GqlConverters.$$BigInt.parse(value$2.defaultAuctionEndPrice),
+                defaultAuctionStartPrice: GqlConverters.$$BigInt.parse(value$2.defaultAuctionStartPrice)
               }) : undefined
         };
 }
@@ -70,19 +112,21 @@ function serialize(value) {
   var $$global;
   if (value$1 !== undefined) {
     var value$2 = value$1.defaultAuctionStartPrice;
-    var value$3 = GqlConverters$WildCards.$$BigInt.serialize(value$2);
+    var value$3 = GqlConverters.$$BigInt.serialize(value$2);
     var value$4 = value$1.defaultAuctionEndPrice;
-    var value$5 = GqlConverters$WildCards.$$BigInt.serialize(value$4);
+    var value$5 = GqlConverters.$$BigInt.serialize(value$4);
     var value$6 = value$1.defaultAuctionLength;
-    var value$7 = GqlConverters$WildCards.$$BigInt.serialize(value$6);
+    var value$7 = GqlConverters.$$BigInt.serialize(value$6);
     var value$8 = value$1.totalTokenCostScaledNumeratorAccurate;
-    var value$9 = GqlConverters$WildCards.$$BigInt.serialize(value$8);
+    var value$9 = GqlConverters.$$BigInt.serialize(value$8);
     var value$10 = value$1.timeLastCollected;
-    var value$11 = GqlConverters$WildCards.$$BigInt.serialize(value$10);
+    var value$11 = GqlConverters.$$BigInt.serialize(value$10);
     var value$12 = value$1.totalCollectedOrDueAccurate;
-    var value$13 = GqlConverters$WildCards.$$BigInt.serialize(value$12);
+    var value$13 = GqlConverters.$$BigInt.serialize(value$12);
     var value$14 = value$1.id;
+    var value$15 = value$1.__typename;
     $$global = {
+      __typename: value$15,
       id: value$14,
       totalCollectedOrDueAccurate: value$13,
       timeLastCollected: value$11,
@@ -94,41 +138,47 @@ function serialize(value) {
   } else {
     $$global = null;
   }
-  var value$15 = value.wildcards;
-  var wildcards = value$15.map(function (value) {
+  var value$16 = value.wildcards;
+  var wildcards = value$16.map(function (value) {
         var value$1 = value.launchTime;
-        var value$2 = GqlConverters$WildCards.$$BigInt.serialize(value$1);
+        var value$2 = GqlConverters.$$BigInt.serialize(value$1);
         var value$3 = value.auctionStartPrice;
-        var auctionStartPrice = value$3 !== undefined ? GqlConverters$WildCards.$$BigInt.serialize(Caml_option.valFromOption(value$3)) : null;
+        var auctionStartPrice = value$3 !== undefined ? GqlConverters.$$BigInt.serialize(Caml_option.valFromOption(value$3)) : null;
         var value$4 = value.timeAcquired;
-        var value$5 = GqlConverters$WildCards.GqlMoment.serialize(value$4);
+        var value$5 = GqlConverters.GqlMoment.serialize(value$4);
         var value$6 = value.patronageNumeratorPriceScaled;
-        var value$7 = GqlConverters$WildCards.$$BigInt.serialize(value$6);
+        var value$7 = GqlConverters.$$BigInt.serialize(value$6);
         var value$8 = value.timeCollected;
-        var value$9 = GqlConverters$WildCards.$$BigInt.serialize(value$8);
+        var value$9 = GqlConverters.$$BigInt.serialize(value$8);
         var value$10 = value.totalCollected;
-        var value$11 = GqlConverters$WildCards.Price.serialize(value$10);
+        var value$11 = GqlConverters.Price.serialize(value$10);
         var value$12 = value.price;
         var value$13 = value$12.id;
         var value$14 = value$12.price;
-        var value$15 = GqlConverters$WildCards.Price.serialize(value$14);
+        var value$15 = GqlConverters.Price.serialize(value$14);
+        var value$16 = value$12.__typename;
         var price = {
+          __typename: value$16,
           price: value$15,
           id: value$13
         };
-        var value$16 = value.owner;
-        var value$17 = value$16.id;
-        var value$18 = value$16.address;
+        var value$17 = value.owner;
+        var value$18 = value$17.id;
+        var value$19 = value$17.address;
+        var value$20 = value$17.__typename;
         var owner = {
-          address: value$18,
-          id: value$17
+          __typename: value$20,
+          address: value$19,
+          id: value$18
         };
-        var value$19 = value.animal;
-        var value$20 = GqlConverters$WildCards.GqlTokenId.serialize(value$19);
-        var value$21 = value.id;
+        var value$21 = value.animal;
+        var value$22 = GqlConverters.GqlTokenId.serialize(value$21);
+        var value$23 = value.id;
+        var value$24 = value.__typename;
         return {
-                id: value$21,
-                animal: value$20,
+                __typename: value$24,
+                id: value$23,
+                animal: value$22,
                 owner: owner,
                 price: price,
                 totalCollected: value$11,
@@ -159,13 +209,43 @@ function makeVariables(amount, globalId, param) {
         };
 }
 
-var InitialLoad = {
+var InitialLoad_inner = {
   Raw: Raw,
-  query: "query ($amount: Int!, $globalId: String!)  {\nwildcards(first: $amount)  {\nid  \nanimal: tokenId  \nowner  {\naddress  \nid  \n}\n\nprice  {\nprice  \nid  \n}\n\ntotalCollected  \ntimeCollected  \npatronageNumeratorPriceScaled  \ntimeAcquired  \nauctionStartPrice  \nlaunchTime  \n}\n\nglobal(id: $globalId)  {\nid  \ntotalCollectedOrDueAccurate  \ntimeLastCollected  \ntotalTokenCostScaledNumeratorAccurate  \ndefaultAuctionLength  \ndefaultAuctionEndPrice  \ndefaultAuctionStartPrice  \n}\n\n}\n",
+  query: query,
   parse: parse,
   serialize: serialize,
   serializeVariables: serializeVariables,
   makeVariables: makeVariables
+};
+
+var include = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query,
+      Raw: Raw,
+      parse: parse,
+      serialize: serialize,
+      serializeVariables: serializeVariables
+    });
+
+var InitialLoad_refetchQueryDescription = include.refetchQueryDescription;
+
+var InitialLoad_use = include.use;
+
+var InitialLoad_useLazy = include.useLazy;
+
+var InitialLoad_useLazyWithVariables = include.useLazyWithVariables;
+
+var InitialLoad = {
+  InitialLoad_inner: InitialLoad_inner,
+  Raw: Raw,
+  query: query,
+  parse: parse,
+  serialize: serialize,
+  serializeVariables: serializeVariables,
+  makeVariables: makeVariables,
+  refetchQueryDescription: InitialLoad_refetchQueryDescription,
+  use: InitialLoad_use,
+  useLazy: InitialLoad_useLazy,
+  useLazyWithVariables: InitialLoad_useLazyWithVariables
 };
 
 function createContext(prim) {
@@ -180,7 +260,7 @@ function useInitialDataLoad(chain) {
 function useAnimalList(chain) {
   console.log(chain);
   return React.useMemo((function () {
-                return Globals$WildCards.$pipe$pipe$pipe$pipe(Globals$WildCards.oMap(undefined, (function (data) {
+                return Globals.$pipe$pipe$pipe$pipe(Globals.oMap(undefined, (function (data) {
                                   return Belt_Array.map(data.wildcards, (function (wc) {
                                                 return wc.animal;
                                               }));
@@ -190,6 +270,250 @@ function useAnimalList(chain) {
               chain
             ]);
 }
+
+var Raw$1 = {};
+
+var query$1 = (require("@apollo/client").gql`
+  query ($artistIdentifier: String!)  {
+    artist_by_pk(id: $artistIdentifier)  {
+      __typename
+      eth_address
+      id
+      name
+      website
+      launchedWildcards: wildcardData(where: {id: {_is_null: false}})  {
+        __typename
+        key
+        id
+        name
+        image
+        organization  {
+          __typename
+          id
+          name
+          logo
+        }
+      }
+      unlaunchedWildcards: wildcardData(where: {id: {_is_null: true}})  {
+        __typename
+        key
+        name
+        image
+        organization  {
+          __typename
+          id
+          name
+          logo
+        }
+      }
+    }
+  }
+`);
+
+function parse$1(value) {
+  var value$1 = value.artist_by_pk;
+  var tmp;
+  if (value$1 == null) {
+    tmp = undefined;
+  } else {
+    var value$2 = value$1.eth_address;
+    var value$3 = value$1.website;
+    var value$4 = value$1.launchedWildcards;
+    var value$5 = value$1.unlaunchedWildcards;
+    tmp = {
+      __typename: value$1.__typename,
+      eth_address: !(value$2 == null) ? value$2 : undefined,
+      id: value$1.id,
+      name: value$1.name,
+      website: !(value$3 == null) ? value$3 : undefined,
+      launchedWildcards: value$4.map(function (value) {
+            var value$1 = value.id;
+            var value$2 = value.name;
+            var value$3 = value.image;
+            var value$4 = value.organization;
+            return {
+                    __typename: value.__typename,
+                    key: value.key,
+                    id: !(value$1 == null) ? value$1 : undefined,
+                    name: !(value$2 == null) ? value$2 : undefined,
+                    image: !(value$3 == null) ? value$3 : undefined,
+                    organization: !(value$4 == null) ? ({
+                          __typename: value$4.__typename,
+                          id: value$4.id,
+                          name: value$4.name,
+                          logo: value$4.logo
+                        }) : undefined
+                  };
+          }),
+      unlaunchedWildcards: value$5.map(function (value) {
+            var value$1 = value.name;
+            var value$2 = value.image;
+            var value$3 = value.organization;
+            return {
+                    __typename: value.__typename,
+                    key: value.key,
+                    name: !(value$1 == null) ? value$1 : undefined,
+                    image: !(value$2 == null) ? value$2 : undefined,
+                    organization: !(value$3 == null) ? ({
+                          __typename: value$3.__typename,
+                          id: value$3.id,
+                          name: value$3.name,
+                          logo: value$3.logo
+                        }) : undefined
+                  };
+          })
+    };
+  }
+  return {
+          artist_by_pk: tmp
+        };
+}
+
+function serialize$1(value) {
+  var value$1 = value.artist_by_pk;
+  var artist_by_pk;
+  if (value$1 !== undefined) {
+    var value$2 = value$1.unlaunchedWildcards;
+    var unlaunchedWildcards = value$2.map(function (value) {
+          var value$1 = value.organization;
+          var organization;
+          if (value$1 !== undefined) {
+            var value$2 = value$1.logo;
+            var value$3 = value$1.name;
+            var value$4 = value$1.id;
+            var value$5 = value$1.__typename;
+            organization = {
+              __typename: value$5,
+              id: value$4,
+              name: value$3,
+              logo: value$2
+            };
+          } else {
+            organization = null;
+          }
+          var value$6 = value.image;
+          var image = value$6 !== undefined ? value$6 : null;
+          var value$7 = value.name;
+          var name = value$7 !== undefined ? value$7 : null;
+          var value$8 = value.key;
+          var value$9 = value.__typename;
+          return {
+                  __typename: value$9,
+                  key: value$8,
+                  name: name,
+                  image: image,
+                  organization: organization
+                };
+        });
+    var value$3 = value$1.launchedWildcards;
+    var launchedWildcards = value$3.map(function (value) {
+          var value$1 = value.organization;
+          var organization;
+          if (value$1 !== undefined) {
+            var value$2 = value$1.logo;
+            var value$3 = value$1.name;
+            var value$4 = value$1.id;
+            var value$5 = value$1.__typename;
+            organization = {
+              __typename: value$5,
+              id: value$4,
+              name: value$3,
+              logo: value$2
+            };
+          } else {
+            organization = null;
+          }
+          var value$6 = value.image;
+          var image = value$6 !== undefined ? value$6 : null;
+          var value$7 = value.name;
+          var name = value$7 !== undefined ? value$7 : null;
+          var value$8 = value.id;
+          var id = value$8 !== undefined ? value$8 : null;
+          var value$9 = value.key;
+          var value$10 = value.__typename;
+          return {
+                  __typename: value$10,
+                  key: value$9,
+                  id: id,
+                  name: name,
+                  image: image,
+                  organization: organization
+                };
+        });
+    var value$4 = value$1.website;
+    var website = value$4 !== undefined ? value$4 : null;
+    var value$5 = value$1.name;
+    var value$6 = value$1.id;
+    var value$7 = value$1.eth_address;
+    var eth_address = value$7 !== undefined ? value$7 : null;
+    var value$8 = value$1.__typename;
+    artist_by_pk = {
+      __typename: value$8,
+      eth_address: eth_address,
+      id: value$6,
+      name: value$5,
+      website: website,
+      launchedWildcards: launchedWildcards,
+      unlaunchedWildcards: unlaunchedWildcards
+    };
+  } else {
+    artist_by_pk = null;
+  }
+  return {
+          artist_by_pk: artist_by_pk
+        };
+}
+
+function serializeVariables$1(inp) {
+  return {
+          artistIdentifier: inp.artistIdentifier
+        };
+}
+
+function makeVariables$1(artistIdentifier, param) {
+  return {
+          artistIdentifier: artistIdentifier
+        };
+}
+
+var ArtistQuery_inner = {
+  Raw: Raw$1,
+  query: query$1,
+  parse: parse$1,
+  serialize: serialize$1,
+  serializeVariables: serializeVariables$1,
+  makeVariables: makeVariables$1
+};
+
+var include$1 = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query$1,
+      Raw: Raw$1,
+      parse: parse$1,
+      serialize: serialize$1,
+      serializeVariables: serializeVariables$1
+    });
+
+var use = include$1.use;
+
+var ArtistQuery_refetchQueryDescription = include$1.refetchQueryDescription;
+
+var ArtistQuery_useLazy = include$1.useLazy;
+
+var ArtistQuery_useLazyWithVariables = include$1.useLazyWithVariables;
+
+var ArtistQuery = {
+  ArtistQuery_inner: ArtistQuery_inner,
+  Raw: Raw$1,
+  query: query$1,
+  parse: parse$1,
+  serialize: serialize$1,
+  serializeVariables: serializeVariables$1,
+  makeVariables: makeVariables$1,
+  refetchQueryDescription: ArtistQuery_refetchQueryDescription,
+  use: use,
+  useLazy: ArtistQuery_useLazy,
+  useLazyWithVariables: ArtistQuery_useLazyWithVariables
+};
 
 function getQueryPrefix(chain) {
   if (chain !== 1) {
@@ -284,26 +608,26 @@ function useHomePageAnimalsData(param) {
 }
 
 function useHomePageAnimalArrayOpt(param) {
-  return Globals$WildCards.oMap(useHomePageAnimalsData(undefined), (function (homeAnimals) {
+  return Globals.oMap(useHomePageAnimalsData(undefined), (function (homeAnimals) {
                 return Belt_Array.map(homeAnimals.homeAnimals, (function (animal) {
                               return {
-                                      id: TokenId$WildCards.fromStringUnsafe(animal.id),
-                                      prev: TokenId$WildCards.fromStringUnsafe(animal.prev),
-                                      next: TokenId$WildCards.fromStringUnsafe(animal.next)
+                                      id: TokenId.fromStringUnsafe(animal.id),
+                                      prev: TokenId.fromStringUnsafe(animal.prev),
+                                      next: TokenId.fromStringUnsafe(animal.next)
                                     };
                             }));
               }));
 }
 
 function useHomePageAnimalArray(param) {
-  return Globals$WildCards.$pipe$pipe$pipe$pipe(useHomePageAnimalArrayOpt(undefined), []);
+  return Globals.$pipe$pipe$pipe$pipe(useHomePageAnimalArrayOpt(undefined), []);
 }
 
 function useDetailsPageNextPrevious(currentToken) {
   var homepageAnimalData = useHomePageAnimalArray(undefined);
-  var defaultValue_id = TokenId$WildCards.fromStringUnsafe("2");
-  var defaultValue_prev = TokenId$WildCards.fromStringUnsafe("0");
-  var defaultValue_next = TokenId$WildCards.fromStringUnsafe("1");
+  var defaultValue_id = TokenId.fromStringUnsafe("2");
+  var defaultValue_prev = TokenId.fromStringUnsafe("0");
+  var defaultValue_next = TokenId.fromStringUnsafe("1");
   var defaultValue = {
     id: defaultValue_id,
     prev: defaultValue_prev,
@@ -311,11 +635,11 @@ function useDetailsPageNextPrevious(currentToken) {
   };
   var forwardNextLookup = React.useMemo((function () {
           return Belt_Array.reduce(homepageAnimalData, {}, (function (dict, item) {
-                        dict[TokenId$WildCards.toString(item.id)] = item;
+                        dict[TokenId.toString(item.id)] = item;
                         return dict;
                       }));
         }), [homepageAnimalData]);
-  return Globals$WildCards.$pipe$pipe$pipe$pipe(Js_dict.get(forwardNextLookup, TokenId$WildCards.toString(currentToken)), defaultValue);
+  return Globals.$pipe$pipe$pipe$pipe(Js_dict.get(forwardNextLookup, TokenId.toString(currentToken)), defaultValue);
 }
 
 function animalDescription_decode(v) {
@@ -324,7 +648,7 @@ function animalDescription_decode(v) {
 
 function useWildcardDescription(tokenId) {
   return queryResultOptionMap(tokenId[0], (function (a) {
-                return Globals$WildCards.$pipe$pipe$pipe$pipe(Globals$WildCards.oMap(a.launchedWildcards_by_pk, (function (b) {
+                return Globals.$pipe$pipe$pipe$pipe(Globals.oMap(a.launchedWildcards_by_pk, (function (b) {
                                   var v = b.wildcard.description;
                                   return Belt_Result.getWithDefault(Decco.arrayFromJson(Decco.stringFromJson, v), []);
                                 })), []);
@@ -403,7 +727,7 @@ function usePatron(chain, animal) {
 }
 
 function useIsAnimalOwened(chain, ownedAnimal) {
-  var currentAccount = Belt_Option.mapWithDefault(RootProvider$WildCards.useCurrentUser(undefined), "loading", (function (a) {
+  var currentAccount = Belt_Option.mapWithDefault(RootProvider.useCurrentUser(undefined), "loading", (function (a) {
           return a;
         }));
   var currentPatron = Belt_Option.mapWithDefault(usePatron(chain, ownedAnimal), "no-patron-defined", (function (a) {
@@ -437,7 +761,7 @@ function useForeclosureTimeBn(chain, patron) {
 }
 
 function useForeclosureTime(chain, patron) {
-  return Belt_Option.map(useForeclosureTimeBn(chain, patron), Helper$WildCards.bnToMoment);
+  return Belt_Option.map(useForeclosureTimeBn(chain, patron), Helper.bnToMoment);
 }
 
 function usePatronQuery(chain, patron) {
@@ -446,11 +770,11 @@ function usePatronQuery(chain, patron) {
 }
 
 function useTimeAcquiredWithDefault(chain, animal, $$default) {
-  return Globals$WildCards.$pipe$pipe$pipe$pipe(useTimeAcquired(chain, animal), $$default);
+  return Globals.$pipe$pipe$pipe$pipe(useTimeAcquired(chain, animal), $$default);
 }
 
 function useDaysHeld(chain, tokenId) {
-  return Globals$WildCards.oMap(useTimeAcquired(chain, tokenId), (function (moment) {
+  return Globals.oMap(useTimeAcquired(chain, tokenId), (function (moment) {
                 return [
                         Moment().diff(moment, "days"),
                         moment
@@ -491,7 +815,7 @@ function useCurrentTimestampBn(param) {
 
 function useAmountRaised(param) {
   var currentTimestamp = useCurrentTime(undefined);
-  return Globals$WildCards.oMap(undefined, (function (param) {
+  return Globals.oMap(undefined, (function (param) {
                 var timeElapsed = new BnJs(currentTimestamp).sub(param[1]);
                 var amountRaisedSinceLastCollection = param[2].mul(timeElapsed).div(new BnJs("31536000000000000000"));
                 return param[0].add(amountRaisedSinceLastCollection);
@@ -500,7 +824,7 @@ function useAmountRaised(param) {
 
 function useTotalCollectedToken(chain, animal) {
   var getTotalCollectedData = function (response) {
-    return Globals$WildCards.oMap(response.wildcard, (function (wc) {
+    return Globals.oMap(response.wildcard, (function (wc) {
                   return [
                           wc.totalCollected,
                           wc.timeCollected,
@@ -532,7 +856,7 @@ function usePledgeRate(chain, tokenId) {
                 if (optPatronageNumerator === undefined) {
                   return 0;
                 }
-                var result = Globals$WildCards.$pipe$slash$pipe(Caml_option.valFromOption(optPatronageNumerator), new BnJs("12000000000"));
+                var result = Globals.$pipe$slash$pipe(Caml_option.valFromOption(optPatronageNumerator), new BnJs("12000000000"));
                 return result.toNumber() / 1000;
               }), [optPatronageNumerator]);
 }
@@ -579,14 +903,14 @@ function useTotalRaisedAnimalGroup(animals) {
             })));
   return [
           detailsMainnet !== undefined ? Caml_option.some(Belt_Array.reduce(Caml_option.valFromOption(detailsMainnet).wildcards, new BnJs("0"), (function (acc, animalDetails) {
-                        return Globals$WildCards.$pipe$plus$pipe(calculateTotalRaised(currentTimestamp, [
+                        return Globals.$pipe$plus$pipe(calculateTotalRaised(currentTimestamp, [
                                         animalDetails.totalCollected,
                                         animalDetails.timeCollected,
                                         animalDetails.patronageNumeratorPriceScaled
                                       ]), acc);
                       }))) : undefined,
           detailsMatic !== undefined ? Caml_option.some(Belt_Array.reduce(Caml_option.valFromOption(detailsMatic).wildcards, new BnJs("0"), (function (acc, animalDetails) {
-                        return Globals$WildCards.$pipe$plus$pipe(calculateTotalRaised(currentTimestamp, [
+                        return Globals.$pipe$plus$pipe(calculateTotalRaised(currentTimestamp, [
                                         animalDetails.totalCollected,
                                         animalDetails.timeCollected,
                                         animalDetails.patronageNumeratorPriceScaled
@@ -610,7 +934,7 @@ function useUnredeemedLoyaltyTokenDueForUser(chain, animal, numberOfTokens) {
     return ;
   }
   var totalLoyaltyTokensPerSecondPerAnimal = new BnJs("11574074074074");
-  return Caml_option.some(Globals$WildCards.$pipe$star$pipe(Globals$WildCards.$pipe$star$pipe(Caml_option.valFromOption(timeSinceTokenWasLastSettled), totalLoyaltyTokensPerSecondPerAnimal), new BnJs(numberOfTokens)));
+  return Caml_option.some(Globals.$pipe$star$pipe(Globals.$pipe$star$pipe(Caml_option.valFromOption(timeSinceTokenWasLastSettled), totalLoyaltyTokensPerSecondPerAnimal), new BnJs(numberOfTokens)));
 }
 
 function useTotalLoyaltyToken(chain, patron) {
@@ -619,11 +943,11 @@ function useTotalLoyaltyToken(chain, patron) {
   if (match === undefined) {
     return ;
   }
-  var timeElapsed = Globals$WildCards.$pipe$neg$pipe(new BnJs(currentTimestamp), match.lastCollected);
+  var timeElapsed = Globals.$pipe$neg$pipe(new BnJs(currentTimestamp), match.lastCollected);
   var totalLoyaltyTokensPerSecondPerAnimal = new BnJs("11574074074074");
-  var totalLoyaltyTokensFor1Animal = Globals$WildCards.$pipe$star$pipe(totalLoyaltyTokensPerSecondPerAnimal, timeElapsed);
-  var totalLoyaltyTokensForAllAnimals = Globals$WildCards.$pipe$star$pipe(match.numberOfAnimalsOwned, totalLoyaltyTokensFor1Animal);
-  var totalLoyaltyTokensForUser = Globals$WildCards.$pipe$plus$pipe(match.currentLoyaltyTokensIncludingUnredeemed, totalLoyaltyTokensForAllAnimals);
+  var totalLoyaltyTokensFor1Animal = Globals.$pipe$star$pipe(totalLoyaltyTokensPerSecondPerAnimal, timeElapsed);
+  var totalLoyaltyTokensForAllAnimals = Globals.$pipe$star$pipe(match.numberOfAnimalsOwned, totalLoyaltyTokensFor1Animal);
+  var totalLoyaltyTokensForUser = Globals.$pipe$plus$pipe(match.currentLoyaltyTokensIncludingUnredeemed, totalLoyaltyTokensForAllAnimals);
   return [
           totalLoyaltyTokensForUser,
           match.currentLoyaltyTokens
@@ -700,13 +1024,25 @@ function useMaticState(forceRefetch, address, network) {
   
 }
 
-var Raw$1 = {};
+var Raw$2 = {};
 
-function parse$1(value) {
+var query$2 = (require("@apollo/client").gql`
+  mutation ($network: String!, $r: String!, $s: String!, $v: Int!, $userAddress: String!, $functionSignature: String!)  {
+    metaTx(functionSignature: $functionSignature, network: $network, r: $r, s: $s, userAddress: $userAddress, v: $v)  {
+      __typename
+      txHash
+      success
+      errorMsg
+    }
+  }
+`);
+
+function parse$2(value) {
   var value$1 = value.metaTx;
   var value$2 = value$1.errorMsg;
   return {
           metaTx: {
+            __typename: value$1.__typename,
             txHash: value$1.txHash,
             success: value$1.success,
             errorMsg: !(value$2 == null) ? value$2 : undefined
@@ -714,13 +1050,15 @@ function parse$1(value) {
         };
 }
 
-function serialize$1(value) {
+function serialize$2(value) {
   var value$1 = value.metaTx;
   var value$2 = value$1.errorMsg;
   var errorMsg = value$2 !== undefined ? value$2 : null;
   var value$3 = value$1.success;
   var value$4 = value$1.txHash;
+  var value$5 = value$1.__typename;
   var metaTx = {
+    __typename: value$5,
     txHash: value$4,
     success: value$3,
     errorMsg: errorMsg
@@ -730,7 +1068,7 @@ function serialize$1(value) {
         };
 }
 
-function serializeVariables$1(inp) {
+function serializeVariables$2(inp) {
   return {
           network: inp.network,
           r: inp.r,
@@ -741,7 +1079,7 @@ function serializeVariables$1(inp) {
         };
 }
 
-function makeVariables$1(network, r, s, v, userAddress, functionSignature, param) {
+function makeVariables$2(network, r, s, v, userAddress, functionSignature, param) {
   return {
           network: network,
           r: r,
@@ -752,75 +1090,115 @@ function makeVariables$1(network, r, s, v, userAddress, functionSignature, param
         };
 }
 
+var ExecuteMetaTxMutation_inner = {
+  Raw: Raw$2,
+  query: query$2,
+  parse: parse$2,
+  serialize: serialize$2,
+  serializeVariables: serializeVariables$2,
+  makeVariables: makeVariables$2
+};
+
+var include$2 = ApolloClient__React_Hooks_UseMutation.Extend({
+      query: query$2,
+      Raw: Raw$2,
+      parse: parse$2,
+      serialize: serialize$2,
+      serializeVariables: serializeVariables$2
+    });
+
+var ExecuteMetaTxMutation_use = include$2.use;
+
+var ExecuteMetaTxMutation_useWithVariables = include$2.useWithVariables;
+
 var ExecuteMetaTxMutation = {
-  Raw: Raw$1,
-  query: "mutation ($network: String!, $r: String!, $s: String!, $v: Int!, $userAddress: String!, $functionSignature: String!)  {\nmetaTx(functionSignature: $functionSignature, network: $network, r: $r, s: $s, userAddress: $userAddress, v: $v)  {\ntxHash  \nsuccess  \nerrorMsg  \n}\n\n}\n",
-  parse: parse$1,
-  serialize: serialize$1,
-  serializeVariables: serializeVariables$1,
-  makeVariables: makeVariables$1
+  ExecuteMetaTxMutation_inner: ExecuteMetaTxMutation_inner,
+  Raw: Raw$2,
+  query: query$2,
+  parse: parse$2,
+  serialize: serialize$2,
+  serializeVariables: serializeVariables$2,
+  makeVariables: makeVariables$2,
+  use: ExecuteMetaTxMutation_use,
+  useWithVariables: ExecuteMetaTxMutation_useWithVariables
 };
 
 function useMetaTx(param) {
   
 }
 
-function useArtistQuery(artistIdentifier) {
-  console.log(artistIdentifier);
-  
-}
-
 function useArtistData(artistIdentifier) {
-  console.log(artistIdentifier);
-  
+  var artistQuery = Curry.app(use, [
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        {
+          artistIdentifier: artistIdentifier
+        }
+      ]);
+  var match = artistQuery.data;
+  if (artistQuery.loading || artistQuery.error !== undefined || match === undefined) {
+    return ;
+  } else {
+    return match.artist_by_pk;
+  }
 }
 
 function useArtistEthAddress(artistIdentifier) {
-  console.log(artistIdentifier);
-  return Belt_Option.flatMap(undefined, (function (data) {
+  var artistData = useArtistData(artistIdentifier);
+  return Belt_Option.flatMap(artistData, (function (data) {
                 return data.eth_address;
               }));
 }
 
 function useArtistName(artistIdentifier) {
-  console.log(artistIdentifier);
-  return Belt_Option.map(undefined, (function (data) {
+  var artistData = useArtistData(artistIdentifier);
+  return Belt_Option.map(artistData, (function (data) {
                 return data.name;
               }));
 }
 
 function useArtistWebsite(artistIdentifier) {
-  console.log(artistIdentifier);
-  return Belt_Option.flatMap(undefined, (function (data) {
+  var artistData = useArtistData(artistIdentifier);
+  return Belt_Option.flatMap(artistData, (function (data) {
                 return data.website;
               }));
 }
 
 function useArtistLaunchedWildcards(artistIdentifier) {
-  console.log(artistIdentifier);
-  return Belt_Option.map(undefined, (function (data) {
+  var artistData = useArtistData(artistIdentifier);
+  return Belt_Option.map(artistData, (function (data) {
                 return data.launchedWildcards;
               }));
 }
 
 function useArtistUnlaunchedWildcards(artistIdentifier) {
-  console.log(artistIdentifier);
-  return Belt_Option.map(undefined, (function (data) {
+  var artistData = useArtistData(artistIdentifier);
+  return Belt_Option.map(artistData, (function (data) {
                 return data.unlaunchedWildcards;
               }));
 }
 
 function useArtistOrgs(artistIdentifier) {
-  console.log(artistIdentifier);
-  return Belt_Option.map(undefined, (function (data) {
+  var artistData = useArtistData(artistIdentifier);
+  return Belt_Option.map(artistData, (function (data) {
                 var dict = {};
                 Belt_Array.map(data.launchedWildcards, (function (wildcard) {
                         var org = wildcard.organization;
                         if (org === undefined) {
                           return ;
                         }
-                        var org$1 = Caml_option.valFromOption(org);
-                        var orgId = org$1.id;
+                        var orgId = org.id;
                         var orgObj = Js_dict.get(dict, orgId);
                         if (orgObj !== undefined) {
                           var newOrgObj_id = orgObj.id;
@@ -838,8 +1216,8 @@ function useArtistOrgs(artistIdentifier) {
                         }
                         dict[orgId] = {
                           id: orgId,
-                          name: org$1.name,
-                          logo: org$1.logo,
+                          name: org.name,
+                          logo: org.logo,
                           wildcards: [wildcard.key]
                         };
                         
@@ -854,6 +1232,7 @@ export {
   createContext ,
   useInitialDataLoad ,
   useAnimalList ,
+  ArtistQuery ,
   getQueryPrefix ,
   subscriptionResultOptionMap ,
   subscriptionResultToOption ,
@@ -923,7 +1302,6 @@ export {
   useMaticState ,
   ExecuteMetaTxMutation ,
   useMetaTx ,
-  useArtistQuery ,
   useArtistData ,
   useArtistEthAddress ,
   useArtistName ,
@@ -933,4 +1311,4 @@ export {
   useArtistOrgs ,
   
 }
-/* bn.js Not a pure module */
+/* query Not a pure module */

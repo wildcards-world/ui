@@ -3,9 +3,9 @@
 import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
+import * as Globals from "../../harberger-lib/Globals.bs.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
-import * as Globals$WildCards from "../../harberger-lib/Globals.bs.js";
 
 var cardStyle = Curry._1(Css.style, {
       hd: Css.height({
@@ -115,7 +115,7 @@ function Team(Props) {
     }
   ];
   return React.createElement("div", undefined, React.createElement(RimbleUi.Flex, {
-                  children: React.createElement("h1", undefined, Globals$WildCards.restr("Wildcards Team")),
+                  children: React.createElement("h1", undefined, Globals.restr("Wildcards Team")),
                   flexWrap: "wrap",
                   alignItems: "stretch",
                   justifyContent: "space-around",

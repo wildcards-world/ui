@@ -190,39 +190,39 @@ let useAnimalList = (~chain) => {
 //   |}
 // ];
 
-// module ArtistQuery = [%graphql
-//   {|
-//     query ($artistIdentifier: String!) {
-//       artist_by_pk(id: $artistIdentifier) {
-//         eth_address
-//         id
-//         name
-//         website
-//         launchedWildcards: wildcardData (where: {id: { _is_null: false}}) {
-//           key
-//           id
-//           name
-//           image
-//           organization {
-//             id
-//             name
-//             logo
-//           }
-//         }
-//         unlaunchedWildcards: wildcardData (where: {id: { _is_null: true}}) {
-//           key
-//           name
-//           image
-//           organization {
-//             id
-//             name
-//             logo
-//           }
-//         }
-//       }
-//     }
-//   |}
-// ];
+module ArtistQuery = [%graphql
+  {|
+    query ($artistIdentifier: String!) {
+      artist_by_pk(id: $artistIdentifier) {
+        eth_address
+        id
+        name
+        website
+        launchedWildcards: wildcardData (where: {id: { _is_null: false}}) {
+          key
+          id
+          name
+          image
+          organization {
+            id
+            name
+            logo
+          }
+        }
+        unlaunchedWildcards: wildcardData (where: {id: { _is_null: true}}) {
+          key
+          name
+          image
+          organization {
+            id
+            name
+            logo
+          }
+        }
+      }
+    }
+  |}
+];
 // // NOTE: If multiple transactions happen in the same block they may get missed, maybe one day that will be a problem for us ;)
 // module SubStateChangeEvents = [%graphql
 //   {|
@@ -1231,74 +1231,156 @@ module ExecuteMetaTxMutation = [%graphql
   |}
 ];
 
-let useMetaTx = () => {
-  Obj.magic();
-           /* let (mutation, _simple, _full) =
-                ApolloHooks.useMutation(
-                  // NOTE: this refetch query doesn't really do much. Since it does the refetch before the transaction has had time to be mined.
-                  ExecuteMetaTxMutation.definition,
-                );
-              (~network, ~r, ~s, ~v, ~functionSignature, userAddress) => {
-                let refetchQueries = _ => {
-                  let query = MaticStateQuery.make(~address=userAddress, ~network, ());
-                  [|ApolloHooks.toQueryObj(query)|];
-                };
-                mutation(
-                  ~refetchQueries,
-                  ~variables=
-                    ExecuteMetaTxMutation.make(
-                      ~network,
-                      ~r,
-                      ~s,
-                      ~v,
-                      ~functionSignature,
-                      ~userAddress,
-                      (),
-                    )##variables,
-                  (),
-                );
-              }; */
+let useMetaTx:
+  (
+    unit,
+    ~network: 'b,
+    ~r: string,
+    ~s: string,
+    ~v: int,
+    ~functionSignature: string,
+    Web3.ethAddress
+  ) =>
+  Js.Promise.t('a) =
+  () => {
+    Obj.magic(); /*
+    let (mutate, result) = ExecuteMetaTxMutation.use();
+
+               switch (result) {
+               | {called: false} =>
+                 <>
+                   "Not called... "->React.string
+                   <button onClick={_ => mutate({text: "Another To-Do"})->ignore}>
+                     "Add To-Do"->React.string
+                   </button>
+                   " "->React.string
+                   <button
+                     onClick={_ =>
+                       mutate(
+                         ~optimisticResponse=
+                           _variables =>
+                             {
+                               todo: {
+                                 __typename: "TodoItem",
+                                 id: "optimisticResponseTodo",
+                                 completed: None,
+                                 text: "To-Do from optimisticRespomse",
+                               },
+                             },
+                         ~update=
+                           ({writeFragment, writeQuery}, {data}) =>
+                             switch (data) {
+                             | Some({todo}) =>
+                               /**
+                                  * Apollo docs use cache.modify, but it's not typesafe. I recommend some
+                                  * combination of readQuery / writeQuery / writeFragment
+                                  */
+                               Js.log2("mutate.update To-Do: ", todo);
+                               let _unusedRef =
+                                 writeFragment(
+                                   ~fragment=(module Fragments.TodoItem),
+                                   ~data={
+                                     __typename: todo.__typename,
+                                     id: "fragmentToDo",
+                                     completed: None,
+                                     text: "To-Do from writeFragment",
+                                   },
+                                   (),
+                                 );
+                               let _unusedRef =
+                                 writeQuery(
+                                   ~query=(module TodosQuery),
+                                   ~data={
+                                     todos: [|
+                                       {
+                                         __typename: todo.__typename,
+                                         id: "writeQueryToDo",
+                                         completed: None,
+                                         text: "To-Do from writeQuery",
+                                       },
+                                     |],
+                                   },
+                                   (),
+                                 );
+                               ();
+                             | None => ()
+                             },
+                         ~refetchQueries=[|
+                           TodosQuery.refetchQueryDescription(),
+                           // - OR -
+                           String("TodosQuery") // Should rarely be needed?
+                         |],
+                         {text: "Another To-Do"},
+                       )
+                       ->ignore
+                     }>
+                     "Add To-Do (all the bells and whistles)"->React.string
+                   </button>
+                 </>
+               | {loading: true} => "Loading..."->React.string
+               | {data: Some({todo: {text}}), error: None} =>
+                 <p> {React.string("To-Do added: \"" ++ text ++ "\"")} </p>
+               | {error} =>
+
+               }; */
+             /* let (mutation, _simple, _full) =
+                  ApolloHooks.useMutation(
+                    // NOTE: this refetch query doesn't really do much. Since it does the refetch before the transaction has had time to be mined.
+                    ExecuteMetaTxMutation.definition,
+                  );
+                (~network, ~r, ~s, ~v, ~functionSignature, userAddress) => {
+                  let refetchQueries = _ => {
+                    let query = MaticStateQuery.make(~address=userAddress, ~network, ());
+                    [|ApolloHooks.toQueryObj(query)|];
+                  };
+                  mutation(
+                    ~refetchQueries,
+                    ~variables=
+                      ExecuteMetaTxMutation.make(
+                        ~network,
+                        ~r,
+                        ~s,
+                        ~v,
+                        ~functionSignature,
+                        ~userAddress,
+                        (),
+                      )##variables,
+                    (),
+                  );
+                }; */
+  };
+
+let useArtistData = (~artistIdentifier) => {
+  let artistQuery =
+    ArtistQuery.use(ArtistQuery.makeVariables(~artistIdentifier, ()));
+
+  switch (artistQuery) {
+  | {loading: true, _} => None
+  | {error: Some(_error), _} => None
+  | {data: Some({artist_by_pk}), _} => artist_by_pk
+  | _ => None
+  };
 };
 
-let useArtistQuery = (~artistIdentifier) => {
-  /*  ApolloHooks.useQuery(
-        ~variables=ArtistQuery.make(~artistIdentifier, ())##variables,
-        ArtistQuery.definition,
-      ); */
-  Js.log(artistIdentifier);
-  None;
-};
-let useArtistData = (~artistIdentifier) => {
-  Js.log(artistIdentifier);
-  None;
-  /* // TODO: when this doesn't load it will just be `None` if there is a failure or if the artist doesn't exist...
-     let (simple, _) = useArtistQuery(~artistIdentifier);
-     switch (simple) {
-     | Data(response) => response##artist_by_pk
-     | Error(_)
-     | Loading
-     | NoData => None
-     }; */
-};
 let useArtistEthAddress = (~artistIdentifier) => {
   let artistData = useArtistData(~artistIdentifier);
-  artistData->Option.flatMap(data => data##eth_address);
+  artistData->Option.flatMap(data => {data.eth_address});
 };
 let useArtistName = (~artistIdentifier) => {
   let artistData = useArtistData(~artistIdentifier);
-  artistData->Option.map(data => data##name);
+  artistData->Option.map(data => data.name);
 };
 let useArtistWebsite = (~artistIdentifier) => {
   let artistData = useArtistData(~artistIdentifier);
-  artistData->Option.flatMap(data => data##website);
+  artistData->Option.flatMap(data => data.website);
 };
 let useArtistLaunchedWildcards = (~artistIdentifier) => {
   let artistData = useArtistData(~artistIdentifier);
-  artistData->Option.map(data => data##launchedWildcards);
+  artistData->Option.map(data => data.launchedWildcards);
 };
 let useArtistUnlaunchedWildcards = (~artistIdentifier) => {
   let artistData = useArtistData(~artistIdentifier);
-  artistData->Option.map(data => data##unlaunchedWildcards);
+  artistData->Option.map(data => data.unlaunchedWildcards);
 };
 type wildcardKey = int;
 type artistOrg = {
@@ -1311,16 +1393,16 @@ let useArtistOrgs = (~artistIdentifier) => {
   let artistData = useArtistData(~artistIdentifier);
   artistData->Option.map(data => {
     let dict = Js.Dict.empty();
-    data##launchedWildcards
+    data.launchedWildcards
     ->Array.map(wildcard => {
-        switch (wildcard##organization) {
+        switch (wildcard.organization) {
         | Some(org) =>
-          let orgId = org##id;
+          let orgId = org.id;
           switch (dict->Js.Dict.get(orgId)) {
           | Some(orgObj) =>
             let newOrgObj = {
               ...orgObj,
-              wildcards: orgObj.wildcards->Array.concat([|wildcard##key|]),
+              wildcards: orgObj.wildcards->Array.concat([|wildcard.key|]),
             };
             dict->Js.Dict.set(orgId, newOrgObj);
           | None =>
@@ -1328,9 +1410,9 @@ let useArtistOrgs = (~artistIdentifier) => {
               orgId,
               {
                 id: orgId,
-                name: org##name,
-                logo: org##logo,
-                wildcards: [|wildcard##key|],
+                name: org.name,
+                logo: org.logo,
+                wildcards: [|wildcard.key|],
               },
             )
           };

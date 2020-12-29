@@ -3,9 +3,9 @@
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Moment from "moment";
+import * as Globals from "./Globals.bs.js";
 import * as Belt_List from "bs-platform/lib/es6/belt_List.js";
 import * as Caml_int32 from "bs-platform/lib/es6/caml_int32.js";
-import * as Globals$WildCards from "./Globals.bs.js";
 
 function culculateUnitAmount(param, secondsInUnit, unitStr) {
   var timeStructure = param[1];
@@ -98,7 +98,7 @@ function CountDown(Props) {
         setCountdown
       ]);
   return React.createElement(React.Fragment, {
-              children: displayUnits ? Globals$WildCards.restr(displayTimeLeft(calculateTimeRemainingFromSeconds(countDown))) : Globals$WildCards.restr(displayTimeLeftSimple(calculateTimeRemainingFromSeconds(countDown)))
+              children: displayUnits ? Globals.restr(displayTimeLeft(calculateTimeRemainingFromSeconds(countDown))) : Globals.restr(displayTimeLeftSimple(calculateTimeRemainingFromSeconds(countDown)))
             });
 }
 

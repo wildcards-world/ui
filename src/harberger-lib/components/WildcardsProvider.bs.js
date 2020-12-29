@@ -2,24 +2,24 @@
 
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
+import * as Client from "../Client.bs.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
-import * as Client from "@apollo/client";
-import * as Client$WildCards from "../Client.bs.js";
-import * as RootProvider$WildCards from "../RootProvider.bs.js";
+import * as RootProvider from "../RootProvider.bs.js";
+import * as Client$1 from "@apollo/client";
 
 function WildcardsProvider$GraphQl(Props) {
   var getGraphEndpoints = Props.getGraphEndpoints;
   var children = Props.children;
-  var networkId = Belt_Option.mapWithDefault(RootProvider$WildCards.useNetworkId(undefined), 1, (function (a) {
+  var networkId = Belt_Option.mapWithDefault(RootProvider.useNetworkId(undefined), 1, (function (a) {
           return a;
         }));
   var client = React.useMemo((function () {
-          return Client$WildCards.instance(Curry._1(getGraphEndpoints, networkId));
+          return Client.instance(Curry._1(getGraphEndpoints, networkId));
         }), [
         getGraphEndpoints,
         networkId
       ]);
-  return React.createElement(Client.ApolloProvider, {
+  return React.createElement(Client$1.ApolloProvider, {
               client: client,
               children: children
             });
@@ -34,7 +34,7 @@ function WildcardsProvider(Props) {
   var children = Props.children;
   var stewardContractAddress = Props.stewardContractAddress;
   var stewardAbi = Props.stewardAbi;
-  return React.createElement(RootProvider$WildCards.make, {
+  return React.createElement(RootProvider.make, {
               children: React.createElement(WildcardsProvider$GraphQl, {
                     getGraphEndpoints: getGraphEndpoints,
                     children: children

@@ -9,8 +9,8 @@ import * as $$Promise from "reason-promise/src/js/promise.bs.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
-import * as RootProvider$WildCards from "../harberger-lib/RootProvider.bs.js";
-import * as UserProvider$WildCards from "../harberger-lib/js/user-provider/UserProvider.bs.js";
+import * as RootProvider from "../harberger-lib/RootProvider.bs.js";
+import * as UserProvider from "../harberger-lib/js/user-provider/UserProvider.bs.js";
 
 function ThreeBoxUpdate$ProfileItem(Props) {
   var fieldName = Props.fieldName;
@@ -71,8 +71,8 @@ function ThreeBoxUpdate$ProfileDetails(Props) {
   var nameChange = editedName !== profileName;
   var descriptionChange = editedDescription !== profileDescription;
   var areChanges = nameChange || descriptionChange;
-  var optEthereumWallet = RootProvider$WildCards.useCurrentUser(undefined);
-  var optWeb3Provider = RootProvider$WildCards.useWeb3(undefined);
+  var optEthereumWallet = RootProvider.useCurrentUser(undefined);
+  var optWeb3Provider = RootProvider.useWeb3(undefined);
   var tmp;
   if (typeof threeBoxState === "number") {
     tmp = threeBoxState === /* Loading3Box */0 ? React.createElement(RimbleUi.Heading, {
@@ -225,11 +225,11 @@ function ThreeBoxUpdate$TwitterVerification(Props) {
   var threeBoxState = Props.threeBoxState;
   var setThreeBoxState = Props.setThreeBoxState;
   var reloadUser = Props.reloadUser;
-  var currentUser = Belt_Option.mapWithDefault(RootProvider$WildCards.useCurrentUser(undefined), "", (function (a) {
+  var currentUser = Belt_Option.mapWithDefault(RootProvider.useCurrentUser(undefined), "", (function (a) {
           return a;
         }));
-  var optEthereumWallet = RootProvider$WildCards.useCurrentUser(undefined);
-  var optWeb3Provider = RootProvider$WildCards.useWeb3(undefined);
+  var optEthereumWallet = RootProvider.useCurrentUser(undefined);
+  var optWeb3Provider = RootProvider.useWeb3(undefined);
   var match = React.useState(function () {
         return /* Uninitialized */0;
       });
@@ -432,15 +432,15 @@ var TwitterVerification = {
 };
 
 function ThreeBoxUpdate$ThreeBoxUpdate(Props) {
-  var currentUser = Belt_Option.mapWithDefault(RootProvider$WildCards.useCurrentUser(undefined), "", (function (a) {
+  var currentUser = Belt_Option.mapWithDefault(RootProvider.useCurrentUser(undefined), "", (function (a) {
           return a;
         }));
-  var userInfoContext = UserProvider$WildCards.useUserInfoContext(undefined);
+  var userInfoContext = UserProvider.useUserInfoContext(undefined);
   var reloadUser = function (forceReload) {
     return Curry._2(userInfoContext.update, currentUser, forceReload);
   };
   Curry._2(userInfoContext.update, currentUser, false);
-  var optThreeBoxData = UserProvider$WildCards.use3BoxUserData(currentUser);
+  var optThreeBoxData = UserProvider.use3BoxUserData(currentUser);
   var match = React.useState(function () {
         return {
                 TAG: /* DefaultView */0,
@@ -484,7 +484,7 @@ var ThreeBoxUpdate = {
 };
 
 function ThreeBoxUpdate$Main(Props) {
-  var currentUser = Belt_Option.mapWithDefault(RootProvider$WildCards.useCurrentUser(undefined), "", (function (a) {
+  var currentUser = Belt_Option.mapWithDefault(RootProvider.useCurrentUser(undefined), "", (function (a) {
           return a;
         }));
   var match = React.useState(function () {

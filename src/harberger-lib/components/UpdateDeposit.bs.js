@@ -2,13 +2,13 @@
 
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
+import * as InputHelp from "../InputHelp.bs.js";
+import * as TxTemplate from "../../components/components/TxTemplate.bs.js";
 import * as Web3Utils from "web3-utils";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
+import * as ContractActions from "../eth/ContractActions.bs.js";
 import * as Core from "@web3-react/core";
-import * as InputHelp$WildCards from "../InputHelp.bs.js";
 import UpdateDepositInput from "./UpdateDepositInput";
-import * as TxTemplate$WildCards from "../../components/components/TxTemplate.bs.js";
-import * as ContractActions$WildCards from "../eth/ContractActions.bs.js";
 
 var make = UpdateDepositInput;
 
@@ -36,9 +36,9 @@ function UpdateDeposit(Props) {
   var setIsAddDeposit = match$1[1];
   var isAddDeposit = match$1[0];
   var web3Context = Core.useWeb3React();
-  var match$2 = ContractActions$WildCards.useUpdateDeposit(chain, web3Context.library, web3Context.account, Belt_Option.getWithDefault(web3Context.chainId, 1));
+  var match$2 = ContractActions.useUpdateDeposit(chain, web3Context.library, web3Context.account, Belt_Option.getWithDefault(web3Context.chainId, 1));
   var depositFunc = match$2[0];
-  var match$3 = ContractActions$WildCards.useWithdrawDeposit(chain, web3Context.library, web3Context.account, Belt_Option.getWithDefault(web3Context.chainId, 1));
+  var match$3 = ContractActions.useWithdrawDeposit(chain, web3Context.library, web3Context.account, Belt_Option.getWithDefault(web3Context.chainId, 1));
   var withdrawFunc = match$3[0];
   var onSubmitDepositChange = function ($$event) {
     $$event.preventDefault();
@@ -51,15 +51,15 @@ function UpdateDeposit(Props) {
   };
   var updateDepositChange = function ($$event) {
     $$event.preventDefault();
-    return InputHelp$WildCards.onlyUpdateIfPositiveFloat(depositChange, setDepositChange, $$event);
+    return InputHelp.onlyUpdateIfPositiveFloat(depositChange, setDepositChange, $$event);
   };
   var updateIsAddDeposit = function (isDeposit) {
     return Curry._1(setIsAddDeposit, (function (param) {
                   return isDeposit;
                 }));
   };
-  return React.createElement(TxTemplate$WildCards.make, {
-              children: React.createElement(TxTemplate$WildCards.make, {
+  return React.createElement(TxTemplate.make, {
+              children: React.createElement(TxTemplate.make, {
                     children: React.createElement(make, {
                           depositChange: depositChange,
                           updateDepositChange: updateDepositChange,

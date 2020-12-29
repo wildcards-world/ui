@@ -2,27 +2,27 @@
 
 import BnJs from "bn.js";
 import * as React from "react";
+import * as Helper from "./Helper.bs.js";
 import * as Moment from "moment";
+import * as Globals from "./Globals.bs.js";
+import * as QlHooks from "./QlHooks.bs.js";
+import * as TokenId from "./TokenId.bs.js";
 import * as MomentRe from "bs-moment/src/MomentRe.bs.js";
+import * as CONSTANTS from "../CONSTANTS.bs.js";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
-import * as Helper$WildCards from "./Helper.bs.js";
-import * as Globals$WildCards from "./Globals.bs.js";
-import * as QlHooks$WildCards from "./QlHooks.bs.js";
-import * as TokenId$WildCards from "./TokenId.bs.js";
-import * as CONSTANTS$WildCards from "../CONSTANTS.bs.js";
 
-var getAnimal = TokenId$WildCards.make;
+var getAnimal = TokenId.make;
 
 function useAvatar(animal) {
-  return Globals$WildCards.$pipe$pipe$pipe$pipe(Belt_Option.map(QlHooks$WildCards.useWildcardAvatar(animal), (function (a) {
-                    return CONSTANTS$WildCards.cdnBase + a;
+  return Globals.$pipe$pipe$pipe$pipe(Belt_Option.map(QlHooks.useWildcardAvatar(animal), (function (a) {
+                    return CONSTANTS.cdnBase + a;
                   })), "./img/animals/comingsoon.png");
 }
 
 function useAlternateImage(animal) {
-  return Belt_Option.flatMap(Belt_Option.map(QlHooks$WildCards.useRealImages(animal), (function (animalImages) {
+  return Belt_Option.flatMap(Belt_Option.map(QlHooks.useRealImages(animal), (function (animalImages) {
                     return Belt_Array.map(animalImages, (function (info) {
                                   return info.image;
                                 }));
@@ -32,27 +32,27 @@ function useAlternateImage(animal) {
 }
 
 function useGetOrgImage(org) {
-  return Globals$WildCards.$pipe$pipe$pipe$pipe(Belt_Option.map(QlHooks$WildCards.useLoadOrganisationLogo(org), (function (path) {
-                    return CONSTANTS$WildCards.cdnBase + path;
+  return Globals.$pipe$pipe$pipe$pipe(Belt_Option.map(QlHooks.useLoadOrganisationLogo(org), (function (path) {
+                    return CONSTANTS.cdnBase + path;
                   })), "https://dd2wadt5nc0o7.cloudfront.net/conservations/OGBage.png");
 }
 
 function useGetOrgBadge(org) {
-  return Globals$WildCards.$pipe$pipe$pipe$pipe(Belt_Option.map(QlHooks$WildCards.useLoadOrganisationLogo(org), (function (path) {
-                    return CONSTANTS$WildCards.cdnBase + path;
+  return Globals.$pipe$pipe$pipe$pipe(Belt_Option.map(QlHooks.useLoadOrganisationLogo(org), (function (path) {
+                    return CONSTANTS.cdnBase + path;
                   })), "https://dd2wadt5nc0o7.cloudfront.net/conservations/OGBage.png");
 }
 
 function useGetOrgBadgeImage(tokenId) {
-  return useGetOrgBadge(Globals$WildCards.$pipe$pipe$pipe$pipe(QlHooks$WildCards.useWildcardOrgId(tokenId), ""));
+  return useGetOrgBadge(Globals.$pipe$pipe$pipe$pipe(QlHooks.useWildcardOrgId(tokenId), ""));
 }
 
 var nextLaunchDate = Moment.utc("2020-07-30T17:00:00");
 
 function useIsLaunched(chain, animal) {
-  var optLaunchTime = QlHooks$WildCards.useLaunchTimeBN(chain, animal);
-  var currentTime = QlHooks$WildCards.useCurrentTimestampBn(undefined);
-  var id = TokenId$WildCards.toInt(animal);
+  var optLaunchTime = QlHooks.useLaunchTimeBN(chain, animal);
+  var currentTime = QlHooks.useCurrentTimestampBn(undefined);
+  var id = TokenId.toInt(animal);
   if (id === undefined) {
     return /* Launched */0;
   }
@@ -73,9 +73,9 @@ function useIsLaunched(chain, animal) {
 }
 
 function useTokenStatus(chain, animal) {
-  var optLaunchTime = QlHooks$WildCards.useLaunchTimeBN(chain, animal);
-  var currentTime = QlHooks$WildCards.useCurrentTimestampBn(undefined);
-  var currentPriceWei = QlHooks$WildCards.usePrice(chain, animal);
+  var optLaunchTime = QlHooks.useLaunchTimeBN(chain, animal);
+  var currentTime = QlHooks.useCurrentTimestampBn(undefined);
+  var currentPriceWei = QlHooks.usePrice(chain, animal);
   if (optLaunchTime === undefined) {
     return /* Loading */0;
   }
@@ -92,7 +92,7 @@ function useTokenStatus(chain, animal) {
   if (!currentPriceWei.TAG) {
     return {
             TAG: /* Foreclosed */3,
-            _0: Helper$WildCards.bnToMoment(currentPriceWei._0)
+            _0: Helper.bnToMoment(currentPriceWei._0)
           };
   }
   var price = currentPriceWei._0;
@@ -120,10 +120,10 @@ function useIsOnAuction(chain, animal) {
 
 function useAuctionPriceWei(chain, animal, launchTime) {
   var tokenStatus = useTokenStatus(chain, animal);
-  var auctionStartPrice = QlHooks$WildCards.useAuctionStartPrice(chain, animal);
-  var auctionEndPrice = QlHooks$WildCards.useAuctionEndPrice(chain, animal);
-  var auctionLength = QlHooks$WildCards.useAuctioLength(chain, animal);
-  var currentTime = QlHooks$WildCards.useCurrentTime(undefined);
+  var auctionStartPrice = QlHooks.useAuctionStartPrice(chain, animal);
+  var auctionEndPrice = QlHooks.useAuctionEndPrice(chain, animal);
+  var auctionLength = QlHooks.useAuctioLength(chain, animal);
+  var currentTime = QlHooks.useCurrentTime(undefined);
   if (auctionStartPrice === undefined) {
     return ;
   }
@@ -142,11 +142,11 @@ function useAuctionPriceWei(chain, animal, launchTime) {
   } else {
     switch (tokenStatus.TAG | 0) {
       case /* Launched */1 :
-          tmp = Globals$WildCards.$pipe$less$pipe(new BnJs(currentTime), Globals$WildCards.$pipe$plus$pipe(launchTime, auctionLength$1)) ? Globals$WildCards.$pipe$neg$pipe(auctionStartPrice$1, Globals$WildCards.$pipe$slash$pipe(Globals$WildCards.$pipe$star$pipe(Globals$WildCards.$pipe$neg$pipe(auctionStartPrice$1, auctionEndPrice$1), Globals$WildCards.$pipe$neg$pipe(new BnJs(currentTime), launchTime)), auctionLength$1)) : auctionEndPrice$1;
+          tmp = Globals.$pipe$less$pipe(new BnJs(currentTime), Globals.$pipe$plus$pipe(launchTime, auctionLength$1)) ? Globals.$pipe$neg$pipe(auctionStartPrice$1, Globals.$pipe$slash$pipe(Globals.$pipe$star$pipe(Globals.$pipe$neg$pipe(auctionStartPrice$1, auctionEndPrice$1), Globals.$pipe$neg$pipe(new BnJs(currentTime), launchTime)), auctionLength$1)) : auctionEndPrice$1;
           break;
       case /* Foreclosed */3 :
           var auctionStartTime = new BnJs(tokenStatus._0.unix());
-          tmp = Globals$WildCards.$pipe$less$pipe(new BnJs(currentTime), Globals$WildCards.$pipe$plus$pipe(auctionStartTime, auctionLength$1)) ? Globals$WildCards.$pipe$neg$pipe(auctionStartPrice$1, Globals$WildCards.$pipe$slash$pipe(Globals$WildCards.$pipe$star$pipe(Globals$WildCards.$pipe$neg$pipe(auctionStartPrice$1, auctionEndPrice$1), Globals$WildCards.$pipe$neg$pipe(new BnJs(currentTime), auctionStartTime)), auctionLength$1)) : auctionEndPrice$1;
+          tmp = Globals.$pipe$less$pipe(new BnJs(currentTime), Globals.$pipe$plus$pipe(auctionStartTime, auctionLength$1)) ? Globals.$pipe$neg$pipe(auctionStartPrice$1, Globals.$pipe$slash$pipe(Globals.$pipe$star$pipe(Globals.$pipe$neg$pipe(auctionStartPrice$1, auctionEndPrice$1), Globals.$pipe$neg$pipe(new BnJs(currentTime), auctionStartTime)), auctionLength$1)) : auctionEndPrice$1;
           break;
       default:
         tmp = auctionEndPrice$1;
@@ -156,7 +156,7 @@ function useAuctionPriceWei(chain, animal, launchTime) {
 }
 
 function getChainIdFromAnimalId(animalId) {
-  var a = Globals$WildCards.$pipe$pipe$pipe$pipe(TokenId$WildCards.toInt(animalId), 0);
+  var a = Globals.$pipe$pipe$pipe$pipe(TokenId.toInt(animalId), 0);
   if (a < 26 || a === 42) {
     return /* MainnetQuery */2;
   } else {

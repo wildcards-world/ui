@@ -3,15 +3,15 @@
 import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
+import * as Styles from "../../Styles.bs.js";
+import * as Globals from "../../harberger-lib/Globals.bs.js";
+import * as QlHooks from "../../harberger-lib/QlHooks.bs.js";
+import * as Web3Utils from "../../harberger-lib/Web3Utils.bs.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Float from "bs-platform/lib/es6/belt_Float.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
-import * as Styles$WildCards from "../../Styles.bs.js";
-import * as Globals$WildCards from "../../harberger-lib/Globals.bs.js";
-import * as QlHooks$WildCards from "../../harberger-lib/QlHooks.bs.js";
-import * as Web3Utils$WildCards from "../../harberger-lib/Web3Utils.bs.js";
-import * as UsdPriceProvider$WildCards from "../../harberger-lib/components/UsdPriceProvider.bs.js";
+import * as UsdPriceProvider from "../../harberger-lib/components/UsdPriceProvider.bs.js";
 import TotalRaisedEtherCountupJs from "./TotalRaisedEtherCountup.js";
 
 var make = TotalRaisedEtherCountupJs;
@@ -21,14 +21,14 @@ var TotalRaisedEtherCountup = {
 };
 
 function uesTotalPatronage(param) {
-  var optTotalPatronageWei = QlHooks$WildCards.useAmountRaised(undefined);
-  var optCurrentUsdEthPrice = UsdPriceProvider$WildCards.useUsdPrice(undefined);
+  var optTotalPatronageWei = QlHooks.useAmountRaised(undefined);
+  var optCurrentUsdEthPrice = UsdPriceProvider.useUsdPrice(undefined);
   if (optTotalPatronageWei === undefined) {
     return /* Loading */0;
   }
-  var totalPatronageEth = Web3Utils$WildCards.fromWeiToEth(Caml_option.valFromOption(optTotalPatronageWei).toString());
+  var totalPatronageEth = Web3Utils.fromWeiToEth(Caml_option.valFromOption(optTotalPatronageWei).toString());
   var optTotaPatronageUsd = Belt_Option.flatMap(optCurrentUsdEthPrice, (function (currentUsdEthPrice) {
-          return (Globals$WildCards.mapd(Belt_Float.fromString(totalPatronageEth), 0, (function (a) {
+          return (Globals.mapd(Belt_Float.fromString(totalPatronageEth), 0, (function (a) {
                             return a;
                           })) * currentUsdEthPrice).toFixed(2);
         }));
@@ -64,17 +64,17 @@ function TotalRaised(Props) {
                         tl: /* [] */0
                       })
                 }, React.createElement("small", undefined, React.createElement("span", {
-                          className: Styles$WildCards.totalRaisedText(1.5)
+                          className: Styles.totalRaisedText(1.5)
                         }, "Wildcards has currently raised "), React.createElement("br", undefined), React.createElement("span", {
-                          className: Styles$WildCards.totalRaisedText(4)
+                          className: Styles.totalRaisedText(4)
                         }, React.createElement(make, {
                               totalRaised: totalPatronageRaised._0
                             }), React.createElement("strong", undefined, " ETH ")), React.createElement("br", undefined), optTotaPatronageUsd !== undefined ? React.createElement(React.Fragment, {
                             children: null
                           }, React.createElement("span", {
-                                className: Styles$WildCards.totalRaisedText(2.5)
+                                className: Styles.totalRaisedText(2.5)
                               }, "(", optTotaPatronageUsd, React.createElement("strong", undefined, " USD"), ")"), React.createElement("br", undefined), React.createElement("span", {
-                                className: Styles$WildCards.totalRaisedText(1.5)
+                                className: Styles.totalRaisedText(1.5)
                               }, " for conservation.")) : null)));
 }
 

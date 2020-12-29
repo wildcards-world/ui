@@ -5,14 +5,30 @@ import * as $$Array from "bs-platform/lib/es6/array.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import BnJs from "bn.js";
 import * as React from "react";
+import * as Helper from "../../harberger-lib/Helper.bs.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
-import * as Helper$WildCards from "../../harberger-lib/Helper.bs.js";
-import * as RootProvider$WildCards from "../../harberger-lib/RootProvider.bs.js";
-import * as UserProvider$WildCards from "../../harberger-lib/js/user-provider/UserProvider.bs.js";
-import * as GqlConverters$WildCards from "../../gql/GqlConverters.bs.js";
+import * as RootProvider from "../../harberger-lib/RootProvider.bs.js";
+import * as UserProvider from "../../harberger-lib/js/user-provider/UserProvider.bs.js";
+import * as GqlConverters from "../../gql/GqlConverters.bs.js";
+import * as ApolloClient__React_Hooks_UseQuery from "reason-apollo-client/src/@apollo/client/react/hooks/ApolloClient__React_Hooks_UseQuery.bs.js";
 
 var Raw = {};
+
+var query = (require("@apollo/client").gql`
+  query   {
+    patrons(first: 20, orderBy: totalTimeHeld, orderDirection: desc, where: {id_not: "NO_OWNER"})  {
+      __typename
+      id
+      totalTimeHeld
+      tokens  {
+        __typename
+        id
+      }
+      lastUpdated
+    }
+  }
+`);
 
 function parse(value) {
   var value$1 = value.patrons;
@@ -20,14 +36,16 @@ function parse(value) {
           patrons: value$1.map(function (value) {
                 var value$1 = value.tokens;
                 return {
+                        __typename: value.__typename,
                         id: value.id,
-                        totalTimeHeld: GqlConverters$WildCards.$$BigInt.parse(value.totalTimeHeld),
+                        totalTimeHeld: GqlConverters.$$BigInt.parse(value.totalTimeHeld),
                         tokens: value$1.map(function (value) {
                               return {
+                                      __typename: value.__typename,
                                       id: value.id
                                     };
                             }),
-                        lastUpdated: GqlConverters$WildCards.$$BigInt.parse(value.lastUpdated)
+                        lastUpdated: GqlConverters.$$BigInt.parse(value.lastUpdated)
                       };
               })
         };
@@ -37,18 +55,22 @@ function serialize(value) {
   var value$1 = value.patrons;
   var patrons = value$1.map(function (value) {
         var value$1 = value.lastUpdated;
-        var value$2 = GqlConverters$WildCards.$$BigInt.serialize(value$1);
+        var value$2 = GqlConverters.$$BigInt.serialize(value$1);
         var value$3 = value.tokens;
         var tokens = value$3.map(function (value) {
               var value$1 = value.id;
+              var value$2 = value.__typename;
               return {
+                      __typename: value$2,
                       id: value$1
                     };
             });
         var value$4 = value.totalTimeHeld;
-        var value$5 = GqlConverters$WildCards.$$BigInt.serialize(value$4);
+        var value$5 = GqlConverters.$$BigInt.serialize(value$4);
         var value$6 = value.id;
+        var value$7 = value.__typename;
         return {
+                __typename: value$7,
                 id: value$6,
                 totalTimeHeld: value$5,
                 tokens: tokens,
@@ -72,14 +94,45 @@ function makeDefaultVariables(param) {
   
 }
 
-var LoadMostDaysHeld = {
+var LoadMostDaysHeld_inner = {
   Raw: Raw,
-  query: "query   {\npatrons(first: 20, orderBy: totalTimeHeld, orderDirection: desc, where: {id_not: \"NO_OWNER\"})  {\nid  \ntotalTimeHeld  \ntokens  {\nid  \n}\n\nlastUpdated  \n}\n\n}\n",
+  query: query,
   parse: parse,
   serialize: serialize,
   serializeVariables: serializeVariables,
   makeVariables: makeVariables,
   makeDefaultVariables: makeDefaultVariables
+};
+
+var include = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query,
+      Raw: Raw,
+      parse: parse,
+      serialize: serialize,
+      serializeVariables: serializeVariables
+    });
+
+var LoadMostDaysHeld_refetchQueryDescription = include.refetchQueryDescription;
+
+var LoadMostDaysHeld_use = include.use;
+
+var LoadMostDaysHeld_useLazy = include.useLazy;
+
+var LoadMostDaysHeld_useLazyWithVariables = include.useLazyWithVariables;
+
+var LoadMostDaysHeld = {
+  LoadMostDaysHeld_inner: LoadMostDaysHeld_inner,
+  Raw: Raw,
+  query: query,
+  parse: parse,
+  serialize: serialize,
+  serializeVariables: serializeVariables,
+  makeVariables: makeVariables,
+  makeDefaultVariables: makeDefaultVariables,
+  refetchQueryDescription: LoadMostDaysHeld_refetchQueryDescription,
+  use: LoadMostDaysHeld_use,
+  useLazy: LoadMostDaysHeld_useLazy,
+  useLazyWithVariables: LoadMostDaysHeld_useLazyWithVariables
 };
 
 function useLoadMostDaysHeld(param) {
@@ -237,14 +290,14 @@ function TotalDaysHeld$ContributorsRow(Props) {
   var contributor = Props.contributor;
   var amount = Props.amount;
   var index = Props.index;
-  Curry._2(UserProvider$WildCards.useUserInfoContext(undefined).update, contributor, false);
-  var optThreeBoxData = UserProvider$WildCards.use3BoxUserData(contributor);
+  Curry._2(UserProvider.useUserInfoContext(undefined).update, contributor, false);
+  var optThreeBoxData = UserProvider.use3BoxUserData(contributor);
   var optUserName = Belt_Option.flatMap(Belt_Option.flatMap(optThreeBoxData, (function (threeBoxData) {
               return threeBoxData.profile;
             })), (function (threeBoxData) {
           return threeBoxData.name;
         }));
-  var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
+  var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   return React.createElement("tr", {
               key: contributor,
               className: rankingColor(index)
@@ -272,7 +325,7 @@ function TotalDaysHeld$ContributorsRow(Props) {
                           e.preventDefault();
                           return Curry._1(clearAndPush, "/#user/" + contributor);
                         })
-                    }, optUserName !== undefined ? React.createElement("span", undefined, optUserName) : React.createElement("span", undefined, Helper$WildCards.elipsify(contributor, 20)))), React.createElement("td", {
+                    }, optUserName !== undefined ? React.createElement("span", undefined, optUserName) : React.createElement("span", undefined, Helper.elipsify(contributor, 20)))), React.createElement("td", {
                   className: rankMetric
                 }, amount + " Days"));
 }
@@ -335,4 +388,4 @@ export {
   make ,
   
 }
-/* leaderboardTable Not a pure module */
+/* query Not a pure module */
