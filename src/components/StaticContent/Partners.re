@@ -21,21 +21,17 @@ type partner = {
   id: string,
   name: string,
 };
-let usePartners = () =>
-  // let (simple, _) = ApolloHooks.useQuery(LoadPatronNoDecode.definition);
-  // switch (simple) {
-  // | Data(orgs) =>
-  //   orgs##organisations
-  //   ->Array.map(org => {logo: org##logo, id: org##id, name: org##name})
-  //   ->Some
-  // | Error(_)
-  // | Loading
-  // | NoData => None
-  // };
-  /**TODO: fix me */
-  {
-    None;
+let usePartners = () => {
+  switch (LoadPatronNoDecode.use()) {
+  | {loading: true, _} => None
+  | {error: Some(_error), _} => None
+  | {data: Some({organisations}), _} =>
+    organisations
+    ->Array.map(org => {logo: org.logo, id: org.id, name: org.name})
+    ->Some
+  | _ => None
   };
+};
 
 let blueBackground = Css.(style([backgroundColor(`hex("73C8D7"))]));
 let cardStyle =

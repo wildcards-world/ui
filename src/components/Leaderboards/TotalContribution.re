@@ -13,8 +13,6 @@ module LoadMostContributed = [%graphql
   |}
 ];
 
-let useLoadMostContributed = () => Obj.magic;
-// ApolloHooks.useSubscription(LoadMostContributed.definition);
 let useLoadMostContributedData = () => {
   let currentTimestamp = QlHooks.useCurrentTime();
 

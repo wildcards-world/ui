@@ -53,7 +53,7 @@ function webSocketHttpLink(uri, matic, subscriptions) {
 
 function instance(getGraphEndpoints) {
   var match = Curry._1(getGraphEndpoints, undefined);
-  return ApolloClient.make(undefined, undefined, undefined, Caml_option.some(webSocketHttpLink(match.mainnet, match.matic, match.ws)), ApolloClient__Cache_InMemory_InMemoryCache.make(undefined, undefined, undefined, undefined, undefined, undefined), undefined, undefined, true, undefined, ApolloClient__ApolloClient.DefaultOptions.make(ApolloClient__ApolloClient.DefaultMutateOptions.make(undefined, undefined, true, /* All */2, undefined, undefined), ApolloClient__ApolloClient.DefaultQueryOptions.make(/* NetworkOnly */2, /* All */2, undefined, undefined), ApolloClient__ApolloClient.DefaultWatchQueryOptions.make(/* NetworkOnly */3, /* All */2, undefined, undefined), undefined), undefined, undefined, undefined, undefined, undefined, undefined, undefined);
+  return ApolloClient.make(undefined, undefined, undefined, Caml_option.some(webSocketHttpLink(match.mainnet, match.matic, match.ws)), ApolloClient__Cache_InMemory_InMemoryCache.make(undefined, undefined, undefined, undefined, undefined, undefined), undefined, undefined, true, undefined, ApolloClient__ApolloClient.DefaultOptions.make(ApolloClient__ApolloClient.DefaultMutateOptions.make(undefined, undefined, true, /* All */2, undefined, undefined), ApolloClient__ApolloClient.DefaultQueryOptions.make(undefined, /* All */2, undefined, undefined), ApolloClient__ApolloClient.DefaultWatchQueryOptions.make(undefined, /* All */2, undefined, undefined), undefined), undefined, undefined, undefined, undefined, undefined, undefined, undefined);
 }
 
 export {

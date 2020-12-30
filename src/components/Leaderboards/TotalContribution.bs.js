@@ -121,12 +121,6 @@ var LoadMostContributed = {
   useLazyWithVariables: LoadMostContributed_useLazyWithVariables
 };
 
-function useLoadMostContributed(param) {
-  return function (prim) {
-    return prim;
-  };
-}
-
 function useLoadMostContributedData(param) {
   var currentTimestamp = QlHooks.useCurrentTime(undefined);
   var match = Curry.app(use, [
@@ -397,7 +391,6 @@ var make = TotalContribution;
 
 export {
   LoadMostContributed ,
-  useLoadMostContributed ,
   useLoadMostContributedData ,
   flameImg ,
   goldTrophyImg ,

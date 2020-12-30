@@ -7,6 +7,7 @@ import * as Styles from "../../Styles.bs.js";
 import * as Globals from "../../harberger-lib/Globals.bs.js";
 import * as CONSTANTS from "../../CONSTANTS.bs.js";
 import * as RimbleUi from "rimble-ui";
+import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import * as RootProvider from "../../harberger-lib/RootProvider.bs.js";
 import * as Css_Legacy_Core from "bs-css/src/Css_Legacy_Core.bs.js";
 import * as ApolloClient__React_Hooks_UseQuery from "reason-apollo-client/src/@apollo/client/react/hooks/ApolloClient__React_Hooks_UseQuery.bs.js";
@@ -95,9 +96,9 @@ var include = ApolloClient__React_Hooks_UseQuery.Extend({
       serializeVariables: serializeVariables
     });
 
-var LoadPatronNoDecode_refetchQueryDescription = include.refetchQueryDescription;
+var use = include.use;
 
-var LoadPatronNoDecode_use = include.use;
+var LoadPatronNoDecode_refetchQueryDescription = include.refetchQueryDescription;
 
 var LoadPatronNoDecode_useLazy = include.useLazy;
 
@@ -113,13 +114,40 @@ var LoadPatronNoDecode = {
   makeVariables: makeVariables,
   makeDefaultVariables: makeDefaultVariables,
   refetchQueryDescription: LoadPatronNoDecode_refetchQueryDescription,
-  use: LoadPatronNoDecode_use,
+  use: use,
   useLazy: LoadPatronNoDecode_useLazy,
   useLazyWithVariables: LoadPatronNoDecode_useLazyWithVariables
 };
 
 function usePartners(param) {
-  
+  var match = Curry.app(use, [
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+      ]);
+  var match$1 = match.data;
+  if (match.loading || match.error !== undefined || match$1 === undefined) {
+    return ;
+  } else {
+    return Belt_Array.map(match$1.organisations, (function (org) {
+                  return {
+                          logo: org.logo,
+                          id: org.id,
+                          name: org.name
+                        };
+                }));
+  }
 }
 
 var blueBackground = Curry._1(Css.style, {
@@ -261,6 +289,21 @@ var OrgDetails = {
 };
 
 function Partners(Props) {
+  var newConservationPartners = usePartners(undefined);
+  var orgBox = function (content, key) {
+    return React.createElement(RimbleUi.Box, {
+                mb: 20,
+                mt: 20,
+                children: content,
+                width: [
+                  0.45,
+                  0.45,
+                  0.18
+                ],
+                color: "black",
+                key: key
+              });
+  };
   return React.createElement("div", {
               width: "100%"
             }, React.createElement(RimbleUi.Flex, {
@@ -272,7 +315,11 @@ function Partners(Props) {
                   pt: 50,
                   className: blueBackground
                 }), React.createElement(RimbleUi.Flex, {
-                  children: null,
+                  children: newConservationPartners !== undefined ? React.createElement(React.Fragment, undefined, Belt_Array.map(newConservationPartners, (function (conservation) {
+                                return orgBox(React.createElement(Partners$OrgDetails, {
+                                                conservation: conservation
+                                              }), conservation.id);
+                              })), orgBox(null, "a"), orgBox(null, "b"), orgBox(null, "c"), orgBox(null, "d")) : null,
                   flexWrap: "wrap",
                   alignItems: "stretch",
                   justifyContent: "space-around",

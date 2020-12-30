@@ -1,26 +1,6 @@
 open Globals;
-module QueryFetchPolicy = ApolloClient__React_Hooks_UseQuery.WatchQueryFetchPolicy;
-
-type owner = {. "address": Js.Json.t};
-
-type price = {. "price": Eth.t};
-
-type wildcard = {
-  id: string,
-  tokenId: TokenId.t,
-  patronageNumerator: Js.Json.t,
-  owner,
-  price,
-};
-
-let decodeBN: Js.Json.t => BN.t =
-  number =>
-    number
-    ->Js.Json.decodeString
-    ->Belt.Option.mapWithDefault("0", a => a) /*trusting that gql will be reliable here*/
-    ->BN.new_;
-
 open GqlConverters;
+module QueryFetchPolicy = ApolloClient__React_Hooks_UseQuery.WatchQueryFetchPolicy;
 
 module InitialLoad = [%graphql
   {|
@@ -356,8 +336,6 @@ let getQueryPrefix = (chain: Client.context) =>
   | Neither => ""
   | MaticQuery => "matic"
   };
-
-type data = {tokenId: string};
 
 let useWildcardQuery = (~chain, tokenId) => {
   let wildcardQuery =

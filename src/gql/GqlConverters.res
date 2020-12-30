@@ -11,21 +11,6 @@ module BigInt = {
   let serialize = bn => bn->BN.toString->Js.Json.string
 }
 
-// // let decodeOptionBN: option(Js.Json.t) => option(BN.t) =
-// //   optionalNumber => optionalNumber->Option.map(num => decodeBN(num));
-// module OptionBigInt = {
-//   type t = option(BN.t)
-//   let parse = json =>
-//     switch json->Js.Json.decodeString {
-//     | Some(str) => BN.new_(str)
-//     | None =>
-//       // In theory graphql should never allow this to not be a correct string
-//       Js.log("CRITICAL - should never happen!")
-//       BN.newInt_(0)
-//     }
-//   let serialize = bn => bn->BN.toString->Js.Json.string
-// }
-
 module BigIntStr = {
   type t = BN.t
   let parse = stringBn => BN.new_(stringBn)

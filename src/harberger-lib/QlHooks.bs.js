@@ -8,7 +8,6 @@ import * as Helper from "./Helper.bs.js";
 import * as Moment from "moment";
 import * as Globals from "./Globals.bs.js";
 import * as Js_dict from "bs-platform/lib/es6/js_dict.js";
-import * as Js_json from "bs-platform/lib/es6/js_json.js";
 import * as Js_math from "bs-platform/lib/es6/js_math.js";
 import * as TokenId from "./TokenId.bs.js";
 import * as Web3Utils from "./Web3Utils.bs.js";
@@ -19,12 +18,6 @@ import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as RootProvider from "./RootProvider.bs.js";
 import * as GqlConverters from "../gql/GqlConverters.bs.js";
 import * as ApolloClient__React_Hooks_UseQuery from "reason-apollo-client/src/@apollo/client/react/hooks/ApolloClient__React_Hooks_UseQuery.bs.js";
-
-function decodeBN(number) {
-  return new BnJs(Belt_Option.mapWithDefault(Js_json.decodeString(number), "0", (function (a) {
-                    return a;
-                  })));
-}
 
 var Raw = {};
 
@@ -2684,7 +2677,6 @@ var QueryFetchPolicy;
 
 export {
   QueryFetchPolicy ,
-  decodeBN ,
   InitialLoad ,
   createContext ,
   useInitialDataLoad ,

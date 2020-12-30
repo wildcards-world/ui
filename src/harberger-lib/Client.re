@@ -92,13 +92,13 @@ let instance = (~getGraphEndpoints: unit => qlEndpoints) => {
             ),
           ~query=
             DefaultQueryOptions.make(
-              ~fetchPolicy=NetworkOnly,
+              // ~fetchPolicy=NetworkOnly,
               ~errorPolicy=All,
               (),
             ),
           ~watchQuery=
             DefaultWatchQueryOptions.make(
-              ~fetchPolicy=NetworkOnly,
+              // ~fetchPolicy=NetworkOnly,
               ~errorPolicy=All,
               (),
             ),
