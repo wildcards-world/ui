@@ -321,20 +321,53 @@ function execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, se
   
 }
 
-function handleMetaTxSumbissionState(result, setTxState) {
+function handleMetaTxSumbissionState(result, setTxState, currentState) {
+  var networkId = RootProvider.useNetworkId(undefined);
+  var exit = 0;
   var data = result.data;
+  if (!result.called) {
+    return ;
+  }
   if (data !== undefined && result.error === undefined) {
     var success = data.metaTx.success;
     var errorMsg = data.metaTx.errorMsg;
     var txHash = data.metaTx.txHash;
     if (success) {
-      Curry._1(setTxState, (function (param) {
-              return {
-                      TAG: /* SignedAndSubmitted */1,
-                      _0: txHash
-                    };
-            }));
-      var maticProvider = new (Ethers.providers.JsonRpcProvider)("https://goerli.infura.io/v3/c401b8ee3a324619a453f2b5b2122d7a");
+      var exit$1 = 0;
+      if (typeof currentState === "number" || currentState.TAG !== /* SignedAndSubmitted */1) {
+        exit$1 = 2;
+      }
+      if (exit$1 === 2) {
+        Curry._1(setTxState, (function (param) {
+                return {
+                        TAG: /* SignedAndSubmitted */1,
+                        _0: txHash
+                      };
+              }));
+      }
+      var providerUrl;
+      if (networkId !== undefined) {
+        switch (networkId) {
+          case 1 :
+              providerUrl = "https://rpc-mainnet.matic.network";
+              break;
+          case 2 :
+          case 3 :
+              providerUrl = "No Network";
+              break;
+          case 4 :
+              providerUrl = "https://goerli.infura.io/v3/c401b8ee3a324619a453f2b5b2122d7a";
+              break;
+          case 5 :
+              providerUrl = "https://rpc-mumbai.matic.today";
+              break;
+          default:
+            providerUrl = "No Network";
+        }
+      } else {
+        providerUrl = "No Network";
+      }
+      var maticProvider = new (Ethers.providers.JsonRpcProvider)(providerUrl);
       var waitForTx = $$Promise.Js.toResult(maticProvider.waitForTransaction(txHash));
       $$Promise.getOk(waitForTx, (function (tx) {
               return Curry._1(setTxState, (function (param) {
@@ -353,20 +386,48 @@ function handleMetaTxSumbissionState(result, setTxState) {
                     
                   }));
     }
-    Curry._1(setTxState, (function (param) {
-            return {
-                    TAG: /* ServerError */3,
-                    _0: Belt_Option.getWithDefault(errorMsg, "Unknown error")
-                  };
-          }));
-    return ;
+    var exit$2 = 0;
+    if (typeof currentState === "number") {
+      exit$2 = 2;
+    } else {
+      if (currentState.TAG === /* ServerError */3) {
+        return ;
+      }
+      exit$2 = 2;
+    }
+    if (exit$2 === 2) {
+      return Curry._1(setTxState, (function (param) {
+                    return {
+                            TAG: /* ServerError */3,
+                            _0: Belt_Option.getWithDefault(errorMsg, "Unknown error")
+                          };
+                  }));
+    }
+    
+  } else {
+    exit = 1;
   }
-  return Curry._1(setTxState, (function (param) {
-                return {
-                        TAG: /* ServerError */3,
-                        _0: "Query Error"
-                      };
-              }));
+  if (exit === 1) {
+    var exit$3 = 0;
+    if (typeof currentState === "number") {
+      exit$3 = 2;
+    } else {
+      if (currentState.TAG === /* ServerError */3) {
+        return ;
+      }
+      exit$3 = 2;
+    }
+    if (exit$3 === 2) {
+      return Curry._1(setTxState, (function (param) {
+                    return {
+                            TAG: /* ServerError */3,
+                            _0: "Query Error"
+                          };
+                  }));
+    }
+    
+  }
+  
 }
 
 function useBuy(chain, animal, library, account, parentChainId) {
@@ -393,7 +454,7 @@ function useBuy(chain, animal, library, account, parentChainId) {
         undefined
       ]);
   var mutate = match$1[0];
-  handleMetaTxSumbissionState(match$1[1], setTxState);
+  handleMetaTxSumbissionState(match$1[1], setTxState, txState);
   var chainIdInt = getChildChainId(parentChainId);
   var chainId = new BnJs(chainIdInt);
   var verifyingContract = getDaiContractAddress(chain, chainIdInt);
@@ -512,7 +573,7 @@ function useBuyAuction(chain, animal, library, account, parentChainId) {
         undefined
       ]);
   var mutate = match$1[0];
-  handleMetaTxSumbissionState(match$1[1], setTxState);
+  handleMetaTxSumbissionState(match$1[1], setTxState, txState);
   var chainIdInt = getChildChainId(parentChainId);
   var chainId = new BnJs(chainIdInt);
   var verifyingContract = getDaiContractAddress(chain, chainIdInt);
@@ -685,7 +746,7 @@ function useUpdateDeposit(chain, library, account, parentChainId) {
         undefined
       ]);
   var mutate = match$1[0];
-  handleMetaTxSumbissionState(match$1[1], setTxState);
+  handleMetaTxSumbissionState(match$1[1], setTxState, txState);
   var chainIdInt = getChildChainId(parentChainId);
   var chainId = new BnJs(chainIdInt);
   var verifyingContract = getDaiContractAddress(chain, chainIdInt);

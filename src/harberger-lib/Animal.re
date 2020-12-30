@@ -14,7 +14,7 @@ let useAvatar = animal => {
 let useAlternateImage: TokenId.t => option(string) =
   animal => {
     QlHooks.useRealImages(animal)
-    ->Option.map(animalImages => animalImages->Array.map(info => info##image))
+    ->Option.map(animalImages => animalImages->Array.map(info => info.image))
     ->Option.flatMap(images => images[0]);
   };
 

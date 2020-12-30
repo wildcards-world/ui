@@ -126,32 +126,32 @@ module SubWildcardQuery = [%graphql
      |}
 ];
 
-// module WildcardDataQuery = [%graphql
-//   {|
-//     query ($tokenId: String!) {
-//       launchedWildcards_by_pk(id: $tokenId) {
-//         wildcard {
-//           id
-//           name
-//           description
-//           organization {
-//             name
-//             id
-//           }
-//           image
-//           real_wc_photos {
-//             image
-//             photographer
-//           }
-//           artistOfWildcard {
-//             name
-//             id
-//           }
-//         }
-//       }
-//     }
-//   |}
-// ];
+module WildcardDataQuery = [%graphql
+  {|
+    query ($tokenId: String!) {
+      launchedWildcards_by_pk(id: $tokenId) {
+        wildcard {
+          id
+          name
+          description
+          organization {
+            name
+            id
+          }
+          image
+          real_wc_photos {
+            image
+            photographer
+          }
+          artistOfWildcard {
+            name
+            id
+          }
+        }
+      }
+    }
+  |}
+];
 
 module MaticStateQuery = [%graphql
   {|
@@ -165,23 +165,23 @@ module MaticStateQuery = [%graphql
     }
   |}
 ];
-// module HomeAnimalsQuery = [%graphql
-//   {|
-//     query {
-//       homeAnimals {
-//         id
-//         next
-//         prev
-//         wildcardData {
-//           description
-//           id
-//           name
-//           organisationId
-//         }
-//       }
-//     }
-//   |}
-// ];
+module HomeAnimalsQuery = [%graphql
+  {|
+    {
+      homeAnimals {
+        id
+        next
+        prev
+        wildcardData {
+          description
+          id
+          name
+          organisationId
+        }
+      }
+    }
+  |}
+];
 
 module ArtistQuery = [%graphql
   {|
@@ -282,21 +282,21 @@ module LoadPatron = [%graphql
      |}
 ];
 
-// module LoadTokenDataArray = [%graphql
-//   {|
-//         query ($wildcardIdArray: [String!]!) {
-//           wildcards (where: {id_in: $wildcardIdArray}) {
-//             # totalCollected
-//             # patronageNumeratorPriceScaled
-//             # timeCollected
-//             id
-//             totalCollected @ppxCustom(module: "Price")
-//             patronageNumeratorPriceScaled @ppxCustom(module: "BigInt")
-//             timeCollected @ppxCustom(module: "BigInt")
-//           }
-//         }
-//      |}
-// ];
+module LoadTokenDataArray = [%graphql
+  {|
+        query ($wildcardIdArray: [String!]!) {
+          wildcards (where: {id_in: $wildcardIdArray}) {
+            # totalCollected
+            # patronageNumeratorPriceScaled
+            # timeCollected
+            id
+            totalCollected @ppxCustom(module: "Price")
+            patronageNumeratorPriceScaled @ppxCustom(module: "BigInt")
+            timeCollected @ppxCustom(module: "BigInt")
+          }
+        }
+     |}
+];
 
 module LoadOrganisationData = [%graphql
   {|
@@ -349,13 +349,6 @@ module SubTotalRaisedOrDueQuery = [%graphql
        }
      |}
 ];
-type errorPlaceholder;
-type graphqlDataLoad('a) =
-  | Loading
-  | Error(errorPlaceholder)
-  // | Error(ReasonApolloHooks.ApolloHooksTypes.apolloError)
-  | NoData
-  | Data('a);
 
 let getQueryPrefix = (chain: Client.context) =>
   switch (chain) {
@@ -363,41 +356,6 @@ let getQueryPrefix = (chain: Client.context) =>
   | Neither => ""
   | MaticQuery => "matic"
   };
-
-let subscriptionResultOptionMap = (result, mapping) => {
-  Js.log2(result, mapping);
-  /*switch (result) {
-    | ApolloHooks.Subscription.Data(response) => response->mapping->Some
-    | ApolloHooks.Subscription.Error(_)
-    | ApolloHooks.Subscription.Loading
-    | ApolloHooks.Subscription.NoData => None
-    };*/
-  None;
-};
-let subscriptionResultToOption = result =>
-  subscriptionResultOptionMap(result, a => a);
-
-let queryResultOptionMap = (result, mapping) => {
-  Js.log2(result, mapping);
-  /*switch (result) {
-    | ApolloHooks.Query.Data(response) => response->mapping->Some
-    | ApolloHooks.Query.Error(_)
-    | ApolloHooks.Query.Loading
-    | ApolloHooks.Query.NoData => None
-    };*/
-  None;
-};
-let queryResultOptionFlatMap = (result, mapping) => {
-  Js.log2(result, mapping);
-  /*switch (result) {
-    | ApolloHooks.Query.Data(response) => response->mapping
-    | ApolloHooks.Query.Error(_)
-    | ApolloHooks.Query.Loading
-    | ApolloHooks.Query.NoData => None
-    };*/
-  None;
-};
-let queryResultToOption = result => queryResultOptionMap(result, a => a);
 
 type data = {tokenId: string};
 
@@ -418,40 +376,42 @@ let useWildcardQuery = (~chain, tokenId) => {
   };
 };
 
-let useLoadTokenDataArrayQuery = (~chain, tokenIdArray) =>
-  Obj.magic((chain, tokenIdArray));
-// ApolloHooks.useQuery(
-//   ~variables=
-//     LoadTokenDataArray.make(
-//       ~wildcardIdArray=tokenIdArray->Array.map(id => id->TokenId.toString),
-//       (),
-//     )##variables,
-//   ~context={context: chain}->createContext,
-//   LoadTokenDataArray.definition,
-// );
+let useLoadTokenDataArrayQuery = (~chain, tokenIdArray) => {
+  let tokenDataQuery =
+    LoadTokenDataArray.use(
+      ~context={context: chain}->createContext,
+      LoadTokenDataArray.makeVariables(
+        ~wildcardIdArray=tokenIdArray->Array.map(id => id->TokenId.toString),
+        (),
+      ),
+    );
+  switch (tokenDataQuery) {
+  | {loading: true, _} => None
+  | {error: Some(_error), _} => None
+  | {data, _} => data
+  };
+};
 let useWildcardDataQuery = tokenId => {
-  Obj.magic(
-    tokenId,
-    // ApolloHooks.useQuery(
-    //   ~variables=
-    //     WildcardDataQuery.make(~tokenId=tokenId->TokenId.toString, ())##variables,
-    //   WildcardDataQuery.definition,
-    // );
-  );
+  let wildcardQuery =
+    WildcardDataQuery.use(
+      WildcardDataQuery.makeVariables(~tokenId=tokenId->TokenId.toString, ()),
+    );
+  switch (wildcardQuery) {
+  | {loading: true, _} => None
+  | {error: Some(_error), _} => None
+  | {data: Some({launchedWildcards_by_pk}), _} => launchedWildcards_by_pk
+  | {data: None, _} => None
+  };
 };
 
-let useHomeAnimalsQuery = () => Obj.magic();
-// ApolloHooks.useQuery(HomeAnimalsQuery.definition);
-// let useBuySubscription = () =>
-//   ApolloHooks.useSubscription(
-//     ~variables=SubBuyEvents.make()##variables,
-//     SubBuyEvents.definition,
-//   );
-let useStateChangeSubscription = () => Obj.magic();
-// ApolloHooks.useSubscription(
-//   ~variables=SubStateChangeEvents.make()##variables,
-//   SubStateChangeEvents.definition,
-// );
+let useHomeAnimalsQuery = () => {
+  switch (HomeAnimalsQuery.use()) {
+  | {loading: true, _} => None
+  | {error: Some(_error), _} => None
+  | {data: Some({homeAnimals}), _} => Some(homeAnimals)
+  | {data: None, _} => None
+  };
+};
 
 let useLoadOrganisationQuery = orgId => {
   let orgQuery =
@@ -463,64 +423,38 @@ let useLoadOrganisationQuery = orgId => {
   | {data: None, _} => None
   };
 };
-// let useBuySubscriptionData = () => {
-//   let (simple, _) = useBuySubscription();
-//   switch (simple) {
-//   | Data(response) => Some(response)
-//   | _ => None
-//   };
-// };
-let useStateChangeSubscriptionData = () => {
-  let (simple, _) = useStateChangeSubscription();
-  subscriptionResultToOption(simple);
-};
 let useLoadOrganisationLogo = orgId => {
-  Js.log(orgId);
-  None;
-  /* let result = useLoadOrganisationQuery(orgId);
-     result
-     ->Option.flatMap(org => org##organisations_by_pk)
-     ->Option.map(org => org##logo); */
+  switch (useLoadOrganisationQuery(orgId)) {
+  | Some({logo, _}) => Some(logo)
+  | None => None
+  };
 };
 let useLoadOrganisationLogoBadge = orgId => {
-  Js.log(orgId);
-  None;
-  /*  let result = useLoadOrganisationQuery(orgId);
-      result
-      ->Option.flatMap(org => org##organisations_by_pk)
-      ->Option.map(org => org##logo_badge |||| org##logo); */
+  switch (useLoadOrganisationQuery(orgId)) {
+  | Some({logo_badge: Some(badge), _}) => Some(badge)
+  | Some({logo, _}) => Some(logo)
+  | None => None
+  };
 };
-let useHomePageAnimalsData = () => {
-  let (simple, _) = useHomeAnimalsQuery();
-  queryResultToOption(simple);
-};
-// type wildcardData = {
-//   description: string,
-//   id: string,
-//   name: string,
-//   organisationId: string,
-// };
+
 type homePageAnimal = {
   id: TokenId.t,
   prev: TokenId.t,
   next: TokenId.t,
-  // wildcardData,
 };
-let useHomePageAnimalArrayOpt = () => {
-  useHomePageAnimalsData()
-  ->oMap(homeAnimals =>
-      homeAnimals##homeAnimals
-      ->Array.map(animal =>
-          {
-            id: TokenId.fromStringUnsafe(animal##id),
-            prev: TokenId.fromStringUnsafe(animal##prev),
-            next: TokenId.fromStringUnsafe(animal##next),
-          }
-        )
-    );
-};
+
 let useHomePageAnimalArray = () => {
-  useHomePageAnimalArrayOpt() |||| [||];
+  switch (useHomeAnimalsQuery()) {
+  | Some(homeAnimals) =>
+    homeAnimals->Array.map(animal =>
+      {
+        id: TokenId.fromStringUnsafe(animal.id),
+        prev: TokenId.fromStringUnsafe(animal.prev),
+        next: TokenId.fromStringUnsafe(animal.next),
+      }
+    )
+  | None => [||]
+  };
 };
 let useDetailsPageNextPrevious = (currentToken: TokenId.t) => {
   let homepageAnimalData = useHomePageAnimalArray();
@@ -549,58 +483,52 @@ let useDetailsPageNextPrevious = (currentToken: TokenId.t) => {
 [@decco.decode]
 type animalDescription = array(string);
 let useWildcardDescription = tokenId => {
-  let (simple, _) = useWildcardDataQuery(tokenId);
-  queryResultOptionMap(simple, a =>
-    a##launchedWildcards_by_pk
-    ->oMap(b =>
-        b##wildcard##description
-        ->animalDescription_decode
-        ->Belt.Result.getWithDefault([||])
+  switch (useWildcardDataQuery(tokenId)) {
+  | Some({wildcard: {description, _}, _}) =>
+    description
+    ->animalDescription_decode
+    ->Belt.Result.mapWithDefault(None, descriptionArray =>
+        Some(descriptionArray)
       )
-    |||| [||]
-  );
+  | None => None
+  };
 };
 
 let useWildcardName = tokenId => {
-  let (simple, _) = useWildcardDataQuery(tokenId);
-  queryResultOptionFlatMap(simple, a =>
-    a##launchedWildcards_by_pk->Option.flatMap(b => b##wildcard##name)
-  );
+  switch (useWildcardDataQuery(tokenId)) {
+  | Some({wildcard: {name, _}, _}) => name
+  | None => None
+  };
 };
 let useWildcardAvatar = tokenId => {
-  let (simple, _) = useWildcardDataQuery(tokenId);
-  queryResultOptionFlatMap(simple, a =>
-    a##launchedWildcards_by_pk->Option.flatMap(b => b##wildcard##image)
-  );
+  switch (useWildcardDataQuery(tokenId)) {
+  | Some({wildcard: {image, _}, _}) => image
+  | None => None
+  };
 };
 let useWildcardArtist = tokenId => {
-  let (simple, _) = useWildcardDataQuery(tokenId);
-  queryResultOptionFlatMap(simple, a =>
-    a##launchedWildcards_by_pk
-    ->Option.flatMap(b => b##wildcard##artistOfWildcard)
-  );
+  switch (useWildcardDataQuery(tokenId)) {
+  | Some({wildcard: {artistOfWildcard, _}, _}) => artistOfWildcard
+  | None => None
+  };
 };
 let useRealImages = tokenId => {
-  let (simple, _) = useWildcardDataQuery(tokenId);
-  queryResultOptionFlatMap(simple, a =>
-    a##launchedWildcards_by_pk->Option.map(b => b##wildcard##real_wc_photos)
-  );
+  switch (useWildcardDataQuery(tokenId)) {
+  | Some({wildcard: {real_wc_photos, _}, _}) => Some(real_wc_photos)
+  | None => None
+  };
 };
 let useWildcardOrgId = (~tokenId) => {
-  let (simple, _) = useWildcardDataQuery(tokenId);
-  queryResultOptionFlatMap(simple, a =>
-    a##launchedWildcards_by_pk
-    ->Option.flatMap(b => b##wildcard##organization)
-    ->Option.map(org => org##id)
-  );
+  switch (useWildcardDataQuery(tokenId)) {
+  | Some({wildcard: {organization: Some({id, _}), _}, _}) => Some(id)
+  | _ => None
+  };
 };
 let useWildcardOrgName = (~tokenId) => {
-  let (simple, _) = useWildcardDataQuery(tokenId);
-  queryResultOptionFlatMap(simple, a =>
-    a##launchedWildcards_by_pk
-    ->Option.flatMap(b => b##wildcard##organization)
-    ->Option.map(org => org##name)
-  );
+  switch (useWildcardDataQuery(tokenId)) {
+  | Some({wildcard: {organization: Some({name, _}), _}, _}) => Some(name)
+  | _ => None
+  };
 };
 
 let useLoadTopContributors = numberOfLeaders => {
@@ -775,11 +703,6 @@ let useTotalCollectedToken:
     };
   };
 
-let useTotalCollectedTokenArray = (~chain, animalArray) => {
-  let (simple, _) = useLoadTokenDataArrayQuery(~chain, animalArray);
-  simple->queryResultToOption;
-};
-
 let usePatronageNumerator = (~chain, tokenId: TokenId.t) => {
   switch (useWildcardQuery(~chain, tokenId)) {
   | Some({wildcard: Some({patronageNumerator, _})}) =>
@@ -880,9 +803,9 @@ let useTotalRaisedAnimalGroup:
     let currentTimestamp = useCurrentTime();
 
     let detailsMainnet =
-      useTotalCollectedTokenArray(~chain=Client.MainnetQuery, animals);
+      useLoadTokenDataArrayQuery(~chain=Client.MainnetQuery, animals);
     let detailsMatic =
-      useTotalCollectedTokenArray(
+      useLoadTokenDataArrayQuery(
         ~chain=Client.MaticQuery,
         animals->Array.map(id => ("matic" ++ id->Obj.magic)->Obj.magic),
       );
@@ -891,14 +814,14 @@ let useTotalRaisedAnimalGroup:
       switch (detailsMainnet) {
       | Some(detailsArray) =>
         Some(
-          detailsArray##wildcards
+          detailsArray.wildcards
           ->Array.reduce(BN.new_("0"), (acc, animalDetails) =>
               calculateTotalRaised(
                 currentTimestamp,
                 (
-                  animalDetails##totalCollected,
-                  animalDetails##timeCollected,
-                  animalDetails##patronageNumeratorPriceScaled,
+                  animalDetails.totalCollected,
+                  animalDetails.timeCollected,
+                  animalDetails.patronageNumeratorPriceScaled,
                 ),
               )
               |+| acc
@@ -909,14 +832,14 @@ let useTotalRaisedAnimalGroup:
       switch (detailsMatic) {
       | Some(detailsArray) =>
         Some(
-          detailsArray##wildcards
+          detailsArray.wildcards
           ->Array.reduce(BN.new_("0"), (acc, animalDetails) =>
               calculateTotalRaised(
                 currentTimestamp,
                 (
-                  animalDetails##totalCollected,
-                  animalDetails##timeCollected,
-                  animalDetails##patronageNumeratorPriceScaled,
+                  animalDetails.totalCollected,
+                  animalDetails.timeCollected,
+                  animalDetails.patronageNumeratorPriceScaled,
                 ),
               )
               |+| acc

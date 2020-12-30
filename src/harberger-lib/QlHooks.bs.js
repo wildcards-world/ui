@@ -479,6 +479,212 @@ var SubWildcardQuery = {
 var Raw$2 = {};
 
 var query$2 = (require("@apollo/client").gql`
+  query ($tokenId: String!)  {
+    launchedWildcards_by_pk(id: $tokenId)  {
+      __typename
+      wildcard  {
+        __typename
+        id
+        name
+        description
+        organization  {
+          __typename
+          name
+          id
+        }
+        image
+        real_wc_photos  {
+          __typename
+          image
+          photographer
+        }
+        artistOfWildcard  {
+          __typename
+          name
+          id
+        }
+      }
+    }
+  }
+`);
+
+function parse$2(value) {
+  var value$1 = value.launchedWildcards_by_pk;
+  var tmp;
+  if (value$1 == null) {
+    tmp = undefined;
+  } else {
+    var value$2 = value$1.wildcard;
+    var value$3 = value$2.id;
+    var value$4 = value$2.name;
+    var value$5 = value$2.organization;
+    var value$6 = value$2.image;
+    var value$7 = value$2.real_wc_photos;
+    var value$8 = value$2.artistOfWildcard;
+    tmp = {
+      __typename: value$1.__typename,
+      wildcard: {
+        __typename: value$2.__typename,
+        id: !(value$3 == null) ? value$3 : undefined,
+        name: !(value$4 == null) ? value$4 : undefined,
+        description: value$2.description,
+        organization: !(value$5 == null) ? ({
+              __typename: value$5.__typename,
+              name: value$5.name,
+              id: value$5.id
+            }) : undefined,
+        image: !(value$6 == null) ? value$6 : undefined,
+        real_wc_photos: value$7.map(function (value) {
+              var value$1 = value.photographer;
+              return {
+                      __typename: value.__typename,
+                      image: value.image,
+                      photographer: !(value$1 == null) ? value$1 : undefined
+                    };
+            }),
+        artistOfWildcard: !(value$8 == null) ? ({
+              __typename: value$8.__typename,
+              name: value$8.name,
+              id: value$8.id
+            }) : undefined
+      }
+    };
+  }
+  return {
+          launchedWildcards_by_pk: tmp
+        };
+}
+
+function serialize$2(value) {
+  var value$1 = value.launchedWildcards_by_pk;
+  var launchedWildcards_by_pk;
+  if (value$1 !== undefined) {
+    var value$2 = value$1.wildcard;
+    var value$3 = value$2.artistOfWildcard;
+    var artistOfWildcard;
+    if (value$3 !== undefined) {
+      var value$4 = value$3.id;
+      var value$5 = value$3.name;
+      var value$6 = value$3.__typename;
+      artistOfWildcard = {
+        __typename: value$6,
+        name: value$5,
+        id: value$4
+      };
+    } else {
+      artistOfWildcard = null;
+    }
+    var value$7 = value$2.real_wc_photos;
+    var real_wc_photos = value$7.map(function (value) {
+          var value$1 = value.photographer;
+          var photographer = value$1 !== undefined ? value$1 : null;
+          var value$2 = value.image;
+          var value$3 = value.__typename;
+          return {
+                  __typename: value$3,
+                  image: value$2,
+                  photographer: photographer
+                };
+        });
+    var value$8 = value$2.image;
+    var image = value$8 !== undefined ? value$8 : null;
+    var value$9 = value$2.organization;
+    var organization;
+    if (value$9 !== undefined) {
+      var value$10 = value$9.id;
+      var value$11 = value$9.name;
+      var value$12 = value$9.__typename;
+      organization = {
+        __typename: value$12,
+        name: value$11,
+        id: value$10
+      };
+    } else {
+      organization = null;
+    }
+    var value$13 = value$2.description;
+    var value$14 = value$2.name;
+    var name = value$14 !== undefined ? value$14 : null;
+    var value$15 = value$2.id;
+    var id = value$15 !== undefined ? value$15 : null;
+    var value$16 = value$2.__typename;
+    var wildcard = {
+      __typename: value$16,
+      id: id,
+      name: name,
+      description: value$13,
+      organization: organization,
+      image: image,
+      real_wc_photos: real_wc_photos,
+      artistOfWildcard: artistOfWildcard
+    };
+    var value$17 = value$1.__typename;
+    launchedWildcards_by_pk = {
+      __typename: value$17,
+      wildcard: wildcard
+    };
+  } else {
+    launchedWildcards_by_pk = null;
+  }
+  return {
+          launchedWildcards_by_pk: launchedWildcards_by_pk
+        };
+}
+
+function serializeVariables$2(inp) {
+  return {
+          tokenId: inp.tokenId
+        };
+}
+
+function makeVariables$2(tokenId, param) {
+  return {
+          tokenId: tokenId
+        };
+}
+
+var WildcardDataQuery_inner = {
+  Raw: Raw$2,
+  query: query$2,
+  parse: parse$2,
+  serialize: serialize$2,
+  serializeVariables: serializeVariables$2,
+  makeVariables: makeVariables$2
+};
+
+var include$2 = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query$2,
+      Raw: Raw$2,
+      parse: parse$2,
+      serialize: serialize$2,
+      serializeVariables: serializeVariables$2
+    });
+
+var use$2 = include$2.use;
+
+var WildcardDataQuery_refetchQueryDescription = include$2.refetchQueryDescription;
+
+var WildcardDataQuery_useLazy = include$2.useLazy;
+
+var WildcardDataQuery_useLazyWithVariables = include$2.useLazyWithVariables;
+
+var WildcardDataQuery = {
+  WildcardDataQuery_inner: WildcardDataQuery_inner,
+  Raw: Raw$2,
+  query: query$2,
+  parse: parse$2,
+  serialize: serialize$2,
+  serializeVariables: serializeVariables$2,
+  makeVariables: makeVariables$2,
+  refetchQueryDescription: WildcardDataQuery_refetchQueryDescription,
+  use: use$2,
+  useLazy: WildcardDataQuery_useLazy,
+  useLazyWithVariables: WildcardDataQuery_useLazyWithVariables
+};
+
+var Raw$3 = {};
+
+var query$3 = (require("@apollo/client").gql`
   query ($address: String!, $network: String!)  {
     maticState(address: $address, network: $network)  {
       __typename
@@ -490,7 +696,7 @@ var query$2 = (require("@apollo/client").gql`
   }
 `);
 
-function parse$2(value) {
+function parse$3(value) {
   var value$1 = value.maticState;
   var value$2 = value$1.error;
   return {
@@ -504,7 +710,7 @@ function parse$2(value) {
         };
 }
 
-function serialize$2(value) {
+function serialize$3(value) {
   var value$1 = value.maticState;
   var value$2 = value$1.stewardNonce;
   var value$3 = value$1.error;
@@ -524,14 +730,14 @@ function serialize$2(value) {
         };
 }
 
-function serializeVariables$2(inp) {
+function serializeVariables$3(inp) {
   return {
           address: inp.address,
           network: inp.network
         };
 }
 
-function makeVariables$2(address, network, param) {
+function makeVariables$3(address, network, param) {
   return {
           address: address,
           network: network
@@ -539,47 +745,192 @@ function makeVariables$2(address, network, param) {
 }
 
 var MaticStateQuery_inner = {
-  Raw: Raw$2,
-  query: query$2,
-  parse: parse$2,
-  serialize: serialize$2,
-  serializeVariables: serializeVariables$2,
-  makeVariables: makeVariables$2
+  Raw: Raw$3,
+  query: query$3,
+  parse: parse$3,
+  serialize: serialize$3,
+  serializeVariables: serializeVariables$3,
+  makeVariables: makeVariables$3
 };
 
-var include$2 = ApolloClient__React_Hooks_UseQuery.Extend({
-      query: query$2,
-      Raw: Raw$2,
-      parse: parse$2,
-      serialize: serialize$2,
-      serializeVariables: serializeVariables$2
+var include$3 = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query$3,
+      Raw: Raw$3,
+      parse: parse$3,
+      serialize: serialize$3,
+      serializeVariables: serializeVariables$3
     });
 
-var use$2 = include$2.use;
+var use$3 = include$3.use;
 
-var MaticStateQuery_refetchQueryDescription = include$2.refetchQueryDescription;
+var MaticStateQuery_refetchQueryDescription = include$3.refetchQueryDescription;
 
-var MaticStateQuery_useLazy = include$2.useLazy;
+var MaticStateQuery_useLazy = include$3.useLazy;
 
-var MaticStateQuery_useLazyWithVariables = include$2.useLazyWithVariables;
+var MaticStateQuery_useLazyWithVariables = include$3.useLazyWithVariables;
 
 var MaticStateQuery = {
   MaticStateQuery_inner: MaticStateQuery_inner,
-  Raw: Raw$2,
-  query: query$2,
-  parse: parse$2,
-  serialize: serialize$2,
-  serializeVariables: serializeVariables$2,
-  makeVariables: makeVariables$2,
+  Raw: Raw$3,
+  query: query$3,
+  parse: parse$3,
+  serialize: serialize$3,
+  serializeVariables: serializeVariables$3,
+  makeVariables: makeVariables$3,
   refetchQueryDescription: MaticStateQuery_refetchQueryDescription,
-  use: use$2,
+  use: use$3,
   useLazy: MaticStateQuery_useLazy,
   useLazyWithVariables: MaticStateQuery_useLazyWithVariables
 };
 
-var Raw$3 = {};
+var Raw$4 = {};
 
-var query$3 = (require("@apollo/client").gql`
+var query$4 = (require("@apollo/client").gql`
+  query   {
+    homeAnimals  {
+      __typename
+      id
+      next
+      prev
+      wildcardData  {
+        __typename
+        description
+        id
+        name
+        organisationId
+      }
+    }
+  }
+`);
+
+function parse$4(value) {
+  var value$1 = value.homeAnimals;
+  return {
+          homeAnimals: value$1.map(function (value) {
+                var value$1 = value.wildcardData;
+                var tmp;
+                if (value$1 == null) {
+                  tmp = undefined;
+                } else {
+                  var value$2 = value$1.id;
+                  var value$3 = value$1.name;
+                  var value$4 = value$1.organisationId;
+                  tmp = {
+                    __typename: value$1.__typename,
+                    description: value$1.description,
+                    id: !(value$2 == null) ? value$2 : undefined,
+                    name: !(value$3 == null) ? value$3 : undefined,
+                    organisationId: !(value$4 == null) ? value$4 : undefined
+                  };
+                }
+                return {
+                        __typename: value.__typename,
+                        id: value.id,
+                        next: value.next,
+                        prev: value.prev,
+                        wildcardData: tmp
+                      };
+              })
+        };
+}
+
+function serialize$4(value) {
+  var value$1 = value.homeAnimals;
+  var homeAnimals = value$1.map(function (value) {
+        var value$1 = value.wildcardData;
+        var wildcardData;
+        if (value$1 !== undefined) {
+          var value$2 = value$1.organisationId;
+          var organisationId = value$2 !== undefined ? value$2 : null;
+          var value$3 = value$1.name;
+          var name = value$3 !== undefined ? value$3 : null;
+          var value$4 = value$1.id;
+          var id = value$4 !== undefined ? value$4 : null;
+          var value$5 = value$1.description;
+          var value$6 = value$1.__typename;
+          wildcardData = {
+            __typename: value$6,
+            description: value$5,
+            id: id,
+            name: name,
+            organisationId: organisationId
+          };
+        } else {
+          wildcardData = null;
+        }
+        var value$7 = value.prev;
+        var value$8 = value.next;
+        var value$9 = value.id;
+        var value$10 = value.__typename;
+        return {
+                __typename: value$10,
+                id: value$9,
+                next: value$8,
+                prev: value$7,
+                wildcardData: wildcardData
+              };
+      });
+  return {
+          homeAnimals: homeAnimals
+        };
+}
+
+function serializeVariables$4(param) {
+  
+}
+
+function makeVariables$4(param) {
+  
+}
+
+function makeDefaultVariables(param) {
+  
+}
+
+var HomeAnimalsQuery_inner = {
+  Raw: Raw$4,
+  query: query$4,
+  parse: parse$4,
+  serialize: serialize$4,
+  serializeVariables: serializeVariables$4,
+  makeVariables: makeVariables$4,
+  makeDefaultVariables: makeDefaultVariables
+};
+
+var include$4 = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query$4,
+      Raw: Raw$4,
+      parse: parse$4,
+      serialize: serialize$4,
+      serializeVariables: serializeVariables$4
+    });
+
+var use$4 = include$4.use;
+
+var HomeAnimalsQuery_refetchQueryDescription = include$4.refetchQueryDescription;
+
+var HomeAnimalsQuery_useLazy = include$4.useLazy;
+
+var HomeAnimalsQuery_useLazyWithVariables = include$4.useLazyWithVariables;
+
+var HomeAnimalsQuery = {
+  HomeAnimalsQuery_inner: HomeAnimalsQuery_inner,
+  Raw: Raw$4,
+  query: query$4,
+  parse: parse$4,
+  serialize: serialize$4,
+  serializeVariables: serializeVariables$4,
+  makeVariables: makeVariables$4,
+  makeDefaultVariables: makeDefaultVariables,
+  refetchQueryDescription: HomeAnimalsQuery_refetchQueryDescription,
+  use: use$4,
+  useLazy: HomeAnimalsQuery_useLazy,
+  useLazyWithVariables: HomeAnimalsQuery_useLazyWithVariables
+};
+
+var Raw$5 = {};
+
+var query$5 = (require("@apollo/client").gql`
   query ($artistIdentifier: String!)  {
     artist_by_pk(id: $artistIdentifier)  {
       __typename
@@ -616,7 +967,7 @@ var query$3 = (require("@apollo/client").gql`
   }
 `);
 
-function parse$3(value) {
+function parse$5(value) {
   var value$1 = value.artist_by_pk;
   var tmp;
   if (value$1 == null) {
@@ -675,7 +1026,7 @@ function parse$3(value) {
         };
 }
 
-function serialize$3(value) {
+function serialize$5(value) {
   var value$1 = value.artist_by_pk;
   var artist_by_pk;
   if (value$1 !== undefined) {
@@ -770,60 +1121,60 @@ function serialize$3(value) {
         };
 }
 
-function serializeVariables$3(inp) {
+function serializeVariables$5(inp) {
   return {
           artistIdentifier: inp.artistIdentifier
         };
 }
 
-function makeVariables$3(artistIdentifier, param) {
+function makeVariables$5(artistIdentifier, param) {
   return {
           artistIdentifier: artistIdentifier
         };
 }
 
 var ArtistQuery_inner = {
-  Raw: Raw$3,
-  query: query$3,
-  parse: parse$3,
-  serialize: serialize$3,
-  serializeVariables: serializeVariables$3,
-  makeVariables: makeVariables$3
+  Raw: Raw$5,
+  query: query$5,
+  parse: parse$5,
+  serialize: serialize$5,
+  serializeVariables: serializeVariables$5,
+  makeVariables: makeVariables$5
 };
 
-var include$3 = ApolloClient__React_Hooks_UseQuery.Extend({
-      query: query$3,
-      Raw: Raw$3,
-      parse: parse$3,
-      serialize: serialize$3,
-      serializeVariables: serializeVariables$3
+var include$5 = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query$5,
+      Raw: Raw$5,
+      parse: parse$5,
+      serialize: serialize$5,
+      serializeVariables: serializeVariables$5
     });
 
-var use$3 = include$3.use;
+var use$5 = include$5.use;
 
-var ArtistQuery_refetchQueryDescription = include$3.refetchQueryDescription;
+var ArtistQuery_refetchQueryDescription = include$5.refetchQueryDescription;
 
-var ArtistQuery_useLazy = include$3.useLazy;
+var ArtistQuery_useLazy = include$5.useLazy;
 
-var ArtistQuery_useLazyWithVariables = include$3.useLazyWithVariables;
+var ArtistQuery_useLazyWithVariables = include$5.useLazyWithVariables;
 
 var ArtistQuery = {
   ArtistQuery_inner: ArtistQuery_inner,
-  Raw: Raw$3,
-  query: query$3,
-  parse: parse$3,
-  serialize: serialize$3,
-  serializeVariables: serializeVariables$3,
-  makeVariables: makeVariables$3,
+  Raw: Raw$5,
+  query: query$5,
+  parse: parse$5,
+  serialize: serialize$5,
+  serializeVariables: serializeVariables$5,
+  makeVariables: makeVariables$5,
   refetchQueryDescription: ArtistQuery_refetchQueryDescription,
-  use: use$3,
+  use: use$5,
   useLazy: ArtistQuery_useLazy,
   useLazyWithVariables: ArtistQuery_useLazyWithVariables
 };
 
-var Raw$4 = {};
+var Raw$6 = {};
 
-var query$4 = (require("@apollo/client").gql`
+var query$6 = (require("@apollo/client").gql`
   query ($patronId: String!)  {
     patron(id: $patronId)  {
       __typename
@@ -847,7 +1198,7 @@ var query$4 = (require("@apollo/client").gql`
   }
 `);
 
-function parse$4(value) {
+function parse$6(value) {
   var value$1 = value.patron;
   var tmp;
   if (value$1 == null) {
@@ -884,7 +1235,7 @@ function parse$4(value) {
         };
 }
 
-function serialize$4(value) {
+function serialize$6(value) {
   var value$1 = value.patron;
   var patron;
   if (value$1 !== undefined) {
@@ -943,60 +1294,167 @@ function serialize$4(value) {
         };
 }
 
-function serializeVariables$4(inp) {
+function serializeVariables$6(inp) {
   return {
           patronId: inp.patronId
         };
 }
 
-function makeVariables$4(patronId, param) {
+function makeVariables$6(patronId, param) {
   return {
           patronId: patronId
         };
 }
 
 var LoadPatron_inner = {
-  Raw: Raw$4,
-  query: query$4,
-  parse: parse$4,
-  serialize: serialize$4,
-  serializeVariables: serializeVariables$4,
-  makeVariables: makeVariables$4
+  Raw: Raw$6,
+  query: query$6,
+  parse: parse$6,
+  serialize: serialize$6,
+  serializeVariables: serializeVariables$6,
+  makeVariables: makeVariables$6
 };
 
-var include$4 = ApolloClient__React_Hooks_UseQuery.Extend({
-      query: query$4,
-      Raw: Raw$4,
-      parse: parse$4,
-      serialize: serialize$4,
-      serializeVariables: serializeVariables$4
+var include$6 = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query$6,
+      Raw: Raw$6,
+      parse: parse$6,
+      serialize: serialize$6,
+      serializeVariables: serializeVariables$6
     });
 
-var use$4 = include$4.use;
+var use$6 = include$6.use;
 
-var LoadPatron_refetchQueryDescription = include$4.refetchQueryDescription;
+var LoadPatron_refetchQueryDescription = include$6.refetchQueryDescription;
 
-var LoadPatron_useLazy = include$4.useLazy;
+var LoadPatron_useLazy = include$6.useLazy;
 
-var LoadPatron_useLazyWithVariables = include$4.useLazyWithVariables;
+var LoadPatron_useLazyWithVariables = include$6.useLazyWithVariables;
 
 var LoadPatron = {
   LoadPatron_inner: LoadPatron_inner,
-  Raw: Raw$4,
-  query: query$4,
-  parse: parse$4,
-  serialize: serialize$4,
-  serializeVariables: serializeVariables$4,
-  makeVariables: makeVariables$4,
+  Raw: Raw$6,
+  query: query$6,
+  parse: parse$6,
+  serialize: serialize$6,
+  serializeVariables: serializeVariables$6,
+  makeVariables: makeVariables$6,
   refetchQueryDescription: LoadPatron_refetchQueryDescription,
-  use: use$4,
+  use: use$6,
   useLazy: LoadPatron_useLazy,
   useLazyWithVariables: LoadPatron_useLazyWithVariables
 };
 
-var Raw$5 = {};
+var Raw$7 = {};
 
-var query$5 = (require("@apollo/client").gql`
+var query$7 = (require("@apollo/client").gql`
+  query ($wildcardIdArray: [String!]!)  {
+    wildcards(where: {id_in: $wildcardIdArray})  {
+      __typename
+      id
+      totalCollected
+      patronageNumeratorPriceScaled
+      timeCollected
+    }
+  }
+`);
+
+function parse$7(value) {
+  var value$1 = value.wildcards;
+  return {
+          wildcards: value$1.map(function (value) {
+                return {
+                        __typename: value.__typename,
+                        id: value.id,
+                        totalCollected: GqlConverters.Price.parse(value.totalCollected),
+                        patronageNumeratorPriceScaled: GqlConverters.$$BigInt.parse(value.patronageNumeratorPriceScaled),
+                        timeCollected: GqlConverters.$$BigInt.parse(value.timeCollected)
+                      };
+              })
+        };
+}
+
+function serialize$7(value) {
+  var value$1 = value.wildcards;
+  var wildcards = value$1.map(function (value) {
+        var value$1 = value.timeCollected;
+        var value$2 = GqlConverters.$$BigInt.serialize(value$1);
+        var value$3 = value.patronageNumeratorPriceScaled;
+        var value$4 = GqlConverters.$$BigInt.serialize(value$3);
+        var value$5 = value.totalCollected;
+        var value$6 = GqlConverters.Price.serialize(value$5);
+        var value$7 = value.id;
+        var value$8 = value.__typename;
+        return {
+                __typename: value$8,
+                id: value$7,
+                totalCollected: value$6,
+                patronageNumeratorPriceScaled: value$4,
+                timeCollected: value$2
+              };
+      });
+  return {
+          wildcards: wildcards
+        };
+}
+
+function serializeVariables$7(inp) {
+  var a = inp.wildcardIdArray;
+  return {
+          wildcardIdArray: a.map(function (b) {
+                return b;
+              })
+        };
+}
+
+function makeVariables$7(wildcardIdArray, param) {
+  return {
+          wildcardIdArray: wildcardIdArray
+        };
+}
+
+var LoadTokenDataArray_inner = {
+  Raw: Raw$7,
+  query: query$7,
+  parse: parse$7,
+  serialize: serialize$7,
+  serializeVariables: serializeVariables$7,
+  makeVariables: makeVariables$7
+};
+
+var include$7 = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query$7,
+      Raw: Raw$7,
+      parse: parse$7,
+      serialize: serialize$7,
+      serializeVariables: serializeVariables$7
+    });
+
+var use$7 = include$7.use;
+
+var LoadTokenDataArray_refetchQueryDescription = include$7.refetchQueryDescription;
+
+var LoadTokenDataArray_useLazy = include$7.useLazy;
+
+var LoadTokenDataArray_useLazyWithVariables = include$7.useLazyWithVariables;
+
+var LoadTokenDataArray = {
+  LoadTokenDataArray_inner: LoadTokenDataArray_inner,
+  Raw: Raw$7,
+  query: query$7,
+  parse: parse$7,
+  serialize: serialize$7,
+  serializeVariables: serializeVariables$7,
+  makeVariables: makeVariables$7,
+  refetchQueryDescription: LoadTokenDataArray_refetchQueryDescription,
+  use: use$7,
+  useLazy: LoadTokenDataArray_useLazy,
+  useLazyWithVariables: LoadTokenDataArray_useLazyWithVariables
+};
+
+var Raw$8 = {};
+
+var query$8 = (require("@apollo/client").gql`
   query ($orgId: String!)  {
     organisations_by_pk(id: $orgId)  {
       __typename
@@ -1026,7 +1484,7 @@ var query$5 = (require("@apollo/client").gql`
   }
 `);
 
-function parse$5(value) {
+function parse$8(value) {
   var value$1 = value.organisations_by_pk;
   var tmp;
   if (value$1 == null) {
@@ -1078,7 +1536,7 @@ function parse$5(value) {
         };
 }
 
-function serialize$5(value) {
+function serialize$8(value) {
   var value$1 = value.organisations_by_pk;
   var organisations_by_pk;
   if (value$1 !== undefined) {
@@ -1150,60 +1608,60 @@ function serialize$5(value) {
         };
 }
 
-function serializeVariables$5(inp) {
+function serializeVariables$8(inp) {
   return {
           orgId: inp.orgId
         };
 }
 
-function makeVariables$5(orgId, param) {
+function makeVariables$8(orgId, param) {
   return {
           orgId: orgId
         };
 }
 
 var LoadOrganisationData_inner = {
-  Raw: Raw$5,
-  query: query$5,
-  parse: parse$5,
-  serialize: serialize$5,
-  serializeVariables: serializeVariables$5,
-  makeVariables: makeVariables$5
+  Raw: Raw$8,
+  query: query$8,
+  parse: parse$8,
+  serialize: serialize$8,
+  serializeVariables: serializeVariables$8,
+  makeVariables: makeVariables$8
 };
 
-var include$5 = ApolloClient__React_Hooks_UseQuery.Extend({
-      query: query$5,
-      Raw: Raw$5,
-      parse: parse$5,
-      serialize: serialize$5,
-      serializeVariables: serializeVariables$5
+var include$8 = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query$8,
+      Raw: Raw$8,
+      parse: parse$8,
+      serialize: serialize$8,
+      serializeVariables: serializeVariables$8
     });
 
-var use$5 = include$5.use;
+var use$8 = include$8.use;
 
-var LoadOrganisationData_refetchQueryDescription = include$5.refetchQueryDescription;
+var LoadOrganisationData_refetchQueryDescription = include$8.refetchQueryDescription;
 
-var LoadOrganisationData_useLazy = include$5.useLazy;
+var LoadOrganisationData_useLazy = include$8.useLazy;
 
-var LoadOrganisationData_useLazyWithVariables = include$5.useLazyWithVariables;
+var LoadOrganisationData_useLazyWithVariables = include$8.useLazyWithVariables;
 
 var LoadOrganisationData = {
   LoadOrganisationData_inner: LoadOrganisationData_inner,
-  Raw: Raw$5,
-  query: query$5,
-  parse: parse$5,
-  serialize: serialize$5,
-  serializeVariables: serializeVariables$5,
-  makeVariables: makeVariables$5,
+  Raw: Raw$8,
+  query: query$8,
+  parse: parse$8,
+  serialize: serialize$8,
+  serializeVariables: serializeVariables$8,
+  makeVariables: makeVariables$8,
   refetchQueryDescription: LoadOrganisationData_refetchQueryDescription,
-  use: use$5,
+  use: use$8,
   useLazy: LoadOrganisationData_useLazy,
   useLazyWithVariables: LoadOrganisationData_useLazyWithVariables
 };
 
-var Raw$6 = {};
+var Raw$9 = {};
 
-var query$6 = (require("@apollo/client").gql`
+var query$9 = (require("@apollo/client").gql`
   query ($numberOfLeaders: Int!)  {
     patrons(first: $numberOfLeaders, orderBy: patronTokenCostScaledNumerator, orderDirection: desc, where: {id_not: "NO_OWNER"})  {
       __typename
@@ -1213,7 +1671,7 @@ var query$6 = (require("@apollo/client").gql`
   }
 `);
 
-function parse$6(value) {
+function parse$9(value) {
   var value$1 = value.patrons;
   return {
           patrons: value$1.map(function (value) {
@@ -1226,7 +1684,7 @@ function parse$6(value) {
         };
 }
 
-function serialize$6(value) {
+function serialize$9(value) {
   var value$1 = value.patrons;
   var patrons = value$1.map(function (value) {
         var value$1 = value.patronTokenCostScaledNumerator;
@@ -1244,60 +1702,60 @@ function serialize$6(value) {
         };
 }
 
-function serializeVariables$6(inp) {
+function serializeVariables$9(inp) {
   return {
           numberOfLeaders: inp.numberOfLeaders
         };
 }
 
-function makeVariables$6(numberOfLeaders, param) {
+function makeVariables$9(numberOfLeaders, param) {
   return {
           numberOfLeaders: numberOfLeaders
         };
 }
 
 var LoadTopContributors_inner = {
-  Raw: Raw$6,
-  query: query$6,
-  parse: parse$6,
-  serialize: serialize$6,
-  serializeVariables: serializeVariables$6,
-  makeVariables: makeVariables$6
+  Raw: Raw$9,
+  query: query$9,
+  parse: parse$9,
+  serialize: serialize$9,
+  serializeVariables: serializeVariables$9,
+  makeVariables: makeVariables$9
 };
 
-var include$6 = ApolloClient__React_Hooks_UseQuery.Extend({
-      query: query$6,
-      Raw: Raw$6,
-      parse: parse$6,
-      serialize: serialize$6,
-      serializeVariables: serializeVariables$6
+var include$9 = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query$9,
+      Raw: Raw$9,
+      parse: parse$9,
+      serialize: serialize$9,
+      serializeVariables: serializeVariables$9
     });
 
-var use$6 = include$6.use;
+var use$9 = include$9.use;
 
-var LoadTopContributors_refetchQueryDescription = include$6.refetchQueryDescription;
+var LoadTopContributors_refetchQueryDescription = include$9.refetchQueryDescription;
 
-var LoadTopContributors_useLazy = include$6.useLazy;
+var LoadTopContributors_useLazy = include$9.useLazy;
 
-var LoadTopContributors_useLazyWithVariables = include$6.useLazyWithVariables;
+var LoadTopContributors_useLazyWithVariables = include$9.useLazyWithVariables;
 
 var LoadTopContributors = {
   LoadTopContributors_inner: LoadTopContributors_inner,
-  Raw: Raw$6,
-  query: query$6,
-  parse: parse$6,
-  serialize: serialize$6,
-  serializeVariables: serializeVariables$6,
-  makeVariables: makeVariables$6,
+  Raw: Raw$9,
+  query: query$9,
+  parse: parse$9,
+  serialize: serialize$9,
+  serializeVariables: serializeVariables$9,
+  makeVariables: makeVariables$9,
   refetchQueryDescription: LoadTopContributors_refetchQueryDescription,
-  use: use$6,
+  use: use$9,
   useLazy: LoadTopContributors_useLazy,
   useLazyWithVariables: LoadTopContributors_useLazyWithVariables
 };
 
-var Raw$7 = {};
+var Raw$10 = {};
 
-var query$7 = (require("@apollo/client").gql`
+var query$10 = (require("@apollo/client").gql`
   query   {
     global(id: "1")  {
       __typename
@@ -1309,7 +1767,7 @@ var query$7 = (require("@apollo/client").gql`
   }
 `);
 
-function parse$7(value) {
+function parse$10(value) {
   var value$1 = value.global;
   return {
           global: !(value$1 == null) ? ({
@@ -1322,7 +1780,7 @@ function parse$7(value) {
         };
 }
 
-function serialize$7(value) {
+function serialize$10(value) {
   var value$1 = value.global;
   var $$global;
   if (value$1 !== undefined) {
@@ -1349,55 +1807,55 @@ function serialize$7(value) {
         };
 }
 
-function serializeVariables$7(param) {
+function serializeVariables$10(param) {
   
 }
 
-function makeVariables$7(param) {
+function makeVariables$10(param) {
   
 }
 
-function makeDefaultVariables(param) {
+function makeDefaultVariables$1(param) {
   
 }
 
 var SubTotalRaisedOrDueQuery_inner = {
-  Raw: Raw$7,
-  query: query$7,
-  parse: parse$7,
-  serialize: serialize$7,
-  serializeVariables: serializeVariables$7,
-  makeVariables: makeVariables$7,
-  makeDefaultVariables: makeDefaultVariables
+  Raw: Raw$10,
+  query: query$10,
+  parse: parse$10,
+  serialize: serialize$10,
+  serializeVariables: serializeVariables$10,
+  makeVariables: makeVariables$10,
+  makeDefaultVariables: makeDefaultVariables$1
 };
 
-var include$7 = ApolloClient__React_Hooks_UseQuery.Extend({
-      query: query$7,
-      Raw: Raw$7,
-      parse: parse$7,
-      serialize: serialize$7,
-      serializeVariables: serializeVariables$7
+var include$10 = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query$10,
+      Raw: Raw$10,
+      parse: parse$10,
+      serialize: serialize$10,
+      serializeVariables: serializeVariables$10
     });
 
-var use$7 = include$7.use;
+var use$10 = include$10.use;
 
-var SubTotalRaisedOrDueQuery_refetchQueryDescription = include$7.refetchQueryDescription;
+var SubTotalRaisedOrDueQuery_refetchQueryDescription = include$10.refetchQueryDescription;
 
-var SubTotalRaisedOrDueQuery_useLazy = include$7.useLazy;
+var SubTotalRaisedOrDueQuery_useLazy = include$10.useLazy;
 
-var SubTotalRaisedOrDueQuery_useLazyWithVariables = include$7.useLazyWithVariables;
+var SubTotalRaisedOrDueQuery_useLazyWithVariables = include$10.useLazyWithVariables;
 
 var SubTotalRaisedOrDueQuery = {
   SubTotalRaisedOrDueQuery_inner: SubTotalRaisedOrDueQuery_inner,
-  Raw: Raw$7,
-  query: query$7,
-  parse: parse$7,
-  serialize: serialize$7,
-  serializeVariables: serializeVariables$7,
-  makeVariables: makeVariables$7,
-  makeDefaultVariables: makeDefaultVariables,
+  Raw: Raw$10,
+  query: query$10,
+  parse: parse$10,
+  serialize: serialize$10,
+  serializeVariables: serializeVariables$10,
+  makeVariables: makeVariables$10,
+  makeDefaultVariables: makeDefaultVariables$1,
   refetchQueryDescription: SubTotalRaisedOrDueQuery_refetchQueryDescription,
-  use: use$7,
+  use: use$10,
   useLazy: SubTotalRaisedOrDueQuery_useLazy,
   useLazyWithVariables: SubTotalRaisedOrDueQuery_useLazyWithVariables
 };
@@ -1408,33 +1866,6 @@ function getQueryPrefix(chain) {
   } else {
     return "matic";
   }
-}
-
-function subscriptionResultOptionMap(result, mapping) {
-  console.log(result, mapping);
-  
-}
-
-function subscriptionResultToOption(result) {
-  return subscriptionResultOptionMap(result, (function (a) {
-                return a;
-              }));
-}
-
-function queryResultOptionMap(result, mapping) {
-  console.log(result, mapping);
-  
-}
-
-function queryResultOptionFlatMap(result, mapping) {
-  console.log(result, mapping);
-  
-}
-
-function queryResultToOption(result) {
-  return queryResultOptionMap(result, (function (a) {
-                return a;
-              }));
 }
 
 function useWildcardQuery(chain, tokenId) {
@@ -1466,26 +1897,87 @@ function useWildcardQuery(chain, tokenId) {
 }
 
 function useLoadTokenDataArrayQuery(chain, tokenIdArray) {
-  return [
-          chain,
-          tokenIdArray
-        ];
+  var tokenDataQuery = Curry.app(use$7, [
+        undefined,
+        {
+          context: chain
+        },
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        {
+          wildcardIdArray: Belt_Array.map(tokenIdArray, TokenId.toString)
+        }
+      ]);
+  if (tokenDataQuery.loading || tokenDataQuery.error !== undefined) {
+    return ;
+  } else {
+    return tokenDataQuery.data;
+  }
 }
 
 function useWildcardDataQuery(tokenId) {
-  return tokenId;
+  var wildcardQuery = Curry.app(use$2, [
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        {
+          tokenId: TokenId.toString(tokenId)
+        }
+      ]);
+  var match = wildcardQuery.data;
+  if (wildcardQuery.loading || wildcardQuery.error !== undefined || match === undefined) {
+    return ;
+  } else {
+    return match.launchedWildcards_by_pk;
+  }
 }
 
 function useHomeAnimalsQuery(param) {
-  
-}
-
-function useStateChangeSubscription(param) {
-  
+  var match = Curry.app(use$4, [
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+      ]);
+  var match$1 = match.data;
+  if (match.loading || match.error !== undefined || match$1 === undefined) {
+    return ;
+  } else {
+    return match$1.homeAnimals;
+  }
 }
 
 function useLoadOrganisationQuery(orgId) {
-  var orgQuery = Curry.app(use$5, [
+  var orgQuery = Curry.app(use$8, [
         undefined,
         undefined,
         undefined,
@@ -1511,42 +2003,40 @@ function useLoadOrganisationQuery(orgId) {
   }
 }
 
-function useStateChangeSubscriptionData(param) {
-  return subscriptionResultOptionMap(undefined[0], (function (a) {
-                return a;
-              }));
-}
-
 function useLoadOrganisationLogo(orgId) {
-  console.log(orgId);
+  var match = useLoadOrganisationQuery(orgId);
+  if (match !== undefined) {
+    return match.logo;
+  }
   
 }
 
 function useLoadOrganisationLogoBadge(orgId) {
-  console.log(orgId);
-  
-}
-
-function useHomePageAnimalsData(param) {
-  return queryResultOptionMap(undefined[0], (function (a) {
-                return a;
-              }));
-}
-
-function useHomePageAnimalArrayOpt(param) {
-  return Globals.oMap(useHomePageAnimalsData(undefined), (function (homeAnimals) {
-                return Belt_Array.map(homeAnimals.homeAnimals, (function (animal) {
-                              return {
-                                      id: TokenId.fromStringUnsafe(animal.id),
-                                      prev: TokenId.fromStringUnsafe(animal.prev),
-                                      next: TokenId.fromStringUnsafe(animal.next)
-                                    };
-                            }));
-              }));
+  var match = useLoadOrganisationQuery(orgId);
+  if (match === undefined) {
+    return ;
+  }
+  var badge = match.logo_badge;
+  if (badge !== undefined) {
+    return badge;
+  } else {
+    return match.logo;
+  }
 }
 
 function useHomePageAnimalArray(param) {
-  return Globals.$pipe$pipe$pipe$pipe(useHomePageAnimalArrayOpt(undefined), []);
+  var homeAnimals = useHomeAnimalsQuery(undefined);
+  if (homeAnimals !== undefined) {
+    return Belt_Array.map(homeAnimals, (function (animal) {
+                  return {
+                          id: TokenId.fromStringUnsafe(animal.id),
+                          prev: TokenId.fromStringUnsafe(animal.prev),
+                          next: TokenId.fromStringUnsafe(animal.next)
+                        };
+                }));
+  } else {
+    return [];
+  }
 }
 
 function useDetailsPageNextPrevious(currentToken) {
@@ -1573,68 +2063,73 @@ function animalDescription_decode(v) {
 }
 
 function useWildcardDescription(tokenId) {
-  return queryResultOptionMap(tokenId[0], (function (a) {
-                return Globals.$pipe$pipe$pipe$pipe(Globals.oMap(a.launchedWildcards_by_pk, (function (b) {
-                                  var v = b.wildcard.description;
-                                  return Belt_Result.getWithDefault(Decco.arrayFromJson(Decco.stringFromJson, v), []);
-                                })), []);
-              }));
+  var match = useWildcardDataQuery(tokenId);
+  if (match !== undefined) {
+    return Belt_Result.mapWithDefault(Decco.arrayFromJson(Decco.stringFromJson, match.wildcard.description), undefined, (function (descriptionArray) {
+                  return descriptionArray;
+                }));
+  }
+  
 }
 
 function useWildcardName(tokenId) {
-  return queryResultOptionFlatMap(tokenId[0], (function (a) {
-                return Belt_Option.flatMap(a.launchedWildcards_by_pk, (function (b) {
-                              return b.wildcard.name;
-                            }));
-              }));
+  var match = useWildcardDataQuery(tokenId);
+  if (match !== undefined) {
+    return match.wildcard.name;
+  }
+  
 }
 
 function useWildcardAvatar(tokenId) {
-  return queryResultOptionFlatMap(tokenId[0], (function (a) {
-                return Belt_Option.flatMap(a.launchedWildcards_by_pk, (function (b) {
-                              return b.wildcard.image;
-                            }));
-              }));
+  var match = useWildcardDataQuery(tokenId);
+  if (match !== undefined) {
+    return match.wildcard.image;
+  }
+  
 }
 
 function useWildcardArtist(tokenId) {
-  return queryResultOptionFlatMap(tokenId[0], (function (a) {
-                return Belt_Option.flatMap(a.launchedWildcards_by_pk, (function (b) {
-                              return b.wildcard.artistOfWildcard;
-                            }));
-              }));
+  var match = useWildcardDataQuery(tokenId);
+  if (match !== undefined) {
+    return match.wildcard.artistOfWildcard;
+  }
+  
 }
 
 function useRealImages(tokenId) {
-  return queryResultOptionFlatMap(tokenId[0], (function (a) {
-                return Belt_Option.map(a.launchedWildcards_by_pk, (function (b) {
-                              return b.wildcard.real_wc_photos;
-                            }));
-              }));
+  var match = useWildcardDataQuery(tokenId);
+  if (match !== undefined) {
+    return match.wildcard.real_wc_photos;
+  }
+  
 }
 
 function useWildcardOrgId(tokenId) {
-  return queryResultOptionFlatMap(tokenId[0], (function (a) {
-                return Belt_Option.map(Belt_Option.flatMap(a.launchedWildcards_by_pk, (function (b) {
-                                  return b.wildcard.organization;
-                                })), (function (org) {
-                              return org.id;
-                            }));
-              }));
+  var match = useWildcardDataQuery(tokenId);
+  if (match === undefined) {
+    return ;
+  }
+  var match$1 = match.wildcard.organization;
+  if (match$1 !== undefined) {
+    return match$1.id;
+  }
+  
 }
 
 function useWildcardOrgName(tokenId) {
-  return queryResultOptionFlatMap(tokenId[0], (function (a) {
-                return Belt_Option.map(Belt_Option.flatMap(a.launchedWildcards_by_pk, (function (b) {
-                                  return b.wildcard.organization;
-                                })), (function (org) {
-                              return org.name;
-                            }));
-              }));
+  var match = useWildcardDataQuery(tokenId);
+  if (match === undefined) {
+    return ;
+  }
+  var match$1 = match.wildcard.organization;
+  if (match$1 !== undefined) {
+    return match$1.name;
+  }
+  
 }
 
 function useLoadTopContributors(numberOfLeaders) {
-  var topContributorsQuery = Curry.app(use$6, [
+  var topContributorsQuery = Curry.app(use$9, [
         undefined,
         undefined,
         undefined,
@@ -1709,7 +2204,7 @@ function useTimeAcquired(chain, animal) {
 }
 
 function useQueryPatron(chain, patron) {
-  var loadPatronQuery = Curry.app(use$4, [
+  var loadPatronQuery = Curry.app(use$6, [
         undefined,
         {
           context: chain
@@ -1762,7 +2257,7 @@ function useDaysHeld(chain, tokenId) {
 }
 
 function useTotalCollectedOrDue(param) {
-  var subTotalRaisedQuery = Curry.app(use$7, [
+  var subTotalRaisedQuery = Curry.app(use$10, [
         undefined,
         undefined,
         undefined,
@@ -1838,12 +2333,6 @@ function useTotalCollectedToken(chain, animal) {
   
 }
 
-function useTotalCollectedTokenArray(chain, animalArray) {
-  return queryResultOptionMap(chain, (function (a) {
-                return a;
-              }));
-}
-
 function usePatronageNumerator(chain, tokenId) {
   var match = useWildcardQuery(chain, tokenId);
   if (match === undefined) {
@@ -1911,19 +2400,19 @@ function calculateTotalRaised(currentTimestamp, param) {
 
 function useTotalRaisedAnimalGroup(animals) {
   var currentTimestamp = useCurrentTime(undefined);
-  var detailsMainnet = useTotalCollectedTokenArray(/* MainnetQuery */2, animals);
-  var detailsMatic = useTotalCollectedTokenArray(/* MaticQuery */1, Belt_Array.map(animals, (function (id) {
+  var detailsMainnet = useLoadTokenDataArrayQuery(/* MainnetQuery */2, animals);
+  var detailsMatic = useLoadTokenDataArrayQuery(/* MaticQuery */1, Belt_Array.map(animals, (function (id) {
               return "matic" + id;
             })));
   return [
-          detailsMainnet !== undefined ? Caml_option.some(Belt_Array.reduce(Caml_option.valFromOption(detailsMainnet).wildcards, new BnJs("0"), (function (acc, animalDetails) {
+          detailsMainnet !== undefined ? Caml_option.some(Belt_Array.reduce(detailsMainnet.wildcards, new BnJs("0"), (function (acc, animalDetails) {
                         return Globals.$pipe$plus$pipe(calculateTotalRaised(currentTimestamp, [
                                         animalDetails.totalCollected,
                                         animalDetails.timeCollected,
                                         animalDetails.patronageNumeratorPriceScaled
                                       ]), acc);
                       }))) : undefined,
-          detailsMatic !== undefined ? Caml_option.some(Belt_Array.reduce(Caml_option.valFromOption(detailsMatic).wildcards, new BnJs("0"), (function (acc, animalDetails) {
+          detailsMatic !== undefined ? Caml_option.some(Belt_Array.reduce(detailsMatic.wildcards, new BnJs("0"), (function (acc, animalDetails) {
                         return Globals.$pipe$plus$pipe(calculateTotalRaised(currentTimestamp, [
                                         animalDetails.totalCollected,
                                         animalDetails.timeCollected,
@@ -2065,7 +2554,7 @@ function useLaunchTimeBN(chain, tokenId) {
 }
 
 function useMaticState(forceRefetch, address, network) {
-  var query = Curry.app(use$2, [
+  var query = Curry.app(use$3, [
         undefined,
         undefined,
         undefined,
@@ -2093,7 +2582,7 @@ function useMaticState(forceRefetch, address, network) {
 }
 
 function useArtistData(artistIdentifier) {
-  var artistQuery = Curry.app(use$3, [
+  var artistQuery = Curry.app(use$5, [
         undefined,
         undefined,
         undefined,
@@ -2201,29 +2690,23 @@ export {
   useInitialDataLoad ,
   useAnimalList ,
   SubWildcardQuery ,
+  WildcardDataQuery ,
   MaticStateQuery ,
+  HomeAnimalsQuery ,
   ArtistQuery ,
   LoadPatron ,
+  LoadTokenDataArray ,
   LoadOrganisationData ,
   LoadTopContributors ,
   SubTotalRaisedOrDueQuery ,
   getQueryPrefix ,
-  subscriptionResultOptionMap ,
-  subscriptionResultToOption ,
-  queryResultOptionMap ,
-  queryResultOptionFlatMap ,
-  queryResultToOption ,
   useWildcardQuery ,
   useLoadTokenDataArrayQuery ,
   useWildcardDataQuery ,
   useHomeAnimalsQuery ,
-  useStateChangeSubscription ,
   useLoadOrganisationQuery ,
-  useStateChangeSubscriptionData ,
   useLoadOrganisationLogo ,
   useLoadOrganisationLogoBadge ,
-  useHomePageAnimalsData ,
-  useHomePageAnimalArrayOpt ,
   useHomePageAnimalArray ,
   useDetailsPageNextPrevious ,
   animalDescription_decode ,
@@ -2250,7 +2733,6 @@ export {
   useCurrentTimestampBn ,
   useAmountRaised ,
   useTotalCollectedToken ,
-  useTotalCollectedTokenArray ,
   usePatronageNumerator ,
   usePledgeRate ,
   usePledgeRateDetailed ,

@@ -344,18 +344,34 @@ let handleMetaTxSumbissionState =
           ExecuteMetaTxMutation.ExecuteMetaTxMutation_inner.t,
         ),
       setTxState,
-    ) =>
+      currentState,
+    ) => {
+  let networkId = RootProvider.useNetworkId();
+
   switch (result) {
-  //  | {called: true} =>
+  | {called: false, _} => ()
   //  | {loading: true} =>
   | {data: Some(data), error: None, _} =>
     let success = data.metaTx.success;
     let errorMsg = data.metaTx.errorMsg;
     let txHash = data.metaTx.txHash;
     if (success) {
-      setTxState(_ => SignedAndSubmitted(txHash));
+      [@warning "-4"]
+      (
+        switch (currentState) {
+        | SignedAndSubmitted(_txHash) => ()
+        | _ => setTxState(_ => SignedAndSubmitted(txHash))
+        }
+      );
 
-      let providerUrl = "https://goerli.infura.io/v3/c401b8ee3a324619a453f2b5b2122d7a";
+      let providerUrl =
+        switch (networkId) {
+        | Some(1) => "https://rpc-mainnet.matic.network"
+        | Some(4) => "https://goerli.infura.io/v3/c401b8ee3a324619a453f2b5b2122d7a"
+        | Some(5) => "https://rpc-mumbai.matic.today"
+        | Some(_)
+        | None => "No Network"
+        };
       let maticProvider = Ethers.makeProvider(providerUrl);
 
       let waitForTx =
@@ -368,15 +384,28 @@ let handleMetaTxSumbissionState =
         Js.log(error);
       });
     } else {
-      setTxState(_ =>
-        ServerError(errorMsg->Option.getWithDefault("Unknown error"))
+      [@warning "-4"]
+      (
+        switch (currentState) {
+        | ServerError(_txHash) => ()
+        | _ =>
+          setTxState(_ =>
+            ServerError(errorMsg->Option.getWithDefault("Unknown error"))
+          )
+        }
       );
-      ();
     };
   | {data: None, _}
-  | {error: _, _} => setTxState(_ => ServerError("Query Error"))
+  | {error: _, _} =>
+    [@warning "-4"]
+    (
+      switch (currentState) {
+      | ServerError(_txHash) => ()
+      | _ => setTxState(_ => ServerError("Query Error"))
+      }
+    )
   };
-
+};
 let useBuy =
     (
       ~chain,
@@ -391,7 +420,7 @@ let useBuy =
   let (txState, setTxState) = React.useState(() => UnInitialised);
 
   let (mutate, result) = ExecuteMetaTxMutation.use();
-  handleMetaTxSumbissionState(result, setTxState);
+  handleMetaTxSumbissionState(result, setTxState, txState);
 
   let chainIdInt = parentChainId->getChildChainId;
   let chainId = chainIdInt->BN.newInt_;
@@ -514,7 +543,7 @@ let useBuyAuction =
   let optSteward = useStewardContract();
 
   let (mutate, result) = ExecuteMetaTxMutation.use();
-  handleMetaTxSumbissionState(result, setTxState);
+  handleMetaTxSumbissionState(result, setTxState, txState);
 
   let chainIdInt = parentChainId->getChildChainId;
   let chainId = chainIdInt->BN.newInt_;
@@ -671,7 +700,7 @@ let useUpdateDeposit =
   let optSteward = useStewardContract();
 
   let (mutate, result) = ExecuteMetaTxMutation.use();
-  handleMetaTxSumbissionState(result, setTxState);
+  handleMetaTxSumbissionState(result, setTxState, txState);
 
   let chainIdInt = parentChainId->getChildChainId;
   let chainId = chainIdInt->BN.newInt_;
