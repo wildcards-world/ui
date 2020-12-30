@@ -1308,9 +1308,43 @@ function useRemainingDepositEth(chain, patron) {
   return Caml_option.some(match[0].sub(amountRaisedSinceLastCollection));
 }
 
-function usePrice(chain, animal) {
-  console.log(chain, animal);
-  return /* Loading */0;
+function usePrice(chain, tokenId) {
+  var wildcardData = useWildcardQuery(chain, tokenId);
+  var optCurrentPatron = usePatron(chain, tokenId);
+  var currentPatron = Belt_Option.mapWithDefault(optCurrentPatron, "no-patron-defined", (function (a) {
+          return a;
+        }));
+  var currentTime = useCurrentTime(undefined);
+  var foreclosureTime = useForeclosureTimeBn(chain, currentPatron);
+  if (wildcardData === undefined) {
+    return /* Loading */0;
+  }
+  var match = wildcardData.wildcard;
+  if (match === undefined) {
+    return /* Loading */0;
+  }
+  if (optCurrentPatron === undefined) {
+    return /* Loading */0;
+  }
+  var price = match.price.price;
+  if (foreclosureTime === undefined) {
+    return {
+            TAG: /* Price */1,
+            _0: price
+          };
+  }
+  var foreclosureTime$1 = Caml_option.valFromOption(foreclosureTime);
+  if (foreclosureTime$1.lt(new BnJs(currentTime))) {
+    return {
+            TAG: /* Foreclosed */0,
+            _0: foreclosureTime$1
+          };
+  } else {
+    return {
+            TAG: /* Price */1,
+            _0: price
+          };
+  }
 }
 
 function useIsForeclosed(chain, currentPatron) {
@@ -1348,7 +1382,14 @@ function useAuctioLength(chain, _tokenId) {
 }
 
 function useLaunchTimeBN(chain, tokenId) {
-  console.log(chain, tokenId);
+  var match = useWildcardQuery(chain, tokenId);
+  if (match === undefined) {
+    return ;
+  }
+  var match$1 = match.wildcard;
+  if (match$1 !== undefined) {
+    return Caml_option.some(match$1.launchTime);
+  }
   
 }
 

@@ -1072,42 +1072,35 @@ type animalPrice =
   | Loading;
 
 let usePrice: (~chain: Client.context, TokenId.t) => animalPrice =
-  (~chain, animal) => {
-    /*let (simple, _) = useWildcardQuery(~chain, animal);
-      let optCurrentPatron = usePatron(~chain, animal);
-      let currentPatron =
-        optCurrentPatron->Belt.Option.mapWithDefault("no-patron-defined", a =>
-          a
-        );
-      let foreclosureTime = useForeclosureTimeBn(~chain, currentPatron);
+  (~chain, tokenId) => {
+    let wildcardData = useWildcardQuery(~chain, tokenId);
+    let optCurrentPatron = usePatron(~chain, tokenId);
+    let currentPatron =
+      optCurrentPatron->Belt.Option.mapWithDefault("no-patron-defined", a =>
+        a
+      );
+    let currentTime = useCurrentTime();
+    let foreclosureTime = useForeclosureTimeBn(~chain, currentPatron);
 
-      let currentTime = useCurrentTime();
-
-      switch (simple) {
-      | Data(response) =>
-        let priceValue =
-          response##wildcard
-          ->Belt.Option.mapWithDefault(Eth.makeFromInt(0), wildcard =>
-              wildcard##price##price
-            );
-
-        switch (optCurrentPatron, foreclosureTime) {
-        | (Some(_currentPatron), Some(foreclosureTime)) =>
-          if (foreclosureTime->BN.lt(currentTime->BN.new_)) {
-            Foreclosed(foreclosureTime);
-          } else {
-            Price(priceValue);
-          }
-        | (Some(_), None) => Price(priceValue)
-        | _ => Loading
-        };
-      | Error(_)
-      | Loading
-      | NoData => Loading
-      }; */
-
-    Js.log2(chain, animal);
-    Loading;
+    switch (wildcardData, optCurrentPatron, foreclosureTime) {
+    | (
+        Some({wildcard: Some({price: {price, _}, _})}),
+        Some(_currentPatron),
+        Some(foreclosureTime),
+      ) =>
+      if (foreclosureTime->BN.lt(currentTime->BN.new_)) {
+        Foreclosed(foreclosureTime);
+      } else {
+        Price(price);
+      }
+    | (
+        Some({wildcard: Some({price: {price, _}, _})}),
+        Some(_currentPatron),
+        None,
+      ) =>
+      Price(price)
+    | _ => Loading
+    };
   };
 
 let useIsForeclosed = (~chain, currentPatron) => {
@@ -1140,17 +1133,11 @@ let useAuctioLength = (~chain, _tokenId: TokenId.t) => {
   ->Option.map(global => global.defaultAuctionLength);
 };
 let useLaunchTimeBN = (~chain, tokenId: TokenId.t) => {
-  Js.log2(chain, tokenId);
-  None;
-  /* let (simple, _) = useWildcardQuery(~chain, tokenId);
-
-     switch (simple) {
-     | Data(response) =>
-       response##wildcard->Belt.Option.map(wildcard => wildcard##launchTime)
-     | Error(_)
-     | Loading
-     | NoData => None
-     }; */
+  switch (useWildcardQuery(~chain, tokenId)) {
+  | Some({wildcard: Some({launchTime, _})}) => Some(launchTime)
+  | Some({wildcard: None})
+  | None => None
+  };
 };
 
 let useMaticState = (~forceRefetch, address, network) => {
