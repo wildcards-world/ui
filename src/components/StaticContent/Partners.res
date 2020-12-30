@@ -6,14 +6,14 @@ let cvLabsLogo = "/img/logos/cvlabszug.jpg"
 let kernelLogo = "/img/logos/kernel.gif"
 
 module LoadPatronNoDecode = %graphql(`
-query ActivePartners {
-  organisations(where: {onboarding_status: {_in: [live,signed,listed]}}) {
-    logo
-    id
-    name
+  query ActivePartners {
+    organisations(where: {onboarding_status: {_in: [live,signed,listed]}}) {
+      logo
+      id
+      name
+    }
   }
-}
-  `)
+`)
 type partner = {
   logo: string,
   id: string,

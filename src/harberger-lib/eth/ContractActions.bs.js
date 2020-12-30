@@ -163,7 +163,7 @@ function useStewardContract(param) {
                 var match = context.library;
                 var match$1 = context.chainId;
                 if (match !== undefined && match$1 !== undefined) {
-                  return Globals.oMap(Curry._1(stewardContractAddress, match$1), (function (__x) {
+                  return Belt_Option.map(Curry._1(stewardContractAddress, match$1), (function (__x) {
                                 return getExchangeContract(__x, stewardAbi, match, context.account);
                               }));
                 }
@@ -181,7 +181,7 @@ function useLoyaltyTokenContract(param) {
                 var match = context.library;
                 var match$1 = context.chainId;
                 if (match !== undefined && match$1 !== undefined) {
-                  return Globals.oMap(loyaltyTokenAddressFromChainId(match$1), (function (__x) {
+                  return Belt_Option.map(loyaltyTokenAddressFromChainId(match$1), (function (__x) {
                                 return getLoyaltyTokenContract(__x, match, context.account);
                               }));
                 }

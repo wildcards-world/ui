@@ -38,7 +38,7 @@ let getPrice = () => {
       let usdEthPrice = switch krakenPriceObj {
       | Ok(priceObj) =>
         let getPriceFromArray = a => a->Array.get(0)
-        \">>="(\"<$>"(\">>="(priceObj.result, ethUsd), c), getPriceFromArray)
+        Option.flatMap(Option.map(Option.flatMap(priceObj.result, ethUsd), c), getPriceFromArray)
       | Result.Error(error) =>
         Js.log(error)
         None
@@ -56,7 +56,9 @@ let make = (~children) => {
   React.useEffect2(() => {
     if etherUsdPrice == None {
       let _ =
-        getPrice()->mapAsync(newPrice => setEtherUsdPrice(_ => \">>="(newPrice, Float.fromString)))
+        getPrice()->mapAsync(newPrice =>
+          setEtherUsdPrice(_ => Option.flatMap(newPrice, Float.fromString))
+        )
     } else {
       ()
     }

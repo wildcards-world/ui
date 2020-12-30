@@ -154,7 +154,7 @@ function getPrice(param) {
                                 var getPriceFromArray = function (a) {
                                   return Belt_Array.get(a, 0);
                                 };
-                                tmp = Globals.$great$great$eq(Globals.$less$$great(Globals.$great$great$eq(krakenPriceObj._0.result, ethUsd), c), getPriceFromArray);
+                                tmp = Belt_Option.flatMap(Belt_Option.map(Belt_Option.flatMap(krakenPriceObj._0.result, ethUsd), c), getPriceFromArray);
                               } else {
                                 console.log(krakenPriceObj._0);
                                 tmp = undefined;
@@ -175,7 +175,7 @@ function UsdPriceProvider(Props) {
           if (etherUsdPrice === undefined) {
             Globals.mapAsync(getPrice(undefined), (function (newPrice) {
                     return Curry._1(setEtherUsdPrice, (function (param) {
-                                  return Globals.$great$great$eq(newPrice, Belt_Float.fromString);
+                                  return Belt_Option.flatMap(newPrice, Belt_Float.fromString);
                                 }));
                   }));
           }

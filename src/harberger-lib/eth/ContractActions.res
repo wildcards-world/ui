@@ -154,7 +154,7 @@ let useStewardContract = () => {
   React.useMemo3(() =>
     switch (context.library, context.chainId) {
     | (Some(library), Some(chainId)) =>
-      stewardContractAddress(chainId)->oMap(
+      stewardContractAddress(chainId)->Option.map(
         getExchangeContract(_, stewardAbi, library, context.account),
       )
 
@@ -171,7 +171,7 @@ let useLoyaltyTokenContract = () => {
     | (Some(library), Some(chainId)) =>
       chainId
       ->loyaltyTokenAddressFromChainId
-      ->oMap(getLoyaltyTokenContract(_, library, context.account))
+      ->Option.map(getLoyaltyTokenContract(_, library, context.account))
 
     | _ => None
     }
@@ -196,28 +196,28 @@ type transactionState =
   | Failed
 
 module ExecuteMetaTxMutation = %graphql(`
-    mutation (
-      $network: String!,
-      $r: String!,
-      $s: String!,
-      $v: Int!,
-      $userAddress: String!,
-      $functionSignature: String!
+  mutation (
+    $network: String!,
+    $r: String!,
+    $s: String!,
+    $v: Int!,
+    $userAddress: String!,
+    $functionSignature: String!
+  ) {
+    metaTx(
+      functionSignature: $functionSignature,
+      network: $network ,
+      r: $r,
+      s: $s,
+      userAddress: $userAddress,
+      v: $v
     ) {
-      metaTx(
-        functionSignature: $functionSignature,
-        network: $network ,
-        r: $r,
-        s: $s,
-        userAddress: $userAddress,
-        v: $v
-      ) {
-        txHash
-        success
-        errorMsg
-      }
+      txHash
+      success
+      errorMsg
     }
-  `)
+  }
+`)
 
 let execDaiPermitMetaTx = (
   daiNonce,
@@ -286,11 +286,12 @@ let execDaiPermitMetaTx = (
       ),
     )->Js.Promise.resolve
   }, _)
-  // TODO: This needs to be
   ->Js.Promise.catch(err => {
     Js.log2("this error was caught", err)
     Js.Promise.resolve(""->Obj.magic)
-  }, _)
+  }, // TODO: This needs to be
+
+  _)
   ->ignore
 
 let handleMetaTxSumbissionState = (

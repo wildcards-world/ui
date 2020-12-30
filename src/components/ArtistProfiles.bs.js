@@ -44,14 +44,14 @@ function ArtistProfiles$ArtistDetails(Props) {
   var optArtistUnlaunchedWildcards = Props.optArtistUnlaunchedWildcards;
   var optArtistOrgs = Props.optArtistOrgs;
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
-  var artistEthAddress = Globals.$pipe$pipe$pipe$pipe(optArtistEthAddress, CONSTANTS.nullEthAddress).toLowerCase();
+  var artistEthAddress = Belt_Option.getWithDefault(optArtistEthAddress, CONSTANTS.nullEthAddress).toLowerCase();
   var userInfoContext = UserProvider.useUserInfoContext(undefined);
   Curry._2(userInfoContext.update, artistEthAddress, false);
   var optThreeBoxData = UserProvider.use3BoxUserData(artistEthAddress);
-  var optProfile = Globals.$great$great$eq(optThreeBoxData, (function (a) {
+  var optProfile = Belt_Option.flatMap(optThreeBoxData, (function (a) {
           return a.profile;
         }));
-  var image = Belt_Option.mapWithDefault(Globals.$great$great$eq(Globals.$less$$great(Globals.$great$great$eq(Globals.$great$great$eq(optProfile, (function (a) {
+  var image = Belt_Option.mapWithDefault(Belt_Option.flatMap(Belt_Option.map(Belt_Option.flatMap(Belt_Option.flatMap(optProfile, (function (a) {
                           return a.image;
                         })), (function (img) {
                       return Belt_Array.get(img, 0);
@@ -62,13 +62,13 @@ function ArtistProfiles$ArtistDetails(Props) {
             })), Blockie.makeBlockie(artistEthAddress), (function (hash) {
           return "https://ipfs.infura.io/ipfs/" + hash;
         }));
-  var optName = Globals.$great$great$eq(optProfile, (function (a) {
+  var optName = Belt_Option.flatMap(optProfile, (function (a) {
           return a.name;
         }));
-  var optDescription = Globals.$great$great$eq(optProfile, (function (a) {
+  var optDescription = Belt_Option.flatMap(optProfile, (function (a) {
           return a.description;
         }));
-  var optTwitter = Globals.$less$$great(Globals.$great$great$eq(Globals.$great$great$eq(optThreeBoxData, (function (a) {
+  var optTwitter = Belt_Option.map(Belt_Option.flatMap(Belt_Option.flatMap(optThreeBoxData, (function (a) {
                   return a.verifications;
                 })), (function (a) {
               return a.twitter;
@@ -138,7 +138,7 @@ function ArtistProfiles$ArtistDetails(Props) {
     exit = 1;
   }
   if (exit === 1) {
-    tmp = React.createElement(React.Fragment, undefined, React.createElement("h2", undefined, Belt_Option.getWithDefault(optName, Globals.$pipe$pipe$pipe$pipe(optArtistName, "Loading artist name"))), Globals.reactMap(optTwitter, (function (twitterHandle) {
+    tmp = React.createElement(React.Fragment, undefined, React.createElement("h2", undefined, Belt_Option.getWithDefault(optName, Belt_Option.getWithDefault(optArtistName, "Loading artist name"))), Globals.reactMap(optTwitter, (function (twitterHandle) {
                 return React.createElement("a", {
                             className: Styles.navListText,
                             href: "https://twitter.com/" + twitterHandle,
@@ -153,7 +153,7 @@ function ArtistProfiles$ArtistDetails(Props) {
                             href: website,
                             rel: "noopener noreferrer",
                             target: "_blank"
-                          }, Globals.$pipe$pipe$pipe$pipe(optArtistName, "Artist") + "'s website");
+                          }, Belt_Option.getWithDefault(optArtistName, "Artist") + "'s website");
               })), React.createElement("br", undefined), React.createElement("br", undefined), Globals.reactMap(optArtistEthAddress, (function (param) {
                 return React.createElement(React.Fragment, undefined, React.createElement("a", {
                                 className: Styles.navListText,

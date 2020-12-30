@@ -10,6 +10,7 @@ import * as QlHooks from "../harberger-lib/QlHooks.bs.js";
 import * as TokenId from "../harberger-lib/TokenId.bs.js";
 import * as CountDown from "../harberger-lib/CountDown.bs.js";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
+import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Announcement from "./Announcement.bs.js";
 
 var linkToAnimal = Curry._1(Css.style, {
@@ -54,7 +55,7 @@ function AnimalAnnouncement(Props) {
             }, Globals.restr("New Wildcard" + ((
                     isPlural ? "s" : ""
                   ) + " ")), Belt_Array.mapWithIndex(nextReleasedAnimals, (function (index, animal) {
-                    var name = Globals.$pipe$pipe$pipe$pipe(QlHooks.useWildcardName(animal), "Loading");
+                    var name = Belt_Option.getWithDefault(QlHooks.useWildcardName(animal), "Loading");
                     return React.createElement("span", {
                                 key: TokenId.toString(animal)
                               }, React.createElement("a", {

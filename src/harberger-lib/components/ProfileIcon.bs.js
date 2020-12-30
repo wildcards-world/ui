@@ -28,10 +28,10 @@ function ProfileIcon(Props) {
   var displayNameStr = UserProvider.displayNameToString(displayName);
   var userAddressLowerCase = currentUser !== undefined ? currentUser.toLowerCase() : CONSTANTS.nullEthAddress;
   var optThreeBoxData = UserProvider.use3BoxUserData(userAddressLowerCase);
-  var optProfile = Globals.$great$great$eq(optThreeBoxData, (function (a) {
+  var optProfile = Belt_Option.flatMap(optThreeBoxData, (function (a) {
           return a.profile;
         }));
-  var profileImage = Belt_Option.mapWithDefault(Globals.$great$great$eq(Globals.$less$$great(Globals.$great$great$eq(Globals.$great$great$eq(optProfile, (function (a) {
+  var profileImage = Belt_Option.mapWithDefault(Belt_Option.flatMap(Belt_Option.map(Belt_Option.flatMap(Belt_Option.flatMap(optProfile, (function (a) {
                           return a.image;
                         })), (function (img) {
                       return Belt_Array.get(img, 0);

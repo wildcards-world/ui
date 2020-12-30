@@ -1,17 +1,17 @@
 open GqlConverters
 
 module LoadMostDaysHeld = %graphql(`
-    query {
-      patrons(first: 20, orderBy: totalTimeHeld, orderDirection: desc,  where: {id_not: "NO_OWNER"}) {
+  query {
+    patrons(first: 20, orderBy: totalTimeHeld, orderDirection: desc,  where: {id_not: "NO_OWNER"}) {
+      id
+      totalTimeHeld @ppxCustom(module: "BigInt")
+      tokens{
         id
-        totalTimeHeld @ppxCustom(module: "BigInt")
-        tokens{
-          id
-        }
-        lastUpdated @ppxCustom(module: "BigInt")
       }
+      lastUpdated @ppxCustom(module: "BigInt")
     }
-  `)
+  }
+`)
 
 let useLoadMostDaysHeldData = () => {
   let currentTimestamp = QlHooks.useCurrentTime()
@@ -138,15 +138,7 @@ module MostDaysHeld = {
   let make = (~mostDaysHeld) =>
     React.array(
       Array.mapWithIndex(mostDaysHeld, (index, (contributor, amount)) =>
-        <ContributorsRow
-          contributor
-          amount={// ->BN.new_("86400")
-          // There are 86400 seconds in a day.
-          amount
-          ->BN.div(BN.new_("86400"))
-          ->BN.toString}
-          index
-        />
+        <ContributorsRow contributor amount={amount->BN.div(BN.new_("86400"))->BN.toString} index />
       ),
     )
 }

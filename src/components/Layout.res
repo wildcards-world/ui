@@ -8,7 +8,7 @@ module AnimalFocusDetails = {
   let make = (~currentAnimal: option<TokenId.t>, ~showForwardBackButtons) => {
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute()
     let animalDetails = QlHooks.useDetailsPageNextPrevious(
-      \"||||"(currentAnimal, TokenId.fromStringUnsafe("0")),
+      Option.getWithDefault(currentAnimal, TokenId.fromStringUnsafe("0")),
     )
     <div
       className={Cn.fromList(list{
@@ -18,7 +18,7 @@ module AnimalFocusDetails = {
           style(list{position(relative)})
         },
       })}>
-      {currentAnimal->mapd(false, _ => true)
+      {currentAnimal->Option.mapWithDefault(false, _ => true)
         ? <Rimble.Button.Text
             icononly=true
             icon="Close"
@@ -56,7 +56,7 @@ module AnimalFocusDetails = {
             open Css
             style(list{
               width(showForwardBackButtons ? #percent(90.) : #percent(100.)),
-              // style([width(`percent(animalCarousel->mapd(100., _ => 90.)))])
+              // style([width(`percent(animalCarousel->Option.getWithDefault(100., _ => 90.)))])
             })
           }>
           <Dapp currentAnimal />

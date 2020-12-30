@@ -3,7 +3,6 @@
 // - Move to components
 
 open Css
-open Globals
 
 let flameImg = "/img/streak-flame.png"
 let goldTrophyImg = "/img/icons/gold-trophy.png"
@@ -94,7 +93,7 @@ let make = (~numberOfLeaders) => {
         | Some(topContributors) =>
           React.array(
             topContributors->Array.mapWithIndex((index, (contributor, amount)) => {
-              let amountRaisedFloat = \"||||"(amount->Float.fromString, 0.)
+              let amountRaisedFloat = Option.getWithDefault(amount->Float.fromString, 0.)
 
               amountRaisedFloat < 0.0000001
                 ? React.null

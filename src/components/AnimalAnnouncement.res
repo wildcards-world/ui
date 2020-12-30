@@ -23,7 +23,7 @@ let make = (~nextReleasedAnimals: array<TokenId.t>, ~announcementBannerColor: st
     {("New Wildcard" ++ ((isPlural ? "s" : "") ++ " "))->restr}
     {React.array(
       nextReleasedAnimals->Array.mapWithIndex((index, animal) => {
-        let name = \"||||"(QlHooks.useWildcardName(animal), "Loading")
+        let name = Option.getWithDefault(QlHooks.useWildcardName(animal), "Loading")
         <span key={animal->TokenId.toString}>
           <a href={"/#details/" ++ animal->TokenId.toString} className=linkToAnimal>
             {name->restr}

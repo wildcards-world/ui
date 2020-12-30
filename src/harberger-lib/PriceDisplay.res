@@ -6,7 +6,8 @@ let priceWeiToTuple = (wei, optCurrentUsdEthPrice) => {
   let optTotaPatronageUsd =
     optCurrentUsdEthPrice->Option.map(currentUsdEthPrice =>
       toFixedWithPrecisionNoTrailingZeros(
-        Float.fromString(totalPatronageEth)->mapd(0., a => a) *. currentUsdEthPrice,
+        Float.fromString(totalPatronageEth)->Option.mapWithDefault(0., a => a) *.
+          currentUsdEthPrice,
         ~digits=2,
       )
     )

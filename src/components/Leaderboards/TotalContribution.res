@@ -1,15 +1,15 @@
 open GqlConverters
 
 module LoadMostContributed = %graphql(`
-    query {
-      patrons(first: 30, orderBy: totalContributed, orderDirection: desc, where: {id_not: "0x6d47cf86f6a490c6410fc082fd1ad29cf61492d0"}) {
-        id
-        patronTokenCostScaledNumerator  @ppxCustom(module: "BigInt")
-        totalContributed @ppxCustom(module: "BigInt")
-        lastUpdated @ppxCustom(module: "BigInt")
-      }
+  query {
+    patrons(first: 30, orderBy: totalContributed, orderDirection: desc, where: {id_not: "0x6d47cf86f6a490c6410fc082fd1ad29cf61492d0"}) {
+      id
+      patronTokenCostScaledNumerator  @ppxCustom(module: "BigInt")
+      totalContributed @ppxCustom(module: "BigInt")
+      lastUpdated @ppxCustom(module: "BigInt")
     }
-  `)
+  }
+`)
 
 let useLoadMostContributedData = () => {
   let currentTimestamp = QlHooks.useCurrentTime()

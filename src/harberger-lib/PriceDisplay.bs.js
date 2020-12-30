@@ -13,7 +13,7 @@ import * as UsdPriceProvider from "./components/UsdPriceProvider.bs.js";
 function priceWeiToTuple(wei, optCurrentUsdEthPrice) {
   var totalPatronageEth = Eth.toFixedWithPrecisionNoTrailingZeros(undefined, wei);
   var optTotaPatronageUsd = Belt_Option.map(optCurrentUsdEthPrice, (function (currentUsdEthPrice) {
-          return Globals.toFixedWithPrecisionNoTrailingZeros(Globals.mapd(Belt_Float.fromString(totalPatronageEth), 0, (function (a) {
+          return Globals.toFixedWithPrecisionNoTrailingZeros(Belt_Option.mapWithDefault(Belt_Float.fromString(totalPatronageEth), 0, (function (a) {
                             return a;
                           })) * currentUsdEthPrice, 2);
         }));

@@ -1,8 +1,6 @@
 @module("./UserProvider") @react.component
 external make: (~children: React.element) => React.element = "UserInfoProvider"
 
-open Globals
-
 type threeBoxImageData = {
   @as("@type")
   imageType: string,
@@ -48,13 +46,13 @@ let useDisplayName: Web3.ethAddress => displayName = ethAddress => {
   let userContext = useUserInfoContext()
   let ethAddressLower = Js.String.toLowerCase(ethAddress)
 
-  let opt3box = \"<$>"(Js.Dict.get(userContext.userInfo, ethAddressLower), a => a.threeBox)
+  let opt3box = Option.map(Js.Dict.get(userContext.userInfo, ethAddressLower), a => a.threeBox)
 
-  let opt3boxName = \">>="(\">>="(opt3box, a => a.profile), a => a.name)
+  let opt3boxName = Option.flatMap(Option.flatMap(opt3box, a => a.profile), a => a.name)
 
   let name =
     opt3boxName->Option.mapWithDefault(
-      \"<$>"(\">>="(\">>="(opt3box, a => a.verifications), a => a.twitter), a =>
+      Option.map(Option.flatMap(Option.flatMap(opt3box, a => a.verifications), a => a.twitter), a =>
         a.username
       )->Option.mapWithDefault(EthAddress(ethAddress), a => TwitterHandle(a)),
       a => ThreeBoxName(a),

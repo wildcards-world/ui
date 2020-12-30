@@ -1,7 +1,5 @@
 %bs.raw(`require("react-tabs/style/react-tabs.css")`)
 
-open Globals
-
 module Router = {
   @react.component
   let make = () => {
@@ -31,24 +29,27 @@ ReactDOMRe.renderToElementWithId(
 
       let endpoints = switch networkId {
       | 5 => {
-          mainnet: \"||||"(goerliApi, "https://goerli.api.wildcards.world/v1/graphq"),
-          matic: \"||||"(
+          mainnet: Option.getWithDefault(goerliApi, "https://goerli.api.wildcards.world/v1/graphq"),
+          matic: Option.getWithDefault(
             maticTestnetApi,
             "https://mumbai.graph.wildcards.world/subgraphs/name/wildcards-world/wildcards-matic",
           ),
           ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
         }
       | 4 => {
-          mainnet: \"||||"(rinkebyApi, "https://rinkeby.api.wildcards.world/v1/graphq"),
-          matic: \"||||"(
+          mainnet: Option.getWithDefault(
+            rinkebyApi,
+            "https://rinkeby.api.wildcards.world/v1/graphq",
+          ),
+          matic: Option.getWithDefault(
             maticAltTestnetApi,
             "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-testnet",
           ),
           ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
         }
       | _ => {
-          mainnet: \"||||"(mainnetApi, "https://api.wildcards.world/v1/graphq"),
-          matic: \"||||"(
+          mainnet: Option.getWithDefault(mainnetApi, "https://api.wildcards.world/v1/graphq"),
+          matic: Option.getWithDefault(
             maticApi,
             "https://matic.graph.wildcards.world/subgraphs/name/wildcards-world/wildcards-matic",
           ),

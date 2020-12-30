@@ -27,7 +27,7 @@ module EditButton = {
 module Streak = {
   @react.component
   let make = (~chain, ~animal: TokenId.t) => {
-    let animalName = \"||||"(QlHooks.useWildcardName(animal), "Loading")
+    let animalName = Option.getWithDefault(QlHooks.useWildcardName(animal), "Loading")
 
     let daysHeld = QlHooks.useDaysHeld(~chain, animal)
 
@@ -118,7 +118,7 @@ module BasicAnimalDisplay = {
   @react.component
   let make = (~chain, ~animal: TokenId.t) => {
     let owned = animal->QlHooks.useIsAnimalOwened(~chain)
-    let currentPatron = \"||||"(QlHooks.usePatron(~chain, animal), "Loading")
+    let currentPatron = Option.getWithDefault(QlHooks.usePatron(~chain, animal), "Loading")
     let displayName = UserProvider.useDisplayName(currentPatron)
 
     let displayNameStr = UserProvider.displayNameToString(displayName)
@@ -187,11 +187,11 @@ module AnimalOnLandingPage = {
     ~optionEndDateMoment: option<MomentRe.Moment.t>,
     ~isGqlLoaded,
   ) => {
-    let name = \"||||"(QlHooks.useWildcardName(animal), "Loading")
+    let name = Option.getWithDefault(QlHooks.useWildcardName(animal), "Loading")
     let isExplorer = Router.useIsExplorer()
 
     let orgBadge = Animal.useGetOrgBadgeImage(~tokenId=animal)
-    let orgId = \"||||"(QlHooks.useWildcardOrgId(~tokenId=animal), "")
+    let orgId = Option.getWithDefault(QlHooks.useWildcardOrgId(~tokenId=animal), "")
 
     let currentPriceWei = QlHooks.usePrice(~chain, animal)
 
@@ -384,7 +384,7 @@ module AnimalActionsOnDetailsPage = {
     let owned = animal->QlHooks.useIsAnimalOwened(~chain)
     // let currentAccount =
     //   RootProvider.useCurrentUser()->mapWithDefault("loading", a => a);
-    let currentPatron = \"||||"(QlHooks.usePatron(~chain, animal), "Loading")
+    let currentPatron = Option.getWithDefault(QlHooks.usePatron(~chain, animal), "Loading")
     let displayName = UserProvider.useDisplayName(currentPatron)
     let displayNameStr = UserProvider.displayNameToString(displayName)
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute()
@@ -436,7 +436,7 @@ module AnimalActionsOnDetailsPage = {
 module DetailsViewAnimal = {
   @react.component
   let make = (~chain, ~animal: TokenId.t) => {
-    let orgId = \"||||"(QlHooks.useWildcardOrgId(~tokenId=animal), "")
+    let orgId = Option.getWithDefault(QlHooks.useWildcardOrgId(~tokenId=animal), "")
 
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute()
 
@@ -495,7 +495,7 @@ module DetailsViewAnimal = {
 
     <React.Fragment>
       {displayAnimal(() => normalImage())}
-      <h2> {\"||||"(QlHooks.useWildcardName(animal), "Loading")->restr} </h2>
+      <h2> {Option.getWithDefault(QlHooks.useWildcardName(animal), "Loading")->restr} </h2>
       <AnimalActionsOnDetailsPage chain animal />
     </React.Fragment>
   }
@@ -574,7 +574,7 @@ module DefaultLeftPanel = {
 module UnlaunchedAnimalInfo = {
   @react.component
   let make = (~chain, ~endDateMoment, ~animal: TokenId.t) => {
-    let animalName = \"||||"(QlHooks.useWildcardName(animal), "Loading")
+    let animalName = Option.getWithDefault(QlHooks.useWildcardName(animal), "Loading")
 
     let ratio = QlHooks.usePledgeRate(~chain, animal)
     let monthlyRate = Js.Float.toString(ratio *. 100.)
@@ -616,7 +616,10 @@ module UnlaunchedAnimalInfo = {
 module AnimalInfo = {
   @react.component
   let make = (~chain, ~animal: TokenId.t) => {
-    let animalDescription = \"||||"(QlHooks.useWildcardDescription(animal), ["Loading"])
+    let animalDescription = Option.getWithDefault(
+      QlHooks.useWildcardDescription(animal),
+      ["Loading"],
+    )
     let optAnimalMedia = animal->Animal.useAlternateImage
 
     let animalStatus = animal->Animal.useTokenStatus(~chain)
@@ -629,7 +632,7 @@ module AnimalInfo = {
         <ReactTabs.TabList>
           <ReactTabs.Tab> {"Story"->React.string} </ReactTabs.Tab>
           <ReactTabs.Tab> {"Details"->React.string} </ReactTabs.Tab>
-          {optAnimalMedia->mapd(React.null, _ =>
+          {optAnimalMedia->Option.mapWithDefault(React.null, _ =>
             <ReactTabs.Tab> {"Media"->React.string} </ReactTabs.Tab>
           )}
         </ReactTabs.TabList>
@@ -672,7 +675,7 @@ module AnimalInfo = {
           }}
         </ReactTabs.TabPanel>
         <ReactTabs.TabPanel>
-          {optAnimalMedia->mapd(React.null, media =>
+          {optAnimalMedia->Option.mapWithDefault(React.null, media =>
             <img
               className={
                 open Css

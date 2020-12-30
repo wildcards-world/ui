@@ -1,5 +1,3 @@
-open Globals
-
 type previousNextAnimal = option<(TokenId.t, TokenId.t)>
 type animalPageState =
   | DetailView(option<TokenId.t>)
@@ -64,10 +62,10 @@ let useUrlState = () => {
     | ["dao"] => VotePage
     | ["increase-iteration"] => IncreaseVoteIteration
     | urlArray =>
-      switch \"||||"(urlArray[0], "") {
+      switch Option.getWithDefault(urlArray[0], "") {
       | "explorer" =>
         Explorer(
-          switch \"||||"(urlArray[1], "") {
+          switch Option.getWithDefault(urlArray[1], "") {
           | "1st-edition" => Gen1
           | "2nd-edition"
           | _ =>

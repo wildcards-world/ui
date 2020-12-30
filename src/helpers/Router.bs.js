@@ -2,8 +2,8 @@
 
 import * as React from "react";
 import * as Animal from "../harberger-lib/Animal.bs.js";
-import * as Globals from "../harberger-lib/Globals.bs.js";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
+import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.bs.js";
 
 function useUrlState(param) {
@@ -166,10 +166,10 @@ function useUrlState(param) {
                 }
                 switch (exit) {
                   case 1 :
-                      var match$10 = Globals.$pipe$pipe$pipe$pipe(Belt_Array.get(urlArray, 0), "");
+                      var match$10 = Belt_Option.getWithDefault(Belt_Array.get(urlArray, 0), "");
                       switch (match$10) {
                         case "explorer" :
-                            var match$11 = Globals.$pipe$pipe$pipe$pipe(Belt_Array.get(urlArray, 1), "");
+                            var match$11 = Belt_Option.getWithDefault(Belt_Array.get(urlArray, 1), "");
                             var tmp;
                             switch (match$11) {
                               case "1st-edition" :

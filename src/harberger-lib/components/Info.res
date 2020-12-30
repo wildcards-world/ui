@@ -249,11 +249,11 @@ module SimpleView = {
 let make = (~chain, ~tokenId: TokenId.t) => {
   let daysHeld = QlHooks.useDaysHeld(~chain, tokenId)
 
-  let currentPatron = \"||||"(QlHooks.usePatron(~chain, tokenId), "Loading")
+  let currentPatron = Option.getWithDefault(QlHooks.usePatron(~chain, tokenId), "Loading")
   let userId = UserProvider.useDisplayName(currentPatron)
   let displayName = UserProvider.useDisplayName(currentPatron)
   let displayNameStr = UserProvider.displayNameToString(displayName)
-  let tokenName = \"||||"(tokenId->QlHooks.useWildcardName, "loading name")
+  let tokenName = Option.getWithDefault(tokenId->QlHooks.useWildcardName, "loading name")
   let userIdType = switch userId {
   | EthAddress(_) => "public address"
   | TwitterHandle(_) => "verified twitter account"
@@ -262,24 +262,34 @@ let make = (~chain, ~tokenId: TokenId.t) => {
 
   let currentUsdEthPrice = UsdPriceProvider.useUsdPrice()
   let (depositAvailableToWithdrawEth, depositAvailableToWithdrawUsd) =
-    QlHooks.useRemainingDepositEth(~chain, currentPatron)->mapd(("Loading", "Loading"), a => (
-      \"||||"(
-        a->Eth.get(Eth.Eth(#ether))->Float.fromString,
-        0.0,
-      )->toFixedWithPrecisionNoTrailingZeros(~digits=9),
-      currentUsdEthPrice->mapd("Loading", usdEthRate => a->Eth.get(Eth.Usd(usdEthRate, 2))),
-    ))
+    QlHooks.useRemainingDepositEth(~chain, currentPatron)->Option.mapWithDefault(
+      ("Loading", "Loading"),
+      a => (
+        Option.getWithDefault(
+          a->Eth.get(Eth.Eth(#ether))->Float.fromString,
+          0.0,
+        )->toFixedWithPrecisionNoTrailingZeros(~digits=9),
+        currentUsdEthPrice->Option.mapWithDefault("Loading", usdEthRate =>
+          a->Eth.get(Eth.Usd(usdEthRate, 2))
+        ),
+      ),
+    )
 
   let (totalPatronage, totalPatronageUsd) =
-    QlHooks.useAmountRaisedToken(~chain, tokenId)->mapd(("Loading", "Loading"), a => (
-      \"||||"(
-        a->Eth.get(Eth.Eth(#ether))->Float.fromString,
-        0.0,
-      )->toFixedWithPrecisionNoTrailingZeros(~digits=9),
-      currentUsdEthPrice->mapd("Loading", usdEthRate => a->Eth.get(Eth.Usd(usdEthRate, 2))),
-    ))
+    QlHooks.useAmountRaisedToken(~chain, tokenId)->Option.mapWithDefault(
+      ("Loading", "Loading"),
+      a => (
+        Option.getWithDefault(
+          a->Eth.get(Eth.Eth(#ether))->Float.fromString,
+          0.0,
+        )->toFixedWithPrecisionNoTrailingZeros(~digits=9),
+        currentUsdEthPrice->Option.mapWithDefault("Loading", usdEthRate =>
+          a->Eth.get(Eth.Usd(usdEthRate, 2))
+        ),
+      ),
+    )
   let foreclosureTime = QlHooks.useForeclosureTime(~chain, currentPatron)
-  let definiteTime = foreclosureTime->mapd(None, a => Some(a))
+  let definiteTime = foreclosureTime->Option.mapWithDefault(None, a => Some(a))
 
   let ratio = QlHooks.usePledgeRate(~chain, tokenId)
 
@@ -311,8 +321,8 @@ let make = (~chain, ~tokenId: TokenId.t) => {
   }
   let unit = showEthWithUsdConversion ? "ETH" : "USD"
   let translationModeContext = ReactTranslate.useTranslationModeContext()
-  let orgName = \"||||"(QlHooks.useWildcardOrgName(~tokenId), " the organisation")
-  let orgId = \"||||"(QlHooks.useWildcardOrgId(~tokenId), " the organisation")
+  let orgName = Option.getWithDefault(QlHooks.useWildcardOrgName(~tokenId), " the organisation")
+  let orgId = Option.getWithDefault(QlHooks.useWildcardOrgId(~tokenId), " the organisation")
 
   let currentPriceWei = QlHooks.usePrice(~chain, tokenId)
   let priceString = switch currentPriceWei {
@@ -396,23 +406,28 @@ let make = (~chain, ~tokenId: TokenId.t) => {
 module Auction = {
   @react.component
   let make = (~chain, ~tokenId: TokenId.t, ~abandoned: bool, ~auctionStartTime) => {
-    let currentPatron = \"||||"(QlHooks.usePatron(~chain, tokenId), "Loading")
+    let currentPatron = Option.getWithDefault(QlHooks.usePatron(~chain, tokenId), "Loading")
     let displayName = UserProvider.useDisplayName(currentPatron)
     let displayNameStr = UserProvider.displayNameToString(displayName)
 
-    let tokenName = \"||||"(tokenId->QlHooks.useWildcardName, "loading name")
+    let tokenName = Option.getWithDefault(tokenId->QlHooks.useWildcardName, "loading name")
 
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute()
 
     let currentUsdEthPrice = UsdPriceProvider.useUsdPrice()
     let (totalPatronage, totalPatronageUsd) =
-      QlHooks.useAmountRaisedToken(~chain, tokenId)->mapd(("Loading", "Loading"), a => (
-        \"||||"(
-          a->Eth.get(Eth.Eth(#ether))->Float.fromString,
-          0.0,
-        )->toFixedWithPrecisionNoTrailingZeros(~digits=9),
-        currentUsdEthPrice->mapd("Loading", usdEthRate => a->Eth.get(Eth.Usd(usdEthRate, 2))),
-      ))
+      QlHooks.useAmountRaisedToken(~chain, tokenId)->Option.mapWithDefault(
+        ("Loading", "Loading"),
+        a => (
+          Option.getWithDefault(
+            a->Eth.get(Eth.Eth(#ether))->Float.fromString,
+            0.0,
+          )->toFixedWithPrecisionNoTrailingZeros(~digits=9),
+          currentUsdEthPrice->Option.mapWithDefault("Loading", usdEthRate =>
+            a->Eth.get(Eth.Usd(usdEthRate, 2))
+          ),
+        ),
+      )
 
     let ratio = QlHooks.usePledgeRate(~chain, tokenId)
 

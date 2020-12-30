@@ -16,10 +16,13 @@ let make = (~clickAction=() => (), ~isMobile=false) => {
   }
 
   let optThreeBoxData = UserProvider.use3BoxUserData(userAddressLowerCase)
-  let optProfile = \">>="(optThreeBoxData, a => a.profile)
+  let optProfile = Option.flatMap(optThreeBoxData, a => a.profile)
   let profileImage: string =
-    \">>="(
-      \"<$>"(\">>="(\">>="(optProfile, a => a.image), img => img->Array.get(0)), a => a.contentUrl),
+    Option.flatMap(
+      Option.map(
+        Option.flatMap(Option.flatMap(optProfile, a => a.image), img => img->Array.get(0)),
+        a => a.contentUrl,
+      ),
       content => Js.Dict.get(content, "/"),
     )->Option.mapWithDefault(Blockie.makeBlockie(. userAddressLowerCase), hash =>
       "https://ipfs.infura.io/ipfs/" ++ hash

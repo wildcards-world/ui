@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import * as Layout from "./components/Layout.bs.js";
-import * as Globals from "./harberger-lib/Globals.bs.js";
+import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Client from "@apollo/client";
 import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.bs.js";
 import * as WildcardsProvider from "./harberger-lib/components/WildcardsProvider.bs.js";
@@ -43,13 +43,13 @@ function SsrEntryPoint(Props) {
               getGraphEndpoints: (function (networkId, param) {
                   if (networkId !== 5) {
                     return {
-                            mainnet: Globals.$pipe$pipe$pipe$pipe(process.env.REACT_APP_MAINNET_BE, "https://api.wildcards.world/v1/graphql"),
+                            mainnet: Belt_Option.getWithDefault(process.env.REACT_APP_MAINNET_BE, "https://api.wildcards.world/v1/graphql"),
                             matic: "https://mumbai.graph.wildcards.world/subgraphs/name/wildcards-world/wildcards-matic/graphql",
                             ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards"
                           };
                   } else {
                     return {
-                            mainnet: Globals.$pipe$pipe$pipe$pipe(process.env.REACT_APP_GOERLI_BE, "https://goerli.api.wildcards.world/v1/graphq"),
+                            mainnet: Belt_Option.getWithDefault(process.env.REACT_APP_GOERLI_BE, "https://goerli.api.wildcards.world/v1/graphq"),
                             matic: "https://mumbai.graph.wildcards.world/subgraphs/name/wildcards-world/wildcards-matic/graphql",
                             ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli"
                           };

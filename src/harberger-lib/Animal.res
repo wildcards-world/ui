@@ -1,12 +1,10 @@
-open Globals
-
 let getAnimal: string => option<
   TokenId.t,
 > = // TODO: add a lookup to the `deprecated_id` field (or just let old links be broken...)
 animal => TokenId.make(animal)
 
 let useAvatar = animal =>
-  \"||||"(
+  Option.getWithDefault(
     QlHooks.useWildcardAvatar(animal)->Option.map(a => CONSTANTS.cdnBase ++ a),
     "./img/animals/comingsoon.png", // TODO: use the loading gif as default (but with better resolution! As svg?)
     // |||| "./img/loading.gif";
@@ -19,19 +17,19 @@ let useAlternateImage: TokenId.t => option<string> = animal =>
   ->Option.flatMap(images => images[0])
 
 let useGetOrgImage: string => string = org =>
-  \"||||"(
+  Option.getWithDefault(
     QlHooks.useLoadOrganisationLogo(org)->Option.map(path => CONSTANTS.cdnBase ++ path),
     "https://dd2wadt5nc0o7.cloudfront.net/conservations/OGBage.png",
   )
 
 let useGetOrgBadge: string => string = org =>
-  \"||||"(
+  Option.getWithDefault(
     QlHooks.useLoadOrganisationLogo(org)->Option.map(path => CONSTANTS.cdnBase ++ path),
     "https://dd2wadt5nc0o7.cloudfront.net/conservations/OGBage.png",
   )
 
 let useGetOrgBadgeImage = (~tokenId) => {
-  let org = \"||||"(QlHooks.useWildcardOrgId(~tokenId), "")
+  let org = Option.getWithDefault(QlHooks.useWildcardOrgId(~tokenId), "")
   useGetOrgBadge(org)
 }
 
@@ -117,19 +115,20 @@ let useAuctionPriceWei = (~chain, animal, launchTime) => {
   switch (auctionStartPrice, auctionEndPrice, auctionLength) {
   | (Some(auctionStartPrice), Some(auctionEndPrice), Some(auctionLength)) =>
     // disable warning #4
+
     @warning("-4")
     Some(
       switch tokenStatus {
       | Foreclosed(foreclosureTime) =>
         let auctionStartTime = foreclosureTime->MomentRe.Moment.toUnix->BN.newInt_
 
-        if \"|<|"(BN.new_(currentTime), \"|+|"(auctionStartTime, auctionLength)) {
-          \"|-|"(
+        if BN.lt(BN.new_(currentTime), BN.add(auctionStartTime, auctionLength)) {
+          BN.sub(
             auctionStartPrice,
-            \"|/|"(
-              \"|*|"(
-                \"|-|"(auctionStartPrice, auctionEndPrice),
-                \"|-|"(BN.new_(currentTime), auctionStartTime),
+            BN.div(
+              BN.mul(
+                BN.sub(auctionStartPrice, auctionEndPrice),
+                BN.sub(BN.new_(currentTime), auctionStartTime),
               ),
               auctionLength,
             ),
@@ -138,13 +137,13 @@ let useAuctionPriceWei = (~chain, animal, launchTime) => {
           auctionEndPrice
         }
       | Launched(_) =>
-        if \"|<|"(BN.new_(currentTime), \"|+|"(launchTime, auctionLength)) {
-          \"|-|"(
+        if BN.lt(BN.new_(currentTime), BN.add(launchTime, auctionLength)) {
+          BN.sub(
             auctionStartPrice,
-            \"|/|"(
-              \"|*|"(
-                \"|-|"(auctionStartPrice, auctionEndPrice),
-                \"|-|"(BN.new_(currentTime), launchTime),
+            BN.div(
+              BN.mul(
+                BN.sub(auctionStartPrice, auctionEndPrice),
+                BN.sub(BN.new_(currentTime), launchTime),
               ),
               auctionLength,
             ),
@@ -160,7 +159,7 @@ let useAuctionPriceWei = (~chain, animal, launchTime) => {
 }
 
 let getChainIdFromAnimalId = animalId =>
-  switch \"||||"(animalId->TokenId.toInt, 0) {
+  switch Option.getWithDefault(animalId->TokenId.toInt, 0) {
   | a when a < 26 || a == 42 => Client.MainnetQuery
   | _ => Client.MaticQuery
   }

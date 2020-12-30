@@ -1,38 +1,37 @@
-open Globals
 open GqlConverters
 module QueryFetchPolicy = ApolloClient__React_Hooks_UseQuery.WatchQueryFetchPolicy
 
 module InitialLoad = %graphql(`
-       query($amount: Int!, $globalId: String!) {
-         wildcards(first: $amount) {
-           id
-           animal: tokenId @ppxCustom(module: "GqlTokenId")
-           owner {
-             address
-             id
-           }
-           price {
-             price @ppxCustom(module: "Price")
-             id
-           }
-           totalCollected @ppxCustom(module: "Price")
-           timeCollected @ppxCustom(module: "BigInt")
-           patronageNumeratorPriceScaled @ppxCustom(module: "BigInt")
-           timeAcquired @ppxCustom(module: "GqlMoment")
-           auctionStartPrice @ppxCustom(module: "BigInt")
-           launchTime @ppxCustom(module: "BigInt")
-         }
-         global(id: $globalId) {
-           id
-           totalCollectedOrDueAccurate @ppxCustom(module: "BigInt")
-           timeLastCollected @ppxCustom(module: "BigInt")
-           totalTokenCostScaledNumeratorAccurate @ppxCustom(module: "BigInt")
-           defaultAuctionLength @ppxCustom(module: "BigInt")
-           defaultAuctionEndPrice @ppxCustom(module: "BigInt")
-           defaultAuctionStartPrice @ppxCustom(module: "BigInt")
-         }
-       }
-     `)
+  query($amount: Int!, $globalId: String!) {
+    wildcards(first: $amount) {
+      id
+      animal: tokenId @ppxCustom(module: "GqlTokenId")
+      owner {
+        address
+        id
+      }
+      price {
+        price @ppxCustom(module: "Price")
+        id
+      }
+      totalCollected @ppxCustom(module: "Price")
+      timeCollected @ppxCustom(module: "BigInt")
+      patronageNumeratorPriceScaled @ppxCustom(module: "BigInt")
+      timeAcquired @ppxCustom(module: "GqlMoment")
+      auctionStartPrice @ppxCustom(module: "BigInt")
+      launchTime @ppxCustom(module: "BigInt")
+    }
+    global(id: $globalId) {
+      id
+      totalCollectedOrDueAccurate @ppxCustom(module: "BigInt")
+      timeLastCollected @ppxCustom(module: "BigInt")
+      totalTokenCostScaledNumeratorAccurate @ppxCustom(module: "BigInt")
+      defaultAuctionLength @ppxCustom(module: "BigInt")
+      defaultAuctionEndPrice @ppxCustom(module: "BigInt")
+      defaultAuctionStartPrice @ppxCustom(module: "BigInt")
+    }
+  }
+`)
 
 let createContext: Client.queryContext => Js.Json.t = Obj.magic
 
@@ -66,241 +65,203 @@ let useInitialDataLoad = (~chain) => {
 let useAnimalList = (~chain) => {
   let allData = useInitialDataLoad(~chain)
   React.useMemo2(
-    () => \"||||"(allData->oMap(data => data.wildcards->Array.map(wc => wc.animal)), []),
+    () =>
+      Option.getWithDefault(
+        allData->Option.map(data => data.wildcards->Array.map(wc => wc.animal)),
+        [],
+      ),
     (allData, chain),
   )
 }
 
 module SubWildcardQuery = %graphql(`
-       query ($tokenId: String!) {
-         wildcard(id: $tokenId) {
-           id
-           animal: tokenId @ppxCustom(module: "GqlTokenId")
-           timeAcquired @ppxCustom(module: "GqlMoment")
-           totalCollected @ppxCustom(module: "Price")
-           patronageNumerator @ppxCustom(module: "BigInt")
-           patronageNumeratorPriceScaled @ppxCustom(module: "BigInt")
-           timeCollected @ppxCustom(module: "BigInt")
-           # timeCollected @ppxCustom(module: "GqlMoment")
-           price {
-             id
-             price @ppxCustom(module: "Price")
-           }
-           owner {
-             address @ppxCustom(module: "GqlAddress")
-             id
-           }
-           auctionStartPrice @ppxCustom(module: "BigInt")
-           launchTime @ppxCustom(module: "BigInt")
-         }
-       }
-     `)
+  query ($tokenId: String!) {
+    wildcard(id: $tokenId) {
+      id
+      animal: tokenId @ppxCustom(module: "GqlTokenId")
+      timeAcquired @ppxCustom(module: "GqlMoment")
+      totalCollected @ppxCustom(module: "Price")
+      patronageNumerator @ppxCustom(module: "BigInt")
+      patronageNumeratorPriceScaled @ppxCustom(module: "BigInt")
+      timeCollected @ppxCustom(module: "BigInt")
+      # timeCollected @ppxCustom(module: "GqlMoment")
+      price {
+        id
+        price @ppxCustom(module: "Price")
+      }
+      owner {
+        address @ppxCustom(module: "GqlAddress")
+        id
+      }
+      auctionStartPrice @ppxCustom(module: "BigInt")
+      launchTime @ppxCustom(module: "BigInt")
+    }
+  }
+`)
 
 module WildcardDataQuery = %graphql(`
-    query ($tokenId: String!) {
-      launchedWildcards_by_pk(id: $tokenId) {
-        wildcard {
-          id
-          name
-          description
-          organization {
-            name
-            id
-          }
-          image
-          real_wc_photos {
-            image
-            photographer
-          }
-          artistOfWildcard {
-            name
-            id
-          }
-        }
-      }
-    }
-  `)
-
-module MaticStateQuery = %graphql(`
-    query ($address: String!, $network: String!) {
-      maticState(address: $address, network: $network) {
-        balance
-        daiNonce
-        error
-        stewardNonce
-      }
-    }
-  `)
-module HomeAnimalsQuery = %graphql(`
-    {
-      homeAnimals {
-        id
-        next
-        prev
-        wildcardData {
-          description
-          id
-          name
-          organisationId
-        }
-      }
-    }
-  `)
-
-module ArtistQuery = %graphql(`
-    query ($artistIdentifier: String!) {
-      artist_by_pk(id: $artistIdentifier) {
-        eth_address
+  query ($tokenId: String!) {
+    launchedWildcards_by_pk(id: $tokenId) {
+      wildcard {
         id
         name
-        website
-        launchedWildcards: wildcardData (where: {id: { _is_null: false}}) {
-          key
+        description
+        organization {
+          name
           id
-          name
-          image
-          organization {
-            id
-            name
-            logo
-          }
         }
-        unlaunchedWildcards: wildcardData (where: {id: { _is_null: true}}) {
-          key
-          name
+        image
+        real_wc_photos {
           image
-          organization {
-            id
-            name
-            logo
-          }
+          photographer
+        }
+        artistOfWildcard {
+          name
+          id
         }
       }
     }
-  `)
-// // NOTE: If multiple transactions happen in the same block they may get missed, maybe one day that will be a problem for us ;)
-// module SubStateChangeEvents = [%graphql
-//   {|
-//        subscription {
-//          stateChanges(first: 1, orderBy: timestamp, orderDirection: desc) {
-//            id
-//            timestamp
-//            wildcardChanges {
-//              id
-//              tokenId
-//              timeAcquired
-//              totalCollected
-//              patronageNumeratorPriceScaled
-//              timeCollected
-//              price {
-//                id
-//                price
-//              }
-//              owner {
-//                address
-//                id
-//              }
-//            }
-//            patronChanges {
-//              id
-//              address
-//              lastUpdated
-//              # lastUpdated @ppxCustom(module: "GqlMoment")
-//              previouslyOwnedTokens {
-//                id
-//              }
-//              tokens {
-//                id
-//              }
-//              availableDeposit
-//              patronTokenCostScaledNumerator
-//              foreclosureTime
-//            }
-//          }
-//        }
-//      |}
-// ];
+  }
+`)
+
+module MaticStateQuery = %graphql(`
+  query ($address: String!, $network: String!) {
+    maticState(address: $address, network: $network) {
+      balance
+      daiNonce
+      error
+      stewardNonce
+    }
+  }
+`)
+module HomeAnimalsQuery = %graphql(`
+  {
+    homeAnimals {
+      id
+      next
+      prev
+      wildcardData {
+        description
+        id
+        name
+        organisationId
+      }
+    }
+  }
+`)
+
+module ArtistQuery = %graphql(`
+  query ($artistIdentifier: String!) {
+    artist_by_pk(id: $artistIdentifier) {
+      eth_address
+      id
+      name
+      website
+      launchedWildcards: wildcardData (where: {id: { _is_null: false}}) {
+        key
+        id
+        name
+        image
+        organization {
+          id
+          name
+          logo
+        }
+      }
+      unlaunchedWildcards: wildcardData (where: {id: { _is_null: true}}) {
+        key
+        name
+        image
+        organization {
+          id
+          name
+          logo
+        }
+      }
+    }
+  }
+`)
 
 module LoadPatron = %graphql(`
-       query ($patronId: String!) {
-         patron(id: $patronId) {
-           id
-           previouslyOwnedTokens {
-             id
-           }
-           tokens {
-             id
-           }
-           availableDeposit  @ppxCustom(module: "Price")
-           patronTokenCostScaledNumerator  @ppxCustom(module: "BigInt")
-           foreclosureTime  @ppxCustom(module: "BigInt")
-           address @ppxCustom(module: "GqlAddress")
-           lastUpdated @ppxCustom(module: "BigInt")
-           totalLoyaltyTokens @ppxCustom(module: "BigInt")
-           totalLoyaltyTokensIncludingUnRedeemed @ppxCustom(module: "BigInt")
-         }
-       }
-     `)
+  query ($patronId: String!) {
+    patron(id: $patronId) {
+      id
+      previouslyOwnedTokens {
+        id
+      }
+      tokens {
+        id
+      }
+      availableDeposit  @ppxCustom(module: "Price")
+      patronTokenCostScaledNumerator  @ppxCustom(module: "BigInt")
+      foreclosureTime  @ppxCustom(module: "BigInt")
+      address @ppxCustom(module: "GqlAddress")
+      lastUpdated @ppxCustom(module: "BigInt")
+      totalLoyaltyTokens @ppxCustom(module: "BigInt")
+      totalLoyaltyTokensIncludingUnRedeemed @ppxCustom(module: "BigInt")
+    }
+  }
+`)
 
 module LoadTokenDataArray = %graphql(`
-        query ($wildcardIdArray: [String!]!) {
-          wildcards (where: {id_in: $wildcardIdArray}) {
-            # totalCollected
-            # patronageNumeratorPriceScaled
-            # timeCollected
-            id
-            totalCollected @ppxCustom(module: "Price")
-            patronageNumeratorPriceScaled @ppxCustom(module: "BigInt")
-            timeCollected @ppxCustom(module: "BigInt")
-          }
-        }
-     `)
+  query ($wildcardIdArray: [String!]!) {
+    wildcards (where: {id_in: $wildcardIdArray}) {
+      # totalCollected
+      # patronageNumeratorPriceScaled
+      # timeCollected
+      id
+      totalCollected @ppxCustom(module: "Price")
+      patronageNumeratorPriceScaled @ppxCustom(module: "BigInt")
+      timeCollected @ppxCustom(module: "BigInt")
+    }
+  }
+`)
 
 module LoadOrganisationData = %graphql(`
-      query ($orgId: String!) {
-        organisations_by_pk(id: $orgId) {
-          description
-          name
-          website
-          wildcard (where: {id: {_is_null: false}}) {
-            id @ppxCustom(module: "GqlTokenIdStr")
-          }
-          unlaunched: wildcard(where: {id: {_is_null: true}, real_wc_photos: {image: {_is_null: false}}}) {
-            key
-            real_wc_photos {
-              image
-              photographer
-            }
-            name
-            commonName
-            description
-          }
-          logo
-          logo_badge
-          youtube_vid
-        }
+query ($orgId: String!) {
+  organisations_by_pk(id: $orgId) {
+    description
+    name
+    website
+    wildcard (where: {id: {_is_null: false}}) {
+      id @ppxCustom(module: "GqlTokenIdStr")
+    }
+    unlaunched: wildcard(where: {id: {_is_null: true}, real_wc_photos: {image: {_is_null: false}}}) {
+      key
+      real_wc_photos {
+        image
+        photographer
       }
-     `)
+      name
+      commonName
+      description
+    }
+    logo
+    logo_badge
+    youtube_vid
+  }
+}
+`)
 
 module LoadTopContributors = %graphql(`
-      query ($numberOfLeaders: Int!) {
-        patrons(first: $numberOfLeaders, orderBy: patronTokenCostScaledNumerator, orderDirection: desc, where: {id_not: "NO_OWNER"}) {
-          id
-          patronTokenCostScaledNumerator  @ppxCustom(module: "BigInt")
-        }
-      }
-  `)
+  query ($numberOfLeaders: Int!) {
+    patrons(first: $numberOfLeaders, orderBy: patronTokenCostScaledNumerator, orderDirection: desc, where: {id_not: "NO_OWNER"}) {
+      id
+      patronTokenCostScaledNumerator  @ppxCustom(module: "BigInt")
+    }
+  }
+`)
 
 module SubTotalRaisedOrDueQuery = %graphql(`
-       query {
-         global(id: "1") {
-           id
-           totalCollectedOrDueAccurate @ppxCustom(module: "BigInt")
-           timeLastCollected @ppxCustom(module: "BigInt")
-           totalTokenCostScaledNumeratorAccurate @ppxCustom(module: "BigInt")
-         }
-       }
-     `)
+  query {
+    global(id: "1") {
+      id
+      totalCollectedOrDueAccurate @ppxCustom(module: "BigInt")
+      timeLastCollected @ppxCustom(module: "BigInt")
+      totalTokenCostScaledNumeratorAccurate @ppxCustom(module: "BigInt")
+    }
+  }
+`)
 
 let getQueryPrefix = (chain: Client.context) =>
   switch chain {
@@ -407,7 +368,10 @@ let useDetailsPageNextPrevious = (currentToken: TokenId.t) => {
     })
   , [homepageAnimalData])
 
-  \"||||"(forwardNextLookup->Js.Dict.get(currentToken->TokenId.toString), defaultValue)
+  Option.getWithDefault(
+    forwardNextLookup->Js.Dict.get(currentToken->TokenId.toString),
+    defaultValue,
+  )
 }
 
 @decco.decode
@@ -531,9 +495,9 @@ let useForeclosureTime = (~chain, patron) =>
   useForeclosureTimeBn(~chain, patron)->Option.map(Helper.bnToMoment)
 
 let useTimeAcquiredWithDefault = (~chain, animal, default: MomentRe.Moment.t) =>
-  \"||||"(useTimeAcquired(~chain, animal), default)
+  Option.getWithDefault(useTimeAcquired(~chain, animal), default)
 let useDaysHeld = (~chain, tokenId) =>
-  useTimeAcquired(~chain, tokenId)->oMap(moment => (
+  useTimeAcquired(~chain, tokenId)->Option.map(moment => (
     MomentRe.diff(MomentRe.momentNow(), moment, #days),
     moment,
   ))
@@ -561,7 +525,7 @@ let useCurrentTimestampBn = () => useCurrentTime()->BN.new_
 let useAmountRaised = () => {
   let currentTimestamp = useCurrentTime()
 
-  useTotalCollectedOrDue()->oMap(({
+  useTotalCollectedOrDue()->Option.map(({
     totalCollectedOrDueAccurate,
     timeLastCollected,
     totalTokenCostScaledNumeratorAccurate,
@@ -606,7 +570,7 @@ let usePledgeRate = (~chain, tokenId) => {
   React.useMemo1(() =>
     switch optPatronageNumerator {
     | Some(patronageNumerator) =>
-      let result = \"|/|"(patronageNumerator, BN.new_("12000000000"))
+      let result = BN.div(patronageNumerator, BN.new_("12000000000"))
       result->BN.toNumberFloat /. 1000.
     | None => 0.
     }
@@ -691,7 +655,7 @@ let useTotalRaisedAnimalGroup: array<TokenId.t> => (option<Eth.t>, option<Eth.t>
     | Some(detailsArray) =>
       Some(
         detailsArray.wildcards->Array.reduce(BN.new_("0"), (acc, animalDetails) =>
-          \"|+|"(
+          BN.add(
             calculateTotalRaised(
               currentTimestamp,
               (
@@ -710,7 +674,7 @@ let useTotalRaisedAnimalGroup: array<TokenId.t> => (option<Eth.t>, option<Eth.t>
     | Some(detailsArray) =>
       Some(
         detailsArray.wildcards->Array.reduce(BN.new_("0"), (acc, animalDetails) =>
-          \"|+|"(
+          BN.add(
             calculateTotalRaised(
               currentTimestamp,
               (
@@ -751,8 +715,8 @@ let useUnredeemedLoyaltyTokenDueForUser: (
   switch useTimeSinceTokenWasLastSettled(~chain, animal) {
   | Some(timeSinceTokenWasLastSettled) =>
     let totalLoyaltyTokensPerSecondPerAnimal = BN.new_("11574074074074")
-    let totalLoyaltyTokensForAllAnimals = \"|*|"(
-      \"|*|"(timeSinceTokenWasLastSettled, totalLoyaltyTokensPerSecondPerAnimal),
+    let totalLoyaltyTokensForAllAnimals = BN.mul(
+      BN.mul(timeSinceTokenWasLastSettled, totalLoyaltyTokensPerSecondPerAnimal),
       BN.newInt_(numberOfTokens),
     )
     Some(totalLoyaltyTokensForAllAnimals)
@@ -771,12 +735,12 @@ let useTotalLoyaltyToken: (~chain: Client.context, Web3.ethAddress) => option<(E
       lastCollected,
       numberOfAnimalsOwned,
     }) =>
-    let timeElapsed = \"|-|"(BN.new_(currentTimestamp), lastCollected)
+    let timeElapsed = BN.sub(BN.new_(currentTimestamp), lastCollected)
     // Reference: https://github.com/wild-cards/contracts-private/blob/v2testing/migrations/7_receipt_tokens.js#L6
     let totalLoyaltyTokensPerSecondPerAnimal = BN.new_("11574074074074")
-    let totalLoyaltyTokensFor1Animal = \"|*|"(totalLoyaltyTokensPerSecondPerAnimal, timeElapsed)
-    let totalLoyaltyTokensForAllAnimals = \"|*|"(numberOfAnimalsOwned, totalLoyaltyTokensFor1Animal)
-    let totalLoyaltyTokensForUser = \"|+|"(
+    let totalLoyaltyTokensFor1Animal = BN.mul(totalLoyaltyTokensPerSecondPerAnimal, timeElapsed)
+    let totalLoyaltyTokensForAllAnimals = BN.mul(numberOfAnimalsOwned, totalLoyaltyTokensFor1Animal)
+    let totalLoyaltyTokensForUser = BN.add(
       currentLoyaltyTokensIncludingUnredeemed,
       totalLoyaltyTokensForAllAnimals,
     )

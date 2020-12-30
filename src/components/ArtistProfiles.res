@@ -17,27 +17,31 @@ module ArtistDetails = {
   ) => {
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute()
     let artistEthAddress =
-      \"||||"(optArtistEthAddress, CONSTANTS.nullEthAddress)->Js.String.toLowerCase
+      Option.getWithDefault(optArtistEthAddress, CONSTANTS.nullEthAddress)->Js.String.toLowerCase
     let userInfoContext = UserProvider.useUserInfoContext()
     let reloadUser = forceReload => userInfoContext.update(artistEthAddress, forceReload)
     reloadUser(false)
     let optThreeBoxData = UserProvider.use3BoxUserData(artistEthAddress)
-    let optProfile = \">>="(optThreeBoxData, a => a.profile)
+    let optProfile = Option.flatMap(optThreeBoxData, a => a.profile)
 
     let image: string =
-      \">>="(
-        \"<$>"(\">>="(\">>="(optProfile, a => a.image), img => img->Array.get(0)), a =>
-          a.contentUrl
+      Option.flatMap(
+        Option.map(
+          Option.flatMap(Option.flatMap(optProfile, a => a.image), img => img->Array.get(0)),
+          a => a.contentUrl,
         ),
         content => Js.Dict.get(content, "/"),
       )->Option.mapWithDefault(Blockie.makeBlockie(. artistEthAddress), hash =>
         "https://ipfs.infura.io/ipfs/" ++ hash
       )
-    let optName = \">>="(optProfile, a => a.name)
-    let optDescription = \">>="(optProfile, a => a.description)
+    let optName = Option.flatMap(optProfile, a => a.name)
+    let optDescription = Option.flatMap(optProfile, a => a.description)
     let optTwitter = {
       open UserProvider
-      \"<$>"(\">>="(\">>="(optThreeBoxData, a => a.verifications), a => a.twitter), a => a.username)
+      Option.map(
+        Option.flatMap(Option.flatMap(optThreeBoxData, a => a.verifications), a => a.twitter),
+        a => a.username,
+      )
     }
     let etherScanUrl = RootProvider.useEtherscanUrl()
 
@@ -127,7 +131,7 @@ module ArtistDetails = {
           | NoExtraState => <>
               <h2>
                 {optName
-                ->Option.getWithDefault(\"||||"(optArtistName, "Loading artist name"))
+                ->Option.getWithDefault(Option.getWithDefault(optArtistName, "Loading artist name"))
                 ->React.string}
               </h2>
               {optTwitter->reactMap(twitterHandle =>
@@ -149,7 +153,7 @@ module ArtistDetails = {
                   target="_blank"
                   rel="noopener noreferrer"
                   href=website>
-                  {(\"||||"(optArtistName, "Artist") ++ "'s website")->React.string}
+                  {(Option.getWithDefault(optArtistName, "Artist") ++ "'s website")->React.string}
                 </a>
               )}
               <br />

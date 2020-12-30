@@ -150,10 +150,10 @@ function UserProfile$UserDetails(Props) {
           return token.id;
         }));
   var uniquePreviouslyOwnedTokens = isForeclosed ? allPreviouslyOwnedTokens : Belt_SetString.toArray(Belt_SetString.removeMany(Belt_SetString.fromArray(allPreviouslyOwnedTokens), currentlyOwnedTokens));
-  var optProfile = Globals.$great$great$eq(optThreeBoxData, (function (a) {
+  var optProfile = Belt_Option.flatMap(optThreeBoxData, (function (a) {
           return a.profile;
         }));
-  var image = Belt_Option.mapWithDefault(Globals.$great$great$eq(Globals.$less$$great(Globals.$great$great$eq(Globals.$great$great$eq(optProfile, (function (a) {
+  var image = Belt_Option.mapWithDefault(Belt_Option.flatMap(Belt_Option.map(Belt_Option.flatMap(Belt_Option.flatMap(optProfile, (function (a) {
                           return a.image;
                         })), (function (img) {
                       return Belt_Array.get(img, 0);
@@ -164,13 +164,13 @@ function UserProfile$UserDetails(Props) {
             })), Blockie.makeBlockie(userAddress), (function (hash) {
           return "https://ipfs.infura.io/ipfs/" + hash;
         }));
-  var optName = Globals.$great$great$eq(optProfile, (function (a) {
+  var optName = Belt_Option.flatMap(optProfile, (function (a) {
           return a.name;
         }));
-  var optDescription = Globals.$great$great$eq(optProfile, (function (a) {
+  var optDescription = Belt_Option.flatMap(optProfile, (function (a) {
           return a.description;
         }));
-  var optTwitter = Globals.$less$$great(Globals.$great$great$eq(Globals.$great$great$eq(optThreeBoxData, (function (a) {
+  var optTwitter = Belt_Option.map(Belt_Option.flatMap(Belt_Option.flatMap(optThreeBoxData, (function (a) {
                   return a.verifications;
                 })), (function (a) {
               return a.twitter;
@@ -181,7 +181,7 @@ function UserProfile$UserDetails(Props) {
   var optUsdPrice = UsdPriceProvider.useUsdPrice(undefined);
   var monthlyCotributionWei = patronQueryResult.patronTokenCostScaledNumerator.mul(new BnJs("2592000")).div(new BnJs("31536000000000000000"));
   var monthlyContributionEth = Web3Utils.fromWeiBNToEthPrecision(monthlyCotributionWei, 4);
-  var optMonthlyContributionUsd = Globals.$less$$great(optUsdPrice, (function (currentUsdEthPrice) {
+  var optMonthlyContributionUsd = Belt_Option.map(optUsdPrice, (function (currentUsdEthPrice) {
           return Globals.toFixedWithPrecisionNoTrailingZeros(Belt_Option.mapWithDefault(Belt_Float.fromString(monthlyContributionEth), 0, (function (a) {
                             return a;
                           })) * currentUsdEthPrice, 2);

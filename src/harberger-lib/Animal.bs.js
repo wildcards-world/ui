@@ -4,7 +4,6 @@ import BnJs from "bn.js";
 import * as React from "react";
 import * as Helper from "./Helper.bs.js";
 import * as Moment from "moment";
-import * as Globals from "./Globals.bs.js";
 import * as QlHooks from "./QlHooks.bs.js";
 import * as TokenId from "./TokenId.bs.js";
 import * as MomentRe from "bs-moment/src/MomentRe.bs.js";
@@ -16,7 +15,7 @@ import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 var getAnimal = TokenId.make;
 
 function useAvatar(animal) {
-  return Globals.$pipe$pipe$pipe$pipe(Belt_Option.map(QlHooks.useWildcardAvatar(animal), (function (a) {
+  return Belt_Option.getWithDefault(Belt_Option.map(QlHooks.useWildcardAvatar(animal), (function (a) {
                     return CONSTANTS.cdnBase + a;
                   })), "./img/animals/comingsoon.png");
 }
@@ -32,19 +31,19 @@ function useAlternateImage(animal) {
 }
 
 function useGetOrgImage(org) {
-  return Globals.$pipe$pipe$pipe$pipe(Belt_Option.map(QlHooks.useLoadOrganisationLogo(org), (function (path) {
+  return Belt_Option.getWithDefault(Belt_Option.map(QlHooks.useLoadOrganisationLogo(org), (function (path) {
                     return CONSTANTS.cdnBase + path;
                   })), "https://dd2wadt5nc0o7.cloudfront.net/conservations/OGBage.png");
 }
 
 function useGetOrgBadge(org) {
-  return Globals.$pipe$pipe$pipe$pipe(Belt_Option.map(QlHooks.useLoadOrganisationLogo(org), (function (path) {
+  return Belt_Option.getWithDefault(Belt_Option.map(QlHooks.useLoadOrganisationLogo(org), (function (path) {
                     return CONSTANTS.cdnBase + path;
                   })), "https://dd2wadt5nc0o7.cloudfront.net/conservations/OGBage.png");
 }
 
 function useGetOrgBadgeImage(tokenId) {
-  return useGetOrgBadge(Globals.$pipe$pipe$pipe$pipe(QlHooks.useWildcardOrgId(tokenId), ""));
+  return useGetOrgBadge(Belt_Option.getWithDefault(QlHooks.useWildcardOrgId(tokenId), ""));
 }
 
 var nextLaunchDate = Moment.utc("2020-07-30T17:00:00");
@@ -142,11 +141,11 @@ function useAuctionPriceWei(chain, animal, launchTime) {
   } else {
     switch (tokenStatus.TAG | 0) {
       case /* Launched */1 :
-          tmp = Globals.$pipe$less$pipe(new BnJs(currentTime), Globals.$pipe$plus$pipe(launchTime, auctionLength$1)) ? Globals.$pipe$neg$pipe(auctionStartPrice$1, Globals.$pipe$slash$pipe(Globals.$pipe$star$pipe(Globals.$pipe$neg$pipe(auctionStartPrice$1, auctionEndPrice$1), Globals.$pipe$neg$pipe(new BnJs(currentTime), launchTime)), auctionLength$1)) : auctionEndPrice$1;
+          tmp = new BnJs(currentTime).lt(launchTime.add(auctionLength$1)) ? auctionStartPrice$1.sub(auctionStartPrice$1.sub(auctionEndPrice$1).mul(new BnJs(currentTime).sub(launchTime)).div(auctionLength$1)) : auctionEndPrice$1;
           break;
       case /* Foreclosed */3 :
           var auctionStartTime = new BnJs(tokenStatus._0.unix());
-          tmp = Globals.$pipe$less$pipe(new BnJs(currentTime), Globals.$pipe$plus$pipe(auctionStartTime, auctionLength$1)) ? Globals.$pipe$neg$pipe(auctionStartPrice$1, Globals.$pipe$slash$pipe(Globals.$pipe$star$pipe(Globals.$pipe$neg$pipe(auctionStartPrice$1, auctionEndPrice$1), Globals.$pipe$neg$pipe(new BnJs(currentTime), auctionStartTime)), auctionLength$1)) : auctionEndPrice$1;
+          tmp = new BnJs(currentTime).lt(auctionStartTime.add(auctionLength$1)) ? auctionStartPrice$1.sub(auctionStartPrice$1.sub(auctionEndPrice$1).mul(new BnJs(currentTime).sub(auctionStartTime)).div(auctionLength$1)) : auctionEndPrice$1;
           break;
       default:
         tmp = auctionEndPrice$1;
@@ -156,7 +155,7 @@ function useAuctionPriceWei(chain, animal, launchTime) {
 }
 
 function getChainIdFromAnimalId(animalId) {
-  var a = Globals.$pipe$pipe$pipe$pipe(TokenId.toInt(animalId), 0);
+  var a = Belt_Option.getWithDefault(TokenId.toInt(animalId), 0);
   if (a < 26 || a === 42) {
     return /* MainnetQuery */2;
   } else {
