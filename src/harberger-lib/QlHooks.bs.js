@@ -993,6 +993,113 @@ var LoadPatron = {
   useLazyWithVariables: LoadPatron_useLazyWithVariables
 };
 
+var Raw$5 = {};
+
+var query$5 = (require("@apollo/client").gql`
+  query   {
+    global(id: "1")  {
+      __typename
+      id
+      totalCollectedOrDueAccurate
+      timeLastCollected
+      totalTokenCostScaledNumeratorAccurate
+    }
+  }
+`);
+
+function parse$5(value) {
+  var value$1 = value.global;
+  return {
+          global: !(value$1 == null) ? ({
+                __typename: value$1.__typename,
+                id: value$1.id,
+                totalCollectedOrDueAccurate: GqlConverters.$$BigInt.parse(value$1.totalCollectedOrDueAccurate),
+                timeLastCollected: GqlConverters.$$BigInt.parse(value$1.timeLastCollected),
+                totalTokenCostScaledNumeratorAccurate: GqlConverters.$$BigInt.parse(value$1.totalTokenCostScaledNumeratorAccurate)
+              }) : undefined
+        };
+}
+
+function serialize$5(value) {
+  var value$1 = value.global;
+  var $$global;
+  if (value$1 !== undefined) {
+    var value$2 = value$1.totalTokenCostScaledNumeratorAccurate;
+    var value$3 = GqlConverters.$$BigInt.serialize(value$2);
+    var value$4 = value$1.timeLastCollected;
+    var value$5 = GqlConverters.$$BigInt.serialize(value$4);
+    var value$6 = value$1.totalCollectedOrDueAccurate;
+    var value$7 = GqlConverters.$$BigInt.serialize(value$6);
+    var value$8 = value$1.id;
+    var value$9 = value$1.__typename;
+    $$global = {
+      __typename: value$9,
+      id: value$8,
+      totalCollectedOrDueAccurate: value$7,
+      timeLastCollected: value$5,
+      totalTokenCostScaledNumeratorAccurate: value$3
+    };
+  } else {
+    $$global = null;
+  }
+  return {
+          global: $$global
+        };
+}
+
+function serializeVariables$5(param) {
+  
+}
+
+function makeVariables$5(param) {
+  
+}
+
+function makeDefaultVariables(param) {
+  
+}
+
+var SubTotalRaisedOrDueQuery_inner = {
+  Raw: Raw$5,
+  query: query$5,
+  parse: parse$5,
+  serialize: serialize$5,
+  serializeVariables: serializeVariables$5,
+  makeVariables: makeVariables$5,
+  makeDefaultVariables: makeDefaultVariables
+};
+
+var include$5 = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query$5,
+      Raw: Raw$5,
+      parse: parse$5,
+      serialize: serialize$5,
+      serializeVariables: serializeVariables$5
+    });
+
+var use$5 = include$5.use;
+
+var SubTotalRaisedOrDueQuery_refetchQueryDescription = include$5.refetchQueryDescription;
+
+var SubTotalRaisedOrDueQuery_useLazy = include$5.useLazy;
+
+var SubTotalRaisedOrDueQuery_useLazyWithVariables = include$5.useLazyWithVariables;
+
+var SubTotalRaisedOrDueQuery = {
+  SubTotalRaisedOrDueQuery_inner: SubTotalRaisedOrDueQuery_inner,
+  Raw: Raw$5,
+  query: query$5,
+  parse: parse$5,
+  serialize: serialize$5,
+  serializeVariables: serializeVariables$5,
+  makeVariables: makeVariables$5,
+  makeDefaultVariables: makeDefaultVariables,
+  refetchQueryDescription: SubTotalRaisedOrDueQuery_refetchQueryDescription,
+  use: use$5,
+  useLazy: SubTotalRaisedOrDueQuery_useLazy,
+  useLazyWithVariables: SubTotalRaisedOrDueQuery_useLazyWithVariables
+};
+
 function getQueryPrefix(chain) {
   if (chain !== 1) {
     return "";
@@ -1251,7 +1358,6 @@ function useTimeAcquired(chain, animal) {
 }
 
 function useQueryPatron(chain, patron) {
-  console.log(chain, patron);
   var loadPatronQuery = Curry.app(use$4, [
         undefined,
         {
@@ -1272,21 +1378,17 @@ function useQueryPatron(chain, patron) {
           patronId: getQueryPrefix(chain) + patron
         }
       ]);
-  if (loadPatronQuery.loading || loadPatronQuery.error !== undefined) {
-    return ;
-  } else {
-    return loadPatronQuery.data;
+  var match = loadPatronQuery.data;
+  if (match !== undefined) {
+    return match.patron;
   }
+  
 }
 
 function useForeclosureTimeBn(chain, patron) {
   var match = useQueryPatron(chain, patron);
-  if (match === undefined) {
-    return ;
-  }
-  var match$1 = match.patron;
-  if (match$1 !== undefined) {
-    return Caml_option.some(match$1.foreclosureTime);
+  if (match !== undefined) {
+    return Caml_option.some(match.foreclosureTime);
   }
   
 }
@@ -1309,7 +1411,28 @@ function useDaysHeld(chain, tokenId) {
 }
 
 function useTotalCollectedOrDue(param) {
-  
+  var subTotalRaisedQuery = Curry.app(use$5, [
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+      ]);
+  var match = subTotalRaisedQuery.data;
+  if (subTotalRaisedQuery.error !== undefined || match === undefined) {
+    return ;
+  } else {
+    return match.global;
+  }
 }
 
 function getCurrentTimestamp(param) {
@@ -1341,10 +1464,10 @@ function useCurrentTimestampBn(param) {
 
 function useAmountRaised(param) {
   var currentTimestamp = useCurrentTime(undefined);
-  return Globals.oMap(undefined, (function (param) {
-                var timeElapsed = new BnJs(currentTimestamp).sub(param[1]);
-                var amountRaisedSinceLastCollection = param[2].mul(timeElapsed).div(new BnJs("31536000000000000000"));
-                return param[0].add(amountRaisedSinceLastCollection);
+  return Globals.oMap(useTotalCollectedOrDue(undefined), (function (param) {
+                var timeElapsed = new BnJs(currentTimestamp).sub(param.timeLastCollected);
+                var amountRaisedSinceLastCollection = param.totalTokenCostScaledNumeratorAccurate.mul(timeElapsed).div(new BnJs("31536000000000000000"));
+                return param.totalCollectedOrDueAccurate.add(amountRaisedSinceLastCollection);
               }));
 }
 
@@ -1486,20 +1609,15 @@ function useTotalLoyaltyToken(chain, patron) {
         ];
 }
 
-function useRemainingDeposit(chain, patron) {
-  console.log(chain, patron);
-  
-}
-
 function useRemainingDepositEth(chain, patron) {
   var currentTimestamp = useCurrentTime(undefined);
-  var match = useRemainingDeposit(chain, patron);
+  var match = useQueryPatron(chain, patron);
   if (match === undefined) {
     return ;
   }
-  var timeElapsed = new BnJs(currentTimestamp).sub(match[1]);
-  var amountRaisedSinceLastCollection = match[2].mul(timeElapsed).div(new BnJs("31536000000000000000"));
-  return Caml_option.some(match[0].sub(amountRaisedSinceLastCollection));
+  var timeElapsed = new BnJs(currentTimestamp).sub(match.lastUpdated);
+  var amountRaisedSinceLastCollection = match.patronTokenCostScaledNumerator.mul(timeElapsed).div(new BnJs("31536000000000000000"));
+  return Caml_option.some(match.availableDeposit.sub(amountRaisedSinceLastCollection));
 }
 
 function usePrice(chain, tokenId) {
@@ -1727,6 +1845,7 @@ export {
   MaticStateQuery ,
   ArtistQuery ,
   LoadPatron ,
+  SubTotalRaisedOrDueQuery ,
   getQueryPrefix ,
   subscriptionResultOptionMap ,
   subscriptionResultToOption ,
@@ -1782,7 +1901,6 @@ export {
   useTimeSinceTokenWasLastSettled ,
   useUnredeemedLoyaltyTokenDueForUser ,
   useTotalLoyaltyToken ,
-  useRemainingDeposit ,
   useRemainingDepositEth ,
   usePrice ,
   useIsForeclosed ,

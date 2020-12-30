@@ -143,16 +143,12 @@ function UserProfile$UserDetails(Props) {
   var userAddress = Props.userAddress;
   var isForeclosed = QlHooks.useIsForeclosed(/* MainnetQuery */2, userAddress);
   var isAddressCurrentUser = RootProvider.useIsAddressCurrentUser(userAddress);
-  var currentlyOwnedTokens = isForeclosed ? [] : Globals.$pipe$pipe$pipe$pipe(Globals.oMap(patronQueryResult.patron, (function (patron) {
-                return Belt_Array.map(patron.tokens, (function (token) {
-                              return token.id;
-                            }));
-              })), []);
-  var allPreviouslyOwnedTokens = Globals.$pipe$pipe$pipe$pipe(Globals.oMap(patronQueryResult.patron, (function (patron) {
-              return Belt_Array.map(patron.previouslyOwnedTokens, (function (token) {
-                            return token.id;
-                          }));
-            })), []);
+  var currentlyOwnedTokens = isForeclosed ? [] : Belt_Array.map(patronQueryResult.tokens, (function (token) {
+            return token.id;
+          }));
+  var allPreviouslyOwnedTokens = Belt_Array.map(patronQueryResult.previouslyOwnedTokens, (function (token) {
+          return token.id;
+        }));
   var uniquePreviouslyOwnedTokens = isForeclosed ? allPreviouslyOwnedTokens : Belt_SetString.toArray(Belt_SetString.removeMany(Belt_SetString.fromArray(allPreviouslyOwnedTokens), currentlyOwnedTokens));
   var optProfile = Globals.$great$great$eq(optThreeBoxData, (function (a) {
           return a.profile;
@@ -183,19 +179,12 @@ function UserProfile$UserDetails(Props) {
         }));
   var etherScanUrl = RootProvider.useEtherscanUrl(undefined);
   var optUsdPrice = UsdPriceProvider.useUsdPrice(undefined);
-  var optMonthlyCotribution = Globals.$less$$great(Globals.$less$$great(patronQueryResult.patron, (function (patron) {
-              return patron.patronTokenCostScaledNumerator.mul(new BnJs("2592000")).div(new BnJs("31536000000000000000"));
-            })), (function (monthlyContributionWei) {
-          var monthlyContributionEth = Web3Utils.fromWeiBNToEthPrecision(monthlyContributionWei, 4);
-          var optMonthlyContributionUsd = Globals.$less$$great(optUsdPrice, (function (currentUsdEthPrice) {
-                  return Globals.toFixedWithPrecisionNoTrailingZeros(Belt_Option.mapWithDefault(Belt_Float.fromString(monthlyContributionEth), 0, (function (a) {
-                                    return a;
-                                  })) * currentUsdEthPrice, 2);
-                }));
-          return [
-                  monthlyContributionEth,
-                  optMonthlyContributionUsd
-                ];
+  var monthlyCotributionWei = patronQueryResult.patronTokenCostScaledNumerator.mul(new BnJs("2592000")).div(new BnJs("31536000000000000000"));
+  var monthlyContributionEth = Web3Utils.fromWeiBNToEthPrecision(monthlyCotributionWei, 4);
+  var optMonthlyContributionUsd = Globals.$less$$great(optUsdPrice, (function (currentUsdEthPrice) {
+          return Globals.toFixedWithPrecisionNoTrailingZeros(Belt_Option.mapWithDefault(Belt_Float.fromString(monthlyContributionEth), 0, (function (a) {
+                            return a;
+                          })) * currentUsdEthPrice, 2);
         }));
   var match = ContractActions.useUserLoyaltyTokenBalance(userAddress);
   var totalLoyaltyTokensAvailableAndClaimedOpt = QlHooks.useTotalLoyaltyToken(/* MainnetQuery */2, userAddress);
@@ -346,13 +335,11 @@ function UserProfile$UserDetails(Props) {
                         1,
                         0.3333
                       ]
-                    }, React.createElement("h2", undefined, Globals.restr("Monthly Contribution")), React.createElement("p", undefined, Globals.reactMapWithDefault(optMonthlyCotribution, Globals.restr("0 ETH"), (function (param) {
-                                return React.createElement(React.Fragment, {
-                                            children: null
-                                          }, Globals.restr("" + param[0] + " ETH\xa0"), Globals.reactMap(param[1], (function (usdValue) {
-                                                  return React.createElement("small", undefined, Globals.restr("(" + usdValue + " USD)"));
-                                                })));
-                              })))), React.createElement(RimbleUi.Box, {
+                    }, React.createElement("h2", undefined, Globals.restr("Monthly Contribution")), React.createElement("p", undefined, React.createElement(React.Fragment, {
+                              children: null
+                            }, Globals.restr("" + monthlyContributionEth + " ETH\xa0"), Globals.reactMap(optMonthlyContributionUsd, (function (usdValue) {
+                                    return React.createElement("small", undefined, Globals.restr("(" + usdValue + " USD)"));
+                                  }))))), React.createElement(RimbleUi.Box, {
                       p: 1,
                       children: null,
                       width: [

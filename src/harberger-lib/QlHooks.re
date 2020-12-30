@@ -336,18 +336,18 @@ module LoadPatron = [%graphql
 //   |}
 // ];
 
-// module SubTotalRaisedOrDueQuery = [%graphql
-//   {|
-//        query {
-//          global(id: "1") {
-//            id
-//            totalCollectedOrDueAccurate @ppxCustom(module: "BigInt")
-//            timeLastCollected @ppxCustom(module: "BigInt")
-//            totalTokenCostScaledNumeratorAccurate @ppxCustom(module: "BigInt")
-//          }
-//        }
-//      |}
-// ];
+module SubTotalRaisedOrDueQuery = [%graphql
+  {|
+       query {
+         global(id: "1") {
+           id
+           totalCollectedOrDueAccurate @ppxCustom(module: "BigInt")
+           timeLastCollected @ppxCustom(module: "BigInt")
+           totalTokenCostScaledNumeratorAccurate @ppxCustom(module: "BigInt")
+         }
+       }
+     |}
+];
 type errorPlaceholder;
 type graphqlDataLoad('a) =
   | Loading
@@ -670,23 +670,22 @@ let useTimeAcquired:
   };
 
 let useQueryPatron = (~chain, patron) => {
-  Js.log2(chain, patron);
   let loadPatronQuery =
     LoadPatron.use(
       ~context={context: chain}->createContext,
       LoadPatron.makeVariables(~patronId=chain->getQueryPrefix ++ patron, ()),
     );
   switch (loadPatronQuery) {
-  | {loading: true, _} => None
-  | {error: Some(_error), _} => None
-  | {data, _} => data
+  | {data: Some({patron}), _} => patron
+  | {data: None, _} => None
+  // | {error: Some(_error), _} => None
+  // | {loading: true, _} => None
   };
 };
 
 let useForeclosureTimeBn = (~chain, patron) => {
   switch (useQueryPatron(~chain, patron)) {
-  | Some({patron: Some({foreclosureTime, _})}) => Some(foreclosureTime)
-  | Some({patron: None})
+  | Some({foreclosureTime, _}) => Some(foreclosureTime)
   | None => None
   };
 };
@@ -702,23 +701,14 @@ let useDaysHeld = (~chain, tokenId) =>
   ->oMap(moment =>
       (MomentRe.diff(MomentRe.momentNow(), moment, `days), moment)
     );
-let useTotalCollectedOrDue: unit => option((BN.t, BN.t, BN.t)) =
-  () => {
-    None;
-        /* let (simple, _) =
-             ApolloHooks.useQuery(SubTotalRaisedOrDueQuery.definition);
-           let getTotalCollected = response =>
-             response##global
-             ->oMap(global =>
-                 (
-                   global##totalCollectedOrDueAccurate,
-                   global##timeLastCollected,
-                   global##totalTokenCostScaledNumeratorAccurate,
-                 )
-               );
-
-           simple->queryResultOptionFlatMap(getTotalCollected); */
+let useTotalCollectedOrDue = () => {
+  let subTotalRaisedQuery = SubTotalRaisedOrDueQuery.use();
+  switch (subTotalRaisedQuery) {
+  | {error: Some(_error), _} => None
+  | {data: None, _} => None
+  | {data: Some({global}), _} => global
   };
+};
 
 let getCurrentTimestamp = () =>
   string_of_int(Js.Math.floor(Js.Date.now() /. 1000.));
@@ -749,13 +739,14 @@ let useAmountRaised = () => {
   useTotalCollectedOrDue()
   ->oMap(
       (
-        (
-          amountCollectedOrDue,
-          timeCalculated,
+        {
+          totalCollectedOrDueAccurate,
+          timeLastCollected,
           totalTokenCostScaledNumeratorAccurate,
-        ),
+          _,
+        },
       ) => {
-      let timeElapsed = BN.new_(currentTimestamp)->BN.sub(timeCalculated);
+      let timeElapsed = BN.new_(currentTimestamp)->BN.sub(timeLastCollected);
 
       let amountRaisedSinceLastCollection =
         totalTokenCostScaledNumeratorAccurate
@@ -764,7 +755,7 @@ let useAmountRaised = () => {
             // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
             BN.new_("31536000000000000000"),
           );
-      amountCollectedOrDue->BN.add(amountRaisedSinceLastCollection);
+      totalCollectedOrDueAccurate->BN.add(amountRaisedSinceLastCollection);
     });
 };
 
@@ -1010,33 +1001,13 @@ let useTotalLoyaltyToken:
     };
   };
 
-let useRemainingDeposit:
-  (~chain: Client.context, string) => option((Eth.t, BN.t, BN.t)) =
-  (~chain, patron) => {
-    Js.log2(chain, patron);
-    None;
-    /* let (simple, _) = useQueryPatron(~chain, patron);
-
-       let getRemainingDepositData = response =>
-         response##patron
-         ->oMap(wc =>
-             (
-               wc##availableDeposit,
-               wc##lastUpdated,
-               wc##patronTokenCostScaledNumerator,
-             )
-           );
-
-       simple->queryResultOptionFlatMap(getRemainingDepositData); */
-  };
-
 // TODO:: Take min of total deposit and amount raised
 let useRemainingDepositEth: (~chain: Client.context, string) => option(Eth.t) =
   (~chain, patron) => {
     let currentTimestamp = useCurrentTime();
 
-    switch (useRemainingDeposit(~chain, patron)) {
-    | Some((availableDeposit, lastUpdated, patronTokenCostScaledNumerator)) =>
+    switch (useQueryPatron(~chain, patron)) {
+    | Some({availableDeposit, lastUpdated, patronTokenCostScaledNumerator, _}) =>
       let timeElapsed = BN.new_(currentTimestamp)->BN.sub(lastUpdated);
 
       let amountRaisedSinceLastCollection =
