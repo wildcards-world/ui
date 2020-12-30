@@ -1,4 +1,5 @@
 open Globals;
+module QueryFetchPolicy = ApolloClient__React_Hooks_UseQuery.WatchQueryFetchPolicy;
 
 type owner = {. "address": Js.Json.t};
 
@@ -160,18 +161,18 @@ let useAnimalList = (~chain) => {
 //   |}
 // ];
 
-// module MaticStateQuery = [%graphql
-//   {|
-//     query ($address: String!, $network: String!) {
-//       maticState(address: $address, network: $network) {
-//         balance
-//         daiNonce
-//         error
-//         stewardNonce
-//       }
-//     }
-//   |}
-// ];
+module MaticStateQuery = [%graphql
+  {|
+    query ($address: String!, $network: String!) {
+      maticState(address: $address, network: $network) {
+        balance
+        daiNonce
+        error
+        stewardNonce
+      }
+    }
+  |}
+];
 // module HomeAnimalsQuery = [%graphql
 //   {|
 //     query {
@@ -854,7 +855,7 @@ let usePatronLoyaltyTokenDetails = (~chain, address) => {
   /* // NOTE: we are using both 'new patron' and 'patron' because the work on the graph is incomplete.
      let (response, _) = useQueryPatron(~chain, address);
 
-     [@ocaml.warning "-4"]
+     [@warning "-4"]
      (
        switch (response) {
        | Data(dataPatron) =>
@@ -1156,54 +1157,21 @@ let useLaunchTimeBN = (~chain, tokenId: TokenId.t) => {
      }; */
 };
 
-let useMaticStateQuery = (~forceRefetch, address, network) =>
-  Js.log3(forceRefetch, address, network);
-/* ApolloHooks.useQuery(
-     ~variables=MaticStateQuery.make(~address, ~network, ())##variables,
-     ~fetchPolicy=
-       forceRefetch
-         ? ReasonApolloHooks.ApolloHooksTypes.CacheAndNetwork
-         : ReasonApolloHooks.ApolloHooksTypes.CacheFirst,
-     ~context=Client.MainnetQuery->Obj.magic,
-     MaticStateQuery.definition,
-   ); */
-None;
-
-// let useMaticStateQueryPartial = forceRefetch =>
-//   ApolloHooks.useQuery(
-//     ~fetchPolicy=
-//       forceRefetch
-//         ? ReasonApolloHooks.ApolloHooksTypes.CacheAndNetwork
-//         : ReasonApolloHooks.ApolloHooksTypes.CacheFirst,
-//     ~context=Client.MainnetQuery->Obj.magic,
-//   );
 let useMaticState = (~forceRefetch, address, network) => {
-  Js.log3(forceRefetch, address, network);
-  None;
-  /*  let (simple, _) = useMaticStateQuery(~forceRefetch, address, network);
-      switch (simple) {
-      | Data(response) => Some(response##maticState)
-      | Error(_)
-      | Loading
-      | NoData => None
-      }; */
+  let query =
+    MaticStateQuery.use(
+      ~fetchPolicy=
+        forceRefetch
+          ? QueryFetchPolicy.CacheAndNetwork : QueryFetchPolicy.CacheFirst,
+      MaticStateQuery.makeVariables(~address, ~network, ()),
+    );
+  switch (query) {
+  | {loading: true, _} => None
+  | {error: Some(_error), _} => None
+  | {data: Some({maticState}), _} => Some(maticState)
+  | _ => None
+  };
 };
-// let useForceUpdateMaticStateFunc = network => {
-//   let partialMaticStateReq = useMaticStateQueryPartial(true);
-//   address => {
-//     let (simple, _) =
-//       partialMaticStateReq(
-//         ~variables=MaticStateQuery.make(~address, ~network, ())##variables,
-//         MaticStateQuery.definition,
-//       );
-//     switch (simple) {
-//     | Data(response) => Some(response##maticState)
-//     | Error(_)
-//     | Loading
-//     | NoData => None
-//     };
-//   };
-// };
 
 let useArtistData = (~artistIdentifier) => {
   let artistQuery =

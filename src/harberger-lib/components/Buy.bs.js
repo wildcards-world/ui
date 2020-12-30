@@ -21,7 +21,6 @@ import * as TxTemplate from "../../components/components/TxTemplate.bs.js";
 import * as Web3Utils$1 from "web3-utils";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_format from "bs-platform/lib/es6/caml_format.js";
-import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as RootProvider from "../RootProvider.bs.js";
 import * as ContractActions from "../eth/ContractActions.bs.js";
 import * as Core from "@web3-react/core";
@@ -238,16 +237,15 @@ function Buy$1(Props) {
   if (optMaticState === undefined) {
     return React.createElement("p", undefined, "Updating latest state.");
   }
-  var maticState = Caml_option.valFromOption(optMaticState);
-  var error = maticState.error;
+  var error = optMaticState.error;
   if (error !== undefined) {
-    console.log("matic state fetch error", Caml_option.valFromOption(error));
+    console.log("matic state fetch error", error);
     return React.createElement("p", undefined, "Error: Unable to get matic state - please try again or contact the Wildcards Team.");
   } else {
     return React.createElement(Buy$Buy, {
                 chain: chain,
                 tokenId: tokenId,
-                availableBalance: new BnJs(maticState.balance)
+                availableBalance: new BnJs(optMaticState.balance)
               });
   }
 }

@@ -273,6 +273,107 @@ function useAnimalList(chain) {
 var Raw$1 = {};
 
 var query$1 = (require("@apollo/client").gql`
+  query ($address: String!, $network: String!)  {
+    maticState(address: $address, network: $network)  {
+      __typename
+      balance
+      daiNonce
+      error
+      stewardNonce
+    }
+  }
+`);
+
+function parse$1(value) {
+  var value$1 = value.maticState;
+  var value$2 = value$1.error;
+  return {
+          maticState: {
+            __typename: value$1.__typename,
+            balance: value$1.balance,
+            daiNonce: value$1.daiNonce,
+            error: !(value$2 == null) ? value$2 : undefined,
+            stewardNonce: value$1.stewardNonce
+          }
+        };
+}
+
+function serialize$1(value) {
+  var value$1 = value.maticState;
+  var value$2 = value$1.stewardNonce;
+  var value$3 = value$1.error;
+  var error = value$3 !== undefined ? value$3 : null;
+  var value$4 = value$1.daiNonce;
+  var value$5 = value$1.balance;
+  var value$6 = value$1.__typename;
+  var maticState = {
+    __typename: value$6,
+    balance: value$5,
+    daiNonce: value$4,
+    error: error,
+    stewardNonce: value$2
+  };
+  return {
+          maticState: maticState
+        };
+}
+
+function serializeVariables$1(inp) {
+  return {
+          address: inp.address,
+          network: inp.network
+        };
+}
+
+function makeVariables$1(address, network, param) {
+  return {
+          address: address,
+          network: network
+        };
+}
+
+var MaticStateQuery_inner = {
+  Raw: Raw$1,
+  query: query$1,
+  parse: parse$1,
+  serialize: serialize$1,
+  serializeVariables: serializeVariables$1,
+  makeVariables: makeVariables$1
+};
+
+var include$1 = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query$1,
+      Raw: Raw$1,
+      parse: parse$1,
+      serialize: serialize$1,
+      serializeVariables: serializeVariables$1
+    });
+
+var use = include$1.use;
+
+var MaticStateQuery_refetchQueryDescription = include$1.refetchQueryDescription;
+
+var MaticStateQuery_useLazy = include$1.useLazy;
+
+var MaticStateQuery_useLazyWithVariables = include$1.useLazyWithVariables;
+
+var MaticStateQuery = {
+  MaticStateQuery_inner: MaticStateQuery_inner,
+  Raw: Raw$1,
+  query: query$1,
+  parse: parse$1,
+  serialize: serialize$1,
+  serializeVariables: serializeVariables$1,
+  makeVariables: makeVariables$1,
+  refetchQueryDescription: MaticStateQuery_refetchQueryDescription,
+  use: use,
+  useLazy: MaticStateQuery_useLazy,
+  useLazyWithVariables: MaticStateQuery_useLazyWithVariables
+};
+
+var Raw$2 = {};
+
+var query$2 = (require("@apollo/client").gql`
   query ($artistIdentifier: String!)  {
     artist_by_pk(id: $artistIdentifier)  {
       __typename
@@ -309,7 +410,7 @@ var query$1 = (require("@apollo/client").gql`
   }
 `);
 
-function parse$1(value) {
+function parse$2(value) {
   var value$1 = value.artist_by_pk;
   var tmp;
   if (value$1 == null) {
@@ -368,7 +469,7 @@ function parse$1(value) {
         };
 }
 
-function serialize$1(value) {
+function serialize$2(value) {
   var value$1 = value.artist_by_pk;
   var artist_by_pk;
   if (value$1 !== undefined) {
@@ -463,53 +564,53 @@ function serialize$1(value) {
         };
 }
 
-function serializeVariables$1(inp) {
+function serializeVariables$2(inp) {
   return {
           artistIdentifier: inp.artistIdentifier
         };
 }
 
-function makeVariables$1(artistIdentifier, param) {
+function makeVariables$2(artistIdentifier, param) {
   return {
           artistIdentifier: artistIdentifier
         };
 }
 
 var ArtistQuery_inner = {
-  Raw: Raw$1,
-  query: query$1,
-  parse: parse$1,
-  serialize: serialize$1,
-  serializeVariables: serializeVariables$1,
-  makeVariables: makeVariables$1
+  Raw: Raw$2,
+  query: query$2,
+  parse: parse$2,
+  serialize: serialize$2,
+  serializeVariables: serializeVariables$2,
+  makeVariables: makeVariables$2
 };
 
-var include$1 = ApolloClient__React_Hooks_UseQuery.Extend({
-      query: query$1,
-      Raw: Raw$1,
-      parse: parse$1,
-      serialize: serialize$1,
-      serializeVariables: serializeVariables$1
+var include$2 = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query$2,
+      Raw: Raw$2,
+      parse: parse$2,
+      serialize: serialize$2,
+      serializeVariables: serializeVariables$2
     });
 
-var use = include$1.use;
+var use$1 = include$2.use;
 
-var ArtistQuery_refetchQueryDescription = include$1.refetchQueryDescription;
+var ArtistQuery_refetchQueryDescription = include$2.refetchQueryDescription;
 
-var ArtistQuery_useLazy = include$1.useLazy;
+var ArtistQuery_useLazy = include$2.useLazy;
 
-var ArtistQuery_useLazyWithVariables = include$1.useLazyWithVariables;
+var ArtistQuery_useLazyWithVariables = include$2.useLazyWithVariables;
 
 var ArtistQuery = {
   ArtistQuery_inner: ArtistQuery_inner,
-  Raw: Raw$1,
-  query: query$1,
-  parse: parse$1,
-  serialize: serialize$1,
-  serializeVariables: serializeVariables$1,
-  makeVariables: makeVariables$1,
+  Raw: Raw$2,
+  query: query$2,
+  parse: parse$2,
+  serialize: serialize$2,
+  serializeVariables: serializeVariables$2,
+  makeVariables: makeVariables$2,
   refetchQueryDescription: ArtistQuery_refetchQueryDescription,
-  use: use,
+  use: use$1,
   useLazy: ArtistQuery_useLazy,
   useLazyWithVariables: ArtistQuery_useLazyWithVariables
 };
@@ -1013,18 +1114,36 @@ function useLaunchTimeBN(chain, tokenId) {
   
 }
 
-function useMaticStateQuery(forceRefetch, address, network) {
-  console.log(forceRefetch, address, network);
-  
-}
-
 function useMaticState(forceRefetch, address, network) {
-  console.log(forceRefetch, address, network);
-  
+  var query = Curry.app(use, [
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        forceRefetch ? /* CacheAndNetwork */0 : /* CacheFirst */1,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        {
+          address: address,
+          network: network
+        }
+      ]);
+  var match = query.data;
+  if (query.loading || query.error !== undefined || match === undefined) {
+    return ;
+  } else {
+    return match.maticState;
+  }
 }
 
 function useArtistData(artistIdentifier) {
-  var artistQuery = Curry.app(use, [
+  var artistQuery = Curry.app(use$1, [
         undefined,
         undefined,
         undefined,
@@ -1122,12 +1241,16 @@ function useArtistOrgs(artistIdentifier) {
               }));
 }
 
+var QueryFetchPolicy;
+
 export {
+  QueryFetchPolicy ,
   decodeBN ,
   InitialLoad ,
   createContext ,
   useInitialDataLoad ,
   useAnimalList ,
+  MaticStateQuery ,
   ArtistQuery ,
   getQueryPrefix ,
   subscriptionResultOptionMap ,
@@ -1194,7 +1317,6 @@ export {
   useAuctionEndPrice ,
   useAuctioLength ,
   useLaunchTimeBN ,
-  useMaticStateQuery ,
   useMaticState ,
   useArtistData ,
   useArtistEthAddress ,

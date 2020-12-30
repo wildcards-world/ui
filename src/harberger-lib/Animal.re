@@ -121,7 +121,7 @@ let useAuctionPriceWei = (~chain, animal, launchTime) => {
   switch (auctionStartPrice, auctionEndPrice, auctionLength) {
   | (Some(auctionStartPrice), Some(auctionEndPrice), Some(auctionLength)) =>
     // disable warning #4
-    [@ocaml.warning "-4"]
+    [@warning "-4"]
     Some(
       switch (tokenStatus) {
       | Foreclosed(foreclosureTime) =>

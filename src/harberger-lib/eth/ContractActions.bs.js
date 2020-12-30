@@ -471,9 +471,8 @@ function useBuy(chain, animal, library, account, parentChainId) {
                 if (maticState === undefined) {
                   return ;
                 }
-                var maticState$1 = Caml_option.valFromOption(maticState);
-                var daiNonce = maticState$1.daiNonce;
-                var stewardNonce = maticState$1.stewardNonce;
+                var daiNonce = maticState.daiNonce;
+                var stewardNonce = maticState.stewardNonce;
                 Curry._1(setTxState, (function (param) {
                         return {
                                 TAG: /* DaiPermit */0,
@@ -582,9 +581,8 @@ function useBuyAuction(chain, animal, library, account, parentChainId) {
     return [
             (function (newPrice, wildcardsPercentage, value) {
                 if (library !== undefined && account !== undefined && maticState !== undefined) {
-                  var maticState$1 = Caml_option.valFromOption(maticState);
-                  var daiNonce = maticState$1.daiNonce;
-                  var stewardNonce = maticState$1.stewardNonce;
+                  var daiNonce = maticState.daiNonce;
+                  var stewardNonce = maticState.stewardNonce;
                   Curry._1(setTxState, (function (param) {
                           return {
                                   TAG: /* DaiPermit */0,
@@ -748,9 +746,8 @@ function useUpdateDeposit(chain, library, account, parentChainId) {
     return [
             (function (amountToAdd) {
                 if (library !== undefined && account !== undefined && maticState !== undefined) {
-                  var maticState$1 = Caml_option.valFromOption(maticState);
-                  var daiNonce = maticState$1.daiNonce;
-                  var stewardNonce = maticState$1.stewardNonce;
+                  var daiNonce = maticState.daiNonce;
+                  var stewardNonce = maticState.stewardNonce;
                   Curry._1(setTxState, (function (param) {
                           return {
                                   TAG: /* DaiPermit */0,

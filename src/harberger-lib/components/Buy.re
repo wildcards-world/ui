@@ -396,7 +396,7 @@ let make = (~chain, ~tokenId) => {
   | Client.MaticQuery =>
     switch (optMaticState) {
     | Some(maticState) =>
-      switch (maticState##error) {
+      switch (maticState.error) {
       | Some(error) =>
         Js.log2("matic state fetch error", error);
         <p>
@@ -404,7 +404,7 @@ let make = (~chain, ~tokenId) => {
           ->React.string
         </p>;
       | None =>
-        <Buy chain tokenId availableBalance={maticState##balance->BN.new_} />
+        <Buy chain tokenId availableBalance={maticState.balance->BN.new_} />
       }
     | None => <p> "Updating latest state."->React.string </p>
     }

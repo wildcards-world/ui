@@ -412,8 +412,8 @@ let useBuy =
           switch (library, account, maticState) {
           // TODO: This function should not take in options of these values, they should be defined
           | (Some(lib), Some(userAddress), Some(maticState)) =>
-            let daiNonce = maticState##daiNonce;
-            let stewardNonce = maticState##stewardNonce;
+            let daiNonce = maticState.daiNonce;
+            let stewardNonce = maticState.stewardNonce;
 
             setTxState(_ => DaiPermit(value->BN.new_));
             execDaiPermitMetaTx(
@@ -534,8 +534,8 @@ let useBuyAuction =
         (newPrice, wildcardsPercentage, value: string) => {
           switch (library, account, maticState) {
           | (Some(lib), Some(userAddress), Some(maticState)) =>
-            let daiNonce = maticState##daiNonce;
-            let stewardNonce = maticState##stewardNonce;
+            let daiNonce = maticState.daiNonce;
+            let stewardNonce = maticState.stewardNonce;
             setTxState(_ => DaiPermit(value->BN.new_));
             execDaiPermitMetaTx(
               daiNonce,
@@ -691,8 +691,8 @@ let useUpdateDeposit =
         amountToAdd => {
           switch (library, account, maticState) {
           | (Some(lib), Some(userAddress), Some(maticState)) =>
-            let daiNonce = maticState##daiNonce;
-            let stewardNonce = maticState##stewardNonce;
+            let daiNonce = maticState.daiNonce;
+            let stewardNonce = maticState.stewardNonce;
             setTxState(_ => DaiPermit(amountToAdd->BN.new_));
             execDaiPermitMetaTx(
               daiNonce,
