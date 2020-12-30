@@ -1,5 +1,3 @@
-open Globals;
-
 let hambergerMenu =
   Css.(
     style([
@@ -52,7 +50,7 @@ let floatingMenu = shouldDisplay =>
       width(`percent(100.)),
       height(vh(100.)),
       visibility(shouldDisplay ? `visible : `hidden),
-      backgroundColor(rgba(255, 255, 255, shouldDisplay ? 0.5 : 0.)),
+      backgroundColor(rgba(255, 255, 255, `num(shouldDisplay ? 0.5 : 0.))),
       display(`flex),
       alignItems(`center),
       justifyContent(`center),
@@ -62,7 +60,7 @@ let floatingMenu = shouldDisplay =>
       selector(
         ".zoom-in-effect",
         [
-          background(rgba(107, 173, 62, 0.3)),
+          background(rgba(107, 173, 62, `num(0.3))),
           width(vw(100.)),
           height(vh(100.)),
           borderRadius(`percent(50.)),
@@ -159,9 +157,9 @@ let make = (~navItems: array(navItem)) => {
              ? <li
                  key={index->string_of_int}
                  className=Cn.(
-                   make([
-                     ifTrue(navItemStyles, isMobile),
-                     ifTrue(
+                   fromList([
+                     on(navItemStyles, isMobile),
+                     on(
                        Css.(
                          style([
                            backgroundColor(white),
@@ -213,7 +211,7 @@ let make = (~navItems: array(navItem)) => {
 
       <div className=Styles.navBox>
         <a
-          className={Cn.make([
+          className={Cn.fromList([
             Styles.clickableLink,
             Css.(style([marginLeft(`px(80)), zIndex(1001)])),
           ])}
@@ -225,10 +223,10 @@ let make = (~navItems: array(navItem)) => {
             <WildcardsLogo maxWidth="258px" />
           </div>
         </a>
-        <nav className={Cn.make([headerNav, fullScreenMenu])}>
+        <nav className={Cn.fromList([headerNav, fullScreenMenu])}>
           {menuItems(false)}
         </nav>
-        <nav className={Cn.make([headerNav, hambergerMenu])}>
+        <nav className={Cn.fromList([headerNav, hambergerMenu])}>
           <div
             className=Css.(
               style([

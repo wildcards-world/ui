@@ -14,7 +14,7 @@ let useAvatar = animal => {
 let useAlternateImage: TokenId.t => option(string) =
   animal => {
     QlHooks.useRealImages(animal)
-    ->Option.map(animalImages => animalImages->Array.map(info => info##image))
+    ->Option.map(animalImages => animalImages->Array.map(info => info.image))
     ->Option.flatMap(images => images[0]);
   };
 
@@ -121,7 +121,7 @@ let useAuctionPriceWei = (~chain, animal, launchTime) => {
   switch (auctionStartPrice, auctionEndPrice, auctionLength) {
   | (Some(auctionStartPrice), Some(auctionEndPrice), Some(auctionLength)) =>
     // disable warning #4
-    [@ocaml.warning "-4"]
+    [@warning "-4"]
     Some(
       switch (tokenStatus) {
       | Foreclosed(foreclosureTime) =>

@@ -145,7 +145,7 @@ module ProfileDetails = {
                     Promise.all2(namePromise, descriptionPromise)
                     ->Promise.get(a => {
                         let (nameSet, descriptionSet) = a;
-                        [@ocaml.warning "-4"]
+                        [@warning "-4"]
                         (
                           switch (nameSet, descriptionSet) {
                           | (Ok (), Ok ()) =>

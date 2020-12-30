@@ -55,9 +55,16 @@ module ArtistDetails = {
     let etherScanUrl = RootProvider.useEtherscanUrl();
 
     let artistsAnimalsArrayLaunched =
-      optArtistLaunchedWildcards->Option.mapWithDefault([||], tokens =>
+      optArtistLaunchedWildcards->Option.mapWithDefault(
+        [||],
+        (
+          tokens:
+            array(
+              QlHooks.ArtistQuery.ArtistQuery_inner.t_artist_by_pk_launchedWildcards,
+            ),
+        ) =>
         tokens->Array.map(token =>
-          token##id->Option.getWithDefault("_")->TokenId.fromStringUnsafe
+          token.id->Option.getWithDefault("_")->TokenId.fromStringUnsafe
         )
       );
     Js.log(optArtistUnlaunchedWildcards);
@@ -257,11 +264,14 @@ module ArtistDetails = {
                <Rimble.Heading> "Coming soon"->React.string </Rimble.Heading>
                <Rimble.Flex flexWrap="wrap" className=centreAlignOnMobile>
                  {React.array(
-                    unlaunchedWildcards->Array.map(token => {
-                      token##image
+                    unlaunchedWildcards->Array.map(
+                      (
+                        token: QlHooks.ArtistQuery.ArtistQuery_inner.t_artist_by_pk_unlaunchedWildcards,
+                      ) => {
+                      token.image
                       ->Option.mapWithDefault(React.null, image =>
                           <OrgProfile.ComingSoonAnimal
-                            key={token##key->string_of_int}
+                            key={token.key->string_of_int}
                             image={CONSTANTS.cdnBase ++ image}
                             onClick={() => {
                               // TODO: add proper onclick

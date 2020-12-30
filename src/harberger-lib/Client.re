@@ -6,19 +6,15 @@ type dataObject = {
 // createInMemoryCache(~dataIdFromObject=(obj: dataObject) => obj##id, ());
 
 /* Create an InMemoryCache */
-let inMemoryCache = () => ApolloInMemoryCache.createInMemoryCache();
+// let inMemoryCache = () => ApolloInMemoryCache.createInMemoryCache();
 
 /* Create an HTTP Link */
-let httpLink = (~uri) => ApolloLinks.createHttpLink(~uri, ());
+let httpLink = (~uri) => ApolloClient.Link.HttpLink.make(~uri=_ => uri, ());
 /* Create an WS Link */
 let wsLink = (~uri) =>
-  ApolloLinks.webSocketLink({
-    uri,
-    options: {
-      reconnect: true,
-      connectionParams: None,
-    },
-  });
+  ApolloClient.Link.WebSocketLink.(
+    make(~uri, ~options=ClientOptions.make(~reconnect=true, ()), ())
+  );
 
 type context =
   | Neither
@@ -33,38 +29,44 @@ let chainContextToStr = chain =>
 type queryContext = {context};
 
 [@bs.send]
-external getContext: ReasonApolloTypes.splitTest => option(queryContext) =
+external getContext:
+  ApolloClient__Link_Core_ApolloLink.Operation.Js_.t => option(queryContext) =
   "getContext";
 
 /* based on test, execute left or right */
 let webSocketHttpLink = (~uri, ~matic, ~subscriptions) =>
-  ApolloLinks.split(
-    operation => {
-      let operationDefition =
-        ApolloUtilities.getMainDefinition(operation.query);
-      operationDefition.kind == "OperationDefinition"
-      && operationDefition.operation == "subscription";
-    },
-    wsLink(~uri=subscriptions),
-    ApolloLinks.split(
-      operation => {
-        let context = operation->getContext;
-
-        let usingMatic =
-          switch (context) {
-          | Some({context}) =>
-            switch (context) {
-            | MaticQuery => true
-            | Neither => false
-            | MainnetQuery => false
-            }
-          | None => false
-          };
-        usingMatic;
+  ApolloClient.Link.split(
+    ~test=
+      ({query, _}) => {
+        let definition = ApolloClient.Utilities.getOperationDefinition(query);
+        switch (definition) {
+        | Some({kind, operation, _}) =>
+          kind === "OperationDefinition" && operation === "subscription"
+        | None => false
+        };
       },
-      httpLink(~uri=matic),
-      httpLink(~uri),
-    ),
+    ~whenTrue=wsLink(~uri=subscriptions),
+    ~whenFalse=
+      ApolloClient.Link.split(
+        ~test=
+          operation => {
+            let context = operation->getContext;
+
+            let usingMatic =
+              switch (context) {
+              | Some({context}) =>
+                switch (context) {
+                | MaticQuery => true
+                | Neither => false
+                | MainnetQuery => false
+                }
+              | None => false
+              };
+            usingMatic;
+          },
+        ~whenTrue=httpLink(~uri=matic),
+        ~whenFalse=httpLink(~uri),
+      ),
   );
 
 type qlEndpoints = {
@@ -76,9 +78,34 @@ type qlEndpoints = {
 let instance = (~getGraphEndpoints: unit => qlEndpoints) => {
   let {mainnet, matic, ws} = getGraphEndpoints();
 
-  ReasonApollo.createApolloClient(
-    ~link=webSocketHttpLink(~uri=mainnet, ~matic, ~subscriptions=ws),
-    ~cache=inMemoryCache(),
-    (),
+  ApolloClient.(
+    make(
+      ~cache=Cache.InMemoryCache.make(),
+      ~connectToDevTools=true,
+      ~defaultOptions=
+        DefaultOptions.make(
+          ~mutate=
+            DefaultMutateOptions.make(
+              ~awaitRefetchQueries=true,
+              ~errorPolicy=All,
+              (),
+            ),
+          ~query=
+            DefaultQueryOptions.make(
+              // ~fetchPolicy=NetworkOnly,
+              ~errorPolicy=All,
+              (),
+            ),
+          ~watchQuery=
+            DefaultWatchQueryOptions.make(
+              // ~fetchPolicy=NetworkOnly,
+              ~errorPolicy=All,
+              (),
+            ),
+          (),
+        ),
+      ~link=webSocketHttpLink(~uri=mainnet, ~matic, ~subscriptions=ws),
+      (),
+    )
   );
 };

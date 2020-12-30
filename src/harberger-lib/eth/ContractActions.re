@@ -217,13 +217,44 @@ type transactionState =
   | Complete(txResult)
   | Failed;
 
+module ExecuteMetaTxMutation = [%graphql
+  {|
+    mutation (
+      $network: String!,
+      $r: String!,
+      $s: String!,
+      $v: Int!,
+      $userAddress: String!,
+      $functionSignature: String!
+    ) {
+      metaTx(
+        functionSignature: $functionSignature,
+        network: $network ,
+        r: $r,
+        s: $s,
+        userAddress: $userAddress,
+        v: $v
+      ) {
+        txHash
+        success
+        errorMsg
+      }
+    }
+  |}
+];
+
 let execDaiPermitMetaTx =
     (
       daiNonce,
       networkName,
       stewardNonce,
       setTxState,
-      sendMetaTx,
+      sendMetaTx:
+        ApolloClient__React_Hooks_UseMutation.MutationTuple.t_mutationFn(
+          ExecuteMetaTxMutation.ExecuteMetaTxMutation_inner.t,
+          ExecuteMetaTxMutation.ExecuteMetaTxMutation_inner.t_variables,
+          ExecuteMetaTxMutation.ExecuteMetaTxMutation_inner.Raw.t_variables,
+        ),
       userAddress,
       spender,
       lib: Web3.web3Library,
@@ -280,61 +311,18 @@ let execDaiPermitMetaTx =
       ((functionSignature, signature)) => {
         open ContractUtil;
         let {r, s, v} = getEthSig(signature);
-        let resultPromise =
-          sendMetaTx(
+        sendMetaTx(
+          ExecuteMetaTxMutation.makeVariables(
             ~network=networkName,
             ~r,
             ~s,
             ~v,
             ~functionSignature,
-            userAddress,
-          );
-        resultPromise;
-      },
-      _,
-    )
-  ->Js.Promise.then_(
-      result => {
-        open ReasonApolloHooks;
-        let (simple, _) = result;
-
-        setTxState(_ => SubmittedMetaTx);
-
-        (
-          switch (simple) {
-          | ApolloHooksMutation.Errors(_)
-          | ApolloHooksMutation.NoData => setTxState(_ => Failed)
-          | ApolloHooksMutation.Data(data) =>
-            let success = data##metaTx##success;
-            let errorMsg = data##metaTx##errorMsg;
-            let txHash = data##metaTx##txHash;
-            if (success) {
-              setTxState(_ => SignedAndSubmitted(txHash));
-
-              let providerUrl = "https://goerli.infura.io/v3/c401b8ee3a324619a453f2b5b2122d7a";
-              let maticProvider = Ethers.makeProvider(providerUrl);
-
-              let waitForTx =
-                maticProvider
-                ->Ethers.waitForTransaction(txHash)
-                ->Promise.Js.toResult;
-
-              waitForTx->Promise.getOk(tx => {setTxState(_ => Complete(tx))});
-              waitForTx->Promise.getError(error => {
-                setTxState(_ => Failed);
-                Js.log("GOT AN ERROR");
-                Js.log(error);
-              });
-            } else {
-              setTxState(_ =>
-                ServerError(errorMsg->Option.getWithDefault("Unknown error"))
-              );
-              ();
-            };
-          }
+            ~userAddress,
+            (),
+          ),
         )
-        ->ignore;
-        Js.Promise.resolve();
+        ->Js.Promise.resolve;
       },
       _,
     )
@@ -349,6 +337,75 @@ let execDaiPermitMetaTx =
   ->ignore;
 };
 
+let handleMetaTxSumbissionState =
+    (
+      result:
+        ApolloClient__React_Types.MutationResult.t(
+          ExecuteMetaTxMutation.ExecuteMetaTxMutation_inner.t,
+        ),
+      setTxState,
+      currentState,
+    ) => {
+  let networkId = RootProvider.useNetworkId();
+
+  switch (result) {
+  | {called: false, _} => ()
+  //  | {loading: true} =>
+  | {data: Some(data), error: None, _} =>
+    let success = data.metaTx.success;
+    let errorMsg = data.metaTx.errorMsg;
+    let txHash = data.metaTx.txHash;
+    if (success) {
+      [@warning "-4"]
+      (
+        switch (currentState) {
+        | SignedAndSubmitted(_txHash) => ()
+        | _ => setTxState(_ => SignedAndSubmitted(txHash))
+        }
+      );
+
+      let providerUrl =
+        switch (networkId) {
+        | Some(1) => "https://rpc-mainnet.matic.network"
+        | Some(4) => "https://goerli.infura.io/v3/c401b8ee3a324619a453f2b5b2122d7a"
+        | Some(5) => "https://rpc-mumbai.matic.today"
+        | Some(_)
+        | None => "No Network"
+        };
+      let maticProvider = Ethers.makeProvider(providerUrl);
+
+      let waitForTx =
+        maticProvider->Ethers.waitForTransaction(txHash)->Promise.Js.toResult;
+
+      waitForTx->Promise.getOk(tx => {setTxState(_ => Complete(tx))});
+      waitForTx->Promise.getError(error => {
+        setTxState(_ => Failed);
+        Js.log("GOT AN ERROR");
+        Js.log(error);
+      });
+    } else {
+      [@warning "-4"]
+      (
+        switch (currentState) {
+        | ServerError(_txHash) => ()
+        | _ =>
+          setTxState(_ =>
+            ServerError(errorMsg->Option.getWithDefault("Unknown error"))
+          )
+        }
+      );
+    };
+  | {data: None, _}
+  | {error: _, _} =>
+    [@warning "-4"]
+    (
+      switch (currentState) {
+      | ServerError(_txHash) => ()
+      | _ => setTxState(_ => ServerError("Query Error"))
+      }
+    )
+  };
+};
 let useBuy =
     (
       ~chain,
@@ -362,7 +419,8 @@ let useBuy =
   let optSteward = useStewardContract();
   let (txState, setTxState) = React.useState(() => UnInitialised);
 
-  let sendMetaTx = QlHooks.useMetaTx();
+  let (mutate, result) = ExecuteMetaTxMutation.use();
+  handleMetaTxSumbissionState(result, setTxState, txState);
 
   let chainIdInt = parentChainId->getChildChainId;
   let chainId = chainIdInt->BN.newInt_;
@@ -383,8 +441,8 @@ let useBuy =
           switch (library, account, maticState) {
           // TODO: This function should not take in options of these values, they should be defined
           | (Some(lib), Some(userAddress), Some(maticState)) =>
-            let daiNonce = maticState##daiNonce;
-            let stewardNonce = maticState##stewardNonce;
+            let daiNonce = maticState.daiNonce;
+            let stewardNonce = maticState.stewardNonce;
 
             setTxState(_ => DaiPermit(value->BN.new_));
             execDaiPermitMetaTx(
@@ -392,7 +450,7 @@ let useBuy =
               networkName,
               stewardNonce,
               setTxState,
-              sendMetaTx,
+              mutate,
               userAddress,
               spender,
               lib,
@@ -484,7 +542,8 @@ let useBuyAuction =
 
   let optSteward = useStewardContract();
 
-  let sendMetaTx = QlHooks.useMetaTx();
+  let (mutate, result) = ExecuteMetaTxMutation.use();
+  handleMetaTxSumbissionState(result, setTxState, txState);
 
   let chainIdInt = parentChainId->getChildChainId;
   let chainId = chainIdInt->BN.newInt_;
@@ -504,15 +563,15 @@ let useBuyAuction =
         (newPrice, wildcardsPercentage, value: string) => {
           switch (library, account, maticState) {
           | (Some(lib), Some(userAddress), Some(maticState)) =>
-            let daiNonce = maticState##daiNonce;
-            let stewardNonce = maticState##stewardNonce;
+            let daiNonce = maticState.daiNonce;
+            let stewardNonce = maticState.stewardNonce;
             setTxState(_ => DaiPermit(value->BN.new_));
             execDaiPermitMetaTx(
               daiNonce,
               networkName,
               stewardNonce,
               setTxState,
-              sendMetaTx,
+              mutate,
               userAddress,
               spender,
               lib,
@@ -640,7 +699,8 @@ let useUpdateDeposit =
 
   let optSteward = useStewardContract();
 
-  let sendMetaTx = QlHooks.useMetaTx();
+  let (mutate, result) = ExecuteMetaTxMutation.use();
+  handleMetaTxSumbissionState(result, setTxState, txState);
 
   let chainIdInt = parentChainId->getChildChainId;
   let chainId = chainIdInt->BN.newInt_;
@@ -660,15 +720,15 @@ let useUpdateDeposit =
         amountToAdd => {
           switch (library, account, maticState) {
           | (Some(lib), Some(userAddress), Some(maticState)) =>
-            let daiNonce = maticState##daiNonce;
-            let stewardNonce = maticState##stewardNonce;
+            let daiNonce = maticState.daiNonce;
+            let stewardNonce = maticState.stewardNonce;
             setTxState(_ => DaiPermit(amountToAdd->BN.new_));
             execDaiPermitMetaTx(
               daiNonce,
               networkName,
               stewardNonce,
               setTxState,
-              sendMetaTx,
+              mutate,
               userAddress,
               spender,
               lib,

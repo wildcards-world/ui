@@ -124,7 +124,7 @@ module UserDetails = {
   let make =
       (
         ~chain,
-        ~patronQueryResult,
+        ~patronQueryResult: QlHooks.LoadPatron.LoadPatron_inner.t_patron,
         ~optThreeBoxData: option(UserProvider.threeBoxUserInfo),
         ~userAddress: string,
       ) => {
@@ -145,17 +145,10 @@ module UserDetails = {
      */
     let currentlyOwnedTokens =
       isForeclosed
-        ? [||]
-        : patronQueryResult##patron
-          ->oMap(patron => patron##tokens->Array.map(token => token##id))
-          |||| [||];
+        ? [||] : patronQueryResult.tokens->Array.map(token => token.id);
 
     let allPreviouslyOwnedTokens =
-      patronQueryResult##patron
-      ->oMap(patron =>
-          patron##previouslyOwnedTokens->Array.map(token => token##id)
-        )
-      |||| [||];
+      patronQueryResult.previouslyOwnedTokens->Array.map(token => token.id);
 
     let uniquePreviouslyOwnedTokens =
       isForeclosed
@@ -189,38 +182,27 @@ module UserDetails = {
 
     let optUsdPrice = UsdPriceProvider.useUsdPrice();
 
-    let optMonthlyCotribution = {
-      patronQueryResult##patron
+    let monthlyCotributionWei =
+      patronQueryResult.patronTokenCostScaledNumerator
+      ->BN.mul(BN.new_("2592000")) // A month with 30 days has 2592000 seconds
+      ->BN.div(
+          // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
+          BN.new_("31536000000000000000"),
+        );
+
+    let monthlyContributionEth =
+      monthlyCotributionWei->Web3Utils.fromWeiBNToEthPrecision(~digits=4);
+    let optMonthlyContributionUsd =
+      optUsdPrice
       <$> (
-        patron =>
-          patron##patronTokenCostScaledNumerator
-          ->BN.mul(BN.new_("2592000")) // A month with 30 days has 2592000 seconds
-          ->BN.div(
-              // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
-              BN.new_("31536000000000000000"),
-            )
-      )
-      <$> (
-        monthlyContributionWei => {
-          let monthlyContributionEth =
-            monthlyContributionWei->Web3Utils.fromWeiBNToEthPrecision(
-              ~digits=4,
-            );
-          let optMonthlyContributionUsd =
-            optUsdPrice
-            <$> (
-              currentUsdEthPrice =>
-                toFixedWithPrecisionNoTrailingZeros(
-                  Float.fromString(monthlyContributionEth)
-                  ->Option.mapWithDefault(0., a => a)
-                  *. currentUsdEthPrice,
-                  ~digits=2,
-                )
-            );
-          (monthlyContributionEth, optMonthlyContributionUsd);
-        }
+        currentUsdEthPrice =>
+          toFixedWithPrecisionNoTrailingZeros(
+            Float.fromString(monthlyContributionEth)
+            ->Option.mapWithDefault(0., a => a)
+            *. currentUsdEthPrice,
+            ~digits=2,
+          )
       );
-    };
 
     // This is the value of tokens that are currently in the users account (IE their spendable balance)
     let (totalLoyaltyTokensOpt, updateFunction) =
@@ -384,19 +366,12 @@ module UserDetails = {
         <Rimble.Box p=1 width=[|1., 1., 0.3333|]>
           <h2> "Monthly Contribution"->restr </h2>
           <p>
-            {optMonthlyCotribution->reactMapWithDefault(
-               {
-                 "0 ETH";
-               }
-               ->restr,
-               ((ethValue, optUsdValue)) =>
-               <React.Fragment>
-                 {j|$ethValue ETH\xa0|j}->restr
-                 {optUsdValue->reactMap(usdValue =>
-                    <small> {j|($usdValue USD)|j}->restr </small>
-                  )}
-               </React.Fragment>
-             )}
+            <React.Fragment>
+              {j|$monthlyContributionEth ETH\xa0|j}->restr
+              {optMonthlyContributionUsd->reactMap(usdValue =>
+                 <small> {j|($usdValue USD)|j}->restr </small>
+               )}
+            </React.Fragment>
           </p>
         </Rimble.Box>
         <Rimble.Box p=1 width=[|1., 1., 0.3333|]>
@@ -456,7 +431,7 @@ module UserDetails = {
 let make = (~chain, ~userAddress: string) => {
   let userAddressLowerCase = userAddress->Js.String.toLowerCase;
   let patronQuery =
-    QlHooks.usePatronQuery(~chain=Client.MainnetQuery, userAddressLowerCase);
+    QlHooks.useQueryPatron(~chain=Client.MainnetQuery, userAddressLowerCase);
   let userInfoContext = UserProvider.useUserInfoContext();
   let reloadUser = forceReload =>
     userInfoContext.update(userAddressLowerCase, forceReload); // double check that data is loaded.

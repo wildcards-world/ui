@@ -2,50 +2,50 @@
 
 import * as Cn from "re-classnames/src/Cn.bs.js";
 import * as Css from "bs-css-emotion/src/Css.bs.js";
+import * as Dapp from "./Dapp.bs.js";
+import * as FAQs from "./StaticContent/FAQs.bs.js";
+import * as Team from "./StaticContent/Team.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
+import * as Footer from "./StaticContent/Footer.bs.js";
+import * as Header from "./Header.bs.js";
+import * as Router from "../helpers/Router.bs.js";
+import * as Styles from "../Styles.bs.js";
+import * as BuyGrid from "./BuyGrid.bs.js";
+import * as Globals from "../harberger-lib/Globals.bs.js";
+import * as QlHooks from "../harberger-lib/QlHooks.bs.js";
+import * as TokenId from "../harberger-lib/TokenId.bs.js";
+import * as Partners from "./StaticContent/Partners.bs.js";
+import * as VotePage from "../ethTurin/VotePage.bs.js";
+import * as InputHelp from "../harberger-lib/InputHelp.bs.js";
 import * as RimbleUi from "rimble-ui";
+import * as FeaturedIn from "./StaticContent/FeaturedIn.bs.js";
+import * as HowItWorks from "./StaticContent/HowItWorks.bs.js";
+import * as OrgProfile from "./OrgProfile.bs.js";
+import * as EmailSignup from "./StaticContent/EmailSignup.bs.js";
+import * as ProfileIcon from "../harberger-lib/components/ProfileIcon.bs.js";
+import * as UserProfile from "./UserProfile.bs.js";
+import * as Web3Connect from "../harberger-lib/components/Web3Connect.bs.js";
+import * as Announcement from "./Announcement.bs.js";
+import * as LeaderBoards from "./Leaderboards/LeaderBoards.bs.js";
+import * as RootProvider from "../harberger-lib/RootProvider.bs.js";
 import ReactSwitch from "react-switch";
-import * as Dapp$WildCards from "./Dapp.bs.js";
-import * as FAQs$WildCards from "./StaticContent/FAQs.bs.js";
-import * as Team$WildCards from "./StaticContent/Team.bs.js";
-import * as Footer$WildCards from "./StaticContent/Footer.bs.js";
-import * as Header$WildCards from "./Header.bs.js";
-import * as Router$WildCards from "../helpers/Router.bs.js";
-import * as Styles$WildCards from "../Styles.bs.js";
-import * as BuyGrid$WildCards from "./BuyGrid.bs.js";
-import * as Globals$WildCards from "../harberger-lib/Globals.bs.js";
-import * as QlHooks$WildCards from "../harberger-lib/QlHooks.bs.js";
-import * as TokenId$WildCards from "../harberger-lib/TokenId.bs.js";
-import * as Partners$WildCards from "./StaticContent/Partners.bs.js";
-import * as VotePage$WildCards from "../ethTurin/VotePage.bs.js";
-import * as InputHelp$WildCards from "../harberger-lib/InputHelp.bs.js";
-import * as FeaturedIn$WildCards from "./StaticContent/FeaturedIn.bs.js";
-import * as HowItWorks$WildCards from "./StaticContent/HowItWorks.bs.js";
-import * as OrgProfile$WildCards from "./OrgProfile.bs.js";
-import * as EmailSignup$WildCards from "./StaticContent/EmailSignup.bs.js";
-import * as ProfileIcon$WildCards from "../harberger-lib/components/ProfileIcon.bs.js";
-import * as UserProfile$WildCards from "./UserProfile.bs.js";
-import * as Web3Connect$WildCards from "../harberger-lib/components/Web3Connect.bs.js";
-import * as Announcement$WildCards from "./Announcement.bs.js";
-import * as LeaderBoards$WildCards from "./Leaderboards/LeaderBoards.bs.js";
-import * as RootProvider$WildCards from "../harberger-lib/RootProvider.bs.js";
-import * as ArtistProfiles$WildCards from "./ArtistProfiles.bs.js";
-import * as ReactTranslate$WildCards from "../helpers/providers/ReactTranslate.bs.js";
-import * as CustomerBenefit$WildCards from "./StaticContent/CustomerBenefit.bs.js";
-import * as AnimalAnnouncement$WildCards from "./AnimalAnnouncement.bs.js";
-import * as HomepageLeaderBoard$WildCards from "./StaticContent/HomepageLeaderBoard.bs.js";
+import * as ArtistProfiles from "./ArtistProfiles.bs.js";
+import * as ReactTranslate from "../helpers/providers/ReactTranslate.bs.js";
+import * as CustomerBenefit from "./StaticContent/CustomerBenefit.bs.js";
+import * as AnimalAnnouncement from "./AnimalAnnouncement.bs.js";
+import * as HomepageLeaderBoard from "./StaticContent/HomepageLeaderBoard.bs.js";
 
 var betaBanner = "/img/beta-banner.png";
 
 function Layout$AnimalFocusDetails(Props) {
   var currentAnimal = Props.currentAnimal;
   var showForwardBackButtons = Props.showForwardBackButtons;
-  var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
-  var animalDetails = QlHooks$WildCards.useDetailsPageNextPrevious(Globals$WildCards.$pipe$pipe$pipe$pipe(currentAnimal, TokenId$WildCards.fromStringUnsafe("0")));
+  var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
+  var animalDetails = QlHooks.useDetailsPageNextPrevious(Globals.$pipe$pipe$pipe$pipe(currentAnimal, TokenId.fromStringUnsafe("0")));
   return React.createElement("div", {
-              className: Cn.make({
-                    hd: Styles$WildCards.topBody,
+              className: Cn.fromList({
+                    hd: Styles.topBody,
                     tl: {
                       hd: Curry._1(Css.style, {
                             hd: Css.position(Css.relative),
@@ -54,7 +54,7 @@ function Layout$AnimalFocusDetails(Props) {
                       tl: /* [] */0
                     }
                   })
-            }, Globals$WildCards.mapd(currentAnimal, false, (function (param) {
+            }, Globals.mapd(currentAnimal, false, (function (param) {
                     return true;
                   })) ? React.createElement(RimbleUi.Button.Text, {
                     className: Curry._1(Css.style, {
@@ -87,10 +87,10 @@ function Layout$AnimalFocusDetails(Props) {
                               tl: /* [] */0
                             })
                       }, React.createElement("span", {
-                            className: Styles$WildCards.carouselArrow(false, true),
+                            className: Styles.carouselArrow(false, true),
                             onClick: (function (param) {
-                                return InputHelp$WildCards.handleMouseEvent((function (param) {
-                                              return Curry._1(clearAndPush, "#details/" + TokenId$WildCards.toString(animalDetails.prev));
+                                return InputHelp.handleMouseEvent((function (param) {
+                                              return Curry._1(clearAndPush, "#details/" + TokenId.toString(animalDetails.prev));
                                             }), param);
                               })
                           }, "◄")) : null, React.createElement("div", {
@@ -104,7 +104,7 @@ function Layout$AnimalFocusDetails(Props) {
                                     })),
                             tl: /* [] */0
                           })
-                    }, React.createElement(Dapp$WildCards.make, {
+                    }, React.createElement(Dapp.make, {
                           currentAnimal: currentAnimal
                         })), showForwardBackButtons ? React.createElement("div", {
                         className: Curry._1(Css.style, {
@@ -115,7 +115,7 @@ function Layout$AnimalFocusDetails(Props) {
                               tl: /* [] */0
                             })
                       }, React.createElement("span", {
-                            className: Styles$WildCards.carouselArrow(false, false) + (" " + Curry._1(Css.style, {
+                            className: Styles.carouselArrow(false, false) + (" " + Curry._1(Css.style, {
                                     hd: Css.width({
                                           NAME: "percent",
                                           VAL: 3
@@ -123,8 +123,8 @@ function Layout$AnimalFocusDetails(Props) {
                                     tl: /* [] */0
                                   })),
                             onClick: (function (param) {
-                                return InputHelp$WildCards.handleMouseEvent((function (param) {
-                                              return Curry._1(clearAndPush, "#details/" + TokenId$WildCards.toString(animalDetails.next));
+                                return InputHelp.handleMouseEvent((function (param) {
+                                              return Curry._1(clearAndPush, "#details/" + TokenId.toString(animalDetails.next));
                                             }), param);
                               })
                           }, "►")) : null));
@@ -135,23 +135,23 @@ var AnimalFocusDetails = {
 };
 
 function Layout(Props) {
-  var urlState = Router$WildCards.useUrlState(undefined);
-  var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
-  var isExplorer = Router$WildCards.useIsExplorer(undefined);
-  var isDetails = Router$WildCards.useIsDetails(undefined);
-  var isHome = Router$WildCards.useIsHome(undefined);
-  var translationModeContext = ReactTranslate$WildCards.useTranslationModeContext(undefined);
+  var urlState = Router.useUrlState(undefined);
+  var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
+  var isExplorer = Router.useIsExplorer(undefined);
+  var isDetails = Router.useIsDetails(undefined);
+  var isHome = Router.useIsHome(undefined);
+  var translationModeContext = ReactTranslate.useTranslationModeContext(undefined);
   var tmp;
   if (typeof urlState === "number") {
     switch (urlState) {
       case /* Team */0 :
-          tmp = React.createElement(Team$WildCards.make, {});
+          tmp = React.createElement(Team.make, {});
           break;
       case /* IncreaseVoteIteration */1 :
           tmp = null;
           break;
       case /* VotePage */2 :
-          tmp = React.createElement(VotePage$WildCards.make, {
+          tmp = React.createElement(VotePage.make, {
                 chain: /* MainnetQuery */2
               });
           break;
@@ -160,18 +160,18 @@ function Layout(Props) {
   } else {
     switch (urlState.TAG | 0) {
       case /* User */0 :
-          tmp = React.createElement(UserProfile$WildCards.make, {
+          tmp = React.createElement(UserProfile.make, {
                 chain: /* MainnetQuery */2,
                 userAddress: urlState._0
               });
           break;
       case /* Artist */1 :
-          tmp = React.createElement(ArtistProfiles$WildCards.make, {
+          tmp = React.createElement(ArtistProfiles.make, {
                 artistIdentifier: urlState._0
               });
           break;
       case /* Org */2 :
-          tmp = React.createElement(OrgProfile$WildCards.make, {
+          tmp = React.createElement(OrgProfile.make, {
                 orgId: urlState._0
               });
           break;
@@ -180,13 +180,13 @@ function Layout(Props) {
           tmp = subState ? React.createElement(Layout$AnimalFocusDetails, {
                   currentAnimal: subState._0,
                   showForwardBackButtons: false
-                }) : React.createElement(BuyGrid$WildCards.make, {
+                }) : React.createElement(BuyGrid.make, {
                   wildcardsEdition: urlState._0
                 });
           break;
       case /* Leaderboards */4 :
           tmp = React.createElement(RimbleUi.Flex, {
-                children: React.createElement(LeaderBoards$WildCards.make, {
+                children: React.createElement(LeaderBoards.make, {
                       leaderboardType: urlState._0
                     }),
                 flexWrap: "wrap",
@@ -207,47 +207,47 @@ function Layout(Props) {
                 }, React.createElement(Layout$AnimalFocusDetails, {
                       currentAnimal: undefined,
                       showForwardBackButtons: false
-                    }), React.createElement(FeaturedIn$WildCards.make, {}), React.createElement(HomepageLeaderBoard$WildCards.make, {}), React.createElement(CustomerBenefit$WildCards.make, {}), React.createElement(HowItWorks$WildCards.make, {}), React.createElement(EmailSignup$WildCards.make, {}), React.createElement(FAQs$WildCards.make, {}), React.createElement(Partners$WildCards.make, {}));
+                    }), React.createElement(FeaturedIn.make, {}), React.createElement(HomepageLeaderBoard.make, {}), React.createElement(CustomerBenefit.make, {}), React.createElement(HowItWorks.make, {}), React.createElement(EmailSignup.make, {}), React.createElement(FAQs.make, {}), React.createElement(Partners.make, {}));
           break;
       
     }
   }
   return React.createElement("div", {
-              className: Styles$WildCards.app
+              className: Styles.app
             }, React.createElement("div", {
                   className: Curry._1(Css.style, {
                         hd: Css.minHeight(Css.vh(88)),
                         tl: /* [] */0
                       })
-                }, React.createElement(Announcement$WildCards.make, {
+                }, React.createElement(Announcement.make, {
                       announcementBannerColor: "72D6B5",
                       children: React.createElement("span", undefined, React.createElement("a", {
-                                className: AnimalAnnouncement$WildCards.linkToAnimal,
+                                className: AnimalAnnouncement.linkToAnimal,
                                 href: "/#explorer/2nd-edition"
-                              }, Globals$WildCards.restr("New wildcards")), " launched on the ", React.createElement("a", {
-                                className: AnimalAnnouncement$WildCards.linkToAnimal,
+                              }, Globals.restr("New wildcards")), " launched on the ", React.createElement("a", {
+                                className: AnimalAnnouncement.linkToAnimal,
                                 href: "https://matic.network",
                                 rel: "noopener noreferrer"
-                              }, Globals$WildCards.restr("MATIC network. ")))
+                              }, Globals.restr("MATIC network. ")))
                     }), React.createElement("div", {
                       className: Curry._1(Css.style, {
                             hd: Css.position(Css.relative),
                             tl: /* [] */0
                           })
                     }, React.createElement("img", {
-                          className: Styles$WildCards.betaBanner,
+                          className: Styles.betaBanner,
                           src: betaBanner
-                        })), React.createElement(Header$WildCards.make, {
+                        })), React.createElement(Header.make, {
                       navItems: [
                         {
                           shouldDisplay: isHome,
                           shouldDisplayMobile: false,
                           component: (function (param, param$1) {
                               return React.createElement("div", {
-                                          className: Styles$WildCards.navListItemToggle
+                                          className: Styles.navListItemToggle
                                         }, React.createElement("span", {
-                                              className: Styles$WildCards.someMarginRight
-                                            }, Globals$WildCards.restr(translationModeContext.translationModeCrypto ? "EXPERT MODE" : "DEFAULT MODE")), React.createElement(ReactSwitch, {
+                                              className: Styles.someMarginRight
+                                            }, Globals.restr(translationModeContext.translationModeCrypto ? "EXPERT MODE" : "DEFAULT MODE")), React.createElement(ReactSwitch, {
                                               onChange: translationModeContext.setTranslationModeCrypto,
                                               checked: translationModeContext.translationModeCrypto,
                                               onColor: "#6BAD3F",
@@ -258,7 +258,7 @@ function Layout(Props) {
                                               height: 16,
                                               width: 30,
                                               handleDiameter: 18,
-                                              className: Styles$WildCards.translationSwitch
+                                              className: Styles.translationSwitch
                                             }));
                             })
                         },
@@ -267,14 +267,14 @@ function Layout(Props) {
                           shouldDisplayMobile: !isHome,
                           component: (function (closeModal, param) {
                               return React.createElement("a", {
-                                          className: Styles$WildCards.navListText,
+                                          className: Styles.navListText,
                                           href: "",
                                           onClick: (function ($$event) {
                                               Curry._1(closeModal, undefined);
                                               $$event.preventDefault();
                                               return Curry._1(clearAndPush, "#");
                                             })
-                                        }, Globals$WildCards.restr("HOME"));
+                                        }, Globals.restr("HOME"));
                             })
                         },
                         {
@@ -282,13 +282,13 @@ function Layout(Props) {
                           shouldDisplayMobile: true,
                           component: (function (closeModal, param) {
                               return React.createElement("a", {
-                                          className: Styles$WildCards.navListText,
+                                          className: Styles.navListText,
                                           onClick: (function ($$event) {
                                               Curry._1(closeModal, undefined);
                                               $$event.preventDefault();
                                               return Curry._1(clearAndPush, "/#leaderboards/monthly-contribution");
                                             })
-                                        }, Globals$WildCards.restr("LEADERBOARDS"));
+                                        }, Globals.restr("LEADERBOARDS"));
                             })
                         },
                         {
@@ -296,13 +296,13 @@ function Layout(Props) {
                           shouldDisplayMobile: true,
                           component: (function (closeModal, param) {
                               return React.createElement("a", {
-                                          className: Styles$WildCards.navListText,
+                                          className: Styles.navListText,
                                           onClick: (function ($$event) {
                                               Curry._1(closeModal, undefined);
                                               $$event.preventDefault();
                                               return Curry._1(clearAndPush, "/#dao");
                                             })
-                                        }, Globals$WildCards.restr("DAO"));
+                                        }, Globals.restr("DAO"));
                             })
                         },
                         {
@@ -310,14 +310,14 @@ function Layout(Props) {
                           shouldDisplayMobile: true,
                           component: (function (closeModal, param) {
                               return React.createElement("a", {
-                                          className: Styles$WildCards.navListText,
+                                          className: Styles.navListText,
                                           href: "https://blog.wildcards.world/",
                                           rel: "noopener noreferrer",
                                           target: "_blank",
                                           onClick: (function (param) {
                                               return Curry._1(closeModal, undefined);
                                             })
-                                        }, Globals$WildCards.restr("BLOG"));
+                                        }, Globals.restr("BLOG"));
                             })
                         },
                         {
@@ -325,8 +325,8 @@ function Layout(Props) {
                           shouldDisplayMobile: !isExplorer || isDetails,
                           component: (function (closeModal, param) {
                               return React.createElement("div", undefined, React.createElement(RimbleUi.Button, {
-                                              className: Styles$WildCards.whiteText,
-                                              children: Globals$WildCards.restr("VIEW WILDCARDS"),
+                                              className: Styles.whiteText,
+                                              children: Globals.restr("VIEW WILDCARDS"),
                                               onClick: (function ($$event) {
                                                   Curry._1(closeModal, undefined);
                                                   $$event.preventDefault();
@@ -339,7 +339,7 @@ function Layout(Props) {
                           shouldDisplay: true,
                           shouldDisplayMobile: true,
                           component: (function (clickAction, param) {
-                              return React.createElement(Web3Connect$WildCards.make, {
+                              return React.createElement(Web3Connect.make, {
                                           clickAction: clickAction
                                         });
                             })
@@ -348,14 +348,14 @@ function Layout(Props) {
                           shouldDisplay: true,
                           shouldDisplayMobile: true,
                           component: (function (clickAction, isMobile) {
-                              return React.createElement(ProfileIcon$WildCards.make, {
+                              return React.createElement(ProfileIcon.make, {
                                           clickAction: clickAction,
                                           isMobile: isMobile
                                         });
                             })
                         }
                       ]
-                    }), tmp), React.createElement(Footer$WildCards.make, {}));
+                    }), tmp), React.createElement(Footer.make, {}));
 }
 
 var make = Layout;

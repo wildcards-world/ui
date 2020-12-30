@@ -2,16 +2,16 @@
 
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
+import * as Styles from "../../Styles.bs.js";
+import * as Globals from "../../harberger-lib/Globals.bs.js";
 import * as RimbleUi from "rimble-ui";
-import * as Styles$WildCards from "../../Styles.bs.js";
-import * as Globals$WildCards from "../../harberger-lib/Globals.bs.js";
-import * as RootProvider$WildCards from "../../harberger-lib/RootProvider.bs.js";
-import * as MonthlyContribution$WildCards from "../Leaderboards/MonthlyContribution.bs.js";
+import * as RootProvider from "../../harberger-lib/RootProvider.bs.js";
+import * as MonthlyContribution from "../Leaderboards/MonthlyContribution.bs.js";
 
 var gorillaOnVine = "/img/wildcardsimages/gorilla-on-vine.png";
 
 function HomepageLeaderBoard(Props) {
-  var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
+  var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   return React.createElement(RimbleUi.Box, {
               children: React.createElement(RimbleUi.Flex, {
                     children: null,
@@ -22,17 +22,17 @@ function HomepageLeaderBoard(Props) {
                               width: "100%"
                             }),
                         width: [0.28],
-                        className: Styles$WildCards.animalImage
+                        className: Styles.animalImage
                       }), React.createElement(RimbleUi.Box, {
                         children: React.createElement(RimbleUi.Card, {
-                              className: Styles$WildCards.infoCardStyles,
+                              className: Styles.infoCardStyles,
                               children: null
-                            }, React.createElement(MonthlyContribution$WildCards.make, {
+                            }, React.createElement(MonthlyContribution.make, {
                                   numberOfLeaders: 6
                                 }), React.createElement("br", undefined), React.createElement(RimbleUi.Box, {
                                   children: React.createElement(RimbleUi.Button, {
-                                        className: Styles$WildCards.centerItemsMargin,
-                                        children: Globals$WildCards.restr("View Other Leaderboards"),
+                                        className: Styles.centerItemsMargin,
+                                        children: Globals.restr("View Other Leaderboards"),
                                         onClick: (function (e) {
                                             e.preventDefault();
                                             return Curry._1(clearAndPush, "/#leaderboards/monthly-contribution");
@@ -45,9 +45,9 @@ function HomepageLeaderBoard(Props) {
                           1,
                           0.59
                         ],
-                        className: Styles$WildCards.infoCardContainer
+                        className: Styles.infoCardContainer
                       })),
-              className: Styles$WildCards.infoBackground
+              className: Styles.infoBackground
             });
 }
 

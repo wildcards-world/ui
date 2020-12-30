@@ -3,22 +3,22 @@
 import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
+import * as Styles from "../Styles.bs.js";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
-import * as Styles$WildCards from "../Styles.bs.js";
-import * as RootProvider$WildCards from "./RootProvider.bs.js";
+import * as RootProvider from "./RootProvider.bs.js";
 import Connectors from "./bindings/web3-react/connectors";
 
 var connectors = Connectors;
 
 function Login(Props) {
-  var match = RootProvider$WildCards.useActivateConnector(undefined);
+  var match = RootProvider.useActivateConnector(undefined);
   var activateConnector = match[1];
   return React.createElement("div", undefined, React.createElement("p", undefined, "Use one of the wallet providers below. ", React.createElement("small", undefined, "(Not sure where to go from here? ", React.createElement("a", {
                           href: "https://blog.wildcards.world/how-to-buy-a-wildcard-web3-ethereum/",
                           rel: "noopener noreferrer",
                           target: "_blank"
                         }, React.createElement("span", {
-                              className: Styles$WildCards.colorGreen
+                              className: Styles.colorGreen
                             }, "Read this guide")), ")")), React.createElement("div", {
                   className: Curry._1(Css.style, {
                         hd: Css.display("grid"),
@@ -49,7 +49,10 @@ function Login(Props) {
                         return React.createElement("div", {
                                     key: String(index),
                                     className: Curry._1(Css.style, {
-                                          hd: Css.border(Css.px(1), "solid", Css.rgba(195, 195, 195, 0.14)),
+                                          hd: Css.border(Css.px(1), "solid", Css.rgba(195, 195, 195, {
+                                                    NAME: "num",
+                                                    VAL: 0.14
+                                                  })),
                                           tl: {
                                             hd: Css.hover(/* [] */0),
                                             tl: /* [] */0
@@ -75,7 +78,10 @@ function Login(Props) {
                                                           hd: Css.borderRadius(Css.px(12)),
                                                           tl: {
                                                             hd: Css.hover({
-                                                                  hd: Css.backgroundColor(Css.rgba(195, 195, 195, 0.14)),
+                                                                  hd: Css.backgroundColor(Css.rgba(195, 195, 195, {
+                                                                            NAME: "num",
+                                                                            VAL: 0.14
+                                                                          })),
                                                                   tl: /* [] */0
                                                                 }),
                                                             tl: {

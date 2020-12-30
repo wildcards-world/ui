@@ -2,26 +2,26 @@
 
 import * as Cn from "re-classnames/src/Cn.bs.js";
 import * as Css from "bs-css-emotion/src/Css.bs.js";
+import * as Eth from "../harberger-lib/Eth.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as Decco from "decco/src/Decco.bs.js";
 import * as React from "react";
+import * as Animal from "../harberger-lib/Animal.bs.js";
+import * as Styles from "../Styles.bs.js";
+import * as Globals from "../harberger-lib/Globals.bs.js";
+import * as QlHooks from "../harberger-lib/QlHooks.bs.js";
+import * as TokenId from "../harberger-lib/TokenId.bs.js";
+import * as CONSTANTS from "../CONSTANTS.bs.js";
+import * as Web3Utils from "../harberger-lib/Web3Utils.bs.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Belt_Result from "bs-platform/lib/es6/belt_Result.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
-import * as Eth$WildCards from "../harberger-lib/Eth.bs.js";
-import * as Animal$WildCards from "../harberger-lib/Animal.bs.js";
-import * as Styles$WildCards from "../Styles.bs.js";
-import * as Globals$WildCards from "../harberger-lib/Globals.bs.js";
-import * as QlHooks$WildCards from "../harberger-lib/QlHooks.bs.js";
-import * as TokenId$WildCards from "../harberger-lib/TokenId.bs.js";
-import * as CONSTANTS$WildCards from "../CONSTANTS.bs.js";
-import * as Web3Utils$WildCards from "../harberger-lib/Web3Utils.bs.js";
+import * as UserProfile from "./UserProfile.bs.js";
+import * as UsdPriceProvider from "../harberger-lib/components/UsdPriceProvider.bs.js";
 import ReactPhotoGallery from "react-photo-gallery";
-import * as UserProfile$WildCards from "./UserProfile.bs.js";
 import ReactResponsiveCarousel from "react-responsive-carousel";
-import * as UsdPriceProvider$WildCards from "../harberger-lib/components/UsdPriceProvider.bs.js";
 import YoutubeVideoJs from "./StaticContent//YoutubeVideo.js";
 
 function orgDescriptionArray_decode(v) {
@@ -72,7 +72,7 @@ function OrgProfile$ImageCarousel(Props) {
                       return Belt_Option.mapWithDefault(Belt_Array.get(animal.real_wc_photos, 0), null, (function (photos) {
                                     return React.createElement("img", {
                                                 key: String(key),
-                                                src: CONSTANTS$WildCards.cdnBase + photos.image
+                                                src: CONSTANTS.cdnBase + photos.image
                                               });
                                   }));
                     })),
@@ -137,7 +137,7 @@ function OrgProfile$ComingSoonModal(Props) {
                                   tl: /* [] */0
                                 }
                               })
-                        }, Belt_Array.mapWithIndex(Belt_Result.getWithDefault(QlHooks$WildCards.animalDescription_decode(animal.description), []), (function (i, paragraphText) {
+                        }, Belt_Array.mapWithIndex(Belt_Result.getWithDefault(QlHooks.animalDescription_decode(animal.description), []), (function (i, paragraphText) {
                                 return React.createElement("p", {
                                             key: String(i)
                                           }, paragraphText);
@@ -169,7 +169,7 @@ function OrgProfile$ComingSoonModal(Props) {
                         }, React.createElement(ReactPhotoGallery, {
                               photos: Belt_Array.map(animal.real_wc_photos, (function (photo) {
                                       return {
-                                              src: CONSTANTS$WildCards.cdnBase + photo.image,
+                                              src: CONSTANTS.cdnBase + photo.image,
                                               width: 4,
                                               height: 3
                                             };
@@ -245,8 +245,7 @@ function OrgProfile$OrgPage(Props) {
   var orgData = Props.orgData;
   var orgId = Props.orgId;
   var orgName = orgData.name;
-  var v = orgData.description;
-  var orgDescription = Decco.arrayFromJson(Decco.stringFromJson, v);
+  var orgDescription = Decco.arrayFromJson(Decco.stringFromJson, orgData.description);
   var orgAnimals = orgData.wildcard;
   var orgComingSoon = orgData.unlaunched;
   var match = React.useState(function () {
@@ -254,10 +253,10 @@ function OrgProfile$OrgPage(Props) {
       });
   var setSelectedComingSoonAnimal = match[1];
   var orgAnimalsArray = Belt_Array.map(orgAnimals, (function (animal) {
-          return animal.id;
+          return Belt_Option.getWithDefault(animal.id, TokenId.makeFromInt(99999));
         }));
-  var currentUsdEthPrice = UsdPriceProvider$WildCards.useUsdPrice(undefined);
-  var match$1 = QlHooks$WildCards.useTotalRaisedAnimalGroup(orgAnimalsArray);
+  var currentUsdEthPrice = UsdPriceProvider.useUsdPrice(undefined);
+  var match$1 = QlHooks.useTotalRaisedAnimalGroup(orgAnimalsArray);
   var totalCollectMaticDai = match$1[1];
   var totalCollectedMainnetEth = match$1[0];
   var match$2;
@@ -266,16 +265,16 @@ function OrgProfile$OrgPage(Props) {
     var mainnetEth = Caml_option.valFromOption(totalCollectedMainnetEth);
     match$2 = [
       (Belt_Option.mapWithDefault(currentUsdEthPrice, 0, (function (usdEthRate) {
-                  return Eth$WildCards.getFloat(mainnetEth, {
+                  return Eth.getFloat(mainnetEth, {
                               TAG: /* Usd */1,
                               _0: usdEthRate,
                               _1: 2
                             });
-                })) + Eth$WildCards.getFloat(maticDai, {
+                })) + Eth.getFloat(maticDai, {
                 TAG: /* Eth */0,
                 _0: "ether"
               })).toFixed(6),
-      Web3Utils$WildCards.fromWeiBNToEthPrecision(mainnetEth, 4) + (" ETH + " + (Web3Utils$WildCards.fromWeiBNToEthPrecision(maticDai, 2) + " DAI"))
+      Web3Utils.fromWeiBNToEthPrecision(mainnetEth, 4) + (" ETH + " + (Web3Utils.fromWeiBNToEthPrecision(maticDai, 2) + " DAI"))
     ];
   } else {
     match$2 = [
@@ -285,13 +284,13 @@ function OrgProfile$OrgPage(Props) {
   }
   var orgWebsite = orgData.website;
   var optOrgYoutubeVid = orgData.youtube_vid;
-  var orgImage = Animal$WildCards.useGetOrgImage(orgId);
+  var orgImage = Animal.useGetOrgImage(orgId);
   var tmp;
-  tmp = orgDescription.TAG ? React.createElement("p", undefined, Globals$WildCards.restr("error loading description")) : Belt_Array.mapWithIndex(orgDescription._0, (function (i, paragraphText) {
+  tmp = orgDescription.TAG === /* Ok */0 ? Belt_Array.mapWithIndex(orgDescription._0, (function (i, paragraphText) {
             return React.createElement("p", {
                         key: String(i)
                       }, paragraphText);
-          }));
+          })) : React.createElement("p", undefined, Globals.restr("error loading description"));
   return React.createElement("div", undefined, React.createElement(OrgProfile$ComingSoonModal, {
                   selectedComingSoonAnimal: match[0],
                   setSelectedComingSoonAnimal: setSelectedComingSoonAnimal,
@@ -327,8 +326,8 @@ function OrgProfile$OrgPage(Props) {
                                 }
                               })
                         }, React.createElement("a", {
-                              className: Cn.make({
-                                    hd: Styles$WildCards.navListText,
+                              className: Cn.fromList({
+                                    hd: Styles.navListText,
                                     tl: {
                                       hd: Curry._1(Css.style, {
                                             hd: Css.fontSize(Css.em(3)),
@@ -359,8 +358,8 @@ function OrgProfile$OrgPage(Props) {
                                       }),
                                   src: orgImage
                                 })), React.createElement("br", undefined), React.createElement("a", {
-                              className: Cn.make({
-                                    hd: Styles$WildCards.navListText,
+                              className: Cn.fromList({
+                                    hd: Styles.navListText,
                                     tl: {
                                       hd: Curry._1(Css.style, {
                                             hd: Css.fontSize(Css.em(3)),
@@ -372,7 +371,7 @@ function OrgProfile$OrgPage(Props) {
                               href: orgWebsite,
                               rel: "noopener noreferrer",
                               target: "_blank"
-                            }, Globals$WildCards.restr(orgName)), React.createElement("br", undefined), React.createElement("div", {
+                            }, Globals.restr(orgName)), React.createElement("br", undefined), React.createElement("div", {
                               className: Curry._1(Css.style, {
                                     hd: Css.maxHeight({
                                           NAME: "em",
@@ -399,7 +398,7 @@ function OrgProfile$OrgPage(Props) {
                               })
                         }, optOrgYoutubeVid !== undefined ? React.createElement(make, {
                                 videoCode: optOrgYoutubeVid
-                              }) : null, React.createElement("h2", undefined, Globals$WildCards.restr("Total Raised")), Globals$WildCards.restr(match$2[0] + "USD"), React.createElement("br", undefined), React.createElement("small", undefined, Globals$WildCards.restr(match$2[1]))), React.createElement(RimbleUi.Box, {
+                              }) : null, React.createElement("h2", undefined, Globals.restr("Total Raised")), Globals.restr(match$2[0] + "USD"), React.createElement("br", undefined), React.createElement("small", undefined, Globals.restr(match$2[1]))), React.createElement(RimbleUi.Box, {
                           children: null,
                           width: [
                             1,
@@ -419,13 +418,14 @@ function OrgProfile$OrgPage(Props) {
                                     children: "Organisations animals"
                                   }), React.createElement(RimbleUi.Flex, {
                                     children: Belt_Array.map(orgAnimals, (function (animal) {
-                                            return React.createElement(UserProfile$WildCards.Token.make, {
-                                                        tokenId: animal.id,
-                                                        key: TokenId$WildCards.toString(animal.id)
+                                            var tokenId = Belt_Option.getWithDefault(animal.id, TokenId.makeFromInt(99999));
+                                            return React.createElement(UserProfile.Token.make, {
+                                                        tokenId: tokenId,
+                                                        key: TokenId.toString(tokenId)
                                                       });
                                           })),
                                     flexWrap: "wrap",
-                                    className: UserProfile$WildCards.centreAlignOnMobile
+                                    className: UserProfile.centreAlignOnMobile
                                   })) : React.createElement("p", undefined, "This organisation doesn't have any wildcards yet"), orgComingSoon.length !== 0 ? React.createElement(React.Fragment, {
                                 children: null
                               }, React.createElement(RimbleUi.Heading, {
@@ -433,11 +433,11 @@ function OrgProfile$OrgPage(Props) {
                                   }), React.createElement(RimbleUi.Flex, {
                                     children: null,
                                     flexWrap: "wrap",
-                                    className: UserProfile$WildCards.centreAlignOnMobile
+                                    className: UserProfile.centreAlignOnMobile
                                   }, null, Belt_Array.mapWithIndex(orgComingSoon, (function (key, animal) {
                                           return Belt_Option.mapWithDefault(Belt_Array.get(animal.real_wc_photos, 0), null, (function (photos) {
                                                         return React.createElement(OrgProfile$ComingSoonAnimal, {
-                                                                    image: CONSTANTS$WildCards.cdnBase + photos.image,
+                                                                    image: CONSTANTS.cdnBase + photos.image,
                                                                     onClick: (function (param) {
                                                                         return Curry._1(setSelectedComingSoonAnimal, (function (param) {
                                                                                       return key;
@@ -455,26 +455,17 @@ var OrgPage = {
 
 function OrgProfile(Props) {
   var orgId = Props.orgId;
-  var orgData = QlHooks$WildCards.useLoadOrganisationData(orgId);
-  var tmp;
-  if (orgData !== undefined) {
-    var orgData$1 = Caml_option.valFromOption(orgData).organisations_by_pk;
-    tmp = orgData$1 !== undefined ? React.createElement(OrgProfile$OrgPage, {
-            orgData: Caml_option.valFromOption(orgData$1),
-            orgId: orgId
-          }) : React.createElement("div", undefined, React.createElement(RimbleUi.Heading, {
-                children: "Could not find an organisation with that ID."
-              }));
-  } else {
-    tmp = React.createElement("div", undefined, React.createElement(RimbleUi.Heading, {
-              children: "Loading Organisation Profile"
-            }), React.createElement(RimbleUi.Loader, {}));
-  }
+  var orgData = QlHooks.useLoadOrganisationQuery(orgId);
   return React.createElement(RimbleUi.Flex, {
-              children: tmp,
+              children: orgData !== undefined ? React.createElement(OrgProfile$OrgPage, {
+                      orgData: orgData,
+                      orgId: orgId
+                    }) : React.createElement("div", undefined, React.createElement(RimbleUi.Heading, {
+                          children: "Loading Organisation Profile"
+                        }), React.createElement(RimbleUi.Loader, {})),
               flexWrap: "wrap",
               alignItems: "center",
-              className: Styles$WildCards.topBody
+              className: Styles.topBody
             });
 }
 

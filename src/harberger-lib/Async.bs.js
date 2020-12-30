@@ -31,10 +31,10 @@ function catchAsync(p, cb) {
 
 function asyncFromResult(result) {
   return mapAsync(Promise.resolve(result), (function (a) {
-                if (a.TAG) {
-                  return Js_exn.raiseError(a._0);
-                } else {
+                if (a.TAG === /* Ok */0) {
                   return a._0;
+                } else {
+                  return Js_exn.raiseError(a._0);
                 }
               }));
 }
@@ -42,10 +42,10 @@ function asyncFromResult(result) {
 function attemptMapAsync(promise, attempter) {
   return mapAsync(promise, (function (a) {
                 var b = Curry._1(attempter, a);
-                if (b.TAG) {
-                  return Js_exn.raiseError(b._0);
-                } else {
+                if (b.TAG === /* Ok */0) {
                   return b._0;
+                } else {
+                  return Js_exn.raiseError(b._0);
                 }
               }));
 }

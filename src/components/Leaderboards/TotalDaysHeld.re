@@ -1,48 +1,44 @@
-open ReasonApolloHooks;
+open GqlConverters;
 
 module LoadMostDaysHeld = [%graphql
   {|
     query {
       patrons(first: 20, orderBy: totalTimeHeld, orderDirection: desc,  where: {id_not: "NO_OWNER"}) {
         id
-        totalTimeHeld @bsDecoder(fn: "QlHooks.decodeBN")
+        totalTimeHeld @ppxCustom(module: "BigInt")
         tokens{
           id
         }
-        lastUpdated @bsDecoder(fn: "QlHooks.decodeBN")
+        lastUpdated @ppxCustom(module: "BigInt")
       }
     }
   |}
 ];
 
-let useLoadMostDaysHeld = () =>
-  ApolloHooks.useSubscription(LoadMostDaysHeld.definition);
 let useLoadMostDaysHeldData = () => {
-  let (simple, _) = useLoadMostDaysHeld();
   let currentTimestamp = QlHooks.useCurrentTime();
-  switch (simple) {
-  | Data(largestContributors) =>
-    let dailyContributions =
-      largestContributors##patrons
-      |> Js.Array.map(patron => {
-           let numberOfTokens = patron##tokens->Js.Array.length->string_of_int;
-           let timeElapsed =
-             BN.new_(currentTimestamp)->BN.sub(patron##lastUpdated);
 
-           let totalTimeHeldWei =
-             patron##totalTimeHeld
-             ->BN.add(timeElapsed->BN.mul(BN.new_(numberOfTokens)));
+  switch (LoadMostDaysHeld.use()) {
+  | {loading: true, _} => None
+  | {error: Some(_error), _} => None
+  | {data: Some({patrons}), _} =>
+    patrons
+    ->Array.map(patron => {
+        let numberOfTokens = patron.tokens->Js.Array.length->string_of_int;
+        let timeElapsed =
+          BN.new_(currentTimestamp)->BN.sub(patron.lastUpdated);
 
-           (patron##id, totalTimeHeldWei);
-         });
-    Array.sort(
-      ((_, first), (_, second)) => {second->BN.cmp(first)},
-      dailyContributions,
-    );
-    Some(dailyContributions);
-  | Error(_)
-  | Loading
-  | NoData => None
+        let totalTimeHeldWei =
+          patron.totalTimeHeld
+          ->BN.add(timeElapsed->BN.mul(BN.new_(numberOfTokens)));
+
+        (patron.id, totalTimeHeldWei);
+      })
+    ->Js.Array2.sortInPlaceWith(((_, first), (_, second)) => {
+        second->BN.cmp(first)
+      })
+    ->Some
+  | _ => None
   };
 };
 
@@ -167,20 +163,17 @@ module MostDaysHeld = {
   [@react.component]
   let make = (~mostDaysHeld) => {
     React.array(
-      Array.mapi(
-        (index, (contributor, amount)) => {
-          <ContributorsRow
-            contributor
-            amount={
-              // ->BN.new_("86400")
-              // There are 86400 seconds in a day.
-              amount->BN.div(BN.new_("86400"))->BN.toString
-            }
-            index
-          />
-        },
-        mostDaysHeld,
-      ),
+      Array.mapWithIndex(mostDaysHeld, (index, (contributor, amount)) => {
+        <ContributorsRow
+          contributor
+          amount={
+            // ->BN.new_("86400")
+            // There are 86400 seconds in a day.
+            amount->BN.div(BN.new_("86400"))->BN.toString
+          }
+          index
+        />
+      }),
     );
   };
 };

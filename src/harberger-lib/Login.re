@@ -47,7 +47,7 @@ let make = () => {
              onClick={_e => activateConnector(connector.connector)}
              className=Css.(
                style([
-                 border(px(1), `solid, rgba(195, 195, 195, 0.14)),
+                 border(px(1), `solid, rgba(195, 195, 195, `num(0.14))),
                  hover([]),
                ])
              )>
@@ -61,7 +61,9 @@ let make = () => {
                    flexDirection(column),
                    cursor(`pointer),
                    borderRadius(px(12)),
-                   hover([backgroundColor(rgba(195, 195, 195, 0.14))]),
+                   hover([
+                     backgroundColor(rgba(195, 195, 195, `num(0.14))),
+                   ]),
                    transition(
                      ~duration=200,
                      ~delay=0,

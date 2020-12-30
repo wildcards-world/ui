@@ -1,5 +1,3 @@
-open Globals;
-
 // This function returns a prefix based on the page state. Now it is a boolean, in the future it may be more complicated.
 let getPagePrefix = isExplorer => isExplorer ? "explorer/" : "";
 

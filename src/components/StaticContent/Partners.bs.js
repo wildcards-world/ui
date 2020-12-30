@@ -3,19 +3,14 @@
 import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
-import * as Js_exn from "bs-platform/lib/es6/js_exn.js";
-import * as Js_dict from "bs-platform/lib/es6/js_dict.js";
-import * as Js_json from "bs-platform/lib/es6/js_json.js";
-import * as Css_Core from "bs-css/src/Css_Core.bs.js";
-import * as Js_option from "bs-platform/lib/es6/js_option.js";
+import * as Styles from "../../Styles.bs.js";
+import * as Globals from "../../harberger-lib/Globals.bs.js";
+import * as CONSTANTS from "../../CONSTANTS.bs.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
-import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
-import * as Styles$WildCards from "../../Styles.bs.js";
-import * as Globals$WildCards from "../../harberger-lib/Globals.bs.js";
-import * as CONSTANTS$WildCards from "../../CONSTANTS.bs.js";
-import * as RootProvider$WildCards from "../../harberger-lib/RootProvider.bs.js";
-import * as ApolloHooks$ReasonApolloHooks from "@wildcards/reason-apollo-hooks/src/ApolloHooks.bs.js";
+import * as RootProvider from "../../harberger-lib/RootProvider.bs.js";
+import * as Css_Legacy_Core from "bs-css/src/Css_Legacy_Core.bs.js";
+import * as ApolloClient__React_Hooks_UseQuery from "reason-apollo-client/src/@apollo/client/react/hooks/ApolloClient__React_Hooks_UseQuery.bs.js";
 
 var ubisoftLogo = "/img/logos/Ubisoft.png";
 
@@ -25,105 +20,127 @@ var cvLabsLogo = "/img/logos/cvlabszug.jpg";
 
 var kernelLogo = "/img/logos/kernel.gif";
 
-var ppx_printed_query = "query ActivePartners  {\norganisations(where: {onboarding_status: {_in: [live, signed, listed]}})  {\nlogo  \nid  \nname  \n}\n\n}\n";
+var Raw = {};
+
+var query = (require("@apollo/client").gql`
+  query ActivePartners  {
+    organisations(where: {onboarding_status: {_in: [live, signed, listed]}})  {
+      __typename
+      logo
+      id
+      name
+    }
+  }
+`);
 
 function parse(value) {
-  var value$1 = Js_option.getExn(Js_json.decodeObject(value));
-  var value$2 = Js_dict.get(value$1, "organisations");
+  var value$1 = value.organisations;
   return {
-          organisations: value$2 !== undefined ? Js_option.getExn(Js_json.decodeArray(Caml_option.valFromOption(value$2))).map(function (value) {
-                  var value$1 = Js_option.getExn(Js_json.decodeObject(value));
-                  var value$2 = Js_dict.get(value$1, "logo");
-                  var tmp;
-                  if (value$2 !== undefined) {
-                    var value$3 = Caml_option.valFromOption(value$2);
-                    var value$4 = Js_json.decodeString(value$3);
-                    tmp = value$4 !== undefined ? value$4 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$3));
-                  } else {
-                    tmp = Js_exn.raiseError("graphql_ppx: Field logo on type organisations is missing");
-                  }
-                  var value$5 = Js_dict.get(value$1, "id");
-                  var tmp$1;
-                  if (value$5 !== undefined) {
-                    var value$6 = Caml_option.valFromOption(value$5);
-                    var value$7 = Js_json.decodeString(value$6);
-                    tmp$1 = value$7 !== undefined ? value$7 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$6));
-                  } else {
-                    tmp$1 = Js_exn.raiseError("graphql_ppx: Field id on type organisations is missing");
-                  }
-                  var value$8 = Js_dict.get(value$1, "name");
-                  var tmp$2;
-                  if (value$8 !== undefined) {
-                    var value$9 = Caml_option.valFromOption(value$8);
-                    var value$10 = Js_json.decodeString(value$9);
-                    tmp$2 = value$10 !== undefined ? value$10 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$9));
-                  } else {
-                    tmp$2 = Js_exn.raiseError("graphql_ppx: Field name on type organisations is missing");
-                  }
-                  return {
-                          logo: tmp,
-                          id: tmp$1,
-                          name: tmp$2
-                        };
-                }) : Js_exn.raiseError("graphql_ppx: Field organisations on type query_root is missing")
+          organisations: value$1.map(function (value) {
+                return {
+                        __typename: value.__typename,
+                        logo: value.logo,
+                        id: value.id,
+                        name: value.name
+                      };
+              })
         };
 }
 
-function make(param) {
+function serialize(value) {
+  var value$1 = value.organisations;
+  var organisations = value$1.map(function (value) {
+        var value$1 = value.name;
+        var value$2 = value.id;
+        var value$3 = value.logo;
+        var value$4 = value.__typename;
+        return {
+                __typename: value$4,
+                logo: value$3,
+                id: value$2,
+                name: value$1
+              };
+      });
   return {
-          query: ppx_printed_query,
-          variables: null,
-          parse: parse
+          organisations: organisations
         };
 }
 
-function makeWithVariables(param) {
-  return {
-          query: ppx_printed_query,
-          variables: null,
-          parse: parse
-        };
+function serializeVariables(param) {
+  
 }
 
 function makeVariables(param) {
-  return null;
+  
 }
 
-function definition_2(graphql_ppx_use_json_variables_fn) {
-  return 0;
+function makeDefaultVariables(param) {
+  
 }
 
-var definition = [
-  parse,
-  ppx_printed_query,
-  definition_2
-];
+var LoadPatronNoDecode_inner = {
+  Raw: Raw,
+  query: query,
+  parse: parse,
+  serialize: serialize,
+  serializeVariables: serializeVariables,
+  makeVariables: makeVariables,
+  makeDefaultVariables: makeDefaultVariables
+};
 
-function ret_type(f) {
-  return {};
-}
+var include = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query,
+      Raw: Raw,
+      parse: parse,
+      serialize: serialize,
+      serializeVariables: serializeVariables
+    });
 
-var MT_Ret = {};
+var use = include.use;
+
+var LoadPatronNoDecode_refetchQueryDescription = include.refetchQueryDescription;
+
+var LoadPatronNoDecode_useLazy = include.useLazy;
+
+var LoadPatronNoDecode_useLazyWithVariables = include.useLazyWithVariables;
 
 var LoadPatronNoDecode = {
-  ppx_printed_query: ppx_printed_query,
-  query: ppx_printed_query,
+  LoadPatronNoDecode_inner: LoadPatronNoDecode_inner,
+  Raw: Raw,
+  query: query,
   parse: parse,
-  make: make,
-  makeWithVariables: makeWithVariables,
+  serialize: serialize,
+  serializeVariables: serializeVariables,
   makeVariables: makeVariables,
-  definition: definition,
-  ret_type: ret_type,
-  MT_Ret: MT_Ret
+  makeDefaultVariables: makeDefaultVariables,
+  refetchQueryDescription: LoadPatronNoDecode_refetchQueryDescription,
+  use: use,
+  useLazy: LoadPatronNoDecode_useLazy,
+  useLazyWithVariables: LoadPatronNoDecode_useLazyWithVariables
 };
 
 function usePartners(param) {
-  var match = ApolloHooks$ReasonApolloHooks.useQuery(undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, definition);
-  var simple = match[0];
-  if (typeof simple === "number" || simple.TAG) {
+  var match = Curry.app(use, [
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+      ]);
+  var match$1 = match.data;
+  if (match.loading || match.error !== undefined || match$1 === undefined) {
     return ;
   } else {
-    return Belt_Array.map(simple._0.organisations, (function (org) {
+    return Belt_Array.map(match$1.organisations, (function (org) {
                   return {
                           logo: org.logo,
                           id: org.id,
@@ -179,7 +196,7 @@ var centerText = Curry._1(Css.style, {
 
 function Partners$OrgDetails(Props) {
   var conservation = Props.conservation;
-  var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
+  var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   var id = conservation.id;
   return React.createElement(RimbleUi.Card, {
               className: cardStyle,
@@ -240,7 +257,10 @@ function Partners$OrgDetails(Props) {
                                               tl: {
                                                 hd: Css.overflow(Css.visible),
                                                 tl: {
-                                                  hd: Css.boxShadow(Css_Core.Shadow.box(undefined, undefined, Css.px(20), Css.px(20), undefined, Css.rgba(121, 181, 80, 0.5))),
+                                                  hd: Css.boxShadow(Css_Legacy_Core.Shadow.box(undefined, undefined, Css.px(20), Css.px(20), undefined, Css.rgba(121, 181, 80, {
+                                                                NAME: "num",
+                                                                VAL: 0.5
+                                                              }))),
                                                   tl: {
                                                     hd: Css.transform(Css.scale(1.01, 1.01)),
                                                     tl: {
@@ -259,7 +279,7 @@ function Partners$OrgDetails(Props) {
                               }
                             }),
                         alt: conservation.name,
-                        src: CONSTANTS$WildCards.cdnBase + conservation.logo
+                        src: CONSTANTS.cdnBase + conservation.logo
                       }))
             });
 }
@@ -287,7 +307,7 @@ function Partners(Props) {
   return React.createElement("div", {
               width: "100%"
             }, React.createElement(RimbleUi.Flex, {
-                  children: React.createElement("h1", undefined, Globals$WildCards.restr("Conservation Partners")),
+                  children: React.createElement("h1", undefined, Globals.restr("Conservation Partners")),
                   flexWrap: "wrap",
                   alignItems: "stretch",
                   justifyContent: "space-around",
@@ -312,7 +332,7 @@ function Partners(Props) {
                   alignItems: "stretch",
                   justifyContent: "space-around",
                   px: 50,
-                  className: Styles$WildCards.infoBackground
+                  className: Styles.infoBackground
                 }, React.createElement(RimbleUi.Box, {
                       mb: 70,
                       mt: 70,
@@ -325,7 +345,7 @@ function Partners(Props) {
                                       alt: "ubisoft",
                                       src: ubisoftLogo
                                     }), React.createElement(RimbleUi.Text, {
-                                      children: Globals$WildCards.restr("Ubisoft's Entrepreneurs Lab, Season 4, participants"),
+                                      children: Globals.restr("Ubisoft's Entrepreneurs Lab, Season 4, participants"),
                                       className: centerText
                                     }))
                           }),
@@ -347,7 +367,7 @@ function Partners(Props) {
                                       alt: "eth-cape-town",
                                       src: ethCapeTownLogo
                                     }), React.createElement(RimbleUi.Text, {
-                                      children: Globals$WildCards.restr("Overall winners of EthCapeTown hackathon"),
+                                      children: Globals.restr("Overall winners of EthCapeTown hackathon"),
                                       className: centerText
                                     }))
                           }),
@@ -369,7 +389,7 @@ function Partners(Props) {
                                       alt: "cv-labs",
                                       src: cvLabsLogo
                                     }), React.createElement(RimbleUi.Text, {
-                                      children: Globals$WildCards.restr("CV Labs Incubator Program, Batch 2"),
+                                      children: Globals.restr("CV Labs Incubator Program, Batch 2"),
                                       className: centerText
                                     }))
                           }),
@@ -391,7 +411,7 @@ function Partners(Props) {
                                       alt: "Kernel Gitcoin",
                                       src: kernelLogo
                                     }), React.createElement(RimbleUi.Text, {
-                                      children: Globals$WildCards.restr("Gitcoin Kernel genesis block participants"),
+                                      children: Globals.restr("Gitcoin Kernel genesis block participants"),
                                       className: centerText
                                     }))
                           }),
@@ -404,7 +424,7 @@ function Partners(Props) {
                     })));
 }
 
-var make$1 = Partners;
+var make = Partners;
 
 export {
   ubisoftLogo ,
@@ -418,7 +438,7 @@ export {
   logoStyle ,
   centerText ,
   OrgDetails ,
-  make$1 as make,
+  make ,
   
 }
-/* blueBackground Not a pure module */
+/* query Not a pure module */

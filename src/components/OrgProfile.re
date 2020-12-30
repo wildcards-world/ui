@@ -23,7 +23,14 @@ module ComingSoonAnimal = {
 
 module ImageCarousel = {
   [@react.component]
-  let make = (~orgComingSoon, ~selectedIndex) => {
+  let make =
+      (
+        ~orgComingSoon:
+           array(
+             QlHooks.LoadOrganisationData.LoadOrganisationData_inner.t_organisations_by_pk_unlaunched,
+           ),
+        ~selectedIndex,
+      ) => {
     <ResponsiveCarousel
       showArrows=true
       showStatus=true
@@ -39,11 +46,11 @@ module ImageCarousel = {
       selectedItem=selectedIndex>
       {React.array(
          orgComingSoon->Array.mapWithIndex((key, animal) => {
-           animal##real_wc_photos[0]
+           animal.real_wc_photos[0]
            ->Option.mapWithDefault(React.null, photos =>
                <img
                  key={key->string_of_int}
-                 src={CONSTANTS.cdnBase ++ photos##image}
+                 src={CONSTANTS.cdnBase ++ photos.image}
                />
              )
          }),
@@ -58,7 +65,10 @@ module ComingSoonModal = {
       (
         ~selectedComingSoonAnimal,
         ~setSelectedComingSoonAnimal,
-        ~orgComingSoon,
+        ~orgComingSoon:
+           array(
+             QlHooks.LoadOrganisationData.LoadOrganisationData_inner.t_organisations_by_pk_unlaunched,
+           ),
       ) => {
     let (openImage, setOpenImage) = React.useState(_ => None);
 
@@ -92,8 +102,8 @@ module ComingSoonModal = {
                <div>
                  <h3 className=Css.(style([textAlign(center)]))>
                    {(
-                      animal##name->Option.getWithDefault("Unamed")
-                      ++ animal##commonName
+                      animal.name->Option.getWithDefault("Unamed")
+                      ++ animal.commonName
                          ->Option.mapWithDefault("", commonName =>
                              " - " ++ commonName
                            )
@@ -118,7 +128,7 @@ module ComingSoonModal = {
                          style([maxHeight(`em(26.)), overflow(`scroll)])
                        )>
                        {React.array(
-                          animal##description
+                          animal.description
                           ->QlHooks.animalDescription_decode
                           ->Belt.Result.getWithDefault([||])
                           ->Array.mapWithIndex((i, paragraphText) =>
@@ -145,10 +155,10 @@ module ComingSoonModal = {
                          }
                          targetRowHeight=30
                          photos={
-                           animal##real_wc_photos
+                           animal.real_wc_photos
                            ->Array.map(photo =>
                                PhotoGallery.{
-                                 src: CONSTANTS.cdnBase ++ photo##image,
+                                 src: CONSTANTS.cdnBase ++ photo.image,
                                  width: 4,
                                  height: 3,
                                }
@@ -170,14 +180,21 @@ module ComingSoonModal = {
 
 module OrgPage = {
   [@react.component]
-  let make = (~orgData, ~orgId) => {
-    let orgName = orgData##name;
-    let orgDescription = orgData##description->orgDescriptionArray_decode;
-    let orgAnimals = orgData##wildcard;
-    let orgComingSoon = orgData##unlaunched;
+  let make =
+      (
+        ~orgData: QlHooks.LoadOrganisationData.LoadOrganisationData_inner.t_organisations_by_pk,
+        ~orgId,
+      ) => {
+    let orgName = orgData.name;
+    let orgDescription = orgData.description->orgDescriptionArray_decode;
+    let orgAnimals = orgData.wildcard;
+    let orgComingSoon = orgData.unlaunched;
     let (selectedComingSoonAnimal, setSelectedComingSoonAnimal) =
       React.useState(() => None);
-    let orgAnimalsArray = orgAnimals->Array.map(animal => animal##id);
+    let orgAnimalsArray =
+      orgAnimals->Array.map(animal =>
+        animal.id->Option.getWithDefault(TokenId.makeFromInt(99999))
+      );
     let currentUsdEthPrice = UsdPriceProvider.useUsdPrice();
     let (totalCollectedMainnetEth, totalCollectMaticDai) =
       QlHooks.useTotalRaisedAnimalGroup(orgAnimalsArray);
@@ -200,8 +217,8 @@ module OrgPage = {
       | _ => ("loading", "loading")
       };
 
-    let orgWebsite = orgData##website;
-    let optOrgYoutubeVid = orgData##youtube_vid;
+    let orgWebsite = orgData.website;
+    let optOrgYoutubeVid = orgData.youtube_vid;
     let orgImage = Animal.useGetOrgImage(orgId);
 
     <div>
@@ -223,7 +240,7 @@ module OrgPage = {
               ])
             )>
             <a
-              className={Cn.make([
+              className={Cn.fromList([
                 Styles.navListText,
                 Css.(style([fontSize(em(3.))])),
               ])}
@@ -245,7 +262,7 @@ module OrgPage = {
             </a>
             <br />
             <a
-              className={Cn.make([
+              className={Cn.fromList([
                 Styles.navListText,
                 Css.(style([fontSize(em(3.))])),
               ])}
@@ -303,10 +320,15 @@ module OrgPage = {
                    flexWrap="wrap" className=UserProfile.centreAlignOnMobile>
                    {React.array(
                       uniquePreviouslyOwnedTokens->Array.map(animal => {
+                        let tokenId =
+                          animal.id
+                          ->Option.getWithDefault(
+                              TokenId.makeFromInt(99999),
+                            );
                         <UserProfile.Token
-                          key={animal##id->TokenId.toString}
-                          tokenId={animal##id}
-                        />
+                          key={tokenId->TokenId.toString}
+                          tokenId
+                        />;
                       }),
                     )}
                  </Rimble.Flex>
@@ -322,11 +344,11 @@ module OrgPage = {
                    React.null
                    {React.array(
                       orgComingSoon->Array.mapWithIndex((key, animal) => {
-                        animal##real_wc_photos[0]
+                        animal.real_wc_photos[0]
                         ->Option.mapWithDefault(React.null, photos =>
                             <ComingSoonAnimal
                               key={key->string_of_int}
-                              image={CONSTANTS.cdnBase ++ photos##image}
+                              image={CONSTANTS.cdnBase ++ photos.image}
                               onClick={() =>
                                 setSelectedComingSoonAnimal(_ => Some(key))
                               }
@@ -347,21 +369,13 @@ module OrgPage = {
 
 [@react.component]
 let make = (~orgId: string) => {
-  let orgData = QlHooks.useLoadOrganisationData(orgId);
+  let orgData = QlHooks.useLoadOrganisationQuery(orgId);
 
   <Rimble.Flex flexWrap="wrap" alignItems="center" className=Styles.topBody>
     {switch (orgData) {
-     | Some(data) =>
-       let orgData = data##organisations_by_pk;
-       switch (orgData) {
-       | Some(orgData) => <OrgPage orgId orgData />
-       | None =>
-         <div>
-           <Rimble.Heading>
-             "Could not find an organisation with that ID."->React.string
-           </Rimble.Heading>
-         </div>
-       };
+     | Some(organisations_by_pk) =>
+       let orgData = organisations_by_pk;
+       <OrgPage orgId orgData />;
      | None =>
        <div>
          <Rimble.Heading>

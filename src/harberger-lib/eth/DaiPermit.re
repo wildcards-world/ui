@@ -1,5 +1,3 @@
-open Globals;
-
 [@bs.send] external padStart: (string, int, string) => string = "padStart";
 let createPermitSig =
     (provider, verifyingContract, nonce, chainId, holder, spender) => {

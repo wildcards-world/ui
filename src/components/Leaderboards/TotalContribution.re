@@ -1,53 +1,48 @@
-open ReasonApolloHooks;
+open GqlConverters;
 
 module LoadMostContributed = [%graphql
   {|
     query {
       patrons(first: 30, orderBy: totalContributed, orderDirection: desc, where: {id_not: "0x6d47cf86f6a490c6410fc082fd1ad29cf61492d0"}) {
         id
-        patronTokenCostScaledNumerator  @bsDecoder(fn: "QlHooks.decodeBN")
-        totalContributed @bsDecoder(fn: "QlHooks.decodeBN")
-        lastUpdated @bsDecoder(fn: "QlHooks.decodeBN")
+        patronTokenCostScaledNumerator  @ppxCustom(module: "BigInt")
+        totalContributed @ppxCustom(module: "BigInt")
+        lastUpdated @ppxCustom(module: "BigInt")
       }
     }
   |}
 ];
 
-let useLoadMostContributed = () =>
-  ApolloHooks.useSubscription(LoadMostContributed.definition);
 let useLoadMostContributedData = () => {
-  let (simple, _) = useLoadMostContributed();
   let currentTimestamp = QlHooks.useCurrentTime();
-  switch (simple) {
-  | Data(largestContributors) =>
-    let dailyContributions =
-      largestContributors##patrons
-      |> Js.Array.map(patron => {
-           let timeElapsed =
-             BN.new_(currentTimestamp)->BN.sub(patron##lastUpdated);
 
-           let amountContributedSinceLastUpdate =
-             patron##patronTokenCostScaledNumerator
-             ->BN.mul(timeElapsed) // A month with 30 days has 2592000 seconds
-             ->BN.div(
-                 // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
-                 BN.new_("31536000000000000000"),
-               );
+  switch (LoadMostContributed.use()) {
+  | {loading: true, _} => None
+  | {error: Some(_error), _} => None
+  | {data: Some({patrons}), _} =>
+    patrons
+    ->Array.map(patron => {
+        let timeElapsed =
+          BN.new_(currentTimestamp)->BN.sub(patron.lastUpdated);
 
-           let totalContributedWei =
-             patron##totalContributed
-             ->BN.add(amountContributedSinceLastUpdate);
+        let amountContributedSinceLastUpdate =
+          patron.patronTokenCostScaledNumerator
+          ->BN.mul(timeElapsed) // A month with 30 days has 2592000 seconds
+          ->BN.div(
+              // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
+              BN.new_("31536000000000000000"),
+            );
 
-           (patron##id, totalContributedWei);
-         });
-    Array.sort(
-      ((_, first), (_, second)) => {second->BN.cmp(first)},
-      dailyContributions,
-    );
-    Some(dailyContributions);
-  | Error(_)
-  | Loading
-  | NoData => None
+        let totalContributedWei =
+          patron.totalContributed->BN.add(amountContributedSinceLastUpdate);
+
+        (patron.id, totalContributedWei);
+      })
+    ->Js.Array2.sortInPlaceWith(((_, first), (_, second)) => {
+        second->BN.cmp(first)
+      })
+    ->Some
+  | _ => None
   };
 };
 
@@ -172,16 +167,13 @@ module MostContributed = {
   [@react.component]
   let make = (~highestContributors) => {
     React.array(
-      Array.mapi(
-        (index, (contributor, amount)) => {
-          <ContributorsRow
-            contributor
-            amount={amount->Web3Utils.fromWeiBNToEthPrecision(~digits=4)}
-            index
-          />
-        },
-        highestContributors,
-      ),
+      Array.mapWithIndex(highestContributors, (index, (contributor, amount)) => {
+        <ContributorsRow
+          contributor
+          amount={amount->Web3Utils.fromWeiBNToEthPrecision(~digits=4)}
+          index
+        />
+      }),
     );
   };
 };

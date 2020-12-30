@@ -2,21 +2,21 @@
 
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
+import * as Styles from "../../Styles.bs.js";
+import * as Globals from "../../harberger-lib/Globals.bs.js";
+import * as Web3Utils from "../../harberger-lib/Web3Utils.bs.js";
 import * as RimbleUi from "rimble-ui";
-import * as Styles$WildCards from "../../Styles.bs.js";
-import * as Globals$WildCards from "../../harberger-lib/Globals.bs.js";
-import * as Web3Utils$WildCards from "../../harberger-lib/Web3Utils.bs.js";
-import * as RootProvider$WildCards from "../../harberger-lib/RootProvider.bs.js";
-import * as WildcardsLoader$WildCards from "../StaticContent/WildcardsLoader.bs.js";
+import * as RootProvider from "../../harberger-lib/RootProvider.bs.js";
+import * as WildcardsLoader from "../StaticContent/WildcardsLoader.bs.js";
 
 function TxTemplate(Props) {
   var children = Props.children;
   var txState = Props.txState;
   var closeButtonText = Props.closeButtonText;
   var chain = Props.chain;
-  var etherscanUrl = RootProvider$WildCards.useEtherscanUrl(undefined);
-  var sidechainUrl = RootProvider$WildCards.useSidechainEtherscanUrl(undefined);
-  var clearNonUrlState = RootProvider$WildCards.useClearNonUrlState(undefined);
+  var etherscanUrl = RootProvider.useEtherscanUrl(undefined);
+  var sidechainUrl = RootProvider.useSidechainEtherscanUrl(undefined);
+  var clearNonUrlState = RootProvider.useClearNonUrlState(undefined);
   var isSideChainTx = chain === 1;
   var txExplererUrl = isSideChainTx ? sidechainUrl : etherscanUrl;
   if (typeof txState === "number") {
@@ -28,7 +28,7 @@ function TxTemplate(Props) {
                       children: null
                     }, React.createElement(RimbleUi.Heading, {
                           children: null
-                        }, Globals$WildCards.restr("Please sign the message to submit this transaction."), React.createElement(WildcardsLoader$WildCards.make, {})), React.createElement(RimbleUi.Flex, {
+                        }, Globals.restr("Please sign the message to submit this transaction."), React.createElement(WildcardsLoader.make, {})), React.createElement(RimbleUi.Flex, {
                           children: React.createElement(RimbleUi.Loader, {
                                 size: "80px"
                               }),
@@ -39,8 +39,8 @@ function TxTemplate(Props) {
                       children: null
                     }, React.createElement(RimbleUi.Heading, {
                           children: null
-                        }, Globals$WildCards.restr("Processing Transaction "), React.createElement(WildcardsLoader$WildCards.make, {})), React.createElement(RimbleUi.Text, {
-                          children: Globals$WildCards.restr("Tx created.")
+                        }, Globals.restr("Processing Transaction "), React.createElement(WildcardsLoader.make, {})), React.createElement(RimbleUi.Text, {
+                          children: Globals.restr("Tx created.")
                         }), React.createElement(RimbleUi.Flex, {
                           children: React.createElement(RimbleUi.Loader, {
                                 size: "80px"
@@ -52,8 +52,8 @@ function TxTemplate(Props) {
                       children: null
                     }, React.createElement(RimbleUi.Heading, {
                           children: null
-                        }, Globals$WildCards.restr("Transaction Submitted "), React.createElement(WildcardsLoader$WildCards.make, {})), React.createElement(RimbleUi.Text, {
-                          children: Globals$WildCards.restr("Awaiting transaction details.")
+                        }, Globals.restr("Transaction Submitted "), React.createElement(WildcardsLoader.make, {})), React.createElement(RimbleUi.Text, {
+                          children: Globals.restr("Awaiting transaction details.")
                         }), React.createElement(RimbleUi.Flex, {
                           children: React.createElement(RimbleUi.Loader, {
                                 size: "80px"
@@ -65,8 +65,8 @@ function TxTemplate(Props) {
                       children: null
                     }, React.createElement(RimbleUi.Heading, {
                           children: null
-                        }, Globals$WildCards.restr("The transaction failed."), React.createElement(WildcardsLoader$WildCards.make, {})), React.createElement(RimbleUi.Text, {
-                          children: Globals$WildCards.restr("It is possible that someone else bought the token before you, or the price changed. If you are unsure please feel free to contact our support.")
+                        }, Globals.restr("The transaction failed."), React.createElement(WildcardsLoader.make, {})), React.createElement(RimbleUi.Text, {
+                          children: Globals.restr("It is possible that someone else bought the token before you, or the price changed. If you are unsure please feel free to contact our support.")
                         }), children);
       
     }
@@ -77,7 +77,7 @@ function TxTemplate(Props) {
                       children: null
                     }, React.createElement(RimbleUi.Heading, {
                           children: null
-                        }, Globals$WildCards.restr("Please sign the message to allow use of " + (Web3Utils$WildCards.fromWeiBNToEthPrecision(txState._0, 2) + " DAI.")), React.createElement(WildcardsLoader$WildCards.make, {})), React.createElement(RimbleUi.Flex, {
+                        }, Globals.restr("Please sign the message to allow use of " + (Web3Utils.fromWeiBNToEthPrecision(txState._0, 2) + " DAI.")), React.createElement(WildcardsLoader.make, {})), React.createElement(RimbleUi.Flex, {
                           children: React.createElement(RimbleUi.Loader, {
                                 size: "80px"
                               }),
@@ -88,42 +88,42 @@ function TxTemplate(Props) {
                       children: null
                     }, React.createElement(RimbleUi.Heading, {
                           children: null
-                        }, Globals$WildCards.restr("Processing Transaction "), React.createElement(WildcardsLoader$WildCards.make, {})), React.createElement(RimbleUi.Text, {
+                        }, Globals.restr("Processing Transaction "), React.createElement(WildcardsLoader.make, {})), React.createElement(RimbleUi.Text, {
                           children: React.createElement("a", {
                                 href: "https://" + txExplererUrl + "/tx/" + txState._0,
                                 rel: "noopener noreferrer",
                                 target: "_blank"
-                              }, Globals$WildCards.restr("View the transaction on " + txExplererUrl))
+                              }, Globals.restr("View the transaction on " + txExplererUrl))
                         }), React.createElement(RimbleUi.Loader, {
-                          className: Styles$WildCards.centerItems,
+                          className: Styles.centerItems,
                           size: "80px"
                         }));
       case /* Declined */2 :
           return React.createElement(React.Fragment, {
                       children: null
                     }, React.createElement(RimbleUi.Heading, {
-                          children: Globals$WildCards.restr("The transaction was declined by your wallet, please try again.")
-                        }), React.createElement("p", undefined, Globals$WildCards.restr("Failure reason: " + txState._0)), children);
+                          children: Globals.restr("The transaction was declined by your wallet, please try again.")
+                        }), React.createElement("p", undefined, Globals.restr("Failure reason: " + txState._0)), children);
       case /* ServerError */3 :
           return React.createElement(React.Fragment, {
                       children: null
                     }, React.createElement(RimbleUi.Heading, {
-                          children: Globals$WildCards.restr("There was a server error when submitting your transaction.")
-                        }), React.createElement("p", undefined, Globals$WildCards.restr("Failure reason: " + txState._0)), children);
+                          children: Globals.restr("There was a server error when submitting your transaction.")
+                        }), React.createElement("p", undefined, Globals.restr("Failure reason: " + txState._0)), children);
       case /* Complete */4 :
           var txHash = txState._0.transactionHash;
           return React.createElement(React.Fragment, {
                       children: null
                     }, React.createElement(RimbleUi.Heading, {
                           children: null
-                        }, Globals$WildCards.restr("Transaction Complete "), React.createElement(WildcardsLoader$WildCards.make, {})), React.createElement(RimbleUi.Text, {
+                        }, Globals.restr("Transaction Complete "), React.createElement(WildcardsLoader.make, {})), React.createElement(RimbleUi.Text, {
                           children: React.createElement("a", {
                                 href: "https://" + txExplererUrl + "/tx/" + txHash,
                                 rel: "noopener noreferrer",
                                 target: "_blank"
-                              }, Globals$WildCards.restr("View the transaction on " + txExplererUrl))
+                              }, Globals.restr("View the transaction on " + txExplererUrl))
                         }), React.createElement(RimbleUi.Button, {
-                          children: Globals$WildCards.restr(closeButtonText),
+                          children: Globals.restr(closeButtonText),
                           onClick: (function (_e) {
                               return Curry._1(clearNonUrlState, undefined);
                             })

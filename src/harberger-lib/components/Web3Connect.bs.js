@@ -2,13 +2,13 @@
 
 import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
+import * as Login from "../Login.bs.js";
 import * as React from "react";
+import * as Styles from "../../Styles.bs.js";
+import * as Globals from "../Globals.bs.js";
 import * as RimbleUi from "rimble-ui";
-import * as Login$WildCards from "../Login.bs.js";
-import * as Styles$WildCards from "../../Styles.bs.js";
-import * as Globals$WildCards from "../Globals.bs.js";
+import * as RootProvider from "../RootProvider.bs.js";
 import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.bs.js";
-import * as RootProvider$WildCards from "../RootProvider.bs.js";
 
 var infoModalStyle = Curry._1(Css.style, {
       hd: Css.padding(Css.rem(3)),
@@ -32,9 +32,9 @@ function Web3Connect(Props) {
   var clickAction = clickActionOpt !== undefined ? clickActionOpt : (function (param) {
         
       });
-  var connectWeb3 = RootProvider$WildCards.useConnectWeb3(undefined);
-  var deactivateWeb3 = RootProvider$WildCards.useDeactivateWeb3(undefined);
-  var networkIdOpt = RootProvider$WildCards.useNetworkId(undefined);
+  var connectWeb3 = RootProvider.useConnectWeb3(undefined);
+  var deactivateWeb3 = RootProvider.useDeactivateWeb3(undefined);
+  var networkIdOpt = RootProvider.useNetworkId(undefined);
   var connectedNetworkName = function (networkId) {
     if (networkId >= 6) {
       if (networkId !== 42) {
@@ -80,13 +80,13 @@ function Web3Connect(Props) {
             })
         });
   return React.createElement("div", {
-              className: Styles$WildCards.loginButton
+              className: Styles.loginButton
             }, web3Button);
 }
 
 function Web3Connect$Modal(Props) {
-  var showLogin = RootProvider$WildCards.useShowLogin(undefined);
-  var closeLogin = RootProvider$WildCards.useCloseWeb3Login(undefined);
+  var showLogin = RootProvider.useShowLogin(undefined);
+  var closeLogin = RootProvider.useCloseWeb3Login(undefined);
   return React.createElement(RimbleUi.Modal, {
               isOpen: showLogin,
               children: React.createElement(RimbleUi.Card, {
@@ -104,9 +104,9 @@ function Web3Connect$Modal(Props) {
                         right: 0,
                         m: 3
                       }), React.createElement(RimbleUi.Heading, {
-                        children: Globals$WildCards.restr("Login"),
-                        className: Styles$WildCards.centerText
-                      }), React.createElement(Login$WildCards.make, {}))
+                        children: Globals.restr("Login"),
+                        className: Styles.centerText
+                      }), React.createElement(Login.make, {}))
             });
 }
 

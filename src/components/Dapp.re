@@ -557,9 +557,9 @@ module DetailsViewAnimal = {
              <a
                onClick={e => {
                  ReactEvent.Mouse.preventDefault(e);
-                 clearAndPush("/#artist/" ++ artistInfo##id);
+                 clearAndPush("/#artist/" ++ artistInfo.id);
                }}>
-               {artistInfo##name->React.string}
+               artistInfo.name->React.string
              </a>
            </p>
          )}

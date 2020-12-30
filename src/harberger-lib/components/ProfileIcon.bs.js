@@ -3,15 +3,15 @@
 import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
+import * as Blockie from "../bindings/ethereum-blockies-base64/Blockie.bs.js";
+import * as Globals from "../Globals.bs.js";
 import * as Js_dict from "bs-platform/lib/es6/js_dict.js";
+import * as CONSTANTS from "../../CONSTANTS.bs.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
-import * as Blockie$WildCards from "../bindings/ethereum-blockies-base64/Blockie.bs.js";
-import * as Globals$WildCards from "../Globals.bs.js";
-import * as CONSTANTS$WildCards from "../../CONSTANTS.bs.js";
-import * as RootProvider$WildCards from "../RootProvider.bs.js";
-import * as UserProvider$WildCards from "../js/user-provider/UserProvider.bs.js";
+import * as RootProvider from "../RootProvider.bs.js";
+import * as UserProvider from "../js/user-provider/UserProvider.bs.js";
 
 function ProfileIcon(Props) {
   var clickActionOpt = Props.clickAction;
@@ -20,18 +20,18 @@ function ProfileIcon(Props) {
         
       });
   var isMobile = isMobileOpt !== undefined ? isMobileOpt : false;
-  var currentUser = RootProvider$WildCards.useCurrentUser(undefined);
-  var networkIdOpt = RootProvider$WildCards.useNetworkId(undefined);
-  var displayName = UserProvider$WildCards.useDisplayName(Belt_Option.mapWithDefault(currentUser, "loading", (function (a) {
+  var currentUser = RootProvider.useCurrentUser(undefined);
+  var networkIdOpt = RootProvider.useNetworkId(undefined);
+  var displayName = UserProvider.useDisplayName(Belt_Option.mapWithDefault(currentUser, "loading", (function (a) {
               return a;
             })));
-  var displayNameStr = UserProvider$WildCards.displayNameToString(displayName);
-  var userAddressLowerCase = currentUser !== undefined ? currentUser.toLowerCase() : CONSTANTS$WildCards.nullEthAddress;
-  var optThreeBoxData = UserProvider$WildCards.use3BoxUserData(userAddressLowerCase);
-  var optProfile = Globals$WildCards.$great$great$eq(optThreeBoxData, (function (a) {
+  var displayNameStr = UserProvider.displayNameToString(displayName);
+  var userAddressLowerCase = currentUser !== undefined ? currentUser.toLowerCase() : CONSTANTS.nullEthAddress;
+  var optThreeBoxData = UserProvider.use3BoxUserData(userAddressLowerCase);
+  var optProfile = Globals.$great$great$eq(optThreeBoxData, (function (a) {
           return a.profile;
         }));
-  var profileImage = Belt_Option.mapWithDefault(Globals$WildCards.$great$great$eq(Globals$WildCards.$less$$great(Globals$WildCards.$great$great$eq(Globals$WildCards.$great$great$eq(optProfile, (function (a) {
+  var profileImage = Belt_Option.mapWithDefault(Globals.$great$great$eq(Globals.$less$$great(Globals.$great$great$eq(Globals.$great$great$eq(optProfile, (function (a) {
                           return a.image;
                         })), (function (img) {
                       return Belt_Array.get(img, 0);
@@ -39,7 +39,7 @@ function ProfileIcon(Props) {
                   return a.contentUrl;
                 })), (function (content) {
               return Js_dict.get(content, "/");
-            })), Blockie$WildCards.makeBlockie(userAddressLowerCase), (function (hash) {
+            })), Blockie.makeBlockie(userAddressLowerCase), (function (hash) {
           return "https://ipfs.infura.io/ipfs/" + hash;
         }));
   var message = networkIdOpt !== undefined ? (
@@ -73,7 +73,7 @@ function ProfileIcon(Props) {
             }),
         src: profileImage
       });
-  var clearAndPush = RootProvider$WildCards.useClearNonUrlStateAndPushRoute(undefined);
+  var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   if (networkIdOpt !== undefined) {
     if (isMobile) {
       return React.createElement("div", {
@@ -88,7 +88,7 @@ function ProfileIcon(Props) {
                       Curry._1(clickAction, undefined);
                       return Curry._1(clearAndPush, "#user/" + userAddressLowerCase);
                     })
-                }, React.createElement("div", undefined, React.createElement("p", undefined, React.createElement("strong", undefined, Globals$WildCards.restr("View Your Profile:"))), React.createElement("p", undefined, Globals$WildCards.restr(message))), profileIcon);
+                }, React.createElement("div", undefined, React.createElement("p", undefined, React.createElement("strong", undefined, Globals.restr("View Your Profile:"))), React.createElement("p", undefined, Globals.restr(message))), profileIcon);
     } else {
       return React.createElement(RimbleUi.Tooltip, {
                   message: message,

@@ -3,16 +3,16 @@
 import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
+import * as Styles from "../Styles.bs.js";
+import * as Globals from "../harberger-lib/Globals.bs.js";
+import * as QlHooks from "../harberger-lib/QlHooks.bs.js";
+import * as TokenId from "../harberger-lib/TokenId.bs.js";
 import * as RimbleUi from "rimble-ui";
+import * as Accounting from "../harberger-lib/Accounting.bs.js";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import * as Belt_Float from "bs-platform/lib/es6/belt_Float.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
-import * as Styles$WildCards from "../Styles.bs.js";
-import * as Globals$WildCards from "../harberger-lib/Globals.bs.js";
-import * as QlHooks$WildCards from "../harberger-lib/QlHooks.bs.js";
-import * as TokenId$WildCards from "../harberger-lib/TokenId.bs.js";
-import * as Accounting$WildCards from "../harberger-lib/Accounting.bs.js";
-import * as PriceDisplay$WildCards from "../harberger-lib/PriceDisplay.bs.js";
+import * as PriceDisplay from "../harberger-lib/PriceDisplay.bs.js";
 
 var dragonImg = "/img/animals/Glen.svg";
 
@@ -155,7 +155,7 @@ function VotePage$OrganisationVote(Props) {
                         }
                       }),
                   disabled: true,
-                  children: Globals$WildCards.restr("Voting Disabled"),
+                  children: Globals.restr("Voting Disabled"),
                   onClick: (function (param) {
                       return Curry._1(selectConservation, index);
                     })
@@ -185,11 +185,11 @@ function VotePage(Props) {
                         };
                 }));
   };
-  var glen = TokenId$WildCards.makeFromInt(13);
-  var optCurrentPrice = PriceDisplay$WildCards.usePrice(chain, glen);
-  var match$1 = QlHooks$WildCards.usePledgeRateDetailed(chain, glen);
+  var glen = TokenId.makeFromInt(13);
+  var optCurrentPrice = PriceDisplay.usePrice(chain, glen);
+  var match$1 = QlHooks.usePledgeRateDetailed(chain, glen);
   var match$2 = optCurrentPrice !== undefined ? [
-      Globals$WildCards.toFixedWithPrecisionNoTrailingZeros(Accounting$WildCards.defaultZeroF(Belt_Float.fromString(optCurrentPrice[0])) * match$1[2], 5),
+      Globals.toFixedWithPrecisionNoTrailingZeros(Accounting.defaultZeroF(Belt_Float.fromString(optCurrentPrice[0])) * match$1[2], 5),
       undefined
     ] : [
       undefined,
@@ -228,17 +228,17 @@ function VotePage(Props) {
                                             hd: Css.textAlign("center"),
                                             tl: /* [] */0
                                           })
-                                    }, Globals$WildCards.restr("Glen the Dragon from Turin"))), React.createElement("p", {
+                                    }, Globals.restr("Glen the Dragon from Turin"))), React.createElement("p", {
                                   className: Curry._1(Css.style, {
                                         hd: Css.textAlign("center"),
                                         tl: /* [] */0
                                       })
-                                }, Globals$WildCards.restr("Monthly contribution: "), optMonthlyPledgeEth !== undefined ? Globals$WildCards.restr(optMonthlyPledgeEth + " ETH") : React.createElement(RimbleUi.Loader, {
+                                }, Globals.restr("Monthly contribution: "), optMonthlyPledgeEth !== undefined ? Globals.restr(optMonthlyPledgeEth + " ETH") : React.createElement(RimbleUi.Loader, {
                                         className: Curry._1(Css.style, {
                                               hd: Css.margin(Css.auto),
                                               tl: /* [] */0
                                             })
-                                      }), React.createElement("br", undefined), React.createElement("small", undefined, optMonthlyPledgeUsd !== undefined ? Globals$WildCards.restr("(" + (Caml_option.valFromOption(optMonthlyPledgeUsd) + " USD)")) : null)), React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("h4", {
+                                      }), React.createElement("br", undefined), React.createElement("small", undefined, optMonthlyPledgeUsd !== undefined ? Globals.restr("(" + (Caml_option.valFromOption(optMonthlyPledgeUsd) + " USD)")) : null)), React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("h4", {
                                   className: Curry._1(Css.style, {
                                         hd: Css.width({
                                               NAME: "percent",
@@ -249,7 +249,7 @@ function VotePage(Props) {
                                           tl: /* [] */0
                                         }
                                       })
-                                }, Globals$WildCards.restr("Voting coming again soon!"))), React.createElement(RimbleUi.Box, {
+                                }, Globals.restr("Voting coming again soon!"))), React.createElement(RimbleUi.Box, {
                               children: null,
                               width: [
                                 1,
@@ -261,12 +261,12 @@ function VotePage(Props) {
                                         hd: Css.textDecoration("underline"),
                                         tl: /* [] */0
                                       })
-                                }, Globals$WildCards.restr("How it works")), React.createElement("p", undefined, Globals$WildCards.restr("Glen is a special Wildcard, this mystical creature is not tied to a specific conservation but rather each month the owners of Wildcards vote for a conservation they think should receive the funds raised by Glen.")), React.createElement("p", undefined, Globals$WildCards.restr("The voting mechanism uses quadratic voting. Wildcards owners vote using Wildcards Loyalty tokens which they earn from holding a Wildcard. Quadratic voting means that the number of loyalty tokens don't represent the exact number of votes but rather the number of loyalty tokens is square rooted to represent the number of votes.")), React.createElement("h3", {
+                                }, Globals.restr("How it works")), React.createElement("p", undefined, Globals.restr("Glen is a special Wildcard, this mystical creature is not tied to a specific conservation but rather each month the owners of Wildcards vote for a conservation they think should receive the funds raised by Glen.")), React.createElement("p", undefined, Globals.restr("The voting mechanism uses quadratic voting. Wildcards owners vote using Wildcards Loyalty tokens which they earn from holding a Wildcard. Quadratic voting means that the number of loyalty tokens don't represent the exact number of votes but rather the number of loyalty tokens is square rooted to represent the number of votes.")), React.createElement("h3", {
                                   className: Curry._1(Css.style, {
                                         hd: Css.textDecoration("underline"),
                                         tl: /* [] */0
                                       })
-                                }, Globals$WildCards.restr("Quadratic Voting    "), match[0] !== /* DefaultView */0 ? React.createElement("img", {
+                                }, Globals.restr("Quadratic Voting    "), match[0] !== /* DefaultView */0 ? React.createElement("img", {
                                         className: Curry._1(Css.style, {
                                               hd: Css.maxHeight({
                                                     NAME: "px",
@@ -286,7 +286,7 @@ function VotePage(Props) {
                                                           return /* DefaultView */0;
                                                         }));
                                           })
-                                      }) : null), React.createElement("small", undefined, React.createElement("p", undefined, Globals$WildCards.restr("Unfortunately we have decided to stop running our DAO on mainnet ethereum. We are moving all of this code to Matic where voting will be much cheaper and more frictionless"))), React.createElement(RimbleUi.Flex, {
+                                      }) : null), React.createElement("small", undefined, React.createElement("p", undefined, Globals.restr("Unfortunately we have decided to stop running our DAO on mainnet ethereum. We are moving all of this code to Matic where voting will be much cheaper and more frictionless"))), React.createElement(RimbleUi.Flex, {
                                   children: Belt_Array.mapWithIndex(conservationPartners, (function (index, conservationPartner) {
                                           return React.createElement(VotePage$OrganisationVote, {
                                                       conservationPartner: conservationPartner,
@@ -299,7 +299,7 @@ function VotePage(Props) {
                                   alignItems: "center"
                                 })))
                   }),
-              className: Styles$WildCards.topBody
+              className: Styles.topBody
             });
 }
 
