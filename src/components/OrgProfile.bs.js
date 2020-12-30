@@ -245,8 +245,7 @@ function OrgProfile$OrgPage(Props) {
   var orgData = Props.orgData;
   var orgId = Props.orgId;
   var orgName = orgData.name;
-  var v = orgData.description;
-  var orgDescription = Decco.arrayFromJson(Decco.stringFromJson, v);
+  var orgDescription = Decco.arrayFromJson(Decco.stringFromJson, orgData.description);
   var orgAnimals = orgData.wildcard;
   var orgComingSoon = orgData.unlaunched;
   var match = React.useState(function () {
@@ -254,7 +253,7 @@ function OrgProfile$OrgPage(Props) {
       });
   var setSelectedComingSoonAnimal = match[1];
   var orgAnimalsArray = Belt_Array.map(orgAnimals, (function (animal) {
-          return animal.id;
+          return Belt_Option.getWithDefault(animal.id, TokenId.makeFromInt(99999));
         }));
   var currentUsdEthPrice = UsdPriceProvider.useUsdPrice(undefined);
   var match$1 = QlHooks.useTotalRaisedAnimalGroup(orgAnimalsArray);
@@ -419,9 +418,10 @@ function OrgProfile$OrgPage(Props) {
                                     children: "Organisations animals"
                                   }), React.createElement(RimbleUi.Flex, {
                                     children: Belt_Array.map(orgAnimals, (function (animal) {
+                                            var tokenId = Belt_Option.getWithDefault(animal.id, TokenId.makeFromInt(99999));
                                             return React.createElement(UserProfile.Token.make, {
-                                                        tokenId: animal.id,
-                                                        key: TokenId.toString(animal.id)
+                                                        tokenId: tokenId,
+                                                        key: TokenId.toString(tokenId)
                                                       });
                                           })),
                                     flexWrap: "wrap",
@@ -455,23 +455,14 @@ var OrgPage = {
 
 function OrgProfile(Props) {
   var orgId = Props.orgId;
-  var orgData = QlHooks.useLoadOrganisationData(orgId);
-  var tmp;
-  if (orgData !== undefined) {
-    var orgData$1 = Caml_option.valFromOption(orgData).organisations_by_pk;
-    tmp = orgData$1 !== undefined ? React.createElement(OrgProfile$OrgPage, {
-            orgData: Caml_option.valFromOption(orgData$1),
-            orgId: orgId
-          }) : React.createElement("div", undefined, React.createElement(RimbleUi.Heading, {
-                children: "Could not find an organisation with that ID."
-              }));
-  } else {
-    tmp = React.createElement("div", undefined, React.createElement(RimbleUi.Heading, {
-              children: "Loading Organisation Profile"
-            }), React.createElement(RimbleUi.Loader, {}));
-  }
+  var orgData = QlHooks.useLoadOrganisationQuery(orgId);
   return React.createElement(RimbleUi.Flex, {
-              children: tmp,
+              children: orgData !== undefined ? React.createElement(OrgProfile$OrgPage, {
+                      orgData: orgData,
+                      orgId: orgId
+                    }) : React.createElement("div", undefined, React.createElement(RimbleUi.Heading, {
+                          children: "Loading Organisation Profile"
+                        }), React.createElement(RimbleUi.Loader, {})),
               flexWrap: "wrap",
               alignItems: "center",
               className: Styles.topBody

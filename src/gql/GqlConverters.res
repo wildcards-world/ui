@@ -42,6 +42,12 @@ module GqlTokenId = {
     ->Belt.Option.getWithDefault(TokenId.makeFromInt(0))
   let serialize = tokenId => tokenId->TokenId.toString->Js.Json.string
 }
+module GqlTokenIdStr = {
+  type t = TokenId.t
+  let parse = tokenIdJson =>
+    tokenIdJson->TokenId.make->Belt.Option.getWithDefault(TokenId.makeFromInt(0))
+  let serialize = tokenId => tokenId->TokenId.toString
+}
 
 // let decodePrice: Js.Json.t => Eth.t =
 module Price = {

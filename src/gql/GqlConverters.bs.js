@@ -53,53 +53,65 @@ var GqlTokenId = {
   serialize: serialize$2
 };
 
-function parse$3(price) {
+function parse$3(tokenIdJson) {
+  return Belt_Option.getWithDefault(TokenId.make(tokenIdJson), TokenId.makeFromInt(0));
+}
+
+var serialize$3 = TokenId.toString;
+
+var GqlTokenIdStr = {
+  parse: parse$3,
+  serialize: serialize$3
+};
+
+function parse$4(price) {
   return Eth.makeWithDefault(Belt_Option.mapWithDefault(Js_json.decodeString(price), "0", (function (a) {
                     return a;
                   })), 0);
 }
 
-function serialize$3(price) {
+function serialize$4(price) {
   return price.toString();
 }
 
 var Price = {
-  parse: parse$3,
-  serialize: serialize$3
-};
-
-function parse$4(moment) {
-  return MomentRe.momentWithUnix(Belt_Option.mapWithDefault(Js_json.decodeString(moment), 0, Caml_format.caml_int_of_string));
-}
-
-function serialize$4(moment) {
-  return String(moment.unix());
-}
-
-var GqlMoment = {
   parse: parse$4,
   serialize: serialize$4
 };
 
-function parse$5(address) {
+function parse$5(moment) {
+  return MomentRe.momentWithUnix(Belt_Option.mapWithDefault(Js_json.decodeString(moment), 0, Caml_format.caml_int_of_string));
+}
+
+function serialize$5(moment) {
+  return String(moment.unix());
+}
+
+var GqlMoment = {
+  parse: parse$5,
+  serialize: serialize$5
+};
+
+function parse$6(address) {
   return Belt_Option.mapWithDefault(Js_json.decodeString(address), "0x0", (function (a) {
                 return a;
               }));
 }
 
-function serialize$5(address) {
+function serialize$6(address) {
   return address;
 }
 
 var GqlAddress = {
-  parse: parse$5,
-  serialize: serialize$5
+  parse: parse$6,
+  serialize: serialize$6
 };
 
 export {
   $$BigInt ,
   BigIntStr ,
   GqlTokenId ,
+  GqlTokenIdStr ,
   Price ,
   GqlMoment ,
   GqlAddress ,

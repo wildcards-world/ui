@@ -11,6 +11,7 @@ import * as Js_dict from "bs-platform/lib/es6/js_dict.js";
 import * as Js_json from "bs-platform/lib/es6/js_json.js";
 import * as Js_math from "bs-platform/lib/es6/js_math.js";
 import * as TokenId from "./TokenId.bs.js";
+import * as Web3Utils from "./Web3Utils.bs.js";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Belt_Result from "bs-platform/lib/es6/belt_Result.js";
@@ -996,6 +997,307 @@ var LoadPatron = {
 var Raw$5 = {};
 
 var query$5 = (require("@apollo/client").gql`
+  query ($orgId: String!)  {
+    organisations_by_pk(id: $orgId)  {
+      __typename
+      description
+      name
+      website
+      wildcard(where: {id: {_is_null: false}})  {
+        __typename
+        id
+      }
+      unlaunched: wildcard(where: {id: {_is_null: true}, real_wc_photos: {image: {_is_null: false}}})  {
+        __typename
+        key
+        real_wc_photos  {
+          __typename
+          image
+          photographer
+        }
+        name
+        commonName
+        description
+      }
+      logo
+      logo_badge
+      youtube_vid
+    }
+  }
+`);
+
+function parse$5(value) {
+  var value$1 = value.organisations_by_pk;
+  var tmp;
+  if (value$1 == null) {
+    tmp = undefined;
+  } else {
+    var value$2 = value$1.wildcard;
+    var value$3 = value$1.unlaunched;
+    var value$4 = value$1.logo_badge;
+    var value$5 = value$1.youtube_vid;
+    tmp = {
+      __typename: value$1.__typename,
+      description: value$1.description,
+      name: value$1.name,
+      website: value$1.website,
+      wildcard: value$2.map(function (value) {
+            var value$1 = value.id;
+            return {
+                    __typename: value.__typename,
+                    id: !(value$1 == null) ? Caml_option.some(GqlConverters.GqlTokenIdStr.parse(value$1)) : undefined
+                  };
+          }),
+      unlaunched: value$3.map(function (value) {
+            var value$1 = value.real_wc_photos;
+            var value$2 = value.name;
+            var value$3 = value.commonName;
+            return {
+                    __typename: value.__typename,
+                    key: value.key,
+                    real_wc_photos: value$1.map(function (value) {
+                          var value$1 = value.photographer;
+                          return {
+                                  __typename: value.__typename,
+                                  image: value.image,
+                                  photographer: !(value$1 == null) ? value$1 : undefined
+                                };
+                        }),
+                    name: !(value$2 == null) ? value$2 : undefined,
+                    commonName: !(value$3 == null) ? value$3 : undefined,
+                    description: value.description
+                  };
+          }),
+      logo: value$1.logo,
+      logo_badge: !(value$4 == null) ? value$4 : undefined,
+      youtube_vid: !(value$5 == null) ? value$5 : undefined
+    };
+  }
+  return {
+          organisations_by_pk: tmp
+        };
+}
+
+function serialize$5(value) {
+  var value$1 = value.organisations_by_pk;
+  var organisations_by_pk;
+  if (value$1 !== undefined) {
+    var value$2 = value$1.youtube_vid;
+    var youtube_vid = value$2 !== undefined ? value$2 : null;
+    var value$3 = value$1.logo_badge;
+    var logo_badge = value$3 !== undefined ? value$3 : null;
+    var value$4 = value$1.logo;
+    var value$5 = value$1.unlaunched;
+    var unlaunched = value$5.map(function (value) {
+          var value$1 = value.description;
+          var value$2 = value.commonName;
+          var commonName = value$2 !== undefined ? value$2 : null;
+          var value$3 = value.name;
+          var name = value$3 !== undefined ? value$3 : null;
+          var value$4 = value.real_wc_photos;
+          var real_wc_photos = value$4.map(function (value) {
+                var value$1 = value.photographer;
+                var photographer = value$1 !== undefined ? value$1 : null;
+                var value$2 = value.image;
+                var value$3 = value.__typename;
+                return {
+                        __typename: value$3,
+                        image: value$2,
+                        photographer: photographer
+                      };
+              });
+          var value$5 = value.key;
+          var value$6 = value.__typename;
+          return {
+                  __typename: value$6,
+                  key: value$5,
+                  real_wc_photos: real_wc_photos,
+                  name: name,
+                  commonName: commonName,
+                  description: value$1
+                };
+        });
+    var value$6 = value$1.wildcard;
+    var wildcard = value$6.map(function (value) {
+          var value$1 = value.id;
+          var id = value$1 !== undefined ? GqlConverters.GqlTokenIdStr.serialize(Caml_option.valFromOption(value$1)) : null;
+          var value$2 = value.__typename;
+          return {
+                  __typename: value$2,
+                  id: id
+                };
+        });
+    var value$7 = value$1.website;
+    var value$8 = value$1.name;
+    var value$9 = value$1.description;
+    var value$10 = value$1.__typename;
+    organisations_by_pk = {
+      __typename: value$10,
+      description: value$9,
+      name: value$8,
+      website: value$7,
+      wildcard: wildcard,
+      unlaunched: unlaunched,
+      logo: value$4,
+      logo_badge: logo_badge,
+      youtube_vid: youtube_vid
+    };
+  } else {
+    organisations_by_pk = null;
+  }
+  return {
+          organisations_by_pk: organisations_by_pk
+        };
+}
+
+function serializeVariables$5(inp) {
+  return {
+          orgId: inp.orgId
+        };
+}
+
+function makeVariables$5(orgId, param) {
+  return {
+          orgId: orgId
+        };
+}
+
+var LoadOrganisationData_inner = {
+  Raw: Raw$5,
+  query: query$5,
+  parse: parse$5,
+  serialize: serialize$5,
+  serializeVariables: serializeVariables$5,
+  makeVariables: makeVariables$5
+};
+
+var include$5 = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query$5,
+      Raw: Raw$5,
+      parse: parse$5,
+      serialize: serialize$5,
+      serializeVariables: serializeVariables$5
+    });
+
+var use$5 = include$5.use;
+
+var LoadOrganisationData_refetchQueryDescription = include$5.refetchQueryDescription;
+
+var LoadOrganisationData_useLazy = include$5.useLazy;
+
+var LoadOrganisationData_useLazyWithVariables = include$5.useLazyWithVariables;
+
+var LoadOrganisationData = {
+  LoadOrganisationData_inner: LoadOrganisationData_inner,
+  Raw: Raw$5,
+  query: query$5,
+  parse: parse$5,
+  serialize: serialize$5,
+  serializeVariables: serializeVariables$5,
+  makeVariables: makeVariables$5,
+  refetchQueryDescription: LoadOrganisationData_refetchQueryDescription,
+  use: use$5,
+  useLazy: LoadOrganisationData_useLazy,
+  useLazyWithVariables: LoadOrganisationData_useLazyWithVariables
+};
+
+var Raw$6 = {};
+
+var query$6 = (require("@apollo/client").gql`
+  query ($numberOfLeaders: Int!)  {
+    patrons(first: $numberOfLeaders, orderBy: patronTokenCostScaledNumerator, orderDirection: desc, where: {id_not: "NO_OWNER"})  {
+      __typename
+      id
+      patronTokenCostScaledNumerator
+    }
+  }
+`);
+
+function parse$6(value) {
+  var value$1 = value.patrons;
+  return {
+          patrons: value$1.map(function (value) {
+                return {
+                        __typename: value.__typename,
+                        id: value.id,
+                        patronTokenCostScaledNumerator: GqlConverters.$$BigInt.parse(value.patronTokenCostScaledNumerator)
+                      };
+              })
+        };
+}
+
+function serialize$6(value) {
+  var value$1 = value.patrons;
+  var patrons = value$1.map(function (value) {
+        var value$1 = value.patronTokenCostScaledNumerator;
+        var value$2 = GqlConverters.$$BigInt.serialize(value$1);
+        var value$3 = value.id;
+        var value$4 = value.__typename;
+        return {
+                __typename: value$4,
+                id: value$3,
+                patronTokenCostScaledNumerator: value$2
+              };
+      });
+  return {
+          patrons: patrons
+        };
+}
+
+function serializeVariables$6(inp) {
+  return {
+          numberOfLeaders: inp.numberOfLeaders
+        };
+}
+
+function makeVariables$6(numberOfLeaders, param) {
+  return {
+          numberOfLeaders: numberOfLeaders
+        };
+}
+
+var LoadTopContributors_inner = {
+  Raw: Raw$6,
+  query: query$6,
+  parse: parse$6,
+  serialize: serialize$6,
+  serializeVariables: serializeVariables$6,
+  makeVariables: makeVariables$6
+};
+
+var include$6 = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query$6,
+      Raw: Raw$6,
+      parse: parse$6,
+      serialize: serialize$6,
+      serializeVariables: serializeVariables$6
+    });
+
+var use$6 = include$6.use;
+
+var LoadTopContributors_refetchQueryDescription = include$6.refetchQueryDescription;
+
+var LoadTopContributors_useLazy = include$6.useLazy;
+
+var LoadTopContributors_useLazyWithVariables = include$6.useLazyWithVariables;
+
+var LoadTopContributors = {
+  LoadTopContributors_inner: LoadTopContributors_inner,
+  Raw: Raw$6,
+  query: query$6,
+  parse: parse$6,
+  serialize: serialize$6,
+  serializeVariables: serializeVariables$6,
+  makeVariables: makeVariables$6,
+  refetchQueryDescription: LoadTopContributors_refetchQueryDescription,
+  use: use$6,
+  useLazy: LoadTopContributors_useLazy,
+  useLazyWithVariables: LoadTopContributors_useLazyWithVariables
+};
+
+var Raw$7 = {};
+
+var query$7 = (require("@apollo/client").gql`
   query   {
     global(id: "1")  {
       __typename
@@ -1007,7 +1309,7 @@ var query$5 = (require("@apollo/client").gql`
   }
 `);
 
-function parse$5(value) {
+function parse$7(value) {
   var value$1 = value.global;
   return {
           global: !(value$1 == null) ? ({
@@ -1020,7 +1322,7 @@ function parse$5(value) {
         };
 }
 
-function serialize$5(value) {
+function serialize$7(value) {
   var value$1 = value.global;
   var $$global;
   if (value$1 !== undefined) {
@@ -1047,11 +1349,11 @@ function serialize$5(value) {
         };
 }
 
-function serializeVariables$5(param) {
+function serializeVariables$7(param) {
   
 }
 
-function makeVariables$5(param) {
+function makeVariables$7(param) {
   
 }
 
@@ -1060,42 +1362,42 @@ function makeDefaultVariables(param) {
 }
 
 var SubTotalRaisedOrDueQuery_inner = {
-  Raw: Raw$5,
-  query: query$5,
-  parse: parse$5,
-  serialize: serialize$5,
-  serializeVariables: serializeVariables$5,
-  makeVariables: makeVariables$5,
+  Raw: Raw$7,
+  query: query$7,
+  parse: parse$7,
+  serialize: serialize$7,
+  serializeVariables: serializeVariables$7,
+  makeVariables: makeVariables$7,
   makeDefaultVariables: makeDefaultVariables
 };
 
-var include$5 = ApolloClient__React_Hooks_UseQuery.Extend({
-      query: query$5,
-      Raw: Raw$5,
-      parse: parse$5,
-      serialize: serialize$5,
-      serializeVariables: serializeVariables$5
+var include$7 = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query$7,
+      Raw: Raw$7,
+      parse: parse$7,
+      serialize: serialize$7,
+      serializeVariables: serializeVariables$7
     });
 
-var use$5 = include$5.use;
+var use$7 = include$7.use;
 
-var SubTotalRaisedOrDueQuery_refetchQueryDescription = include$5.refetchQueryDescription;
+var SubTotalRaisedOrDueQuery_refetchQueryDescription = include$7.refetchQueryDescription;
 
-var SubTotalRaisedOrDueQuery_useLazy = include$5.useLazy;
+var SubTotalRaisedOrDueQuery_useLazy = include$7.useLazy;
 
-var SubTotalRaisedOrDueQuery_useLazyWithVariables = include$5.useLazyWithVariables;
+var SubTotalRaisedOrDueQuery_useLazyWithVariables = include$7.useLazyWithVariables;
 
 var SubTotalRaisedOrDueQuery = {
   SubTotalRaisedOrDueQuery_inner: SubTotalRaisedOrDueQuery_inner,
-  Raw: Raw$5,
-  query: query$5,
-  parse: parse$5,
-  serialize: serialize$5,
-  serializeVariables: serializeVariables$5,
-  makeVariables: makeVariables$5,
+  Raw: Raw$7,
+  query: query$7,
+  parse: parse$7,
+  serialize: serialize$7,
+  serializeVariables: serializeVariables$7,
+  makeVariables: makeVariables$7,
   makeDefaultVariables: makeDefaultVariables,
   refetchQueryDescription: SubTotalRaisedOrDueQuery_refetchQueryDescription,
-  use: use$5,
+  use: use$7,
   useLazy: SubTotalRaisedOrDueQuery_useLazy,
   useLazyWithVariables: SubTotalRaisedOrDueQuery_useLazyWithVariables
 };
@@ -1183,18 +1485,36 @@ function useStateChangeSubscription(param) {
 }
 
 function useLoadOrganisationQuery(orgId) {
-  return orgId;
+  var orgQuery = Curry.app(use$5, [
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        {
+          orgId: orgId
+        }
+      ]);
+  var match = orgQuery.data;
+  if (orgQuery.loading || orgQuery.error !== undefined || match === undefined) {
+    return ;
+  } else {
+    return match.organisations_by_pk;
+  }
 }
 
 function useStateChangeSubscriptionData(param) {
   return subscriptionResultOptionMap(undefined[0], (function (a) {
                 return a;
               }));
-}
-
-function useLoadOrganisationData(orgId) {
-  console.log(orgId);
-  
 }
 
 function useLoadOrganisationLogo(orgId) {
@@ -1314,12 +1634,43 @@ function useWildcardOrgName(tokenId) {
 }
 
 function useLoadTopContributors(numberOfLeaders) {
-  console.log(numberOfLeaders);
-  
+  var topContributorsQuery = Curry.app(use$6, [
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        {
+          numberOfLeaders: numberOfLeaders
+        }
+      ]);
+  var match = topContributorsQuery.data;
+  if (topContributorsQuery.loading || topContributorsQuery.error !== undefined || match === undefined) {
+    return ;
+  } else {
+    return match.patrons;
+  }
 }
 
 function useLoadTopContributorsData(numberOfLeaders) {
-  console.log(numberOfLeaders);
+  var topContributors = useLoadTopContributors(numberOfLeaders);
+  if (topContributors !== undefined) {
+    return Belt_Array.map(topContributors, (function (patron) {
+                  var monthlyContribution = Web3Utils.fromWeiBNToEthPrecision(patron.patronTokenCostScaledNumerator.mul(new BnJs("2592000")).div(new BnJs("31536000000000000000")), 4);
+                  return [
+                          patron.id,
+                          monthlyContribution
+                        ];
+                }));
+  }
   
 }
 
@@ -1411,7 +1762,7 @@ function useDaysHeld(chain, tokenId) {
 }
 
 function useTotalCollectedOrDue(param) {
-  var subTotalRaisedQuery = Curry.app(use$5, [
+  var subTotalRaisedQuery = Curry.app(use$7, [
         undefined,
         undefined,
         undefined,
@@ -1529,7 +1880,15 @@ function usePledgeRateDetailed(chain, tokenId) {
 }
 
 function usePatronLoyaltyTokenDetails(chain, address) {
-  console.log(chain, address);
+  var patron = useQueryPatron(chain, address);
+  if (patron !== undefined) {
+    return {
+            currentLoyaltyTokens: patron.totalLoyaltyTokens,
+            currentLoyaltyTokensIncludingUnredeemed: patron.totalLoyaltyTokensIncludingUnRedeemed,
+            lastCollected: patron.lastUpdated,
+            numberOfAnimalsOwned: new BnJs(String(patron.tokens.length))
+          };
+  }
   
 }
 
@@ -1845,6 +2204,8 @@ export {
   MaticStateQuery ,
   ArtistQuery ,
   LoadPatron ,
+  LoadOrganisationData ,
+  LoadTopContributors ,
   SubTotalRaisedOrDueQuery ,
   getQueryPrefix ,
   subscriptionResultOptionMap ,
@@ -1859,7 +2220,6 @@ export {
   useStateChangeSubscription ,
   useLoadOrganisationQuery ,
   useStateChangeSubscriptionData ,
-  useLoadOrganisationData ,
   useLoadOrganisationLogo ,
   useLoadOrganisationLogoBadge ,
   useHomePageAnimalsData ,

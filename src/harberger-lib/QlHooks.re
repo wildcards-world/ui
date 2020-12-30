@@ -297,44 +297,45 @@ module LoadPatron = [%graphql
 //         }
 //      |}
 // ];
-// module LoadOrganisationData = [%graphql
-//   {|
-//       query ($orgId: String!) {
-//         organisations_by_pk(id: $orgId) {
-//           description
-//           name
-//           website
-//           wildcard (where: {id: {_is_null: false}}) {
-//             id @ppxCustom(module: "GqlTokenId")
-//           }
-//           unlaunched: wildcard(where: {id: {_is_null: true}, real_wc_photos: {image: {_is_null: false}}}) {
-//             key
-//             real_wc_photos {
-//               image
-//               photographer
-//             }
-//             name
-//             commonName
-//             description
-//           }
-//           logo
-//           logo_badge
-//           youtube_vid
-//         }
-//       }
-//      |}
-// ];
 
-// module LoadTopContributors = [%graphql
-//   {|
-//       query ($numberOfLeaders: Int!) {
-//         patrons(first: $numberOfLeaders, orderBy: patronTokenCostScaledNumerator, orderDirection: desc, where: {id_not: "NO_OWNER"}) {
-//           id
-//           patronTokenCostScaledNumerator  @ppxCustom(module: "BigInt")
-//         }
-//       }
-//   |}
-// ];
+module LoadOrganisationData = [%graphql
+  {|
+      query ($orgId: String!) {
+        organisations_by_pk(id: $orgId) {
+          description
+          name
+          website
+          wildcard (where: {id: {_is_null: false}}) {
+            id @ppxCustom(module: "GqlTokenIdStr")
+          }
+          unlaunched: wildcard(where: {id: {_is_null: true}, real_wc_photos: {image: {_is_null: false}}}) {
+            key
+            real_wc_photos {
+              image
+              photographer
+            }
+            name
+            commonName
+            description
+          }
+          logo
+          logo_badge
+          youtube_vid
+        }
+      }
+     |}
+];
+
+module LoadTopContributors = [%graphql
+  {|
+      query ($numberOfLeaders: Int!) {
+        patrons(first: $numberOfLeaders, orderBy: patronTokenCostScaledNumerator, orderDirection: desc, where: {id_not: "NO_OWNER"}) {
+          id
+          patronTokenCostScaledNumerator  @ppxCustom(module: "BigInt")
+        }
+      }
+  |}
+];
 
 module SubTotalRaisedOrDueQuery = [%graphql
   {|
@@ -452,11 +453,16 @@ let useStateChangeSubscription = () => Obj.magic();
 //   SubStateChangeEvents.definition,
 // );
 
-let useLoadOrganisationQuery = orgId => Obj.magic(orgId);
-// ApolloHooks.useQuery(
-//   ~variables=LoadOrganisationData.make(~orgId, ())##variables,
-//   LoadOrganisationData.definition,
-// );
+let useLoadOrganisationQuery = orgId => {
+  let orgQuery =
+    LoadOrganisationData.use(LoadOrganisationData.makeVariables(~orgId, ()));
+  switch (orgQuery) {
+  | {loading: true, _} => None
+  | {error: Some(_error), _} => None
+  | {data: Some({organisations_by_pk}), _} => organisations_by_pk
+  | {data: None, _} => None
+  };
+};
 // let useBuySubscriptionData = () => {
 //   let (simple, _) = useBuySubscription();
 //   switch (simple) {
@@ -468,18 +474,10 @@ let useStateChangeSubscriptionData = () => {
   let (simple, _) = useStateChangeSubscription();
   subscriptionResultToOption(simple);
 };
-let useLoadOrganisationData = orgId => {
-  Js.log(
-    orgId,
-    /*let (simple, _) = useLoadOrganisationQuery(orgId);
-      queryResultToOption(simple);*/
-  );
-  None;
-};
 let useLoadOrganisationLogo = orgId => {
   Js.log(orgId);
   None;
-  /* let result = useLoadOrganisationData(orgId);
+  /* let result = useLoadOrganisationQuery(orgId);
      result
      ->Option.flatMap(org => org##organisations_by_pk)
      ->Option.map(org => org##logo); */
@@ -487,7 +485,7 @@ let useLoadOrganisationLogo = orgId => {
 let useLoadOrganisationLogoBadge = orgId => {
   Js.log(orgId);
   None;
-  /*  let result = useLoadOrganisationData(orgId);
+  /*  let result = useLoadOrganisationQuery(orgId);
       result
       ->Option.flatMap(org => org##organisations_by_pk)
       ->Option.map(org => org##logo_badge |||| org##logo); */
@@ -606,36 +604,35 @@ let useWildcardOrgName = (~tokenId) => {
 };
 
 let useLoadTopContributors = numberOfLeaders => {
-  /*  ApolloHooks.useSubscription(
-        ~variables=LoadTopContributors.make(~numberOfLeaders, ())##variables,
-        LoadTopContributors.definition,
-      ); */
-  Js.log(numberOfLeaders);
-  None;
+  let topContributorsQuery =
+    LoadTopContributors.use(
+      LoadTopContributors.makeVariables(~numberOfLeaders, ()),
+    );
+  switch (topContributorsQuery) {
+  | {loading: true, _} => None
+  | {error: Some(_error), _} => None
+  | {data: Some({patrons}), _} => Some(patrons)
+  | {data: None, _} => None
+  };
 };
 let useLoadTopContributorsData = numberOfLeaders => {
-  Js.log(numberOfLeaders);
-  None;
-  /*   let (simple, _) = useLoadTopContributors(numberOfLeaders);
-
-       let getLargestContributors = largestContributors => {
-         let monthlyContributions =
-           largestContributors##patrons
-           |> Js.Array.map(patron => {
-                let monthlyContribution =
-                  patron##patronTokenCostScaledNumerator
-                  ->BN.mul(BN.new_("2592000")) // A month with 30 days has 2592000 seconds
-                  ->BN.div(
-                      // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
-                      BN.new_("31536000000000000000"),
-                    )
-                  ->Web3Utils.fromWeiBNToEthPrecision(~digits=4);
-                (patron##id, monthlyContribution);
-              });
-         monthlyContributions;
-       };
-
-       simple->subscriptionResultOptionMap(getLargestContributors); */
+  switch (useLoadTopContributors(numberOfLeaders)) {
+  | Some(topContributors) =>
+    topContributors
+    ->Array.map(patron => {
+        let monthlyContribution =
+          patron.patronTokenCostScaledNumerator
+          ->BN.mul(BN.new_("2592000")) // A month with 30 days has 2592000 seconds
+          ->BN.div(
+              // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
+              BN.new_("31536000000000000000"),
+            )
+          ->Web3Utils.fromWeiBNToEthPrecision(~digits=4);
+        (patron.id, monthlyContribution);
+      })
+    ->Some
+  | None => None
+  };
 };
 let usePatron: (~chain: Client.context, TokenId.t) => option(string) =
   (~chain, animal) => {
@@ -821,35 +818,19 @@ type patronLoyaltyTokenDetails = {
   lastCollected: BN.t,
   numberOfAnimalsOwned: BN.t,
 };
-let usePatronLoyaltyTokenDetails = (~chain, address) => {
-  Js.log2(chain, address);
-  None;
-  /* // NOTE: we are using both 'new patron' and 'patron' because the work on the graph is incomplete.
-     let (response, _) = useQueryPatron(~chain, address);
-
-     [@warning "-4"]
-     (
-       switch (response) {
-       | Data(dataPatron) =>
-         switch (dataPatron##patron) {
-         | Some(patron) =>
-           Some({
-             currentLoyaltyTokens: patron##totalLoyaltyTokens,
-             currentLoyaltyTokensIncludingUnredeemed:
-               patron##totalLoyaltyTokensIncludingUnRedeemed,
-             lastCollected: patron##lastUpdated,
-             numberOfAnimalsOwned:
-               BN.new_(patron##tokens->Obj.magic->Array.length->string_of_int),
-           })
-         | _ => None
-         }
-       // | Loading
-       // | Error(_error)
-       // | NoData => None
-       | _ => None
-       }
-     ); */
-};
+let usePatronLoyaltyTokenDetails = (~chain, address) =>
+  switch (useQueryPatron(~chain, address)) {
+  | Some(patron) =>
+    Some({
+      currentLoyaltyTokens: patron.totalLoyaltyTokens,
+      currentLoyaltyTokensIncludingUnredeemed:
+        patron.totalLoyaltyTokensIncludingUnRedeemed,
+      lastCollected: patron.lastUpdated,
+      numberOfAnimalsOwned:
+        BN.new_(patron.tokens->Obj.magic->Array.length->string_of_int),
+    })
+  | _ => None
+  };
 
 // TODO:: Take min of total deposit and amount raised
 let useAmountRaisedToken: (~chain: Client.context, TokenId.t) => option(Eth.t) =
