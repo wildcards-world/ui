@@ -820,6 +820,179 @@ var ArtistQuery = {
   useLazyWithVariables: ArtistQuery_useLazyWithVariables
 };
 
+var Raw$4 = {};
+
+var query$4 = (require("@apollo/client").gql`
+  query ($patronId: String!)  {
+    patron(id: $patronId)  {
+      __typename
+      id
+      previouslyOwnedTokens  {
+        __typename
+        id
+      }
+      tokens  {
+        __typename
+        id
+      }
+      availableDeposit
+      patronTokenCostScaledNumerator
+      foreclosureTime
+      address
+      lastUpdated
+      totalLoyaltyTokens
+      totalLoyaltyTokensIncludingUnRedeemed
+    }
+  }
+`);
+
+function parse$4(value) {
+  var value$1 = value.patron;
+  var tmp;
+  if (value$1 == null) {
+    tmp = undefined;
+  } else {
+    var value$2 = value$1.previouslyOwnedTokens;
+    var value$3 = value$1.tokens;
+    tmp = {
+      __typename: value$1.__typename,
+      id: value$1.id,
+      previouslyOwnedTokens: value$2.map(function (value) {
+            return {
+                    __typename: value.__typename,
+                    id: value.id
+                  };
+          }),
+      tokens: value$3.map(function (value) {
+            return {
+                    __typename: value.__typename,
+                    id: value.id
+                  };
+          }),
+      availableDeposit: GqlConverters.Price.parse(value$1.availableDeposit),
+      patronTokenCostScaledNumerator: GqlConverters.$$BigInt.parse(value$1.patronTokenCostScaledNumerator),
+      foreclosureTime: GqlConverters.$$BigInt.parse(value$1.foreclosureTime),
+      address: GqlConverters.GqlAddress.parse(value$1.address),
+      lastUpdated: GqlConverters.$$BigInt.parse(value$1.lastUpdated),
+      totalLoyaltyTokens: GqlConverters.$$BigInt.parse(value$1.totalLoyaltyTokens),
+      totalLoyaltyTokensIncludingUnRedeemed: GqlConverters.$$BigInt.parse(value$1.totalLoyaltyTokensIncludingUnRedeemed)
+    };
+  }
+  return {
+          patron: tmp
+        };
+}
+
+function serialize$4(value) {
+  var value$1 = value.patron;
+  var patron;
+  if (value$1 !== undefined) {
+    var value$2 = value$1.totalLoyaltyTokensIncludingUnRedeemed;
+    var value$3 = GqlConverters.$$BigInt.serialize(value$2);
+    var value$4 = value$1.totalLoyaltyTokens;
+    var value$5 = GqlConverters.$$BigInt.serialize(value$4);
+    var value$6 = value$1.lastUpdated;
+    var value$7 = GqlConverters.$$BigInt.serialize(value$6);
+    var value$8 = value$1.address;
+    var value$9 = GqlConverters.GqlAddress.serialize(value$8);
+    var value$10 = value$1.foreclosureTime;
+    var value$11 = GqlConverters.$$BigInt.serialize(value$10);
+    var value$12 = value$1.patronTokenCostScaledNumerator;
+    var value$13 = GqlConverters.$$BigInt.serialize(value$12);
+    var value$14 = value$1.availableDeposit;
+    var value$15 = GqlConverters.Price.serialize(value$14);
+    var value$16 = value$1.tokens;
+    var tokens = value$16.map(function (value) {
+          var value$1 = value.id;
+          var value$2 = value.__typename;
+          return {
+                  __typename: value$2,
+                  id: value$1
+                };
+        });
+    var value$17 = value$1.previouslyOwnedTokens;
+    var previouslyOwnedTokens = value$17.map(function (value) {
+          var value$1 = value.id;
+          var value$2 = value.__typename;
+          return {
+                  __typename: value$2,
+                  id: value$1
+                };
+        });
+    var value$18 = value$1.id;
+    var value$19 = value$1.__typename;
+    patron = {
+      __typename: value$19,
+      id: value$18,
+      previouslyOwnedTokens: previouslyOwnedTokens,
+      tokens: tokens,
+      availableDeposit: value$15,
+      patronTokenCostScaledNumerator: value$13,
+      foreclosureTime: value$11,
+      address: value$9,
+      lastUpdated: value$7,
+      totalLoyaltyTokens: value$5,
+      totalLoyaltyTokensIncludingUnRedeemed: value$3
+    };
+  } else {
+    patron = null;
+  }
+  return {
+          patron: patron
+        };
+}
+
+function serializeVariables$4(inp) {
+  return {
+          patronId: inp.patronId
+        };
+}
+
+function makeVariables$4(patronId, param) {
+  return {
+          patronId: patronId
+        };
+}
+
+var LoadPatron_inner = {
+  Raw: Raw$4,
+  query: query$4,
+  parse: parse$4,
+  serialize: serialize$4,
+  serializeVariables: serializeVariables$4,
+  makeVariables: makeVariables$4
+};
+
+var include$4 = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query$4,
+      Raw: Raw$4,
+      parse: parse$4,
+      serialize: serialize$4,
+      serializeVariables: serializeVariables$4
+    });
+
+var use$4 = include$4.use;
+
+var LoadPatron_refetchQueryDescription = include$4.refetchQueryDescription;
+
+var LoadPatron_useLazy = include$4.useLazy;
+
+var LoadPatron_useLazyWithVariables = include$4.useLazyWithVariables;
+
+var LoadPatron = {
+  LoadPatron_inner: LoadPatron_inner,
+  Raw: Raw$4,
+  query: query$4,
+  parse: parse$4,
+  serialize: serialize$4,
+  serializeVariables: serializeVariables$4,
+  makeVariables: makeVariables$4,
+  refetchQueryDescription: LoadPatron_refetchQueryDescription,
+  use: use$4,
+  useLazy: LoadPatron_useLazy,
+  useLazyWithVariables: LoadPatron_useLazyWithVariables
+};
+
 function getQueryPrefix(chain) {
   if (chain !== 1) {
     return "";
@@ -1079,26 +1252,47 @@ function useTimeAcquired(chain, animal) {
 
 function useQueryPatron(chain, patron) {
   console.log(chain, patron);
-  
-}
-
-function useQueryPatronNew(patron) {
-  console.log(patron);
-  
+  var loadPatronQuery = Curry.app(use$4, [
+        undefined,
+        {
+          context: chain
+        },
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        {
+          patronId: getQueryPrefix(chain) + patron
+        }
+      ]);
+  if (loadPatronQuery.loading || loadPatronQuery.error !== undefined) {
+    return ;
+  } else {
+    return loadPatronQuery.data;
+  }
 }
 
 function useForeclosureTimeBn(chain, patron) {
-  console.log(chain, patron);
+  var match = useQueryPatron(chain, patron);
+  if (match === undefined) {
+    return ;
+  }
+  var match$1 = match.patron;
+  if (match$1 !== undefined) {
+    return Caml_option.some(match$1.foreclosureTime);
+  }
   
 }
 
 function useForeclosureTime(chain, patron) {
   return Belt_Option.map(useForeclosureTimeBn(chain, patron), Helper.bnToMoment);
-}
-
-function usePatronQuery(chain, patron) {
-  console.log(chain, patron);
-  
 }
 
 function useTimeAcquiredWithDefault(chain, animal, $$default) {
@@ -1532,6 +1726,7 @@ export {
   SubWildcardQuery ,
   MaticStateQuery ,
   ArtistQuery ,
+  LoadPatron ,
   getQueryPrefix ,
   subscriptionResultOptionMap ,
   subscriptionResultToOption ,
@@ -1566,10 +1761,8 @@ export {
   useIsAnimalOwened ,
   useTimeAcquired ,
   useQueryPatron ,
-  useQueryPatronNew ,
   useForeclosureTimeBn ,
   useForeclosureTime ,
-  usePatronQuery ,
   useTimeAcquiredWithDefault ,
   useDaysHeld ,
   useTotalCollectedOrDue ,

@@ -124,7 +124,7 @@ module UserDetails = {
   let make =
       (
         ~chain,
-        ~patronQueryResult,
+        ~patronQueryResult: QlHooks.LoadPatron.LoadPatron_inner.t,
         ~optThreeBoxData: option(UserProvider.threeBoxUserInfo),
         ~userAddress: string,
       ) => {
@@ -146,14 +146,14 @@ module UserDetails = {
     let currentlyOwnedTokens =
       isForeclosed
         ? [||]
-        : patronQueryResult##patron
-          ->oMap(patron => patron##tokens->Array.map(token => token##id))
+        : patronQueryResult.patron
+          ->oMap(patron => patron.tokens->Array.map(token => token.id))
           |||| [||];
 
     let allPreviouslyOwnedTokens =
-      patronQueryResult##patron
+      patronQueryResult.patron
       ->oMap(patron =>
-          patron##previouslyOwnedTokens->Array.map(token => token##id)
+          patron.previouslyOwnedTokens->Array.map(token => token.id)
         )
       |||| [||];
 
@@ -190,10 +190,10 @@ module UserDetails = {
     let optUsdPrice = UsdPriceProvider.useUsdPrice();
 
     let optMonthlyCotribution = {
-      patronQueryResult##patron
+      patronQueryResult.patron
       <$> (
         patron =>
-          patron##patronTokenCostScaledNumerator
+          patron.patronTokenCostScaledNumerator
           ->BN.mul(BN.new_("2592000")) // A month with 30 days has 2592000 seconds
           ->BN.div(
               // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
@@ -456,7 +456,7 @@ module UserDetails = {
 let make = (~chain, ~userAddress: string) => {
   let userAddressLowerCase = userAddress->Js.String.toLowerCase;
   let patronQuery =
-    QlHooks.usePatronQuery(~chain=Client.MainnetQuery, userAddressLowerCase);
+    QlHooks.useQueryPatron(~chain=Client.MainnetQuery, userAddressLowerCase);
   let userInfoContext = UserProvider.useUserInfoContext();
   let reloadUser = forceReload =>
     userInfoContext.update(userAddressLowerCase, forceReload); // double check that data is loaded.

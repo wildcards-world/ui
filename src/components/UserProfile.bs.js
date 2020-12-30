@@ -399,14 +399,14 @@ function UserProfile(Props) {
   var chain = Props.chain;
   var userAddress = Props.userAddress;
   var userAddressLowerCase = userAddress.toLowerCase();
-  var patronQuery = QlHooks.usePatronQuery(/* MainnetQuery */2, userAddressLowerCase);
+  var patronQuery = QlHooks.useQueryPatron(/* MainnetQuery */2, userAddressLowerCase);
   var userInfoContext = UserProvider.useUserInfoContext(undefined);
   Curry._2(userInfoContext.update, userAddressLowerCase, false);
   var optThreeBoxData = UserProvider.use3BoxUserData(userAddressLowerCase);
   return React.createElement(RimbleUi.Flex, {
               children: patronQuery !== undefined ? React.createElement(UserProfile$UserDetails, {
                       chain: chain,
-                      patronQueryResult: Caml_option.valFromOption(patronQuery),
+                      patronQueryResult: patronQuery,
                       optThreeBoxData: optThreeBoxData,
                       userAddress: userAddress
                     }) : React.createElement("div", undefined, React.createElement(RimbleUi.Heading, {

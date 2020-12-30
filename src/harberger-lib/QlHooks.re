@@ -259,28 +259,28 @@ module ArtistQuery = [%graphql
 //      |}
 // ];
 
-// module LoadPatron = [%graphql
-//   {|
-//        query ($patronId: String!) {
-//          patron(id: $patronId) {
-//            id
-//            previouslyOwnedTokens {
-//              id
-//            }
-//            tokens {
-//              id
-//            }
-//            availableDeposit  @ppxCustom(module: "Price")
-//            patronTokenCostScaledNumerator  @ppxCustom(module: "BigInt")
-//            foreclosureTime  @ppxCustom(module: "BigInt")
-//            address @ppxCustom(module: "GqlAddress")
-//            lastUpdated @ppxCustom(module: "BigInt")
-//            totalLoyaltyTokens @ppxCustom(module: "BigInt")
-//            totalLoyaltyTokensIncludingUnRedeemed @ppxCustom(module: "BigInt")
-//          }
-//        }
-//      |}
-// ];
+module LoadPatron = [%graphql
+  {|
+       query ($patronId: String!) {
+         patron(id: $patronId) {
+           id
+           previouslyOwnedTokens {
+             id
+           }
+           tokens {
+             id
+           }
+           availableDeposit  @ppxCustom(module: "Price")
+           patronTokenCostScaledNumerator  @ppxCustom(module: "BigInt")
+           foreclosureTime  @ppxCustom(module: "BigInt")
+           address @ppxCustom(module: "GqlAddress")
+           lastUpdated @ppxCustom(module: "BigInt")
+           totalLoyaltyTokens @ppxCustom(module: "BigInt")
+           totalLoyaltyTokensIncludingUnRedeemed @ppxCustom(module: "BigInt")
+         }
+       }
+     |}
+];
 
 // module LoadTokenDataArray = [%graphql
 //   {|
@@ -671,45 +671,30 @@ let useTimeAcquired:
 
 let useQueryPatron = (~chain, patron) => {
   Js.log2(chain, patron);
-  /*  // ApolloHooks.useQuery(
-      //   ~context={context: chain}->createContext,
-      //   ~variables=
-      //     LoadPatron.make(~patronId=chain->getQueryPrefix ++ patron, ())##variables,
-      //   LoadPatron.definition,
-      // ); */
-  None;
-};
-
-let useQueryPatronNew = patron => {
-  Js.log(patron);
-  /* ApolloHooks.useQuery(
-       ~variables=LoadPatron.make(~patronId=patron, ())##variables,
-       LoadPatron.definition,
-     ); */
-  None;
+  let loadPatronQuery =
+    LoadPatron.use(
+      ~context={context: chain}->createContext,
+      LoadPatron.makeVariables(~patronId=chain->getQueryPrefix ++ patron, ()),
+    );
+  switch (loadPatronQuery) {
+  | {loading: true, _} => None
+  | {error: Some(_error), _} => None
+  | {data, _} => data
+  };
 };
 
 let useForeclosureTimeBn = (~chain, patron) => {
-  Js.log2(chain, patron);
-  None;
-  /*   let (simple, _) = useQueryPatron(~chain, patron);
-       let getForclosureTime = response =>
-         response##patron->Belt.Option.map(patron => patron##foreclosureTime);
-
-       simple->queryResultOptionFlatMap(getForclosureTime); */
+  switch (useQueryPatron(~chain, patron)) {
+  | Some({patron: Some({foreclosureTime, _})}) => Some(foreclosureTime)
+  | Some({patron: None})
+  | None => None
+  };
 };
 
 let useForeclosureTime = (~chain, patron) => {
   useForeclosureTimeBn(~chain, patron)->Option.map(Helper.bnToMoment);
 };
 
-let usePatronQuery = (~chain, patron) => {
-  Js.log2(chain, patron);
-  None;
-  /*   let (simple, _) = useQueryPatron(~chain, patron);
-
-       simple->queryResultToOption; */
-};
 let useTimeAcquiredWithDefault = (~chain, animal, default: MomentRe.Moment.t) =>
   useTimeAcquired(~chain, animal) |||| default;
 let useDaysHeld = (~chain, tokenId) =>
