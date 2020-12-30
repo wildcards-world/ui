@@ -2,7 +2,6 @@
 
 import * as Cn from "re-classnames/src/Cn.bs.js";
 import * as Css from "bs-css-emotion/src/Css.bs.js";
-import * as List from "bs-platform/lib/es6/list.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as Css_Core from "bs-css/src/Css_Core.bs.js";
 import * as Belt_List from "bs-platform/lib/es6/belt_List.js";
@@ -979,7 +978,7 @@ var invisibleGorilla = Curry._1(Css.style, {
     });
 
 function fadeOut(targetOpacity) {
-  return Curry._1(Css.style, List.append({
+  return Curry._1(Css.style, Belt_List.concat({
                   hd: Css.width({
                         NAME: "percent",
                         VAL: 100

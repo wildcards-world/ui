@@ -1,5 +1,3 @@
-open Globals;
-
 let hambergerMenu =
   Css.(
     style([

@@ -1,6 +1,7 @@
 {
   "name": "wild-cards",
   "bsc-flags": [
+    "-open Belt",
     "-bs-super-errors"
   ],
   // referenc: https://dev.to/yawaramin/ocaml-reasonml-best-practice-warnings-and-errors-4mkm

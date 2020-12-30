@@ -364,7 +364,7 @@ let fadeOut = targetOpacity =>
       width(`percent(100.)),
       transition(~duration=2000, ~delay=0, ~timingFunction=ease, "opacity"),
     ]
-    ->List.append([opacity(targetOpacity)]),
+    ->List.concat([opacity(targetOpacity)]),
   );
 
 let carouselArrow = (~absolutePosition=true, onLeft) =>

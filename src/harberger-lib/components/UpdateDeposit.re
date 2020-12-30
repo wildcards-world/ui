@@ -1,5 +1,3 @@
-open Globals;
-
 module UpdateDepositInput = {
   [@bs.module "./UpdateDepositInput"] [@react.component]
   external make:
