@@ -118,8 +118,8 @@ function useStewardAbi(param) {
   }
 }
 
-function defaultStewardAddressFromChainId(param) {
-  switch (param) {
+function defaultStewardAddressFromChainId(x) {
+  switch (x) {
     case 1 :
         return stewardAddressMainnet;
     case 2 :
@@ -143,9 +143,9 @@ function useStewardAddress(param) {
   };
 }
 
-function loyaltyTokenAddressFromChainId(param) {
-  if (param !== 1) {
-    if (param !== 5) {
+function loyaltyTokenAddressFromChainId(x) {
+  if (x !== 1) {
+    if (x !== 5) {
       return ;
     } else {
       return loyaltyTokenAddressGoerli;
@@ -460,12 +460,7 @@ function useBuy(chain, animal, library, account, parentChainId) {
   var verifyingContract = getDaiContractAddress(chain, chainIdInt);
   var spender = getStewardAddress(chain, chainIdInt);
   var networkName = getMaticNetworkName(chainIdInt);
-  var arg = Belt_Option.getWithDefault(account, CONSTANTS.nullEthAddress);
-  var maticState = Curry._1((function (param) {
-            return function (param$1) {
-              return QlHooks.useMaticState(param, arg, param$1);
-            };
-          })(false), networkName);
+  var maticState = QlHooks.useMaticState(false, Belt_Option.getWithDefault(account, CONSTANTS.nullEthAddress), networkName);
   if (chain >= 2) {
     return [
             (function (newPrice, oldPrice, wildcardsPercentage, value) {
@@ -579,12 +574,7 @@ function useBuyAuction(chain, animal, library, account, parentChainId) {
   var verifyingContract = getDaiContractAddress(chain, chainIdInt);
   var spender = getStewardAddress(chain, chainIdInt);
   var networkName = getMaticNetworkName(chainIdInt);
-  var arg = Belt_Option.getWithDefault(account, CONSTANTS.nullEthAddress);
-  var maticState = Curry._1((function (param) {
-            return function (param$1) {
-              return QlHooks.useMaticState(param, arg, param$1);
-            };
-          })(false), networkName);
+  var maticState = QlHooks.useMaticState(false, Belt_Option.getWithDefault(account, CONSTANTS.nullEthAddress), networkName);
   if (chain >= 2) {
     return [
             (function (newPrice, wildcardsPercentage, value) {
@@ -752,12 +742,7 @@ function useUpdateDeposit(chain, library, account, parentChainId) {
   var verifyingContract = getDaiContractAddress(chain, chainIdInt);
   var spender = getStewardAddress(chain, chainIdInt);
   var networkName = getMaticNetworkName(chainIdInt);
-  var arg = Belt_Option.getWithDefault(account, CONSTANTS.nullEthAddress);
-  var maticState = Curry._1((function (param) {
-            return function (param$1) {
-              return QlHooks.useMaticState(param, arg, param$1);
-            };
-          })(false), networkName);
+  var maticState = QlHooks.useMaticState(false, Belt_Option.getWithDefault(account, CONSTANTS.nullEthAddress), networkName);
   if (chain >= 2) {
     return [
             (function (value) {

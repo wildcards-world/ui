@@ -222,12 +222,7 @@ function Buy$1(Props) {
   var chain = Props.chain;
   var tokenId = Props.tokenId;
   var web3Context = Core.useWeb3React();
-  var arg = Belt_Option.getWithDefault(web3Context.account, CONSTANTS.nullEthAddress);
-  var optMaticState = Curry._1((function (param) {
-            return function (param$1) {
-              return QlHooks.useMaticState(param, arg, param$1);
-            };
-          })(false), ContractActions.getMaticNetworkName(ContractActions.getChildChainId(Belt_Option.getWithDefault(web3Context.chainId, 1))));
+  var optMaticState = QlHooks.useMaticState(false, Belt_Option.getWithDefault(web3Context.account, CONSTANTS.nullEthAddress), ContractActions.getMaticNetworkName(ContractActions.getChildChainId(Belt_Option.getWithDefault(web3Context.chainId, 1))));
   if (chain !== 1) {
     return React.createElement(Buy$Buy, {
                 chain: chain,
