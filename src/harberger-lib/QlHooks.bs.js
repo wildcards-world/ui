@@ -297,6 +297,187 @@ function useAnimalList(chain) {
 var Raw$1 = {};
 
 var query$1 = (require("@apollo/client").gql`
+  query ($tokenId: String!)  {
+    wildcard(id: $tokenId)  {
+      __typename
+      id
+      animal: tokenId
+      timeAcquired
+      totalCollected
+      patronageNumerator
+      patronageNumeratorPriceScaled
+      timeCollected
+      price  {
+        __typename
+        id
+        price
+      }
+      owner  {
+        __typename
+        address
+        id
+      }
+      auctionStartPrice
+      launchTime
+    }
+  }
+`);
+
+function parse$1(value) {
+  var value$1 = value.wildcard;
+  var tmp;
+  if (value$1 == null) {
+    tmp = undefined;
+  } else {
+    var value$2 = value$1.price;
+    var value$3 = value$1.owner;
+    var value$4 = value$1.auctionStartPrice;
+    tmp = {
+      __typename: value$1.__typename,
+      id: value$1.id,
+      animal: GqlConverters.GqlTokenId.parse(value$1.animal),
+      timeAcquired: GqlConverters.GqlMoment.parse(value$1.timeAcquired),
+      totalCollected: GqlConverters.Price.parse(value$1.totalCollected),
+      patronageNumerator: GqlConverters.$$BigInt.parse(value$1.patronageNumerator),
+      patronageNumeratorPriceScaled: GqlConverters.$$BigInt.parse(value$1.patronageNumeratorPriceScaled),
+      timeCollected: GqlConverters.$$BigInt.parse(value$1.timeCollected),
+      price: {
+        __typename: value$2.__typename,
+        id: value$2.id,
+        price: GqlConverters.Price.parse(value$2.price)
+      },
+      owner: {
+        __typename: value$3.__typename,
+        address: GqlConverters.GqlAddress.parse(value$3.address),
+        id: value$3.id
+      },
+      auctionStartPrice: !(value$4 == null) ? Caml_option.some(GqlConverters.$$BigInt.parse(value$4)) : undefined,
+      launchTime: GqlConverters.$$BigInt.parse(value$1.launchTime)
+    };
+  }
+  return {
+          wildcard: tmp
+        };
+}
+
+function serialize$1(value) {
+  var value$1 = value.wildcard;
+  var wildcard;
+  if (value$1 !== undefined) {
+    var value$2 = value$1.launchTime;
+    var value$3 = GqlConverters.$$BigInt.serialize(value$2);
+    var value$4 = value$1.auctionStartPrice;
+    var auctionStartPrice = value$4 !== undefined ? GqlConverters.$$BigInt.serialize(Caml_option.valFromOption(value$4)) : null;
+    var value$5 = value$1.owner;
+    var value$6 = value$5.id;
+    var value$7 = value$5.address;
+    var value$8 = GqlConverters.GqlAddress.serialize(value$7);
+    var value$9 = value$5.__typename;
+    var owner = {
+      __typename: value$9,
+      address: value$8,
+      id: value$6
+    };
+    var value$10 = value$1.price;
+    var value$11 = value$10.price;
+    var value$12 = GqlConverters.Price.serialize(value$11);
+    var value$13 = value$10.id;
+    var value$14 = value$10.__typename;
+    var price = {
+      __typename: value$14,
+      id: value$13,
+      price: value$12
+    };
+    var value$15 = value$1.timeCollected;
+    var value$16 = GqlConverters.$$BigInt.serialize(value$15);
+    var value$17 = value$1.patronageNumeratorPriceScaled;
+    var value$18 = GqlConverters.$$BigInt.serialize(value$17);
+    var value$19 = value$1.patronageNumerator;
+    var value$20 = GqlConverters.$$BigInt.serialize(value$19);
+    var value$21 = value$1.totalCollected;
+    var value$22 = GqlConverters.Price.serialize(value$21);
+    var value$23 = value$1.timeAcquired;
+    var value$24 = GqlConverters.GqlMoment.serialize(value$23);
+    var value$25 = value$1.animal;
+    var value$26 = GqlConverters.GqlTokenId.serialize(value$25);
+    var value$27 = value$1.id;
+    var value$28 = value$1.__typename;
+    wildcard = {
+      __typename: value$28,
+      id: value$27,
+      animal: value$26,
+      timeAcquired: value$24,
+      totalCollected: value$22,
+      patronageNumerator: value$20,
+      patronageNumeratorPriceScaled: value$18,
+      timeCollected: value$16,
+      price: price,
+      owner: owner,
+      auctionStartPrice: auctionStartPrice,
+      launchTime: value$3
+    };
+  } else {
+    wildcard = null;
+  }
+  return {
+          wildcard: wildcard
+        };
+}
+
+function serializeVariables$1(inp) {
+  return {
+          tokenId: inp.tokenId
+        };
+}
+
+function makeVariables$1(tokenId, param) {
+  return {
+          tokenId: tokenId
+        };
+}
+
+var SubWildcardQuery_inner = {
+  Raw: Raw$1,
+  query: query$1,
+  parse: parse$1,
+  serialize: serialize$1,
+  serializeVariables: serializeVariables$1,
+  makeVariables: makeVariables$1
+};
+
+var include$1 = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query$1,
+      Raw: Raw$1,
+      parse: parse$1,
+      serialize: serialize$1,
+      serializeVariables: serializeVariables$1
+    });
+
+var use$1 = include$1.use;
+
+var SubWildcardQuery_refetchQueryDescription = include$1.refetchQueryDescription;
+
+var SubWildcardQuery_useLazy = include$1.useLazy;
+
+var SubWildcardQuery_useLazyWithVariables = include$1.useLazyWithVariables;
+
+var SubWildcardQuery = {
+  SubWildcardQuery_inner: SubWildcardQuery_inner,
+  Raw: Raw$1,
+  query: query$1,
+  parse: parse$1,
+  serialize: serialize$1,
+  serializeVariables: serializeVariables$1,
+  makeVariables: makeVariables$1,
+  refetchQueryDescription: SubWildcardQuery_refetchQueryDescription,
+  use: use$1,
+  useLazy: SubWildcardQuery_useLazy,
+  useLazyWithVariables: SubWildcardQuery_useLazyWithVariables
+};
+
+var Raw$2 = {};
+
+var query$2 = (require("@apollo/client").gql`
   query ($address: String!, $network: String!)  {
     maticState(address: $address, network: $network)  {
       __typename
@@ -308,7 +489,7 @@ var query$1 = (require("@apollo/client").gql`
   }
 `);
 
-function parse$1(value) {
+function parse$2(value) {
   var value$1 = value.maticState;
   var value$2 = value$1.error;
   return {
@@ -322,7 +503,7 @@ function parse$1(value) {
         };
 }
 
-function serialize$1(value) {
+function serialize$2(value) {
   var value$1 = value.maticState;
   var value$2 = value$1.stewardNonce;
   var value$3 = value$1.error;
@@ -342,14 +523,14 @@ function serialize$1(value) {
         };
 }
 
-function serializeVariables$1(inp) {
+function serializeVariables$2(inp) {
   return {
           address: inp.address,
           network: inp.network
         };
 }
 
-function makeVariables$1(address, network, param) {
+function makeVariables$2(address, network, param) {
   return {
           address: address,
           network: network
@@ -357,47 +538,47 @@ function makeVariables$1(address, network, param) {
 }
 
 var MaticStateQuery_inner = {
-  Raw: Raw$1,
-  query: query$1,
-  parse: parse$1,
-  serialize: serialize$1,
-  serializeVariables: serializeVariables$1,
-  makeVariables: makeVariables$1
+  Raw: Raw$2,
+  query: query$2,
+  parse: parse$2,
+  serialize: serialize$2,
+  serializeVariables: serializeVariables$2,
+  makeVariables: makeVariables$2
 };
 
-var include$1 = ApolloClient__React_Hooks_UseQuery.Extend({
-      query: query$1,
-      Raw: Raw$1,
-      parse: parse$1,
-      serialize: serialize$1,
-      serializeVariables: serializeVariables$1
+var include$2 = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query$2,
+      Raw: Raw$2,
+      parse: parse$2,
+      serialize: serialize$2,
+      serializeVariables: serializeVariables$2
     });
 
-var use$1 = include$1.use;
+var use$2 = include$2.use;
 
-var MaticStateQuery_refetchQueryDescription = include$1.refetchQueryDescription;
+var MaticStateQuery_refetchQueryDescription = include$2.refetchQueryDescription;
 
-var MaticStateQuery_useLazy = include$1.useLazy;
+var MaticStateQuery_useLazy = include$2.useLazy;
 
-var MaticStateQuery_useLazyWithVariables = include$1.useLazyWithVariables;
+var MaticStateQuery_useLazyWithVariables = include$2.useLazyWithVariables;
 
 var MaticStateQuery = {
   MaticStateQuery_inner: MaticStateQuery_inner,
-  Raw: Raw$1,
-  query: query$1,
-  parse: parse$1,
-  serialize: serialize$1,
-  serializeVariables: serializeVariables$1,
-  makeVariables: makeVariables$1,
+  Raw: Raw$2,
+  query: query$2,
+  parse: parse$2,
+  serialize: serialize$2,
+  serializeVariables: serializeVariables$2,
+  makeVariables: makeVariables$2,
   refetchQueryDescription: MaticStateQuery_refetchQueryDescription,
-  use: use$1,
+  use: use$2,
   useLazy: MaticStateQuery_useLazy,
   useLazyWithVariables: MaticStateQuery_useLazyWithVariables
 };
 
-var Raw$2 = {};
+var Raw$3 = {};
 
-var query$2 = (require("@apollo/client").gql`
+var query$3 = (require("@apollo/client").gql`
   query ($artistIdentifier: String!)  {
     artist_by_pk(id: $artistIdentifier)  {
       __typename
@@ -434,7 +615,7 @@ var query$2 = (require("@apollo/client").gql`
   }
 `);
 
-function parse$2(value) {
+function parse$3(value) {
   var value$1 = value.artist_by_pk;
   var tmp;
   if (value$1 == null) {
@@ -493,7 +674,7 @@ function parse$2(value) {
         };
 }
 
-function serialize$2(value) {
+function serialize$3(value) {
   var value$1 = value.artist_by_pk;
   var artist_by_pk;
   if (value$1 !== undefined) {
@@ -588,53 +769,53 @@ function serialize$2(value) {
         };
 }
 
-function serializeVariables$2(inp) {
+function serializeVariables$3(inp) {
   return {
           artistIdentifier: inp.artistIdentifier
         };
 }
 
-function makeVariables$2(artistIdentifier, param) {
+function makeVariables$3(artistIdentifier, param) {
   return {
           artistIdentifier: artistIdentifier
         };
 }
 
 var ArtistQuery_inner = {
-  Raw: Raw$2,
-  query: query$2,
-  parse: parse$2,
-  serialize: serialize$2,
-  serializeVariables: serializeVariables$2,
-  makeVariables: makeVariables$2
+  Raw: Raw$3,
+  query: query$3,
+  parse: parse$3,
+  serialize: serialize$3,
+  serializeVariables: serializeVariables$3,
+  makeVariables: makeVariables$3
 };
 
-var include$2 = ApolloClient__React_Hooks_UseQuery.Extend({
-      query: query$2,
-      Raw: Raw$2,
-      parse: parse$2,
-      serialize: serialize$2,
-      serializeVariables: serializeVariables$2
+var include$3 = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query$3,
+      Raw: Raw$3,
+      parse: parse$3,
+      serialize: serialize$3,
+      serializeVariables: serializeVariables$3
     });
 
-var use$2 = include$2.use;
+var use$3 = include$3.use;
 
-var ArtistQuery_refetchQueryDescription = include$2.refetchQueryDescription;
+var ArtistQuery_refetchQueryDescription = include$3.refetchQueryDescription;
 
-var ArtistQuery_useLazy = include$2.useLazy;
+var ArtistQuery_useLazy = include$3.useLazy;
 
-var ArtistQuery_useLazyWithVariables = include$2.useLazyWithVariables;
+var ArtistQuery_useLazyWithVariables = include$3.useLazyWithVariables;
 
 var ArtistQuery = {
   ArtistQuery_inner: ArtistQuery_inner,
-  Raw: Raw$2,
-  query: query$2,
-  parse: parse$2,
-  serialize: serialize$2,
-  serializeVariables: serializeVariables$2,
-  makeVariables: makeVariables$2,
+  Raw: Raw$3,
+  query: query$3,
+  parse: parse$3,
+  serialize: serialize$3,
+  serializeVariables: serializeVariables$3,
+  makeVariables: makeVariables$3,
   refetchQueryDescription: ArtistQuery_refetchQueryDescription,
-  use: use$2,
+  use: use$3,
   useLazy: ArtistQuery_useLazy,
   useLazyWithVariables: ArtistQuery_useLazyWithVariables
 };
@@ -675,10 +856,31 @@ function queryResultToOption(result) {
 }
 
 function useWildcardQuery(chain, tokenId) {
-  return [
-          chain,
-          tokenId
-        ];
+  var wildcardQuery = Curry.app(use$1, [
+        undefined,
+        {
+          context: chain
+        },
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        {
+          tokenId: getQueryPrefix(chain) + TokenId.toString(tokenId)
+        }
+      ]);
+  if (wildcardQuery.loading || wildcardQuery.error !== undefined) {
+    return ;
+  } else {
+    return wildcardQuery.data;
+  }
 }
 
 function useLoadTokenDataArrayQuery(chain, tokenIdArray) {
@@ -842,12 +1044,15 @@ function useLoadTopContributorsData(numberOfLeaders) {
 }
 
 function usePatron(chain, animal) {
-  var getAddress = function (response) {
-    return Belt_Option.flatMap(response.wildcard, (function (wildcard) {
-                  return Caml_option.some(wildcard.owner.address);
-                }));
-  };
-  return queryResultOptionFlatMap(chain, getAddress);
+  var match = useWildcardQuery(chain, animal);
+  if (match === undefined) {
+    return ;
+  }
+  var match$1 = match.wildcard;
+  if (match$1 !== undefined) {
+    return match$1.owner.address;
+  }
+  
 }
 
 function useIsAnimalOwened(chain, ownedAnimal) {
@@ -861,12 +1066,15 @@ function useIsAnimalOwened(chain, ownedAnimal) {
 }
 
 function useTimeAcquired(chain, animal) {
-  var getTimeAquired = function (response) {
-    return Belt_Option.mapWithDefault(response.wildcard, Moment(), (function (wildcard) {
-                  return wildcard.timeAcquired;
-                }));
-  };
-  return queryResultOptionMap(chain, getTimeAquired);
+  var match = useWildcardQuery(chain, animal);
+  if (match === undefined) {
+    return ;
+  }
+  var match$1 = match.wildcard;
+  if (match$1 !== undefined) {
+    return Caml_option.some(match$1.timeAcquired);
+  }
+  
 }
 
 function useQueryPatron(chain, patron) {
@@ -947,16 +1155,19 @@ function useAmountRaised(param) {
 }
 
 function useTotalCollectedToken(chain, animal) {
-  var getTotalCollectedData = function (response) {
-    return Globals.oMap(response.wildcard, (function (wc) {
-                  return [
-                          wc.totalCollected,
-                          wc.timeCollected,
-                          wc.patronageNumeratorPriceScaled
-                        ];
-                }));
-  };
-  return queryResultOptionFlatMap(chain, getTotalCollectedData);
+  var match = useWildcardQuery(chain, animal);
+  if (match === undefined) {
+    return ;
+  }
+  var match$1 = match.wildcard;
+  if (match$1 !== undefined) {
+    return [
+            match$1.totalCollected,
+            match$1.timeCollected,
+            match$1.patronageNumeratorPriceScaled
+          ];
+  }
+  
 }
 
 function useTotalCollectedTokenArray(chain, animalArray) {
@@ -966,12 +1177,15 @@ function useTotalCollectedTokenArray(chain, animalArray) {
 }
 
 function usePatronageNumerator(chain, tokenId) {
-  var patronageNumerator = function (response) {
-    return Belt_Option.map(response.wildcard, (function (wildcard) {
-                  return wildcard.patronageNumerator;
-                }));
-  };
-  return queryResultOptionFlatMap(chain, patronageNumerator);
+  var match = useWildcardQuery(chain, tokenId);
+  if (match === undefined) {
+    return ;
+  }
+  var match$1 = match.wildcard;
+  if (match$1 !== undefined) {
+    return Caml_option.some(match$1.patronageNumerator);
+  }
+  
 }
 
 function usePledgeRate(chain, tokenId) {
@@ -1139,7 +1353,7 @@ function useLaunchTimeBN(chain, tokenId) {
 }
 
 function useMaticState(forceRefetch, address, network) {
-  var query = Curry.app(use$1, [
+  var query = Curry.app(use$2, [
         undefined,
         undefined,
         undefined,
@@ -1167,7 +1381,7 @@ function useMaticState(forceRefetch, address, network) {
 }
 
 function useArtistData(artistIdentifier) {
-  var artistQuery = Curry.app(use$2, [
+  var artistQuery = Curry.app(use$3, [
         undefined,
         undefined,
         undefined,
@@ -1274,6 +1488,7 @@ export {
   createContext ,
   useInitialDataLoad ,
   useAnimalList ,
+  SubWildcardQuery ,
   MaticStateQuery ,
   ArtistQuery ,
   getQueryPrefix ,

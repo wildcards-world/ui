@@ -39,7 +39,6 @@ module InitialLoad = [%graphql
            totalCollected @ppxCustom(module: "Price")
            timeCollected @ppxCustom(module: "BigInt")
            patronageNumeratorPriceScaled @ppxCustom(module: "BigInt")
-           # timeCollected @ppxCustom(module: "GqlMoment")
            timeAcquired @ppxCustom(module: "GqlMoment")
            auctionStartPrice @ppxCustom(module: "BigInt")
            launchTime @ppxCustom(module: "BigInt")
@@ -100,32 +99,32 @@ let useAnimalList = (~chain) => {
   );
 };
 
-// module SubWildcardQuery = [%graphql
-//   {|
-//        query ($tokenId: String!) {
-//          wildcard(id: $tokenId) {
-//            id
-//            animal: tokenId @ppxCustom(module: "GqlTokenId")
-//            timeAcquired @ppxCustom(module: "GqlMoment")
-//            totalCollected @ppxCustom(module: "Price")
-//            patronageNumerator @ppxCustom(module: "BigInt")
-//            patronageNumeratorPriceScaled @ppxCustom(module: "BigInt")
-//            timeCollected @ppxCustom(module: "BigInt")
-//            # timeCollected @ppxCustom(module: "GqlMoment")
-//            price {
-//              id
-//              price @ppxCustom(module: "Price")
-//            }
-//            owner {
-//              address @ppxCustom(module: "GqlAddress")
-//              id
-//            }
-//            auctionStartPrice @ppxCustom(module: "BigInt")
-//            launchTime @ppxCustom(module: "BigInt")
-//          }
-//        }
-//      |}
-// ];
+module SubWildcardQuery = [%graphql
+  {|
+       query ($tokenId: String!) {
+         wildcard(id: $tokenId) {
+           id
+           animal: tokenId @ppxCustom(module: "GqlTokenId")
+           timeAcquired @ppxCustom(module: "GqlMoment")
+           totalCollected @ppxCustom(module: "Price")
+           patronageNumerator @ppxCustom(module: "BigInt")
+           patronageNumeratorPriceScaled @ppxCustom(module: "BigInt")
+           timeCollected @ppxCustom(module: "BigInt")
+           # timeCollected @ppxCustom(module: "GqlMoment")
+           price {
+             id
+             price @ppxCustom(module: "Price")
+           }
+           owner {
+             address @ppxCustom(module: "GqlAddress")
+             id
+           }
+           auctionStartPrice @ppxCustom(module: "BigInt")
+           launchTime @ppxCustom(module: "BigInt")
+         }
+       }
+     |}
+];
 
 // module WildcardDataQuery = [%graphql
 //   {|
@@ -401,16 +400,22 @@ let queryResultToOption = result => queryResultOptionMap(result, a => a);
 
 type data = {tokenId: string};
 
-let useWildcardQuery = (~chain, tokenId) => Obj.magic((chain, tokenId));
-// ApolloHooks.useQuery(
-//   ~context={context: chain}->createContext,
-//   ~variables=
-//     SubWildcardQuery.make(
-//       ~tokenId=chain->getQueryPrefix ++ tokenId->TokenId.toString,
-//       (),
-//     )##variables,
-//   SubWildcardQuery.definition,
-// );
+let useWildcardQuery = (~chain, tokenId) => {
+  let wildcardQuery =
+    SubWildcardQuery.use(
+      ~context={context: chain}->createContext,
+      SubWildcardQuery.makeVariables(
+        ~tokenId=chain->getQueryPrefix ++ tokenId->TokenId.toString,
+        (),
+      ),
+    );
+
+  switch (wildcardQuery) {
+  | {loading: true, _} => None
+  | {error: Some(_error), _} => None
+  | {data, _} => data
+  };
+};
 
 let useLoadTokenDataArrayQuery = (~chain, tokenIdArray) =>
   Obj.magic((chain, tokenIdArray));
@@ -634,12 +639,11 @@ let useLoadTopContributorsData = numberOfLeaders => {
 };
 let usePatron: (~chain: Client.context, TokenId.t) => option(string) =
   (~chain, animal) => {
-    let (simple, _) = useWildcardQuery(~chain, animal);
-    let getAddress = response =>
-      response##wildcard
-      ->Belt.Option.flatMap(wildcard => Some(wildcard##owner##address));
-
-    simple->queryResultOptionFlatMap(getAddress);
+    switch (useWildcardQuery(~chain, animal)) {
+    | Some({wildcard: Some({owner: {address, _}, _})}) => Some(address)
+    | Some({wildcard: None})
+    | None => None
+    };
   };
 
 let useIsAnimalOwened = (~chain, ownedAnimal) => {
@@ -658,14 +662,11 @@ let useIsAnimalOwened = (~chain, ownedAnimal) => {
 let useTimeAcquired:
   (~chain: Client.context, TokenId.t) => option(MomentRe.Moment.t) =
   (~chain, animal) => {
-    let (simple, _) = useWildcardQuery(~chain, animal);
-    let getTimeAquired = response =>
-      response##wildcard
-      ->Belt.Option.mapWithDefault(MomentRe.momentNow(), wildcard
-          // wildcard
-          => wildcard##timeAcquired);
-
-    simple->queryResultOptionMap(getTimeAquired);
+    switch (useWildcardQuery(~chain, animal)) {
+    | Some({wildcard: Some({timeAcquired, _})}) => Some(timeAcquired)
+    | Some({wildcard: None})
+    | None => None
+    };
   };
 
 let useQueryPatron = (~chain, patron) => {
@@ -785,18 +786,20 @@ let useAmountRaised = () => {
 let useTotalCollectedToken:
   (~chain: Client.context, TokenId.t) => option((Eth.t, BN.t, BN.t)) =
   (~chain, animal) => {
-    let (simple, _) = useWildcardQuery(~chain, animal);
-    let getTotalCollectedData = response =>
-      response##wildcard
-      ->oMap(wc =>
-          (
-            wc##totalCollected,
-            wc##timeCollected,
-            wc##patronageNumeratorPriceScaled,
-          )
-        );
-
-    simple->queryResultOptionFlatMap(getTotalCollectedData);
+    switch (useWildcardQuery(~chain, animal)) {
+    | Some({
+        wildcard:
+          Some({
+            totalCollected,
+            timeCollected,
+            patronageNumeratorPriceScaled,
+            _,
+          }),
+      }) =>
+      Some((totalCollected, timeCollected, patronageNumeratorPriceScaled))
+    | Some({wildcard: None})
+    | None => None
+    };
   };
 
 let useTotalCollectedTokenArray = (~chain, animalArray) => {
@@ -805,12 +808,12 @@ let useTotalCollectedTokenArray = (~chain, animalArray) => {
 };
 
 let usePatronageNumerator = (~chain, tokenId: TokenId.t) => {
-  let (simple, _) = useWildcardQuery(~chain, tokenId);
-  let patronageNumerator = response =>
-    response##wildcard
-    ->Belt.Option.map(wildcard => wildcard##patronageNumerator);
-
-  simple->queryResultOptionFlatMap(patronageNumerator);
+  switch (useWildcardQuery(~chain, tokenId)) {
+  | Some({wildcard: Some({patronageNumerator, _})}) =>
+    Some(patronageNumerator)
+  | Some({wildcard: None})
+  | None => None
+  };
 };
 
 // TODO: fix this, this is a hardcoded pledgerate. It should be fetched from the graph!
