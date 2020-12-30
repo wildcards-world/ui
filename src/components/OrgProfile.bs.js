@@ -286,11 +286,11 @@ function OrgProfile$OrgPage(Props) {
   var optOrgYoutubeVid = orgData.youtube_vid;
   var orgImage = Animal.useGetOrgImage(orgId);
   var tmp;
-  tmp = orgDescription.TAG ? React.createElement("p", undefined, Globals.restr("error loading description")) : Belt_Array.mapWithIndex(orgDescription._0, (function (i, paragraphText) {
+  tmp = orgDescription.TAG === /* Ok */0 ? Belt_Array.mapWithIndex(orgDescription._0, (function (i, paragraphText) {
             return React.createElement("p", {
                         key: String(i)
                       }, paragraphText);
-          }));
+          })) : React.createElement("p", undefined, Globals.restr("error loading description"));
   return React.createElement("div", undefined, React.createElement(OrgProfile$ComingSoonModal, {
                   selectedComingSoonAnimal: match[0],
                   setSelectedComingSoonAnimal: setSelectedComingSoonAnimal,
@@ -326,7 +326,7 @@ function OrgProfile$OrgPage(Props) {
                                 }
                               })
                         }, React.createElement("a", {
-                              className: Cn.make({
+                              className: Cn.fromList({
                                     hd: Styles.navListText,
                                     tl: {
                                       hd: Curry._1(Css.style, {
@@ -358,7 +358,7 @@ function OrgProfile$OrgPage(Props) {
                                       }),
                                   src: orgImage
                                 })), React.createElement("br", undefined), React.createElement("a", {
-                              className: Cn.make({
+                              className: Cn.fromList({
                                     hd: Styles.navListText,
                                     tl: {
                                       hd: Curry._1(Css.style, {

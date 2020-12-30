@@ -3,9 +3,9 @@
 import * as Cn from "re-classnames/src/Cn.bs.js";
 import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
-import * as Css_Core from "bs-css/src/Css_Core.bs.js";
 import * as Belt_List from "bs-platform/lib/es6/belt_List.js";
 import * as Pervasives from "bs-platform/lib/es6/pervasives.js";
+import * as Css_Legacy_Core from "bs-css/src/Css_Legacy_Core.bs.js";
 
 var backgroundImageGorilla = "/img/wildcardsimages/wild-jungle-background.jpg";
 
@@ -263,7 +263,10 @@ function overlayImg(topPosition, leftPosition) {
 
 var overlayFlameImg = overlayImg(20, 0);
 
-var prettyTransparent = Css.rgba(255, 255, 255, 0.5);
+var prettyTransparent = Css.rgba(255, 255, 255, {
+      NAME: "num",
+      VAL: 0.5
+    });
 
 var imageHoverStyle = Css.hover({
       hd: Css.filter({
@@ -284,7 +287,7 @@ var imageHoverStyle = Css.hover({
         tl: {
           hd: Css.backgroundColor(prettyTransparent),
           tl: {
-            hd: Css.boxShadow(Css_Core.Shadow.box(undefined, undefined, Css.px(20), Css.px(20), undefined, prettyTransparent)),
+            hd: Css.boxShadow(Css_Legacy_Core.Shadow.box(undefined, undefined, Css.px(20), Css.px(20), undefined, prettyTransparent)),
             tl: {
               hd: Css.transform(Css.scale(1.3, 1.3)),
               tl: {
@@ -298,7 +301,7 @@ var imageHoverStyle = Css.hover({
     });
 
 function overlayBadgeImg(x, y) {
-  return Cn.make({
+  return Cn.fromList({
               hd: overlayImg(x, y),
               tl: {
                 hd: Curry._1(Css.style, {
@@ -658,7 +661,10 @@ var infoBackground = Curry._1(Css.style, {
                         255,
                         255,
                         255,
-                        0.2
+                        {
+                          NAME: "num",
+                          VAL: 0.2
+                        }
                       ]
                     }
                   ],
@@ -671,7 +677,10 @@ var infoBackground = Curry._1(Css.style, {
                           255,
                           255,
                           255,
-                          0.2
+                          {
+                            NAME: "num",
+                            VAL: 0.2
+                          }
                         ]
                       }
                     ],
@@ -867,7 +876,10 @@ var linkPillBox = Curry._1(Css.style, {
               tl: {
                 hd: Css.color(Css.hex("fff")),
                 tl: {
-                  hd: Css.backgroundColor(Css.rgba(48, 48, 48, 0.12)),
+                  hd: Css.backgroundColor(Css.rgba(48, 48, 48, {
+                            NAME: "num",
+                            VAL: 0.12
+                          })),
                   tl: /* [] */0
                 }
               }

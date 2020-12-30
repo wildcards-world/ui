@@ -18,7 +18,7 @@ function ActionButtons$Buy(Props) {
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   var buttonText;
   buttonText = typeof currentPriceWei === "number" ? "loading" : (
-      currentPriceWei.TAG ? "Buy" : "Adopt"
+      currentPriceWei.TAG === /* Foreclosed */0 ? "Adopt" : "Buy"
     );
   return React.createElement(React.Fragment, {
               children: React.createElement(RimbleUi.Button, {

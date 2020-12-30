@@ -23,18 +23,18 @@ function fromWeiEth(value) {
 }
 
 function getFloat(value, unit) {
-  if (unit.TAG) {
-    return Number(Web3Utils.fromWei(value, "ether")) * unit._0;
-  } else {
+  if (unit.TAG === /* Eth */0) {
     return Number(Web3Utils.fromWei(value, unit._0));
+  } else {
+    return Number(Web3Utils.fromWei(value, "ether")) * unit._0;
   }
 }
 
 function get(value, unit) {
-  if (unit.TAG) {
-    return Globals.toFixedWithPrecisionNoTrailingZeros(Number(Web3Utils.fromWei(value, "ether")) * unit._0, unit._1);
-  } else {
+  if (unit.TAG === /* Eth */0) {
     return Web3Utils.fromWei(value, unit._0);
+  } else {
+    return Globals.toFixedWithPrecisionNoTrailingZeros(Number(Web3Utils.fromWei(value, "ether")) * unit._0, unit._1);
   }
 }
 

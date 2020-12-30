@@ -89,7 +89,7 @@ function useTokenStatus(chain, animal) {
   if (typeof currentPriceWei === "number") {
     return /* Loading */0;
   }
-  if (!currentPriceWei.TAG) {
+  if (currentPriceWei.TAG === /* Foreclosed */0) {
     return {
             TAG: /* Foreclosed */3,
             _0: Helper.bnToMoment(currentPriceWei._0)

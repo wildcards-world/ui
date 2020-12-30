@@ -104,7 +104,7 @@ let overlayImg = (topPosition, leftPosition) =>
     minHeight(px(50)),
   ]);
 let overlayFlameImg = overlayImg(20., 0.);
-let prettyTransparent = rgba(255, 255, 255, 0.5);
+let prettyTransparent = rgba(255, 255, 255, `num(0.5));
 let imageHoverStyle =
   hover([
     filter([`saturate(150.), `brightness(110.)]),
@@ -115,7 +115,7 @@ let imageHoverStyle =
     transition(~duration=100, ~delay=0, ~timingFunction=ease, "all"),
   ]);
 let overlayBadgeImg = (~x, ~y) =>
-  Cn.make([
+  Cn.fromList([
     overlayImg(x, y),
     style([borderRadius(`percent(100.)), imageHoverStyle]),
   ]);
@@ -244,8 +244,8 @@ let infoBackground =
       `linearGradient((
         deg(0.),
         [
-          (zero, `rgba((255, 255, 255, 0.2))),
-          (zero, `rgba((255, 255, 255, 0.2))),
+          (zero, `rgba((255, 255, 255, `num(0.2)))),
+          (zero, `rgba((255, 255, 255, `num(0.2)))),
         ],
       )),
       `url(backgroundImageGorilla),
@@ -321,7 +321,7 @@ let linkPillBox =
     fontSize(px(14)),
     borderRadius(px(25)),
     color(hex("fff")),
-    backgroundColor(rgba(48, 48, 48, 0.12)),
+    backgroundColor(rgba(48, 48, 48, `num(0.12))),
   ]);
 let linkPillText =
   style([margin(px(10)), marginBottom(px(1)), color(hex("fff"))]);

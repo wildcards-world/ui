@@ -28,13 +28,13 @@ function usePrice(chain, animal) {
   var optCurrentUsdEthPrice = UsdPriceProvider.useUsdPrice(undefined);
   if (typeof optPriceWei === "number") {
     return ;
-  } else if (optPriceWei.TAG) {
-    return priceWeiToTuple(optPriceWei._0, optCurrentUsdEthPrice);
-  } else {
+  } else if (optPriceWei.TAG === /* Foreclosed */0) {
     return [
             "0",
             "0"
           ];
+  } else {
+    return priceWeiToTuple(optPriceWei._0, optCurrentUsdEthPrice);
   }
 }
 
@@ -58,14 +58,14 @@ function PriceDisplay$InUSD(Props) {
   var optPriceWei = QlHooks.usePrice(chain, animal);
   if (typeof optPriceWei === "number") {
     return React.createElement(RimbleUi.Loader, {});
-  } else if (optPriceWei.TAG) {
-    return React.createElement("p", {
-                className: Styles.noMarginTop + (" " + Styles.noMarginBottom)
-              }, Globals.restr(Eth.toFixedWithPrecisionNoTrailingZeros(undefined, optPriceWei._0) + " USD"));
-  } else {
+  } else if (optPriceWei.TAG === /* Foreclosed */0) {
     return React.createElement("p", {
                 className: Styles.noMarginTop + (" " + Styles.noMarginBottom)
               }, Globals.restr("0 USD"));
+  } else {
+    return React.createElement("p", {
+                className: Styles.noMarginTop + (" " + Styles.noMarginBottom)
+              }, Globals.restr(Eth.toFixedWithPrecisionNoTrailingZeros(undefined, optPriceWei._0) + " USD"));
   }
 }
 

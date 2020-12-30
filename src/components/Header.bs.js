@@ -103,7 +103,10 @@ function floatingMenu(shouldDisplay) {
                       tl: {
                         hd: Css.visibility(shouldDisplay ? "visible" : "hidden"),
                         tl: {
-                          hd: Css.backgroundColor(Css.rgba(255, 255, 255, shouldDisplay ? 0.5 : 0)),
+                          hd: Css.backgroundColor(Css.rgba(255, 255, 255, {
+                                    NAME: "num",
+                                    VAL: shouldDisplay ? 0.5 : 0
+                                  })),
                           tl: {
                             hd: Css.display("flex"),
                             tl: {
@@ -118,7 +121,10 @@ function floatingMenu(shouldDisplay) {
                                       hd: Css.transition(600, 0, Css.ease, "all"),
                                       tl: {
                                         hd: Css.selector(".zoom-in-effect", {
-                                              hd: Css.background(Css.rgba(107, 173, 62, 0.3)),
+                                              hd: Css.background(Css.rgba(107, 173, 62, {
+                                                        NAME: "num",
+                                                        VAL: 0.3
+                                                      })),
                                               tl: {
                                                 hd: Css.width(Css.vw(100)),
                                                 tl: {
@@ -249,10 +255,10 @@ function Header(Props) {
                       if (param.shouldDisplay && !isMobile || param.shouldDisplayMobile && isMobile) {
                         return React.createElement("li", {
                                     key: String(index),
-                                    className: Cn.make({
-                                          hd: Cn.ifTrue(navItemStyles, isMobile),
+                                    className: Cn.fromList({
+                                          hd: Cn.on(navItemStyles, isMobile),
                                           tl: {
-                                            hd: Cn.ifTrue(Curry._1(Css.style, {
+                                            hd: Cn.on(Curry._1(Css.style, {
                                                       hd: Css.backgroundColor(Css.white),
                                                       tl: {
                                                         hd: Css.borderBottom(Css.px(1), "solid", Styles.wildCardGreen),
@@ -323,7 +329,7 @@ function Header(Props) {
             }, React.createElement("div", {
                   className: Styles.navBox
                 }, React.createElement("a", {
-                      className: Cn.make({
+                      className: Cn.fromList({
                             hd: Styles.clickableLink,
                             tl: {
                               hd: Curry._1(Css.style, {
@@ -348,7 +354,7 @@ function Header(Props) {
                         }, React.createElement(WildcardsLogo.make, {
                               maxWidth: "258px"
                             }))), React.createElement("nav", {
-                      className: Cn.make({
+                      className: Cn.fromList({
                             hd: headerNav,
                             tl: {
                               hd: fullScreenMenu,
@@ -356,7 +362,7 @@ function Header(Props) {
                             }
                           })
                     }, menuItems(false)), React.createElement("nav", {
-                      className: Cn.make({
+                      className: Cn.fromList({
                             hd: headerNav,
                             tl: {
                               hd: hambergerMenu,

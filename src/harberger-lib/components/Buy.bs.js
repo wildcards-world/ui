@@ -68,7 +68,7 @@ function Buy$Buy(Props) {
   var currentPriceWei = Animal.useAuctionPriceWei(chain, tokenId, Belt_Option.getWithDefault(launchTimeOpt, new BnJs("5000")));
   var currentPriceWei$1 = isOnAuction ? Belt_Option.getWithDefault(currentPriceWei, new BnJs("0")) : (
       typeof priceStatus === "number" ? new BnJs("0") : (
-          priceStatus.TAG ? priceStatus._0 : new BnJs("0")
+          priceStatus.TAG === /* Foreclosed */0 ? new BnJs("0") : priceStatus._0
         )
     );
   var tokenIdName = "token#" + TokenId.toString(tokenId);
@@ -112,7 +112,7 @@ function Buy$Buy(Props) {
   var setDepositTimeInSeconds = match$7[1];
   var onSubmitBuy = function (param) {
     var amountToSend = currentPriceWei$1.add(new BnJs(Web3Utils$1.toWei(deposit, "ether")));
-    if (typeof priceStatus !== "number" && priceStatus.TAG) {
+    if (typeof priceStatus !== "number" && priceStatus.TAG !== /* Foreclosed */0) {
       if (priceStatus._0.gt(new BnJs("0"))) {
         return Curry._4(buyFunc, newPrice, currentPriceWei$1.toString(), "150000", amountToSend.toString());
       } else {

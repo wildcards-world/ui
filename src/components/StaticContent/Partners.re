@@ -86,7 +86,7 @@ module OrgDetails = {
                   Shadow.box(
                     ~blur=px(20),
                     ~spread=px(20),
-                    rgba(121, 181, 80, 0.5),
+                    rgba(121, 181, 80, `num(0.5)),
                   ),
                 ),
                 transform(scale(1.01, 1.01)),

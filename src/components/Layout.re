@@ -12,7 +12,7 @@ module AnimalFocusDetails = {
         currentAnimal |||| TokenId.fromStringUnsafe("0"),
       );
     <div
-      className={Cn.make([
+      className={Cn.fromList([
         Styles.topBody,
         Css.(style([position(relative)])),
       ])}>

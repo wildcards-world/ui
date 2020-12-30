@@ -5,10 +5,10 @@ import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Styles from "../../Styles.bs.js";
 import * as Globals from "../../harberger-lib/Globals.bs.js";
-import * as Css_Core from "bs-css/src/Css_Core.bs.js";
 import * as CONSTANTS from "../../CONSTANTS.bs.js";
 import * as RimbleUi from "rimble-ui";
 import * as RootProvider from "../../harberger-lib/RootProvider.bs.js";
+import * as Css_Legacy_Core from "bs-css/src/Css_Legacy_Core.bs.js";
 import * as ApolloClient__React_Hooks_UseQuery from "reason-apollo-client/src/@apollo/client/react/hooks/ApolloClient__React_Hooks_UseQuery.bs.js";
 
 var ubisoftLogo = "/img/logos/Ubisoft.png";
@@ -229,7 +229,10 @@ function Partners$OrgDetails(Props) {
                                               tl: {
                                                 hd: Css.overflow(Css.visible),
                                                 tl: {
-                                                  hd: Css.boxShadow(Css_Core.Shadow.box(undefined, undefined, Css.px(20), Css.px(20), undefined, Css.rgba(121, 181, 80, 0.5))),
+                                                  hd: Css.boxShadow(Css_Legacy_Core.Shadow.box(undefined, undefined, Css.px(20), Css.px(20), undefined, Css.rgba(121, 181, 80, {
+                                                                NAME: "num",
+                                                                VAL: 0.5
+                                                              }))),
                                                   tl: {
                                                     hd: Css.transform(Css.scale(1.01, 1.01)),
                                                     tl: {

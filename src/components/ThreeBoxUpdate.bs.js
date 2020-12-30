@@ -119,9 +119,7 @@ function ThreeBoxUpdate$ProfileDetails(Props) {
                                               }));
                                         return $$Promise.get($$Promise.Js.toResult(threeBoxInstance.syncDone), (function (isBoxLoaded) {
                                                       var state;
-                                                      if (isBoxLoaded.TAG) {
-                                                        state = /* Load3BoxError */1;
-                                                      } else {
+                                                      if (isBoxLoaded.TAG === /* Ok */0) {
                                                         var namePromise = profileName === editedName ? $$Promise.resolved({
                                                                 TAG: /* Ok */0,
                                                                 _0: undefined
@@ -131,7 +129,7 @@ function ThreeBoxUpdate$ProfileDetails(Props) {
                                                                 _0: undefined
                                                               }) : $$Promise.Js.toResult(threeBoxInstance.public.set("description", editedDescription));
                                                         $$Promise.get($$Promise.all2(namePromise, descriptionPromise), (function (a) {
-                                                                if (!a[0].TAG && !a[1].TAG) {
+                                                                if (a[0].TAG === /* Ok */0 && a[1].TAG === /* Ok */0) {
                                                                   Curry._1(reloadUser, true);
                                                                   return Curry._1(setThreeBoxState, (function (param) {
                                                                                 return {
@@ -151,6 +149,8 @@ function ThreeBoxUpdate$ProfileDetails(Props) {
                                                           TAG: /* SyncedBox */2,
                                                           _0: threeBoxInstance
                                                         };
+                                                      } else {
+                                                        state = /* Load3BoxError */1;
                                                       }
                                                       return Curry._1(setThreeBoxState, (function (param) {
                                                                     return state;
@@ -259,10 +259,10 @@ function ThreeBoxUpdate$TwitterVerification(Props) {
                     }));
               return $$Promise.get($$Promise.Js.toResult(threeBoxInstance.syncDone), (function (isBoxLoaded) {
                             var state;
-                            state = isBoxLoaded.TAG ? /* Load3BoxError */1 : ({
+                            state = isBoxLoaded.TAG === /* Ok */0 ? ({
                                   TAG: /* SyncedBox */2,
                                   _0: threeBoxInstance
-                                });
+                                }) : /* Load3BoxError */1;
                             return Curry._1(setThreeBoxState, (function (param) {
                                           return state;
                                         }));
@@ -295,15 +295,15 @@ function ThreeBoxUpdate$TwitterVerification(Props) {
                     }));
               return $$Promise.get($$Promise.Js.toResult(threeBoxInstance.syncDone), (function (isBoxLoaded) {
                             var state;
-                            if (isBoxLoaded.TAG) {
-                              state = /* Load3BoxError */1;
-                            } else {
+                            if (isBoxLoaded.TAG === /* Ok */0) {
                               threeBoxInstance.public.remove("proof_twitter");
                               Curry._1(reloadUser, true);
                               state = {
                                 TAG: /* SyncedBox */2,
                                 _0: threeBoxInstance
                               };
+                            } else {
+                              state = /* Load3BoxError */1;
                             }
                             return Curry._1(setThreeBoxState, (function (param) {
                                           return state;
@@ -403,7 +403,7 @@ function ThreeBoxUpdate$TwitterVerification(Props) {
       return React.createElement("p", undefined, "Please login to 3box!");
     }
   }
-  if (twitterVerificationStep.TAG) {
+  if (twitterVerificationStep.TAG !== /* PostToTwitter */0) {
     return React.createElement("p", undefined, "Verifying with server!");
   }
   var did = twitterVerificationStep._0;

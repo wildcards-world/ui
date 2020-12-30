@@ -240,7 +240,7 @@ module OrgPage = {
               ])
             )>
             <a
-              className={Cn.make([
+              className={Cn.fromList([
                 Styles.navListText,
                 Css.(style([fontSize(em(3.))])),
               ])}
@@ -262,7 +262,7 @@ module OrgPage = {
             </a>
             <br />
             <a
-              className={Cn.make([
+              className={Cn.fromList([
                 Styles.navListText,
                 Css.(style([fontSize(em(3.))])),
               ])}

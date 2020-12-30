@@ -44,7 +44,7 @@ function Layout$AnimalFocusDetails(Props) {
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   var animalDetails = QlHooks.useDetailsPageNextPrevious(Globals.$pipe$pipe$pipe$pipe(currentAnimal, TokenId.fromStringUnsafe("0")));
   return React.createElement("div", {
-              className: Cn.make({
+              className: Cn.fromList({
                     hd: Styles.topBody,
                     tl: {
                       hd: Curry._1(Css.style, {

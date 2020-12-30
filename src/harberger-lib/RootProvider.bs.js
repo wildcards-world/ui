@@ -182,7 +182,7 @@ function reducer(_prevState, _action) {
             if (typeof followOnAction === "number") {
               return newState;
             }
-            if (followOnAction.TAG) {
+            if (followOnAction.TAG !== /* LoginScreen */0) {
               return newState;
             }
             _action = followOnAction._0;
@@ -371,7 +371,7 @@ function useNonUrlState(param) {
 
 function useShowLogin(param) {
   var nonUrlRouting = useNonUrlState(undefined);
-  if (typeof nonUrlRouting === "number" || nonUrlRouting.TAG) {
+  if (typeof nonUrlRouting === "number" || nonUrlRouting.TAG !== /* LoginScreen */0) {
     return false;
   } else {
     return true;

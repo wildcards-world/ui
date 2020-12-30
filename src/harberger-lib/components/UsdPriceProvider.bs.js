@@ -48,7 +48,7 @@ function price_decode(v) {
     return Decco.error(undefined, "Not an object", v);
   }
   var c = Decco.arrayFromJson(Decco.stringFromJson, Belt_Option.getWithDefault(Js_dict.get(dict._0, "c"), null));
-  if (!c.TAG) {
+  if (c.TAG === /* Ok */0) {
     return {
             TAG: /* Ok */0,
             _0: {
@@ -87,7 +87,7 @@ function ethUsdPrice_decode(v) {
     return Decco.error(undefined, "Not an object", v);
   }
   var ethUsd = Decco.optionFromJson(price_decode, Belt_Option.getWithDefault(Js_dict.get(dict._0, "XETHZUSD"), null));
-  if (!ethUsd.TAG) {
+  if (ethUsd.TAG === /* Ok */0) {
     return {
             TAG: /* Ok */0,
             _0: {
@@ -126,7 +126,7 @@ function krakenPriceResponse_decode(v) {
     return Decco.error(undefined, "Not an object", v);
   }
   var result = Decco.optionFromJson(ethUsdPrice_decode, Belt_Option.getWithDefault(Js_dict.get(dict._0, "result"), null));
-  if (!result.TAG) {
+  if (result.TAG === /* Ok */0) {
     return {
             TAG: /* Ok */0,
             _0: {
@@ -150,14 +150,14 @@ function getPrice(param) {
                 return Async.let_(result.json(), (function (response) {
                               var krakenPriceObj = krakenPriceResponse_decode(response);
                               var tmp;
-                              if (krakenPriceObj.TAG) {
-                                console.log(krakenPriceObj._0);
-                                tmp = undefined;
-                              } else {
+                              if (krakenPriceObj.TAG === /* Ok */0) {
                                 var getPriceFromArray = function (a) {
                                   return Belt_Array.get(a, 0);
                                 };
                                 tmp = Globals.$great$great$eq(Globals.$less$$great(Globals.$great$great$eq(krakenPriceObj._0.result, ethUsd), c), getPriceFromArray);
+                              } else {
+                                console.log(krakenPriceObj._0);
+                                tmp = undefined;
                               }
                               return Globals.async(tmp);
                             }));

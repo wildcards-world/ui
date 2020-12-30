@@ -49,7 +49,10 @@ function Login(Props) {
                         return React.createElement("div", {
                                     key: String(index),
                                     className: Curry._1(Css.style, {
-                                          hd: Css.border(Css.px(1), "solid", Css.rgba(195, 195, 195, 0.14)),
+                                          hd: Css.border(Css.px(1), "solid", Css.rgba(195, 195, 195, {
+                                                    NAME: "num",
+                                                    VAL: 0.14
+                                                  })),
                                           tl: {
                                             hd: Css.hover(/* [] */0),
                                             tl: /* [] */0
@@ -75,7 +78,10 @@ function Login(Props) {
                                                           hd: Css.borderRadius(Css.px(12)),
                                                           tl: {
                                                             hd: Css.hover({
-                                                                  hd: Css.backgroundColor(Css.rgba(195, 195, 195, 0.14)),
+                                                                  hd: Css.backgroundColor(Css.rgba(195, 195, 195, {
+                                                                            NAME: "num",
+                                                                            VAL: 0.14
+                                                                          })),
                                                                   tl: /* [] */0
                                                                 }),
                                                             tl: {

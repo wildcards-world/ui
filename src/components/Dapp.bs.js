@@ -225,10 +225,10 @@ function Dapp$BasicAnimalDisplay(Props) {
     } else {
       tmp = null;
     }
-  } else if (nonUrlRouting.TAG) {
-    tmp = null;
-  } else {
+  } else if (nonUrlRouting.TAG === /* LoginScreen */0) {
     exit = 1;
+  } else {
+    tmp = null;
   }
   if (exit === 1) {
     tmp = owned ? React.createElement(Dapp$EditButton, {
@@ -351,7 +351,7 @@ function Dapp$AnimalOnLandingPage(Props) {
       tmp = null;
     } else {
       var tmp$1;
-      tmp$1 = isGqlLoaded && !(optionEndDateMoment !== undefined || isOnAuction || typeof currentPriceWei === "number" || !currentPriceWei.TAG) ? React.createElement("div", {
+      tmp$1 = isGqlLoaded && !(optionEndDateMoment !== undefined || isOnAuction || typeof currentPriceWei === "number" || currentPriceWei.TAG === /* Foreclosed */0) ? React.createElement("div", {
               className: Styles.overlayFlameImg
             }, React.createElement(Dapp$Streak, {
                   chain: chain,
@@ -574,10 +574,10 @@ function Dapp$AnimalActionsOnDetailsPage(Props) {
       } else {
         tmp = null;
       }
-    } else if (nonUrlRouting.TAG) {
-      tmp = null;
-    } else {
+    } else if (nonUrlRouting.TAG === /* LoginScreen */0) {
       exit = 1;
+    } else {
+      tmp = null;
     }
     if (exit === 1) {
       tmp = React.createElement(ActionButtons.Buy.make, {
