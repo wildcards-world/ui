@@ -225,9 +225,9 @@ var include = ApolloClient__React_Hooks_UseQuery.Extend({
       serializeVariables: serializeVariables
     });
 
-var InitialLoad_refetchQueryDescription = include.refetchQueryDescription;
+var use = include.use;
 
-var InitialLoad_use = include.use;
+var InitialLoad_refetchQueryDescription = include.refetchQueryDescription;
 
 var InitialLoad_useLazy = include.useLazy;
 
@@ -242,7 +242,7 @@ var InitialLoad = {
   serializeVariables: serializeVariables,
   makeVariables: makeVariables,
   refetchQueryDescription: InitialLoad_refetchQueryDescription,
-  use: InitialLoad_use,
+  use: use,
   useLazy: InitialLoad_useLazy,
   useLazyWithVariables: InitialLoad_useLazyWithVariables
 };
@@ -252,20 +252,44 @@ function createContext(prim) {
 }
 
 function useInitialDataLoad(chain) {
-  console.log(chain);
-  
+  var initLoadQuery = Curry.app(use, [
+        undefined,
+        {
+          context: chain
+        },
+        undefined,
+        undefined,
+        /* CacheFirst */1,
+        undefined,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        {
+          amount: chain !== 1 ? 30 : 31,
+          globalId: chain !== 1 ? "1" : "Matic-Global"
+        }
+      ]);
+  if (initLoadQuery.loading || initLoadQuery.error !== undefined) {
+    return ;
+  } else {
+    return initLoadQuery.data;
+  }
 }
 
 function useAnimalList(chain) {
-  console.log(chain);
+  var allData = useInitialDataLoad(chain);
   return React.useMemo((function () {
-                return Globals.$pipe$pipe$pipe$pipe(Globals.oMap(undefined, (function (data) {
+                return Globals.$pipe$pipe$pipe$pipe(Globals.oMap(allData, (function (data) {
                                   return Belt_Array.map(data.wildcards, (function (wc) {
                                                 return wc.animal;
                                               }));
                                 })), []);
               }), [
-              undefined,
+              allData,
               chain
             ]);
 }
@@ -349,7 +373,7 @@ var include$1 = ApolloClient__React_Hooks_UseQuery.Extend({
       serializeVariables: serializeVariables$1
     });
 
-var use = include$1.use;
+var use$1 = include$1.use;
 
 var MaticStateQuery_refetchQueryDescription = include$1.refetchQueryDescription;
 
@@ -366,7 +390,7 @@ var MaticStateQuery = {
   serializeVariables: serializeVariables$1,
   makeVariables: makeVariables$1,
   refetchQueryDescription: MaticStateQuery_refetchQueryDescription,
-  use: use,
+  use: use$1,
   useLazy: MaticStateQuery_useLazy,
   useLazyWithVariables: MaticStateQuery_useLazyWithVariables
 };
@@ -593,7 +617,7 @@ var include$2 = ApolloClient__React_Hooks_UseQuery.Extend({
       serializeVariables: serializeVariables$2
     });
 
-var use$1 = include$2.use;
+var use$2 = include$2.use;
 
 var ArtistQuery_refetchQueryDescription = include$2.refetchQueryDescription;
 
@@ -610,7 +634,7 @@ var ArtistQuery = {
   serializeVariables: serializeVariables$2,
   makeVariables: makeVariables$2,
   refetchQueryDescription: ArtistQuery_refetchQueryDescription,
-  use: use$1,
+  use: use$2,
   useLazy: ArtistQuery_useLazy,
   useLazyWithVariables: ArtistQuery_useLazyWithVariables
 };
@@ -1083,8 +1107,8 @@ function useIsForeclosed(chain, currentPatron) {
 }
 
 function useAuctionStartPrice(chain, _tokenId) {
-  console.log(chain);
-  return Belt_Option.map(Belt_Option.flatMap(undefined, (function (data) {
+  var optData = useInitialDataLoad(chain);
+  return Belt_Option.map(Belt_Option.flatMap(optData, (function (data) {
                     return data.global;
                   })), (function ($$global) {
                 return $$global.defaultAuctionStartPrice;
@@ -1092,8 +1116,8 @@ function useAuctionStartPrice(chain, _tokenId) {
 }
 
 function useAuctionEndPrice(chain, _tokenId) {
-  console.log(chain);
-  return Belt_Option.map(Belt_Option.flatMap(undefined, (function (data) {
+  var optData = useInitialDataLoad(chain);
+  return Belt_Option.map(Belt_Option.flatMap(optData, (function (data) {
                     return data.global;
                   })), (function ($$global) {
                 return $$global.defaultAuctionEndPrice;
@@ -1101,8 +1125,8 @@ function useAuctionEndPrice(chain, _tokenId) {
 }
 
 function useAuctioLength(chain, _tokenId) {
-  console.log(chain);
-  return Belt_Option.map(Belt_Option.flatMap(undefined, (function (data) {
+  var optData = useInitialDataLoad(chain);
+  return Belt_Option.map(Belt_Option.flatMap(optData, (function (data) {
                     return data.global;
                   })), (function ($$global) {
                 return $$global.defaultAuctionLength;
@@ -1115,7 +1139,7 @@ function useLaunchTimeBN(chain, tokenId) {
 }
 
 function useMaticState(forceRefetch, address, network) {
-  var query = Curry.app(use, [
+  var query = Curry.app(use$1, [
         undefined,
         undefined,
         undefined,
@@ -1143,7 +1167,7 @@ function useMaticState(forceRefetch, address, network) {
 }
 
 function useArtistData(artistIdentifier) {
-  var artistQuery = Curry.app(use$1, [
+  var artistQuery = Curry.app(use$2, [
         undefined,
         undefined,
         undefined,

@@ -57,50 +57,43 @@ module InitialLoad = [%graphql
      |}
 ];
 
-let createContext: Client.queryContext => 'a = Obj.magic;
+let createContext: Client.queryContext => Js.Json.t = Obj.magic;
 
 let useInitialDataLoad = (~chain) => {
-  Js.log(chain);
-  None;
-  /*let (simple, _full) =
-      ApolloHooks.useQuery(
-        ~notifyOnNetworkStatusChange=true,
-        // ~fetchPolicy=ApolloHooksTypes.NoCache,
-        ~fetchPolicy=ApolloHooksTypes.CacheFirst,
-        // This is a wierd hack for the sake of caching
-        ~variables=
-          InitialLoad.make(
-            ~amount=
-              switch (chain) {
-              | Client.MaticQuery => 31
-              | Client.Neither
-              | Client.MainnetQuery => 30
-              },
-            ~globalId=
-              switch (chain) {
-              | Client.MaticQuery => "Matic-Global"
-              | Client.Neither
-              | Client.MainnetQuery => "1"
-              },
-            (),
-          )##variables,
-        ~context={context: chain}->createContext,
-        InitialLoad.definition,
-      );
+  let initLoadQuery =
+    InitialLoad.use(
+      ~notifyOnNetworkStatusChange=true,
+      ~fetchPolicy=QueryFetchPolicy.CacheFirst,
+      ~context={context: chain}->createContext,
+      InitialLoad.makeVariables(
+        ~amount=
+          switch (chain) {
+          | Client.MaticQuery => 31
+          | Client.Neither
+          | Client.MainnetQuery => 30
+          },
+        ~globalId=
+          switch (chain) {
+          | Client.MaticQuery => "Matic-Global"
+          | Client.Neither
+          | Client.MainnetQuery => "1"
+          },
+        (),
+      ),
+    );
 
-    switch (simple) {
-    | Data(data) => Some(data)
-    | Loading
-    | NoData
-    | Error(_) => None
-    };*/
+  switch (initLoadQuery) {
+  | {loading: true, _} => None
+  | {error: Some(_error), _} => None
+  | {data, _} => data
+  };
 };
 
 let useAnimalList = (~chain) => {
   let allData = useInitialDataLoad(~chain);
   React.useMemo2(
     () => {
-      allData->oMap(data => data##wildcards->Array.map(wc => wc##animal))
+      allData->oMap(data => data.wildcards->Array.map(wc => wc.animal))
       |||| [||]
     },
     (allData, chain),
@@ -1126,22 +1119,22 @@ let useAuctionStartPrice = (~chain, _tokenId: TokenId.t) => {
   let optData = useInitialDataLoad(~chain);
 
   optData
-  ->Option.flatMap(data => data##global)
-  ->Option.map(global => global##defaultAuctionStartPrice);
+  ->Option.flatMap(data => data.global)
+  ->Option.map(global => global.defaultAuctionStartPrice);
 };
 let useAuctionEndPrice = (~chain, _tokenId: TokenId.t) => {
   let optData = useInitialDataLoad(~chain);
 
   optData
-  ->Option.flatMap(data => data##global)
-  ->Option.map(global => global##defaultAuctionEndPrice);
+  ->Option.flatMap(data => data.global)
+  ->Option.map(global => global.defaultAuctionEndPrice);
 };
 let useAuctioLength = (~chain, _tokenId: TokenId.t) => {
   let optData = useInitialDataLoad(~chain);
 
   optData
-  ->Option.flatMap(data => data##global)
-  ->Option.map(global => global##defaultAuctionLength);
+  ->Option.flatMap(data => data.global)
+  ->Option.map(global => global.defaultAuctionLength);
 };
 let useLaunchTimeBN = (~chain, tokenId: TokenId.t) => {
   Js.log2(chain, tokenId);

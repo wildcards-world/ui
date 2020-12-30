@@ -28,7 +28,10 @@ let chainContextToStr = chain =>
   };
 type queryContext = {context};
 
-[@bs.send] external getContext: 'a => option(queryContext) = "getContext";
+[@bs.send]
+external getContext:
+  ApolloClient__Link_Core_ApolloLink.Operation.Js_.t => option(queryContext) =
+  "getContext";
 
 /* based on test, execute left or right */
 let webSocketHttpLink = (~uri, ~matic, ~subscriptions) =>
