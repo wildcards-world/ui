@@ -12,7 +12,7 @@ module Router = {
 
 module ApolloProvider = {
   @react.component
-  let make = (~children, ~client) =>
+  @dead("ApolloProvider.+make") let make = (~children, ~client) =>
     <ApolloClient.React.ApolloProvider client> children </ApolloClient.React.ApolloProvider>
 }
 
@@ -22,7 +22,7 @@ external mainnetApi: option<string> = "process.env.REACT_APP_MAINNET_BE"
 
 // TODO: SSR doesn't work correctly here, need to use the external apollo client
 @react.component
-let make = () =>
+@dead("+make") let make = () =>
   <WildcardsProvider
     getGraphEndpoints={(networkId, ()) => {
       open Client

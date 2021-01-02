@@ -1,4 +1,4 @@
-let gorillaOnVine = "/img/wildcardsimages/gorilla-on-vine.png"
+@dead("+gorillaOnVine") let gorillaOnVine = "/img/wildcardsimages/gorilla-on-vine.png"
 
 open Globals
 open Rimble

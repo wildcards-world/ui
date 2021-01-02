@@ -6,7 +6,7 @@ external fromWei: (string, string) => string = "fromWei"
 @module("web3-utils")
 external fromWeiBN: (BN.t, string) => string = "fromWei"
 
-@module("web3-utils") external isBN: string => bool = "isBN"
+@dead("+isBN") @module("web3-utils") external isBN: string => bool = "isBN"
 
 @module("web3-utils") external toWei: (string, string) => string = "toWei"
 

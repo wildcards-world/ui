@@ -1,5 +1,5 @@
 module HoverToggle = {
-  @module("./HoverToggle.js") @react.component
+  @dead("HoverToggle.+make") @module("./HoverToggle.js") @react.component
   external make: (
     ~_ComponentHover: React.element,
     ~_ComponentNoHover: React.element,

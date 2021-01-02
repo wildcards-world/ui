@@ -1,19 +1,19 @@
 // This is a very big component because it contains full 3box. They should be lazy loaded!
 type threeBoxError
 type boxSpaceFunctions = {
-  get: (. string) => Promise.Js.t<string, threeBoxError>,
+  @dead("boxSpaceFunctions.get") get: (. string) => Promise.Js.t<string, threeBoxError>,
   remove: (. string) => Promise.Js.t<string, threeBoxError>,
   set: (. string, string) => Promise.Js.t<unit, threeBoxError>,
-  all: (. unit) => Promise.Js.t<string, threeBoxError>,
+  @dead("boxSpaceFunctions.all") all: (. unit) => Promise.Js.t<string, threeBoxError>,
 }
 type space = {
-  syncDone: Promise.Js.t<bool, threeBoxError>,
-  public: boxSpaceFunctions,
+  @dead("space.syncDone") syncDone: Promise.Js.t<bool, threeBoxError>,
+  @dead("space.public") public: boxSpaceFunctions,
 }
 type verified3Box = {addTwitter: (. string) => Promise.Js.t<string, threeBoxError>}
 type threeBox = {
   syncDone: Promise.Js.t<bool, threeBoxError>,
-  openSpace: (. string) => Promise.Js.t<space, threeBoxError>,
+  @dead("threeBox.openSpace") openSpace: (. string) => Promise.Js.t<space, threeBoxError>,
   public: boxSpaceFunctions,
   verified: verified3Box,
   @as("DID")
@@ -29,8 +29,8 @@ type threeBoxStatus =
   | Load3BoxError
   | LoggedIn(threeBox, bool) // the boolean here is if the `Space` needs to be synced too.
   | SyncedBox(threeBox)
-  | SyncedBoxWithSpace(threeBox, space)
-  | SyncedSpace(threeBox, space)
+  | @dead("threeBoxStatus.SyncedBoxWithSpace") SyncedBoxWithSpace(threeBox, space)
+  | @dead("threeBoxStatus.SyncedSpace") SyncedSpace(threeBox, space)
 
 @module("3box")
 external openBox: (. Web3.ethAddress, Web3.rawProvider) => Promise.Js.t<threeBox, threeBoxError> =
@@ -231,8 +231,8 @@ module ProfileDetails = {
 }
 
 type registerRequestData = {
-  did: string,
-  twitterHandle: string,
+  @dead("registerRequestData.did") did: string,
+  @dead("registerRequestData.twitterHandle") twitterHandle: string,
 }
 type did = string
 type twitterVerificationSteps =
@@ -509,4 +509,4 @@ module Main = {
   }
 }
 
-let default = Main.make
+@dead("+default") let default = Main.make

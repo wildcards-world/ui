@@ -16,9 +16,9 @@ type rec web3Library = {
 }
 
 type rpcDefinition = {
-  method: string,
-  params: array<string>,
-  from: ethAddress,
+  @dead("rpcDefinition.method") method: string,
+  @dead("rpcDefinition.params") params: array<string>,
+  @dead("rpcDefinition.from") from: ethAddress,
 }
 
 type error
@@ -38,7 +38,7 @@ external sendAsync: (
 external personalSign: (t, string, ethAddress) => Js.Promise.t<string> = "sign"
 
 module Contract = {
-  type sendParams = {from: ethAddress}
+  type sendParams = {@dead("Contract.sendParams.from") from: ethAddress}
   type txSendResult
   type contractMethod = {
     encodeABI: unit => string,

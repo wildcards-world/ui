@@ -1,6 +1,6 @@
 type structProperty = {
-  name: string,
-  @as("type")
+  @dead("structProperty.name") name: string,
+  @dead("structProperty._type") @as("type")
   _type: string,
 }
 type typedStruct = array<structProperty>
@@ -21,9 +21,9 @@ let eip712Domain = [
   {name: "salt", _type: "bytes32"},
 ]
 type domain = {
-  name: string,
-  version: string,
+  @dead("domain.name") name: string,
+  @dead("domain.version") version: string,
   // chainId: string,
-  verifyingContract: string,
-  salt: string,
+  @dead("domain.verifyingContract") verifyingContract: string,
+  @dead("domain.salt") salt: string,
 }

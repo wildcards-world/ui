@@ -118,7 +118,7 @@ module ComingSoonModal = {
                       {React.array(
                         animal.description
                         ->QlHooks.animalDescription_decode
-                        ->Result.getWithDefault([])
+                        ->Result.getWithDefault(@dead("ComingSoonModal.+emptyArray") [])
                         ->Array.mapWithIndex((i, paragraphText) =>
                           <p key={i->string_of_int}> {paragraphText->React.string} </p>
                         ),

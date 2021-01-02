@@ -18,9 +18,9 @@ let async = a => Js.Promise.resolve(a)
 
 type promise<'a> = Js.Promise.t<'a>
 
-let catchAsync = (p, cb) => Js.Promise.catch(cb, p)
+@dead("+catchAsync") let catchAsync = (p, cb) => Js.Promise.catch(cb, p)
 
-let asyncFromResult = result =>
+@dead("+asyncFromResult") let asyncFromResult = result =>
   // Lift it into a promise in case the original caller wasn't already in the promise. We want to use Promise's error catching behavior, and not Javascript's error catching behavior.
   result
   ->async
@@ -31,7 +31,7 @@ let asyncFromResult = result =>
     }
   )
 
-let attemptMapAsync = (
+@dead("+attemptMapAsync") let attemptMapAsync = (
   promise: Js.Promise.t<'a>,
   attempter: 'a => result<'b, 'error>,
 ): Js.Promise.t<'b> =>

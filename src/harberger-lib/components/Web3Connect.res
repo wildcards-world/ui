@@ -48,7 +48,7 @@ let make = (~clickAction=() => ()) => {
 
 module Modal = {
   @react.component
-  let make = () => {
+  @dead("Modal.+make") let make = () => {
     let showLogin = RootProvider.useShowLogin()
     let closeLogin = RootProvider.useCloseWeb3Login()
 

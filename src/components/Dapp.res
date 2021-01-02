@@ -3,7 +3,7 @@ open Globals
 let flameImg = "/img/streak-flame.png"
 
 module ShareSocial = {
-  @module("./components/shareSocialMedia") @react.component
+  @dead("ShareSocial.+make") @module("./components/shareSocialMedia") @react.component
   external make: unit => React.element = "default"
 }
 module EditButton = {

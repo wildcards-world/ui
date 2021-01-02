@@ -6,9 +6,9 @@ type t
 @send external div: (t, t) => t = "div"
 @send external gt: (t, t) => bool = "gt"
 @send external lt: (t, t) => bool = "lt"
-@send external eq: (t, t) => bool = "eq"
+@dead("+eq") @send external eq: (t, t) => bool = "eq"
 @send external cmp: (t, t) => int = "cmp"
-@send external sqr: t => t = "sqr"
+@dead("+sqr") @send external sqr: t => t = "sqr"
 @send external toString: t => string = "toString"
 @send external toStringRad: (t, int) => string = "toString"
 

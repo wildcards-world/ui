@@ -6,7 +6,7 @@ let fromStringUnsafe: string => t = Obj.magic
 let make: string => option<t> = tokenId =>
   Helper.isPositiveStringInteger(tokenId) ? Some(tokenId->fromStringUnsafe) : None
 
-let makeWithDefault: (string, int) => t = (tokenId, default) =>
+@dead("+makeWithDefault") let makeWithDefault: (string, int) => t = (tokenId, default) =>
   switch make(tokenId) {
   | Some(id) => id
   | None => default->Js.Math.abs_int->Int.toString->fromStringUnsafe

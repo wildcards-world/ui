@@ -1,8 +1,8 @@
 open Globals
 
-type usdPrice = {usdPrice: option<float>}
+type usdPrice = {@dead("usdPrice.usdPrice") usdPrice: option<float>}
 
-let initialState = {usdPrice: None}
+@dead("+initialState") let initialState = {usdPrice: None}
 
 // TODO: this should move to using a graphql based price feed (preferably from thegraph (via uniswap or makers oracles?))
 module PriceProvider = {

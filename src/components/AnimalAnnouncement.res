@@ -9,7 +9,7 @@ let linkToAnimal = style(list{
 })
 
 @react.component
-let make = (~nextReleasedAnimals: array<TokenId.t>, ~announcementBannerColor: string) => {
+@dead("+make") let make = (~nextReleasedAnimals: array<TokenId.t>, ~announcementBannerColor: string) => {
   let nextLaunchDate = Animal.nextLaunchDate
 
   let isLaunched = MomentRe.diff(nextLaunchDate, MomentRe.momentNow(), #seconds) < 0.

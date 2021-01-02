@@ -20,5 +20,5 @@ let reactMap = (opt, f) => reactMapWithDefault(opt, React.null, f)
 
 // For use with: https://github.com/reasonml-labs/bs-let
 module Opt = {
-  let let_ = Option.flatMap
+  @dead("Opt.+let_") let let_ = Option.flatMap
 }
