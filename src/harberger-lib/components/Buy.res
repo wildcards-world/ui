@@ -58,7 +58,7 @@ module Buy = {
       web3Context.chainId->Option.getWithDefault(1),
     )
 
-    let userBalance = Belt.Option.mapWithDefault(RootProvider.useEthBalance(), BN.new_("0"), a => a)
+    let userBalance = Option.mapWithDefault(RootProvider.useEthBalance(), BN.new_("0"), a => a)
 
     let (numerator, denominator, ratio, _ratioInverse) = QlHooks.usePledgeRateDetailed(
       ~chain,
@@ -118,7 +118,7 @@ module Buy = {
     let (
       defaultDepositTime,
       defaultDeposit,
-    ) = // TODO: these 'float_of_string' s can throw errors, rather use the Belt library.
+    ) = // TODO: these 'float_of_string' s can throw errors, rather use the library.
     if depositForAYear->float_of_string < maxAvailableDeposit->float_of_string {
       (31536000, depositForAYear)
     } else {

@@ -88,7 +88,7 @@ module ContributorsRow = {
 
     let optThreeBoxData = UserProvider.use3BoxUserData(contributor)
     let optUserName = {
-      open Belt.Option
+      open Option
       optThreeBoxData
       ->flatMap(threeBoxData => threeBoxData.profile)
       ->flatMap(threeBoxData => threeBoxData.name)
@@ -168,7 +168,7 @@ let make = (~numberOfLeaders) => {
       <tbody>
         {switch highestContributorsOpt {
         | Some(highestContributorsFull) =>
-          let highestContributors = Belt.Array.slice(
+          let highestContributors = Array.slice(
             highestContributorsFull,
             ~offset=0,
             ~len=numberOfLeaders,

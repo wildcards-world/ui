@@ -84,7 +84,7 @@ module ContributorsRow = {
 
     let optThreeBoxData = UserProvider.use3BoxUserData(contributor)
     let optUserName = {
-      open Belt.Option
+      open Option
       optThreeBoxData
       ->flatMap(threeBoxData => threeBoxData.profile)
       ->flatMap(threeBoxData => threeBoxData.name)
@@ -164,7 +164,7 @@ let make = (~numberOfLeaders) => {
       <tbody>
         {switch mostDaysHeldOpt {
         | Some(mostDaysHeldFull) =>
-          let mostDaysHeld = Belt.Array.slice(mostDaysHeldFull, ~offset=0, ~len=numberOfLeaders)
+          let mostDaysHeld = Array.slice(mostDaysHeldFull, ~offset=0, ~len=numberOfLeaders)
           <MostDaysHeld mostDaysHeld />
         | None => React.null
         }}

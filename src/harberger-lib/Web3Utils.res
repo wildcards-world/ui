@@ -16,7 +16,7 @@ let fromWeiBNToEthPrecision = (value, ~digits) =>
   value
   ->fromWeiBNToEth
   ->Float.fromString
-  ->Belt.Option.mapWithDefault(0., a => a)
+  ->Option.mapWithDefault(0., a => a)
   ->toFixedWithPrecisionNoTrailingZeros(~digits)
 
 let toWeiFromEth = value => toWei(value, "ether")

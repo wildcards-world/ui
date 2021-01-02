@@ -208,7 +208,7 @@ module RootWithWeb3 = {
           dispatch(
             LoadAddress(
               account,
-              newBalance->Belt.Option.flatMap(balance => Eth.make(balance.toString(.))),
+              newBalance->Option.flatMap(balance => Eth.make(balance.toString(.))),
             ),
           )
         )

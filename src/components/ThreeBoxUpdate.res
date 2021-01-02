@@ -49,7 +49,7 @@ module ProfileItem = {
             value=fieldValue
             placeholder=fieldName
             onChange={event => {
-              let value = ReactEvent.Form.target(event)["value"]->Belt.Option.getWithDefault("")
+              let value = ReactEvent.Form.target(event)["value"]->Option.getWithDefault("")
               onEdit(_ => value)
             }}
           />
@@ -126,6 +126,7 @@ module ProfileDetails = {
               }
               Promise.all2(namePromise, descriptionPromise)->Promise.get(a => {
                 let (nameSet, descriptionSet) = a
+
                 @warning("-4")
                 switch (nameSet, descriptionSet) {
                 | (Ok(), Ok()) =>
@@ -254,7 +255,7 @@ let getResult: string => option<string> = %raw(`
 module TwitterVerification = {
   @react.component
   let make = (~twitterVerification, ~threeBoxState, ~setThreeBoxState, ~reloadUser) => {
-    let currentUser = RootProvider.useCurrentUser()->Belt.Option.mapWithDefault("", a => a)
+    let currentUser = RootProvider.useCurrentUser()->Option.mapWithDefault("", a => a)
 
     let optEthereumWallet = RootProvider.useCurrentUser()
     let optWeb3Provider = RootProvider.useWeb3()
@@ -324,7 +325,7 @@ module TwitterVerification = {
               Js.Json.stringifyAny({
                 did: did,
                 twitterHandle: twitterHandle,
-              })->Belt.Option.mapWithDefault("{}", a => a),
+              })->Option.mapWithDefault("{}", a => a),
             ),
             (),
           ),
@@ -380,7 +381,7 @@ module TwitterVerification = {
             value=twitterHandle
             placeholder="twitter_handle"
             onChange={event => {
-              let value = ReactEvent.Form.target(event)["value"]->Belt.Option.getWithDefault("")
+              let value = ReactEvent.Form.target(event)["value"]->Option.getWithDefault("")
               setTwitterHandle(_ => value)
             }}
           />
@@ -435,7 +436,7 @@ module TwitterVerification = {
 module ThreeBoxUpdate = {
   @react.component
   let make = () => {
-    let currentUser = RootProvider.useCurrentUser()->Belt.Option.mapWithDefault("", a => a)
+    let currentUser = RootProvider.useCurrentUser()->Option.mapWithDefault("", a => a)
 
     let userInfoContext = UserProvider.useUserInfoContext()
     let reloadUser = forceReload => userInfoContext.update(currentUser, forceReload) // double check that data is loaded.
@@ -452,8 +453,8 @@ module ThreeBoxUpdate = {
         | Some(profile) =>
           <div>
             <ProfileDetails
-              profileName={profile.name->Belt.Option.mapWithDefault("", a => a)}
-              profileDescription={profile.description->Belt.Option.mapWithDefault("", a => a)}
+              profileName={profile.name->Option.mapWithDefault("", a => a)}
+              profileDescription={profile.description->Option.mapWithDefault("", a => a)}
               reloadUser
               threeBoxState
               setThreeBoxState
@@ -477,7 +478,7 @@ module ThreeBoxUpdate = {
 module Main = {
   @react.component
   let make = () => {
-    let currentUser = RootProvider.useCurrentUser()->Belt.Option.mapWithDefault("", a => a)
+    let currentUser = RootProvider.useCurrentUser()->Option.mapWithDefault("", a => a)
     let (isIntegrated3Box, setIsIntegarted3Box) = React.useState(_ => false)
     <div>
       <Rimble.Heading> {"Verify your identity"->React.string} </Rimble.Heading>

@@ -50,7 +50,7 @@ module ContributorName = {
 
     let optThreeBoxData = UserProvider.use3BoxUserData(contributor)
     let optUserName = {
-      open Belt.Option
+      open Option
       optThreeBoxData
       ->flatMap(threeBoxData => threeBoxData.profile)
       ->flatMap(threeBoxData => threeBoxData.name)

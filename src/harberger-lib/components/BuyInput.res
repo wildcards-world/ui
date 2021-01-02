@@ -78,7 +78,7 @@ let make = (
           _type="number"
           placeholder="Your Initial Sale Price"
           onChange={event => {
-            let value = ReactEvent.Form.target(event)["value"]->Belt.Option.getWithDefault("")
+            let value = ReactEvent.Form.target(event)["value"]->Option.getWithDefault("")
             setNewPrice(value)
           }}
           value=newPrice
@@ -108,7 +108,7 @@ let make = (
           className=inputStyle
           placeholder="Your Initial Deposit"
           onChange={event => {
-            let value = ReactEvent.Form.target(event)["value"]->Belt.Option.getWithDefault("")
+            let value = ReactEvent.Form.target(event)["value"]->Option.getWithDefault("")
             setDeposit(value)
           }}
           value=deposit
@@ -119,7 +119,7 @@ let make = (
           value=depositSlider
           className=inputStyle
           onChange={event => {
-            let value = ReactEvent.Form.target(event)["value"]->Belt.Option.getWithDefault("")
+            let value = ReactEvent.Form.target(event)["value"]->Option.getWithDefault("")
             setDepositSlider(_ => value)
             debouncedSetDeposit(value)
           }}

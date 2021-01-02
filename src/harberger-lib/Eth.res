@@ -46,13 +46,13 @@ let make: string => option<t> = wei => {
 let makeWithDefault: (string, int) => t = (tokenId, default) =>
   switch make(tokenId) {
   | Some(wei) => wei
-  | None => default->Belt.Int.toString->BN.new_
+  | None => default->Int.toString->BN.new_
   }
-let makeFromInt: int => t = tokenId => tokenId->Belt.Int.toString->BN.new_
+let makeFromInt: int => t = tokenId => tokenId->Int.toString->BN.new_
 
 let makeFromEthStr: string => option<t> = eth =>
-  Float.fromString(eth)->Belt.Option.flatMap(ethFloat => Some(
-    BN.new_(toWei(Belt.Float.toString(ethFloat), "ether")),
+  Float.fromString(eth)->Option.flatMap(ethFloat => Some(
+    BN.new_(toWei(Float.toString(ethFloat), "ether")),
   ))
 
 let toFixedWithPrecisionNoTrailingZeros = (~digits=9, eth) =>

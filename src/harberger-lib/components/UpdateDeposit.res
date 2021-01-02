@@ -10,7 +10,7 @@ module UpdateDepositInput = {
 }
 
 let getToDisplay = (label, value) =>
-  React.string(label ++ (": " ++ value->Belt.Option.mapWithDefault("loading", a => a)))
+  React.string(label ++ (": " ++ value->Option.mapWithDefault("loading", a => a)))
 
 @react.component
 let make = (~closeButtonText, ~chain) => {

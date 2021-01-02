@@ -36,7 +36,7 @@ let make = () => {
         })
       }>
       {connectors
-      ->Belt.Array.mapWithIndex((index, connector) =>
+      ->Array.mapWithIndex((index, connector) =>
         <div
           key={index->string_of_int}
           onClick={_e => activateConnector(connector.connector)}

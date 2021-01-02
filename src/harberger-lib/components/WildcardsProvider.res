@@ -1,7 +1,7 @@
 module GraphQl = {
   @react.component
   let make = (~getGraphEndpoints: (int, unit) => Client.qlEndpoints, ~children) => {
-    let networkId = RootProvider.useNetworkId()->Belt.Option.mapWithDefault(1, a => a)
+    let networkId = RootProvider.useNetworkId()->Option.mapWithDefault(1, a => a)
     let client = React.useMemo2(
       () => Client.instance(~getGraphEndpoints=getGraphEndpoints(networkId)),
       (getGraphEndpoints, networkId),

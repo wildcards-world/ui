@@ -288,8 +288,8 @@ let forwardBackButton = style(list{width(#percent(100.)), height(#em(5.))})
 
 // let mapStylesFunction = [%raw (prev, next) => "`${prev} ${next}`"];
 let mergeStyles: list<string> => string = styles =>
-  /* styles->Belt.List.reduce("", mapStylesFunction); */
-  styles->Belt.List.reduce("", (prev, next) => prev ++ (" " ++ next))
+  /* styles->List.reduce("", mapStylesFunction); */
+  styles->List.reduce("", (prev, next) => prev ++ (" " ++ next))
 
 let wrapText = style(list{overflowWrap(#breakWord), wordWrap(#breakWord)})
 

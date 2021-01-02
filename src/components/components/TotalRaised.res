@@ -19,7 +19,7 @@ let uesTotalPatronage = () => {
     let totalPatronageEth = totalPatronageWei->BN.toString->Web3Utils.fromWeiToEth
 
     let optTotaPatronageUsd =
-      optCurrentUsdEthPrice->Belt.Option.flatMap(currentUsdEthPrice => Some(
+      optCurrentUsdEthPrice->Option.flatMap(currentUsdEthPrice => Some(
         Js.Float.toFixedWithPrecision(
           Float.fromString(totalPatronageEth)->Option.mapWithDefault(0., a => a) *.
             currentUsdEthPrice,

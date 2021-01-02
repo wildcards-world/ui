@@ -46,14 +46,14 @@ let calculateTimeRemainingFromSeconds = numSeconds => {
 }
 
 let displayTimeLeft = durationStructure =>
-  durationStructure->Belt.List.reduce("", (acc, item) => {
+  durationStructure->List.reduce("", (acc, item) => {
     let display =
       item.decimal->string_of_int ++ (" " ++ (item.unit ++ (item.decimal > 1 ? "s " : " ")))
     display ++ acc
   })
 
 let displayTimeLeftSimple = durationStructure => {
-  let (displayStr, _) = durationStructure->Belt.List.reduce(("", ""), ((acc, spacer), item) => {
+  let (displayStr, _) = durationStructure->List.reduce(("", ""), ((acc, spacer), item) => {
     let display = item.decimal->string_of_int->padStart(0, 2)
     (display ++ (spacer ++ acc), ":")
   })

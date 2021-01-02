@@ -1,4 +1,4 @@
-open Belt.Option
+open Option
 
 let defaultZeroF = maybeFloat => mapWithDefault(maybeFloat, 0., a => a)
 let defaultZeroI = maybeInt => mapWithDefault(maybeInt, -1, a => a)

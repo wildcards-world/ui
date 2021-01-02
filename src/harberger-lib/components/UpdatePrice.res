@@ -1,7 +1,5 @@
-open Belt.Option
-
 let getToDisplay = (label, value) =>
-  React.string(label ++ (": " ++ value->mapWithDefault("loading", a => a)))
+  React.string(label ++ (": " ++ value->Option.mapWithDefault("loading", a => a)))
 
 @react.component
 let make = (~tokenId: TokenId.t, ~chain) => {
@@ -24,7 +22,7 @@ let make = (~tokenId: TokenId.t, ~chain) => {
         _type="number"
         placeholder="New Sale Price"
         onChange={event => {
-          let value = ReactEvent.Form.target(event)["value"]->getWithDefault("")
+          let value = ReactEvent.Form.target(event)["value"]->Option.getWithDefault("")
           let _ = InputHelp.onlyUpdateValueIfPositiveFloat(newBuyPrice, setNewBuyPrice, value)
         }}
         value=newBuyPrice

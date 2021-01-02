@@ -381,7 +381,7 @@ let useWildcardDescription = tokenId =>
   | Some({wildcard: {description, _}, _}) =>
     description
     ->animalDescription_decode
-    ->Belt.Result.mapWithDefault(None, descriptionArray => Some(descriptionArray))
+    ->Result.mapWithDefault(None, descriptionArray => Some(descriptionArray))
   | None => None
   }
 
@@ -453,10 +453,10 @@ let usePatron: (~chain: Client.context, TokenId.t) => option<string> = (~chain, 
   }
 
 let useIsAnimalOwened = (~chain, ownedAnimal) => {
-  let currentAccount = RootProvider.useCurrentUser()->Belt.Option.mapWithDefault("loading", a => a)
+  let currentAccount = RootProvider.useCurrentUser()->Option.mapWithDefault("loading", a => a)
 
   let currentPatron =
-    usePatron(~chain, ownedAnimal)->Belt.Option.mapWithDefault("no-patron-defined", a => a)
+    usePatron(~chain, ownedAnimal)->Option.mapWithDefault("no-patron-defined", a => a)
 
   currentAccount->Js.String.toLowerCase == currentPatron->Js.String.toLocaleLowerCase
 }
@@ -780,7 +780,7 @@ type animalPrice =
 let usePrice: (~chain: Client.context, TokenId.t) => animalPrice = (~chain, tokenId) => {
   let wildcardData = useWildcardQuery(~chain, tokenId)
   let optCurrentPatron = usePatron(~chain, tokenId)
-  let currentPatron = optCurrentPatron->Belt.Option.mapWithDefault("no-patron-defined", a => a)
+  let currentPatron = optCurrentPatron->Option.mapWithDefault("no-patron-defined", a => a)
   let currentTime = useCurrentTime()
   let foreclosureTime = useForeclosureTimeBn(~chain, currentPatron)
 

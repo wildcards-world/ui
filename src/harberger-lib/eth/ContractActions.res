@@ -134,7 +134,7 @@ let defaultStewardAddressFromChainId = x =>
 let useStewardAddress = () => {
   let externallySetAddress = RootProvider.useStewardContractAddress()
   chainId =>
-    externallySetAddress->Belt.Option.mapWithDefault(
+    externallySetAddress->Option.mapWithDefault(
       defaultStewardAddressFromChainId(chainId),
       a => Some(a),
     )
