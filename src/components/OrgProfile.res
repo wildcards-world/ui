@@ -225,10 +225,15 @@ module AmountRaised = {
       None
     }, [usdRaisedStr])
 
-    let explainerString =
-      mainnetEth->Web3Utils.fromWeiBNToEthPrecision(~digits=4) ++
-        (" ETH + " ++
-        (maticDai->Web3Utils.fromWeiBNToEthPrecision(~digits=2) ++ " DAI"))
+    let optExplainerString = switch (
+      mainnetEth->Web3Utils.fromWeiBNToEthPrecision(~digits=4),
+      maticDai->Web3Utils.fromWeiBNToEthPrecision(~digits=2),
+    ) {
+    | ("0", "0") => None
+    | (ethAmount, "0") => Some("(" ++ ethAmount ++ " ETH)")
+    | ("0", _) => None
+    | (ethAmount, daiAmount) => Some("(" ++ ethAmount ++ " ETH + " ++ daiAmount ++ "DAI)")
+    }
 
     let styleOnCountUp = {
       open Css
@@ -250,8 +255,11 @@ module AmountRaised = {
           | stringFloat => <Countup.StringFloat stringFloat styleOnCountUp />
           }}
         </span>
-        <br />
-        <small> {explainerString->React.string} </small>
+        {" USD"->React.string}
+        {switch optExplainerString {
+        | Some(explainerString) => <> <br /> <small> {explainerString->React.string} </small> </>
+        | None => React.null
+        }}
       </p>
     </>
   }

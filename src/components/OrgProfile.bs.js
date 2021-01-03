@@ -327,7 +327,20 @@ function OrgProfile$AmountRaised(Props) {
                 }));
           
         }), [usdRaisedStr]);
-  var explainerString = Web3Utils.fromWeiBNToEthPrecision(mainnetEth, 4) + (" ETH + " + (Web3Utils.fromWeiBNToEthPrecision(maticDai, 2) + " DAI"));
+  var match$3 = Web3Utils.fromWeiBNToEthPrecision(mainnetEth, 4);
+  var match$4 = Web3Utils.fromWeiBNToEthPrecision(maticDai, 2);
+  var optExplainerString;
+  var exit = 0;
+  if (match$3 === "0" && match$4 === "0") {
+    optExplainerString = undefined;
+  } else {
+    exit = 1;
+  }
+  if (exit === 1) {
+    optExplainerString = match$4 === "0" ? "(" + match$3 + " ETH)" : (
+        match$3 === "0" ? undefined : "(" + match$3 + " ETH + " + match$4 + "DAI)"
+      );
+  }
   var styleOnCountUp = Curry._1(Css.style, {
         hd: Css.color(Css.green),
         tl: {
@@ -344,7 +357,7 @@ function OrgProfile$AmountRaised(Props) {
                       styleOnCountUp: styleOnCountUp
                     }), React.createElement("span", {
                       className: CssJs.style([CssJs.fontSize(CssJs.em(0.75))])
-                    }, React.createElement("span", undefined, match$2[2]), tmp), React.createElement("br", undefined), React.createElement("small", undefined, explainerString)));
+                    }, React.createElement("span", undefined, match$2[2]), tmp), " USD", optExplainerString !== undefined ? React.createElement(React.Fragment, undefined, React.createElement("br", undefined), React.createElement("small", undefined, optExplainerString)) : null));
 }
 
 var AmountRaised = {
