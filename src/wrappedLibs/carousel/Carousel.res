@@ -19,6 +19,6 @@ external make: (
 // ~arrowRight: React.element=?,
 
 module Dots = {
-  @module("@wildcards/react-carousel") @react.component
+  @dead("Dots.+make") @module("@wildcards/react-carousel") @react.component
   external make: (~onChange: int => unit, ~value: int, ~number: int) => React.element = "Dots"
 }

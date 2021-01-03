@@ -15,7 +15,7 @@ type conservationPartnerType = {
   name: string,
   image: string,
   link: string,
-  index: int,
+  @dead("conservationPartnerType.index") index: int,
 }
 
 let conservationPartners: array<conservationPartnerType> = [
@@ -52,11 +52,11 @@ type voteStep =
   | SelectedOrganisationToVote(organisationArrayIndex, float => unit)
   | // | SelectedOrganisationToVote(organisationArrayIndex, currentVote)
   ProcessTransaction
-  | ViewResults
+  | @dead("voteStep.ViewResults") ViewResults
 
 module HackyComponentThatCallsAFunctionOnce = {
   @react.component
-  let make = (~reloadFunction) => {
+  @dead("HackyComponentThatCallsAFunctionOnce.+make") let make = (~reloadFunction) => {
     let (hasCalledFunction, setHasCalledFunction) = React.useState(_ => false)
     if !hasCalledFunction {
       reloadFunction()
@@ -72,7 +72,7 @@ module HackyComponentThatCallsAFunctionOnce = {
 // TODO: this shouldn't be done using a component, it should be done with a 'useEffect'
 module HackyComponentThatReloadsOnTimeout = {
   @react.component
-  let make = (~reloadFunction: unit => unit, ~timeoutTime) => {
+  @dead("HackyComponentThatReloadsOnTimeout.+make") let make = (~reloadFunction: unit => unit, ~timeoutTime) => {
     let (hasCalledFunction, setHasCalledFunction) = React.useState(_ => false)
 
     React.useEffect4(() => {

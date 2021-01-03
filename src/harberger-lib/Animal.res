@@ -164,5 +164,5 @@ let getChainIdFromAnimalId = animalId =>
   | _ => Client.MaticQuery
   }
 
-let useChainIdFromAnimalId = animalId =>
+@dead("+useChainIdFromAnimalId") let useChainIdFromAnimalId = animalId =>
   React.useMemo1(() => animalId->getChainIdFromAnimalId, [animalId])

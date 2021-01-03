@@ -18,7 +18,7 @@ type ethUnit = [
 ]
 
 @module("web3-utils") external fromWei: (t, string) => string = "fromWei"
-@module("web3-utils") external toWei: (string, string) => string = "toWei"
+@dead("+toWei") @module("web3-utils") external toWei: (string, string) => string = "toWei"
 
 let fromWeiEth: t => string = value => fromWei(value, ethUnitToJs(#ether))
 
@@ -43,14 +43,14 @@ let make: string => option<t> = wei => {
   let result = Helper.isPositiveStringInteger(wei) ? Some(BN.new_(wei)) : None
   result
 }
-let makeWithDefault: (string, int) => t = (tokenId, default) =>
+@dead("+makeWithDefault") let makeWithDefault: (string, int) => t = (tokenId, default) =>
   switch make(tokenId) {
   | Some(wei) => wei
   | None => default->Int.toString->BN.new_
   }
-let makeFromInt: int => t = tokenId => tokenId->Int.toString->BN.new_
+@dead("+makeFromInt") let makeFromInt: int => t = tokenId => tokenId->Int.toString->BN.new_
 
-let makeFromEthStr: string => option<t> = eth =>
+@dead("+makeFromEthStr") let makeFromEthStr: string => option<t> = eth =>
   Float.fromString(eth)->Option.flatMap(ethFloat => Some(
     BN.new_(toWei(Float.toString(ethFloat), "ether")),
   ))

@@ -5,7 +5,7 @@ open Rimble
 
 module CoreConcepts = {
   @react.component
-  let make = () => {
+  @dead("CoreConcepts.+make") let make = () => {
     let usedtranslationModeContext = ReactTranslate.useTranslationModeContext()
     let translation = ReactTranslate.useTranslate(. usedtranslationModeContext.translationMode)
 

@@ -33,3 +33,9 @@ yarn run build
 ```
 yarn run test
 ```
+
+## Code Quality and Analysis
+
+Dead code analysis is provided by (reanalyse)[https://github.com/reason-association/reanalyze]. Running `yarn re:analyse-write` will add `@dead` annotations to all places in the code where code could be unused/dead. There are places where the code is needed for javascript interop and in those cases the `@dead` annotation should typically be converted into a `@live` annotation ((see their meanings)[https://github.com/reason-association/reanalyze#dce-controlling-reports-with-annotations]).
+
+You can also get a breakdown of the bundle size (which packages etc contribute towards it) by running `yarn build && yarn analyze`.

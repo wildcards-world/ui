@@ -1,7 +1,7 @@
 open Globals
 
 @react.component
-let make = () =>
+@dead("+make") let make = () =>
   <Rimble.Box className=Styles.horizantalBlueTile>
     <p className=Styles.explainerMediumText>
       <span className=Styles.boldExplainerText> {"Wildcards"->restr} </span>

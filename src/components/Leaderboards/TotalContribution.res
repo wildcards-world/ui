@@ -42,7 +42,7 @@ let useLoadMostContributedData = () => {
 
 open Css
 
-let flameImg = "/img/streak-flame.png"
+@dead("+flameImg") let flameImg = "/img/streak-flame.png"
 let goldTrophyImg = "/img/icons/gold-trophy.png"
 let silverTrophyImg = "/img/icons/silver-trophy.png"
 let bronzeTrophyImg = "/img/icons/bronze-trophy.png"

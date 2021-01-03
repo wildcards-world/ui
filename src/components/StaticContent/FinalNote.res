@@ -5,7 +5,7 @@ module FinalNote = {
   open Rimble
 
   @react.component
-  let make = () =>
+  @dead("FinalNote.+make") let make = () =>
     <Box className=Styles.infoBackground>
       <Flex>
         <Box className=Styles.extraInfoFooterBox>

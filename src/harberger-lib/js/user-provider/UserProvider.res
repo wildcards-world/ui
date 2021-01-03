@@ -2,29 +2,29 @@
 external make: (~children: React.element) => React.element = "UserInfoProvider"
 
 type threeBoxImageData = {
-  @as("@type")
+  @dead("threeBoxImageData.imageType") @as("@type")
   imageType: string,
   contentUrl: Js.Dict.t<string>,
 }
 type threeBoxImage = array<threeBoxImageData>
 type threeBoxTwitterVerification = {
   username: string,
-  proof: string,
-  verifiedBy: string,
+  @dead("threeBoxTwitterVerification.proof") proof: string,
+  @dead("threeBoxTwitterVerification.verifiedBy") verifiedBy: string,
 }
 type threeBoxProfile = {
-  coverPhoto: option<threeBoxImage>,
+  @dead("threeBoxProfile.coverPhoto") coverPhoto: option<threeBoxImage>,
   description: option<string>,
   image: option<threeBoxImage>,
   name: option<string>,
 }
 type threeBoxVerifications = {
-  did: string,
+  @dead("threeBoxVerifications.did") did: string,
   twitter: option<threeBoxTwitterVerification>,
 }
 type threeBoxUserInfo = {
   profile: option<threeBoxProfile>,
-  wildcardsSpace: option<string>,
+  @dead("threeBoxUserInfo.wildcardsSpace") wildcardsSpace: option<string>,
   verifications: option<threeBoxVerifications>,
 }
 type userVerification = {threeBox: threeBoxUserInfo}
@@ -70,7 +70,7 @@ let use3BoxUserData: string => option<threeBoxUserInfo> = ethAddress => {
   }
 }
 
-let useIsUserValidated: string => bool = ethAddress =>
+@dead("+useIsUserValidated") let useIsUserValidated: string => bool = ethAddress =>
   switch useDisplayName(ethAddress) {
   | TwitterHandle(_) => true
   | ThreeBoxName(_)

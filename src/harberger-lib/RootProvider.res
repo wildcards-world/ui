@@ -10,7 +10,7 @@ type web3reactContext = {
 }
 @module("@web3-react/core")
 external useWeb3React: unit => web3reactContext = "useWeb3React"
-@module("@web3-react/core")
+@dead("+useWeb3ReactId") @module("@web3-react/core")
 external useWeb3ReactId: string => web3reactContext = "useWeb3React"
 
 module Web3ReactProvider = {
@@ -221,7 +221,7 @@ module RootWithWeb3 = {
     <RootContext value=(rootState, dispatch)> children </RootContext>
   }
 }
-let useRootContext: unit => RootProviderTypes.state = () => {
+@dead("+useRootContext") let useRootContext: unit => RootProviderTypes.state = () => {
   let (state, _) = React.useContext(RootContext.context)
   state
 }
@@ -252,7 +252,7 @@ let useIsAddressCurrentUser: Web3.ethAddress => bool = address => {
   }
 }
 
-let useIsProviderSelected: unit => bool = () => {
+@dead("+useIsProviderSelected") let useIsProviderSelected: unit => bool = () => {
   let (state, _) = React.useContext(RootContext.context)
   switch state.ethState {
   | Connected(_address, _balance) => true
@@ -321,7 +321,7 @@ let useGoToBuy: (unit, TokenId.t) => unit = () => {
   let (_, dispatch) = React.useContext(RootContext.context)
   animal => dispatch(GoToBuy(animal))
 }
-let useGoToAuction: (unit, TokenId.t) => unit = () => {
+@dead("+useGoToAuction") let useGoToAuction: (unit, TokenId.t) => unit = () => {
   let (_, dispatch) = React.useContext(RootContext.context)
   animal => dispatch(GoToAuction(animal))
 }

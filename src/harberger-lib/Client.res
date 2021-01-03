@@ -13,10 +13,10 @@ let wsLink = (~uri) => {
 }
 
 type context =
-  | Neither
+  | @dead("context.Neither") Neither
   | MaticQuery
   | MainnetQuery
-let chainContextToStr = chain =>
+@dead("+chainContextToStr") let chainContextToStr = chain =>
   switch chain {
   | Neither => "neither"
   | MaticQuery => "matic"

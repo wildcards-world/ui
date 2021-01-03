@@ -1,6 +1,7 @@
 // This function returns a prefix based on the page state. Now it is a boolean, in the future it may be more complicated.
 let getPagePrefix = isExplorer => isExplorer ? "explorer/" : ""
 
+@dead("+handleEvent")
 let handleEvent = (action, event) => {
   ReactEvent.Form.preventDefault(event)
   action()
@@ -61,6 +62,7 @@ let onlyUpdateIfPositiveFloat = (currentValue, updateFunction, event) => {
   onlyUpdateValueIfPositiveFloat(currentValue, updateFunction, value)
 }
 
+@dead("+onlyUpdateIfInRangeFloat")
 let onlyUpdateIfInRangeFloat = (min, max, currentValue, updateFunction, event) => {
   ReactEvent.Form.preventDefault(event)
 

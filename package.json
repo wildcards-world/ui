@@ -76,7 +76,7 @@
     "generate-ppx-schema-goerli": "get-graphql-schema https://api.wildcards.world/v1/graphql -j >| graphql_schema.json",
     "generate-ppx-schema-local": "get-graphql-schema http://localhost:8080/v1/graphql -j >| graphql_schema.json",
     "re:analyze": "reanalyze -dce",
-    "re:analyze-write": "reanalyze -write -dce"
+    "re:analyze-write": "reanalyze -write -dce; find ./src -type f | xargs sed -i -e 's/<@dead(\".*\") /</g'"
   },
   "jest": {
     "transformIgnorePatterns": [

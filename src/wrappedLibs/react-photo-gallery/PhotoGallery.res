@@ -1,10 +1,10 @@
 type photo = {
-  src: string,
-  width: int,
-  height: int,
+  @dead("photo.src") src: string,
+  @dead("photo.width") width: int,
+  @dead("photo.height") height: int,
 }
 type selectedPhoto = {
-  photo: photo,
+  @dead("selectedPhoto.photo") photo: photo,
   index: int,
   // next: photo,
   // previous: photo,

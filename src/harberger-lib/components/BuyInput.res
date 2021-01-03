@@ -1,7 +1,7 @@
 type debounceOptions = {
-  maxWait: option<int>,
-  leading: option<bool>,
-  trailing: option<bool>,
+  @dead("debounceOptions.maxWait") maxWait: option<int>,
+  @dead("debounceOptions.leading") leading: option<bool>,
+  @dead("debounceOptions.trailing") trailing: option<bool>,
 }
 
 @module("use-debounce")

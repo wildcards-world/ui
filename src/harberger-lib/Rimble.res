@@ -1,8 +1,8 @@
 type width =
   | AnyStr(string)
-  | AnyStryArray(array<string>)
-  | Float(float)
-  | FloatArray(array<float>)
+  | @dead("width.AnyStryArray") AnyStryArray(array<string>)
+  | @dead("width.Float") Float(float)
+  | @dead("width.FloatArray") FloatArray(array<float>)
 
 type wcColourString = [#green]
 
@@ -140,7 +140,7 @@ module Text = {
   ) => React.element = "Text"
 }
 module TextS = {
-  @module("rimble-ui") @react.component
+  @dead("TextS.+make") @module("rimble-ui") @react.component
   external make: (~children: string) => React.element = "Text"
 }
 

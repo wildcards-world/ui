@@ -331,7 +331,7 @@ let useLoadOrganisationLogo = orgId =>
   | Some({logo, _}) => Some(logo)
   | None => None
   }
-let useLoadOrganisationLogoBadge = orgId =>
+@dead("+useLoadOrganisationLogoBadge") let useLoadOrganisationLogoBadge = orgId =>
   switch useLoadOrganisationQuery(orgId) {
   | Some({logo_badge: Some(badge), _}) => Some(badge)
   | Some({logo, _}) => Some(logo)
@@ -494,7 +494,7 @@ let useForeclosureTimeBn = (~chain, patron) =>
 let useForeclosureTime = (~chain, patron) =>
   useForeclosureTimeBn(~chain, patron)->Option.map(Helper.bnToMoment)
 
-let useTimeAcquiredWithDefault = (~chain, animal, default: MomentRe.Moment.t) =>
+@dead("+useTimeAcquiredWithDefault") let useTimeAcquiredWithDefault = (~chain, animal, default: MomentRe.Moment.t) =>
   Option.getWithDefault(useTimeAcquired(~chain, animal), default)
 let useDaysHeld = (~chain, tokenId) =>
   useTimeAcquired(~chain, tokenId)->Option.map(moment => (
@@ -876,7 +876,7 @@ let useArtistUnlaunchedWildcards = (~artistIdentifier) => {
 type wildcardKey = int
 type artistOrg = {
   id: string,
-  name: string,
+  @dead("artistOrg.name") name: string,
   logo: string,
   wildcards: array<wildcardKey>,
 }

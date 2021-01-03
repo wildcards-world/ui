@@ -8,16 +8,16 @@ type tx = {
 }
 type parsedUnits
 type txOptions = {
-  gasLimit: string,
-  value: parsedUnits,
+  @dead("txOptions.gasLimit") gasLimit: string,
+  @dead("txOptions.value") value: parsedUnits,
 }
 type tokenIdString = string
 type estimateBuy = {
-  buy: // (. string, parsedUnits, txOptions) =>
+  @dead("estimateBuy.buy") buy: // (. string, parsedUnits, txOptions) =>
   (. string, parsedUnits, parsedUnits, txOptions) => Promise.Js.t<string, string>,
 }
 type stewardContract = {
-  estimate: estimateBuy,
+  @dead("stewardContract.estimate") estimate: estimateBuy,
   buy: (. tokenIdString, parsedUnits, parsedUnits, string, txOptions) => Promise.Js.t<tx, txError>,
   buyAuction: (. tokenIdString, parsedUnits, string, txOptions) => Promise.Js.t<tx, txError>,
   depositWei: (. txOptions) => Promise.Js.t<tx, txError>,
@@ -31,9 +31,9 @@ type ethersBnFormat
 
 type loyaltyTokenContract = {
   // approve(address to, uint256 tokenId)
-  allowance: (. Web3.ethAddress, Web3.ethAddress) => Js.Promise.t<ethersBnFormat>,
+  @dead("loyaltyTokenContract.allowance") allowance: (. Web3.ethAddress, Web3.ethAddress) => Js.Promise.t<ethersBnFormat>,
   balanceOf: (. Web3.ethAddress) => Js.Promise.t<ethersBnFormat>,
-  approve: (. Web3.ethAddress, string, txOptions) => Promise.Js.t<tx, txError>,
+  @dead("loyaltyTokenContract.approve") approve: (. Web3.ethAddress, string, txOptions) => Promise.Js.t<tx, txError>,
 }
 
 @new @module("ethers")
@@ -69,11 +69,11 @@ let loyaltyTokenAddressMainnet = "0x773c75c2277eD3e402BDEfd28Ec3b51A3AfbD8a4"
 let loyaltyTokenAddressGoerli = "0xd7d8c42ab5b83aa3d4114e5297989dc27bdfb715"
 // let loyaltyTokenAddressRinkbey = "0xd7d8c42ab5b83aa3d4114e5297989dc27bdfb715";
 
-let stewardAddressMaticMain = "0x6D47CF86F6A490c6410fC082Fd1Ad29CF61492d0"
-let stewardAddressMumbai = "0x0C00CFE8EbB34fE7C31d4915a43Cde211e9F0F3B"
+@dead("+stewardAddressMaticMain") let stewardAddressMaticMain = "0x6D47CF86F6A490c6410fC082Fd1Ad29CF61492d0"
+@dead("+stewardAddressMumbai") let stewardAddressMumbai = "0x0C00CFE8EbB34fE7C31d4915a43Cde211e9F0F3B"
 
-let loyaltyTokenAddressMaticMain = "0x773c75c2277eD3e402BDEfd28Ec3b51A3AfbD8a4"
-let loyaltyTokenAddressMumbai = "0xd7d8c42ab5b83aa3d4114e5297989dc27bdfb715"
+@dead("+loyaltyTokenAddressMaticMain") let loyaltyTokenAddressMaticMain = "0x773c75c2277eD3e402BDEfd28Ec3b51A3AfbD8a4"
+@dead("+loyaltyTokenAddressMumbai") let loyaltyTokenAddressMumbai = "0xd7d8c42ab5b83aa3d4114e5297989dc27bdfb715"
 // let loyaltyTokenAddressRinkbey = "0xd7d8c42ab5b83aa3d4114e5297989dc27bdfb715";
 
 let getDaiContractAddress = (chain: Client.context, chainId) =>
@@ -183,7 +183,7 @@ type transactionState =
   | DaiPermit(BN.t)
   | SignMetaTx
   | Created
-  | SubmittedMetaTx
+  | @dead("transactionState.SubmittedMetaTx") SubmittedMetaTx
   | SignedAndSubmitted(txHash)
   // TODO: get the error message when it is declined.
   //      4001 - means the transaction was declined by the signer
