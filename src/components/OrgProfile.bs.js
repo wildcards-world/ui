@@ -378,8 +378,17 @@ function OrgProfile$OrgPage(Props) {
                                           VAL: 15
                                         }),
                                     tl: {
-                                      hd: Css.overflow("scroll"),
-                                      tl: /* [] */0
+                                      hd: Css.overflowY("auto"),
+                                      tl: {
+                                        hd: Css.overflowX("hidden"),
+                                        tl: {
+                                          hd: Css.backgroundColor(Css.rgb(250, 250, 250)),
+                                          tl: {
+                                            hd: Css.borderRadius(Css.em(0.8)),
+                                            tl: /* [] */0
+                                          }
+                                        }
+                                      }
                                     }
                                   })
                             }, tmp), React.createElement("br", undefined)), React.createElement(RimbleUi.Box, {

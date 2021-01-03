@@ -255,7 +255,13 @@ module OrgPage = {
             <div
               className={
                 open Css
-                style(list{maxHeight(#em(15.)), overflow(#scroll)})
+                style(list{
+                  maxHeight(#em(15.)),
+                  overflowY(#auto),
+                  overflowX(#hidden),
+                  backgroundColor(rgb(250, 250, 250)),
+                  borderRadius(em(0.8)),
+                })
               }>
               {switch orgDescription {
               | Ok(descriptionArray) =>
