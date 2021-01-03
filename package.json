@@ -71,7 +71,7 @@
     "lint": "eslint src",
     "re:build": "bsb -make-world -clean-world",
     "re:clean": "bsb -clean-world",
-    "re:watch": "BS_LOG=* bsb -make-world -clean-world -w",
+    "re:watch": "RES_LOG=* bsb -make-world -clean-world -w",
     "generate-ppx-schema": "get-graphql-schema https://api.wildcards.world/v1/graphql -j >| graphql_schema.json",
     "generate-ppx-schema-goerli": "get-graphql-schema https://api.wildcards.world/v1/graphql -j >| graphql_schema.json",
     "generate-ppx-schema-local": "get-graphql-schema http://localhost:8080/v1/graphql -j >| graphql_schema.json",
