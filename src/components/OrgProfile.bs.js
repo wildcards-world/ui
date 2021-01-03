@@ -3,11 +3,13 @@
 import * as Cn from "re-classnames/src/Cn.bs.js";
 import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Eth from "../harberger-lib/Eth.bs.js";
+import * as CssJs from "bs-css-emotion/src/CssJs.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as Decco from "decco/src/Decco.bs.js";
 import * as React from "react";
 import * as Animal from "../harberger-lib/Animal.bs.js";
 import * as Styles from "../Styles.bs.js";
+import * as Countup from "./components/Countup.bs.js";
 import * as Globals from "../harberger-lib/Globals.bs.js";
 import * as QlHooks from "../harberger-lib/QlHooks.bs.js";
 import * as TokenId from "../harberger-lib/TokenId.bs.js";
@@ -118,13 +120,13 @@ function OrgProfile$ComingSoonModal(Props) {
                       hd: Css.textAlign(Css.center),
                       tl: /* [] */0
                     })
-              }, Belt_Option.getWithDefault(animal.name, "Unamed") + Belt_Option.mapWithDefault(animal.commonName, "", (function (commonName) {
+              }, Belt_Option.getWithDefault(animal.name, "Unnamed") + Belt_Option.mapWithDefault(animal.commonName, "", (function (commonName) {
                       return " - " + commonName;
                     }))), React.createElement(RimbleUi.Flex, {
                 children: null,
                 flexWrap: "wrap",
                 alignItems: "start",
-                alignContent: "space-arround"
+                alignContent: "space-around"
               }, React.createElement(RimbleUi.Box, {
                     children: React.createElement("div", {
                           className: Curry._1(Css.style, {
@@ -241,6 +243,114 @@ var ComingSoonModal = {
   make: OrgProfile$ComingSoonModal
 };
 
+function stringToArray(str) {
+  return Array.from(str);
+}
+
+function toDollarCentsFixedNoRounding(aFloat) {
+  return Belt_Option.getWithDefault(Caml_option.null_to_opt(String(aFloat).match(/^\d+[.]\d\d/g)), [""])[0];
+}
+
+function OrgProfile$AmountRaised(Props) {
+  var mainnetEth = Props.mainnetEth;
+  var maticDai = Props.maticDai;
+  var currentUsdEthPrice = UsdPriceProvider.useUsdPrice(undefined);
+  var match = React.useState(function () {
+        return [];
+      });
+  var setPrevUsdRaisedStrArray = match[1];
+  var prevUsdRaisedStrArray = match[0];
+  var match$1 = React.useState(function () {
+        return [
+                "",
+                "",
+                "",
+                ""
+              ];
+      });
+  var setRaisedDisplay = match$1[1];
+  var match$2 = match$1[0];
+  var raisedSubChanged = match$2[3];
+  var usdRaisedFloat = Belt_Option.mapWithDefault(currentUsdEthPrice, 0, (function (usdEthRate) {
+          return Eth.getFloat(mainnetEth, {
+                      TAG: /* Usd */1,
+                      _0: usdEthRate,
+                      _1: 2
+                    });
+        })) + Eth.getFloat(maticDai, {
+        TAG: /* Eth */0,
+        _0: "ether"
+      });
+  var usdRaisedStr = usdRaisedFloat.toFixed(6);
+  var usdRaised2Precision = toDollarCentsFixedNoRounding(usdRaisedFloat);
+  React.useEffect((function () {
+          var usdRaisedDigitArray = Array.from(usdRaisedStr);
+          var indexOfTheFirstChangedDigit = usdRaisedDigitArray.findIndex(function (newDigit, index) {
+                var digit = Belt_Array.get(prevUsdRaisedStrArray, index);
+                if (digit !== undefined) {
+                  return digit !== newDigit;
+                } else {
+                  return false;
+                }
+              });
+          var match = usdRaised2Precision.length;
+          if (indexOfTheFirstChangedDigit < 0) {
+            Curry._1(setRaisedDisplay, (function (param) {
+                    return [
+                            usdRaised2Precision,
+                            "",
+                            usdRaisedStr.slice(match),
+                            ""
+                          ];
+                  }));
+          } else if (indexOfTheFirstChangedDigit > match) {
+            Curry._1(setRaisedDisplay, (function (param) {
+                    return [
+                            usdRaised2Precision,
+                            "",
+                            usdRaisedStr.slice(match, indexOfTheFirstChangedDigit),
+                            usdRaisedStr.slice(indexOfTheFirstChangedDigit)
+                          ];
+                  }));
+          } else {
+            Curry._1(setRaisedDisplay, (function (param) {
+                    return [
+                            usdRaised2Precision.slice(0, indexOfTheFirstChangedDigit),
+                            usdRaised2Precision.slice(indexOfTheFirstChangedDigit),
+                            "",
+                            usdRaisedStr.slice(match)
+                          ];
+                  }));
+          }
+          Curry._1(setPrevUsdRaisedStrArray, (function (param) {
+                  return usdRaisedDigitArray;
+                }));
+          
+        }), [usdRaisedStr]);
+  var explainerString = Web3Utils.fromWeiBNToEthPrecision(mainnetEth, 4) + (" ETH + " + (Web3Utils.fromWeiBNToEthPrecision(maticDai, 2) + " DAI"));
+  var styleOnCountUp = Curry._1(Css.style, {
+        hd: Css.color(Css.green),
+        tl: {
+          hd: Css.fontWeight("bold"),
+          tl: /* [] */0
+        }
+      });
+  var tmp = raisedSubChanged === "" ? null : React.createElement(Countup.StringFloat.make, {
+          stringFloat: raisedSubChanged,
+          styleOnCountUp: styleOnCountUp
+        });
+  return React.createElement(React.Fragment, undefined, React.createElement("p", undefined, React.createElement("span", undefined, match$2[0]), React.createElement(Countup.StringFloat.make, {
+                      stringFloat: match$2[1],
+                      styleOnCountUp: styleOnCountUp
+                    }), React.createElement("span", {
+                      className: CssJs.style([CssJs.fontSize(CssJs.em(0.75))])
+                    }, React.createElement("span", undefined, match$2[2]), tmp), React.createElement("br", undefined), React.createElement("small", undefined, explainerString)));
+}
+
+var AmountRaised = {
+  make: OrgProfile$AmountRaised
+};
+
 function OrgProfile$OrgPage(Props) {
   var orgData = Props.orgData;
   var orgId = Props.orgId;
@@ -255,33 +365,9 @@ function OrgProfile$OrgPage(Props) {
   var orgAnimalsArray = Belt_Array.map(orgAnimals, (function (animal) {
           return Belt_Option.getWithDefault(animal.id, TokenId.makeFromInt(99999));
         }));
-  var currentUsdEthPrice = UsdPriceProvider.useUsdPrice(undefined);
   var match$1 = QlHooks.useTotalRaisedAnimalGroup(orgAnimalsArray);
   var totalCollectMaticDai = match$1[1];
   var totalCollectedMainnetEth = match$1[0];
-  var match$2;
-  if (totalCollectedMainnetEth !== undefined && totalCollectMaticDai !== undefined) {
-    var maticDai = Caml_option.valFromOption(totalCollectMaticDai);
-    var mainnetEth = Caml_option.valFromOption(totalCollectedMainnetEth);
-    match$2 = [
-      (Belt_Option.mapWithDefault(currentUsdEthPrice, 0, (function (usdEthRate) {
-                  return Eth.getFloat(mainnetEth, {
-                              TAG: /* Usd */1,
-                              _0: usdEthRate,
-                              _1: 2
-                            });
-                })) + Eth.getFloat(maticDai, {
-                TAG: /* Eth */0,
-                _0: "ether"
-              })).toFixed(6),
-      Web3Utils.fromWeiBNToEthPrecision(mainnetEth, 4) + (" ETH + " + (Web3Utils.fromWeiBNToEthPrecision(maticDai, 2) + " DAI"))
-    ];
-  } else {
-    match$2 = [
-      "loading",
-      "loading"
-    ];
-  }
   var orgWebsite = orgData.website;
   var optOrgYoutubeVid = orgData.youtube_vid;
   var orgImage = Animal.useGetOrgImage(orgId);
@@ -407,7 +493,10 @@ function OrgProfile$OrgPage(Props) {
                               })
                         }, optOrgYoutubeVid !== undefined ? React.createElement(make, {
                                 videoCode: optOrgYoutubeVid
-                              }) : null, React.createElement("h2", undefined, Globals.restr("Total Raised")), Globals.restr(match$2[0] + "USD"), React.createElement("br", undefined), React.createElement("small", undefined, Globals.restr(match$2[1]))), React.createElement(RimbleUi.Box, {
+                              }) : null, React.createElement("h2", undefined, Globals.restr("Total Raised")), totalCollectedMainnetEth !== undefined && totalCollectMaticDai !== undefined ? React.createElement(OrgProfile$AmountRaised, {
+                                mainnetEth: Caml_option.valFromOption(totalCollectedMainnetEth),
+                                maticDai: Caml_option.valFromOption(totalCollectMaticDai)
+                              }) : "Loading"), React.createElement(RimbleUi.Box, {
                           children: null,
                           width: [
                             1,
@@ -486,6 +575,9 @@ export {
   ComingSoonAnimal ,
   ImageCarousel ,
   ComingSoonModal ,
+  stringToArray ,
+  toDollarCentsFixedNoRounding ,
+  AmountRaised ,
   OrgPage ,
   make$1 as make,
   

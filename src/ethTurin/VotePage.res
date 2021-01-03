@@ -55,14 +55,12 @@ type voteStep =
   | @dead("voteStep.ViewResults") ViewResults
 
 module HackyComponentThatCallsAFunctionOnce = {
-  @react.component
-  @dead("HackyComponentThatCallsAFunctionOnce.+make") let make = (~reloadFunction) => {
+  @react.component @dead("HackyComponentThatCallsAFunctionOnce.+make")
+  let make = (~reloadFunction) => {
     let (hasCalledFunction, setHasCalledFunction) = React.useState(_ => false)
     if !hasCalledFunction {
       reloadFunction()
       setHasCalledFunction(_ => true)
-    } else {
-      ()
     }
 
     React.null
@@ -71,8 +69,8 @@ module HackyComponentThatCallsAFunctionOnce = {
 
 // TODO: this shouldn't be done using a component, it should be done with a 'useEffect'
 module HackyComponentThatReloadsOnTimeout = {
-  @react.component
-  @dead("HackyComponentThatReloadsOnTimeout.+make") let make = (~reloadFunction: unit => unit, ~timeoutTime) => {
+  @react.component @dead("HackyComponentThatReloadsOnTimeout.+make")
+  let make = (~reloadFunction: unit => unit, ~timeoutTime) => {
     let (hasCalledFunction, setHasCalledFunction) = React.useState(_ => false)
 
     React.useEffect4(() => {
@@ -80,8 +78,6 @@ module HackyComponentThatReloadsOnTimeout = {
         if !hasCalledFunction {
           reloadFunction()
           setHasCalledFunction(_ => true)
-        } else {
-          ()
         }
       , timeoutTime)
       Some(() => Js.Global.clearTimeout(timeout))

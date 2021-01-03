@@ -184,8 +184,6 @@ module Buy = {
           denominator,
         )
         setDepositTimeInSeconds(_ => timeInSeconds)
-      } else {
-        ()
       }
     }
 
@@ -211,9 +209,7 @@ module Buy = {
     //         denominator,
     //       );
     //     setDepositTimeInSeconds(_ => timeInSeconds);
-    //   } else {
-    //     ();
-    //   };
+    //   }
     // };
     let setDeposit = value => {
       let (value, didUpdate) = InputHelp.onlyUpdateValueIfInRangeFloat(
@@ -232,8 +228,6 @@ module Buy = {
         )
 
         setDepositTimeInSeconds(_ => timeInSeconds)
-      } else {
-        ()
       }
     }
     let currency = switch chain {
@@ -243,7 +237,6 @@ module Buy = {
     }
 
     let openTransak = _ => {
-      Js.log(Config.Transak.getConfig(~chain, web3Context))
       let transak = Transak.new_(Config.Transak.getConfig(~chain, web3Context))
       transak->Transak.init()
     }

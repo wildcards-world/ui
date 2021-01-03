@@ -148,7 +148,6 @@ function Buy$Buy(Props) {
   };
   var currency = chain !== 1 ? "ether" : "DAI";
   var openTransak = function (param) {
-    console.log(Config.Transak.getConfig(chain, web3Context));
     var transak = new TransakSdk(Config.Transak.getConfig(chain, web3Context));
     transak.init();
     

@@ -51,7 +51,6 @@ module ArtistDetails = {
       ) =>
         tokens->Array.map(token => token.id->Option.getWithDefault("_")->TokenId.fromStringUnsafe)
       )
-    Js.log(optArtistUnlaunchedWildcards)
 
     let currentUsdEthPrice = UsdPriceProvider.useUsdPrice()
     let (totalCollectedMainnetEth, totalCollectMaticDai) = QlHooks.useTotalRaisedAnimalGroup(
@@ -256,9 +255,6 @@ module ArtistDetails = {
 
 @react.component
 let make = (~artistIdentifier: string) => {
-  // let artistAddress =
-  Js.log(artistIdentifier)
-
   let optArtistEthAddress = QlHooks.useArtistEthAddress(~artistIdentifier)
   let optArtistName = QlHooks.useArtistName(~artistIdentifier)
   let optArtistWebsite = QlHooks.useArtistWebsite(~artistIdentifier)

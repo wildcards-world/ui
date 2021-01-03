@@ -81,7 +81,6 @@ function ArtistProfiles$ArtistDetails(Props) {
                         return TokenId.fromStringUnsafe(Belt_Option.getWithDefault(token.id, "_"));
                       }));
         }));
-  console.log(optArtistUnlaunchedWildcards);
   var currentUsdEthPrice = UsdPriceProvider.useUsdPrice(undefined);
   var match = QlHooks.useTotalRaisedAnimalGroup(artistsAnimalsArrayLaunched);
   var totalCollectMaticDai = match[1];
@@ -296,7 +295,6 @@ var ArtistDetails = {
 
 function ArtistProfiles(Props) {
   var artistIdentifier = Props.artistIdentifier;
-  console.log(artistIdentifier);
   var optArtistEthAddress = QlHooks.useArtistEthAddress(artistIdentifier);
   var optArtistName = QlHooks.useArtistName(artistIdentifier);
   var optArtistWebsite = QlHooks.useArtistWebsite(artistIdentifier);

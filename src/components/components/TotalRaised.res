@@ -55,7 +55,7 @@ let make = () => {
           </span>
           <br />
           <span className={Styles.totalRaisedText(4.)}>
-            <TotalRaisedEtherCountup totalRaised /> <strong> {React.string(" ETH ")} </strong>
+            <Countup.TotalRaised totalRaised /> <strong> {React.string(" ETH ")} </strong>
           </span>
           <br />
           {switch optTotaPatronageUsd {
