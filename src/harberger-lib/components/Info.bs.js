@@ -144,11 +144,11 @@ function Info(Props) {
   var chain = Props.chain;
   var tokenId = Props.tokenId;
   var daysHeld = QlHooks.useDaysHeld(chain, tokenId);
-  var currentPatron = Globals.$pipe$pipe$pipe$pipe(QlHooks.usePatron(chain, tokenId), "Loading");
+  var currentPatron = Belt_Option.getWithDefault(QlHooks.usePatron(chain, tokenId), "Loading");
   var userId = UserProvider.useDisplayName(currentPatron);
   var displayName = UserProvider.useDisplayName(currentPatron);
   var displayNameStr = UserProvider.displayNameToString(displayName);
-  var tokenName = Globals.$pipe$pipe$pipe$pipe(QlHooks.useWildcardName(tokenId), "loading name");
+  var tokenName = Belt_Option.getWithDefault(QlHooks.useWildcardName(tokenId), "loading name");
   var userIdType;
   switch (userId.TAG | 0) {
     case /* TwitterHandle */0 :
@@ -163,16 +163,16 @@ function Info(Props) {
     
   }
   var currentUsdEthPrice = UsdPriceProvider.useUsdPrice(undefined);
-  var match = Globals.mapd(QlHooks.useRemainingDepositEth(chain, currentPatron), [
+  var match = Belt_Option.mapWithDefault(QlHooks.useRemainingDepositEth(chain, currentPatron), [
         "Loading",
         "Loading"
       ], (function (a) {
           return [
-                  Globals.toFixedWithPrecisionNoTrailingZeros(Globals.$pipe$pipe$pipe$pipe(Belt_Float.fromString(Eth.get(a, {
+                  Globals.toFixedWithPrecisionNoTrailingZeros(Belt_Option.getWithDefault(Belt_Float.fromString(Eth.get(a, {
                                     TAG: /* Eth */0,
                                     _0: "ether"
                                   })), 0.0), 9),
-                  Globals.mapd(currentUsdEthPrice, "Loading", (function (usdEthRate) {
+                  Belt_Option.mapWithDefault(currentUsdEthPrice, "Loading", (function (usdEthRate) {
                           return Eth.get(a, {
                                       TAG: /* Usd */1,
                                       _0: usdEthRate,
@@ -181,16 +181,16 @@ function Info(Props) {
                         }))
                 ];
         }));
-  var match$1 = Globals.mapd(QlHooks.useAmountRaisedToken(chain, tokenId), [
+  var match$1 = Belt_Option.mapWithDefault(QlHooks.useAmountRaisedToken(chain, tokenId), [
         "Loading",
         "Loading"
       ], (function (a) {
           return [
-                  Globals.toFixedWithPrecisionNoTrailingZeros(Globals.$pipe$pipe$pipe$pipe(Belt_Float.fromString(Eth.get(a, {
+                  Globals.toFixedWithPrecisionNoTrailingZeros(Belt_Option.getWithDefault(Belt_Float.fromString(Eth.get(a, {
                                     TAG: /* Eth */0,
                                     _0: "ether"
                                   })), 0.0), 9),
-                  Globals.mapd(currentUsdEthPrice, "Loading", (function (usdEthRate) {
+                  Belt_Option.mapWithDefault(currentUsdEthPrice, "Loading", (function (usdEthRate) {
                           return Eth.get(a, {
                                       TAG: /* Usd */1,
                                       _0: usdEthRate,
@@ -201,7 +201,7 @@ function Info(Props) {
         }));
   var totalPatronage = match$1[0];
   var foreclosureTime = QlHooks.useForeclosureTime(chain, currentPatron);
-  var definiteTime = Globals.mapd(foreclosureTime, undefined, (function (a) {
+  var definiteTime = Belt_Option.mapWithDefault(foreclosureTime, undefined, (function (a) {
           return Caml_option.some(a);
         }));
   var ratio = QlHooks.usePledgeRate(chain, tokenId);
@@ -218,8 +218,8 @@ function Info(Props) {
   var showEthWithUsdConversion = chain !== 1;
   var unit = showEthWithUsdConversion ? "ETH" : "USD";
   var translationModeContext = ReactTranslate.useTranslationModeContext(undefined);
-  var orgName = Globals.$pipe$pipe$pipe$pipe(QlHooks.useWildcardOrgName(tokenId), " the organisation");
-  var orgId = Globals.$pipe$pipe$pipe$pipe(QlHooks.useWildcardOrgId(tokenId), " the organisation");
+  var orgName = Belt_Option.getWithDefault(QlHooks.useWildcardOrgName(tokenId), " the organisation");
+  var orgId = Belt_Option.getWithDefault(QlHooks.useWildcardOrgId(tokenId), " the organisation");
   var currentPriceWei = QlHooks.usePrice(chain, tokenId);
   var priceString = typeof currentPriceWei === "number" ? "Loading" : Web3Utils.fromWeiBNToEthPrecision(currentPriceWei._0, 2) + (" " + unit);
   return React.createElement(React.Fragment, undefined, React.createElement("div", {
@@ -294,22 +294,22 @@ function Info$Auction(Props) {
   var tokenId = Props.tokenId;
   var abandoned = Props.abandoned;
   var auctionStartTime = Props.auctionStartTime;
-  var currentPatron = Globals.$pipe$pipe$pipe$pipe(QlHooks.usePatron(chain, tokenId), "Loading");
+  var currentPatron = Belt_Option.getWithDefault(QlHooks.usePatron(chain, tokenId), "Loading");
   var displayName = UserProvider.useDisplayName(currentPatron);
   var displayNameStr = UserProvider.displayNameToString(displayName);
-  var tokenName = Globals.$pipe$pipe$pipe$pipe(QlHooks.useWildcardName(tokenId), "loading name");
+  var tokenName = Belt_Option.getWithDefault(QlHooks.useWildcardName(tokenId), "loading name");
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   var currentUsdEthPrice = UsdPriceProvider.useUsdPrice(undefined);
-  var match = Globals.mapd(QlHooks.useAmountRaisedToken(chain, tokenId), [
+  var match = Belt_Option.mapWithDefault(QlHooks.useAmountRaisedToken(chain, tokenId), [
         "Loading",
         "Loading"
       ], (function (a) {
           return [
-                  Globals.toFixedWithPrecisionNoTrailingZeros(Globals.$pipe$pipe$pipe$pipe(Belt_Float.fromString(Eth.get(a, {
+                  Globals.toFixedWithPrecisionNoTrailingZeros(Belt_Option.getWithDefault(Belt_Float.fromString(Eth.get(a, {
                                     TAG: /* Eth */0,
                                     _0: "ether"
                                   })), 0.0), 9),
-                  Globals.mapd(currentUsdEthPrice, "Loading", (function (usdEthRate) {
+                  Belt_Option.mapWithDefault(currentUsdEthPrice, "Loading", (function (usdEthRate) {
                           return Eth.get(a, {
                                       TAG: /* Usd */1,
                                       _0: usdEthRate,

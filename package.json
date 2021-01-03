@@ -74,7 +74,9 @@
     "re:watch": "BS_LOG=* bsb -make-world -clean-world -w",
     "generate-ppx-schema": "get-graphql-schema https://api.wildcards.world/v1/graphql -j >| graphql_schema.json",
     "generate-ppx-schema-goerli": "get-graphql-schema https://api.wildcards.world/v1/graphql -j >| graphql_schema.json",
-    "generate-ppx-schema-local": "get-graphql-schema http://localhost:8080/v1/graphql -j >| graphql_schema.json"
+    "generate-ppx-schema-local": "get-graphql-schema http://localhost:8080/v1/graphql -j >| graphql_schema.json",
+    "re:analyze": "reanalyze -dce",
+    "re:analyze-write": "reanalyze -write -dce"
   },
   "jest": {
     "transformIgnorePatterns": [
@@ -106,6 +108,7 @@
     "file-loader": "^6.2.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "reanalyze": "^2.12.0",
     "reason-apollo-client": "^1.0.0",
     "reason-react": "^0.9.1"
   },

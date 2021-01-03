@@ -22,6 +22,7 @@ import * as RimbleUi from "rimble-ui";
 import * as FeaturedIn from "./StaticContent/FeaturedIn.bs.js";
 import * as HowItWorks from "./StaticContent/HowItWorks.bs.js";
 import * as OrgProfile from "./OrgProfile.bs.js";
+import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as EmailSignup from "./StaticContent/EmailSignup.bs.js";
 import * as ProfileIcon from "../harberger-lib/components/ProfileIcon.bs.js";
 import * as UserProfile from "./UserProfile.bs.js";
@@ -42,7 +43,7 @@ function Layout$AnimalFocusDetails(Props) {
   var currentAnimal = Props.currentAnimal;
   var showForwardBackButtons = Props.showForwardBackButtons;
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
-  var animalDetails = QlHooks.useDetailsPageNextPrevious(Globals.$pipe$pipe$pipe$pipe(currentAnimal, TokenId.fromStringUnsafe("0")));
+  var animalDetails = QlHooks.useDetailsPageNextPrevious(Belt_Option.getWithDefault(currentAnimal, TokenId.fromStringUnsafe("0")));
   return React.createElement("div", {
               className: Cn.fromList({
                     hd: Styles.topBody,
@@ -54,7 +55,7 @@ function Layout$AnimalFocusDetails(Props) {
                       tl: /* [] */0
                     }
                   })
-            }, Globals.mapd(currentAnimal, false, (function (param) {
+            }, Belt_Option.mapWithDefault(currentAnimal, false, (function (param) {
                     return true;
                   })) ? React.createElement(RimbleUi.Button.Text, {
                     className: Curry._1(Css.style, {

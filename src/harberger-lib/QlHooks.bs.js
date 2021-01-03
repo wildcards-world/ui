@@ -6,7 +6,6 @@ import BnJs from "bn.js";
 import * as React from "react";
 import * as Helper from "./Helper.bs.js";
 import * as Moment from "moment";
-import * as Globals from "./Globals.bs.js";
 import * as Js_dict from "bs-platform/lib/es6/js_dict.js";
 import * as Js_math from "bs-platform/lib/es6/js_math.js";
 import * as TokenId from "./TokenId.bs.js";
@@ -277,7 +276,7 @@ function useInitialDataLoad(chain) {
 function useAnimalList(chain) {
   var allData = useInitialDataLoad(chain);
   return React.useMemo((function () {
-                return Globals.$pipe$pipe$pipe$pipe(Globals.oMap(allData, (function (data) {
+                return Belt_Option.getWithDefault(Belt_Option.map(allData, (function (data) {
                                   return Belt_Array.map(data.wildcards, (function (wc) {
                                                 return wc.animal;
                                               }));
@@ -2048,7 +2047,7 @@ function useDetailsPageNextPrevious(currentToken) {
                         return dict;
                       }));
         }), [homepageAnimalData]);
-  return Globals.$pipe$pipe$pipe$pipe(Js_dict.get(forwardNextLookup, TokenId.toString(currentToken)), defaultValue);
+  return Belt_Option.getWithDefault(Js_dict.get(forwardNextLookup, TokenId.toString(currentToken)), defaultValue);
 }
 
 function animalDescription_decode(v) {
@@ -2237,11 +2236,11 @@ function useForeclosureTime(chain, patron) {
 }
 
 function useTimeAcquiredWithDefault(chain, animal, $$default) {
-  return Globals.$pipe$pipe$pipe$pipe(useTimeAcquired(chain, animal), $$default);
+  return Belt_Option.getWithDefault(useTimeAcquired(chain, animal), $$default);
 }
 
 function useDaysHeld(chain, tokenId) {
-  return Globals.oMap(useTimeAcquired(chain, tokenId), (function (moment) {
+  return Belt_Option.map(useTimeAcquired(chain, tokenId), (function (moment) {
                 return [
                         Moment().diff(moment, "days"),
                         moment
@@ -2303,7 +2302,7 @@ function useCurrentTimestampBn(param) {
 
 function useAmountRaised(param) {
   var currentTimestamp = useCurrentTime(undefined);
-  return Globals.oMap(useTotalCollectedOrDue(undefined), (function (param) {
+  return Belt_Option.map(useTotalCollectedOrDue(undefined), (function (param) {
                 var timeElapsed = new BnJs(currentTimestamp).sub(param.timeLastCollected);
                 var amountRaisedSinceLastCollection = param.totalTokenCostScaledNumeratorAccurate.mul(timeElapsed).div(new BnJs("31536000000000000000"));
                 return param.totalCollectedOrDueAccurate.add(amountRaisedSinceLastCollection);
@@ -2344,7 +2343,7 @@ function usePledgeRate(chain, tokenId) {
                 if (optPatronageNumerator === undefined) {
                   return 0;
                 }
-                var result = Globals.$pipe$slash$pipe(Caml_option.valFromOption(optPatronageNumerator), new BnJs("12000000000"));
+                var result = Caml_option.valFromOption(optPatronageNumerator).div(new BnJs("12000000000"));
                 return result.toNumber() / 1000;
               }), [optPatronageNumerator]);
 }
@@ -2399,18 +2398,18 @@ function useTotalRaisedAnimalGroup(animals) {
             })));
   return [
           detailsMainnet !== undefined ? Caml_option.some(Belt_Array.reduce(detailsMainnet.wildcards, new BnJs("0"), (function (acc, animalDetails) {
-                        return Globals.$pipe$plus$pipe(calculateTotalRaised(currentTimestamp, [
-                                        animalDetails.totalCollected,
-                                        animalDetails.timeCollected,
-                                        animalDetails.patronageNumeratorPriceScaled
-                                      ]), acc);
+                        return calculateTotalRaised(currentTimestamp, [
+                                      animalDetails.totalCollected,
+                                      animalDetails.timeCollected,
+                                      animalDetails.patronageNumeratorPriceScaled
+                                    ]).add(acc);
                       }))) : undefined,
           detailsMatic !== undefined ? Caml_option.some(Belt_Array.reduce(detailsMatic.wildcards, new BnJs("0"), (function (acc, animalDetails) {
-                        return Globals.$pipe$plus$pipe(calculateTotalRaised(currentTimestamp, [
-                                        animalDetails.totalCollected,
-                                        animalDetails.timeCollected,
-                                        animalDetails.patronageNumeratorPriceScaled
-                                      ]), acc);
+                        return calculateTotalRaised(currentTimestamp, [
+                                      animalDetails.totalCollected,
+                                      animalDetails.timeCollected,
+                                      animalDetails.patronageNumeratorPriceScaled
+                                    ]).add(acc);
                       }))) : undefined
         ];
 }
@@ -2430,7 +2429,7 @@ function useUnredeemedLoyaltyTokenDueForUser(chain, animal, numberOfTokens) {
     return ;
   }
   var totalLoyaltyTokensPerSecondPerAnimal = new BnJs("11574074074074");
-  return Caml_option.some(Globals.$pipe$star$pipe(Globals.$pipe$star$pipe(Caml_option.valFromOption(timeSinceTokenWasLastSettled), totalLoyaltyTokensPerSecondPerAnimal), new BnJs(numberOfTokens)));
+  return Caml_option.some(Caml_option.valFromOption(timeSinceTokenWasLastSettled).mul(totalLoyaltyTokensPerSecondPerAnimal).mul(new BnJs(numberOfTokens)));
 }
 
 function useTotalLoyaltyToken(chain, patron) {
@@ -2439,11 +2438,11 @@ function useTotalLoyaltyToken(chain, patron) {
   if (match === undefined) {
     return ;
   }
-  var timeElapsed = Globals.$pipe$neg$pipe(new BnJs(currentTimestamp), match.lastCollected);
+  var timeElapsed = new BnJs(currentTimestamp).sub(match.lastCollected);
   var totalLoyaltyTokensPerSecondPerAnimal = new BnJs("11574074074074");
-  var totalLoyaltyTokensFor1Animal = Globals.$pipe$star$pipe(totalLoyaltyTokensPerSecondPerAnimal, timeElapsed);
-  var totalLoyaltyTokensForAllAnimals = Globals.$pipe$star$pipe(match.numberOfAnimalsOwned, totalLoyaltyTokensFor1Animal);
-  var totalLoyaltyTokensForUser = Globals.$pipe$plus$pipe(match.currentLoyaltyTokensIncludingUnredeemed, totalLoyaltyTokensForAllAnimals);
+  var totalLoyaltyTokensFor1Animal = totalLoyaltyTokensPerSecondPerAnimal.mul(timeElapsed);
+  var totalLoyaltyTokensForAllAnimals = match.numberOfAnimalsOwned.mul(totalLoyaltyTokensFor1Animal);
+  var totalLoyaltyTokensForUser = match.currentLoyaltyTokensIncludingUnredeemed.add(totalLoyaltyTokensForAllAnimals);
   return [
           totalLoyaltyTokensForUser,
           match.currentLoyaltyTokens

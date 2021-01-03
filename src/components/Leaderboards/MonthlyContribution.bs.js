@@ -4,7 +4,6 @@ import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Helper from "../../harberger-lib/Helper.bs.js";
-import * as Globals from "../../harberger-lib/Globals.bs.js";
 import * as QlHooks from "../../harberger-lib/QlHooks.bs.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
@@ -191,7 +190,7 @@ function MonthlyContribution(Props) {
                     }, React.createElement("tr", undefined, React.createElement("th", undefined, "Rank"), React.createElement("th", undefined, "Guardian"), React.createElement("th", undefined, "Monthly Contribution"))), React.createElement("tbody", undefined, topContributorsOpt !== undefined ? Belt_Array.mapWithIndex(topContributorsOpt, (function (index, param) {
                               var amount = param[1];
                               var contributor = param[0];
-                              var amountRaisedFloat = Globals.$pipe$pipe$pipe$pipe(Belt_Float.fromString(amount), 0);
+                              var amountRaisedFloat = Belt_Option.getWithDefault(Belt_Float.fromString(amount), 0);
                               if (amountRaisedFloat < 0.0000001) {
                                 return null;
                               } else {

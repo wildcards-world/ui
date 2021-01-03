@@ -68,7 +68,7 @@ var EditButton = {
 function Dapp$Streak(Props) {
   var chain = Props.chain;
   var animal = Props.animal;
-  var animalName = Globals.$pipe$pipe$pipe$pipe(QlHooks.useWildcardName(animal), "Loading");
+  var animalName = Belt_Option.getWithDefault(QlHooks.useWildcardName(animal), "Loading");
   var daysHeld = QlHooks.useDaysHeld(chain, animal);
   if (daysHeld === undefined) {
     return null;
@@ -205,7 +205,7 @@ function Dapp$BasicAnimalDisplay(Props) {
   var chain = Props.chain;
   var animal = Props.animal;
   var owned = QlHooks.useIsAnimalOwened(chain, animal);
-  var currentPatron = Globals.$pipe$pipe$pipe$pipe(QlHooks.usePatron(chain, animal), "Loading");
+  var currentPatron = Belt_Option.getWithDefault(QlHooks.usePatron(chain, animal), "Loading");
   var displayName = UserProvider.useDisplayName(currentPatron);
   var displayNameStr = UserProvider.displayNameToString(displayName);
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
@@ -314,10 +314,10 @@ function Dapp$AnimalOnLandingPage(Props) {
   var isGqlLoaded = Props.isGqlLoaded;
   var scalar = scalarOpt !== undefined ? scalarOpt : 1;
   var enlargement = enlargementOpt !== undefined ? enlargementOpt : 1;
-  var name = Globals.$pipe$pipe$pipe$pipe(QlHooks.useWildcardName(animal), "Loading");
+  var name = Belt_Option.getWithDefault(QlHooks.useWildcardName(animal), "Loading");
   var isExplorer = Router.useIsExplorer(undefined);
   var orgBadge = Animal.useGetOrgBadgeImage(animal);
-  var orgId = Globals.$pipe$pipe$pipe$pipe(QlHooks.useWildcardOrgId(animal), "");
+  var orgId = Belt_Option.getWithDefault(QlHooks.useWildcardOrgId(animal), "");
   var currentPriceWei = QlHooks.usePrice(chain, animal);
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   var image = Animal.useAvatar(animal);
@@ -553,7 +553,7 @@ function Dapp$AnimalActionsOnDetailsPage(Props) {
   var chain = Props.chain;
   var animal = Props.animal;
   var owned = QlHooks.useIsAnimalOwened(chain, animal);
-  var currentPatron = Globals.$pipe$pipe$pipe$pipe(QlHooks.usePatron(chain, animal), "Loading");
+  var currentPatron = Belt_Option.getWithDefault(QlHooks.usePatron(chain, animal), "Loading");
   var displayName = UserProvider.useDisplayName(currentPatron);
   var displayNameStr = UserProvider.displayNameToString(displayName);
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
@@ -623,7 +623,7 @@ var AnimalActionsOnDetailsPage = {
 function Dapp$DetailsViewAnimal(Props) {
   var chain = Props.chain;
   var animal = Props.animal;
-  var orgId = Globals.$pipe$pipe$pipe$pipe(QlHooks.useWildcardOrgId(animal), "");
+  var orgId = Belt_Option.getWithDefault(QlHooks.useWildcardOrgId(animal), "");
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   var image = Animal.useAvatar(animal);
   var optArtistInfo = QlHooks.useWildcardArtist(animal);
@@ -711,7 +711,7 @@ function Dapp$DetailsViewAnimal(Props) {
                               className: ownedAnimalImg,
                               src: image
                             });
-                }), React.createElement("h2", undefined, Globals.restr(Globals.$pipe$pipe$pipe$pipe(QlHooks.useWildcardName(animal), "Loading"))), React.createElement(Dapp$AnimalActionsOnDetailsPage, {
+                }), React.createElement("h2", undefined, Globals.restr(Belt_Option.getWithDefault(QlHooks.useWildcardName(animal), "Loading"))), React.createElement(Dapp$AnimalActionsOnDetailsPage, {
                   chain: chain,
                   animal: animal
                 }));
@@ -856,7 +856,7 @@ function Dapp$UnlaunchedAnimalInfo(Props) {
   var chain = Props.chain;
   var endDateMoment = Props.endDateMoment;
   var animal = Props.animal;
-  var animalName = Globals.$pipe$pipe$pipe$pipe(QlHooks.useWildcardName(animal), "Loading");
+  var animalName = Belt_Option.getWithDefault(QlHooks.useWildcardName(animal), "Loading");
   var ratio = QlHooks.usePledgeRate(chain, animal);
   var monthlyRate = (ratio * 100).toString();
   return React.createElement(Dapp$DisplayAfterDate, {
@@ -884,7 +884,7 @@ var UnlaunchedAnimalInfo = {
 function Dapp$AnimalInfo(Props) {
   var chain = Props.chain;
   var animal = Props.animal;
-  var animalDescription = Globals.$pipe$pipe$pipe$pipe(QlHooks.useWildcardDescription(animal), ["Loading"]);
+  var animalDescription = Belt_Option.getWithDefault(QlHooks.useWildcardDescription(animal), ["Loading"]);
   var optAnimalMedia = Animal.useAlternateImage(animal);
   var animalStatus = Animal.useTokenStatus(chain, animal);
   var tmp;
@@ -934,7 +934,7 @@ function Dapp$AnimalInfo(Props) {
                             children: "Story"
                           }), React.createElement(ReactTabs.Tab, {
                             children: "Details"
-                          }), Globals.mapd(optAnimalMedia, null, (function (param) {
+                          }), Belt_Option.mapWithDefault(optAnimalMedia, null, (function (param) {
                               return React.createElement(ReactTabs.Tab, {
                                           children: "Media"
                                         });
@@ -965,7 +965,7 @@ function Dapp$AnimalInfo(Props) {
                                 }, Globals.restr("Vote for your favourite conservation"))) : null), React.createElement(ReactTabs.TabPanel, {
                         children: tmp
                       }), React.createElement(ReactTabs.TabPanel, {
-                        children: Globals.mapd(optAnimalMedia, null, (function (media) {
+                        children: Belt_Option.mapWithDefault(optAnimalMedia, null, (function (media) {
                                 return React.createElement("img", {
                                             className: Curry._1(Css.style, {
                                                   hd: Css.width({

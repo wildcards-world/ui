@@ -22,15 +22,15 @@ module GqlTokenId = {
   let parse = tokenIdJson =>
     tokenIdJson
     ->Js.Json.decodeString
-    ->Belt.Option.mapWithDefault("0", a => a)
+    ->Option.mapWithDefault("0", a => a)
     ->TokenId.make
-    ->Belt.Option.getWithDefault(TokenId.makeFromInt(0))
+    ->Option.getWithDefault(TokenId.makeFromInt(0))
   let serialize = tokenId => tokenId->TokenId.toString->Js.Json.string
 }
 module GqlTokenIdStr = {
   type t = TokenId.t
   let parse = tokenIdJson =>
-    tokenIdJson->TokenId.make->Belt.Option.getWithDefault(TokenId.makeFromInt(0))
+    tokenIdJson->TokenId.make->Option.getWithDefault(TokenId.makeFromInt(0))
   let serialize = tokenId => tokenId->TokenId.toString
 }
 
@@ -38,7 +38,7 @@ module GqlTokenIdStr = {
 module Price = {
   type t = Eth.t
   let parse = price =>
-    price->Js.Json.decodeString->Belt.Option.mapWithDefault("0", a => a)->Eth.makeWithDefault(0)
+    price->Js.Json.decodeString->Option.mapWithDefault("0", a => a)->Eth.makeWithDefault(0)
   let serialize = price => price->BN.toString->Js.Json.string
 }
 
@@ -47,16 +47,14 @@ module GqlMoment = {
   let parse = moment =>
     moment
     ->Js.Json.decodeString
-    ->Belt.Option.mapWithDefault(0, a =>
-      a->int_of_string
-    ) /* trusting that gql will be reliable here */
+    ->Option.mapWithDefault(0, a => a->int_of_string) /* trusting that gql will be reliable here */
     ->MomentRe.momentWithUnix
   let serialize = moment => moment->MomentRe.Moment.toUnix->string_of_int->Js.Json.string
 }
 module GqlAddress = {
   // TODO: make a real address string
   type t = string
-  let parse = address => address->Js.Json.decodeString->Belt.Option.mapWithDefault("0x0", a => a)
+  let parse = address => address->Js.Json.decodeString->Option.mapWithDefault("0x0", a => a)
 
   let serialize = address => address->Js.Json.string
 }

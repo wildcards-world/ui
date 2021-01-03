@@ -6,34 +6,6 @@ import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_format from "bs-platform/lib/es6/caml_format.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 
-function $pipe$plus$pipe(a, b) {
-  return a.add(b);
-}
-
-function $pipe$star$pipe(a, b) {
-  return a.mul(b);
-}
-
-function $pipe$neg$pipe(a, b) {
-  return a.sub(b);
-}
-
-function $pipe$slash$pipe(a, b) {
-  return a.div(b);
-}
-
-function $pipe$eq$eq$pipe(a, b) {
-  return a.eq(b);
-}
-
-function $pipe$less$pipe(a, b) {
-  return a.lt(b);
-}
-
-function $pipe$great$pipe(a, b) {
-  return a.gt(b);
-}
-
 function toFixedWithPrecisionNoTrailingZeros(number, digits) {
   return String(Caml_format.caml_float_of_string(number.toFixed(digits)));
 }
@@ -70,18 +42,6 @@ var asyncFromResult = Async.asyncFromResult;
 
 var attemptMapAsync = Async.attemptMapAsync;
 
-var oMap = Belt_Option.map;
-
-var $less$$great = Belt_Option.map;
-
-var oFlatMap = Belt_Option.flatMap;
-
-var $great$great$eq = Belt_Option.flatMap;
-
-var mapd = Belt_Option.mapWithDefault;
-
-var $pipe$pipe$pipe$pipe = Belt_Option.getWithDefault;
-
 export {
   let_ ,
   mapAsync ,
@@ -89,19 +49,6 @@ export {
   catchAsync ,
   asyncFromResult ,
   attemptMapAsync ,
-  oMap ,
-  $less$$great ,
-  oFlatMap ,
-  $great$great$eq ,
-  mapd ,
-  $pipe$pipe$pipe$pipe ,
-  $pipe$plus$pipe ,
-  $pipe$star$pipe ,
-  $pipe$neg$pipe ,
-  $pipe$slash$pipe ,
-  $pipe$eq$eq$pipe ,
-  $pipe$less$pipe ,
-  $pipe$great$pipe ,
   toFixedWithPrecisionNoTrailingZeros ,
   restr ,
   reactMapWithDefault ,

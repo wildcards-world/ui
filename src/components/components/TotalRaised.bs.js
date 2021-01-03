@@ -4,7 +4,6 @@ import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Styles from "../../Styles.bs.js";
-import * as Globals from "../../harberger-lib/Globals.bs.js";
 import * as QlHooks from "../../harberger-lib/QlHooks.bs.js";
 import * as Web3Utils from "../../harberger-lib/Web3Utils.bs.js";
 import * as RimbleUi from "rimble-ui";
@@ -28,7 +27,7 @@ function uesTotalPatronage(param) {
   }
   var totalPatronageEth = Web3Utils.fromWeiToEth(Caml_option.valFromOption(optTotalPatronageWei).toString());
   var optTotaPatronageUsd = Belt_Option.flatMap(optCurrentUsdEthPrice, (function (currentUsdEthPrice) {
-          return (Globals.mapd(Belt_Float.fromString(totalPatronageEth), 0, (function (a) {
+          return (Belt_Option.mapWithDefault(Belt_Float.fromString(totalPatronageEth), 0, (function (a) {
                             return a;
                           })) * currentUsdEthPrice).toFixed(2);
         }));
