@@ -1,10 +1,5 @@
 open UsdPriceProvider
 
-module TotalRaisedEtherCountup = {
-  @module("./TotalRaisedEtherCountup.js") @react.component
-  external make: (~totalRaised: string) => React.element = "default"
-}
-
 type patronageRaised =
   | Loaded(string, option<string>)
   | Loading

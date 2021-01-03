@@ -11,13 +11,7 @@ import * as Belt_Float from "bs-platform/lib/es6/belt_Float.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as UsdPriceProvider from "../../harberger-lib/components/UsdPriceProvider.bs.js";
-import TotalRaisedEtherCountupJs from "./TotalRaisedEtherCountup.js";
-
-var make = TotalRaisedEtherCountupJs;
-
-var TotalRaisedEtherCountup = {
-  make: make
-};
+import * as TotalRaisedEtherCountup from "./TotalRaisedEtherCountup.bs.js";
 
 function uesTotalPatronage(param) {
   var optTotalPatronageWei = QlHooks.useAmountRaised(undefined);
@@ -66,7 +60,7 @@ function TotalRaised(Props) {
                           className: Styles.totalRaisedText(1.5)
                         }, "Wildcards has currently raised "), React.createElement("br", undefined), React.createElement("span", {
                           className: Styles.totalRaisedText(4)
-                        }, React.createElement(make, {
+                        }, React.createElement(TotalRaisedEtherCountup.make, {
                               totalRaised: totalPatronageRaised._0
                             }), React.createElement("strong", undefined, " ETH ")), React.createElement("br", undefined), optTotaPatronageUsd !== undefined ? React.createElement(React.Fragment, {
                             children: null
@@ -77,12 +71,11 @@ function TotalRaised(Props) {
                               }, " for conservation.")) : null)));
 }
 
-var make$1 = TotalRaised;
+var make = TotalRaised;
 
 export {
-  TotalRaisedEtherCountup ,
   uesTotalPatronage ,
-  make$1 as make,
+  make ,
   
 }
-/* make Not a pure module */
+/* Css Not a pure module */
