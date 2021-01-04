@@ -40,21 +40,18 @@ function OrgProfile$ComingSoonAnimal(Props) {
   var image = Props.image;
   var onClick = Props.onClick;
   return React.createElement("div", {
-              className: Curry._1(Css.style, {
-                    hd: Css.width({
+              className: CssJs.style([CssJs.width({
                           NAME: "percent",
                           VAL: 32
-                        }),
-                    tl: /* [] */0
-                  })
+                        })])
             }, React.createElement("img", {
-                  className: Curry._1(Css.style, {
-                        hd: Css.width({
+                  className: CssJs.style([
+                        CssJs.width({
                               NAME: "percent",
                               VAL: 100
                             }),
-                        tl: /* [] */0
-                      }),
+                        Styles.imageHoverStyle
+                      ]),
                   src: image,
                   onClick: (function (_e) {
                       return Curry._1(onClick, undefined);
@@ -439,22 +436,17 @@ function OrgProfile$OrgPage(Props) {
                               rel: "noopener noreferrer",
                               target: "_blank"
                             }, React.createElement("img", {
-                                  className: Curry._1(Css.style, {
-                                        hd: Css.width({
+                                  className: CssJs.style([
+                                        CssJs.width({
                                               NAME: "vh",
                                               VAL: 25
                                             }),
-                                        tl: {
-                                          hd: Css.height({
-                                                NAME: "vh",
-                                                VAL: 25
-                                              }),
-                                          tl: {
-                                            hd: Css.objectFit("contain"),
-                                            tl: /* [] */0
-                                          }
-                                        }
-                                      }),
+                                        CssJs.height({
+                                              NAME: "vh",
+                                              VAL: 25
+                                            }),
+                                        CssJs.objectFit("contain")
+                                      ]),
                                   src: orgImage
                                 })), React.createElement("br", undefined), React.createElement("a", {
                               className: Cn.fromList({
@@ -471,25 +463,16 @@ function OrgProfile$OrgPage(Props) {
                               rel: "noopener noreferrer",
                               target: "_blank"
                             }, Globals.restr(orgName)), React.createElement("br", undefined), React.createElement("div", {
-                              className: Curry._1(Css.style, {
-                                    hd: Css.maxHeight({
+                              className: CssJs.style([
+                                    CssJs.maxHeight({
                                           NAME: "em",
                                           VAL: 15
                                         }),
-                                    tl: {
-                                      hd: Css.overflowY("auto"),
-                                      tl: {
-                                        hd: Css.overflowX("hidden"),
-                                        tl: {
-                                          hd: Css.backgroundColor(Css.rgb(250, 250, 250)),
-                                          tl: {
-                                            hd: Css.borderRadius(Css.em(0.8)),
-                                            tl: /* [] */0
-                                          }
-                                        }
-                                      }
-                                    }
-                                  })
+                                    CssJs.overflowY("auto"),
+                                    CssJs.overflowX("hidden"),
+                                    CssJs.backgroundColor(CssJs.rgb(250, 250, 250)),
+                                    CssJs.borderRadius(CssJs.em(0.8))
+                                  ])
                             }, tmp), React.createElement("br", undefined)), React.createElement(RimbleUi.Box, {
                           children: null,
                           width: [
