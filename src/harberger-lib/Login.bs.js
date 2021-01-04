@@ -118,7 +118,7 @@ function Login(Props) {
                                                         tl: /* [] */0
                                                       }
                                                     }),
-                                                alt: "MetaMask",
+                                                alt: connector.name,
                                                 src: connector.img
                                               })), React.createElement("div", {
                                             className: Curry._1(Css.style, {

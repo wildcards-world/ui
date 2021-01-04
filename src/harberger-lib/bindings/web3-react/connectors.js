@@ -72,7 +72,7 @@ export const fortmatic = new FortmaticConnector({
 });
 
 export const portis = new PortisConnector({
-  dAppId: "1456ad21-b5a7-4364-9eba-e6237a7cc1e9", // required
+  dAppId: "1456ad21-b5a7-4364-9eba-e6237a7cc1e9", // d
   networks: [1, 100],
 });
 
@@ -92,37 +92,37 @@ export default [
   {
     name: "MetaMask",
     connector: injected,
-    img: require("./icons/metamask.svg"),
+    img: "/img/wallet-icons/metamask.svg",
     connectionPhrase: "Connect to your MetaMask Wallet",
   },
   {
     name: "WalletConnect",
     connector: walletconnect,
     connectionPhrase: "Connect via WalletConnect",
-    img: require("./icons/walletConnect.svg"),
+    img: "/img/wallet-icons/walletConnect.svg",
   },
   {
     name: "Torus",
     connector: torus,
     connectionPhrase: "Connect via a Torus",
-    img: require("./icons/torus.svg"),
+    img: "/img/wallet-icons/torus.svg",
   },
   {
     name: "Portis",
     connector: portis,
     connectionPhrase: "Connect via a Portis",
-    img: require("./icons/portis.svg"),
+    img: "/img/wallet-icons/portis.svg",
   },
   {
     name: "Fortmatic",
     connector: fortmatic,
     connectionPhrase: "Connect via a Fortmatic",
-    img: require("./icons/fortmatic.svg"),
+    img: "/img/wallet-icons/fortmatic.svg",
   },
   {
     name: "Squarelink",
     connector: squarelink,
     connectionPhrase: "Connect via a Squarelink",
-    img: require("./icons/squarelink.svg"),
+    img: "/img/wallet-icons/squarelink.svg",
   },
 ];

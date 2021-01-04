@@ -66,7 +66,7 @@ let make = () => {
               }>
               <img
                 src=connector.img
-                alt="MetaMask"
+                alt=connector.name
                 className={
                   open Css
                   style(list{width(#percent(100.)), height(#percent(100.))})
