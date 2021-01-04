@@ -13,13 +13,13 @@ module ComingSoonAnimal = {
   let make = (~image, ~onClick) =>
     <div
       className={
-        open Css
-        style(list{width(#percent(32.))})
+        open CssJs
+        style(.[width(#percent(32.))])
       }>
       <img
         className={
-          open Css
-          style(list{width(#percent(100.))})
+          open CssJs
+          style(.[width(#percent(100.)), Styles.imageHoverStyle])
         }
         onClick={_e => onClick()}
         src=image
@@ -313,14 +313,14 @@ module OrgPage = {
               href=orgWebsite>
               <img
                 className={
-                  open Css
-                  style(list{
+                  open CssJs
+                  style(.[
                     // borderRadius(`percent(100.)),
                     width(#vh(25.)),
                     height(#vh(25.)),
                     objectFit(#contain),
                     // objectFit(`cover),
-                  })
+                  ])
                 }
                 src=orgImage
               />
@@ -342,14 +342,14 @@ module OrgPage = {
             <br />
             <div
               className={
-                open Css
-                style(list{
+                open CssJs
+                style(.[
                   maxHeight(#em(15.)),
                   overflowY(#auto),
                   overflowX(#hidden),
                   backgroundColor(rgb(250, 250, 250)),
                   borderRadius(em(0.8)),
-                })
+                ])
               }>
               {switch orgDescription {
               | Ok(descriptionArray) =>

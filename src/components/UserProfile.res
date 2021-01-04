@@ -16,7 +16,8 @@ module Token = {
     <div
       className={
         open Css
-        style(list{width(vh(12.)), cursor(#pointer)})
+
+        style(list{width(vh(12.)), cursor(#pointer), Styles.imageHoverStyle})
       }>
       <img
         className={

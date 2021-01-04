@@ -650,7 +650,6 @@ module AnimalInfo = {
             )}
           </div>
           {animal->TokenId.toString == "13"
-          // Glen
             ? <a href="/#dao">
                 <span
                   className={
@@ -662,7 +661,6 @@ module AnimalInfo = {
               </a>
             : React.null}
         </ReactTabs.TabPanel>
-        // [@warning "-102"]
         <ReactTabs.TabPanel>
           {switch animalStatus {
           | Loading => <Rimble.Loader />
