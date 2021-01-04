@@ -11,6 +11,7 @@ import * as Styles from "../Styles.bs.js";
 import * as Blockie from "../harberger-lib/bindings/ethereum-blockies-base64/Blockie.bs.js";
 import * as Globals from "../harberger-lib/Globals.bs.js";
 import * as Js_dict from "bs-platform/lib/es6/js_dict.js";
+import * as Js_json from "bs-platform/lib/es6/js_json.js";
 import * as QlHooks from "../harberger-lib/QlHooks.bs.js";
 import * as TokenId from "../harberger-lib/TokenId.bs.js";
 import * as Validate from "./Validate.bs.js";
@@ -137,18 +138,32 @@ var ClaimLoyaltyTokenButtons = {
 
 function UserProfile$UserDetails(Props) {
   var chain = Props.chain;
-  var patronQueryResult = Props.patronQueryResult;
+  var patronQueryResultMainnet = Props.patronQueryResultMainnet;
+  var patronQueryResultMatic = Props.patronQueryResultMatic;
   var optThreeBoxData = Props.optThreeBoxData;
   var userAddress = Props.userAddress;
-  var isForeclosed = QlHooks.useIsForeclosed(/* MainnetQuery */2, userAddress);
+  var isForeclosedMainnet = QlHooks.useIsForeclosed(/* MainnetQuery */2, userAddress);
+  var isForeclosedMatic = QlHooks.useIsForeclosed(/* MaticQuery */1, userAddress);
   var isAddressCurrentUser = RootProvider.useIsAddressCurrentUser(userAddress);
-  var currentlyOwnedTokens = isForeclosed ? [] : Belt_Array.map(patronQueryResult.tokens, (function (token) {
-            return token.id;
-          }));
-  var allPreviouslyOwnedTokens = Belt_Array.map(patronQueryResult.previouslyOwnedTokens, (function (token) {
-          return token.id;
-        }));
-  var uniquePreviouslyOwnedTokens = isForeclosed ? allPreviouslyOwnedTokens : Belt_SetString.toArray(Belt_SetString.removeMany(Belt_SetString.fromArray(allPreviouslyOwnedTokens), currentlyOwnedTokens));
+  var currentlyOwnedTokens = Belt_Array.concat(isForeclosedMainnet ? [] : Belt_Option.mapWithDefault(patronQueryResultMainnet, [], (function (patronMainnet) {
+                return Belt_Array.map(patronMainnet.tokens, (function (token) {
+                              return Belt_Option.getWithDefault(Js_json.decodeString(token.tokenId), "0");
+                            }));
+              })), isForeclosedMatic ? [] : Belt_Option.mapWithDefault(patronQueryResultMatic, [], (function (patronMainnet) {
+                return Belt_Array.map(patronMainnet.tokens, (function (token) {
+                              return Belt_Option.getWithDefault(Js_json.decodeString(token.tokenId), "0");
+                            }));
+              })));
+  var allPreviouslyOwnedTokens = Belt_Array.concat(Belt_Option.mapWithDefault(patronQueryResultMainnet, [], (function (patronMainnet) {
+              return Belt_Array.map(patronMainnet.previouslyOwnedTokens, (function (token) {
+                            return Belt_Option.getWithDefault(Js_json.decodeString(token.tokenId), "0");
+                          }));
+            })), Belt_Option.mapWithDefault(patronQueryResultMatic, [], (function (patronMainnet) {
+              return Belt_Array.map(patronMainnet.previouslyOwnedTokens, (function (token) {
+                            return Belt_Option.getWithDefault(Js_json.decodeString(token.tokenId), "0");
+                          }));
+            })));
+  var uniquePreviouslyOwnedTokens = Belt_SetString.toArray(Belt_SetString.removeMany(Belt_SetString.fromArray(allPreviouslyOwnedTokens), currentlyOwnedTokens));
   var optProfile = Belt_Option.flatMap(optThreeBoxData, (function (a) {
           return a.profile;
         }));
@@ -178,7 +193,9 @@ function UserProfile$UserDetails(Props) {
         }));
   var etherScanUrl = RootProvider.useEtherscanUrl(undefined);
   var optUsdPrice = UsdPriceProvider.useUsdPrice(undefined);
-  var monthlyCotributionWei = patronQueryResult.patronTokenCostScaledNumerator.mul(new BnJs("2592000")).div(new BnJs("31536000000000000000"));
+  var monthlyCotributionWei = Belt_Option.mapWithDefault(patronQueryResultMainnet, new BnJs("0"), (function (patronMainnet) {
+          return patronMainnet.patronTokenCostScaledNumerator.mul(new BnJs("2592000")).div(new BnJs("31536000000000000000"));
+        }));
   var monthlyContributionEth = Web3Utils.fromWeiBNToEthPrecision(monthlyCotributionWei, 4);
   var optMonthlyContributionUsd = Belt_Option.map(optUsdPrice, (function (currentUsdEthPrice) {
           return Globals.toFixedWithPrecisionNoTrailingZeros(Belt_Option.mapWithDefault(Belt_Float.fromString(monthlyContributionEth), 0, (function (a) {
@@ -385,19 +402,35 @@ function UserProfile(Props) {
   var chain = Props.chain;
   var userAddress = Props.userAddress;
   var userAddressLowerCase = userAddress.toLowerCase();
-  var patronQuery = QlHooks.useQueryPatron(/* MainnetQuery */2, userAddressLowerCase);
+  var patronQuery = QlHooks.useQueryPatronQuery(/* MainnetQuery */2, userAddressLowerCase);
+  var patronQueryMatic = QlHooks.useQueryPatronQuery(/* MaticQuery */1, userAddressLowerCase);
   var userInfoContext = UserProvider.useUserInfoContext(undefined);
   Curry._2(userInfoContext.update, userAddressLowerCase, false);
   var optThreeBoxData = UserProvider.use3BoxUserData(userAddressLowerCase);
+  var tmp;
+  var exit = 0;
+  if (patronQuery.loading || patronQueryMatic.loading) {
+    exit = 1;
+  } else {
+    tmp = patronQueryMatic.error !== undefined || patronQuery.error !== undefined ? "There was an error loading some of this user's data" : React.createElement(UserProfile$UserDetails, {
+            chain: chain,
+            patronQueryResultMainnet: Belt_Option.flatMap(patronQuery.data, (function (param) {
+                    return param.patron;
+                  })),
+            patronQueryResultMatic: Belt_Option.flatMap(patronQueryMatic.data, (function (param) {
+                    return param.patron;
+                  })),
+            optThreeBoxData: optThreeBoxData,
+            userAddress: userAddress
+          });
+  }
+  if (exit === 1) {
+    tmp = React.createElement("div", undefined, React.createElement(RimbleUi.Heading, {
+              children: "Loading user profile:"
+            }), React.createElement(RimbleUi.Loader, {}));
+  }
   return React.createElement(RimbleUi.Flex, {
-              children: patronQuery !== undefined ? React.createElement(UserProfile$UserDetails, {
-                      chain: chain,
-                      patronQueryResult: patronQuery,
-                      optThreeBoxData: optThreeBoxData,
-                      userAddress: userAddress
-                    }) : React.createElement("div", undefined, React.createElement(RimbleUi.Heading, {
-                          children: "Loading user profile:"
-                        }), React.createElement(RimbleUi.Loader, {})),
+              children: tmp,
               flexWrap: "wrap",
               alignItems: "center",
               className: Styles.topBody

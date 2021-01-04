@@ -112,11 +112,13 @@ module UserDetails = {
   @react.component
   let make = (
     ~chain,
-    ~patronQueryResult: QlHooks.LoadPatron.LoadPatron_inner.t_patron,
+    ~patronQueryResultMainnet: option<QlHooks.LoadPatron.LoadPatron_inner.t_patron>,
+    ~patronQueryResultMatic: option<QlHooks.LoadPatron.LoadPatron_inner.t_patron>,
     ~optThreeBoxData: option<UserProvider.threeBoxUserInfo>,
     ~userAddress: string,
   ) => {
-    let isForeclosed = QlHooks.useIsForeclosed(~chain=Client.MainnetQuery, userAddress)
+    let isForeclosedMainnet = QlHooks.useIsForeclosed(~chain=Client.MainnetQuery, userAddress)
+    let isForeclosedMatic = QlHooks.useIsForeclosed(~chain=Client.MaticQuery, userAddress)
     let isAddressCurrentUser = RootProvider.useIsAddressCurrentUser(userAddress)
 
     @ocaml.doc("
@@ -129,18 +131,40 @@ module UserDetails = {
      * TODO: It might make the code more readable to encode the above for options into an variant.
      *       It is hard to reason about if we are just checking if the array is null, or not etc.
      ")
-    let currentlyOwnedTokens = isForeclosed
-      ? []
-      : patronQueryResult.tokens->Array.map(token => token.id)
+    let currentlyOwnedTokens = Array.concat(
+      isForeclosedMainnet
+        ? []
+        : patronQueryResultMainnet->Option.mapWithDefault([], patronMainnet =>
+            patronMainnet.tokens->Array.map(token =>
+              token.tokenId->Js.Json.decodeString->Option.getWithDefault("0")
+            )
+          ),
+      isForeclosedMatic
+        ? []
+        : patronQueryResultMatic->Option.mapWithDefault([], patronMainnet =>
+            patronMainnet.tokens->Array.map(token =>
+              token.tokenId->Js.Json.decodeString->Option.getWithDefault("0")
+            )
+          ),
+    )
 
-    let allPreviouslyOwnedTokens =
-      patronQueryResult.previouslyOwnedTokens->Array.map(token => token.id)
+    let allPreviouslyOwnedTokens = Array.concat(
+      patronQueryResultMainnet->Option.mapWithDefault([], patronMainnet =>
+        patronMainnet.previouslyOwnedTokens->Array.map(token =>
+          token.tokenId->Js.Json.decodeString->Option.getWithDefault("0")
+        )
+      ),
+      patronQueryResultMatic->Option.mapWithDefault([], patronMainnet =>
+        patronMainnet.previouslyOwnedTokens->Array.map(token =>
+          token.tokenId->Js.Json.decodeString->Option.getWithDefault("0")
+        )
+      ),
+    )
 
-    let uniquePreviouslyOwnedTokens = isForeclosed
-      ? allPreviouslyOwnedTokens
-      : Set.String.fromArray(allPreviouslyOwnedTokens)
-        ->Set.String.removeMany(currentlyOwnedTokens)
-        ->Set.String.toArray
+    let uniquePreviouslyOwnedTokens =
+      Set.String.fromArray(allPreviouslyOwnedTokens)
+      ->Set.String.removeMany(currentlyOwnedTokens)
+      ->Set.String.toArray
 
     let optProfile = Option.flatMap(optThreeBoxData, a => a.profile)
     let image: string =
@@ -166,13 +190,16 @@ module UserDetails = {
 
     let optUsdPrice = UsdPriceProvider.useUsdPrice()
 
-    let monthlyCotributionWei =
-      patronQueryResult.patronTokenCostScaledNumerator
-      ->BN.mul(BN.new_("2592000")) // A month with 30 days has 2592000 seconds
-      ->BN.div(
-        // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
-        BN.new_("31536000000000000000"),
-      )
+    let monthlyCotributionWei = patronQueryResultMainnet->Option.mapWithDefault(
+      BN.new_("0"),
+      patronMainnet =>
+        patronMainnet.patronTokenCostScaledNumerator
+        ->BN.mul(BN.new_("2592000")) // A month with 30 days has 2592000 seconds
+        ->BN.div(
+          // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
+          BN.new_("31536000000000000000"),
+        ),
+    )
 
     let monthlyContributionEth = monthlyCotributionWei->Web3Utils.fromWeiBNToEthPrecision(~digits=4)
     let optMonthlyContributionUsd = Option.map(optUsdPrice, currentUsdEthPrice =>
@@ -393,19 +420,39 @@ module UserDetails = {
 @react.component
 let make = (~chain, ~userAddress: string) => {
   let userAddressLowerCase = userAddress->Js.String.toLowerCase
-  let patronQuery = QlHooks.useQueryPatron(~chain=Client.MainnetQuery, userAddressLowerCase)
+  let patronQuery = QlHooks.useQueryPatronQuery(~chain=Client.MainnetQuery, userAddressLowerCase)
+  let patronQueryMatic = QlHooks.useQueryPatronQuery(~chain=Client.MaticQuery, userAddressLowerCase)
   let userInfoContext = UserProvider.useUserInfoContext()
   let reloadUser = forceReload => userInfoContext.update(userAddressLowerCase, forceReload) // double check that data is loaded.
   reloadUser(false)
   let optThreeBoxData = UserProvider.use3BoxUserData(userAddressLowerCase)
 
+  // {switch patronQuery {
+  // | Some(patronQueryResult) => <UserDetails chain optThreeBoxData patronQueryResult userAddress />
+  // | None =>
+  //   <div>
+  //     <Rimble.Heading> {"Loading user profile:"->React.string} </Rimble.Heading> <Rimble.Loader />
+  //   </div>
+  // }}
   <Rimble.Flex flexWrap="wrap" alignItems="center" className=Styles.topBody>
-    {switch patronQuery {
-    | Some(patronQueryResult) => <UserDetails chain optThreeBoxData patronQueryResult userAddress />
-    | None =>
+    {switch (patronQuery, patronQueryMatic) {
+    | ({loading: true, _}, _)
+    | (_, {loading: true, _}) =>
       <div>
         <Rimble.Heading> {"Loading user profile:"->React.string} </Rimble.Heading> <Rimble.Loader />
       </div>
+    | (_, {error: Some(_error), _})
+    | ({error: Some(_error), _}, _) =>
+      "There was an error loading some of this user's data"->React.string
+    | ({data: optMainnetPatronInfo, _}, {data: optMaticPatronInfo, _}) =>
+      <UserDetails
+        chain
+        optThreeBoxData
+        patronQueryResultMainnet={optMainnetPatronInfo->Option.flatMap(({patron}) => patron)}
+        patronQueryResultMatic={optMaticPatronInfo->Option.flatMap(({patron}) => patron)}
+        userAddress
+      />
+    // | {data: None, _} => None
     }}
   </Rimble.Flex>
 }
