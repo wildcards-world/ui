@@ -32,11 +32,10 @@ import * as RootProvider from "../harberger-lib/RootProvider.bs.js";
 import * as UserProvider from "../harberger-lib/js/user-provider/UserProvider.bs.js";
 import * as ActionButtons from "./ActionButtons.bs.js";
 import * as UpdateDeposit from "../harberger-lib/components/UpdateDeposit.bs.js";
-import * as ReactTranslate from "../helpers/providers/ReactTranslate.bs.js";
-import * as ReactTranslate$1 from "react-translate";
 import * as UsdPriceProvider from "../harberger-lib/components/UsdPriceProvider.bs.js";
 import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.bs.js";
 import * as LazyThreeBoxUpdate from "./LazyThreeBoxUpdate.bs.js";
+import * as Browser$ReScriptLogger from "rescript-logger/src/Browser.bs.js";
 import ReactCarousel from "@wildcards/react-carousel";
 import ShareSocialMedia from "./components/shareSocialMedia";
 
@@ -724,6 +723,19 @@ var DetailsViewAnimal = {
 function Dapp$DetailsView(Props) {
   var chain = Props.chain;
   var optionAnimal = Props.optionAnimal;
+  Browser$ReScriptLogger.info1({
+        rootModule: "Dapp",
+        subModulePath: {
+          hd: "DetailsView",
+          tl: /* [] */0
+        },
+        value: "make",
+        fullPath: "Dapp.DetailsView.make",
+        filePath: "/home/jasoons/Documents/code/ui/src/components/Dapp.res"
+      }, "optionAnimal", [
+        "a",
+        optionAnimal
+      ]);
   if (optionAnimal !== undefined) {
     return React.createElement(Dapp$DetailsViewAnimal, {
                 chain: chain,
@@ -814,6 +826,19 @@ function Dapp$DefaultLook(Props) {
                 }));
         break;
     case 2 :
+        Browser$ReScriptLogger.info1({
+              rootModule: "Dapp",
+              subModulePath: {
+                hd: "DefaultLook",
+                tl: /* [] */0
+              },
+              value: "make",
+              fullPath: "Dapp.DefaultLook.make",
+              filePath: "/home/jasoons/Documents/code/ui/src/components/Dapp.res"
+            }, "the animalString", [
+              "a",
+              animalStr
+            ]);
         var optionAnimal = TokenId.make(animalStr);
         var chain = Belt_Option.mapWithDefault(optionAnimal, /* MainnetQuery */2, Animal.getChainIdFromAnimalId);
         tmp = React.createElement(Dapp$DetailsView, {
@@ -833,15 +858,13 @@ var DefaultLook = {
 };
 
 function Dapp$DefaultLeftPanel(Props) {
-  var translationModeContext = ReactTranslate.useTranslationModeContext(undefined);
-  var translation = ReactTranslate$1.useTranslate(translationModeContext.translationMode);
   return React.createElement(React.Fragment, {
               children: null
             }, React.createElement("h1", {
                   className: Styles.heading
                 }, React.createElement("span", {
                       className: Styles.colorBlue
-                    }, Globals.restr("Always")), React.createElement("br", undefined), Globals.restr(translation("raising funds for")), React.createElement("br", undefined), React.createElement("span", {
+                    }, Globals.restr("Always")), React.createElement("br", undefined), Globals.restr("raising funds for"), React.createElement("br", undefined), React.createElement("span", {
                       className: Styles.colorGreen
                     }, Globals.restr("conservation"))), React.createElement("hr", undefined), React.createElement("h3", {
                   className: Styles.subHeading

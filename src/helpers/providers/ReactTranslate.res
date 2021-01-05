@@ -19,16 +19,8 @@ let cryptoMuggleTranslations: translations = %raw(`
     {
       locale: "en",
       crypto: {
-        nft: "Non-Fungible Token",
-        whatIsANFT:
-          " is a way to ensure digital assets are unique and easily tradable on a blockchain.",
-        harbergerTax: "Harberger Tax"
       },
       muggle: {
-        nft: "Blockchain Animal",
-        whatIsANFT:
-          " is a digital animal that is completely unique and easily tradable on a blockchain.",
-        harbergerTax: "Monthly Pledge"
       }
     }
 `)

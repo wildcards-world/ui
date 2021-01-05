@@ -554,13 +554,11 @@ module DefaultLook = {
 module DefaultLeftPanel = {
   @react.component
   let make = () => {
-    let translationModeContext = ReactTranslate.useTranslationModeContext()
-    let translation = ReactTranslate.useTranslate(. translationModeContext.translationMode)
     <React.Fragment>
       <h1 className=Styles.heading>
         <span className=Styles.colorBlue> {"Always"->restr} </span>
         <br />
-        {translation(. "raising funds for")->restr}
+        {"raising funds for"->restr}
         <br />
         <span className=Styles.colorGreen> {"conservation"->restr} </span>
       </h1>
