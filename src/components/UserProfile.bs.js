@@ -8,6 +8,7 @@ import * as React from "react";
 import * as Animal from "../harberger-lib/Animal.bs.js";
 import * as Helper from "../harberger-lib/Helper.bs.js";
 import * as Styles from "../Styles.bs.js";
+import * as Amounts from "./Amounts.bs.js";
 import * as Blockie from "../harberger-lib/bindings/ethereum-blockies-base64/Blockie.bs.js";
 import * as Globals from "../harberger-lib/Globals.bs.js";
 import * as Js_dict from "bs-platform/lib/es6/js_dict.js";
@@ -18,7 +19,6 @@ import * as Validate from "./Validate.bs.js";
 import * as Web3Utils from "../harberger-lib/Web3Utils.bs.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
-import * as Belt_Float from "bs-platform/lib/es6/belt_Float.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as RootProvider from "../harberger-lib/RootProvider.bs.js";
@@ -27,7 +27,6 @@ import * as ActionButtons from "./ActionButtons.bs.js";
 import * as UpdateDeposit from "../harberger-lib/components/UpdateDeposit.bs.js";
 import * as Belt_SetString from "bs-platform/lib/es6/belt_SetString.js";
 import * as ContractActions from "../harberger-lib/eth/ContractActions.bs.js";
-import * as UsdPriceProvider from "../harberger-lib/components/UsdPriceProvider.bs.js";
 import * as LazyThreeBoxUpdate from "./LazyThreeBoxUpdate.bs.js";
 
 var centreAlignOnMobile = Curry._1(Css.style, {
@@ -192,15 +191,11 @@ function UserProfile$UserDetails(Props) {
           return a.username;
         }));
   var etherScanUrl = RootProvider.useEtherscanUrl(undefined);
-  var optUsdPrice = UsdPriceProvider.useUsdPrice(undefined);
   var monthlyCotributionWei = Belt_Option.mapWithDefault(patronQueryResultMainnet, new BnJs("0"), (function (patronMainnet) {
           return patronMainnet.patronTokenCostScaledNumerator.mul(new BnJs("2592000")).div(new BnJs("31536000000000000000"));
         }));
-  var monthlyContributionEth = Web3Utils.fromWeiBNToEthPrecision(monthlyCotributionWei, 4);
-  var optMonthlyContributionUsd = Belt_Option.map(optUsdPrice, (function (currentUsdEthPrice) {
-          return Globals.toFixedWithPrecisionNoTrailingZeros(Belt_Option.mapWithDefault(Belt_Float.fromString(monthlyContributionEth), 0, (function (a) {
-                            return a;
-                          })) * currentUsdEthPrice, 2);
+  var monthlyCotributionDai = Belt_Option.mapWithDefault(patronQueryResultMatic, new BnJs("0"), (function (patronMainnet) {
+          return patronMainnet.patronTokenCostScaledNumerator.mul(new BnJs("2592000")).div(new BnJs("31536000000000000000"));
         }));
   var match = ContractActions.useUserLoyaltyTokenBalance(userAddress);
   var totalLoyaltyTokensAvailableAndClaimedOpt = QlHooks.useTotalLoyaltyToken(/* MainnetQuery */2, userAddress);
@@ -351,11 +346,10 @@ function UserProfile$UserDetails(Props) {
                         1,
                         0.3333
                       ]
-                    }, React.createElement("h2", undefined, Globals.restr("Monthly Contribution")), React.createElement("p", undefined, React.createElement(React.Fragment, {
-                              children: null
-                            }, Globals.restr("" + monthlyContributionEth + " ETH\xa0"), Globals.reactMap(optMonthlyContributionUsd, (function (usdValue) {
-                                    return React.createElement("small", undefined, Globals.restr("(" + usdValue + " USD)"));
-                                  }))))), React.createElement(RimbleUi.Box, {
+                    }, React.createElement("h2", undefined, Globals.restr("Monthly Contribution")), React.createElement(Amounts.AmountRaised.make, {
+                          mainnetEth: monthlyCotributionWei,
+                          maticDai: monthlyCotributionDai
+                        })), React.createElement(RimbleUi.Box, {
                       p: 1,
                       children: null,
                       width: [
@@ -366,7 +360,7 @@ function UserProfile$UserDetails(Props) {
                     }, currentlyOwnedTokens.length !== 0 ? React.createElement(React.Fragment, {
                             children: null
                           }, React.createElement(RimbleUi.Heading, {
-                                children: "Currently owned tokens"
+                                children: "Currently owned Wildcards"
                               }), React.createElement(RimbleUi.Flex, {
                                 children: Belt_Array.map(currentlyOwnedTokens, (function (tokenId) {
                                         return React.createElement(UserProfile$Token, {
@@ -381,7 +375,7 @@ function UserProfile$UserDetails(Props) {
                       ), uniquePreviouslyOwnedTokens.length !== 0 ? React.createElement(React.Fragment, {
                             children: null
                           }, React.createElement(RimbleUi.Heading, {
-                                children: "Previously owned tokens"
+                                children: "Previously owned Wildcards"
                               }), React.createElement(RimbleUi.Flex, {
                                 children: Belt_Array.map(uniquePreviouslyOwnedTokens, (function (tokenId) {
                                         return React.createElement(UserProfile$Token, {

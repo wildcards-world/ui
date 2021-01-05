@@ -188,8 +188,6 @@ module UserDetails = {
     }
     let etherScanUrl = RootProvider.useEtherscanUrl()
 
-    let optUsdPrice = UsdPriceProvider.useUsdPrice()
-
     let monthlyCotributionWei = patronQueryResultMainnet->Option.mapWithDefault(
       BN.new_("0"),
       patronMainnet =>
@@ -200,14 +198,15 @@ module UserDetails = {
           BN.new_("31536000000000000000"),
         ),
     )
-
-    let monthlyContributionEth = monthlyCotributionWei->Web3Utils.fromWeiBNToEthPrecision(~digits=4)
-    let optMonthlyContributionUsd = Option.map(optUsdPrice, currentUsdEthPrice =>
-      toFixedWithPrecisionNoTrailingZeros(
-        Float.fromString(monthlyContributionEth)->Option.mapWithDefault(0., a => a) *.
-          currentUsdEthPrice,
-        ~digits=2,
-      )
+    let monthlyCotributionDai = patronQueryResultMatic->Option.mapWithDefault(
+      BN.new_("0"),
+      patronMainnet =>
+        patronMainnet.patronTokenCostScaledNumerator
+        ->BN.mul(BN.new_("2592000")) // A month with 30 days has 2592000 seconds
+        ->BN.div(
+          // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
+          BN.new_("31536000000000000000"),
+        ),
     )
 
     // This is the value of tokens that are currently in the users account (IE their spendable balance)
@@ -367,14 +366,7 @@ module UserDetails = {
         </Rimble.Box>
         <Rimble.Box p=1 width=[1., 1., 0.3333]>
           <h2> {"Monthly Contribution"->restr} </h2>
-          <p>
-            <React.Fragment>
-              {j`$monthlyContributionEth ETH\\xa0`->restr}
-              {optMonthlyContributionUsd->reactMap(usdValue =>
-                <small> {j`($usdValue USD)`->restr} </small>
-              )}
-            </React.Fragment>
-          </p>
+          <Amounts.AmountRaised mainnetEth=monthlyCotributionWei maticDai=monthlyCotributionDai />
         </Rimble.Box>
         <Rimble.Box p=1 width=[1., 1., 0.3333]>
           {switch currentlyOwnedTokens {
@@ -384,7 +376,7 @@ module UserDetails = {
               : <p> {"User has never owned a wildcard."->restr} </p>
           | currentlyOwnedTokens =>
             <React.Fragment>
-              <Rimble.Heading> {"Currently owned tokens"->React.string} </Rimble.Heading>
+              <Rimble.Heading> {"Currently owned Wildcards"->React.string} </Rimble.Heading>
               <Rimble.Flex flexWrap="wrap" className=centreAlignOnMobile>
                 {React.array(
                   currentlyOwnedTokens->Array.map(tokenId =>
@@ -401,7 +393,7 @@ module UserDetails = {
           | [] => React.null
           | uniquePreviouslyOwnedTokens =>
             <React.Fragment>
-              <Rimble.Heading> {"Previously owned tokens"->React.string} </Rimble.Heading>
+              <Rimble.Heading> {"Previously owned Wildcards"->React.string} </Rimble.Heading>
               <Rimble.Flex flexWrap="wrap" className=centreAlignOnMobile>
                 {React.array(
                   uniquePreviouslyOwnedTokens->Array.map(tokenId =>
