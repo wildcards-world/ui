@@ -48,17 +48,21 @@ function HowItWorks(Props) {
                               children: null
                             }, React.createElement(make, {
                                   videoCode: "n7GBm6ruVaQ"
-                                }), React.createElement("br", undefined), React.createElement(RimbleUi.Box, {
+                                }), React.createElement("br", undefined), React.createElement(RimbleUi.Flex, {
                                   children: React.createElement(RimbleUi.Button, {
                                         className: Styles.centerItemsMargin,
-                                        children: Globals.restr("Click here for a simple text explanation"),
+                                        children: Globals.restr("Read More"),
                                         onClick: (function (param) {
                                             return Curry._1(setModalOpen, (function (param) {
                                                           return true;
                                                         }));
                                           })
                                       }),
-                                  width: [1]
+                                  flexWrap: "wrap",
+                                  alignItems: "stretch",
+                                  justifyContent: "space-around",
+                                  px: 50,
+                                  pt: 50
                                 }), React.createElement(RimbleUi.Modal, {
                                   isOpen: match[0],
                                   children: React.createElement(RimbleUi.Card, {
