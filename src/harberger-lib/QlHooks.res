@@ -187,10 +187,10 @@ module LoadPatron = %graphql(`
     patron(id: $patronId) {
       id
       previouslyOwnedTokens {
-        id
+        tokenId
       }
       tokens {
-        id
+        tokenId
       }
       availableDeposit  @ppxCustom(module: "Price")
       patronTokenCostScaledNumerator  @ppxCustom(module: "BigInt")
@@ -331,7 +331,8 @@ let useLoadOrganisationLogo = orgId =>
   | Some({logo, _}) => Some(logo)
   | None => None
   }
-@dead("+useLoadOrganisationLogoBadge") let useLoadOrganisationLogoBadge = orgId =>
+@dead("+useLoadOrganisationLogoBadge")
+let useLoadOrganisationLogoBadge = orgId =>
   switch useLoadOrganisationQuery(orgId) {
   | Some({logo_badge: Some(badge), _}) => Some(badge)
   | Some({logo, _}) => Some(logo)
@@ -472,11 +473,15 @@ let useTimeAcquired: (~chain: Client.context, TokenId.t) => option<MomentRe.Mome
     None
   }
 
-let useQueryPatron = (~chain, patron) => {
-  let loadPatronQuery = LoadPatron.use(
+let useQueryPatronQuery = (~chain, patron) => {
+  LoadPatron.use(
     ~context={context: chain}->createContext,
     LoadPatron.makeVariables(~patronId=chain->getQueryPrefix ++ patron, ()),
   )
+}
+let useQueryPatron = (~chain, patron) => {
+  let loadPatronQuery = useQueryPatronQuery(~chain, patron)
+
   switch loadPatronQuery {
   | {data: Some({patron}), _} => patron
   | {data: None, _} => None
@@ -494,7 +499,8 @@ let useForeclosureTimeBn = (~chain, patron) =>
 let useForeclosureTime = (~chain, patron) =>
   useForeclosureTimeBn(~chain, patron)->Option.map(Helper.bnToMoment)
 
-@dead("+useTimeAcquiredWithDefault") let useTimeAcquiredWithDefault = (~chain, animal, default: MomentRe.Moment.t) =>
+@dead("+useTimeAcquiredWithDefault")
+let useTimeAcquiredWithDefault = (~chain, animal, default: MomentRe.Moment.t) =>
   Option.getWithDefault(useTimeAcquired(~chain, animal), default)
 let useDaysHeld = (~chain, tokenId) =>
   useTimeAcquired(~chain, tokenId)->Option.map(moment => (

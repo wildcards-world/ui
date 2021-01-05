@@ -1173,11 +1173,11 @@ var query$6 = (require("@apollo/client").gql`
       id
       previouslyOwnedTokens  {
         __typename
-        id
+        tokenId
       }
       tokens  {
         __typename
-        id
+        tokenId
       }
       availableDeposit
       patronTokenCostScaledNumerator
@@ -1204,13 +1204,13 @@ function parse$6(value) {
       previouslyOwnedTokens: value$2.map(function (value) {
             return {
                     __typename: value.__typename,
-                    id: value.id
+                    tokenId: value.tokenId
                   };
           }),
       tokens: value$3.map(function (value) {
             return {
                     __typename: value.__typename,
-                    id: value.id
+                    tokenId: value.tokenId
                   };
           }),
       availableDeposit: GqlConverters.Price.parse(value$1.availableDeposit),
@@ -1247,20 +1247,20 @@ function serialize$6(value) {
     var value$15 = GqlConverters.Price.serialize(value$14);
     var value$16 = value$1.tokens;
     var tokens = value$16.map(function (value) {
-          var value$1 = value.id;
+          var value$1 = value.tokenId;
           var value$2 = value.__typename;
           return {
                   __typename: value$2,
-                  id: value$1
+                  tokenId: value$1
                 };
         });
     var value$17 = value$1.previouslyOwnedTokens;
     var previouslyOwnedTokens = value$17.map(function (value) {
-          var value$1 = value.id;
+          var value$1 = value.tokenId;
           var value$2 = value.__typename;
           return {
                   __typename: value$2,
-                  id: value$1
+                  tokenId: value$1
                 };
         });
     var value$18 = value$1.id;
@@ -2195,27 +2195,31 @@ function useTimeAcquired(chain, animal) {
   
 }
 
+function useQueryPatronQuery(chain, patron) {
+  return Curry.app(use$6, [
+              undefined,
+              {
+                context: chain
+              },
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              {
+                patronId: getQueryPrefix(chain) + patron
+              }
+            ]);
+}
+
 function useQueryPatron(chain, patron) {
-  var loadPatronQuery = Curry.app(use$6, [
-        undefined,
-        {
-          context: chain
-        },
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        {
-          patronId: getQueryPrefix(chain) + patron
-        }
-      ]);
+  var loadPatronQuery = useQueryPatronQuery(chain, patron);
   var match = loadPatronQuery.data;
   if (match !== undefined) {
     return match.patron;
@@ -2713,6 +2717,7 @@ export {
   usePatron ,
   useIsAnimalOwened ,
   useTimeAcquired ,
+  useQueryPatronQuery ,
   useQueryPatron ,
   useForeclosureTimeBn ,
   useForeclosureTime ,
