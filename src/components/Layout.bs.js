@@ -30,14 +30,10 @@ import * as Web3Connect from "../harberger-lib/components/Web3Connect.bs.js";
 import * as Announcement from "./Announcement.bs.js";
 import * as LeaderBoards from "./Leaderboards/LeaderBoards.bs.js";
 import * as RootProvider from "../harberger-lib/RootProvider.bs.js";
-import ReactSwitch from "react-switch";
 import * as ArtistProfiles from "./ArtistProfiles.bs.js";
-import * as ReactTranslate from "../helpers/providers/ReactTranslate.bs.js";
 import * as CustomerBenefit from "./StaticContent/CustomerBenefit.bs.js";
 import * as AnimalAnnouncement from "./AnimalAnnouncement.bs.js";
 import * as HomepageLeaderBoard from "./StaticContent/HomepageLeaderBoard.bs.js";
-
-var betaBanner = "/img/beta-banner.png";
 
 function Layout$AnimalFocusDetails(Props) {
   var currentAnimal = Props.currentAnimal;
@@ -141,7 +137,6 @@ function Layout(Props) {
   var isExplorer = Router.useIsExplorer(undefined);
   var isDetails = Router.useIsDetails(undefined);
   var isHome = Router.useIsHome(undefined);
-  var translationModeContext = ReactTranslate.useTranslationModeContext(undefined);
   var tmp;
   if (typeof urlState === "number") {
     switch (urlState) {
@@ -230,39 +225,8 @@ function Layout(Props) {
                                 href: "https://matic.network",
                                 rel: "noopener noreferrer"
                               }, Globals.restr("MATIC network. ")))
-                    }), React.createElement("div", {
-                      className: Curry._1(Css.style, {
-                            hd: Css.position(Css.relative),
-                            tl: /* [] */0
-                          })
-                    }, React.createElement("img", {
-                          className: Styles.betaBanner,
-                          src: betaBanner
-                        })), React.createElement(Header.make, {
+                    }), React.createElement(Header.make, {
                       navItems: [
-                        {
-                          shouldDisplay: isHome,
-                          shouldDisplayMobile: false,
-                          component: (function (param, param$1) {
-                              return React.createElement("div", {
-                                          className: Styles.navListItemToggle
-                                        }, React.createElement("span", {
-                                              className: Styles.someMarginRight
-                                            }, Globals.restr(translationModeContext.translationModeCrypto ? "EXPERT MODE" : "DEFAULT MODE")), React.createElement(ReactSwitch, {
-                                              onChange: translationModeContext.setTranslationModeCrypto,
-                                              checked: translationModeContext.translationModeCrypto,
-                                              onColor: "#6BAD3F",
-                                              onHandleColor: "#346D4C",
-                                              offHandleColor: "#aaaaaa",
-                                              uncheckedIcon: false,
-                                              checkedIcon: false,
-                                              height: 16,
-                                              width: 30,
-                                              handleDiameter: 18,
-                                              className: Styles.translationSwitch
-                                            }));
-                            })
-                        },
                         {
                           shouldDisplay: !isHome,
                           shouldDisplayMobile: !isHome,
@@ -289,21 +253,7 @@ function Layout(Props) {
                                               $$event.preventDefault();
                                               return Curry._1(clearAndPush, "/#leaderboards/monthly-contribution");
                                             })
-                                        }, Globals.restr("LEADERBOARDS"));
-                            })
-                        },
-                        {
-                          shouldDisplay: true,
-                          shouldDisplayMobile: true,
-                          component: (function (closeModal, param) {
-                              return React.createElement("a", {
-                                          className: Styles.navListText,
-                                          onClick: (function ($$event) {
-                                              Curry._1(closeModal, undefined);
-                                              $$event.preventDefault();
-                                              return Curry._1(clearAndPush, "/#dao");
-                                            })
-                                        }, Globals.restr("DAO"));
+                                        }, Globals.restr("TOP GUARDIANS"));
                             })
                         },
                         {
@@ -362,7 +312,6 @@ function Layout(Props) {
 var make = Layout;
 
 export {
-  betaBanner ,
   AnimalFocusDetails ,
   make ,
   

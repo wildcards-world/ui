@@ -527,22 +527,6 @@ var linkPillText = CssJs.style([
       CssJs.color(CssJs.hex("fff"))
     ]);
 
-var betaBanner = CssJs.style([
-      CssJs.position("absolute"),
-      CssJs.left({
-            NAME: "px",
-            VAL: 0
-          }),
-      CssJs.top({
-            NAME: "px",
-            VAL: 0
-          }),
-      CssJs.width({
-            NAME: "px",
-            VAL: 80
-          })
-    ]);
-
 var loginButton = CssJs.style([CssJs.paddingLeft({
             NAME: "px",
             VAL: 10
@@ -711,7 +695,6 @@ export {
   whiteText ,
   linkPillBox ,
   linkPillText ,
-  betaBanner ,
   loginButton ,
   forwardBackButton ,
   mergeStyles ,

@@ -37,7 +37,6 @@ import * as ReactTranslate$1 from "react-translate";
 import * as UsdPriceProvider from "../harberger-lib/components/UsdPriceProvider.bs.js";
 import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.bs.js";
 import * as LazyThreeBoxUpdate from "./LazyThreeBoxUpdate.bs.js";
-import * as Browser$ReScriptLogger from "rescript-logger/src/Browser.bs.js";
 import ReactCarousel from "@wildcards/react-carousel";
 import ShareSocialMedia from "./components/shareSocialMedia";
 
@@ -725,19 +724,6 @@ var DetailsViewAnimal = {
 function Dapp$DetailsView(Props) {
   var chain = Props.chain;
   var optionAnimal = Props.optionAnimal;
-  Browser$ReScriptLogger.info1({
-        rootModule: "Dapp",
-        subModulePath: {
-          hd: "DetailsView",
-          tl: /* [] */0
-        },
-        value: "make",
-        fullPath: "Dapp.DetailsView.make",
-        filePath: "/home/jasoons/Documents/code/ui/src/components/Dapp.res"
-      }, "optionAnimal", [
-        "a",
-        optionAnimal
-      ]);
   if (optionAnimal !== undefined) {
     return React.createElement(Dapp$DetailsViewAnimal, {
                 chain: chain,
@@ -828,19 +814,6 @@ function Dapp$DefaultLook(Props) {
                 }));
         break;
     case 2 :
-        Browser$ReScriptLogger.info1({
-              rootModule: "Dapp",
-              subModulePath: {
-                hd: "DefaultLook",
-                tl: /* [] */0
-              },
-              value: "make",
-              fullPath: "Dapp.DefaultLook.make",
-              filePath: "/home/jasoons/Documents/code/ui/src/components/Dapp.res"
-            }, "the animalString", [
-              "a",
-              animalStr
-            ]);
         var optionAnimal = TokenId.make(animalStr);
         var chain = Belt_Option.mapWithDefault(optionAnimal, /* MainnetQuery */2, Animal.getChainIdFromAnimalId);
         tmp = React.createElement(Dapp$DetailsView, {
@@ -868,11 +841,11 @@ function Dapp$DefaultLeftPanel(Props) {
                   className: Styles.heading
                 }, React.createElement("span", {
                       className: Styles.colorBlue
-                    }, Globals.restr(translation("bluetext"))), React.createElement("br", undefined), Globals.restr(translation("ethereum")), React.createElement("br", undefined), React.createElement("span", {
+                    }, Globals.restr("Always")), React.createElement("br", undefined), Globals.restr(translation("raising funds for")), React.createElement("br", undefined), React.createElement("span", {
                       className: Styles.colorGreen
-                    }, Globals.restr("conservation")), Globals.restr(" " + translation("tokens"))), React.createElement("hr", undefined), React.createElement("h3", {
+                    }, Globals.restr("conservation"))), React.createElement("hr", undefined), React.createElement("h3", {
                   className: Styles.subHeading
-                }, Globals.restr(translation("subHeading"))));
+                }, Globals.restr("Adopt an animal to start giving today.")));
 }
 
 var DefaultLeftPanel = {

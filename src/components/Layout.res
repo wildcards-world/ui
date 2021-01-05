@@ -1,8 +1,5 @@
 open Globals
 
-// TODO: there must be a better way of importing images in reason react...
-let betaBanner = "/img/beta-banner.png"
-
 module AnimalFocusDetails = {
   @react.component
   let make = (~currentAnimal: option<TokenId.t>, ~showForwardBackButtons) => {
@@ -100,7 +97,6 @@ let make = () => {
   let isExplorer = Router.useIsExplorer()
   let isDetails = Router.useIsDetails()
   let isHome = Router.useIsHome()
-  let translationModeContext = ReactTranslate.useTranslationModeContext()
 
   <div className=Styles.app>
     <div
@@ -135,40 +131,8 @@ let make = () => {
       //   // 72D6B5
       //   // AEE79A
       // />
-      <div
-        className={
-          open Css
-          style(list{position(relative)})
-        }>
-        <img src=betaBanner className=Styles.betaBanner />
-      </div>
       <Header
         navItems=[
-          {
-            shouldDisplay: isHome,
-            shouldDisplayMobile: false,
-            component: (_, _) =>
-              <div className=Styles.navListItemToggle>
-                <span className=Styles.someMarginRight>
-                  {(
-                    translationModeContext.translationModeCrypto ? "EXPERT MODE" : "DEFAULT MODE"
-                  )->restr}
-                </span>
-                <ReactSwitch
-                  onChange=translationModeContext.setTranslationModeCrypto
-                  checked=translationModeContext.translationModeCrypto
-                  height=16
-                  handleDiameter=18
-                  width=30
-                  onColor="#6BAD3F"
-                  onHandleColor="#346D4C"
-                  offHandleColor="#aaaaaa"
-                  uncheckedIcon=false
-                  checkedIcon=false
-                  className=Styles.translationSwitch
-                />
-              </div>,
-          },
           {
             shouldDisplay: !isHome,
             shouldDisplayMobile: !isHome,
@@ -195,21 +159,7 @@ let make = () => {
                   ReactEvent.Mouse.preventDefault(event)
                   clearAndPush(j`/#leaderboards/monthly-contribution`)
                 }}>
-                {"LEADERBOARDS"->restr}
-              </a>,
-          },
-          {
-            shouldDisplay: true,
-            shouldDisplayMobile: true,
-            component: (closeModal, _) =>
-              <a
-                className=Styles.navListText
-                onClick={event => {
-                  closeModal()
-                  ReactEvent.Mouse.preventDefault(event)
-                  clearAndPush(j`/#dao`)
-                }}>
-                {"DAO"->restr}
+                {"TOP GUARDIANS"->restr}
               </a>,
           },
           {

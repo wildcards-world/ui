@@ -279,8 +279,6 @@ let linkPillBox = style(.[
 ])
 let linkPillText = style(.[margin(px(10)), marginBottom(px(1)), color(hex("fff"))])
 
-let betaBanner = style(.[position(#absolute), left(#px(0)), top(#px(0)), width(#px(80))])
-
 let loginButton = style(.[paddingLeft(#px(10))])
 
 let forwardBackButton = style(.[width(#percent(100.)), height(#em(5.))])
