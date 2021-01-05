@@ -34,8 +34,6 @@ CssJs.$$global("a:hover", [CssJs.textDecoration(CssJs.underline)]);
 
 CssJs.$$global("a:active", [CssJs.color(CssJs.hex("303030"))]);
 
-CssJs.$$global("a:visited", [CssJs.color(CssJs.hex("303030"))]);
-
 var app = CssJs.style([
       CssJs.boxSizing("borderBox"),
       CssJs.fontSize(CssJs.px(16))

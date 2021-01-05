@@ -17,7 +17,6 @@ global(.
 global(. "a", [color(hex("303030")), textDecoration(none)])
 global(. "a:hover", [textDecoration(underline)])
 global(. "a:active", [color(hex("303030"))])
-global(. "a:visited", [color(hex("303030"))])
 
 let app = style(.[
   boxSizing(#borderBox),
