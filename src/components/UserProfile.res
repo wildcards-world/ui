@@ -351,12 +351,7 @@ module UserDetails = {
                   </small>}
               {if isAddressCurrentUser {
                 <React.Fragment>
-                  <br />
-                  <ActionButtons.UpdateDeposit />
-                  <br />
-                  // {UserProvider.useIsUserValidated(currentAccount)
-                  //    ? <ShareSocial /> : <Validate />}
-                  <Validate />
+                  <br /> <ActionButtons.UpdateDeposit /> <br /> <Validate />
                 </React.Fragment>
               } else {
                 React.null
@@ -419,13 +414,6 @@ let make = (~chain, ~userAddress: string) => {
   reloadUser(false)
   let optThreeBoxData = UserProvider.use3BoxUserData(userAddressLowerCase)
 
-  // {switch patronQuery {
-  // | Some(patronQueryResult) => <UserDetails chain optThreeBoxData patronQueryResult userAddress />
-  // | None =>
-  //   <div>
-  //     <Rimble.Heading> {"Loading user profile:"->React.string} </Rimble.Heading> <Rimble.Loader />
-  //   </div>
-  // }}
   <Rimble.Flex flexWrap="wrap" alignItems="center" className=Styles.topBody>
     {switch (patronQuery, patronQueryMatic) {
     | ({loading: true, _}, _)

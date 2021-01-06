@@ -8,7 +8,29 @@ let toDollarCentsFixedNoRounding = aFloat =>
 
 module AmountRaised = {
   @react.component
-  let make = (~mainnetEth, ~maticDai) => {
+  let make = (
+    ~populateElement=(~bigTextComponent, ~smallTextComponent, ~optCommentTextComponent) => {
+      <>
+        <p>
+          {bigTextComponent}
+          <span
+            className={
+              open CssJs
+              style(.[fontSize(em(0.75))])
+            }>
+            {smallTextComponent}
+          </span>
+          {" USD"->React.string}
+          {switch optCommentTextComponent {
+          | Some(explainerString) => <> <br /> <small> {explainerString} </small> </>
+          | None => React.null
+          }}
+        </p>
+      </>
+    },
+    ~mainnetEth,
+    ~maticDai,
+  ) => {
     let currentUsdEthPrice = UsdPriceProvider.useUsdPrice()
     let (prevUsdRaisedStrArray, setPrevUsdRaisedStrArray) = React.useState(_ => [])
     let (
@@ -74,30 +96,28 @@ module AmountRaised = {
 
     let styleOnCountUp = {
       open Css
-      style(list{color(green), fontWeight(#bold)})
+      style(list{important(color(green)), fontWeight(#bold)})
     }
 
     <>
-      <p>
-        <span> {raisedMainUnchanged->React.string} </span>
-        <Countup.StringFloat stringFloat={raisedMainChanged} styleOnCountUp />
-        <span
-          className={
-            open CssJs
-            style(.[fontSize(em(0.75))])
-          }>
-          <span> {raisedSubUnchanged->React.string} </span>
-          {switch raisedSubChanged {
-          | "" => React.null
-          | stringFloat => <Countup.StringFloat stringFloat styleOnCountUp />
-          }}
-        </span>
-        {" USD"->React.string}
-        {switch optExplainerString {
-        | Some(explainerString) => <> <br /> <small> {explainerString->React.string} </small> </>
-        | None => React.null
-        }}
-      </p>
+      {populateElement(
+        ~bigTextComponent={
+          <>
+            <span> {raisedMainUnchanged->React.string} </span>
+            <Countup.StringFloat stringFloat={raisedMainChanged} styleOnCountUp />
+          </>
+        },
+        ~smallTextComponent={
+          <>
+            <span> {raisedSubUnchanged->React.string} </span>
+            {switch raisedSubChanged {
+            | "" => React.null
+            | stringFloat => <Countup.StringFloat stringFloat styleOnCountUp />
+            }}
+          </>
+        },
+        ~optCommentTextComponent=optExplainerString->Option.map(React.string),
+      )}
     </>
   }
 }

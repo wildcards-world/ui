@@ -21,8 +21,14 @@ function toDollarCentsFixedNoRounding(aFloat) {
 }
 
 function Amounts$AmountRaised(Props) {
+  var populateElementOpt = Props.populateElement;
   var mainnetEth = Props.mainnetEth;
   var maticDai = Props.maticDai;
+  var populateElement = populateElementOpt !== undefined ? populateElementOpt : (function (bigTextComponent, smallTextComponent, optCommentTextComponent) {
+        return React.createElement(React.Fragment, undefined, React.createElement("p", undefined, bigTextComponent, React.createElement("span", {
+                            className: CssJs.style([CssJs.fontSize(CssJs.em(0.75))])
+                          }, smallTextComponent), " USD", optCommentTextComponent !== undefined ? React.createElement(React.Fragment, undefined, React.createElement("br", undefined), React.createElement("small", undefined, Caml_option.valFromOption(optCommentTextComponent))) : null));
+      });
   var currentUsdEthPrice = UsdPriceProvider.useUsdPrice(undefined);
   var match = React.useState(function () {
         return [];
@@ -111,7 +117,7 @@ function Amounts$AmountRaised(Props) {
       );
   }
   var styleOnCountUp = Curry._1(Css.style, {
-        hd: Css.color(Css.green),
+        hd: Css.important(Css.color(Css.green)),
         tl: {
           hd: Css.fontWeight("bold"),
           tl: /* [] */0
@@ -121,12 +127,12 @@ function Amounts$AmountRaised(Props) {
           stringFloat: raisedSubChanged,
           styleOnCountUp: styleOnCountUp
         });
-  return React.createElement(React.Fragment, undefined, React.createElement("p", undefined, React.createElement("span", undefined, match$2[0]), React.createElement(Countup.StringFloat.make, {
-                      stringFloat: match$2[1],
-                      styleOnCountUp: styleOnCountUp
-                    }), React.createElement("span", {
-                      className: CssJs.style([CssJs.fontSize(CssJs.em(0.75))])
-                    }, React.createElement("span", undefined, match$2[2]), tmp), " USD", optExplainerString !== undefined ? React.createElement(React.Fragment, undefined, React.createElement("br", undefined), React.createElement("small", undefined, optExplainerString)) : null));
+  return React.createElement(React.Fragment, undefined, Curry._3(populateElement, React.createElement(React.Fragment, undefined, React.createElement("span", undefined, match$2[0]), React.createElement(Countup.StringFloat.make, {
+                          stringFloat: match$2[1],
+                          styleOnCountUp: styleOnCountUp
+                        })), React.createElement(React.Fragment, undefined, React.createElement("span", undefined, match$2[2]), tmp), Belt_Option.map(optExplainerString, (function (prim) {
+                        return prim;
+                      }))));
 }
 
 var AmountRaised = {

@@ -274,9 +274,6 @@ module OrgPage = {
             | (Some(mainnetEth), Some(maticDai)) => <Amounts.AmountRaised mainnetEth maticDai />
             | _ => "Loading"->React.string
             }}
-            // {(totalPatronageUsd ++ "USD")->restr}
-            // <br />
-            // <small> {totalBreakdownString->restr} </small>
           </Rimble.Box>
           <Rimble.Box
             width=[1., 1., 0.3333]
