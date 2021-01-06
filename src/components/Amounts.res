@@ -10,23 +10,21 @@ module AmountRaised = {
   @react.component
   let make = (
     ~populateElement=(~bigTextComponent, ~smallTextComponent, ~optCommentTextComponent) => {
-      <>
-        <p>
-          {bigTextComponent}
-          <span
-            className={
-              open CssJs
-              style(.[fontSize(em(0.75))])
-            }>
-            {smallTextComponent}
-          </span>
-          {" USD"->React.string}
-          {switch optCommentTextComponent {
-          | Some(explainerString) => <> <br /> <small> {explainerString} </small> </>
-          | None => React.null
-          }}
-        </p>
-      </>
+      <p>
+        {bigTextComponent}
+        <span
+          className={
+            open CssJs
+            style(.[fontSize(em(0.75))])
+          }>
+          {smallTextComponent}
+        </span>
+        {" USD"->React.string}
+        {switch optCommentTextComponent {
+        | Some(explainerString) => <> <br /> <small> {explainerString} </small> </>
+        | None => React.null
+        }}
+      </p>
     },
     ~mainnetEth,
     ~maticDai,
@@ -96,7 +94,7 @@ module AmountRaised = {
 
     let styleOnCountUp = {
       open Css
-      style(list{important(color(green)), fontWeight(#bold)})
+      style(list{color(green), fontWeight(#bold)})
     }
 
     <>

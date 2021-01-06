@@ -32,7 +32,9 @@ function TotalRaised(Props) {
                           hd: Css.display("table"),
                           tl: /* [] */0
                         })
-                  }, "Wildcards has currently raised ", React.createElement("br", undefined), React.createElement(Amounts.AmountRaised.make, {
+                  }, React.createElement("span", {
+                        className: Styles.totalRaisedText(1.5)
+                      }, "Wildcards has currently raised "), React.createElement("br", undefined), React.createElement(Amounts.AmountRaised.make, {
                         populateElement: (function (bigTextComponent, smallTextComponent, optCommentTextComponent) {
                             return React.createElement(React.Fragment, undefined, React.createElement("span", {
                                             className: Styles.totalRaisedText(4)

@@ -25,9 +25,9 @@ function Amounts$AmountRaised(Props) {
   var mainnetEth = Props.mainnetEth;
   var maticDai = Props.maticDai;
   var populateElement = populateElementOpt !== undefined ? populateElementOpt : (function (bigTextComponent, smallTextComponent, optCommentTextComponent) {
-        return React.createElement(React.Fragment, undefined, React.createElement("p", undefined, bigTextComponent, React.createElement("span", {
-                            className: CssJs.style([CssJs.fontSize(CssJs.em(0.75))])
-                          }, smallTextComponent), " USD", optCommentTextComponent !== undefined ? React.createElement(React.Fragment, undefined, React.createElement("br", undefined), React.createElement("small", undefined, Caml_option.valFromOption(optCommentTextComponent))) : null));
+        return React.createElement("p", undefined, bigTextComponent, React.createElement("span", {
+                        className: CssJs.style([CssJs.fontSize(CssJs.em(0.75))])
+                      }, smallTextComponent), " USD", optCommentTextComponent !== undefined ? React.createElement(React.Fragment, undefined, React.createElement("br", undefined), React.createElement("small", undefined, Caml_option.valFromOption(optCommentTextComponent))) : null);
       });
   var currentUsdEthPrice = UsdPriceProvider.useUsdPrice(undefined);
   var match = React.useState(function () {
@@ -117,7 +117,7 @@ function Amounts$AmountRaised(Props) {
       );
   }
   var styleOnCountUp = Curry._1(Css.style, {
-        hd: Css.important(Css.color(Css.green)),
+        hd: Css.color(Css.green),
         tl: {
           hd: Css.fontWeight("bold"),
           tl: /* [] */0
