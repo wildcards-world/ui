@@ -1748,8 +1748,8 @@ var LoadTopContributors = {
 var Raw$10 = {};
 
 var query$10 = (require("@apollo/client").gql`
-  query   {
-    global(id: "1")  {
+  query ($id: String!)  {
+    global(id: $id)  {
       __typename
       id
       totalCollectedOrDueAccurate
@@ -1799,16 +1799,16 @@ function serialize$10(value) {
         };
 }
 
-function serializeVariables$10(param) {
-  
+function serializeVariables$10(inp) {
+  return {
+          id: inp.id
+        };
 }
 
-function makeVariables$10(param) {
-  
-}
-
-function makeDefaultVariables$1(param) {
-  
+function makeVariables$10(id, param) {
+  return {
+          id: id
+        };
 }
 
 var SubTotalRaisedOrDueQuery_inner = {
@@ -1817,8 +1817,7 @@ var SubTotalRaisedOrDueQuery_inner = {
   parse: parse$10,
   serialize: serialize$10,
   serializeVariables: serializeVariables$10,
-  makeVariables: makeVariables$10,
-  makeDefaultVariables: makeDefaultVariables$1
+  makeVariables: makeVariables$10
 };
 
 var include$10 = ApolloClient__React_Hooks_UseQuery.Extend({
@@ -1845,7 +1844,6 @@ var SubTotalRaisedOrDueQuery = {
   serialize: serialize$10,
   serializeVariables: serializeVariables$10,
   makeVariables: makeVariables$10,
-  makeDefaultVariables: makeDefaultVariables$1,
   refetchQueryDescription: SubTotalRaisedOrDueQuery_refetchQueryDescription,
   use: use$10,
   useLazy: SubTotalRaisedOrDueQuery_useLazy,
@@ -2252,9 +2250,12 @@ function useDaysHeld(chain, tokenId) {
               }));
 }
 
-function useTotalCollectedOrDue(param) {
+function useTotalCollectedOrDue(chain) {
   var subTotalRaisedQuery = Curry.app(use$10, [
         undefined,
+        {
+          context: chain
+        },
         undefined,
         undefined,
         undefined,
@@ -2266,8 +2267,9 @@ function useTotalCollectedOrDue(param) {
         undefined,
         undefined,
         undefined,
-        undefined,
-        undefined
+        {
+          id: chain !== 1 ? "1" : "Matic-Global"
+        }
       ]);
   var match = subTotalRaisedQuery.data;
   if (subTotalRaisedQuery.error !== undefined || match === undefined) {
@@ -2304,9 +2306,9 @@ function useCurrentTimestampBn(param) {
   return new BnJs(useCurrentTime(undefined));
 }
 
-function useAmountRaised(param) {
+function useAmountRaised(chain) {
   var currentTimestamp = useCurrentTime(undefined);
-  return Belt_Option.map(useTotalCollectedOrDue(undefined), (function (param) {
+  return Belt_Option.map(useTotalCollectedOrDue(chain), (function (param) {
                 var timeElapsed = new BnJs(currentTimestamp).sub(param.timeLastCollected);
                 var amountRaisedSinceLastCollection = param.totalTokenCostScaledNumeratorAccurate.mul(timeElapsed).div(new BnJs("31536000000000000000"));
                 return param.totalCollectedOrDueAccurate.add(amountRaisedSinceLastCollection);

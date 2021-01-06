@@ -10,15 +10,20 @@ import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as ReactCountup from "react-countup";
 
+function intLength(digits) {
+  return String(digits).length;
+}
+
 function Countup$Basic(Props) {
   var decimals = Props.decimals;
   var prefixStringOpt = Props.prefixString;
   var styleOnCountUpOpt = Props.styleOnCountUp;
   var prefixString = prefixStringOpt !== undefined ? prefixStringOpt : "";
   var styleOnCountUp = styleOnCountUpOpt !== undefined ? styleOnCountUpOpt : "";
+  var initialValue = decimals < 0 ? 0 : decimals;
   var countUpObj = ReactCountup.useCountUp({
-        start: decimals,
-        end: decimals,
+        start: initialValue,
+        end: initialValue,
         delay: 1000,
         duration: 1,
         redraw: false,
@@ -36,12 +41,28 @@ function Countup$Basic(Props) {
         return false;
       });
   var setShowCountupStyles = match[1];
+  var match$1 = React.useState(function () {
+        return [
+                false,
+                0
+              ];
+      });
+  var setChangeInDigitLength = match$1[1];
+  var match$2 = match$1[0];
+  var pevPrefixLength = match$2[1];
   var ref = React.useRef(0);
   React.useEffect((function () {
-          if (ref.current !== decimals) {
+          if (ref.current !== decimals && decimals >= 0) {
             if (ref.current === 0) {
               countUpObj.start();
             } else {
+              var prefixLength = prefixString.length;
+              Curry._1(setChangeInDigitLength, (function (param) {
+                      return [
+                              (String(decimals).length + prefixLength | 0) !== (String(ref.current).length + pevPrefixLength | 0),
+                              prefixLength
+                            ];
+                    }));
               countUpObj.update(decimals);
               Curry._1(setShowCountupStyles, (function (param) {
                       return true;
@@ -60,9 +81,13 @@ function Countup$Basic(Props) {
         startCountup,
         updateCountup
       ]);
-  return React.createElement(React.Fragment, undefined, React.createElement("span", {
-                  className: Cn.on(styleOnCountUp, match[0])
-                }, prefixString, String(countUpObj.countUp)));
+  if (decimals >= 0) {
+    return React.createElement(React.Fragment, undefined, React.createElement("span", {
+                    className: Cn.on(styleOnCountUp, match[0])
+                  }, prefixString, String(match$2[0] ? decimals : countUpObj.countUp)));
+  } else {
+    return null;
+  }
 }
 
 var Basic = {
@@ -85,12 +110,11 @@ function Countup$StringFloat(Props) {
   var decimalLeadingZeros = decimalsString !== undefined ? "." + Belt_Option.getWithDefault(Belt_Option.flatMap(Caml_option.null_to_opt(decimalsString.match(/^0*/g)), (function (matches) {
                 return Belt_Array.get(matches, 0);
               })), "") : ".";
-  var initialStringPart = Belt_Option.flatMap(Belt_Array.get(res, 0), Belt_Int.fromString);
-  return React.createElement(React.Fragment, undefined, initialStringPart !== undefined ? React.createElement(Countup$Basic, {
-                    decimals: initialStringPart,
-                    prefixString: mainLeadingZeros,
-                    styleOnCountUp: styleOnCountUp
-                  }) : null, optDecimals !== undefined ? React.createElement(Countup$Basic, {
+  return React.createElement(React.Fragment, undefined, React.createElement(Countup$Basic, {
+                  decimals: Belt_Option.getWithDefault(Belt_Option.flatMap(Belt_Array.get(res, 0), Belt_Int.fromString), -1),
+                  prefixString: mainLeadingZeros,
+                  styleOnCountUp: styleOnCountUp
+                }), optDecimals !== undefined ? React.createElement(Countup$Basic, {
                     decimals: optDecimals,
                     prefixString: decimalLeadingZeros,
                     styleOnCountUp: styleOnCountUp
@@ -121,6 +145,7 @@ var TotalRaised = {
 };
 
 export {
+  intLength ,
   Basic ,
   StringFloat ,
   TotalRaised ,

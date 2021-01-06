@@ -253,8 +253,8 @@ module LoadTopContributors = %graphql(`
 `)
 
 module SubTotalRaisedOrDueQuery = %graphql(`
-  query {
-    global(id: "1") {
+  query ($id: String!) {
+    global(id: $id) {
       id
       totalCollectedOrDueAccurate @ppxCustom(module: "BigInt")
       timeLastCollected @ppxCustom(module: "BigInt")
@@ -507,8 +507,18 @@ let useDaysHeld = (~chain, tokenId) =>
     MomentRe.diff(MomentRe.momentNow(), moment, #days),
     moment,
   ))
-let useTotalCollectedOrDue = () => {
-  let subTotalRaisedQuery = SubTotalRaisedOrDueQuery.use()
+let useTotalCollectedOrDue = (~chain) => {
+  let subTotalRaisedQuery = SubTotalRaisedOrDueQuery.use(
+    ~context={{context: chain}->createContext},
+    SubTotalRaisedOrDueQuery.makeVariables(
+      ~id=switch chain {
+      | Client.MaticQuery => "Matic-Global"
+      | Client.Neither
+      | Client.MainnetQuery => "1"
+      },
+      (),
+    ),
+  )
   switch subTotalRaisedQuery {
   | {error: Some(_error), _} => None
   | {data: None, _} => None
@@ -528,10 +538,10 @@ let useCurrentTime = () => {
   currentTime
 }
 let useCurrentTimestampBn = () => useCurrentTime()->BN.new_
-let useAmountRaised = () => {
+let useAmountRaised = (~chain) => {
   let currentTimestamp = useCurrentTime()
 
-  useTotalCollectedOrDue()->Option.map(({
+  useTotalCollectedOrDue(~chain)->Option.map(({
     totalCollectedOrDueAccurate,
     timeLastCollected,
     totalTokenCostScaledNumeratorAccurate,
