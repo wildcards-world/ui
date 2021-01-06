@@ -32,8 +32,6 @@ import * as RootProvider from "../harberger-lib/RootProvider.bs.js";
 import * as UserProvider from "../harberger-lib/js/user-provider/UserProvider.bs.js";
 import * as ActionButtons from "./ActionButtons.bs.js";
 import * as UpdateDeposit from "../harberger-lib/components/UpdateDeposit.bs.js";
-import * as ReactTranslate from "../helpers/providers/ReactTranslate.bs.js";
-import * as ReactTranslate$1 from "react-translate";
 import * as UsdPriceProvider from "../harberger-lib/components/UsdPriceProvider.bs.js";
 import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.bs.js";
 import * as LazyThreeBoxUpdate from "./LazyThreeBoxUpdate.bs.js";
@@ -860,19 +858,17 @@ var DefaultLook = {
 };
 
 function Dapp$DefaultLeftPanel(Props) {
-  var translationModeContext = ReactTranslate.useTranslationModeContext(undefined);
-  var translation = ReactTranslate$1.useTranslate(translationModeContext.translationMode);
   return React.createElement(React.Fragment, {
               children: null
             }, React.createElement("h1", {
                   className: Styles.heading
                 }, React.createElement("span", {
                       className: Styles.colorBlue
-                    }, Globals.restr(translation("bluetext"))), React.createElement("br", undefined), Globals.restr(translation("ethereum")), React.createElement("br", undefined), React.createElement("span", {
+                    }, Globals.restr("Always")), React.createElement("br", undefined), Globals.restr("raising funds for"), React.createElement("br", undefined), React.createElement("span", {
                       className: Styles.colorGreen
-                    }, Globals.restr("conservation")), Globals.restr(" " + translation("tokens"))), React.createElement("hr", undefined), React.createElement("h3", {
+                    }, Globals.restr("conservation"))), React.createElement("hr", undefined), React.createElement("h3", {
                   className: Styles.subHeading
-                }, Globals.restr(translation("subHeading"))));
+                }, Globals.restr("Adopt an animal to start giving today.")));
 }
 
 var DefaultLeftPanel = {

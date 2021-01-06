@@ -128,52 +128,63 @@ let make = () => {
       | None => React.null
       }}
     </Rimble.Flex>
-    <Rimble.Flex
-      flexWrap="wrap"
-      justifyContent="space-around"
-      alignItems="stretch"
-      className=Styles.infoBackground
-      px=50>
-      <Rimble.Box mt=70 mb=70 width=[1., 1., 0.2] color="black">
-        <Rimble.Card className=cardStyle>
-          <a href="https://www.ubisoft.com/en-us/company/start-ups/station-f.aspx">
-            <img src=ubisoftLogo alt="ubisoft" className=logoStyle />
-            <Rimble.Text className=centerText>
-              {"Ubisoft's Entrepreneurs Lab, Season 4, participants"->restr}
-            </Rimble.Text>
-          </a>
-        </Rimble.Card>
-      </Rimble.Box>
-      <Rimble.Box mt=70 mb=70 width=[1., 1., 0.2] color="black">
-        <Rimble.Card className=cardStyle>
-          <a href="https://ethcapetown.com/">
-            <img src=ethCapeTownLogo alt="eth-cape-town" className=logoStyle />
-            <Rimble.Text className=centerText>
-              {"Overall winners of EthCapeTown hackathon"->restr}
-            </Rimble.Text>
-          </a>
-        </Rimble.Card>
-      </Rimble.Box>
-      <Rimble.Box mt=70 mb=70 width=[1., 1., 0.2] color="black">
-        <Rimble.Card className=cardStyle>
-          <a href="https://cvvc.com/index.php">
-            <img src=cvLabsLogo alt="cv-labs" className=logoStyle />
-            <Rimble.Text className=centerText>
-              {"CV Labs Incubator Program, Batch 2"->restr}
-            </Rimble.Text>
-          </a>
-        </Rimble.Card>
-      </Rimble.Box>
-      <Rimble.Box mt=70 mb=70 width=[1., 1., 0.2] color="black">
-        <Rimble.Card className=cardStyle>
-          <a href="https://kernel.community/">
-            <img src=kernelLogo alt="Kernel Gitcoin" className=logoStyle />
-            <Rimble.Text className=centerText>
-              {"Gitcoin Kernel genesis block participants"->restr}
-            </Rimble.Text>
-          </a>
-        </Rimble.Card>
-      </Rimble.Box>
-    </Rimble.Flex>
+    <div className=Styles.infoBackground>
+      <Rimble.Flex flexWrap="wrap" justifyContent="space-around" alignItems="stretch" pt=50 px=50>
+        <h1
+          className={
+            open CssJs
+            style(.[
+              unsafe(
+                "text-shadow",
+                "0.25em 0.25em 0.5em #FFFFFF, -0.25em -0.25em 0.5em #FFFFFF, -0.25em 0.25em 0.5em #FFFFFF, 0.25em -0.25em 0.5em #FFFFFF;",
+              ),
+            ])
+          }>
+          {"Corporate partners"->restr}
+        </h1>
+      </Rimble.Flex>
+      <Rimble.Flex flexWrap="wrap" justifyContent="space-around" alignItems="stretch" px=50>
+        <Rimble.Box mt=70 mb=70 width=[1., 1., 0.2] color="black">
+          <Rimble.Card className=cardStyle>
+            <a href="https://www.ubisoft.com/en-us/company/start-ups/station-f.aspx">
+              <img src=ubisoftLogo alt="ubisoft" className=logoStyle />
+              <Rimble.Text className=centerText>
+                {"Ubisoft's Entrepreneurs Lab, Season 4, participants"->restr}
+              </Rimble.Text>
+            </a>
+          </Rimble.Card>
+        </Rimble.Box>
+        <Rimble.Box mt=70 mb=70 width=[1., 1., 0.2] color="black">
+          <Rimble.Card className=cardStyle>
+            <a href="https://ethcapetown.com/">
+              <img src=ethCapeTownLogo alt="eth-cape-town" className=logoStyle />
+              <Rimble.Text className=centerText>
+                {"Overall winners of EthCapeTown hackathon"->restr}
+              </Rimble.Text>
+            </a>
+          </Rimble.Card>
+        </Rimble.Box>
+        <Rimble.Box mt=70 mb=70 width=[1., 1., 0.2] color="black">
+          <Rimble.Card className=cardStyle>
+            <a href="https://cvvc.com/index.php">
+              <img src=cvLabsLogo alt="cv-labs" className=logoStyle />
+              <Rimble.Text className=centerText>
+                {"CV Labs Incubator Program, Batch 2"->restr}
+              </Rimble.Text>
+            </a>
+          </Rimble.Card>
+        </Rimble.Box>
+        <Rimble.Box mt=70 mb=70 width=[1., 1., 0.2] color="black">
+          <Rimble.Card className=cardStyle>
+            <a href="https://kernel.community/">
+              <img src=kernelLogo alt="Kernel Gitcoin" className=logoStyle />
+              <Rimble.Text className=centerText>
+                {"Gitcoin Kernel genesis block participants"->restr}
+              </Rimble.Text>
+            </a>
+          </Rimble.Card>
+        </Rimble.Box>
+      </Rimble.Flex>
+    </div>
   </div>
 }

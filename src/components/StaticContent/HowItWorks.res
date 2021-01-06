@@ -23,12 +23,13 @@ let make = () => {
         <Rimble.Card className=Styles.infoCardStyles>
           <YoutubeVid videoCode="n7GBm6ruVaQ" />
           <br />
-          <Rimble.Box width=[1.]>
+          <Rimble.Flex
+            flexWrap="wrap" justifyContent="space-around" alignItems="stretch" pt=50 px=50>
             <Rimble.Button
               className=Styles.centerItemsMargin onClick={_ => setModalOpen(_ => true)}>
-              {"Click here for a simple text explanation"->restr}
+              {"Read More"->restr}
             </Rimble.Button>
-          </Rimble.Box>
+          </Rimble.Flex>
           <Rimble.Modal isOpen=isModalOpen>
             <Rimble.Card className=infoModalStyle>
               <Rimble.Button.Text

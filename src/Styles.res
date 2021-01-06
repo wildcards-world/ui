@@ -17,7 +17,6 @@ global(.
 global(. "a", [color(hex("303030")), textDecoration(none)])
 global(. "a:hover", [textDecoration(underline)])
 global(. "a:active", [color(hex("303030"))])
-global(. "a:visited", [color(hex("303030"))])
 
 let app = style(.[
   boxSizing(#borderBox),
@@ -278,8 +277,6 @@ let linkPillBox = style(.[
   backgroundColor(rgba(48, 48, 48, #num(0.12))),
 ])
 let linkPillText = style(.[margin(px(10)), marginBottom(px(1)), color(hex("fff"))])
-
-let betaBanner = style(.[position(#absolute), left(#px(0)), top(#px(0)), width(#px(80))])
 
 let loginButton = style(.[paddingLeft(#px(10))])
 

@@ -2,10 +2,8 @@
 
 import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
-import * as Login from "../Login.bs.js";
 import * as React from "react";
 import * as Styles from "../../Styles.bs.js";
-import * as Globals from "../Globals.bs.js";
 import * as RimbleUi from "rimble-ui";
 import * as RootProvider from "../RootProvider.bs.js";
 import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.bs.js";
@@ -72,7 +70,7 @@ function Web3Connect(Props) {
               size: "16px"
             })) : React.createElement(RimbleUi.Button, {
           mainColor: "#72C7D7",
-          children: "Connect",
+          children: "Log In",
           onClick: (function (_e) {
               Curry._1(clickAction, undefined);
               ReasonReactRouter.push("#");
@@ -84,42 +82,11 @@ function Web3Connect(Props) {
             }, web3Button);
 }
 
-function Web3Connect$Modal(Props) {
-  var showLogin = RootProvider.useShowLogin(undefined);
-  var closeLogin = RootProvider.useCloseWeb3Login(undefined);
-  return React.createElement(RimbleUi.Modal, {
-              isOpen: showLogin,
-              children: React.createElement(RimbleUi.Card, {
-                    className: infoModalStyle,
-                    children: null
-                  }, React.createElement(RimbleUi.Button.Text, {
-                        onClick: (function (param) {
-                            return Curry._1(closeLogin, undefined);
-                          }),
-                        icononly: true,
-                        icon: "Close",
-                        color: "moon-gray",
-                        position: "absolute",
-                        top: 0,
-                        right: 0,
-                        m: 3
-                      }), React.createElement(RimbleUi.Heading, {
-                        children: Globals.restr("Login"),
-                        className: Styles.centerText
-                      }), React.createElement(Login.make, {}))
-            });
-}
-
-var Modal = {
-  make: Web3Connect$Modal
-};
-
 var make = Web3Connect;
 
 export {
   infoModalStyle ,
   make ,
-  Modal ,
   
 }
 /* infoModalStyle Not a pure module */

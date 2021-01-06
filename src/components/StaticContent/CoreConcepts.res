@@ -1,11 +1,27 @@
 let gorillaOnVine = "/img/wildcardsimages/gorilla-on-vine.png"
 
+/*
 open Globals
 open Rimble
 
+// //  When (if) you want to add this component back with a muggle toggle add this to the page
+      // crypto: {
+      //   nft: "Non-Fungible Token",
+      //   whatIsANFT:
+      //     " is a way to ensure digital assets are unique and easily tradable on a blockchain.",
+      //   harbergerTax: "Harberger Tax"
+      // },
+      // muggle: {
+      //   nft: "Blockchain Animal",
+      //   whatIsANFT:
+      //     " is a digital animal that is completely unique and easily tradable on a blockchain.",
+      //   harbergerTax: "Monthly Pledge"
+      // }
+
+// TODO: the core concepts should go on its own page, shouldn't need to scroll to get to them
 module CoreConcepts = {
   @react.component
-  @dead("CoreConcepts.+make") let make = () => {
+  let make = () => {
     let usedtranslationModeContext = ReactTranslate.useTranslationModeContext()
     let translation = ReactTranslate.useTranslate(. usedtranslationModeContext.translationMode)
 
@@ -51,3 +67,4 @@ module CoreConcepts = {
     </Box>
   }
 }
+*/

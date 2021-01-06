@@ -1,5 +1,3 @@
-open Globals
-
 let infoModalStyle = {
   open Css
   style(list{padding(rem(3.)), borderRadius(px(5)), width(px(640)), maxWidth(#vw(100.))})
@@ -39,34 +37,9 @@ let make = (~clickAction=() => ()) => {
         ReasonReactRouter.push("#")
         connectWeb3(RootProviderTypes.NoAction)
       }}>
-      {"Connect"->React.string}
+      {"Log In"->React.string}
     </Rimble.Button>
   }
 
   <div className=Styles.loginButton> web3Button </div>
-}
-
-module Modal = {
-  @react.component
-  @dead("Modal.+make") let make = () => {
-    let showLogin = RootProvider.useShowLogin()
-    let closeLogin = RootProvider.useCloseWeb3Login()
-
-    <Rimble.Modal isOpen=showLogin>
-      <Rimble.Card className=infoModalStyle>
-        <Rimble.Button.Text
-          icononly=true
-          icon="Close"
-          color="moon-gray"
-          position="absolute"
-          top=0
-          right=0
-          m=3
-          onClick={_ => closeLogin()}
-        />
-        <Rimble.Heading className=Styles.centerText> {"Login"->restr} </Rimble.Heading>
-        <Login />
-      </Rimble.Card>
-    </Rimble.Modal>
-  }
 }
