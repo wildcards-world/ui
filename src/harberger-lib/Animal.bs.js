@@ -95,7 +95,7 @@ function useTokenStatus(chain, animal) {
           };
   }
   var price = currentPriceWei._0;
-  if (price.gt(new BnJs("0"))) {
+  if (price.gt(CONSTANTS.zeroBn)) {
     return {
             TAG: /* Owned */2,
             _0: price

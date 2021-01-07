@@ -121,16 +121,6 @@ module UserDetails = {
     let isForeclosedMatic = QlHooks.useIsForeclosed(~chain=Client.MaticQuery, userAddress)
     let isAddressCurrentUser = RootProvider.useIsAddressCurrentUser(userAddress)
 
-    @ocaml.doc("
-     * 1 of four scenarios for each user:
-     * User has never owned a wildcard.
-     * User owns a wildcard(s), hasn't owned others in the past.
-     * User owns a wildcard(s), has owned others in the past.
-     * User owned (past tense) wildcards, but they have foreclosed / been bought from them.
-     *
-     * TODO: It might make the code more readable to encode the above for options into an variant.
-     *       It is hard to reason about if we are just checking if the array is null, or not etc.
-     ")
     let currentlyOwnedTokens = Array.concat(
       isForeclosedMainnet
         ? []
@@ -188,26 +178,48 @@ module UserDetails = {
     }
     let etherScanUrl = RootProvider.useEtherscanUrl()
 
-    let monthlyCotributionWei = patronQueryResultMainnet->Option.mapWithDefault(
-      BN.new_("0"),
-      patronMainnet =>
+    let monthlyCotributionWei =
+      patronQueryResultMainnet->Option.mapWithDefault(CONSTANTS.zeroBn, patronMainnet =>
         patronMainnet.patronTokenCostScaledNumerator
-        ->BN.mul(BN.new_("2592000")) // A month with 30 days has 2592000 seconds
-        ->BN.div(
-          // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
-          BN.new_("31536000000000000000"),
-        ),
-    )
-    let monthlyCotributionDai = patronQueryResultMatic->Option.mapWithDefault(
-      BN.new_("0"),
-      patronMainnet =>
+        ->BN.mul(CONSTANTS.secondsInAMonthBn)
+        ->BN.div(CONSTANTS.secondsIn365DaysPrecisionScaled)
+      )
+    let monthlyCotributionDai =
+      patronQueryResultMatic->Option.mapWithDefault(CONSTANTS.zeroBn, patronMainnet =>
         patronMainnet.patronTokenCostScaledNumerator
-        ->BN.mul(BN.new_("2592000")) // A month with 30 days has 2592000 seconds
-        ->BN.div(
-          // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
-          BN.new_("31536000000000000000"),
-        ),
-    )
+        ->BN.mul(CONSTANTS.secondsInAMonthBn)
+        ->BN.div(CONSTANTS.secondsIn365DaysPrecisionScaled)
+      )
+
+    let currentTimestamp = QlHooks.useCurrentTime()
+    let totalContributionWei = patronQueryResultMainnet->Option.mapWithDefault(CONSTANTS.zeroBn, ({
+      patronTokenCostScaledNumerator,
+      totalContributed,
+      lastUpdated,
+      _,
+    }) => {
+      let timeElapsed = BN.new_(currentTimestamp)->BN.sub(lastUpdated)
+
+      TotalContribution.calcTotalContibutedByPatron(
+        ~timeElapsed,
+        ~patronTokenCostScaledNumerator,
+        ~totalContributed,
+      )
+    })
+    let totalContributionDai = patronQueryResultMatic->Option.mapWithDefault(CONSTANTS.zeroBn, ({
+      patronTokenCostScaledNumerator,
+      totalContributed,
+      lastUpdated,
+      _,
+    }) => {
+      let timeElapsed = BN.new_(currentTimestamp)->BN.sub(lastUpdated)
+
+      TotalContribution.calcTotalContibutedByPatron(
+        ~timeElapsed,
+        ~patronTokenCostScaledNumerator,
+        ~totalContributed,
+      )
+    })
 
     // This is the value of tokens that are currently in the users account (IE their spendable balance)
     let (totalLoyaltyTokensOpt, updateFunction) = ContractActions.useUserLoyaltyTokenBalance(
@@ -361,7 +373,9 @@ module UserDetails = {
         </Rimble.Box>
         <Rimble.Box p=1 width=[1., 1., 0.3333]>
           <h2> {"Monthly Contribution"->restr} </h2>
-          <Amounts.AmountRaised mainnetEth=monthlyCotributionWei maticDai=monthlyCotributionDai />
+          <Amounts.Basic mainnetEth=monthlyCotributionWei maticDai=monthlyCotributionDai />
+          <h2> {"Total Contributed"->restr} </h2>
+          <Amounts.AmountRaised mainnetEth=totalContributionWei maticDai=totalContributionDai />
         </Rimble.Box>
         <Rimble.Box p=1 width=[1., 1., 0.3333]>
           {switch currentlyOwnedTokens {

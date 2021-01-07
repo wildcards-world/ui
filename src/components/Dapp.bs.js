@@ -5,7 +5,6 @@ import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Info from "../harberger-lib/components/Info.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as Login from "../harberger-lib/Login.bs.js";
-import BnJs from "bn.js";
 import * as React from "react";
 import * as Animal from "../harberger-lib/Animal.bs.js";
 import * as Router from "../helpers/Router.bs.js";
@@ -35,7 +34,6 @@ import * as UpdateDeposit from "../harberger-lib/components/UpdateDeposit.bs.js"
 import * as UsdPriceProvider from "../harberger-lib/components/UsdPriceProvider.bs.js";
 import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.bs.js";
 import * as LazyThreeBoxUpdate from "./LazyThreeBoxUpdate.bs.js";
-import * as Browser$ReScriptLogger from "rescript-logger/src/Browser.bs.js";
 import ReactCarousel from "@wildcards/react-carousel";
 import ShareSocialMedia from "./components/shareSocialMedia";
 
@@ -135,7 +133,7 @@ function Dapp$AuctionDisplay(Props) {
   var optCurrentUsdEthPrice = UsdPriceProvider.useUsdPrice(undefined);
   var tmp;
   if (chain !== 1) {
-    var match = PriceDisplay.priceWeiToTuple(Belt_Option.getWithDefault(currentPriceWei, new BnJs("0")), optCurrentUsdEthPrice);
+    var match = PriceDisplay.priceWeiToTuple(Belt_Option.getWithDefault(currentPriceWei, CONSTANTS.zeroBn), optCurrentUsdEthPrice);
     tmp = React.createElement(PriceDisplay.PurePriceDisplay.make, {
           priceEth: match[0],
           optPriceUsd: match[1]
@@ -723,19 +721,6 @@ var DetailsViewAnimal = {
 function Dapp$DetailsView(Props) {
   var chain = Props.chain;
   var optionAnimal = Props.optionAnimal;
-  Browser$ReScriptLogger.info1({
-        rootModule: "Dapp",
-        subModulePath: {
-          hd: "DetailsView",
-          tl: /* [] */0
-        },
-        value: "make",
-        fullPath: "Dapp.DetailsView.make",
-        filePath: "/home/jasoons/Documents/code/ui/src/components/Dapp.res"
-      }, "optionAnimal", [
-        "a",
-        optionAnimal
-      ]);
   if (optionAnimal !== undefined) {
     return React.createElement(Dapp$DetailsViewAnimal, {
                 chain: chain,
@@ -826,19 +811,6 @@ function Dapp$DefaultLook(Props) {
                 }));
         break;
     case 2 :
-        Browser$ReScriptLogger.info1({
-              rootModule: "Dapp",
-              subModulePath: {
-                hd: "DefaultLook",
-                tl: /* [] */0
-              },
-              value: "make",
-              fullPath: "Dapp.DefaultLook.make",
-              filePath: "/home/jasoons/Documents/code/ui/src/components/Dapp.res"
-            }, "the animalString", [
-              "a",
-              animalStr
-            ]);
         var optionAnimal = TokenId.make(animalStr);
         var chain = Belt_Option.mapWithDefault(optionAnimal, /* MainnetQuery */2, Animal.getChainIdFromAnimalId);
         tmp = React.createElement(Dapp$DetailsView, {

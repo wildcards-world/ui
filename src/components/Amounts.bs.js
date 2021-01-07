@@ -139,10 +139,53 @@ var AmountRaised = {
   make: Amounts$AmountRaised
 };
 
+function Amounts$Basic(Props) {
+  var populateElementOpt = Props.populateElement;
+  var mainnetEth = Props.mainnetEth;
+  var maticDai = Props.maticDai;
+  var populateElement = populateElementOpt !== undefined ? populateElementOpt : (function (amountText, optCommentTextComponent) {
+        return React.createElement("p", undefined, amountText, " USD", optCommentTextComponent !== undefined ? React.createElement(React.Fragment, undefined, React.createElement("br", undefined), React.createElement("small", undefined, Caml_option.valFromOption(optCommentTextComponent))) : null);
+      });
+  var currentUsdEthPrice = UsdPriceProvider.useUsdPrice(undefined);
+  var usdRaisedFloat = Belt_Option.mapWithDefault(currentUsdEthPrice, 0, (function (usdEthRate) {
+          return Eth.getFloat(mainnetEth, {
+                      TAG: /* Usd */1,
+                      _0: usdEthRate,
+                      _1: 2
+                    });
+        })) + Eth.getFloat(maticDai, {
+        TAG: /* Eth */0,
+        _0: "ether"
+      });
+  var usdRaisedStr = usdRaisedFloat.toFixed(2);
+  var match = Web3Utils.fromWeiBNToEthPrecision(mainnetEth, 4);
+  var match$1 = Web3Utils.fromWeiBNToEthPrecision(maticDai, 2);
+  var optExplainerString;
+  var exit = 0;
+  if (match === "0" && match$1 === "0") {
+    optExplainerString = undefined;
+  } else {
+    exit = 1;
+  }
+  if (exit === 1) {
+    optExplainerString = match$1 === "0" ? "(" + match + " ETH)" : (
+        match === "0" ? undefined : "(" + match + " ETH + " + match$1 + "DAI)"
+      );
+  }
+  return React.createElement(React.Fragment, undefined, Curry._2(populateElement, usdRaisedStr, Belt_Option.map(optExplainerString, (function (prim) {
+                        return prim;
+                      }))));
+}
+
+var Basic = {
+  make: Amounts$Basic
+};
+
 export {
   stringToArray ,
   toDollarCentsFixedNoRounding ,
   AmountRaised ,
+  Basic ,
   
 }
 /* Css Not a pure module */

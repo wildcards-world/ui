@@ -11,6 +11,20 @@ module LoadMostContributed = %graphql(`
   }
 `)
 
+// NOTE: ALL OF THESE LEADER BOARDS ARE MAINNET ONLY AT THE MOMENT!!
+
+let calcTotalContibutedByPatron = (
+  ~timeElapsed,
+  ~patronTokenCostScaledNumerator,
+  ~totalContributed,
+) => {
+  let amountContributedSinceLastUpdate =
+    patronTokenCostScaledNumerator
+    ->BN.mul(timeElapsed)
+    ->BN.div(CONSTANTS.secondsIn365DaysPrecisionScaled)
+
+  totalContributed->BN.add(amountContributedSinceLastUpdate)
+}
 let useLoadMostContributedData = () => {
   let currentTimestamp = QlHooks.useCurrentTime()
 
@@ -19,20 +33,16 @@ let useLoadMostContributedData = () => {
   | {error: Some(_error), _} => None
   | {data: Some({patrons}), _} =>
     patrons
-    ->Array.map(patron => {
-      let timeElapsed = BN.new_(currentTimestamp)->BN.sub(patron.lastUpdated)
-
-      let amountContributedSinceLastUpdate =
-        patron.patronTokenCostScaledNumerator
-        ->BN.mul(timeElapsed) // A month with 30 days has 2592000 seconds
-        ->BN.div(
-          // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
-          BN.new_("31536000000000000000"),
-        )
-
-      let totalContributedWei = patron.totalContributed->BN.add(amountContributedSinceLastUpdate)
-
-      (patron.id, totalContributedWei)
+    ->Array.map(({patronTokenCostScaledNumerator, id, totalContributed, lastUpdated, _}) => {
+      let timeElapsed = BN.new_(currentTimestamp)->BN.sub(lastUpdated)
+      (
+        id,
+        calcTotalContibutedByPatron(
+          ~timeElapsed,
+          ~patronTokenCostScaledNumerator,
+          ~totalContributed,
+        ),
+      )
     })
     ->Js.Array2.sortInPlaceWith(((_, first), (_, second)) => second->BN.cmp(first))
     ->Some
@@ -42,7 +52,6 @@ let useLoadMostContributedData = () => {
 
 open Css
 
-@dead("+flameImg") let flameImg = "/img/streak-flame.png"
 let goldTrophyImg = "/img/icons/gold-trophy.png"
 let silverTrophyImg = "/img/icons/silver-trophy.png"
 let bronzeTrophyImg = "/img/icons/bronze-trophy.png"

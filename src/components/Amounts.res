@@ -119,3 +119,49 @@ module AmountRaised = {
     </>
   }
 }
+
+module Basic = {
+  @react.component
+  let make = (
+    ~populateElement=(~amountText, ~optCommentTextComponent) => {
+      <p>
+        {amountText}
+        {" USD"->React.string}
+        {switch optCommentTextComponent {
+        | Some(explainerString) => <> <br /> <small> {explainerString} </small> </>
+        | None => React.null
+        }}
+      </p>
+    },
+    ~mainnetEth,
+    ~maticDai,
+  ) => {
+    let currentUsdEthPrice = UsdPriceProvider.useUsdPrice()
+
+    let usdRaisedFloat =
+      currentUsdEthPrice->Option.mapWithDefault(0., usdEthRate =>
+        mainnetEth->Eth.getFloat(Eth.Usd(usdEthRate, 2))
+      ) +. maticDai->Eth.getFloat(Eth.Eth(#ether))
+
+    let usdRaisedStr = usdRaisedFloat->Js.Float.toFixedWithPrecision(~digits=2)
+
+    let optExplainerString = switch (
+      mainnetEth->Web3Utils.fromWeiBNToEthPrecision(~digits=4),
+      maticDai->Web3Utils.fromWeiBNToEthPrecision(~digits=2),
+    ) {
+    | ("0", "0") => None
+    | (ethAmount, "0") => Some("(" ++ ethAmount ++ " ETH)")
+    | ("0", _) => None
+    | (ethAmount, daiAmount) => Some("(" ++ ethAmount ++ " ETH + " ++ daiAmount ++ "DAI)")
+    }
+
+    <>
+      {populateElement(
+        ~amountText={
+          usdRaisedStr->React.string
+        },
+        ~optCommentTextComponent=optExplainerString->Option.map(React.string),
+      )}
+    </>
+  }
+}

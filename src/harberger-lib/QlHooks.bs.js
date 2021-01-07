@@ -9,6 +9,7 @@ import * as Moment from "moment";
 import * as Js_dict from "bs-platform/lib/es6/js_dict.js";
 import * as Js_math from "bs-platform/lib/es6/js_math.js";
 import * as TokenId from "./TokenId.bs.js";
+import * as CONSTANTS from "../CONSTANTS.bs.js";
 import * as Web3Utils from "./Web3Utils.bs.js";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
@@ -1186,6 +1187,7 @@ var query$6 = (require("@apollo/client").gql`
       lastUpdated
       totalLoyaltyTokens
       totalLoyaltyTokensIncludingUnRedeemed
+      totalContributed
     }
   }
 `);
@@ -1219,7 +1221,8 @@ function parse$6(value) {
       address: GqlConverters.GqlAddress.parse(value$1.address),
       lastUpdated: GqlConverters.$$BigInt.parse(value$1.lastUpdated),
       totalLoyaltyTokens: GqlConverters.$$BigInt.parse(value$1.totalLoyaltyTokens),
-      totalLoyaltyTokensIncludingUnRedeemed: GqlConverters.$$BigInt.parse(value$1.totalLoyaltyTokensIncludingUnRedeemed)
+      totalLoyaltyTokensIncludingUnRedeemed: GqlConverters.$$BigInt.parse(value$1.totalLoyaltyTokensIncludingUnRedeemed),
+      totalContributed: GqlConverters.$$BigInt.parse(value$1.totalContributed)
     };
   }
   return {
@@ -1231,22 +1234,24 @@ function serialize$6(value) {
   var value$1 = value.patron;
   var patron;
   if (value$1 !== undefined) {
-    var value$2 = value$1.totalLoyaltyTokensIncludingUnRedeemed;
+    var value$2 = value$1.totalContributed;
     var value$3 = GqlConverters.$$BigInt.serialize(value$2);
-    var value$4 = value$1.totalLoyaltyTokens;
+    var value$4 = value$1.totalLoyaltyTokensIncludingUnRedeemed;
     var value$5 = GqlConverters.$$BigInt.serialize(value$4);
-    var value$6 = value$1.lastUpdated;
+    var value$6 = value$1.totalLoyaltyTokens;
     var value$7 = GqlConverters.$$BigInt.serialize(value$6);
-    var value$8 = value$1.address;
-    var value$9 = GqlConverters.GqlAddress.serialize(value$8);
-    var value$10 = value$1.foreclosureTime;
-    var value$11 = GqlConverters.$$BigInt.serialize(value$10);
-    var value$12 = value$1.patronTokenCostScaledNumerator;
+    var value$8 = value$1.lastUpdated;
+    var value$9 = GqlConverters.$$BigInt.serialize(value$8);
+    var value$10 = value$1.address;
+    var value$11 = GqlConverters.GqlAddress.serialize(value$10);
+    var value$12 = value$1.foreclosureTime;
     var value$13 = GqlConverters.$$BigInt.serialize(value$12);
-    var value$14 = value$1.availableDeposit;
-    var value$15 = GqlConverters.Price.serialize(value$14);
-    var value$16 = value$1.tokens;
-    var tokens = value$16.map(function (value) {
+    var value$14 = value$1.patronTokenCostScaledNumerator;
+    var value$15 = GqlConverters.$$BigInt.serialize(value$14);
+    var value$16 = value$1.availableDeposit;
+    var value$17 = GqlConverters.Price.serialize(value$16);
+    var value$18 = value$1.tokens;
+    var tokens = value$18.map(function (value) {
           var value$1 = value.tokenId;
           var value$2 = value.__typename;
           return {
@@ -1254,8 +1259,8 @@ function serialize$6(value) {
                   tokenId: value$1
                 };
         });
-    var value$17 = value$1.previouslyOwnedTokens;
-    var previouslyOwnedTokens = value$17.map(function (value) {
+    var value$19 = value$1.previouslyOwnedTokens;
+    var previouslyOwnedTokens = value$19.map(function (value) {
           var value$1 = value.tokenId;
           var value$2 = value.__typename;
           return {
@@ -1263,20 +1268,21 @@ function serialize$6(value) {
                   tokenId: value$1
                 };
         });
-    var value$18 = value$1.id;
-    var value$19 = value$1.__typename;
+    var value$20 = value$1.id;
+    var value$21 = value$1.__typename;
     patron = {
-      __typename: value$19,
-      id: value$18,
+      __typename: value$21,
+      id: value$20,
       previouslyOwnedTokens: previouslyOwnedTokens,
       tokens: tokens,
-      availableDeposit: value$15,
-      patronTokenCostScaledNumerator: value$13,
-      foreclosureTime: value$11,
-      address: value$9,
-      lastUpdated: value$7,
-      totalLoyaltyTokens: value$5,
-      totalLoyaltyTokensIncludingUnRedeemed: value$3
+      availableDeposit: value$17,
+      patronTokenCostScaledNumerator: value$15,
+      foreclosureTime: value$13,
+      address: value$11,
+      lastUpdated: value$9,
+      totalLoyaltyTokens: value$7,
+      totalLoyaltyTokensIncludingUnRedeemed: value$5,
+      totalContributed: value$3
     };
   } else {
     patron = null;
@@ -2149,7 +2155,7 @@ function useLoadTopContributorsData(numberOfLeaders) {
   var topContributors = useLoadTopContributors(numberOfLeaders);
   if (topContributors !== undefined) {
     return Belt_Array.map(topContributors, (function (patron) {
-                  var monthlyContribution = Web3Utils.fromWeiBNToEthPrecision(patron.patronTokenCostScaledNumerator.mul(new BnJs("2592000")).div(new BnJs("31536000000000000000")), 4);
+                  var monthlyContribution = Web3Utils.fromWeiBNToEthPrecision(patron.patronTokenCostScaledNumerator.mul(CONSTANTS.secondsInAMonthBn).div(CONSTANTS.secondsIn365DaysPrecisionScaled), 4);
                   return [
                           patron.id,
                           monthlyContribution
@@ -2310,7 +2316,7 @@ function useAmountRaised(chain) {
   var currentTimestamp = useCurrentTime(undefined);
   return Belt_Option.map(useTotalCollectedOrDue(chain), (function (param) {
                 var timeElapsed = new BnJs(currentTimestamp).sub(param.timeLastCollected);
-                var amountRaisedSinceLastCollection = param.totalTokenCostScaledNumeratorAccurate.mul(timeElapsed).div(new BnJs("31536000000000000000"));
+                var amountRaisedSinceLastCollection = param.totalTokenCostScaledNumeratorAccurate.mul(timeElapsed).div(CONSTANTS.secondsIn365DaysPrecisionScaled);
                 return param.totalCollectedOrDueAccurate.add(amountRaisedSinceLastCollection);
               }));
 }
@@ -2386,13 +2392,13 @@ function useAmountRaisedToken(chain, animal) {
     return ;
   }
   var timeElapsed = new BnJs(currentTimestamp).sub(match[1]);
-  var amountRaisedSinceLastCollection = match[2].mul(timeElapsed).div(new BnJs("31536000000000000000"));
+  var amountRaisedSinceLastCollection = match[2].mul(timeElapsed).div(CONSTANTS.secondsIn365DaysPrecisionScaled);
   return Caml_option.some(match[0].add(amountRaisedSinceLastCollection));
 }
 
 function calculateTotalRaised(currentTimestamp, param) {
   var timeElapsed = new BnJs(currentTimestamp).sub(param[1]);
-  var amountRaisedSinceLastCollection = param[2].mul(timeElapsed).div(new BnJs("31536000000000000000"));
+  var amountRaisedSinceLastCollection = param[2].mul(timeElapsed).div(CONSTANTS.secondsIn365DaysPrecisionScaled);
   return param[0].add(amountRaisedSinceLastCollection);
 }
 
@@ -2403,14 +2409,14 @@ function useTotalRaisedAnimalGroup(animals) {
               return "matic" + id;
             })));
   return [
-          detailsMainnet !== undefined ? Caml_option.some(Belt_Array.reduce(detailsMainnet.wildcards, new BnJs("0"), (function (acc, animalDetails) {
+          detailsMainnet !== undefined ? Caml_option.some(Belt_Array.reduce(detailsMainnet.wildcards, CONSTANTS.zeroBn, (function (acc, animalDetails) {
                         return calculateTotalRaised(currentTimestamp, [
                                       animalDetails.totalCollected,
                                       animalDetails.timeCollected,
                                       animalDetails.patronageNumeratorPriceScaled
                                     ]).add(acc);
                       }))) : undefined,
-          detailsMatic !== undefined ? Caml_option.some(Belt_Array.reduce(detailsMatic.wildcards, new BnJs("0"), (function (acc, animalDetails) {
+          detailsMatic !== undefined ? Caml_option.some(Belt_Array.reduce(detailsMatic.wildcards, CONSTANTS.zeroBn, (function (acc, animalDetails) {
                         return calculateTotalRaised(currentTimestamp, [
                                       animalDetails.totalCollected,
                                       animalDetails.timeCollected,
@@ -2462,7 +2468,7 @@ function useRemainingDepositEth(chain, patron) {
     return ;
   }
   var timeElapsed = new BnJs(currentTimestamp).sub(match.lastUpdated);
-  var amountRaisedSinceLastCollection = match.patronTokenCostScaledNumerator.mul(timeElapsed).div(new BnJs("31536000000000000000"));
+  var amountRaisedSinceLastCollection = match.patronTokenCostScaledNumerator.mul(timeElapsed).div(CONSTANTS.secondsIn365DaysPrecisionScaled);
   return Caml_option.some(match.availableDeposit.sub(amountRaisedSinceLastCollection));
 }
 
@@ -2508,7 +2514,7 @@ function usePrice(chain, tokenId) {
 function useIsForeclosed(chain, currentPatron) {
   var optAvailableDeposit = useRemainingDepositEth(chain, currentPatron);
   return Belt_Option.mapWithDefault(optAvailableDeposit, true, (function (availableDeposit) {
-                return !availableDeposit.gt(new BnJs("0"));
+                return !availableDeposit.gt(CONSTANTS.zeroBn);
               }));
 }
 

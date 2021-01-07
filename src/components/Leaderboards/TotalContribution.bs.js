@@ -6,6 +6,7 @@ import BnJs from "bn.js";
 import * as React from "react";
 import * as Helper from "../../harberger-lib/Helper.bs.js";
 import * as QlHooks from "../../harberger-lib/QlHooks.bs.js";
+import * as CONSTANTS from "../../CONSTANTS.bs.js";
 import * as Web3Utils from "../../harberger-lib/Web3Utils.bs.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
@@ -121,6 +122,11 @@ var LoadMostContributed = {
   useLazyWithVariables: LoadMostContributed_useLazyWithVariables
 };
 
+function calcTotalContibutedByPatron(timeElapsed, patronTokenCostScaledNumerator, totalContributed) {
+  var amountContributedSinceLastUpdate = patronTokenCostScaledNumerator.mul(timeElapsed).div(CONSTANTS.secondsIn365DaysPrecisionScaled);
+  return totalContributed.add(amountContributedSinceLastUpdate);
+}
+
 function useLoadMostContributedData(param) {
   var currentTimestamp = QlHooks.useCurrentTime(undefined);
   var match = Curry.app(use, [
@@ -143,13 +149,11 @@ function useLoadMostContributedData(param) {
   if (match.loading || match.error !== undefined || match$1 === undefined) {
     return ;
   } else {
-    return Belt_Array.map(match$1.patrons, (function (patron) {
-                    var timeElapsed = new BnJs(currentTimestamp).sub(patron.lastUpdated);
-                    var amountContributedSinceLastUpdate = patron.patronTokenCostScaledNumerator.mul(timeElapsed).div(new BnJs("31536000000000000000"));
-                    var totalContributedWei = patron.totalContributed.add(amountContributedSinceLastUpdate);
+    return Belt_Array.map(match$1.patrons, (function (param) {
+                    var timeElapsed = new BnJs(currentTimestamp).sub(param.lastUpdated);
                     return [
-                            patron.id,
-                            totalContributedWei
+                            param.id,
+                            calcTotalContibutedByPatron(timeElapsed, param.patronTokenCostScaledNumerator, param.totalContributed)
                           ];
                   })).sort(function (param, param$1) {
                 return param$1[1].cmp(param[1]);
@@ -385,14 +389,12 @@ function TotalContribution(Props) {
                     }, React.createElement("tr", undefined, React.createElement("th", undefined, "Rank"), React.createElement("th", undefined, "Guardian"), React.createElement("th", undefined, "Total Contribution"))), React.createElement("tbody", undefined, tmp)));
 }
 
-var flameImg = "/img/streak-flame.png";
-
 var make = TotalContribution;
 
 export {
   LoadMostContributed ,
+  calcTotalContibutedByPatron ,
   useLoadMostContributedData ,
-  flameImg ,
   goldTrophyImg ,
   silverTrophyImg ,
   bronzeTrophyImg ,
