@@ -26,7 +26,7 @@ function Amounts$AmountRaised(Props) {
   var maticDai = Props.maticDai;
   var populateElement = populateElementOpt !== undefined ? populateElementOpt : (function (bigTextComponent, smallTextComponent, optCommentTextComponent) {
         return React.createElement("p", undefined, bigTextComponent, React.createElement("span", {
-                        className: CssJs.style([CssJs.fontSize(CssJs.em(0.75))])
+                        className: CssJs.style([CssJs.fontSize(CssJs.em(0.5))])
                       }, smallTextComponent), " USD", optCommentTextComponent !== undefined ? React.createElement(React.Fragment, undefined, React.createElement("br", undefined), React.createElement("small", undefined, Caml_option.valFromOption(optCommentTextComponent))) : null);
       });
   var currentUsdEthPrice = UsdPriceProvider.useUsdPrice(undefined);

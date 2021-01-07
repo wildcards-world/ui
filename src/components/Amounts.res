@@ -15,7 +15,7 @@ module AmountRaised = {
         <span
           className={
             open CssJs
-            style(.[fontSize(em(0.75))])
+            style(.[fontSize(em(0.5))])
           }>
           {smallTextComponent}
         </span>

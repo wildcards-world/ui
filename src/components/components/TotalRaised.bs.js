@@ -39,7 +39,7 @@ function TotalRaised(Props) {
                             return React.createElement(React.Fragment, undefined, React.createElement("span", {
                                             className: Styles.totalRaisedText(4)
                                           }, bigTextComponent, React.createElement("span", {
-                                                className: Styles.totalRaisedText(0.75)
+                                                className: Styles.totalRaisedText(0.5)
                                               }, smallTextComponent), React.createElement("strong", undefined, " USD")), React.createElement("br", undefined), optCommentTextComponent !== undefined ? React.createElement(React.Fragment, {
                                               children: React.createElement("span", {
                                                     className: Styles.totalRaisedText(2)

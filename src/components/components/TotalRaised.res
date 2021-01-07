@@ -32,7 +32,7 @@ let make = () => {
             <>
               <span className={Styles.totalRaisedText(4.)}>
                 {bigTextComponent}
-                <span className={Styles.totalRaisedText(0.75)}> {smallTextComponent} </span>
+                <span className={Styles.totalRaisedText(0.5)}> {smallTextComponent} </span>
                 <strong> {React.string(" USD")} </strong>
               </span>
               <br />
