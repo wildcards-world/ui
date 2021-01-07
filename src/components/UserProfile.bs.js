@@ -357,7 +357,7 @@ function UserProfile$UserDetails(Props) {
                         1,
                         0.3333
                       ]
-                    }, React.createElement("h2", undefined, Globals.restr("Monthly Contribution")), React.createElement(Amounts.AmountRaised.make, {
+                    }, React.createElement("h2", undefined, Globals.restr("Monthly Contribution")), React.createElement(Amounts.Basic.make, {
                           mainnetEth: monthlyCotributionWei,
                           maticDai: monthlyCotributionDai
                         }), React.createElement("h2", undefined, Globals.restr("Total Contributed")), React.createElement(Amounts.AmountRaised.make, {

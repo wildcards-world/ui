@@ -373,7 +373,7 @@ module UserDetails = {
         </Rimble.Box>
         <Rimble.Box p=1 width=[1., 1., 0.3333]>
           <h2> {"Monthly Contribution"->restr} </h2>
-          <Amounts.AmountRaised mainnetEth=monthlyCotributionWei maticDai=monthlyCotributionDai />
+          <Amounts.Basic mainnetEth=monthlyCotributionWei maticDai=monthlyCotributionDai />
           <h2> {"Total Contributed"->restr} </h2>
           <Amounts.AmountRaised mainnetEth=totalContributionWei maticDai=totalContributionDai />
         </Rimble.Box>
