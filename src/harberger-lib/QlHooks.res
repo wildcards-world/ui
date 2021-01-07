@@ -199,6 +199,7 @@ module LoadPatron = %graphql(`
       lastUpdated @ppxCustom(module: "BigInt")
       totalLoyaltyTokens @ppxCustom(module: "BigInt")
       totalLoyaltyTokensIncludingUnRedeemed @ppxCustom(module: "BigInt")
+      totalContributed @ppxCustom(module: "BigInt")
     }
   }
 `)
@@ -434,10 +435,10 @@ let useLoadTopContributorsData = numberOfLeaders =>
     topContributors
     ->Array.map(patron => {
       let monthlyContribution = patron.patronTokenCostScaledNumerator
-      ->BN.mul(BN.new_("2592000")) // A month with 30 days has 2592000 seconds
+      ->BN.mul(CONSTANTS.secondsInAMonthBn) // A month with 30 days has 2592000 seconds
       ->BN.div(
         // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
-        BN.new_("31536000000000000000"),
+        CONSTANTS.secondsIn365DaysPrecisionScaled,
       )
       ->Web3Utils.fromWeiBNToEthPrecision(~digits=4)
       (patron.id, monthlyContribution)
@@ -554,7 +555,7 @@ let useAmountRaised = (~chain) => {
       ->BN.mul(timeElapsed)
       ->BN.div(
         // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
-        BN.new_("31536000000000000000"),
+        CONSTANTS.secondsIn365DaysPrecisionScaled,
       )
     totalCollectedOrDueAccurate->BN.add(amountRaisedSinceLastCollection)
   })
@@ -634,7 +635,7 @@ let useAmountRaisedToken: (~chain: Client.context, TokenId.t) => option<Eth.t> =
       ->BN.mul(timeElapsed)
       ->BN.div(
         // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
-        BN.new_("31536000000000000000"),
+        CONSTANTS.secondsIn365DaysPrecisionScaled,
       )
 
     Some(amountCollectedOrDue->BN.add(amountRaisedSinceLastCollection))
@@ -652,7 +653,7 @@ let calculateTotalRaised = (
     ->BN.mul(timeElapsed)
     ->BN.div(
       // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
-      BN.new_("31536000000000000000"),
+      CONSTANTS.secondsIn365DaysPrecisionScaled,
     )
 
   amountCollectedOrDue->BN.add(amountRaisedSinceLastCollection)
@@ -670,7 +671,7 @@ let useTotalRaisedAnimalGroup: array<TokenId.t> => (option<Eth.t>, option<Eth.t>
     switch detailsMainnet {
     | Some(detailsArray) =>
       Some(
-        detailsArray.wildcards->Array.reduce(BN.new_("0"), (acc, animalDetails) =>
+        detailsArray.wildcards->Array.reduce(CONSTANTS.zeroBn, (acc, animalDetails) =>
           BN.add(
             calculateTotalRaised(
               currentTimestamp,
@@ -689,7 +690,7 @@ let useTotalRaisedAnimalGroup: array<TokenId.t> => (option<Eth.t>, option<Eth.t>
     switch detailsMatic {
     | Some(detailsArray) =>
       Some(
-        detailsArray.wildcards->Array.reduce(BN.new_("0"), (acc, animalDetails) =>
+        detailsArray.wildcards->Array.reduce(CONSTANTS.zeroBn, (acc, animalDetails) =>
           BN.add(
             calculateTotalRaised(
               currentTimestamp,
@@ -781,7 +782,7 @@ let useRemainingDepositEth: (~chain: Client.context, string) => option<Eth.t> = 
       ->BN.mul(timeElapsed)
       ->BN.div(
         // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
-        BN.new_("31536000000000000000"),
+        CONSTANTS.secondsIn365DaysPrecisionScaled,
       )
     Some(availableDeposit->BN.sub(amountRaisedSinceLastCollection))
   | None => None
@@ -816,7 +817,7 @@ let useIsForeclosed = (~chain, currentPatron) => {
   let optAvailableDeposit = useRemainingDepositEth(~chain, currentPatron)
 
   optAvailableDeposit->Option.mapWithDefault(true, availableDeposit =>
-    !(availableDeposit->BN.gt(BN.new_("0")))
+    !(availableDeposit->BN.gt(CONSTANTS.zeroBn))
   )
 }
 

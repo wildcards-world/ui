@@ -80,7 +80,7 @@ let useTokenStatus: (~chain: Client.context, TokenId.t) => tokenStatus = (~chain
     } else {
       switch currentPriceWei {
       | Price(price) =>
-        if price->BN.gt(BN.new_("0")) {
+        if price->BN.gt(CONSTANTS.zeroBn) {
           Owned(price)
         } else {
           Launched(launchTime->BN.toNumber->MomentRe.momentWithUnix)
@@ -164,5 +164,6 @@ let getChainIdFromAnimalId = animalId =>
   | _ => Client.MaticQuery
   }
 
-@dead("+useChainIdFromAnimalId") let useChainIdFromAnimalId = animalId =>
+@dead("+useChainIdFromAnimalId")
+let useChainIdFromAnimalId = animalId =>
   React.useMemo1(() => animalId->getChainIdFromAnimalId, [animalId])

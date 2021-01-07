@@ -16,6 +16,7 @@ import * as Js_json from "bs-platform/lib/es6/js_json.js";
 import * as QlHooks from "../harberger-lib/QlHooks.bs.js";
 import * as TokenId from "../harberger-lib/TokenId.bs.js";
 import * as Validate from "./Validate.bs.js";
+import * as CONSTANTS from "../CONSTANTS.bs.js";
 import * as Web3Utils from "../harberger-lib/Web3Utils.bs.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
@@ -27,6 +28,7 @@ import * as ActionButtons from "./ActionButtons.bs.js";
 import * as UpdateDeposit from "../harberger-lib/components/UpdateDeposit.bs.js";
 import * as Belt_SetString from "bs-platform/lib/es6/belt_SetString.js";
 import * as ContractActions from "../harberger-lib/eth/ContractActions.bs.js";
+import * as TotalContribution from "./Leaderboards/TotalContribution.bs.js";
 import * as LazyThreeBoxUpdate from "./LazyThreeBoxUpdate.bs.js";
 
 var centreAlignOnMobile = Curry._1(Css.style, {
@@ -191,11 +193,20 @@ function UserProfile$UserDetails(Props) {
           return a.username;
         }));
   var etherScanUrl = RootProvider.useEtherscanUrl(undefined);
-  var monthlyCotributionWei = Belt_Option.mapWithDefault(patronQueryResultMainnet, new BnJs("0"), (function (patronMainnet) {
-          return patronMainnet.patronTokenCostScaledNumerator.mul(new BnJs("2592000")).div(new BnJs("31536000000000000000"));
+  var monthlyCotributionWei = Belt_Option.mapWithDefault(patronQueryResultMainnet, CONSTANTS.zeroBn, (function (patronMainnet) {
+          return patronMainnet.patronTokenCostScaledNumerator.mul(CONSTANTS.secondsInAMonthBn).div(CONSTANTS.secondsIn365DaysPrecisionScaled);
         }));
-  var monthlyCotributionDai = Belt_Option.mapWithDefault(patronQueryResultMatic, new BnJs("0"), (function (patronMainnet) {
-          return patronMainnet.patronTokenCostScaledNumerator.mul(new BnJs("2592000")).div(new BnJs("31536000000000000000"));
+  var monthlyCotributionDai = Belt_Option.mapWithDefault(patronQueryResultMatic, CONSTANTS.zeroBn, (function (patronMainnet) {
+          return patronMainnet.patronTokenCostScaledNumerator.mul(CONSTANTS.secondsInAMonthBn).div(CONSTANTS.secondsIn365DaysPrecisionScaled);
+        }));
+  var currentTimestamp = QlHooks.useCurrentTime(undefined);
+  var totalContributionWei = Belt_Option.mapWithDefault(patronQueryResultMainnet, CONSTANTS.zeroBn, (function (param) {
+          var timeElapsed = new BnJs(currentTimestamp).sub(param.lastUpdated);
+          return TotalContribution.calcTotalContibutedByPatron(timeElapsed, param.patronTokenCostScaledNumerator, param.totalContributed);
+        }));
+  var totalContributionDai = Belt_Option.mapWithDefault(patronQueryResultMatic, CONSTANTS.zeroBn, (function (param) {
+          var timeElapsed = new BnJs(currentTimestamp).sub(param.lastUpdated);
+          return TotalContribution.calcTotalContibutedByPatron(timeElapsed, param.patronTokenCostScaledNumerator, param.totalContributed);
         }));
   var match = ContractActions.useUserLoyaltyTokenBalance(userAddress);
   var totalLoyaltyTokensAvailableAndClaimedOpt = QlHooks.useTotalLoyaltyToken(/* MainnetQuery */2, userAddress);
@@ -349,6 +360,9 @@ function UserProfile$UserDetails(Props) {
                     }, React.createElement("h2", undefined, Globals.restr("Monthly Contribution")), React.createElement(Amounts.AmountRaised.make, {
                           mainnetEth: monthlyCotributionWei,
                           maticDai: monthlyCotributionDai
+                        }), React.createElement("h2", undefined, Globals.restr("Total Contributed")), React.createElement(Amounts.AmountRaised.make, {
+                          mainnetEth: totalContributionWei,
+                          maticDai: totalContributionDai
                         })), React.createElement(RimbleUi.Box, {
                       p: 1,
                       children: null,

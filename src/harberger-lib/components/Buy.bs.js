@@ -37,7 +37,7 @@ function calcPricePerSecond(price, numerator, denominator) {
 function calculateDepositDuration(deposit, price, numerator, denominator) {
   var depositBn = new BnJs(deposit);
   var pricePerSecond = calcPricePerSecond(price, numerator, denominator);
-  return Accounting.defaultZeroI(Belt_Int.fromString(depositBn.div(pricePerSecond.gt(new BnJs("0")) ? pricePerSecond : new BnJs("1")).toString()));
+  return Accounting.defaultZeroI(Belt_Int.fromString(depositBn.div(pricePerSecond.gt(CONSTANTS.zeroBn) ? pricePerSecond : new BnJs("1")).toString()));
 }
 
 function calcRequiredDepositForTime(time, price, numerator, denominator) {
@@ -55,7 +55,7 @@ function Buy$Buy(Props) {
   var buyFunc = match[0];
   var match$1 = ContractActions.useBuyAuction(chain, tokenId, web3Context.library, web3Context.account, Belt_Option.getWithDefault(web3Context.chainId, 1));
   var buyFuncAuction = match$1[0];
-  var userBalance = Belt_Option.mapWithDefault(RootProvider.useEthBalance(undefined), new BnJs("0"), (function (a) {
+  var userBalance = Belt_Option.mapWithDefault(RootProvider.useEthBalance(undefined), CONSTANTS.zeroBn, (function (a) {
           return a;
         }));
   var match$2 = QlHooks.usePledgeRateDetailed(chain, tokenId);
@@ -66,16 +66,14 @@ function Buy$Buy(Props) {
   var isOnAuction = Animal.useIsOnAuction(chain, tokenId);
   var launchTimeOpt = QlHooks.useLaunchTimeBN(chain, tokenId);
   var currentPriceWei = Animal.useAuctionPriceWei(chain, tokenId, Belt_Option.getWithDefault(launchTimeOpt, new BnJs("5000")));
-  var currentPriceWei$1 = isOnAuction ? Belt_Option.getWithDefault(currentPriceWei, new BnJs("0")) : (
-      typeof priceStatus === "number" ? new BnJs("0") : (
-          priceStatus.TAG === /* Foreclosed */0 ? new BnJs("0") : priceStatus._0
-        )
+  var currentPriceWei$1 = isOnAuction ? Belt_Option.getWithDefault(currentPriceWei, CONSTANTS.zeroBn) : (
+      typeof priceStatus === "number" || priceStatus.TAG === /* Foreclosed */0 ? CONSTANTS.zeroBn : priceStatus._0
     );
   var tokenIdName = "token#" + TokenId.toString(tokenId);
   var paymentTokenBalance = Web3Utils.fromWeiBNToEthPrecision(Belt_Option.getWithDefault(availableBalance, userBalance), 4);
   var maxAvailableDepositBN = Belt_Option.getWithDefault(availableBalance, userBalance.sub(new BnJs("3000000000000000")).sub(currentPriceWei$1));
   var maxAvailableDeposit = Web3Utils.fromWeiToEth(maxAvailableDepositBN.toString());
-  var isAbleToBuy = maxAvailableDepositBN.gt(new BnJs("0"));
+  var isAbleToBuy = maxAvailableDepositBN.gt(CONSTANTS.zeroBn);
   var currentPriceEth = Web3Utils.fromWeiBNToEth(currentPriceWei$1);
   var currentPriceFloat = Accounting.defaultZeroF(Belt_Float.fromString(currentPriceEth));
   var currentPriceFloatWithMinimum = Math.max(currentPriceFloat, 0.005);
@@ -113,7 +111,7 @@ function Buy$Buy(Props) {
   var onSubmitBuy = function (param) {
     var amountToSend = currentPriceWei$1.add(new BnJs(Web3Utils$1.toWei(deposit, "ether")));
     if (typeof priceStatus !== "number" && priceStatus.TAG !== /* Foreclosed */0) {
-      if (priceStatus._0.gt(new BnJs("0"))) {
+      if (priceStatus._0.gt(CONSTANTS.zeroBn)) {
         return Curry._4(buyFunc, newPrice, currentPriceWei$1.toString(), "150000", amountToSend.toString());
       } else {
         return Curry._3(buyFuncAuction, newPrice, "150000", amountToSend.add(new BnJs("1000000000000000")).toString());

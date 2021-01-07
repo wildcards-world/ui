@@ -18,7 +18,7 @@ let calculateDepositDuration = (deposit, price, numerator, denominator) => {
 
   depositBn
   ->BN.div(
-    if pricePerSecond->BN.gt(BN.new_("0")) {
+    if pricePerSecond->BN.gt(CONSTANTS.zeroBn) {
       pricePerSecond
     } else {
       BN.new_("1")
@@ -58,7 +58,7 @@ module Buy = {
       web3Context.chainId->Option.getWithDefault(1),
     )
 
-    let userBalance = Option.mapWithDefault(RootProvider.useEthBalance(), BN.new_("0"), a => a)
+    let userBalance = Option.mapWithDefault(RootProvider.useEthBalance(), CONSTANTS.zeroBn, a => a)
 
     let (numerator, denominator, ratio, _ratioInverse) = QlHooks.usePledgeRateDetailed(
       ~chain,
@@ -74,12 +74,11 @@ module Buy = {
     )
 
     let currentPriceWei = isOnAuction
-      ? currentPriceWei->Option.getWithDefault(BN.new_("0"))
+      ? currentPriceWei->Option.getWithDefault(CONSTANTS.zeroBn)
       : switch priceStatus {
         | Price(price) => price
         | Loading
-        | Foreclosed(_) =>
-          BN.new_("0")
+        | Foreclosed(_) => CONSTANTS.zeroBn
         }
 
     let tokenIdName = "token#" ++ tokenId->TokenId.toString
@@ -95,7 +94,7 @@ module Buy = {
       )
     let maxAvailableDeposit = maxAvailableDepositBN->BN.toString->Web3Utils.fromWeiToEth
 
-    let isAbleToBuy = maxAvailableDepositBN->BN.gt(BN.new_("0"))
+    let isAbleToBuy = maxAvailableDepositBN->BN.gt(CONSTANTS.zeroBn)
 
     let currentPriceEth = Web3Utils.fromWeiBNToEth(currentPriceWei)
     let currentPriceFloat = Float.fromString(currentPriceEth)->defaultZeroF
@@ -153,7 +152,7 @@ module Buy = {
           ->BN.toString,
         )
       | Price(price) =>
-        if price->BN.gt(BN.new_("0")) {
+        if price->BN.gt(CONSTANTS.zeroBn) {
           buyFunc(newPrice, currentPriceWei->BN.toString, "150000", amountToSend->BN.toString)
         } else {
           buyFuncAuction(

@@ -86,7 +86,7 @@ module AuctionDisplay = {
       | Client.Neither
       | Client.MainnetQuery =>
         let (priceEth, optPriceUsd) = PriceDisplay.priceWeiToTuple(
-          currentPriceWei->Option.getWithDefault(BN.new_("0")),
+          currentPriceWei->Option.getWithDefault(CONSTANTS.zeroBn),
           optCurrentUsdEthPrice,
         )
         <PriceDisplay.PurePriceDisplay priceEth optPriceUsd />

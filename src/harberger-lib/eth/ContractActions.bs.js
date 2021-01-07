@@ -536,7 +536,7 @@ function useBuy(chain, animal, library, account, parentChainId) {
                               };
                       }));
                 return execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, mutate, account, spender, library, (function (steward, v, r, s) {
-                              return Curry._1(steward.methods.buyWithPermit(new BnJs(daiNonce), new BnJs("0"), true, v, r, s, animalId, Web3Utils.toWeiFromEth(newPrice), oldPrice, wildcardsPercentage, value).encodeABI, undefined);
+                              return Curry._1(steward.methods.buyWithPermit(new BnJs(daiNonce), CONSTANTS.zeroBn, true, v, r, s, animalId, Web3Utils.toWeiFromEth(newPrice), oldPrice, wildcardsPercentage, value).encodeABI, undefined);
                             }), chainId, verifyingContract);
               }),
             txState
@@ -641,7 +641,7 @@ function useBuyAuction(chain, animal, library, account, parentChainId) {
                                 };
                         }));
                   return execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, mutate, account, spender, library, (function (steward, v, r, s) {
-                                return Curry._1(steward.methods.buyAuctionWithPermit(new BnJs(daiNonce), new BnJs("0"), true, v, r, s, animalId, Web3Utils.toWeiFromEth(newPrice), wildcardsPercentage, value).encodeABI, undefined);
+                                return Curry._1(steward.methods.buyAuctionWithPermit(new BnJs(daiNonce), CONSTANTS.zeroBn, true, v, r, s, animalId, Web3Utils.toWeiFromEth(newPrice), wildcardsPercentage, value).encodeABI, undefined);
                               }), chainId, verifyingContract);
                 }
                 console.log("something important is null");
@@ -801,7 +801,7 @@ function useUpdateDeposit(chain, library, account, parentChainId) {
                                 };
                         }));
                   return execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, mutate, account, spender, library, (function (steward, v, r, s) {
-                                return Curry._1(steward.methods.depositWithPermit(new BnJs(daiNonce), new BnJs("0"), true, v, r, s, account, new BnJs(amountToAdd)).encodeABI, undefined);
+                                return Curry._1(steward.methods.depositWithPermit(new BnJs(daiNonce), CONSTANTS.zeroBn, true, v, r, s, account, new BnJs(amountToAdd)).encodeABI, undefined);
                               }), chainId, verifyingContract);
                 }
                 console.log("something important is null");

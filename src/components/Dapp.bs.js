@@ -5,7 +5,6 @@ import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Info from "../harberger-lib/components/Info.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as Login from "../harberger-lib/Login.bs.js";
-import BnJs from "bn.js";
 import * as React from "react";
 import * as Animal from "../harberger-lib/Animal.bs.js";
 import * as Router from "../helpers/Router.bs.js";
@@ -135,7 +134,7 @@ function Dapp$AuctionDisplay(Props) {
   var optCurrentUsdEthPrice = UsdPriceProvider.useUsdPrice(undefined);
   var tmp;
   if (chain !== 1) {
-    var match = PriceDisplay.priceWeiToTuple(Belt_Option.getWithDefault(currentPriceWei, new BnJs("0")), optCurrentUsdEthPrice);
+    var match = PriceDisplay.priceWeiToTuple(Belt_Option.getWithDefault(currentPriceWei, CONSTANTS.zeroBn), optCurrentUsdEthPrice);
     tmp = React.createElement(PriceDisplay.PurePriceDisplay.make, {
           priceEth: match[0],
           optPriceUsd: match[1]
