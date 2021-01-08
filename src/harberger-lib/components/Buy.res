@@ -81,7 +81,7 @@ module Buy = {
         | Foreclosed(_) => CONSTANTS.zeroBn
         }
 
-    let tokenIdName = "token#" ++ tokenId->TokenId.toString
+    let tokenIdName = "token #" ++ tokenId->TokenId.toString
 
     let paymentTokenBalance =
       availableBalance

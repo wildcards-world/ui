@@ -177,7 +177,7 @@ var cardStyle = Curry._1(Css.style, {
     });
 
 var logoStyle = Curry._1(Css.style, {
-      hd: Css.marginLeft({
+      hd: Css.margin({
             NAME: "percent",
             VAL: 10
           }),
@@ -190,9 +190,15 @@ var logoStyle = Curry._1(Css.style, {
       }
     });
 
-var centerText = Curry._1(Css.style, {
+var corporatePartnerTextStyle = Curry._1(Css.style, {
       hd: Css.textAlign("center"),
-      tl: /* [] */0
+      tl: {
+        hd: Css.marginBottom({
+              NAME: "percent",
+              VAL: 10
+            }),
+        tl: /* [] */0
+      }
     });
 
 function Partners$OrgDetails(Props) {
@@ -357,7 +363,7 @@ function Partners(Props) {
                                           src: ubisoftLogo
                                         }), React.createElement(RimbleUi.Text, {
                                           children: Globals.restr("Ubisoft's Entrepreneurs Lab, Season 4, participants"),
-                                          className: centerText
+                                          className: corporatePartnerTextStyle
                                         }))
                               }),
                           width: [
@@ -379,7 +385,7 @@ function Partners(Props) {
                                           src: ethCapeTownLogo
                                         }), React.createElement(RimbleUi.Text, {
                                           children: Globals.restr("Overall winners of EthCapeTown hackathon"),
-                                          className: centerText
+                                          className: corporatePartnerTextStyle
                                         }))
                               }),
                           width: [
@@ -401,7 +407,7 @@ function Partners(Props) {
                                           src: cvLabsLogo
                                         }), React.createElement(RimbleUi.Text, {
                                           children: Globals.restr("CV Labs Incubator Program, Batch 2"),
-                                          className: centerText
+                                          className: corporatePartnerTextStyle
                                         }))
                               }),
                           width: [
@@ -423,7 +429,7 @@ function Partners(Props) {
                                           src: kernelLogo
                                         }), React.createElement(RimbleUi.Text, {
                                           children: Globals.restr("Gitcoin Kernel genesis block participants"),
-                                          className: centerText
+                                          className: corporatePartnerTextStyle
                                         }))
                               }),
                           width: [
@@ -447,7 +453,7 @@ export {
   blueBackground ,
   cardStyle ,
   logoStyle ,
-  centerText ,
+  corporatePartnerTextStyle ,
   OrgDetails ,
   make ,
   
