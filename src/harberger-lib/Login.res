@@ -28,13 +28,12 @@ let make = () => {
     </p>
     <div
       className={
-        open Css
-        style(list{
+        open CssJs
+        style(.[
           display(#grid),
-          zIndex(1),
-          gridTemplateColumns(list{#repeat(#autoFit, #minmax(px(176), fr(0.6)))}),
+          gridTemplateColumns([#repeat(#autoFit, #minmax(px(176), fr(0.6)))]),
           maxWidth(px(800)),
-        })
+        ])
       }>
       {connectors
       ->Array.mapWithIndex((index, connector) =>
@@ -45,8 +44,8 @@ let make = () => {
             activateConnector(connector.connector)
           }}
           className={
-            open Css
-            style(list{border(px(1), #solid, rgba(195, 195, 195, #num(0.14))), hover(list{})})
+            open CssJs
+            style(.[zIndex(1), border(px(1), #solid, rgba(195, 195, 195, #num(0.14)))])
           }>
           <div
             className={
