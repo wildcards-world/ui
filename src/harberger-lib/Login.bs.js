@@ -23,25 +23,28 @@ function Login(Props) {
                   className: Curry._1(Css.style, {
                         hd: Css.display("grid"),
                         tl: {
-                          hd: Css.gridTemplateColumns({
-                                hd: {
-                                  NAME: "repeat",
-                                  VAL: [
-                                    "autoFit",
-                                    {
-                                      NAME: "minmax",
-                                      VAL: [
-                                        Css.px(176),
-                                        Css.fr(0.6)
-                                      ]
-                                    }
-                                  ]
-                                },
-                                tl: /* [] */0
-                              }),
+                          hd: Css.zIndex(1),
                           tl: {
-                            hd: Css.maxWidth(Css.px(800)),
-                            tl: /* [] */0
+                            hd: Css.gridTemplateColumns({
+                                  hd: {
+                                    NAME: "repeat",
+                                    VAL: [
+                                      "autoFit",
+                                      {
+                                        NAME: "minmax",
+                                        VAL: [
+                                          Css.px(176),
+                                          Css.fr(0.6)
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  tl: /* [] */0
+                                }),
+                            tl: {
+                              hd: Css.maxWidth(Css.px(800)),
+                              tl: /* [] */0
+                            }
                           }
                         }
                       })
@@ -58,7 +61,8 @@ function Login(Props) {
                                             tl: /* [] */0
                                           }
                                         }),
-                                    onClick: (function (_e) {
+                                    onClick: (function (e) {
+                                        e.stopPropagation();
                                         return Curry._1(activateConnector, connector.connector);
                                       })
                                   }, React.createElement("div", {

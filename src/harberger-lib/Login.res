@@ -31,6 +31,7 @@ let make = () => {
         open Css
         style(list{
           display(#grid),
+          zIndex(1),
           gridTemplateColumns(list{#repeat(#autoFit, #minmax(px(176), fr(0.6)))}),
           maxWidth(px(800)),
         })
@@ -39,7 +40,10 @@ let make = () => {
       ->Array.mapWithIndex((index, connector) =>
         <div
           key={index->string_of_int}
-          onClick={_e => activateConnector(connector.connector)}
+          onClick={e => {
+            ReactEvent.Mouse.stopPropagation(e)
+            activateConnector(connector.connector)
+          }}
           className={
             open Css
             style(list{border(px(1), #solid, rgba(195, 195, 195, #num(0.14))), hover(list{})})
