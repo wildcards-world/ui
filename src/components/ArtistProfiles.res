@@ -171,7 +171,9 @@ module ArtistDetails = {
           }}
         </Rimble.Box>
         <Rimble.Box p=1 width=[1., 1., 0.3333]>
-          <h2> {"Total contributed by artist"->React.string} </h2>
+          <h2> {"Total contributed through artwork created by "->React.string} {optName
+                ->Option.getWithDefault(Option.getWithDefault(optArtistName, "Loading artist name"))
+                ->React.string}</h2>
           {(totalPatronageUsd ++ "USD")->React.string}
           <br />
           <small> {totalBreakdownString->React.string} </small>
@@ -181,7 +183,9 @@ module ArtistDetails = {
           | Some(orgList) => <>
               <br />
               <br />
-              <h4> {"Organisations this artist has contributed to:"->React.string} </h4>
+              <h4> {"Organisations that "->React.string} {optName
+                ->Option.getWithDefault(Option.getWithDefault(optArtistName, "Loading artist name"))
+                ->React.string} {" has created artwork for:"->React.string}</h4>
               {orgList
               ->Array.map(org => {
                 open QlHooks
@@ -210,7 +214,9 @@ module ArtistDetails = {
           | Some([]) => <p> {"Artist doesn't have any launched wildcards"->React.string} </p>
           | Some(_) =>
             <React.Fragment>
-              <Rimble.Heading> {"Wildcards created by artist"->React.string} </Rimble.Heading>
+              <Rimble.Heading> {"Wildcards created by "->React.string} {optName
+                ->Option.getWithDefault(Option.getWithDefault(optArtistName, "Loading artist name"))
+                ->React.string}</Rimble.Heading>
               <Rimble.Flex flexWrap="wrap" className=centreAlignOnMobile>
                 {React.array(
                   artistsAnimalsArrayLaunched->Array.map(token => {

@@ -220,8 +220,8 @@ function ArtistProfiles$ArtistDetails(Props) {
                         1,
                         0.3333
                       ]
-                    }, React.createElement("h2", undefined, "Total contributed by artist"), match$1[0] + "USD", React.createElement("br", undefined), React.createElement("small", undefined, match$1[1]), optArtistOrgs !== undefined ? (
-                        optArtistOrgs.length !== 0 ? React.createElement(React.Fragment, undefined, React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("h4", undefined, "Organisations this artist has contributed to:"), Belt_Array.map(optArtistOrgs, (function (org) {
+                    }, React.createElement("h2", undefined, "Total contributed through artwork created by ", Belt_Option.getWithDefault(optName, Belt_Option.getWithDefault(optArtistName, "Loading artist name"))), match$1[0] + "USD", React.createElement("br", undefined), React.createElement("small", undefined, match$1[1]), optArtistOrgs !== undefined ? (
+                        optArtistOrgs.length !== 0 ? React.createElement(React.Fragment, undefined, React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("h4", undefined, "Organisations that ", Belt_Option.getWithDefault(optName, Belt_Option.getWithDefault(optArtistName, "Loading artist name")), " has created artwork for:"), Belt_Array.map(optArtistOrgs, (function (org) {
                                       return React.createElement("div", {
                                                   className: Curry._1(Css.style, {
                                                         hd: Css.width(Css.vh(12)),
@@ -256,8 +256,8 @@ function ArtistProfiles$ArtistDetails(Props) {
                         optArtistLaunchedWildcards.length !== 0 ? React.createElement(React.Fragment, {
                                 children: null
                               }, React.createElement(RimbleUi.Heading, {
-                                    children: "Wildcards created by artist"
-                                  }), React.createElement(RimbleUi.Flex, {
+                                    children: null
+                                  }, "Wildcards created by ", Belt_Option.getWithDefault(optName, Belt_Option.getWithDefault(optArtistName, "Loading artist name"))), React.createElement(RimbleUi.Flex, {
                                     children: Belt_Array.map(artistsAnimalsArrayLaunched, (function (token) {
                                             var id = TokenId.toString(token);
                                             return React.createElement(UserProfile.Token.make, {
