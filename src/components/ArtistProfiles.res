@@ -186,6 +186,7 @@ module ArtistDetails = {
               <h4> {"Organisations that "->React.string} {optName
                 ->Option.getWithDefault(Option.getWithDefault(optArtistName, "Loading artist name"))
                 ->React.string} {" has created artwork for:"->React.string}</h4>
+              <Rimble.Flex flexWrap="wrap" className=centreAlignOnMobile>
               {orgList
               ->Array.map(org => {
                 open QlHooks
@@ -205,6 +206,7 @@ module ArtistDetails = {
                 </div>
               })
               ->React.array}
+              </Rimble.Flex>
             </>
           }}
         </Rimble.Box>

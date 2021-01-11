@@ -221,29 +221,33 @@ function ArtistProfiles$ArtistDetails(Props) {
                         0.3333
                       ]
                     }, React.createElement("h2", undefined, "Total contributed through artwork created by ", Belt_Option.getWithDefault(optName, Belt_Option.getWithDefault(optArtistName, "Loading artist name"))), match$1[0] + "USD", React.createElement("br", undefined), React.createElement("small", undefined, match$1[1]), optArtistOrgs !== undefined ? (
-                        optArtistOrgs.length !== 0 ? React.createElement(React.Fragment, undefined, React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("h4", undefined, "Organisations that ", Belt_Option.getWithDefault(optName, Belt_Option.getWithDefault(optArtistName, "Loading artist name")), " has created artwork for:"), Belt_Array.map(optArtistOrgs, (function (org) {
-                                      return React.createElement("div", {
-                                                  className: Curry._1(Css.style, {
-                                                        hd: Css.width(Css.vh(12)),
-                                                        tl: {
-                                                          hd: Css.cursor("pointer"),
-                                                          tl: /* [] */0
-                                                        }
-                                                      })
-                                                }, React.createElement("img", {
-                                                      className: Curry._1(Css.style, {
-                                                            hd: Css.width({
-                                                                  NAME: "percent",
-                                                                  VAL: 100
+                        optArtistOrgs.length !== 0 ? React.createElement(React.Fragment, undefined, React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("h4", undefined, "Organisations that ", Belt_Option.getWithDefault(optName, Belt_Option.getWithDefault(optArtistName, "Loading artist name")), " has created artwork for:"), React.createElement(RimbleUi.Flex, {
+                                    children: Belt_Array.map(optArtistOrgs, (function (org) {
+                                            return React.createElement("div", {
+                                                        className: Curry._1(Css.style, {
+                                                              hd: Css.width(Css.vh(12)),
+                                                              tl: {
+                                                                hd: Css.cursor("pointer"),
+                                                                tl: /* [] */0
+                                                              }
+                                                            })
+                                                      }, React.createElement("img", {
+                                                            className: Curry._1(Css.style, {
+                                                                  hd: Css.width({
+                                                                        NAME: "percent",
+                                                                        VAL: 100
+                                                                      }),
+                                                                  tl: /* [] */0
                                                                 }),
-                                                            tl: /* [] */0
-                                                          }),
-                                                      src: CONSTANTS.cdnBase + org.logo,
-                                                      onClick: (function (_e) {
-                                                          return Curry._1(clearAndPush, "/#org/" + org.id);
-                                                        })
-                                                    }));
-                                    }))) : null
+                                                            src: CONSTANTS.cdnBase + org.logo,
+                                                            onClick: (function (_e) {
+                                                                return Curry._1(clearAndPush, "/#org/" + org.id);
+                                                              })
+                                                          }));
+                                          })),
+                                    flexWrap: "wrap",
+                                    className: centreAlignOnMobile
+                                  })) : null
                       ) : React.createElement("h2", undefined, "Loading orgs")), React.createElement(RimbleUi.Box, {
                       p: 1,
                       children: null,
