@@ -474,7 +474,7 @@ function useBuy(chain, animal, library, account, parentChainId) {
                   return ;
                 }
                 var buyPromise = $$Promise.Js.toResult(optSteward.buy(animalId, newPriceEncoded, oldPriceParsed, wildcardsPercentage, {
-                          gasLimit: "500302",
+                          gasLimit: undefined,
                           value: value$1
                         }));
                 $$Promise.getOk(buyPromise, (function (tx) {
@@ -587,7 +587,7 @@ function useBuyAuction(chain, animal, library, account, parentChainId) {
                   return ;
                 }
                 var buyPromise = $$Promise.Js.toResult(optSteward.buyAuction(animalId, newPriceEncoded, wildcardsPercentage, {
-                          gasLimit: "500302",
+                          gasLimit: undefined,
                           value: value$1
                         }));
                 $$Promise.getOk(buyPromise, (function (tx) {
@@ -668,7 +668,7 @@ function useRedeemLoyaltyTokens(patron) {
       return ;
     }
     var claimLoyaltyTokenPromise = $$Promise.Js.toResult(optSteward._collectPatronagePatron(patron, {
-              gasLimit: "500302",
+              gasLimit: undefined,
               value: value
             }));
     $$Promise.getOk(claimLoyaltyTokenPromise, (function (tx) {
@@ -754,7 +754,7 @@ function useUpdateDeposit(chain, library, account, parentChainId) {
                   return ;
                 }
                 var updateDepositPromise = $$Promise.Js.toResult(optSteward.depositWei({
-                          gasLimit: "500302",
+                          gasLimit: undefined,
                           value: value$1
                         }));
                 $$Promise.getOk(updateDepositPromise, (function (tx) {
@@ -834,7 +834,7 @@ function useWithdrawDeposit(chain, library, account, parentChainId) {
                   return ;
                 }
                 var updateDepositPromise = $$Promise.Js.toResult(optSteward.withdrawDeposit(amountToWithdrawEncoded, {
-                          gasLimit: "500302",
+                          gasLimit: undefined,
                           value: value
                         }));
                 $$Promise.getOk(updateDepositPromise, (function (tx) {
@@ -956,7 +956,7 @@ function useChangePrice(animal) {
                 return ;
               }
               var updatePricePromise = $$Promise.Js.toResult(optSteward.changePrice(animalId, newPriceEncoded, {
-                        gasLimit: "500302",
+                        gasLimit: undefined,
                         value: value
                       }));
               $$Promise.getOk(updatePricePromise, (function (tx) {
