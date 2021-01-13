@@ -1,15 +1,14 @@
 type debounceOptions = {
-  @dead("debounceOptions.maxWait") maxWait: option<int>,
-  @dead("debounceOptions.leading") leading: option<bool>,
-  @dead("debounceOptions.trailing") trailing: option<bool>,
+  @live maxWait: option<int>,
+  @live leading: option<bool>,
+  @live trailing: option<bool>,
 }
 
+type callBack<'callback> = {callback: 'callback, cancel: unit => unit, flush: unit => unit}
+
 @module("use-debounce")
-external useDebouncedCallback: (
-  . 'callback,
-  int,
-  debounceOptions,
-) => ('callback, unit => unit, unit => unit) = "useDebouncedCallback"
+external useDebouncedCallback: (. 'callback, int, debounceOptions) => callBack<'callback> =
+  "useDebouncedCallback"
 
 let inputStyle = {
   open Css
@@ -49,12 +48,10 @@ let make = (
     None
   }, (deposit, setDepositSlider))
 
-  let (debouncedSetDeposit, _, _) = useDebouncedCallback(.
-    // debounced function
+  let {callback: debouncedSetDeposit, _} = useDebouncedCallback(.
     setDeposit,
-    // delay in ms
     50,
-    {maxWait: Some(500), leading: None, trailing: None},
+    {maxWait: Some(500), leading: Some(true), trailing: Some(true)},
   )
   <>
     <Rimble.Flex>
