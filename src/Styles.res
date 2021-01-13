@@ -96,7 +96,7 @@ let imageHoverStyle = {
     filter([#saturate(150.), #brightness(110.)]),
     overflow(visible),
     backgroundColor(prettyTransparent),
-    boxShadow(Shadow.box(~blur=px(20), ~spread=px(20), prettyTransparent)),
+    boxShadow(Shadow.box(~blur=em(2.), ~spread=em(2.), prettyTransparent)),
     transform(scale(1.3, 1.3)),
     transition(~duration=100, ~delay=0, ~timingFunction=ease, "all"),
   ])
@@ -111,7 +111,8 @@ let streakText = style(.[
   right(#percent(50.)),
   transform(translateX(#percent(50.))),
 ])
-let flameImg = style(.[width(#percent(100.)), maxWidth(em(2.1))])
+let smallImage = imageMaxWidth => style(.[width(#percent(100.)), maxWidth(imageMaxWidth)])
+let flameImg = smallImage(em(2.1))
 
 let navListItem = style(.[display(inlineBlock)])
 

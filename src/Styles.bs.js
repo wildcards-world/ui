@@ -157,7 +157,7 @@ var imageHoverStyle = CssJs.hover([
           ]),
       CssJs.overflow(CssJs.visible),
       CssJs.backgroundColor(prettyTransparent),
-      CssJs.boxShadow(Css_Js_Core.Shadow.box(undefined, undefined, CssJs.px(20), CssJs.px(20), undefined, prettyTransparent)),
+      CssJs.boxShadow(Css_Js_Core.Shadow.box(undefined, undefined, CssJs.em(2), CssJs.em(2), undefined, prettyTransparent)),
       CssJs.transform(CssJs.scale(1.3, 1.3)),
       CssJs.transition(100, 0, CssJs.ease, "all")
     ]);
@@ -195,13 +195,17 @@ var streakText = CssJs.style([
               }))
     ]);
 
-var flameImg = CssJs.style([
-      CssJs.width({
-            NAME: "percent",
-            VAL: 100
-          }),
-      CssJs.maxWidth(CssJs.em(2.1))
-    ]);
+function smallImage(imageMaxWidth) {
+  return CssJs.style([
+              CssJs.width({
+                    NAME: "percent",
+                    VAL: 100
+                  }),
+              CssJs.maxWidth(imageMaxWidth)
+            ]);
+}
+
+var flameImg = smallImage(CssJs.em(2.1));
 
 var navListItem = CssJs.style([CssJs.display(CssJs.inlineBlock)]);
 
@@ -652,6 +656,7 @@ export {
   imageHoverStyle ,
   overlayBadgeImg ,
   streakText ,
+  smallImage ,
   flameImg ,
   navListItem ,
   navListItemToggle ,
