@@ -151,55 +151,41 @@ function usePartners(param) {
   }
 }
 
-var blueBackground = Curry._1(Css.style, {
-      hd: Css.backgroundColor({
+var blueBackground = CssJs.style([CssJs.backgroundColor({
             NAME: "hex",
             VAL: "73C8D7"
-          }),
-      tl: /* [] */0
-    });
+          })]);
 
-var cardStyle = Curry._1(Css.style, {
-      hd: Css.height({
+var cardStyle = CssJs.style([
+      CssJs.height({
             NAME: "percent",
             VAL: 100
           }),
-      tl: {
-        hd: Css.display("flex"),
-        tl: {
-          hd: Css.important(Css.padding({
-                    NAME: "percent",
-                    VAL: 0
-                  })),
-          tl: /* [] */0
-        }
-      }
-    });
+      CssJs.display("flex"),
+      CssJs.important(CssJs.padding({
+                NAME: "percent",
+                VAL: 0
+              }))
+    ]);
 
-var logoStyle = Curry._1(Css.style, {
-      hd: Css.margin({
+var logoStyle = CssJs.style([
+      CssJs.margin({
             NAME: "percent",
             VAL: 10
           }),
-      tl: {
-        hd: Css.width({
-              NAME: "percent",
-              VAL: 80
-            }),
-        tl: /* [] */0
-      }
-    });
+      CssJs.width({
+            NAME: "percent",
+            VAL: 80
+          })
+    ]);
 
-var corporatePartnerTextStyle = Curry._1(Css.style, {
-      hd: Css.textAlign("center"),
-      tl: {
-        hd: Css.marginBottom({
-              NAME: "percent",
-              VAL: 10
-            }),
-        tl: /* [] */0
-      }
-    });
+var corporatePartnerTextStyle = CssJs.style([
+      CssJs.textAlign("center"),
+      CssJs.marginBottom({
+            NAME: "percent",
+            VAL: 10
+          })
+    ]);
 
 function Partners$OrgDetails(Props) {
   var conservation = Props.conservation;

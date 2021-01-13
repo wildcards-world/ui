@@ -29,20 +29,20 @@ let usePartners = () =>
   }
 
 let blueBackground = {
-  open Css
-  style(list{backgroundColor(#hex("73C8D7"))})
+  open CssJs
+  style(.[backgroundColor(#hex("73C8D7"))])
 }
 let cardStyle = {
-  open Css
-  style(list{height(#percent(100.)), display(#flex), important(padding(#percent(0.)))})
+  open CssJs
+  style(.[height(#percent(100.)), display(#flex), important(padding(#percent(0.)))])
 }
 let logoStyle = {
-  open Css
-  style(list{margin(#percent(10.)), width(#percent(80.))})
+  open CssJs
+  style(.[margin(#percent(10.)), width(#percent(80.))])
 }
 let corporatePartnerTextStyle = {
-  open Css
-  style(list{textAlign(#center), marginBottom(#percent(10.))})
+  open CssJs
+  style(.[textAlign(#center), marginBottom(#percent(10.))])
 }
 
 module OrgDetails = {
