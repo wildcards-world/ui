@@ -4,7 +4,6 @@ import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Styles from "../../Styles.bs.js";
-import * as Globals from "../../harberger-lib/Globals.bs.js";
 import * as RimbleUi from "rimble-ui";
 import YoutubeVideoJs from "./YoutubeVideo.js";
 
@@ -51,7 +50,7 @@ function HowItWorks(Props) {
                                 }), React.createElement("br", undefined), React.createElement(RimbleUi.Flex, {
                                   children: React.createElement(RimbleUi.Button, {
                                         className: Styles.centerItemsMargin,
-                                        children: Globals.restr("Read More"),
+                                        children: "Read More",
                                         onClick: (function (param) {
                                             return Curry._1(setModalOpen, (function (param) {
                                                           return true;
@@ -82,18 +81,18 @@ function HowItWorks(Props) {
                                             right: 0,
                                             m: 3
                                           }), React.createElement(RimbleUi.Heading, {
-                                            children: Globals.restr("How it works"),
+                                            children: "How it works",
                                             className: Styles.centerText
                                           }), React.createElement("br", undefined), React.createElement("hr", undefined), React.createElement(RimbleUi.Text, {
                                             children: null
-                                          }, Globals.restr("You can become the guardian of a wildcard by simply clicking buy on any of the listed wildcards. Wildcards are "), React.createElement("strong", undefined, Globals.restr("always for sale")), Globals.restr(" since anyone can purchase them at anytime for their current sale price. When someone purchases a wildcard, they are required to immediately set a sale price for that wildcard. This ensures wildcards are "), React.createElement("strong", undefined, Globals.restr("always for sale"))), React.createElement("br", undefined), React.createElement(RimbleUi.Text, {
+                                          }, "You can become the guardian of a wildcard by simply clicking buy on any of the listed wildcards. Wildcards are ", React.createElement("strong", undefined, "always for sale"), " since anyone can purchase them at anytime for their current sale price. When someone purchases a wildcard, they are required to immediately set a sale price for that wildcard. This ensures wildcards are ", React.createElement("strong", undefined, "always for sale")), React.createElement("br", undefined), React.createElement(RimbleUi.Text, {
                                             children: null
-                                          }, Globals.restr("As the gaurdian of a wildcard, you pay a "), React.createElement("strong", undefined, Globals.restr("Harberger tax")), Globals.restr(" (percentage based fee) on your newly set sale price. This fee goes towards supporting wildlife conservation. ")), React.createElement("br", undefined), React.createElement(RimbleUi.Text, {
+                                          }, "As the gaurdian of a wildcard, you pay a ", React.createElement("strong", undefined, "Harberger tax"), " (percentage based fee) on your newly set sale price. This fee goes towards supporting wildlife conservation. "), React.createElement("br", undefined), React.createElement(RimbleUi.Text, {
                                             children: null
-                                          }, React.createElement("strong", undefined, Globals.restr("Here's where it gets interesting.")), Globals.restr(" When someone purchases your wildcard from you, you will receive the sale price you set for that wildcard. Depending on what sale price you set and the harberger tax you have already paid, you may make a profit. The only constant is that the conservation organisation will continually receive funding based on the current selling price of each wildcard.")), React.createElement("br", undefined), React.createElement(RimbleUi.Text, {
+                                          }, React.createElement("strong", undefined, "Here's where it gets interesting."), " When someone purchases your wildcard from you, you will receive the sale price you set for that wildcard. Depending on what sale price you set and the harberger tax you have already paid, you may make a profit. The only constant is that the conservation organisation will continually receive funding based on the current selling price of each wildcard."), React.createElement("br", undefined), React.createElement(RimbleUi.Text, {
                                             children: React.createElement("span", {
                                                   className: Styles.redDisclaimer
-                                                }, Globals.restr("The first wildcard we released, Vitalik, has a 2.5% Harberger tax rate per month. Other wildcards have different harberger tax rates ranging from 2.5% to 100% per month."))
+                                                }, "The first wildcard we released, Vitalik, has a 2.5% Harberger tax rate per month. Other wildcards have different harberger tax rates ranging from 2.5% to 100% per month.")
                                           }))
                                 })),
                         width: [

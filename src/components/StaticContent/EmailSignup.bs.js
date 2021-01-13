@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import * as Styles from "../../Styles.bs.js";
-import * as Globals from "../../harberger-lib/Globals.bs.js";
 import * as RimbleUi from "rimble-ui";
 
 function EmailSignup(Props) {
@@ -25,7 +24,7 @@ function EmailSignup(Props) {
                             className: Styles.emailTextBox
                           }, React.createElement("p", {
                                 className: Styles.emailSignupHeader
-                              }, React.createElement("strong", undefined, Globals.restr("Want to stay in the loop?"))), React.createElement("span", undefined, Globals.restr("Sign up for our newsletter")), React.createElement("br", undefined), React.createElement("br", undefined)), React.createElement(RimbleUi.Box, {
+                              }, React.createElement("strong", undefined, "Want to stay in the loop?")), React.createElement("span", undefined, "Sign up for our newsletter"), React.createElement("br", undefined), React.createElement("br", undefined)), React.createElement(RimbleUi.Box, {
                             children: React.createElement(RimbleUi.Form, {
                                   children: React.createElement(RimbleUi.Flex, {
                                         children: null,
@@ -46,7 +45,7 @@ function EmailSignup(Props) {
                                             className: Styles.inputElements
                                           }), React.createElement(RimbleUi.Box, {
                                             children: React.createElement(RimbleUi.Button, {
-                                                  children: Globals.restr("Submit"),
+                                                  children: "Submit",
                                                   width: 1
                                                 }),
                                             width: [

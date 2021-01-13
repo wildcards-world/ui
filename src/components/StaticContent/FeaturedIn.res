@@ -1,4 +1,3 @@
-open Globals
 
 type featuredMediaItemType = {
   imagePath: string,
@@ -45,7 +44,7 @@ let featuredContainerStyles = {
 @react.component
 let make = () =>
   <Rimble.Box className=Styles.horizantalBlueTile>
-    <p className=Styles.explainerLargeText> {"Featured in "->restr} </p>
+    <p className=Styles.explainerLargeText> {"Featured in "->React.string} </p>
     <Rimble.Flex
       alignItems="center" justifyContent="center" flexWrap="wrap" className=featuredContainerStyles>
       {React.array(

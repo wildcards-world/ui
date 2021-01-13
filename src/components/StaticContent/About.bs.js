@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import * as Styles from "../../Styles.bs.js";
-import * as Globals from "../../harberger-lib/Globals.bs.js";
 import * as RimbleUi from "rimble-ui";
 
 function About(Props) {
@@ -11,11 +10,11 @@ function About(Props) {
                     className: Styles.explainerMediumText
                   }, React.createElement("span", {
                         className: Styles.boldExplainerText
-                      }, Globals.restr("Wildcards")), Globals.restr(" is an idea born out of the "), React.createElement("a", {
+                      }, "Wildcards"), " is an idea born out of the ", React.createElement("a", {
                         href: "https://ethcapetown.com/"
-                      }, Globals.restr("#ETHCapeTown2019")), Globals.restr(" hackathon which saw team Wildcards as overall "), React.createElement("a", {
+                      }, "#ETHCapeTown2019"), " hackathon which saw team Wildcards as overall ", React.createElement("a", {
                         href: "https://devpost.com/software/ethcapetown_wildcards"
-                      }, Globals.restr("winners")), Globals.restr(". The focus of the project is raising funds for at risk animals.")),
+                      }, "winners"), ". The focus of the project is raising funds for at risk animals."),
               className: Styles.horizantalBlueTile
             });
 }

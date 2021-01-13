@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import * as Styles from "../../Styles.bs.js";
-import * as Globals from "../../harberger-lib/Globals.bs.js";
 import * as RimbleUi from "rimble-ui";
 
 function CustomerBenefit(Props) {
@@ -13,9 +12,9 @@ function CustomerBenefit(Props) {
                   className: Styles.explainerLargeText
                 }, React.createElement("span", {
                       className: Styles.boldExplainerText
-                    }, Globals.restr("Wildcards")), Globals.restr(" connects global conservation organisations to users. ")), React.createElement("p", {
+                    }, "Wildcards"), " connects global conservation organisations to users. "), React.createElement("p", {
                   className: Styles.explainerMediumText
-                }, Globals.restr("Social, gamified and transparent giving makes wildcards the perfect platform to start making your difference.")));
+                }, "Social, gamified and transparent giving makes wildcards the perfect platform to start making your difference."));
 }
 
 var make = CustomerBenefit;

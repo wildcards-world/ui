@@ -3,7 +3,6 @@
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Moment from "moment";
-import * as Globals from "./Globals.bs.js";
 import * as Belt_List from "bs-platform/lib/es6/belt_List.js";
 import * as Caml_int32 from "bs-platform/lib/es6/caml_int32.js";
 
@@ -98,7 +97,7 @@ function CountDown(Props) {
         setCountdown
       ]);
   return React.createElement(React.Fragment, {
-              children: displayUnits ? Globals.restr(displayTimeLeft(calculateTimeRemainingFromSeconds(countDown))) : Globals.restr(displayTimeLeftSimple(calculateTimeRemainingFromSeconds(countDown)))
+              children: displayUnits ? displayTimeLeft(calculateTimeRemainingFromSeconds(countDown)) : displayTimeLeftSimple(calculateTimeRemainingFromSeconds(countDown))
             });
 }
 

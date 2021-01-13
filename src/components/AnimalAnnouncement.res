@@ -1,4 +1,3 @@
-open Globals
 open Css
 
 let linkToAnimal = style(list{
@@ -8,8 +7,8 @@ let linkToAnimal = style(list{
   selector(":hover", list{important(color(hex("6CAD3D")))}),
 })
 
-@react.component
-@dead("+make") let make = (~nextReleasedAnimals: array<TokenId.t>, ~announcementBannerColor: string) => {
+@react.component @dead("+make")
+let make = (~nextReleasedAnimals: array<TokenId.t>, ~announcementBannerColor: string) => {
   let nextLaunchDate = Animal.nextLaunchDate
 
   let isLaunched = MomentRe.diff(nextLaunchDate, MomentRe.momentNow(), #seconds) < 0.
@@ -20,13 +19,13 @@ let linkToAnimal = style(list{
   let numberOfAnimalsToLaunch = nextReleasedAnimals->Array.length
   let isPlural = numberOfAnimalsToLaunch > 1
   <div className={Announcement.announcementStyle(showAnnouncement, announcementBannerColor)}>
-    {("New Wildcard" ++ ((isPlural ? "s" : "") ++ " "))->restr}
+    {("New Wildcard" ++ ((isPlural ? "s" : "") ++ " "))->React.string}
     {React.array(
       nextReleasedAnimals->Array.mapWithIndex((index, animal) => {
         let name = Option.getWithDefault(QlHooks.useWildcardName(animal), "Loading")
         <span key={animal->TokenId.toString}>
           <a href={"/#details/" ++ animal->TokenId.toString} className=linkToAnimal>
-            {name->restr}
+            {name->React.string}
           </a>
           {(
             index == numberOfAnimalsToLaunch - 1
@@ -35,19 +34,19 @@ let linkToAnimal = style(list{
                 | true => " and "
                 | false => ", "
                 }
-          )->restr}
+          )->React.string}
         </span>
       }),
     )}
     {isLaunched
-      ? ((isPlural ? "have" : "has") ++ " just been launched!")->restr
+      ? ((isPlural ? "have" : "has") ++ " just been launched!")->React.string
       : <>
-          {"coming in "->restr}
+          {"coming in "->React.string}
           <CountDown endDateMoment=nextLaunchDate displayUnits=true />
-          {"!"->restr}
+          {"!"->React.string}
         </>}
     <span className=closeButton onClick={_ => setShowAnnouncement(_ => #none)}>
-      {`×`->restr}
+      {`×`->React.string}
     </span>
   </div>
 }

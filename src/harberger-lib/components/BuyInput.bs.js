@@ -3,7 +3,6 @@
 import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
-import * as Globals from "../Globals.bs.js";
 import * as CountDown from "../CountDown.bs.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
@@ -69,7 +68,7 @@ function BuyInput(Props) {
                         p: 2,
                         mb: 2,
                         children: React.createElement(RimbleUi.Heading, {
-                              children: Globals.restr("Purchase " + tokenIdName)
+                              children: "Purchase " + tokenIdName
                             })
                       })
                 }), React.createElement(RimbleUi.Flex, {
@@ -87,7 +86,7 @@ function BuyInput(Props) {
                           placement: "top",
                           children: React.createElement(RimbleUi.Text, {
                                 children: null
-                              }, Globals.restr("Set " + (tokenIdName + "'s new for sale price:")), infoIcon)
+                              }, "Set " + (tokenIdName + "'s new for sale price:"), infoIcon)
                         }), React.createElement(RimbleUi.Input, {
                           type: "number",
                           placeholder: "Your Initial Sale Price",
@@ -110,9 +109,9 @@ function BuyInput(Props) {
                           children: React.createElement(RimbleUi.Text, {
                                 children: null,
                                 className: rightAlignText
-                              }, Globals.restr("Your monthly contribution:"), infoIcon)
+                              }, "Your monthly contribution:", infoIcon)
                         }), React.createElement("br", undefined), React.createElement(RimbleUi.Text, {
-                          children: Globals.restr(patronage),
+                          children: patronage,
                           className: rightAlignText
                         }))), React.createElement(RimbleUi.Flex, {
                   children: null,
@@ -131,7 +130,7 @@ function BuyInput(Props) {
                           placement: "top",
                           children: React.createElement(RimbleUi.Text, {
                                 children: null
-                              }, Globals.restr("Set your deposit:"), infoIcon)
+                              }, "Set your deposit:", infoIcon)
                         }), React.createElement(RimbleUi.Input, {
                           type: "number",
                           placeholder: "Your Initial Deposit",
@@ -161,12 +160,12 @@ function BuyInput(Props) {
                         1,
                         0.7
                       ]
-                    })), React.createElement("p", undefined, Globals.restr("This deposit will last " + (CountDown.displayTimeLeftHours(depositTimeInSeconds) + " for your monthly contribution"))), React.createElement(RimbleUi.Flex, {
+                    })), React.createElement("p", undefined, "This deposit will last " + (CountDown.displayTimeLeftHours(depositTimeInSeconds) + " for your monthly contribution")), React.createElement(RimbleUi.Flex, {
                   children: React.createElement(RimbleUi.Box, {
                         p: 2,
                         mb: 2,
                         children: React.createElement(RimbleUi.Button, {
-                              children: Globals.restr("Buy"),
+                              children: "Buy",
                               onClick: (function (param) {
                                   return Curry._1(onSubmitBuy, undefined);
                                 })

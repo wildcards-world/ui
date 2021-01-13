@@ -103,31 +103,31 @@ function UserProfile$ClaimLoyaltyTokenButtons(Props) {
                     onClick: (function (param) {
                         return Curry._1(redeemLoyaltyTokens, undefined);
                       })
-                  }, Globals.restr("Redeem " + (Web3Utils.fromWeiBNToEthPrecision(Caml_option.valFromOption(balanceAvailableOnTokens), 5) + " loyalty tokens"))));
+                  }, "Redeem " + (Web3Utils.fromWeiBNToEthPrecision(Caml_option.valFromOption(balanceAvailableOnTokens), 5) + " loyalty tokens")));
           break;
       case /* Failed */4 :
-          tmp = React.createElement("p", undefined, Globals.restr("Transaction failed"));
+          tmp = React.createElement("p", undefined, "Transaction failed");
           break;
       default:
-        tmp = React.createElement("p", undefined, Globals.restr("Transaction Created"));
+        tmp = React.createElement("p", undefined, "Transaction Created");
     }
   } else {
     switch (transactionStatus.TAG | 0) {
       case /* SignedAndSubmitted */1 :
-          tmp = React.createElement("p", undefined, Globals.restr("Processing: "), React.createElement("a", {
+          tmp = React.createElement("p", undefined, "Processing: ", React.createElement("a", {
                     href: "https://" + (etherScanUrl + ("/tx/" + transactionStatus._0)),
                     rel: "noopener noreferrer",
                     target: "_blank"
-                  }, Globals.restr("view transaction")));
+                  }, "view transaction"));
           break;
       case /* Declined */2 :
-          tmp = React.createElement("p", undefined, Globals.restr("Submitting transaction failed: " + transactionStatus._0));
+          tmp = React.createElement("p", undefined, "Submitting transaction failed: " + transactionStatus._0);
           break;
       case /* Complete */4 :
-          tmp = React.createElement("p", undefined, Globals.restr("Tokens claimed (please reload the page, this will be improved soon)"));
+          tmp = React.createElement("p", undefined, "Tokens claimed (please reload the page, this will be improved soon)");
           break;
       default:
-        tmp = React.createElement("p", undefined, Globals.restr("Transaction Created"));
+        tmp = React.createElement("p", undefined, "Transaction Created");
     }
   }
   return React.createElement("small", undefined, tmp);
@@ -270,24 +270,24 @@ function UserProfile$UserDetails(Props) {
   }
   if (exit === 1) {
     tmp = React.createElement(React.Fragment, undefined, Globals.reactMap(optName, (function (name) {
-                return React.createElement("h2", undefined, Globals.restr(name));
+                return React.createElement("h2", undefined, name);
               })), Globals.reactMap(optTwitter, (function (twitterHandle) {
                 return React.createElement("a", {
                             className: Styles.navListText,
                             href: "https://twitter.com/" + twitterHandle,
                             rel: "noopener noreferrer",
                             target: "_blank"
-                          }, Globals.restr("@" + twitterHandle));
+                          }, "@" + twitterHandle);
               })), React.createElement("br", undefined), Globals.reactMap(optDescription, (function (description) {
-                return React.createElement("p", undefined, Globals.restr(description));
+                return React.createElement("p", undefined, description);
               })), React.createElement("a", {
               className: Styles.navListText,
               href: "https://" + (etherScanUrl + ("/address/" + userAddress)),
               rel: "noopener noreferrer",
               target: "_blank"
-            }, Globals.restr(Helper.elipsify(userAddress, 10))), React.createElement("br", undefined), isAddressCurrentUser ? React.createElement(React.Fragment, undefined, React.createElement("small", undefined, React.createElement("p", undefined, Globals.restr("Claimed Loyalty Token Balance: " + (Belt_Option.mapWithDefault(match[0], "Loading", (function (claimedLoyaltyTokens) {
-                                    return Web3Utils.fromWeiBNToEthPrecision(claimedLoyaltyTokens, 6);
-                                  })) + " WLT")))), currentlyOwnedTokens.length !== 0 ? React.createElement(UserProfile$ClaimLoyaltyTokenButtons, {
+            }, Helper.elipsify(userAddress, 10)), React.createElement("br", undefined), isAddressCurrentUser ? React.createElement(React.Fragment, undefined, React.createElement("small", undefined, React.createElement("p", undefined, "Claimed Loyalty Token Balance: " + (Belt_Option.mapWithDefault(match[0], "Loading", (function (claimedLoyaltyTokens) {
+                                return Web3Utils.fromWeiBNToEthPrecision(claimedLoyaltyTokens, 6);
+                              })) + " WLT"))), currentlyOwnedTokens.length !== 0 ? React.createElement(UserProfile$ClaimLoyaltyTokenButtons, {
                       chain: chain,
                       userAddress: userAddress,
                       id: currentlyOwnedTokens[0],
@@ -295,9 +295,9 @@ function UserProfile$UserDetails(Props) {
                       numberOfTokens: currentlyOwnedTokens.length
                     }) : null, React.createElement("a", {
                     href: "/#ethturin-quadratic-voting"
-                  }, Globals.restr("vote"))) : React.createElement("small", undefined, React.createElement("p", undefined, Globals.restr("Loyalty Token Balance Generated: " + (Belt_Option.mapWithDefault(totalLoyaltyTokensAvailableAndClaimedOpt, "Loading", (function (param) {
-                                return Web3Utils.fromWeiBNToEthPrecision(param[0], 5);
-                              })) + " WLT")))), isAddressCurrentUser ? React.createElement(React.Fragment, {
+                  }, "vote")) : React.createElement("small", undefined, React.createElement("p", undefined, "Loyalty Token Balance Generated: " + (Belt_Option.mapWithDefault(totalLoyaltyTokensAvailableAndClaimedOpt, "Loading", (function (param) {
+                            return Web3Utils.fromWeiBNToEthPrecision(param[0], 5);
+                          })) + " WLT"))), isAddressCurrentUser ? React.createElement(React.Fragment, {
                 children: null
               }, React.createElement("br", undefined), React.createElement(ActionButtons.UpdateDeposit.make, {}), React.createElement("br", undefined), React.createElement(Validate.make, {})) : null);
   }
@@ -357,10 +357,10 @@ function UserProfile$UserDetails(Props) {
                         1,
                         0.3333
                       ]
-                    }, React.createElement("h2", undefined, Globals.restr("Monthly Contribution")), React.createElement(Amounts.Basic.make, {
+                    }, React.createElement("h2", undefined, "Monthly Contribution"), React.createElement(Amounts.Basic.make, {
                           mainnetEth: monthlyCotributionWei,
                           maticDai: monthlyCotributionDai
-                        }), React.createElement("h2", undefined, Globals.restr("Total Contributed")), React.createElement(Amounts.AmountRaised.make, {
+                        }), React.createElement("h2", undefined, "Total Contributed"), React.createElement(Amounts.AmountRaised.make, {
                           mainnetEth: totalContributionWei,
                           maticDai: totalContributionDai
                         })), React.createElement(RimbleUi.Box, {
@@ -385,7 +385,7 @@ function UserProfile$UserDetails(Props) {
                                 flexWrap: "wrap",
                                 className: centreAlignOnMobile
                               }), React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("br", undefined)) : (
-                        uniquePreviouslyOwnedTokens.length !== 0 ? React.createElement("p", undefined, Globals.restr("User currently doesn't currently own a wildcard.")) : React.createElement("p", undefined, Globals.restr("User has never owned a wildcard."))
+                        uniquePreviouslyOwnedTokens.length !== 0 ? React.createElement("p", undefined, "User currently doesn't currently own a wildcard.") : React.createElement("p", undefined, "User has never owned a wildcard.")
                       ), uniquePreviouslyOwnedTokens.length !== 0 ? React.createElement(React.Fragment, {
                             children: null
                           }, React.createElement(RimbleUi.Heading, {

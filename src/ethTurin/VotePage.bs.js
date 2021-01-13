@@ -155,7 +155,7 @@ function VotePage$OrganisationVote(Props) {
                         }
                       }),
                   disabled: true,
-                  children: Globals.restr("Voting Disabled"),
+                  children: "Voting Disabled",
                   onClick: (function (param) {
                       return Curry._1(selectConservation, index);
                     })
@@ -228,17 +228,17 @@ function VotePage(Props) {
                                             hd: Css.textAlign("center"),
                                             tl: /* [] */0
                                           })
-                                    }, Globals.restr("Glen the Dragon from Turin"))), React.createElement("p", {
+                                    }, "Glen the Dragon from Turin")), React.createElement("p", {
                                   className: Curry._1(Css.style, {
                                         hd: Css.textAlign("center"),
                                         tl: /* [] */0
                                       })
-                                }, Globals.restr("Monthly contribution: "), optMonthlyPledgeEth !== undefined ? Globals.restr(optMonthlyPledgeEth + " ETH") : React.createElement(RimbleUi.Loader, {
+                                }, "Monthly contribution: ", optMonthlyPledgeEth !== undefined ? optMonthlyPledgeEth + " ETH" : React.createElement(RimbleUi.Loader, {
                                         className: Curry._1(Css.style, {
                                               hd: Css.margin(Css.auto),
                                               tl: /* [] */0
                                             })
-                                      }), React.createElement("br", undefined), React.createElement("small", undefined, optMonthlyPledgeUsd !== undefined ? Globals.restr("(" + (Caml_option.valFromOption(optMonthlyPledgeUsd) + " USD)")) : null)), React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("h4", {
+                                      }), React.createElement("br", undefined), React.createElement("small", undefined, optMonthlyPledgeUsd !== undefined ? "(" + (Caml_option.valFromOption(optMonthlyPledgeUsd) + " USD)") : null)), React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("h4", {
                                   className: Curry._1(Css.style, {
                                         hd: Css.width({
                                               NAME: "percent",
@@ -249,7 +249,7 @@ function VotePage(Props) {
                                           tl: /* [] */0
                                         }
                                       })
-                                }, Globals.restr("Voting coming again soon!"))), React.createElement(RimbleUi.Box, {
+                                }, "Voting coming again soon!")), React.createElement(RimbleUi.Box, {
                               children: null,
                               width: [
                                 1,
@@ -261,12 +261,12 @@ function VotePage(Props) {
                                         hd: Css.textDecoration("underline"),
                                         tl: /* [] */0
                                       })
-                                }, Globals.restr("How it works")), React.createElement("p", undefined, Globals.restr("Glen is a special Wildcard, this mystical creature is not tied to a specific conservation but rather each month the owners of Wildcards vote for a conservation they think should receive the funds raised by Glen.")), React.createElement("p", undefined, Globals.restr("The voting mechanism uses quadratic voting. Wildcards owners vote using Wildcards Loyalty tokens which they earn from holding a Wildcard. Quadratic voting means that the number of loyalty tokens don't represent the exact number of votes but rather the number of loyalty tokens is square rooted to represent the number of votes.")), React.createElement("h3", {
+                                }, "How it works"), React.createElement("p", undefined, "Glen is a special Wildcard, this mystical creature is not tied to a specific conservation but rather each month the owners of Wildcards vote for a conservation they think should receive the funds raised by Glen."), React.createElement("p", undefined, "The voting mechanism uses quadratic voting. Wildcards owners vote using Wildcards Loyalty tokens which they earn from holding a Wildcard. Quadratic voting means that the number of loyalty tokens don't represent the exact number of votes but rather the number of loyalty tokens is square rooted to represent the number of votes."), React.createElement("h3", {
                                   className: Curry._1(Css.style, {
                                         hd: Css.textDecoration("underline"),
                                         tl: /* [] */0
                                       })
-                                }, Globals.restr("Quadratic Voting    "), match[0] !== /* DefaultView */0 ? React.createElement("img", {
+                                }, "Quadratic Voting    ", match[0] !== /* DefaultView */0 ? React.createElement("img", {
                                         className: Curry._1(Css.style, {
                                               hd: Css.maxHeight({
                                                     NAME: "px",
@@ -286,7 +286,7 @@ function VotePage(Props) {
                                                           return /* DefaultView */0;
                                                         }));
                                           })
-                                      }) : null), React.createElement("small", undefined, React.createElement("p", undefined, Globals.restr("Unfortunately we have decided to stop running our DAO on mainnet ethereum. We are moving all of this code to Matic where voting will be much cheaper and more frictionless"))), React.createElement(RimbleUi.Flex, {
+                                      }) : null), React.createElement("small", undefined, React.createElement("p", undefined, "Unfortunately we have decided to stop running our DAO on mainnet ethereum. We are moving all of this code to Matic where voting will be much cheaper and more frictionless")), React.createElement(RimbleUi.Flex, {
                                   children: Belt_Array.mapWithIndex(conservationPartners, (function (index, conservationPartner) {
                                           return React.createElement(VotePage$OrganisationVote, {
                                                       conservationPartner: conservationPartner,

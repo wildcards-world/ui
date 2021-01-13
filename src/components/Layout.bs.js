@@ -12,7 +12,6 @@ import * as Header from "./Header.bs.js";
 import * as Router from "../helpers/Router.bs.js";
 import * as Styles from "../Styles.bs.js";
 import * as BuyGrid from "./BuyGrid.bs.js";
-import * as Globals from "../harberger-lib/Globals.bs.js";
 import * as QlHooks from "../harberger-lib/QlHooks.bs.js";
 import * as TokenId from "../harberger-lib/TokenId.bs.js";
 import * as Partners from "./StaticContent/Partners.bs.js";
@@ -220,11 +219,11 @@ function Layout(Props) {
                       children: React.createElement("span", undefined, React.createElement("a", {
                                 className: AnimalAnnouncement.linkToAnimal,
                                 href: "/#explorer/2nd-edition"
-                              }, Globals.restr("New wildcards")), " launched on the ", React.createElement("a", {
+                              }, "New wildcards"), " launched on the ", React.createElement("a", {
                                 className: AnimalAnnouncement.linkToAnimal,
                                 href: "https://matic.network",
                                 rel: "noopener noreferrer"
-                              }, Globals.restr("MATIC network. ")))
+                              }, "MATIC network. "))
                     }), React.createElement(Header.make, {
                       navItems: [
                         {
@@ -239,7 +238,7 @@ function Layout(Props) {
                                               $$event.preventDefault();
                                               return Curry._1(clearAndPush, "#");
                                             })
-                                        }, Globals.restr("HOME"));
+                                        }, "HOME");
                             })
                         },
                         {
@@ -253,7 +252,7 @@ function Layout(Props) {
                                               $$event.preventDefault();
                                               return Curry._1(clearAndPush, "/#leaderboards/monthly-contribution");
                                             })
-                                        }, Globals.restr("TOP GUARDIANS"));
+                                        }, "TOP GUARDIANS");
                             })
                         },
                         {
@@ -268,7 +267,7 @@ function Layout(Props) {
                                           onClick: (function (param) {
                                               return Curry._1(closeModal, undefined);
                                             })
-                                        }, Globals.restr("BLOG"));
+                                        }, "BLOG");
                             })
                         },
                         {
@@ -277,7 +276,7 @@ function Layout(Props) {
                           component: (function (closeModal, param) {
                               return React.createElement("div", undefined, React.createElement(RimbleUi.Button, {
                                               className: Styles.whiteText,
-                                              children: Globals.restr("VIEW WILDCARDS"),
+                                              children: "VIEW WILDCARDS",
                                               onClick: (function ($$event) {
                                                   Curry._1(closeModal, undefined);
                                                   $$event.preventDefault();

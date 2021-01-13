@@ -30,11 +30,13 @@ module PurePriceDisplay = {
   @react.component
   let make = (~priceEth, ~optPriceUsd) => <>
     <p className={Styles.noMarginTop ++ (" " ++ Styles.noMarginBottom)}>
-      {(priceEth ++ " ETH")->restr}
+      {(priceEth ++ " ETH")->React.string}
     </p>
     {switch optPriceUsd {
     | Some(priceUsd) =>
-      <p className=Styles.noMarginTop> <small> {("(" ++ (priceUsd ++ " USD)"))->restr} </small> </p>
+      <p className=Styles.noMarginTop>
+        <small> {("(" ++ (priceUsd ++ " USD)"))->React.string} </small>
+      </p>
     | None => React.null
     }}
   </>
@@ -48,10 +50,12 @@ module InUSD = {
     switch optPriceWei {
     | Price(totalPatronageWei) =>
       <p className={Styles.noMarginTop ++ (" " ++ Styles.noMarginBottom)}>
-        {(totalPatronageWei->Eth.toFixedWithPrecisionNoTrailingZeros ++ " USD")->restr}
+        {(totalPatronageWei->Eth.toFixedWithPrecisionNoTrailingZeros ++ " USD")->React.string}
       </p>
     | Foreclosed(_) =>
-      <p className={Styles.noMarginTop ++ (" " ++ Styles.noMarginBottom)}> {"0 USD"->restr} </p>
+      <p className={Styles.noMarginTop ++ (" " ++ Styles.noMarginBottom)}>
+        {"0 USD"->React.string}
+      </p>
 
     | Loading => <Rimble.Loader />
     }

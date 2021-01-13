@@ -4,7 +4,6 @@ import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Blockie from "../bindings/ethereum-blockies-base64/Blockie.bs.js";
-import * as Globals from "../Globals.bs.js";
 import * as Js_dict from "bs-platform/lib/es6/js_dict.js";
 import * as CONSTANTS from "../../CONSTANTS.bs.js";
 import * as RimbleUi from "rimble-ui";
@@ -88,7 +87,7 @@ function ProfileIcon(Props) {
                       Curry._1(clickAction, undefined);
                       return Curry._1(clearAndPush, "#user/" + userAddressLowerCase);
                     })
-                }, React.createElement("div", undefined, React.createElement("p", undefined, React.createElement("strong", undefined, Globals.restr("View Your Profile:"))), React.createElement("p", undefined, Globals.restr(message))), profileIcon);
+                }, React.createElement("div", undefined, React.createElement("p", undefined, React.createElement("strong", undefined, "View Your Profile:")), React.createElement("p", undefined, message)), profileIcon);
     } else {
       return React.createElement(RimbleUi.Tooltip, {
                   message: message,

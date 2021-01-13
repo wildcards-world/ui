@@ -107,7 +107,7 @@ module OrganisationVote = {
         }
         disabled=true
         onClick={_ => selectConservation(index)}>
-        {"Voting Disabled"->restr}
+        {"Voting Disabled"->React.string}
       </Rimble.Button>
     </Rimble.Box>
 }
@@ -161,7 +161,7 @@ let make = (~chain) => {
                 open Css
                 style(list{textAlign(#center)})
               }>
-              {"Glen the Dragon from Turin"->restr}
+              {"Glen the Dragon from Turin"->React.string}
             </h3>
           </a>
           <p
@@ -169,9 +169,9 @@ let make = (~chain) => {
               open Css
               style(list{textAlign(#center)})
             }>
-            {"Monthly contribution: "->restr}
+            {"Monthly contribution: "->React.string}
             {switch optMonthlyPledgeEth {
-            | Some(monthlyPledgeEth) => (monthlyPledgeEth ++ " ETH")->restr
+            | Some(monthlyPledgeEth) => (monthlyPledgeEth ++ " ETH")->React.string
             | None =>
               <Rimble.Loader
                 className={
@@ -183,7 +183,7 @@ let make = (~chain) => {
             <br />
             <small>
               {switch optMonthlyPledgeUsd {
-              | Some(monthlyPledgeUsd) => ("(" ++ (monthlyPledgeUsd ++ " USD)"))->restr
+              | Some(monthlyPledgeUsd) => ("(" ++ (monthlyPledgeUsd ++ " USD)"))->React.string
               | None => React.null
               }}
             </small>
@@ -196,7 +196,7 @@ let make = (~chain) => {
               open Css
               style(list{width(#percent(100.)), textAlign(center)})
             }>
-            {"Voting coming again soon!"->restr}
+            {"Voting coming again soon!"->React.string}
           </h4>
         </Rimble.Box>
         <Rimble.Box width=[1., 1., 0.7]>
@@ -205,20 +205,20 @@ let make = (~chain) => {
               open Css
               style(list{textDecoration(#underline)})
             }>
-            {"How it works"->restr}
+            {"How it works"->React.string}
           </h3>
           <p>
-            {"Glen is a special Wildcard, this mystical creature is not tied to a specific conservation but rather each month the owners of Wildcards vote for a conservation they think should receive the funds raised by Glen."->restr}
+            {"Glen is a special Wildcard, this mystical creature is not tied to a specific conservation but rather each month the owners of Wildcards vote for a conservation they think should receive the funds raised by Glen."->React.string}
           </p>
           <p>
-            {"The voting mechanism uses quadratic voting. Wildcards owners vote using Wildcards Loyalty tokens which they earn from holding a Wildcard. Quadratic voting means that the number of loyalty tokens don't represent the exact number of votes but rather the number of loyalty tokens is square rooted to represent the number of votes."->restr}
+            {"The voting mechanism uses quadratic voting. Wildcards owners vote using Wildcards Loyalty tokens which they earn from holding a Wildcard. Quadratic voting means that the number of loyalty tokens don't represent the exact number of votes but rather the number of loyalty tokens is square rooted to represent the number of votes."->React.string}
           </p>
           <h3
             className={
               open Css
               style(list{textDecoration(#underline)})
             }>
-            {"Quadratic Voting    "->restr}
+            {"Quadratic Voting    "->React.string}
             {voteStep != DefaultView
               ? <img
                   onClick={_ => resetVoting()}
@@ -232,7 +232,7 @@ let make = (~chain) => {
           </h3>
           <small>
             <p>
-              {"Unfortunately we have decided to stop running our DAO on mainnet ethereum. We are moving all of this code to Matic where voting will be much cheaper and more frictionless"->restr}
+              {"Unfortunately we have decided to stop running our DAO on mainnet ethereum. We are moving all of this code to Matic where voting will be much cheaper and more frictionless"->React.string}
             </p>
           </small>
           <Rimble.Flex flexWrap="wrap" alignItems="center">

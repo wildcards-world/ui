@@ -395,14 +395,14 @@ module AnimalActionsOnDetailsPage = {
         ? <AuctionDetails chain animal />
         : <React.Fragment>
             <p>
-            {"Owner: "->React.string}
-            <a
-              onClick={e => {
-                ReactEvent.Mouse.preventDefault(e)
-                clearAndPush(`/#user/${currentPatron}`)
-              }}>
-              {displayNameStr->React.string}
-            </a>
+              {"Owner: "->React.string}
+              <a
+                onClick={e => {
+                  ReactEvent.Mouse.preventDefault(e)
+                  clearAndPush(`/#user/${currentPatron}`)
+                }}>
+                {displayNameStr->React.string}
+              </a>
             </p>
             <PriceDisplay chain animal />
             {switch nonUrlRouting {
@@ -429,9 +429,7 @@ module AnimalActionsOnDetailsPage = {
         <Validate />
       </React.Fragment>
     } else {
-      <>
-      <Unowned chain animal price />
-      </>
+      <> <Unowned chain animal price /> </>
     }
   }
 }
@@ -500,9 +498,16 @@ module DetailsViewAnimal = {
       {displayAnimal(() => normalImage())}
       <h2>
         {switch (QlHooks.useWildcardName(animal), QlHooks.useWildcardCommonName(animal)) {
-        | (Some(name), Some(commonName)) => <> {name->React.string} <small className={open CssJs
-          style(.[fontWeight(#thin)])
-        }>{` the ${commonName}`->React.string}</small> </>
+        | (Some(name), Some(commonName)) => <>
+            {name->React.string}
+            <small
+              className={
+                open CssJs
+                style(.[fontWeight(#thin)])
+              }>
+              {` the ${commonName}`->React.string}
+            </small>
+          </>
         | (Some(name), None) => name->React.string
         | _ => "Loading"->React.string
         }}

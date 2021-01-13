@@ -1,7 +1,6 @@
 let gorillaOnVine = "/img/wildcardsimages/gorilla-on-vine.png"
 
 open Rimble
-open Globals
 
 @react.component
 let make = () => {
@@ -21,7 +20,7 @@ let make = () => {
                 ReactEvent.Form.preventDefault(e)
                 clearAndPush(j`/#leaderboards/monthly-contribution`)
               }}>
-              {"View Other Leaderboards"->restr}
+              {"View Other Leaderboards"->React.string}
             </Button>
           </Rimble.Box>
         </Card>
