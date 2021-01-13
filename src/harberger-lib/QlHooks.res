@@ -105,6 +105,7 @@ module WildcardDataQuery = %graphql(`
       wildcard {
         id
         name
+        commonName
         description
         organization {
           name
@@ -390,6 +391,11 @@ let useWildcardDescription = tokenId =>
 let useWildcardName = tokenId =>
   switch useWildcardDataQuery(tokenId) {
   | Some({wildcard: {name, _}, _}) => name
+  | None => None
+  }
+let useWildcardCommonName = tokenId =>
+  switch useWildcardDataQuery(tokenId) {
+  | Some({wildcard: {commonName, _}, _}) => commonName
   | None => None
   }
 let useWildcardAvatar = tokenId =>
