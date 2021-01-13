@@ -59,10 +59,10 @@ function BuyInput(Props) {
       ]);
   var match$1 = UseDebounce.useDebouncedCallback(setDeposit, 50, {
         maxWait: 500,
-        leading: undefined,
-        trailing: undefined
+        leading: true,
+        trailing: true
       });
-  var debouncedSetDeposit = match$1[0];
+  var debouncedSetDeposit = match$1.callback;
   return React.createElement(React.Fragment, undefined, React.createElement(RimbleUi.Flex, {
                   children: React.createElement(RimbleUi.Box, {
                         p: 2,
