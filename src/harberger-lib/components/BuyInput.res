@@ -56,16 +56,16 @@ let make = (
   <>
     <Rimble.Flex>
       <Rimble.Box p=2 mb=2>
-        <Rimble.Heading> {("Purchase " ++ tokenIdName)->React.string} </Rimble.Heading>
+        <Rimble.Heading> {`Purchase ${tokenIdName}`->React.string} </Rimble.Heading>
       </Rimble.Box>
     </Rimble.Flex>
     <Rimble.Flex>
       <Rimble.Box p=2 mb=2 width=[1., 0.5]>
         <Rimble.Tooltip
-          message=j`This is the amount of money you will receive if someone purchases $tokenIdName from you.`
+          message={`This is the amount of money you will receive if someone purchases ${tokenIdName} from you.`}
           placement="top">
           <Rimble.Text>
-            {("Set " ++ (tokenIdName ++ "'s new for sale price:"))->React.string} infoIcon
+            {`Set ${tokenIdName}'s new for sale price:`->React.string} infoIcon
           </Rimble.Text>
         </Rimble.Tooltip>
         <Rimble.Input

@@ -73,6 +73,7 @@ module Input = {
     ~placeholder: string=?,
     ~className: string=?,
     ~onChange: ReactEvent.Form.t => unit=?,
+    ~onFocus: ReactEvent.Form.t => unit=?,
     ~value: string=?,
   ) => React.element = "Input"
 }
@@ -195,6 +196,7 @@ module Form = {
       ~name: string=?,
       ~className: string=?,
       ~onChange: ReactEvent.Form.t => unit=?,
+      ~onFocus: ReactEvent.Form.t => unit=?,
       ~value: string=?,
       ~width: float=?,
     ) => React.element = "Input"

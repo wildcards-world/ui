@@ -86,7 +86,7 @@ function BuyInput(Props) {
                           placement: "top",
                           children: React.createElement(RimbleUi.Text, {
                                 children: null
-                              }, "Set " + (tokenIdName + "'s new for sale price:"), infoIcon)
+                              }, "Set " + tokenIdName + "\'s new for sale price:", infoIcon)
                         }), React.createElement(RimbleUi.Input, {
                           type: "number",
                           placeholder: "Your Initial Sale Price",
