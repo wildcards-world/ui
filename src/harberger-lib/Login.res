@@ -49,8 +49,8 @@ let make = () => {
           }>
           <div
             className={
-              open Css
-              style(list{
+              open CssJs
+              style(.[
                 margin(px(8)),
                 display(#flex),
                 justifyContent(#center),
@@ -58,9 +58,10 @@ let make = () => {
                 flexDirection(column),
                 cursor(#pointer),
                 borderRadius(px(12)),
-                hover(list{backgroundColor(rgba(195, 195, 195, #num(0.14)))}),
+                backgroundColor(white),
+                hover([backgroundColor(rgb(195, 195, 195))]),
                 transition(~duration=200, ~delay=0, ~timingFunction=easeInOut, "background-color"),
-              })
+              ])
             }>
             <div
               className={

@@ -53,40 +53,18 @@ function Login(Props) {
                                         return Curry._1(activateConnector, connector.connector);
                                       })
                                   }, React.createElement("div", {
-                                        className: Curry._1(Css.style, {
-                                              hd: Css.margin(Css.px(8)),
-                                              tl: {
-                                                hd: Css.display("flex"),
-                                                tl: {
-                                                  hd: Css.justifyContent("center"),
-                                                  tl: {
-                                                    hd: Css.alignItems("center"),
-                                                    tl: {
-                                                      hd: Css.flexDirection(Css.column),
-                                                      tl: {
-                                                        hd: Css.cursor("pointer"),
-                                                        tl: {
-                                                          hd: Css.borderRadius(Css.px(12)),
-                                                          tl: {
-                                                            hd: Css.hover({
-                                                                  hd: Css.backgroundColor(Css.rgba(195, 195, 195, {
-                                                                            NAME: "num",
-                                                                            VAL: 0.14
-                                                                          })),
-                                                                  tl: /* [] */0
-                                                                }),
-                                                            tl: {
-                                                              hd: Css.transition(200, 0, Css.easeInOut, "background-color"),
-                                                              tl: /* [] */0
-                                                            }
-                                                          }
-                                                        }
-                                                      }
-                                                    }
-                                                  }
-                                                }
-                                              }
-                                            })
+                                        className: CssJs.style([
+                                              CssJs.margin(CssJs.px(8)),
+                                              CssJs.display("flex"),
+                                              CssJs.justifyContent("center"),
+                                              CssJs.alignItems("center"),
+                                              CssJs.flexDirection(CssJs.column),
+                                              CssJs.cursor("pointer"),
+                                              CssJs.borderRadius(CssJs.px(12)),
+                                              CssJs.backgroundColor(CssJs.white),
+                                              CssJs.hover([CssJs.backgroundColor(CssJs.rgb(195, 195, 195))]),
+                                              CssJs.transition(200, 0, CssJs.easeInOut, "background-color")
+                                            ])
                                       }, React.createElement("div", {
                                             className: Curry._1(Css.style, {
                                                   hd: Css.width(Css.px(45)),
