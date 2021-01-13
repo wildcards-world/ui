@@ -1,4 +1,4 @@
-# Wild Cards web app
+# Wildcards web app
 
 ## Basic Usage
 

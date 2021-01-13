@@ -29,20 +29,20 @@ let usePartners = () =>
   }
 
 let blueBackground = {
-  open Css
-  style(list{backgroundColor(#hex("73C8D7"))})
+  open CssJs
+  style(.[backgroundColor(#hex("73C8D7"))])
 }
 let cardStyle = {
-  open Css
-  style(list{height(#percent(100.)), display(#flex), important(padding(#percent(0.)))})
+  open CssJs
+  style(.[height(#percent(100.)), display(#flex), important(padding(#percent(0.)))])
 }
 let logoStyle = {
-  open Css
-  style(list{marginLeft(#percent(10.)), width(#percent(80.))})
+  open CssJs
+  style(.[margin(#percent(10.)), width(#percent(80.))])
 }
-let centerText = {
-  open Css
-  style(list{textAlign(#center)})
+let corporatePartnerTextStyle = {
+  open CssJs
+  style(.[textAlign(#center), marginBottom(#percent(10.))])
 }
 
 module OrgDetails = {
@@ -124,7 +124,6 @@ let make = () => {
           {orgBox(React.null, ~key="c")}
           {orgBox(React.null, ~key="d")}
         </>
-      //  "helloWorld"->React.string;
       | None => React.null
       }}
     </Rimble.Flex>
@@ -148,7 +147,7 @@ let make = () => {
           <Rimble.Card className=cardStyle>
             <a href="https://www.ubisoft.com/en-us/company/start-ups/station-f.aspx">
               <img src=ubisoftLogo alt="ubisoft" className=logoStyle />
-              <Rimble.Text className=centerText>
+              <Rimble.Text className=corporatePartnerTextStyle>
                 {"Ubisoft's Entrepreneurs Lab, Season 4, participants"->restr}
               </Rimble.Text>
             </a>
@@ -158,7 +157,7 @@ let make = () => {
           <Rimble.Card className=cardStyle>
             <a href="https://ethcapetown.com/">
               <img src=ethCapeTownLogo alt="eth-cape-town" className=logoStyle />
-              <Rimble.Text className=centerText>
+              <Rimble.Text className=corporatePartnerTextStyle>
                 {"Overall winners of EthCapeTown hackathon"->restr}
               </Rimble.Text>
             </a>
@@ -168,7 +167,7 @@ let make = () => {
           <Rimble.Card className=cardStyle>
             <a href="https://cvvc.com/index.php">
               <img src=cvLabsLogo alt="cv-labs" className=logoStyle />
-              <Rimble.Text className=centerText>
+              <Rimble.Text className=corporatePartnerTextStyle>
                 {"CV Labs Incubator Program, Batch 2"->restr}
               </Rimble.Text>
             </a>
@@ -178,7 +177,7 @@ let make = () => {
           <Rimble.Card className=cardStyle>
             <a href="https://kernel.community/">
               <img src=kernelLogo alt="Kernel Gitcoin" className=logoStyle />
-              <Rimble.Text className=centerText>
+              <Rimble.Text className=corporatePartnerTextStyle>
                 {"Gitcoin Kernel genesis block participants"->restr}
               </Rimble.Text>
             </a>

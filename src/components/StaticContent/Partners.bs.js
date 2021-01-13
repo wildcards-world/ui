@@ -151,49 +151,41 @@ function usePartners(param) {
   }
 }
 
-var blueBackground = Curry._1(Css.style, {
-      hd: Css.backgroundColor({
+var blueBackground = CssJs.style([CssJs.backgroundColor({
             NAME: "hex",
             VAL: "73C8D7"
-          }),
-      tl: /* [] */0
-    });
+          })]);
 
-var cardStyle = Curry._1(Css.style, {
-      hd: Css.height({
+var cardStyle = CssJs.style([
+      CssJs.height({
             NAME: "percent",
             VAL: 100
           }),
-      tl: {
-        hd: Css.display("flex"),
-        tl: {
-          hd: Css.important(Css.padding({
-                    NAME: "percent",
-                    VAL: 0
-                  })),
-          tl: /* [] */0
-        }
-      }
-    });
+      CssJs.display("flex"),
+      CssJs.important(CssJs.padding({
+                NAME: "percent",
+                VAL: 0
+              }))
+    ]);
 
-var logoStyle = Curry._1(Css.style, {
-      hd: Css.marginLeft({
+var logoStyle = CssJs.style([
+      CssJs.margin({
             NAME: "percent",
             VAL: 10
           }),
-      tl: {
-        hd: Css.width({
-              NAME: "percent",
-              VAL: 80
-            }),
-        tl: /* [] */0
-      }
-    });
+      CssJs.width({
+            NAME: "percent",
+            VAL: 80
+          })
+    ]);
 
-var centerText = Curry._1(Css.style, {
-      hd: Css.textAlign("center"),
-      tl: /* [] */0
-    });
+var corporatePartnerTextStyle = CssJs.style([
+      CssJs.textAlign("center"),
+      CssJs.marginBottom({
+            NAME: "percent",
+            VAL: 10
+          })
+    ]);
 
 function Partners$OrgDetails(Props) {
   var conservation = Props.conservation;
@@ -357,7 +349,7 @@ function Partners(Props) {
                                           src: ubisoftLogo
                                         }), React.createElement(RimbleUi.Text, {
                                           children: Globals.restr("Ubisoft's Entrepreneurs Lab, Season 4, participants"),
-                                          className: centerText
+                                          className: corporatePartnerTextStyle
                                         }))
                               }),
                           width: [
@@ -379,7 +371,7 @@ function Partners(Props) {
                                           src: ethCapeTownLogo
                                         }), React.createElement(RimbleUi.Text, {
                                           children: Globals.restr("Overall winners of EthCapeTown hackathon"),
-                                          className: centerText
+                                          className: corporatePartnerTextStyle
                                         }))
                               }),
                           width: [
@@ -401,7 +393,7 @@ function Partners(Props) {
                                           src: cvLabsLogo
                                         }), React.createElement(RimbleUi.Text, {
                                           children: Globals.restr("CV Labs Incubator Program, Batch 2"),
-                                          className: centerText
+                                          className: corporatePartnerTextStyle
                                         }))
                               }),
                           width: [
@@ -423,7 +415,7 @@ function Partners(Props) {
                                           src: kernelLogo
                                         }), React.createElement(RimbleUi.Text, {
                                           children: Globals.restr("Gitcoin Kernel genesis block participants"),
-                                          className: centerText
+                                          className: corporatePartnerTextStyle
                                         }))
                               }),
                           width: [
@@ -447,7 +439,7 @@ export {
   blueBackground ,
   cardStyle ,
   logoStyle ,
-  centerText ,
+  corporatePartnerTextStyle ,
   OrgDetails ,
   make ,
   

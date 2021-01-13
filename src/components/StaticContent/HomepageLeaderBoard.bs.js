@@ -43,7 +43,7 @@ function HomepageLeaderBoard(Props) {
                         width: [
                           1,
                           1,
-                          0.59
+                          0.67
                         ],
                         className: Styles.infoCardContainer
                       })),
