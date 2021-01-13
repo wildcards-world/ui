@@ -260,7 +260,8 @@ function OrgProfile$OrgPage(Props) {
   var tmp;
   tmp = orgDescription.TAG === /* Ok */0 ? Belt_Array.mapWithIndex(orgDescription._0, (function (i, paragraphText) {
             return React.createElement("p", {
-                        key: String(i)
+                        key: String(i),
+                        className: CssJs.style([CssJs.textAlign("justify")])
                       }, paragraphText);
           })) : React.createElement("p", undefined, Globals.restr("error loading description"));
   return React.createElement("div", undefined, React.createElement(OrgProfile$ComingSoonModal, {
@@ -346,7 +347,8 @@ function OrgProfile$OrgPage(Props) {
                                         }),
                                     CssJs.overflowY("auto"),
                                     CssJs.overflowX("hidden"),
-                                    CssJs.backgroundColor(CssJs.rgb(250, 250, 250)),
+                                    CssJs.backgroundColor(CssJs.rgb(240, 240, 240)),
+                                    CssJs.padding(CssJs.em(0.5)),
                                     CssJs.borderRadius(CssJs.em(0.8))
                                   ])
                             }, tmp), React.createElement("br", undefined)), React.createElement(RimbleUi.Box, {
