@@ -28,26 +28,29 @@ let make = () => {
     </p>
     <div
       className={
-        open Css
-        style(list{
+        open CssJs
+        style(.[
           display(#grid),
-          gridTemplateColumns(list{#repeat(#autoFit, #minmax(px(176), fr(0.6)))}),
+          gridTemplateColumns([#repeat(#autoFit, #minmax(px(176), fr(0.6)))]),
           maxWidth(px(800)),
-        })
+        ])
       }>
       {connectors
       ->Array.mapWithIndex((index, connector) =>
         <div
           key={index->string_of_int}
-          onClick={_e => activateConnector(connector.connector)}
+          onClick={e => {
+            ReactEvent.Mouse.stopPropagation(e)
+            activateConnector(connector.connector)
+          }}
           className={
-            open Css
-            style(list{border(px(1), #solid, rgba(195, 195, 195, #num(0.14))), hover(list{})})
+            open CssJs
+            style(.[zIndex(1), border(px(1), #solid, rgba(195, 195, 195, #num(0.14)))])
           }>
           <div
             className={
-              open Css
-              style(list{
+              open CssJs
+              style(.[
                 margin(px(8)),
                 display(#flex),
                 justifyContent(#center),
@@ -55,9 +58,10 @@ let make = () => {
                 flexDirection(column),
                 cursor(#pointer),
                 borderRadius(px(12)),
-                hover(list{backgroundColor(rgba(195, 195, 195, #num(0.14)))}),
+                backgroundColor(white),
+                hover([backgroundColor(rgb(195, 195, 195))]),
                 transition(~duration=200, ~delay=0, ~timingFunction=easeInOut, "background-color"),
-              })
+              ])
             }>
             <div
               className={
