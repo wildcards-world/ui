@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import * as Styles from "../../Styles.bs.js";
-import * as Globals from "../../harberger-lib/Globals.bs.js";
 import * as RimbleUi from "rimble-ui";
 
 var raisingHandsEmoji = "/img/emoji/raising_hands.png";
@@ -24,7 +23,7 @@ function FinalNote$FinalNote(Props) {
                               children: null,
                               className: Styles.finalNoteContent
                             }, React.createElement(RimbleUi.Heading, {
-                                  children: Globals.restr("Wildcards is currently under active development."),
+                                  children: "Wildcards is currently under active development.",
                                   className: Styles.whiteText
                                 }), React.createElement("br", undefined), React.createElement("a", {
                                   className: Styles.linkPillBox,
@@ -33,7 +32,7 @@ function FinalNote$FinalNote(Props) {
                                   target: "_blank"
                                 }, React.createElement("span", {
                                       className: Styles.linkPillText
-                                    }, Globals.restr("Watch presentation at the EthCapeTown hackathon.")))))
+                                    }, "Watch presentation at the EthCapeTown hackathon."))))
                   }),
               className: Styles.infoBackground
             });

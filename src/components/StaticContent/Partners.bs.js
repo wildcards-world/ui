@@ -5,7 +5,6 @@ import * as CssJs from "bs-css-emotion/src/CssJs.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Styles from "../../Styles.bs.js";
-import * as Globals from "../../harberger-lib/Globals.bs.js";
 import * as CONSTANTS from "../../CONSTANTS.bs.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
@@ -300,7 +299,7 @@ function Partners(Props) {
   return React.createElement("div", {
               width: "100%"
             }, React.createElement(RimbleUi.Flex, {
-                  children: React.createElement("h1", undefined, Globals.restr("Conservation Partners")),
+                  children: React.createElement("h1", undefined, "Conservation Partners"),
                   flexWrap: "wrap",
                   alignItems: "stretch",
                   justifyContent: "space-around",
@@ -324,7 +323,7 @@ function Partners(Props) {
                 }, React.createElement(RimbleUi.Flex, {
                       children: React.createElement("h1", {
                             className: CssJs.style([CssJs.unsafe("text-shadow", "0.25em 0.25em 0.5em #FFFFFF, -0.25em -0.25em 0.5em #FFFFFF, -0.25em 0.25em 0.5em #FFFFFF, 0.25em -0.25em 0.5em #FFFFFF;")])
-                          }, Globals.restr("Corporate partners")),
+                          }, "Corporate partners"),
                       flexWrap: "wrap",
                       alignItems: "stretch",
                       justifyContent: "space-around",
@@ -348,7 +347,7 @@ function Partners(Props) {
                                           alt: "ubisoft",
                                           src: ubisoftLogo
                                         }), React.createElement(RimbleUi.Text, {
-                                          children: Globals.restr("Ubisoft's Entrepreneurs Lab, Season 4, participants"),
+                                          children: "Ubisoft's Entrepreneurs Lab, Season 4, participants",
                                           className: corporatePartnerTextStyle
                                         }))
                               }),
@@ -370,7 +369,7 @@ function Partners(Props) {
                                           alt: "eth-cape-town",
                                           src: ethCapeTownLogo
                                         }), React.createElement(RimbleUi.Text, {
-                                          children: Globals.restr("Overall winners of EthCapeTown hackathon"),
+                                          children: "Overall winners of EthCapeTown hackathon",
                                           className: corporatePartnerTextStyle
                                         }))
                               }),
@@ -392,7 +391,7 @@ function Partners(Props) {
                                           alt: "cv-labs",
                                           src: cvLabsLogo
                                         }), React.createElement(RimbleUi.Text, {
-                                          children: Globals.restr("CV Labs Incubator Program, Batch 2"),
+                                          children: "CV Labs Incubator Program, Batch 2",
                                           className: corporatePartnerTextStyle
                                         }))
                               }),
@@ -414,7 +413,7 @@ function Partners(Props) {
                                           alt: "Kernel Gitcoin",
                                           src: kernelLogo
                                         }), React.createElement(RimbleUi.Text, {
-                                          children: Globals.restr("Gitcoin Kernel genesis block participants"),
+                                          children: "Gitcoin Kernel genesis block participants",
                                           className: corporatePartnerTextStyle
                                         }))
                               }),

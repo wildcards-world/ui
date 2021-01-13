@@ -1,5 +1,3 @@
-open Globals
-
 type timeUnit = {
   decimal: int,
   unit: string,
@@ -84,7 +82,7 @@ let make = (~endDateMoment, ~displayUnits=true) => {
 
   <React.Fragment>
     {displayUnits
-      ? countDown->calculateTimeRemainingFromSeconds->displayTimeLeft->restr
-      : countDown->calculateTimeRemainingFromSeconds->displayTimeLeftSimple->restr}
+      ? countDown->calculateTimeRemainingFromSeconds->displayTimeLeft->React.string
+      : countDown->calculateTimeRemainingFromSeconds->displayTimeLeftSimple->React.string}
   </React.Fragment>
 }

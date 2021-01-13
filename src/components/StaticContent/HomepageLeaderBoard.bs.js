@@ -3,7 +3,6 @@
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Styles from "../../Styles.bs.js";
-import * as Globals from "../../harberger-lib/Globals.bs.js";
 import * as RimbleUi from "rimble-ui";
 import * as RootProvider from "../../harberger-lib/RootProvider.bs.js";
 import * as MonthlyContribution from "../Leaderboards/MonthlyContribution.bs.js";
@@ -32,7 +31,7 @@ function HomepageLeaderBoard(Props) {
                                 }), React.createElement("br", undefined), React.createElement(RimbleUi.Box, {
                                   children: React.createElement(RimbleUi.Button, {
                                         className: Styles.centerItemsMargin,
-                                        children: Globals.restr("View Other Leaderboards"),
+                                        children: "View Other Leaderboards",
                                         onClick: (function (e) {
                                             e.preventDefault();
                                             return Curry._1(clearAndPush, "/#leaderboards/monthly-contribution");

@@ -1,5 +1,4 @@
 open Rimble
-open Globals
 open React
 
 // FAQ Styles
@@ -65,7 +64,7 @@ module FaqItem = {
     <Fragment>
       <div onClick={_ => toggleAccordion()}>
         <Text className="accordion-title">
-          {title->restr} <Chevron className={rotate(isOpen ? 90. : 0.)} />
+          {title->React.string} <Chevron className={rotate(isOpen ? 90. : 0.)} />
         </Text>
       </div>
       <div
@@ -87,49 +86,49 @@ type faqContentItem = {
 let content = [
   {
     title: "Do the different wildcards represent real animals?",
-    content: "Some wildcards do represent real animals, while other wildcards are symoblic of the coservation efforts of that organisation. When partnering with a conservation organisation, if that organisation has specific ainimals they track and care for, we aim to list those real animals. In other cases, conservation efforts can occur on a more macro level (without specific animals). To raise funds for these efforts we create an animal representative of that organisation. In both cases, an animal will simply represent an organisation, and funds generated from that animal will flow to the organisation it represents."->restr,
+    content: "Some wildcards do represent real animals, while other wildcards are symoblic of the coservation efforts of that organisation. When partnering with a conservation organisation, if that organisation has specific ainimals they track and care for, we aim to list those real animals. In other cases, conservation efforts can occur on a more macro level (without specific animals). To raise funds for these efforts we create an animal representative of that organisation. In both cases, an animal will simply represent an organisation, and funds generated from that animal will flow to the organisation it represents."->React.string,
   },
   {
     title: "How do I know my funds are going to the organization?",
     content: <Fragment>
-      {"Our platform uses ethereum (a blockchain), which is essentially a public transaction ledger. This means that every single action happening on this platform is completely public, verifiable and auditable. If you would like to learn more, "->restr}
+      {"Our platform uses ethereum (a blockchain), which is essentially a public transaction ledger. This means that every single action happening on this platform is completely public, verifiable and auditable. If you would like to learn more, "->React.string}
       <a
         href="https://blog.wildcards.world/where-is-the-money-going/"
         target="_blank"
         rel="noopener noreferrer">
-        {"read our blog post"->restr}
+        {"read our blog post"->React.string}
       </a>
-      {"  which details how funds are transparently recieved by our conservation partners."->restr}
+      {"  which details how funds are transparently recieved by our conservation partners."->React.string}
     </Fragment>,
   },
   {
     title: "Can I only buy a wildcard using cryptocurrency?",
     content: <Fragment>
-      {"Unfortunately, for now cryptocurrency is the only way to buy a wildcard. We are actively working on FIAT currency solutions. In the mean time, we have intergrated with Torus, allowing you to use your credit card easily to buy the required ETH necessary to purchase a wildcard."->restr}
+      {"Unfortunately, for now cryptocurrency is the only way to buy a wildcard. We are actively working on FIAT currency solutions. In the mean time, we have intergrated with Torus, allowing you to use your credit card easily to buy the required ETH necessary to purchase a wildcard."->React.string}
       <a
         href="https://blog.wildcards.world/how-to-buy-a-wildcard-web3-ethereum/"
         target="_blank"
         rel="noopener noreferrer">
-        {" Read our guide"->restr}
+        {" Read our guide"->React.string}
       </a>
-      {" to find out more about how to buy a wildcard."->restr}
+      {" to find out more about how to buy a wildcard."->React.string}
     </Fragment>,
   },
   {
     title: "What is a non-fungible token?",
-    content: "A non-fungible token (NFT), is simply put, a token that is unique. This is in contrast to bitcoin (which is fungible), as each bitcoin is always equivalent to another one in value. Every wildcard is an NFT representing a unique animal. Since wildcards are non-fungible (unique), every wildcard has a unique history and independant value."->restr,
+    content: "A non-fungible token (NFT), is simply put, a token that is unique. This is in contrast to bitcoin (which is fungible), as each bitcoin is always equivalent to another one in value. Every wildcard is an NFT representing a unique animal. Since wildcards are non-fungible (unique), every wildcard has a unique history and independant value."->React.string,
   },
   {
     title: "What does 'always for sale' mean?",
-    content: "Always for sale means exactly what it says, the asset or thing in question can be bought by any person at anytime, and is hence, always for sale. How this functions in practice is very interesting. The owner of the asset is required to always have a listed selling price for this asset at which anyone could buy this asset from them at any point in time. The owner won’t set the selling price too high because they are required to continually pay a percentage of the selling price in order to keep ownership of the asset."->restr,
+    content: "Always for sale means exactly what it says, the asset or thing in question can be bought by any person at anytime, and is hence, always for sale. How this functions in practice is very interesting. The owner of the asset is required to always have a listed selling price for this asset at which anyone could buy this asset from them at any point in time. The owner won’t set the selling price too high because they are required to continually pay a percentage of the selling price in order to keep ownership of the asset."->React.string,
   },
   {
     title: "What is a deposit and what happens if my deposit runs out?",
-    content: "Your deposit is used to contiually pay the percentage fee of the selling price you set, in order for you to continue your ownership of the asset. If your deposit runs out then anyone can claim the asset for free and set a new selling price."->restr,
+    content: "Your deposit is used to contiually pay the percentage fee of the selling price you set, in order for you to continue your ownership of the asset. If your deposit runs out then anyone can claim the asset for free and set a new selling price."->React.string,
   },
   {
     title: "Can I join wildcards and raise funds for my animal conservation project?",
-    content: "Yes! Please send an email to jonjon@wildcards.world"->restr,
+    content: "Yes! Please send an email to jonjon@wildcards.world"->React.string,
   },
 ]
 
@@ -143,7 +142,7 @@ let make = () => {
       <Rimble.Flex flexWrap="wrap" alignItems="center" className=Styles.floatingSignupBoxInner>
         <Rimble.Box width=[1.]>
           <Rimble.Card>
-            <Heading> {"Frequently Asked Questions (FAQs)"->restr} </Heading>
+            <Heading> {"Frequently Asked Questions (FAQs)"->React.string} </Heading>
             <div className=accordionSection>
               {Array.mapWithIndex(content, (index, {title, content}) =>
                 <FaqItem

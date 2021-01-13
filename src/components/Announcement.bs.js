@@ -3,7 +3,6 @@
 import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
-import * as Globals from "../harberger-lib/Globals.bs.js";
 
 function announcementStyle(displayVal, announcementBannerColor) {
   return Curry._1(Css.style, {
@@ -59,7 +58,7 @@ function Announcement(Props) {
                                     return "none";
                                   }));
                     })
-                }, Globals.restr("×")));
+                }, "×"));
 }
 
 var make = Announcement;

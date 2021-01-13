@@ -33,33 +33,33 @@ module CoreConcepts = {
         <Box width=[1., 1., 0.59] className=Styles.infoCardContainer>
           <Card className=Styles.infoCardStyles>
             <Heading className=Styles.centerText _as="h2" fontSize=5>
-              {"Core Concepts"->restr}
+              {"Core Concepts"->React.string}
             </Heading>
             <br />
             <hr />
             <br />
-            <Heading _as="h3"> {translation(. "nft")->restr} </Heading>
+            <Heading _as="h3"> {translation(. "nft")->React.string} </Heading>
             <br />
             <Text>
-              {"A "->restr}
-              <strong> {translation(. "nft")->restr} </strong>
-              {translation(. "whatIsANFT")->restr}
+              {"A "->React.string}
+              <strong> {translation(. "nft")->React.string} </strong>
+              {translation(. "whatIsANFT")->React.string}
             </Text>
             <br />
-            <Heading _as="h3"> {"Always for Sale"->restr} </Heading>
+            <Heading _as="h3"> {"Always for Sale"->React.string} </Heading>
             <br />
             <Text>
-              {"When an asset is bought a new selling price is stipulated by the buyer. Assets are "->restr}
-              <strong> {"Always for Sale"->restr} </strong>
-              {", forever!"->restr}
+              {"When an asset is bought a new selling price is stipulated by the buyer. Assets are "->React.string}
+              <strong> {"Always for Sale"->React.string} </strong>
+              {", forever!"->React.string}
             </Text>
             <br />
-            <Heading _as="h3"> {translation(. "harbergerTax")->restr} </Heading>
+            <Heading _as="h3"> {translation(. "harbergerTax")->React.string} </Heading>
             <br />
             <Text>
-              {"The owner of an asset pays a "->restr}
-              <strong> {translation(. "harbergerTax")->restr} </strong>
-              {"  which is a percentage of the selling price they stipulate."->restr}
+              {"The owner of an asset pays a "->React.string}
+              <strong> {translation(. "harbergerTax")->React.string} </strong>
+              {"  which is a percentage of the selling price they stipulate."->React.string}
             </Text>
           </Card>
         </Box>

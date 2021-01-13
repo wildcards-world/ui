@@ -26,8 +26,6 @@ let infoTooltipStyle = {
 let infoIcon =
   <div className=infoTooltipStyle> <Rimble.Icon color="green" name="Info" size="16" /> </div>
 
-open Globals
-
 @react.component
 let make = (
   ~patronage,
@@ -61,7 +59,7 @@ let make = (
   <>
     <Rimble.Flex>
       <Rimble.Box p=2 mb=2>
-        <Rimble.Heading> {("Purchase " ++ tokenIdName)->restr} </Rimble.Heading>
+        <Rimble.Heading> {("Purchase " ++ tokenIdName)->React.string} </Rimble.Heading>
       </Rimble.Box>
     </Rimble.Flex>
     <Rimble.Flex>
@@ -70,7 +68,7 @@ let make = (
           message=j`This is the amount of money you will receive if someone purchases $tokenIdName from you.`
           placement="top">
           <Rimble.Text>
-            {("Set " ++ (tokenIdName ++ "'s new for sale price:"))->restr} infoIcon
+            {("Set " ++ (tokenIdName ++ "'s new for sale price:"))->React.string} infoIcon
           </Rimble.Text>
         </Rimble.Tooltip>
         <Rimble.Input
@@ -89,11 +87,11 @@ let make = (
           message="This is the monthly contribution that will go towards conservation of at risk animals. This will be deducted continuously from your deposit"
           placement="top">
           <Rimble.Text className=rightAlignText>
-            {"Your monthly contribution:"->restr} infoIcon
+            {"Your monthly contribution:"->React.string} infoIcon
           </Rimble.Text>
         </Rimble.Tooltip>
         <br />
-        <Rimble.Text className=rightAlignText> {patronage->restr} </Rimble.Text>
+        <Rimble.Text className=rightAlignText> {patronage->React.string} </Rimble.Text>
       </Rimble.Box>
     </Rimble.Flex>
     <Rimble.Flex alignItems="center" justifyContent="center">
@@ -101,7 +99,7 @@ let make = (
         <Rimble.Tooltip
           message="The deposit is the funds that will be used to cover your monthly contribution."
           placement="top">
-          <Rimble.Text> {"Set your deposit:"->restr} infoIcon </Rimble.Text>
+          <Rimble.Text> {"Set your deposit:"->React.string} infoIcon </Rimble.Text>
         </Rimble.Tooltip>
         <Rimble.Input
           _type="number"
@@ -132,11 +130,11 @@ let make = (
     <p>
       {("This deposit will last " ++
       (depositTimeInSeconds->CountDown.displayTimeLeftHours ++
-      " for your monthly contribution"))->restr}
+      " for your monthly contribution"))->React.string}
     </p>
     <Rimble.Flex>
       <Rimble.Box p=2 mb=2 width=[1., 0.7]>
-        <Rimble.Button onClick={_ => onSubmitBuy()}> {"Buy"->restr} </Rimble.Button>
+        <Rimble.Button onClick={_ => onSubmitBuy()}> {"Buy"->React.string} </Rimble.Button>
       </Rimble.Box>
     </Rimble.Flex>
   </>

@@ -1,5 +1,3 @@
-open Globals
-
 let ubisoftLogo = "/img/logos/Ubisoft.png"
 let ethCapeTownLogo = "/img/logos/EthCapeTown.png"
 let cvLabsLogo = "/img/logos/cvlabszug.jpg"
@@ -104,7 +102,7 @@ let make = () => {
       pt=50
       px=50
       className=blueBackground>
-      <h1> {"Conservation Partners"->restr} </h1>
+      <h1> {"Conservation Partners"->React.string} </h1>
     </Rimble.Flex>
     <Rimble.Flex
       flexWrap="wrap"
@@ -139,7 +137,7 @@ let make = () => {
               ),
             ])
           }>
-          {"Corporate partners"->restr}
+          {"Corporate partners"->React.string}
         </h1>
       </Rimble.Flex>
       <Rimble.Flex flexWrap="wrap" justifyContent="space-around" alignItems="stretch" px=50>
@@ -148,7 +146,7 @@ let make = () => {
             <a href="https://www.ubisoft.com/en-us/company/start-ups/station-f.aspx">
               <img src=ubisoftLogo alt="ubisoft" className=logoStyle />
               <Rimble.Text className=corporatePartnerTextStyle>
-                {"Ubisoft's Entrepreneurs Lab, Season 4, participants"->restr}
+                {"Ubisoft's Entrepreneurs Lab, Season 4, participants"->React.string}
               </Rimble.Text>
             </a>
           </Rimble.Card>
@@ -158,7 +156,7 @@ let make = () => {
             <a href="https://ethcapetown.com/">
               <img src=ethCapeTownLogo alt="eth-cape-town" className=logoStyle />
               <Rimble.Text className=corporatePartnerTextStyle>
-                {"Overall winners of EthCapeTown hackathon"->restr}
+                {"Overall winners of EthCapeTown hackathon"->React.string}
               </Rimble.Text>
             </a>
           </Rimble.Card>
@@ -168,7 +166,7 @@ let make = () => {
             <a href="https://cvvc.com/index.php">
               <img src=cvLabsLogo alt="cv-labs" className=logoStyle />
               <Rimble.Text className=corporatePartnerTextStyle>
-                {"CV Labs Incubator Program, Batch 2"->restr}
+                {"CV Labs Incubator Program, Batch 2"->React.string}
               </Rimble.Text>
             </a>
           </Rimble.Card>
@@ -178,7 +176,7 @@ let make = () => {
             <a href="https://kernel.community/">
               <img src=kernelLogo alt="Kernel Gitcoin" className=logoStyle />
               <Rimble.Text className=corporatePartnerTextStyle>
-                {"Gitcoin Kernel genesis block participants"->restr}
+                {"Gitcoin Kernel genesis block participants"->React.string}
               </Rimble.Text>
             </a>
           </Rimble.Card>

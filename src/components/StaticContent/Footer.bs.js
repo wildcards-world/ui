@@ -3,7 +3,6 @@
 import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
-import * as Globals from "../../harberger-lib/Globals.bs.js";
 import * as RimbleUi from "rimble-ui";
 import * as ReactSocialIcons from "@wildcards/react-social-icons";
 
@@ -135,39 +134,39 @@ function Footer(Props) {
                     className: footerWrapper
                   }, React.createElement("div", {
                         className: footerText
-                      }, React.createElement("div", undefined, Globals.restr("©"), React.createElement("a", {
+                      }, React.createElement("div", undefined, "©", React.createElement("a", {
                                 className: footerLink,
                                 href: "https://wildcards.world",
                                 rel: "noopener noreferrer",
                                 target: "_blank"
-                              }, Globals.restr("Wildcards")))), React.createElement("div", {
+                              }, "Wildcards"))), React.createElement("div", {
                         className: footerText
                       }, React.createElement("a", {
                             className: footerLink,
                             href: transparency_link,
                             rel: "noopener noreferrer",
                             target: "_blank"
-                          }, Globals.restr("Transparency"))), React.createElement("div", {
+                          }, "Transparency")), React.createElement("div", {
                         className: footerText
                       }, React.createElement("a", {
                             className: footerLink,
                             href: "/#team",
                             rel: "noopener noreferrer"
-                          }, Globals.restr("Team"))), React.createElement("div", {
+                          }, "Team")), React.createElement("div", {
                         className: footerText
                       }, React.createElement("a", {
                             className: footerLink,
                             href: privacy_policy_link,
                             rel: "noopener noreferrer",
                             target: "_blank"
-                          }, Globals.restr("Privacy Policy"))), React.createElement("div", {
+                          }, "Privacy Policy")), React.createElement("div", {
                         className: footerText
                       }, React.createElement("a", {
                             className: footerLink,
                             href: terms_and_conditions_link,
                             rel: "noopener noreferrer",
                             target: "_blank"
-                          }, Globals.restr("Terms and Conditions"))), React.createElement("ul", {
+                          }, "Terms and Conditions")), React.createElement("ul", {
                         className: footerSocialButtons
                       }, React.createElement("li", {
                             className: footerSocialButton

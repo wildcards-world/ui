@@ -9,7 +9,6 @@ import * as React from "react";
 import * as Animal from "../harberger-lib/Animal.bs.js";
 import * as Styles from "../Styles.bs.js";
 import * as Amounts from "./Amounts.bs.js";
-import * as Globals from "../harberger-lib/Globals.bs.js";
 import * as QlHooks from "../harberger-lib/QlHooks.bs.js";
 import * as TokenId from "../harberger-lib/TokenId.bs.js";
 import * as CONSTANTS from "../CONSTANTS.bs.js";
@@ -263,7 +262,7 @@ function OrgProfile$OrgPage(Props) {
                         key: String(i),
                         className: CssJs.style([CssJs.textAlign("justify")])
                       }, paragraphText);
-          })) : React.createElement("p", undefined, Globals.restr("error loading description"));
+          })) : React.createElement("p", undefined, "error loading description");
   return React.createElement("div", undefined, React.createElement(OrgProfile$ComingSoonModal, {
                   selectedComingSoonAnimal: match[0],
                   setSelectedComingSoonAnimal: setSelectedComingSoonAnimal,
@@ -339,7 +338,7 @@ function OrgProfile$OrgPage(Props) {
                               href: orgWebsite,
                               rel: "noopener noreferrer",
                               target: "_blank"
-                            }, Globals.restr(orgName)), React.createElement("br", undefined), React.createElement("div", {
+                            }, orgName), React.createElement("br", undefined), React.createElement("div", {
                               className: CssJs.style([
                                     CssJs.maxHeight({
                                           NAME: "em",
@@ -367,7 +366,7 @@ function OrgProfile$OrgPage(Props) {
                               })
                         }, optOrgYoutubeVid !== undefined ? React.createElement(make, {
                                 videoCode: optOrgYoutubeVid
-                              }) : null, React.createElement("h2", undefined, Globals.restr("Total Raised")), totalCollectedMainnetEth !== undefined && totalCollectMaticDai !== undefined ? React.createElement(Amounts.AmountRaised.make, {
+                              }) : null, React.createElement("h2", undefined, "Total Raised"), totalCollectedMainnetEth !== undefined && totalCollectMaticDai !== undefined ? React.createElement(Amounts.AmountRaised.make, {
                                 mainnetEth: Caml_option.valFromOption(totalCollectedMainnetEth),
                                 maticDai: Caml_option.valFromOption(totalCollectMaticDai)
                               }) : "Loading"), React.createElement(RimbleUi.Box, {

@@ -1,6 +1,5 @@
 @dead("+gorillaOnVine") let gorillaOnVine = "/img/wildcardsimages/gorilla-on-vine.png"
 
-open Globals
 open Rimble
 
 @react.component
@@ -10,9 +9,9 @@ let make = () =>
       <Flex flexWrap="wrap" alignItems="center" className=Styles.floatingSignupBoxInner>
         <Box className=Styles.emailTextBox width=[1., 1., 0.4]>
           <p className=Styles.emailSignupHeader>
-            <strong> {"Want to stay in the loop?"->restr} </strong>
+            <strong> {"Want to stay in the loop?"->React.string} </strong>
           </p>
-          <span> {"Sign up for our newsletter"->restr} </span>
+          <span> {"Sign up for our newsletter"->React.string} </span>
           <br />
           <br />
         </Box>
@@ -32,7 +31,7 @@ let make = () =>
                 />
               </Box>
               <Box width=[1., 0.4] className=Styles.inputElements>
-                <Button width=1.> {"Submit"->restr} </Button>
+                <Button width=1.> {"Submit"->React.string} </Button>
               </Box>
             </Flex>
           </Rimble.Form>

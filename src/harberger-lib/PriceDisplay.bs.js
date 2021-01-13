@@ -43,9 +43,9 @@ function PriceDisplay$PurePriceDisplay(Props) {
   var optPriceUsd = Props.optPriceUsd;
   return React.createElement(React.Fragment, undefined, React.createElement("p", {
                   className: Styles.noMarginTop + (" " + Styles.noMarginBottom)
-                }, Globals.restr(priceEth + " ETH")), optPriceUsd !== undefined ? React.createElement("p", {
+                }, priceEth + " ETH"), optPriceUsd !== undefined ? React.createElement("p", {
                     className: Styles.noMarginTop
-                  }, React.createElement("small", undefined, Globals.restr("(" + (optPriceUsd + " USD)")))) : null);
+                  }, React.createElement("small", undefined, "(" + (optPriceUsd + " USD)"))) : null);
 }
 
 var PurePriceDisplay = {
@@ -61,11 +61,11 @@ function PriceDisplay$InUSD(Props) {
   } else if (optPriceWei.TAG === /* Foreclosed */0) {
     return React.createElement("p", {
                 className: Styles.noMarginTop + (" " + Styles.noMarginBottom)
-              }, Globals.restr("0 USD"));
+              }, "0 USD");
   } else {
     return React.createElement("p", {
                 className: Styles.noMarginTop + (" " + Styles.noMarginBottom)
-              }, Globals.restr(Eth.toFixedWithPrecisionNoTrailingZeros(undefined, optPriceWei._0) + " USD"));
+              }, Eth.toFixedWithPrecisionNoTrailingZeros(undefined, optPriceWei._0) + " USD");
   }
 }
 

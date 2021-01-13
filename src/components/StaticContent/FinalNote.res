@@ -1,11 +1,10 @@
 let raisingHandsEmoji = "/img/emoji/raising_hands.png"
 
 module FinalNote = {
-  open Globals
   open Rimble
 
-  @react.component
-  @dead("FinalNote.+make") let make = () =>
+  @react.component @dead("FinalNote.+make")
+  let make = () =>
     <Box className=Styles.infoBackground>
       <Flex>
         <Box className=Styles.extraInfoFooterBox>
@@ -14,7 +13,7 @@ module FinalNote = {
           </Box>
           <Box className=Styles.finalNoteContent>
             <Heading className=Styles.whiteText>
-              {"Wildcards is currently under active development."->restr}
+              {"Wildcards is currently under active development."->React.string}
             </Heading>
             <br />
             <a
@@ -23,7 +22,7 @@ module FinalNote = {
               target="_blank"
               rel="noopener noreferrer">
               <span className=Styles.linkPillText>
-                {"Watch presentation at the EthCapeTown hackathon."->restr}
+                {"Watch presentation at the EthCapeTown hackathon."->React.string}
               </span>
             </a>
           </Box>

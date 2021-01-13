@@ -41,51 +41,51 @@ function Info$ExpertView(Props) {
   var tmp;
   if (definiteTime !== undefined) {
     var date = Caml_option.valFromOption(definiteTime);
-    tmp = React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, Globals.restr("Foreclosure date: "), React.createElement(RimbleUi.Tooltip, {
+    tmp = React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, "Foreclosure date: ", React.createElement(RimbleUi.Tooltip, {
                       message: "This is the date the deposit will run out and the current owner will lose guardianship of " + tokenName,
                       placement: "top",
-                      children: React.createElement("span", undefined, Globals.restr("ⓘ"))
-                    }))), React.createElement("br", undefined), Globals.restr(date.format("LLLL")), React.createElement("br", undefined), React.createElement("small", undefined, Globals.restr("( "), React.createElement(CountDown.make, {
+                      children: React.createElement("span", undefined, "ⓘ")
+                    }))), React.createElement("br", undefined), date.format("LLLL"), React.createElement("br", undefined), React.createElement("small", undefined, "( ", React.createElement(CountDown.make, {
                   endDateMoment: date
-                }), Globals.restr(")")));
+                }), ")"));
   } else {
     tmp = null;
   }
   var tmp$1;
   if (daysHeld !== undefined) {
     var timeAcquiredString = daysHeld[1].toISOString(undefined);
-    tmp$1 = React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, Globals.restr("Days Held: "), React.createElement(RimbleUi.Tooltip, {
+    tmp$1 = React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, "Days Held: ", React.createElement(RimbleUi.Tooltip, {
                       message: "This is the amount of time " + (tokenName + (" has been held. It was acquired on the " + (timeAcquiredString + "."))),
                       placement: "top",
-                      children: React.createElement("span", undefined, Globals.restr("ⓘ"))
-                    }))), React.createElement("br", undefined), Globals.restr(daysHeld[0].toFixed()), React.createElement("br", undefined));
+                      children: React.createElement("span", undefined, "ⓘ")
+                    }))), React.createElement("br", undefined), daysHeld[0].toFixed(), React.createElement("br", undefined));
   } else {
     tmp$1 = null;
   }
   return React.createElement(React.Fragment, {
               children: null
-            }, React.createElement("div", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, Globals.restr("Monthly Pledge (at " + (monthlyRate + "%): ")), React.createElement(RimbleUi.Tooltip, {
+            }, React.createElement("div", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, "Monthly Pledge (at " + (monthlyRate + "%): "), React.createElement(RimbleUi.Tooltip, {
                               message: "This is the monthly percentage contribution of " + (tokenName + "'s sale price that will go towards conservation of at risk animals. This is deducted continuously from the deposit and paid by the owner of the animal"),
                               placement: "top",
-                              children: React.createElement("span", undefined, Globals.restr("ⓘ"))
-                            }))), React.createElement("br", undefined), optMonthlyPledgeEth !== undefined ? Globals.restr(optMonthlyPledgeEth + (" " + unit)) : React.createElement(RimbleUi.Loader, {}), React.createElement("br", undefined), showEthWithUsdConversion && optMonthlyPledgeUsd !== undefined ? React.createElement("small", undefined, Globals.restr("(" + (optMonthlyPledgeUsd + " USD)"))) : null), React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, Globals.restr("Current Patron: "), React.createElement(RimbleUi.Tooltip, {
+                              children: React.createElement("span", undefined, "ⓘ")
+                            }))), React.createElement("br", undefined), optMonthlyPledgeEth !== undefined ? optMonthlyPledgeEth + (" " + unit) : React.createElement(RimbleUi.Loader, {}), React.createElement("br", undefined), showEthWithUsdConversion && optMonthlyPledgeUsd !== undefined ? React.createElement("small", undefined, "(" + (optMonthlyPledgeUsd + " USD)")) : null), React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, "Current Patron: ", React.createElement(RimbleUi.Tooltip, {
                               message: "This is the " + userIdType + " of the current owner",
                               placement: "top",
-                              children: React.createElement("span", undefined, Globals.restr("ⓘ"))
+                              children: React.createElement("span", undefined, "ⓘ")
                             }))), React.createElement("br", undefined), React.createElement("a", {
                       onClick: (function (e) {
                           e.preventDefault();
                           return Curry._1(clearAndPush, "/#user/" + currentPatron);
                         })
-                    }, Globals.restr(displayNameStr))), React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, Globals.restr("Available Deposit: "), React.createElement(RimbleUi.Tooltip, {
+                    }, displayNameStr)), React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, "Available Deposit: ", React.createElement(RimbleUi.Tooltip, {
                               message: "This is the amount the owner has deposited to pay their monthly contribution",
                               placement: "top",
-                              children: React.createElement("span", undefined, Globals.restr("ⓘ"))
-                            }))), React.createElement("br", undefined), Globals.restr(depositAvailableToWithdrawEth + (" " + unit)), React.createElement("br", undefined), showEthWithUsdConversion ? React.createElement("small", undefined, Globals.restr("(" + (depositAvailableToWithdrawUsd + " USD)"))) : null), React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, Globals.restr(tokenName + "'s Patronage: "), React.createElement(RimbleUi.Tooltip, {
+                              children: React.createElement("span", undefined, "ⓘ")
+                            }))), React.createElement("br", undefined), depositAvailableToWithdrawEth + (" " + unit), React.createElement("br", undefined), showEthWithUsdConversion ? React.createElement("small", undefined, "(" + (depositAvailableToWithdrawUsd + " USD)")) : null), React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, tokenName + "'s Patronage: ", React.createElement(RimbleUi.Tooltip, {
                               message: "This is the total contribution that has been raised thanks to the wildcard, " + tokenName,
                               placement: "top",
-                              children: React.createElement("span", undefined, Globals.restr("ⓘ"))
-                            }))), React.createElement("br", undefined), Globals.restr(totalPatronage + (" " + unit)), React.createElement("br", undefined), showEthWithUsdConversion ? React.createElement("small", undefined, Globals.restr("(" + (totalPatronageUsd + " USD)"))) : null), tmp, tmp$1);
+                              children: React.createElement("span", undefined, "ⓘ")
+                            }))), React.createElement("br", undefined), totalPatronage + (" " + unit), React.createElement("br", undefined), showEthWithUsdConversion ? React.createElement("small", undefined, "(" + (totalPatronageUsd + " USD)")) : null), tmp, tmp$1);
 }
 
 var ExpertView = {
@@ -117,14 +117,14 @@ function Info$SimpleView(Props) {
             e.preventDefault();
             return Curry._1(clearAndPush, "/#user/" + currentPatron);
           })
-      }, Globals.restr(displayNameStr));
+      }, displayNameStr);
   var orgLink = React.createElement("a", {
         className: linkStyle,
         onClick: (function (e) {
             e.preventDefault();
             return Curry._1(clearAndPush, "/#org/" + orgId);
           })
-      }, Globals.restr(orgName));
+      }, orgName);
   return React.createElement(React.Fragment, {
               children: null
             }, React.createElement("p", undefined, tokenName + " is currently protected by ", userLink, " who values their guardianship of " + (tokenName + (" at " + (priceString + (". " + (tokenName + (" has a monthly pledge rate of " + (monthlyRate + "%. This means "))))))), userLink, " has to contribute " + ((
@@ -244,7 +244,7 @@ function Info(Props) {
                           $$event.preventDefault();
                           return Curry._1(translationModeContext.setTranslationModeCrypto, !translationModeContext.translationModeCrypto);
                         })
-                    }, Globals.restr(translationModeContext.translationModeCrypto ? "EXPERT MODE " : "DEFAULT MODE ")), React.createElement(ReactSwitch, {
+                    }, translationModeContext.translationModeCrypto ? "EXPERT MODE " : "DEFAULT MODE "), React.createElement(ReactSwitch, {
                       onChange: translationModeContext.setTranslationModeCrypto,
                       checked: translationModeContext.translationModeCrypto,
                       onColor: "#6BAD3F",
@@ -324,28 +324,28 @@ function Info$Auction(Props) {
   var unit = showEthWithUsdConversion ? "ETH" : "USD";
   return React.createElement(React.Fragment, {
               children: null
-            }, React.createElement("div", undefined, ratio === 0 ? React.createElement("p", undefined, Globals.restr("The monthly pledge rate will be revealed at launch.")) : React.createElement(React.Fragment, undefined, React.createElement("small", undefined, React.createElement("strong", undefined, Globals.restr("Monthly Pledge Rate:"), React.createElement(RimbleUi.Tooltip, {
+            }, React.createElement("div", undefined, ratio === 0 ? React.createElement("p", undefined, "The monthly pledge rate will be revealed at launch.") : React.createElement(React.Fragment, undefined, React.createElement("small", undefined, React.createElement("strong", undefined, "Monthly Pledge Rate:", React.createElement(RimbleUi.Tooltip, {
                                     message: "This is the monthly percentage contribution of " + (tokenName + "'s sale price that will go towards conservation of at risk animals. This is deducted continuously from the deposit and paid by the guardian of the animal"),
                                     placement: "top",
-                                    children: React.createElement("span", undefined, Globals.restr("ⓘ"))
-                                  }))), React.createElement("br", undefined), Globals.restr(monthlyRate + " %"))), abandoned ? React.createElement("p", undefined, React.createElement("strong", undefined, Globals.restr("The previous guardian was "), React.createElement("a", {
+                                    children: React.createElement("span", undefined, "ⓘ")
+                                  }))), React.createElement("br", undefined), monthlyRate + " %")), abandoned ? React.createElement("p", undefined, React.createElement("strong", undefined, "The previous guardian was ", React.createElement("a", {
                             onClick: (function (e) {
                                 e.preventDefault();
                                 return Curry._1(clearAndPush, "/#user/" + currentPatron);
                               })
-                          }, Globals.restr(displayNameStr)), React.createElement(RimbleUi.Tooltip, {
+                          }, displayNameStr), React.createElement(RimbleUi.Tooltip, {
                             message: "This happens when the user\'s deposit runs out for the wildcard.",
                             placement: "top",
-                            children: React.createElement("span", undefined, Globals.restr("ⓘ"))
-                          })), React.createElement("br", undefined)) : React.createElement("p", undefined, tokenName + " has never had a guardian - you can be the first."), React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, Globals.restr(tokenName + "'s Patronage: "), React.createElement(RimbleUi.Tooltip, {
+                            children: React.createElement("span", undefined, "ⓘ")
+                          })), React.createElement("br", undefined)) : React.createElement("p", undefined, tokenName + " has never had a guardian - you can be the first."), React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, tokenName + "'s Patronage: ", React.createElement(RimbleUi.Tooltip, {
                               message: "This is the total contribution that has been raised thanks to " + tokenName,
                               placement: "top",
-                              children: React.createElement("span", undefined, Globals.restr("ⓘ"))
-                            }))), React.createElement("br", undefined), Globals.restr(match[0] + (" " + unit)), React.createElement("br", undefined), showEthWithUsdConversion ? React.createElement("small", undefined, Globals.restr("(" + (match[1] + " USD)"))) : null), abandoned ? React.createElement(React.Fragment, undefined, React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, Globals.restr("Abandoned since: "), React.createElement(RimbleUi.Tooltip, {
+                              children: React.createElement("span", undefined, "ⓘ")
+                            }))), React.createElement("br", undefined), match[0] + (" " + unit), React.createElement("br", undefined), showEthWithUsdConversion ? React.createElement("small", undefined, "(" + (match[1] + " USD)")) : null), abandoned ? React.createElement(React.Fragment, undefined, React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, "Abandoned since: ", React.createElement(RimbleUi.Tooltip, {
                                     message: "This is the date the deposit ran out and the current guardian will lose guardianship of " + tokenName,
                                     placement: "top",
-                                    children: React.createElement("span", undefined, Globals.restr("ⓘ"))
-                                  }))), React.createElement("br", undefined), Globals.restr(auctionStartTime.format("LLLL")), React.createElement("br", undefined))) : null);
+                                    children: React.createElement("span", undefined, "ⓘ")
+                                  }))), React.createElement("br", undefined), auctionStartTime.format("LLLL"), React.createElement("br", undefined))) : null);
 }
 
 var Auction = {

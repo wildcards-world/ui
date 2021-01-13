@@ -1,5 +1,3 @@
-open Globals
-
 type teamMember = {
   name: string,
   img: string,
@@ -87,7 +85,7 @@ let make = () => {
   <div>
     <Rimble.Flex
       flexWrap="wrap" justifyContent="space-around" alignItems="stretch" pt=20 pb=20 px=50>
-      <h1> {"Wildcards Team"->restr} </h1>
+      <h1> {"Wildcards Team"->React.string} </h1>
     </Rimble.Flex>
     <Rimble.Flex flexWrap="wrap" justifyContent="space-around" alignItems="stretch" pb=50 px=50>
       {React.array(

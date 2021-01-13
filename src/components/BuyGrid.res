@@ -1,5 +1,3 @@
-open Globals
-
 let backgroundStyle = {
   open Css
   style(list{
@@ -56,7 +54,7 @@ let make = (~wildcardsEdition) => {
 
   <div className=backgroundStyle>
     <div>
-      <h1 className=headingStyle> {"Wildcards Kingdom"->restr} </h1>
+      <h1 className=headingStyle> {"Wildcards Kingdom"->React.string} </h1>
       <ReactTabs selectedIndex=index onSelect=selectLeaderBoard>
         <ReactTabs.TabList>
           <ReactTabs.Tab> {"First edition"->React.string} </ReactTabs.Tab>

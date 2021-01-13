@@ -1,6 +1,5 @@
 let gorillaOnVine = "/img/wildcardsimages/hanging-gorilla-from-vine.png"
 
-open Globals
 open Rimble
 
 module YoutubeVid = {
@@ -27,7 +26,7 @@ let make = () => {
             flexWrap="wrap" justifyContent="space-around" alignItems="stretch" pt=50 px=50>
             <Rimble.Button
               className=Styles.centerItemsMargin onClick={_ => setModalOpen(_ => true)}>
-              {"Read More"->restr}
+              {"Read More"->React.string}
             </Rimble.Button>
           </Rimble.Flex>
           <Rimble.Modal isOpen=isModalOpen>
@@ -42,30 +41,30 @@ let make = () => {
                 m=3
                 onClick={_ => setModalOpen(_ => false)}
               />
-              <Heading className=Styles.centerText> {"How it works"->restr} </Heading>
+              <Heading className=Styles.centerText> {"How it works"->React.string} </Heading>
               <br />
               <hr />
               <Text>
-                {"You can become the guardian of a wildcard by simply clicking buy on any of the listed wildcards. Wildcards are "->restr}
-                <strong> {"always for sale"->restr} </strong>
-                {" since anyone can purchase them at anytime for their current sale price. When someone purchases a wildcard, they are required to immediately set a sale price for that wildcard. This ensures wildcards are "->restr}
-                <strong> {"always for sale"->restr} </strong>
+                {"You can become the guardian of a wildcard by simply clicking buy on any of the listed wildcards. Wildcards are "->React.string}
+                <strong> {"always for sale"->React.string} </strong>
+                {" since anyone can purchase them at anytime for their current sale price. When someone purchases a wildcard, they are required to immediately set a sale price for that wildcard. This ensures wildcards are "->React.string}
+                <strong> {"always for sale"->React.string} </strong>
               </Text>
               <br />
               <Text>
-                {"As the gaurdian of a wildcard, you pay a "->restr}
-                <strong> {"Harberger tax"->restr} </strong>
-                {" (percentage based fee) on your newly set sale price. This fee goes towards supporting wildlife conservation. "->restr}
+                {"As the gaurdian of a wildcard, you pay a "->React.string}
+                <strong> {"Harberger tax"->React.string} </strong>
+                {" (percentage based fee) on your newly set sale price. This fee goes towards supporting wildlife conservation. "->React.string}
               </Text>
               <br />
               <Text>
-                <strong> {"Here's where it gets interesting."->restr} </strong>
-                {" When someone purchases your wildcard from you, you will receive the sale price you set for that wildcard. Depending on what sale price you set and the harberger tax you have already paid, you may make a profit. The only constant is that the conservation organisation will continually receive funding based on the current selling price of each wildcard."->restr}
+                <strong> {"Here's where it gets interesting."->React.string} </strong>
+                {" When someone purchases your wildcard from you, you will receive the sale price you set for that wildcard. Depending on what sale price you set and the harberger tax you have already paid, you may make a profit. The only constant is that the conservation organisation will continually receive funding based on the current selling price of each wildcard."->React.string}
               </Text>
               <br />
               <Text>
                 <span className=Styles.redDisclaimer>
-                  {"The first wildcard we released, Vitalik, has a 2.5% Harberger tax rate per month. Other wildcards have different harberger tax rates ranging from 2.5% to 100% per month."->restr}
+                  {"The first wildcard we released, Vitalik, has a 2.5% Harberger tax rate per month. Other wildcards have different harberger tax rates ranging from 2.5% to 100% per month."->React.string}
                 </span>
               </Text>
             </Rimble.Card>

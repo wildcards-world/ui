@@ -1,5 +1,3 @@
-open Globals
-
 @react.component
 let make = (
   ~children: React.element,
@@ -24,7 +22,7 @@ let make = (
       <Rimble.Heading>
         {("Please sign the message to allow use of " ++
         (value->Web3Utils.fromWeiBNToEthPrecision(~digits=2) ++
-        " DAI."))->restr}
+        " DAI."))->React.string}
         <WildcardsLoader />
       </Rimble.Heading>
       <Rimble.Flex justifyContent="center"> <Rimble.Loader size="80px" /> </Rimble.Flex>
@@ -32,28 +30,34 @@ let make = (
   | SignMetaTx =>
     <React.Fragment>
       <Rimble.Heading>
-        {"Please sign the message to submit this transaction."->restr} <WildcardsLoader />
+        {"Please sign the message to submit this transaction."->React.string} <WildcardsLoader />
       </Rimble.Heading>
       <Rimble.Flex justifyContent="center"> <Rimble.Loader size="80px" /> </Rimble.Flex>
     </React.Fragment>
   | SubmittedMetaTx =>
     <React.Fragment>
-      <Rimble.Heading> {"Transaction Submitted "->restr} <WildcardsLoader /> </Rimble.Heading>
-      <Rimble.Text> {"Awaiting transaction details."->restr} </Rimble.Text>
+      <Rimble.Heading>
+        {"Transaction Submitted "->React.string} <WildcardsLoader />
+      </Rimble.Heading>
+      <Rimble.Text> {"Awaiting transaction details."->React.string} </Rimble.Text>
       <Rimble.Flex justifyContent="center"> <Rimble.Loader size="80px" /> </Rimble.Flex>
     </React.Fragment>
   | ContractActions.Created =>
     <React.Fragment>
-      <Rimble.Heading> {"Processing Transaction "->restr} <WildcardsLoader /> </Rimble.Heading>
-      <Rimble.Text> {"Tx created."->restr} </Rimble.Text>
+      <Rimble.Heading>
+        {"Processing Transaction "->React.string} <WildcardsLoader />
+      </Rimble.Heading>
+      <Rimble.Text> {"Tx created."->React.string} </Rimble.Text>
       <Rimble.Flex justifyContent="center"> <Rimble.Loader size="80px" /> </Rimble.Flex>
     </React.Fragment>
   | ContractActions.SignedAndSubmitted(txHash) =>
     <React.Fragment>
-      <Rimble.Heading> {"Processing Transaction "->restr} <WildcardsLoader /> </Rimble.Heading>
+      <Rimble.Heading>
+        {"Processing Transaction "->React.string} <WildcardsLoader />
+      </Rimble.Heading>
       <Rimble.Text>
         <a href=j`https://$txExplererUrl/tx/$txHash` target="_blank" rel="noopener noreferrer">
-          {("View the transaction on " ++ txExplererUrl)->restr}
+          {("View the transaction on " ++ txExplererUrl)->React.string}
         </a>
       </Rimble.Text>
       <Rimble.Loader className=Styles.centerItems size="80px" />
@@ -61,35 +65,39 @@ let make = (
   | ContractActions.Complete(result) =>
     let txHash = result.transactionHash
     <React.Fragment>
-      <Rimble.Heading> {"Transaction Complete "->restr} <WildcardsLoader /> </Rimble.Heading>
+      <Rimble.Heading> {"Transaction Complete "->React.string} <WildcardsLoader /> </Rimble.Heading>
       <Rimble.Text>
         <a href=j`https://$txExplererUrl/tx/$txHash` target="_blank" rel="noopener noreferrer">
-          {("View the transaction on " ++ txExplererUrl)->restr}
+          {("View the transaction on " ++ txExplererUrl)->React.string}
         </a>
       </Rimble.Text>
-      <Rimble.Button onClick={_e => clearNonUrlState()}> {closeButtonText->restr} </Rimble.Button>
+      <Rimble.Button onClick={_e => clearNonUrlState()}>
+        {closeButtonText->React.string}
+      </Rimble.Button>
     </React.Fragment>
   | ContractActions.Declined(message) =>
     <React.Fragment>
       <Rimble.Heading>
-        {"The transaction was declined by your wallet, please try again."->restr}
+        {"The transaction was declined by your wallet, please try again."->React.string}
       </Rimble.Heading>
-      <p> {("Failure reason: " ++ message)->restr} </p>
+      <p> {("Failure reason: " ++ message)->React.string} </p>
       children
     </React.Fragment>
   | ServerError(message) =>
     <React.Fragment>
       <Rimble.Heading>
-        {"There was a server error when submitting your transaction."->restr}
+        {"There was a server error when submitting your transaction."->React.string}
       </Rimble.Heading>
-      <p> {("Failure reason: " ++ message)->restr} </p>
+      <p> {("Failure reason: " ++ message)->React.string} </p>
       children
     </React.Fragment>
   | ContractActions.Failed =>
     <React.Fragment>
-      <Rimble.Heading> {"The transaction failed."->restr} <WildcardsLoader /> </Rimble.Heading>
+      <Rimble.Heading>
+        {"The transaction failed."->React.string} <WildcardsLoader />
+      </Rimble.Heading>
       <Rimble.Text>
-        {"It is possible that someone else bought the token before you, or the price changed. If you are unsure please feel free to contact our support."->restr}
+        {"It is possible that someone else bought the token before you, or the price changed. If you are unsure please feel free to contact our support."->React.string}
       </Rimble.Text>
       children
     </React.Fragment>
