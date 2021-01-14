@@ -1,5 +1,3 @@
-open Globals
-
 @react.component
 let make = (~clickAction=() => (), ~isMobile=false) => {
   let currentUser = RootProvider.useCurrentUser()
@@ -64,7 +62,8 @@ let make = (~clickAction=() => (), ~isMobile=false) => {
             style(list{display(#flex), flexDirection(#row)})
           }>
           <div>
-            <p> <strong> {"View Your Profile:"->restr} </strong> </p> <p> {message->restr} </p>
+            <p> <strong> {"View Your Profile:"->React.string} </strong> </p>
+            <p> {message->React.string} </p>
           </div>
           profileIcon
         </div>

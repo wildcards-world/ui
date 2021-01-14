@@ -69,7 +69,7 @@ function Buy$Buy(Props) {
   var currentPriceWei$1 = isOnAuction ? Belt_Option.getWithDefault(currentPriceWei, CONSTANTS.zeroBn) : (
       typeof priceStatus === "number" || priceStatus.TAG === /* Foreclosed */0 ? CONSTANTS.zeroBn : priceStatus._0
     );
-  var tokenIdName = "token#" + TokenId.toString(tokenId);
+  var tokenIdName = "token #" + TokenId.toString(tokenId);
   var paymentTokenBalance = Web3Utils.fromWeiBNToEthPrecision(Belt_Option.getWithDefault(availableBalance, userBalance), 4);
   var maxAvailableDepositBN = Belt_Option.getWithDefault(availableBalance, userBalance.sub(new BnJs("3000000000000000")).sub(currentPriceWei$1));
   var maxAvailableDeposit = Web3Utils.fromWeiToEth(maxAvailableDepositBN.toString());

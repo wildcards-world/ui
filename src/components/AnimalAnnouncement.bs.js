@@ -5,7 +5,6 @@ import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Animal from "../harberger-lib/Animal.bs.js";
 import * as Moment from "moment";
-import * as Globals from "../harberger-lib/Globals.bs.js";
 import * as QlHooks from "../harberger-lib/QlHooks.bs.js";
 import * as TokenId from "../harberger-lib/TokenId.bs.js";
 import * as CountDown from "../harberger-lib/CountDown.bs.js";
@@ -52,31 +51,31 @@ function AnimalAnnouncement(Props) {
   var isPlural = numberOfAnimalsToLaunch > 1;
   return React.createElement("div", {
               className: Announcement.announcementStyle(match[0], announcementBannerColor)
-            }, Globals.restr("New Wildcard" + ((
-                    isPlural ? "s" : ""
-                  ) + " ")), Belt_Array.mapWithIndex(nextReleasedAnimals, (function (index, animal) {
+            }, "New Wildcard" + ((
+                isPlural ? "s" : ""
+              ) + " "), Belt_Array.mapWithIndex(nextReleasedAnimals, (function (index, animal) {
                     var name = Belt_Option.getWithDefault(QlHooks.useWildcardName(animal), "Loading");
                     return React.createElement("span", {
                                 key: TokenId.toString(animal)
                               }, React.createElement("a", {
                                     className: linkToAnimal,
                                     href: "/#details/" + TokenId.toString(animal)
-                                  }, Globals.restr(name)), Globals.restr(index === (numberOfAnimalsToLaunch - 1 | 0) ? " " : (
-                                      index === (numberOfAnimalsToLaunch - 2 | 0) ? " and " : ", "
-                                    )));
-                  })), isLaunched ? Globals.restr((
-                    isPlural ? "have" : "has"
-                  ) + " just been launched!") : React.createElement(React.Fragment, undefined, Globals.restr("coming in "), React.createElement(CountDown.make, {
+                                  }, name), index === (numberOfAnimalsToLaunch - 1 | 0) ? " " : (
+                                  index === (numberOfAnimalsToLaunch - 2 | 0) ? " and " : ", "
+                                ));
+                  })), isLaunched ? (
+                isPlural ? "have" : "has"
+              ) + " just been launched!" : React.createElement(React.Fragment, undefined, "coming in ", React.createElement(CountDown.make, {
                         endDateMoment: Animal.nextLaunchDate,
                         displayUnits: true
-                      }), Globals.restr("!")), React.createElement("span", {
+                      }), "!"), React.createElement("span", {
                   className: closeButton,
                   onClick: (function (param) {
                       return Curry._1(setShowAnnouncement, (function (param) {
                                     return "none";
                                   }));
                     })
-                }, Globals.restr("×")));
+                }, "×"));
 }
 
 var make = AnimalAnnouncement;

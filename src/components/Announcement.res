@@ -1,4 +1,3 @@
-open Globals
 open Css
 
 let announcementStyle = (displayVal, announcementBannerColor) =>
@@ -24,7 +23,7 @@ let make = (~announcementBannerColor: string, ~children) => {
   <div className={announcementStyle(showAnnouncement, announcementBannerColor)}>
     children
     <span className=closeButton onClick={_ => setShowAnnouncement(_ => #none)}>
-      {`×`->restr}
+      {`×`->React.string}
     </span>
   </div>
 }

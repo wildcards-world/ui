@@ -479,6 +479,7 @@ var query$2 = (require("@apollo/client").gql`
         __typename
         id
         name
+        commonName
         description
         organization  {
           __typename
@@ -510,24 +511,26 @@ function parse$2(value) {
     var value$2 = value$1.wildcard;
     var value$3 = value$2.id;
     var value$4 = value$2.name;
-    var value$5 = value$2.organization;
-    var value$6 = value$2.image;
-    var value$7 = value$2.real_wc_photos;
-    var value$8 = value$2.artistOfWildcard;
+    var value$5 = value$2.commonName;
+    var value$6 = value$2.organization;
+    var value$7 = value$2.image;
+    var value$8 = value$2.real_wc_photos;
+    var value$9 = value$2.artistOfWildcard;
     tmp = {
       __typename: value$1.__typename,
       wildcard: {
         __typename: value$2.__typename,
         id: !(value$3 == null) ? value$3 : undefined,
         name: !(value$4 == null) ? value$4 : undefined,
+        commonName: !(value$5 == null) ? value$5 : undefined,
         description: value$2.description,
-        organization: !(value$5 == null) ? ({
-              __typename: value$5.__typename,
-              name: value$5.name,
-              id: value$5.id
+        organization: !(value$6 == null) ? ({
+              __typename: value$6.__typename,
+              name: value$6.name,
+              id: value$6.id
             }) : undefined,
-        image: !(value$6 == null) ? value$6 : undefined,
-        real_wc_photos: value$7.map(function (value) {
+        image: !(value$7 == null) ? value$7 : undefined,
+        real_wc_photos: value$8.map(function (value) {
               var value$1 = value.photographer;
               return {
                       __typename: value.__typename,
@@ -535,10 +538,10 @@ function parse$2(value) {
                       photographer: !(value$1 == null) ? value$1 : undefined
                     };
             }),
-        artistOfWildcard: !(value$8 == null) ? ({
-              __typename: value$8.__typename,
-              name: value$8.name,
-              id: value$8.id
+        artistOfWildcard: !(value$9 == null) ? ({
+              __typename: value$9.__typename,
+              name: value$9.name,
+              id: value$9.id
             }) : undefined
       }
     };
@@ -596,24 +599,27 @@ function serialize$2(value) {
       organization = null;
     }
     var value$13 = value$2.description;
-    var value$14 = value$2.name;
-    var name = value$14 !== undefined ? value$14 : null;
-    var value$15 = value$2.id;
-    var id = value$15 !== undefined ? value$15 : null;
-    var value$16 = value$2.__typename;
+    var value$14 = value$2.commonName;
+    var commonName = value$14 !== undefined ? value$14 : null;
+    var value$15 = value$2.name;
+    var name = value$15 !== undefined ? value$15 : null;
+    var value$16 = value$2.id;
+    var id = value$16 !== undefined ? value$16 : null;
+    var value$17 = value$2.__typename;
     var wildcard = {
-      __typename: value$16,
+      __typename: value$17,
       id: id,
       name: name,
+      commonName: commonName,
       description: value$13,
       organization: organization,
       image: image,
       real_wc_photos: real_wc_photos,
       artistOfWildcard: artistOfWildcard
     };
-    var value$17 = value$1.__typename;
+    var value$18 = value$1.__typename;
     launchedWildcards_by_pk = {
-      __typename: value$17,
+      __typename: value$18,
       wildcard: wildcard
     };
   } else {
@@ -2076,6 +2082,14 @@ function useWildcardName(tokenId) {
   
 }
 
+function useWildcardCommonName(tokenId) {
+  var match = useWildcardDataQuery(tokenId);
+  if (match !== undefined) {
+    return match.wildcard.commonName;
+  }
+  
+}
+
 function useWildcardAvatar(tokenId) {
   var match = useWildcardDataQuery(tokenId);
   if (match !== undefined) {
@@ -2715,6 +2729,7 @@ export {
   animalDescription_decode ,
   useWildcardDescription ,
   useWildcardName ,
+  useWildcardCommonName ,
   useWildcardAvatar ,
   useWildcardArtist ,
   useRealImages ,

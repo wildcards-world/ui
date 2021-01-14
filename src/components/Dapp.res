@@ -1,5 +1,3 @@
-open Globals
-
 let flameImg = "/img/streak-flame.png"
 
 module ShareSocial = {
@@ -148,7 +146,7 @@ module BasicAnimalDisplay = {
               ReactEvent.Mouse.preventDefault(e)
               clearAndPush(j`/#user/$currentPatron`)
             }}>
-            {displayNameStr->restr}
+            {displayNameStr->React.string}
           </a>
         </>
   }
@@ -396,13 +394,16 @@ module AnimalActionsOnDetailsPage = {
       isOnAuction
         ? <AuctionDetails chain animal />
         : <React.Fragment>
-            <a
-              onClick={e => {
-                ReactEvent.Mouse.preventDefault(e)
-                clearAndPush(j`/#user/$currentPatron`)
-              }}>
-              {displayNameStr->restr}
-            </a>
+            <p>
+              {"Owner: "->React.string}
+              <a
+                onClick={e => {
+                  ReactEvent.Mouse.preventDefault(e)
+                  clearAndPush(`/#user/${currentPatron}`)
+                }}>
+                {displayNameStr->React.string}
+              </a>
+            </p>
             <PriceDisplay chain animal />
             {switch nonUrlRouting {
             | UserVerificationScreen
@@ -428,7 +429,7 @@ module AnimalActionsOnDetailsPage = {
         <Validate />
       </React.Fragment>
     } else {
-      <Unowned chain animal price />
+      <> <Unowned chain animal price /> </>
     }
   }
 }
@@ -444,34 +445,42 @@ module DetailsViewAnimal = {
     let optArtistInfo = QlHooks.useWildcardArtist(animal)
 
     let ownedAnimalImg = {
-      open Css
-      style(list{
-        position(absolute),
-        zIndex(1),
-        maxWidth(#percent(100.)),
-        top(#percent(50.)),
-        transform(translate(#percent(-50.), #percent(-50.))),
-        left(#percent(50.)),
-      })
+      open CssJs
+      style(.[
+        width(#percent(100.)),
+        height(#percent(100.)),
+        // top(#percent(50.)),
+        // left(#percent(50.)),
+        // transform(translate(#percent(-50.), #percent(-50.))),
+        objectFit(#contain),
+      ])
     }
 
     let normalImage = () => <img className=ownedAnimalImg src=image />
     let orgBadge = Animal.useGetOrgBadgeImage(~tokenId=animal)
 
-    let displayAnimal = animalImage =>
+    let displayAnimal = animalImage => <>
       <SquareBox>
         {animalImage()}
-        {optArtistInfo->Option.mapWithDefault(React.null, artistInfo =>
-          <p
+        <div
+          onClick={e => {
+            ReactEvent.Mouse.stopPropagation(e)
+            ReactEvent.Mouse.preventDefault(e)
+            clearAndPush("#org/" ++ orgId)
+          }}
+          className={Styles.overlayBadgeImg(~x=90., ~y=90.)}>
+          <img
             className={
-              open Css
-              style(list{
-                position(absolute),
-                bottom(#percent(2.)),
-                textAlign(center),
-                width(#percent(100.)),
-              })
-            }>
+              open CssJs
+              style(.[width(#percent(100.)), height(#percent(100.)), objectFit(#contain)])
+            }
+            src=orgBadge
+          />
+        </div>
+      </SquareBox>
+      <div>
+        {optArtistInfo->Option.mapWithDefault(React.null, artistInfo =>
+          <p>
             {"Art by: "->React.string}
             <a
               onClick={e => {
@@ -482,20 +491,27 @@ module DetailsViewAnimal = {
             </a>
           </p>
         )}
-        <div
-          onClick={e => {
-            ReactEvent.Mouse.stopPropagation(e)
-            ReactEvent.Mouse.preventDefault(e)
-            clearAndPush("#org/" ++ orgId)
-          }}
-          className={Styles.overlayBadgeImg(~x=80., ~y=80.)}>
-          <img className=Styles.flameImg src=orgBadge />
-        </div>
-      </SquareBox>
+      </div>
+    </>
 
     <React.Fragment>
       {displayAnimal(() => normalImage())}
-      <h2> {Option.getWithDefault(QlHooks.useWildcardName(animal), "Loading")->restr} </h2>
+      <h2>
+        {switch (QlHooks.useWildcardName(animal), QlHooks.useWildcardCommonName(animal)) {
+        | (Some(name), Some(commonName)) => <>
+            {name->React.string}
+            <small
+              className={
+                open CssJs
+                style(.[fontWeight(#thin)])
+              }>
+              {` the ${commonName}`->React.string}
+            </small>
+          </>
+        | (Some(name), None) => name->React.string
+        | _ => "Loading"->React.string
+        }}
+      </h2>
       <AnimalActionsOnDetailsPage chain animal />
     </React.Fragment>
   }
@@ -513,7 +529,7 @@ module DetailsView = {
     | None =>
       <div>
         <h1> {React.string("We are unable to find that animal in our system.")} </h1>
-        <p> {"Please check the spelling and try again."->restr} </p>
+        <p> {"Please check the spelling and try again."->React.string} </p>
       </div>
     | Some(animal) => <DetailsViewAnimal chain animal />
     }
@@ -556,14 +572,16 @@ module DefaultLeftPanel = {
   let make = () => {
     <React.Fragment>
       <h1 className=Styles.heading>
-        <span className=Styles.colorBlue> {"Always"->restr} </span>
+        <span className=Styles.colorBlue> {"Always"->React.string} </span>
         <br />
-        {"raising funds for"->restr}
+        {"raising funds for"->React.string}
         <br />
-        <span className=Styles.colorGreen> {"conservation"->restr} </span>
+        <span className=Styles.colorGreen> {"conservation"->React.string} </span>
       </h1>
       <hr />
-      <h3 className=Styles.subHeading> {"Adopt an animal to start giving today."->restr} </h3>
+      <h3 className=Styles.subHeading>
+        {"Adopt an animal to start giving today."->React.string}
+      </h3>
     </React.Fragment>
   }
 }
@@ -586,23 +604,23 @@ module UnlaunchedAnimalInfo = {
         <br />
         <br />
         {if ratio == 0. {
-          <p> {"The monthly pledge rate will be revealed at launch."->restr} </p>
+          <p> {"The monthly pledge rate will be revealed at launch."->React.string} </p>
         } else {
           <>
             <small>
               <strong>
-                {"Monthly Pledge Rate:"->restr}
+                {"Monthly Pledge Rate:"->React.string}
                 <Rimble.Tooltip
                   message={"This is the monthly percentage contribution of " ++
                   (animalName ++
                   "'s sale price that will go towards conservation of at risk animals. This is deducted continuously from the deposit and paid by the owner of the animal")}
                   placement="top">
-                  <span> {`ⓘ`->restr} </span>
+                  <span> {`ⓘ`->React.string} </span>
                 </Rimble.Tooltip>
               </strong>
             </small>
             <br />
-            {(monthlyRate ++ " %")->restr}
+            {(monthlyRate ++ " %")->React.string}
           </>
         }}
       </React.Fragment>}
@@ -653,7 +671,7 @@ module AnimalInfo = {
                     open Css
                     style(list{color(hex("72c7d7"))})
                   }>
-                  {"Vote for your favourite conservation"->restr}
+                  {"Vote for your favourite conservation"->React.string}
                 </span>
               </a>
             : React.null}

@@ -2,8 +2,6 @@ let transparency_link = "https://blog.wildcards.world/where-is-the-money-going/"
 let privacy_policy_link = "https://wildcards.world/privacy_policy.html"
 let terms_and_conditions_link = "https://wildcards.world/terms_and_conditions.html"
 
-open Globals
-
 let footer = {
   open Css
   style(list{
@@ -71,27 +69,27 @@ let make = () =>
     <div className=footerWrapper>
       <div className=footerText>
         <div>
-          {`©`->restr}
+          {`©`->React.string}
           <a
             className=footerLink
             target="_blank"
             rel="noopener noreferrer"
             href="https://wildcards.world">
-            {"Wildcards"->restr}
+            {"Wildcards"->React.string}
           </a>
         </div>
       </div>
       <div className=footerText>
         <a className=footerLink target="_blank" rel="noopener noreferrer" href=transparency_link>
-          {"Transparency"->restr}
+          {"Transparency"->React.string}
         </a>
       </div>
       <div className=footerText>
-        <a className=footerLink rel="noopener noreferrer" href="/#team"> {"Team"->restr} </a>
+        <a className=footerLink rel="noopener noreferrer" href="/#team"> {"Team"->React.string} </a>
       </div>
       <div className=footerText>
         <a className=footerLink target="_blank" rel="noopener noreferrer" href=privacy_policy_link>
-          {"Privacy Policy"->restr}
+          {"Privacy Policy"->React.string}
         </a>
       </div>
       <div className=footerText>
@@ -100,7 +98,7 @@ let make = () =>
           target="_blank"
           rel="noopener noreferrer"
           href=terms_and_conditions_link>
-          {"Terms and Conditions"->restr}
+          {"Terms and Conditions"->React.string}
         </a>
       </div>
       <ul className=footerSocialButtons>

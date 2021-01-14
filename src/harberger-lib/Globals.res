@@ -6,7 +6,6 @@ let toFixedWithPrecisionNoTrailingZeros = (number: float, ~digits) =>
   number->Js.Float.toFixedWithPrecision(~digits)->float_of_string->Float.toString
 
 // React components
-let restr = React.string
 let reactMapWithDefault: (option<'a>, React.element, 'a => React.element) => React.element = (
   opt,
   default,

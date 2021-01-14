@@ -1,5 +1,3 @@
-open Globals
-
 @decco.decode
 type orgDescriptionArray = array<string>
 
@@ -233,7 +231,7 @@ module OrgPage = {
               target="_blank"
               rel="noopener noreferrer"
               href=orgWebsite>
-              {orgName->restr}
+              {orgName->React.string}
             </a>
             <br />
             <div
@@ -243,7 +241,8 @@ module OrgPage = {
                   maxHeight(#em(15.)),
                   overflowY(#auto),
                   overflowX(#hidden),
-                  backgroundColor(rgb(250, 250, 250)),
+                  backgroundColor(rgb(240, 240, 240)),
+                  padding(em(0.5)),
                   borderRadius(em(0.8)),
                 ])
               }>
@@ -251,10 +250,17 @@ module OrgPage = {
               | Ok(descriptionArray) =>
                 React.array(
                   descriptionArray->Array.mapWithIndex((i, paragraphText) =>
-                    <p key={i->string_of_int}> {paragraphText->React.string} </p>
+                    <p
+                      key={i->string_of_int}
+                      className={
+                        open CssJs
+                        style(.[textAlign(#justify)])
+                      }>
+                      {paragraphText->React.string}
+                    </p>
                   ),
                 )
-              | Error(_) => <p> {"error loading description"->restr} </p>
+              | Error(_) => <p> {"error loading description"->React.string} </p>
               }}
             </div>
             <br />
@@ -269,7 +275,7 @@ module OrgPage = {
             | Some(videoCode) => <YoutubeVid videoCode />
             | None => React.null
             }}
-            <h2> {"Total Raised"->restr} </h2>
+            <h2> {"Total Raised"->React.string} </h2>
             {switch (totalCollectedMainnetEth, totalCollectMaticDai) {
             | (Some(mainnetEth), Some(maticDai)) => <Amounts.AmountRaised mainnetEth maticDai />
             | _ => "Loading"->React.string

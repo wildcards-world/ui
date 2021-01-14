@@ -1,5 +1,3 @@
-open Globals
-
 module AnimalFocusDetails = {
   @react.component
   let make = (~currentAnimal: option<TokenId.t>, ~showForwardBackButtons) => {
@@ -107,14 +105,14 @@ let make = () => {
       <Announcement announcementBannerColor="72D6B5">
         <span>
           <a href="/#explorer/2nd-edition" className=AnimalAnnouncement.linkToAnimal>
-            {"New wildcards"->restr}
+            {"New wildcards"->React.string}
           </a>
           {" launched on the "->React.string}
           <a
             href="https://matic.network"
             rel="noopener noreferrer"
             className=AnimalAnnouncement.linkToAnimal>
-            {"MATIC network. "->restr}
+            {"MATIC network. "->React.string}
           </a>
         </span>
       </Announcement>
@@ -145,7 +143,7 @@ let make = () => {
                   ReactEvent.Mouse.preventDefault(event)
                   clearAndPush("#")
                 }}>
-                {"HOME"->restr}
+                {"HOME"->React.string}
               </a>,
           },
           {
@@ -159,7 +157,7 @@ let make = () => {
                   ReactEvent.Mouse.preventDefault(event)
                   clearAndPush(j`/#leaderboards/monthly-contribution`)
                 }}>
-                {"TOP GUARDIANS"->restr}
+                {"TOP GUARDIANS"->React.string}
               </a>,
           },
           {
@@ -172,7 +170,7 @@ let make = () => {
                 onClick={_ => closeModal()}
                 rel="noopener noreferrer"
                 href="https://blog.wildcards.world/">
-                {"BLOG"->restr}
+                {"BLOG"->React.string}
               </a>,
           },
           {
@@ -187,7 +185,7 @@ let make = () => {
                     clearAndPush("#explorer")
                   }}
                   className=Styles.whiteText>
-                  {"VIEW WILDCARDS"->restr}
+                  {"VIEW WILDCARDS"->React.string}
                 </Rimble.Button>
               </div>,
           },

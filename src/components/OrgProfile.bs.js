@@ -9,7 +9,6 @@ import * as React from "react";
 import * as Animal from "../harberger-lib/Animal.bs.js";
 import * as Styles from "../Styles.bs.js";
 import * as Amounts from "./Amounts.bs.js";
-import * as Globals from "../harberger-lib/Globals.bs.js";
 import * as QlHooks from "../harberger-lib/QlHooks.bs.js";
 import * as TokenId from "../harberger-lib/TokenId.bs.js";
 import * as CONSTANTS from "../CONSTANTS.bs.js";
@@ -260,9 +259,10 @@ function OrgProfile$OrgPage(Props) {
   var tmp;
   tmp = orgDescription.TAG === /* Ok */0 ? Belt_Array.mapWithIndex(orgDescription._0, (function (i, paragraphText) {
             return React.createElement("p", {
-                        key: String(i)
+                        key: String(i),
+                        className: CssJs.style([CssJs.textAlign("justify")])
                       }, paragraphText);
-          })) : React.createElement("p", undefined, Globals.restr("error loading description"));
+          })) : React.createElement("p", undefined, "error loading description");
   return React.createElement("div", undefined, React.createElement(OrgProfile$ComingSoonModal, {
                   selectedComingSoonAnimal: match[0],
                   setSelectedComingSoonAnimal: setSelectedComingSoonAnimal,
@@ -338,7 +338,7 @@ function OrgProfile$OrgPage(Props) {
                               href: orgWebsite,
                               rel: "noopener noreferrer",
                               target: "_blank"
-                            }, Globals.restr(orgName)), React.createElement("br", undefined), React.createElement("div", {
+                            }, orgName), React.createElement("br", undefined), React.createElement("div", {
                               className: CssJs.style([
                                     CssJs.maxHeight({
                                           NAME: "em",
@@ -346,7 +346,8 @@ function OrgProfile$OrgPage(Props) {
                                         }),
                                     CssJs.overflowY("auto"),
                                     CssJs.overflowX("hidden"),
-                                    CssJs.backgroundColor(CssJs.rgb(250, 250, 250)),
+                                    CssJs.backgroundColor(CssJs.rgb(240, 240, 240)),
+                                    CssJs.padding(CssJs.em(0.5)),
                                     CssJs.borderRadius(CssJs.em(0.8))
                                   ])
                             }, tmp), React.createElement("br", undefined)), React.createElement(RimbleUi.Box, {
@@ -365,7 +366,7 @@ function OrgProfile$OrgPage(Props) {
                               })
                         }, optOrgYoutubeVid !== undefined ? React.createElement(make, {
                                 videoCode: optOrgYoutubeVid
-                              }) : null, React.createElement("h2", undefined, Globals.restr("Total Raised")), totalCollectedMainnetEth !== undefined && totalCollectMaticDai !== undefined ? React.createElement(Amounts.AmountRaised.make, {
+                              }) : null, React.createElement("h2", undefined, "Total Raised"), totalCollectedMainnetEth !== undefined && totalCollectMaticDai !== undefined ? React.createElement(Amounts.AmountRaised.make, {
                                 mainnetEth: Caml_option.valFromOption(totalCollectedMainnetEth),
                                 maticDai: Caml_option.valFromOption(totalCollectMaticDai)
                               }) : "Loading"), React.createElement(RimbleUi.Box, {

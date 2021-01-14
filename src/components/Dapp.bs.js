@@ -3,6 +3,7 @@
 import * as Buy from "../harberger-lib/components/Buy.bs.js";
 import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Info from "../harberger-lib/components/Info.bs.js";
+import * as CssJs from "bs-css-emotion/src/CssJs.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as Login from "../harberger-lib/Login.bs.js";
 import * as React from "react";
@@ -10,7 +11,6 @@ import * as Animal from "../harberger-lib/Animal.bs.js";
 import * as Router from "../helpers/Router.bs.js";
 import * as Styles from "../Styles.bs.js";
 import * as Moment from "moment";
-import * as Globals from "../harberger-lib/Globals.bs.js";
 import * as QlHooks from "../harberger-lib/QlHooks.bs.js";
 import * as TokenId from "../harberger-lib/TokenId.bs.js";
 import * as Validate from "./Validate.bs.js";
@@ -244,7 +244,7 @@ function Dapp$BasicAnimalDisplay(Props) {
                       e.preventDefault();
                       return Curry._1(clearAndPush, "/#user/" + currentPatron);
                     })
-                }, Globals.restr(displayNameStr)));
+                }, displayNameStr));
 }
 
 var BasicAnimalDisplay = {
@@ -585,12 +585,12 @@ function Dapp$AnimalActionsOnDetailsPage(Props) {
     }
     return React.createElement(React.Fragment, {
                 children: null
-              }, React.createElement("a", {
-                    onClick: (function (e) {
-                        e.preventDefault();
-                        return Curry._1(clearAndPush, "/#user/" + currentPatron);
-                      })
-                  }, Globals.restr(displayNameStr)), React.createElement(PriceDisplay.make, {
+              }, React.createElement("p", undefined, "Owner: ", React.createElement("a", {
+                        onClick: (function (e) {
+                            e.preventDefault();
+                            return Curry._1(clearAndPush, "/#user/" + currentPatron);
+                          })
+                      }, displayNameStr)), React.createElement(PriceDisplay.make, {
                     chain: chain,
                     animal: animal
                   }), tmp);
@@ -605,11 +605,11 @@ function Dapp$AnimalActionsOnDetailsPage(Props) {
                     animal: animal
                   }), React.createElement("br", undefined), React.createElement(ActionButtons.UpdateDeposit.make, {}), React.createElement("br", undefined), React.createElement(Validate.make, {}));
   } else {
-    return React.createElement(Dapp$AnimalActionsOnDetailsPage$Unowned, {
-                chain: chain,
-                animal: animal,
-                price: price
-              });
+    return React.createElement(React.Fragment, undefined, React.createElement(Dapp$AnimalActionsOnDetailsPage$Unowned, {
+                    chain: chain,
+                    animal: animal,
+                    price: price
+                  }));
   }
 }
 
@@ -625,83 +625,52 @@ function Dapp$DetailsViewAnimal(Props) {
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   var image = Animal.useAvatar(animal);
   var optArtistInfo = QlHooks.useWildcardArtist(animal);
-  var ownedAnimalImg = Curry._1(Css.style, {
-        hd: Css.position(Css.absolute),
-        tl: {
-          hd: Css.zIndex(1),
-          tl: {
-            hd: Css.maxWidth({
-                  NAME: "percent",
-                  VAL: 100
-                }),
-            tl: {
-              hd: Css.top({
-                    NAME: "percent",
-                    VAL: 50
-                  }),
-              tl: {
-                hd: Css.transform(Css.translate({
-                          NAME: "percent",
-                          VAL: -50
-                        }, {
-                          NAME: "percent",
-                          VAL: -50
-                        })),
-                tl: {
-                  hd: Css.left({
-                        NAME: "percent",
-                        VAL: 50
-                      }),
-                  tl: /* [] */0
-                }
-              }
-            }
-          }
-        }
-      });
+  var ownedAnimalImg = CssJs.style([
+        CssJs.width({
+              NAME: "percent",
+              VAL: 100
+            }),
+        CssJs.height({
+              NAME: "percent",
+              VAL: 100
+            }),
+        CssJs.objectFit("contain")
+      ]);
   var orgBadge = Animal.useGetOrgBadgeImage(animal);
   var displayAnimal = function (animalImage) {
-    return React.createElement(Dapp$SquareBox, {
-                children: null
-              }, Curry._1(animalImage, undefined), Belt_Option.mapWithDefault(optArtistInfo, null, (function (artistInfo) {
-                      return React.createElement("p", {
-                                  className: Curry._1(Css.style, {
-                                        hd: Css.position(Css.absolute),
-                                        tl: {
-                                          hd: Css.bottom({
-                                                NAME: "percent",
-                                                VAL: 2
-                                              }),
-                                          tl: {
-                                            hd: Css.textAlign(Css.center),
-                                            tl: {
-                                              hd: Css.width({
-                                                    NAME: "percent",
-                                                    VAL: 100
-                                                  }),
-                                              tl: /* [] */0
-                                            }
-                                          }
-                                        }
-                                      })
-                                }, "Art by: ", React.createElement("a", {
-                                      onClick: (function (e) {
-                                          e.preventDefault();
-                                          return Curry._1(clearAndPush, "/#artist/" + artistInfo.id);
-                                        })
-                                    }, artistInfo.name));
-                    })), React.createElement("div", {
-                    className: Styles.overlayBadgeImg(80, 80),
-                    onClick: (function (e) {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        return Curry._1(clearAndPush, "#org/" + orgId);
-                      })
-                  }, React.createElement("img", {
-                        className: Styles.flameImg,
-                        src: orgBadge
-                      })));
+    return React.createElement(React.Fragment, undefined, React.createElement(Dapp$SquareBox, {
+                    children: null
+                  }, Curry._1(animalImage, undefined), React.createElement("div", {
+                        className: Styles.overlayBadgeImg(90, 90),
+                        onClick: (function (e) {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            return Curry._1(clearAndPush, "#org/" + orgId);
+                          })
+                      }, React.createElement("img", {
+                            className: CssJs.style([
+                                  CssJs.width({
+                                        NAME: "percent",
+                                        VAL: 100
+                                      }),
+                                  CssJs.height({
+                                        NAME: "percent",
+                                        VAL: 100
+                                      }),
+                                  CssJs.objectFit("contain")
+                                ]),
+                            src: orgBadge
+                          }))), React.createElement("div", undefined, Belt_Option.mapWithDefault(optArtistInfo, null, (function (artistInfo) {
+                          return React.createElement("p", undefined, "Art by: ", React.createElement("a", {
+                                          onClick: (function (e) {
+                                              e.preventDefault();
+                                              return Curry._1(clearAndPush, "/#artist/" + artistInfo.id);
+                                            })
+                                        }, artistInfo.name));
+                        }))));
   };
+  var match = QlHooks.useWildcardName(animal);
+  var match$1 = QlHooks.useWildcardCommonName(animal);
   return React.createElement(React.Fragment, {
               children: null
             }, displayAnimal(function (param) {
@@ -709,7 +678,11 @@ function Dapp$DetailsViewAnimal(Props) {
                               className: ownedAnimalImg,
                               src: image
                             });
-                }), React.createElement("h2", undefined, Globals.restr(Belt_Option.getWithDefault(QlHooks.useWildcardName(animal), "Loading"))), React.createElement(Dapp$AnimalActionsOnDetailsPage, {
+                }), React.createElement("h2", undefined, match !== undefined ? (
+                    match$1 !== undefined ? React.createElement(React.Fragment, undefined, match, React.createElement("small", {
+                                className: CssJs.style([CssJs.fontWeight("thin")])
+                              }, " the " + match$1)) : match
+                  ) : "Loading"), React.createElement(Dapp$AnimalActionsOnDetailsPage, {
                   chain: chain,
                   animal: animal
                 }));
@@ -730,7 +703,7 @@ function Dapp$DetailsView(Props) {
         },
         value: "make",
         fullPath: "Dapp.DetailsView.make",
-        filePath: "/Users/johanthan/Code/wildcards/ui/src/components/Dapp.res"
+        filePath: "/home/jasoons/Documents/code/ui/src/components/Dapp.res"
       }, "optionAnimal", [
         "a",
         optionAnimal
@@ -741,7 +714,7 @@ function Dapp$DetailsView(Props) {
                 animal: Caml_option.valFromOption(optionAnimal)
               });
   } else {
-    return React.createElement("div", undefined, React.createElement("h1", undefined, "We are unable to find that animal in our system."), React.createElement("p", undefined, Globals.restr("Please check the spelling and try again.")));
+    return React.createElement("div", undefined, React.createElement("h1", undefined, "We are unable to find that animal in our system."), React.createElement("p", undefined, "Please check the spelling and try again."));
   }
 }
 
@@ -833,7 +806,7 @@ function Dapp$DefaultLook(Props) {
               },
               value: "make",
               fullPath: "Dapp.DefaultLook.make",
-              filePath: "/Users/johanthan/Code/wildcards/ui/src/components/Dapp.res"
+              filePath: "/home/jasoons/Documents/code/ui/src/components/Dapp.res"
             }, "the animalString", [
               "a",
               animalStr
@@ -863,11 +836,11 @@ function Dapp$DefaultLeftPanel(Props) {
                   className: Styles.heading
                 }, React.createElement("span", {
                       className: Styles.colorBlue
-                    }, Globals.restr("Always")), React.createElement("br", undefined), Globals.restr("raising funds for"), React.createElement("br", undefined), React.createElement("span", {
+                    }, "Always"), React.createElement("br", undefined), "raising funds for", React.createElement("br", undefined), React.createElement("span", {
                       className: Styles.colorGreen
-                    }, Globals.restr("conservation"))), React.createElement("hr", undefined), React.createElement("h3", {
+                    }, "conservation")), React.createElement("hr", undefined), React.createElement("h3", {
                   className: Styles.subHeading
-                }, Globals.restr("Adopt an animal to start giving today.")));
+                }, "Adopt an animal to start giving today."));
 }
 
 var DefaultLeftPanel = {
@@ -887,11 +860,11 @@ function Dapp$UnlaunchedAnimalInfo(Props) {
                     children: null
                   }, React.createElement("h2", undefined, "This animal will launch in:"), React.createElement(CountDown.make, {
                         endDateMoment: endDateMoment
-                      }), React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("br", undefined), ratio === 0 ? React.createElement("p", undefined, Globals.restr("The monthly pledge rate will be revealed at launch.")) : React.createElement(React.Fragment, undefined, React.createElement("small", undefined, React.createElement("strong", undefined, Globals.restr("Monthly Pledge Rate:"), React.createElement(RimbleUi.Tooltip, {
+                      }), React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("br", undefined), ratio === 0 ? React.createElement("p", undefined, "The monthly pledge rate will be revealed at launch.") : React.createElement(React.Fragment, undefined, React.createElement("small", undefined, React.createElement("strong", undefined, "Monthly Pledge Rate:", React.createElement(RimbleUi.Tooltip, {
                                       message: "This is the monthly percentage contribution of " + (animalName + "'s sale price that will go towards conservation of at risk animals. This is deducted continuously from the deposit and paid by the owner of the animal"),
                                       placement: "top",
-                                      children: React.createElement("span", undefined, Globals.restr("ⓘ"))
-                                    }))), React.createElement("br", undefined), Globals.restr(monthlyRate + " %"))),
+                                      children: React.createElement("span", undefined, "ⓘ")
+                                    }))), React.createElement("br", undefined), monthlyRate + " %")),
               afterComponent: React.createElement(Info.make, {
                     chain: chain,
                     tokenId: animal
@@ -984,7 +957,7 @@ function Dapp$AnimalInfo(Props) {
                                         hd: Css.color(Css.hex("72c7d7")),
                                         tl: /* [] */0
                                       })
-                                }, Globals.restr("Vote for your favourite conservation"))) : null), React.createElement(ReactTabs.TabPanel, {
+                                }, "Vote for your favourite conservation")) : null), React.createElement(ReactTabs.TabPanel, {
                         children: tmp
                       }), React.createElement(ReactTabs.TabPanel, {
                         children: Belt_Option.mapWithDefault(optAnimalMedia, null, (function (media) {

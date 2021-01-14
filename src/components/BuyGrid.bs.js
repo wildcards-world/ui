@@ -4,7 +4,6 @@ import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Dapp from "./Dapp.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
-import * as Globals from "../harberger-lib/Globals.bs.js";
 import * as QlHooks from "../harberger-lib/QlHooks.bs.js";
 import * as TokenId from "../harberger-lib/TokenId.bs.js";
 import * as RimbleUi from "rimble-ui";
@@ -104,7 +103,7 @@ function BuyGrid(Props) {
               className: backgroundStyle
             }, React.createElement("div", undefined, React.createElement("h1", {
                       className: headingStyle
-                    }, Globals.restr("Wildcards Kingdom")), React.createElement(ReactTabs.Tabs, {
+                    }, "Wildcards Kingdom"), React.createElement(ReactTabs.Tabs, {
                       selectedIndex: index,
                       onSelect: selectLeaderBoard,
                       children: null

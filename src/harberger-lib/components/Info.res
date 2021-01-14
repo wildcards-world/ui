@@ -25,34 +25,34 @@ module ExpertView = {
       <div>
         <small>
           <strong>
-            {("Monthly Pledge (at " ++ (monthlyRate ++ "%): "))->restr}
+            {("Monthly Pledge (at " ++ (monthlyRate ++ "%): "))->React.string}
             <Rimble.Tooltip
               message={"This is the monthly percentage contribution of " ++
               (tokenName ++
               "'s sale price that will go towards conservation of at risk animals. This is deducted continuously from the deposit and paid by the owner of the animal")}
               placement="top">
-              <span> {`ⓘ`->restr} </span>
+              <span> {`ⓘ`->React.string} </span>
             </Rimble.Tooltip>
           </strong>
         </small>
         <br />
         {switch optMonthlyPledgeEth {
-        | Some(monthlyPledgeEth) => (monthlyPledgeEth ++ (" " ++ unit))->restr
+        | Some(monthlyPledgeEth) => (monthlyPledgeEth ++ (" " ++ unit))->React.string
         | None => <Rimble.Loader />
         }}
         <br />
         {switch (showEthWithUsdConversion, optMonthlyPledgeUsd) {
         | (true, Some(monthlyPledgeUsd)) =>
-          <small> {("(" ++ (monthlyPledgeUsd ++ " USD)"))->restr} </small>
+          <small> {("(" ++ (monthlyPledgeUsd ++ " USD)"))->React.string} </small>
         | _ => React.null
         }}
       </div>
       <p>
         <small>
           <strong>
-            {"Current Patron: "->restr}
+            {"Current Patron: "->React.string}
             <Rimble.Tooltip message=j`This is the $userIdType of the current owner` placement="top">
-              <span> {`ⓘ`->restr} </span>
+              <span> {`ⓘ`->React.string} </span>
             </Rimble.Tooltip>
           </strong>
         </small>
@@ -62,44 +62,44 @@ module ExpertView = {
             ReactEvent.Mouse.preventDefault(e)
             clearAndPush(j`/#user/$currentPatron`)
           }}>
-          {displayNameStr->restr}
+          {displayNameStr->React.string}
         </a>
       </p>
       <p>
         <small>
           <strong>
-            {"Available Deposit: "->restr}
+            {"Available Deposit: "->React.string}
             <Rimble.Tooltip
               message="This is the amount the owner has deposited to pay their monthly contribution"
               placement="top">
-              <span> {`ⓘ`->restr} </span>
+              <span> {`ⓘ`->React.string} </span>
             </Rimble.Tooltip>
           </strong>
         </small>
         <br />
-        {(depositAvailableToWithdrawEth ++ (" " ++ unit))->restr}
+        {(depositAvailableToWithdrawEth ++ (" " ++ unit))->React.string}
         <br />
         {showEthWithUsdConversion
-          ? <small> {("(" ++ (depositAvailableToWithdrawUsd ++ " USD)"))->restr} </small>
+          ? <small> {("(" ++ (depositAvailableToWithdrawUsd ++ " USD)"))->React.string} </small>
           : React.null}
       </p>
       <p>
         <small>
           <strong>
-            {(tokenName ++ "'s Patronage: ")->restr}
+            {(tokenName ++ "'s Patronage: ")->React.string}
             <Rimble.Tooltip
               message={"This is the total contribution that has been raised thanks to the wildcard, " ++
               tokenName}
               placement="top">
-              <span> {`ⓘ`->restr} </span>
+              <span> {`ⓘ`->React.string} </span>
             </Rimble.Tooltip>
           </strong>
         </small>
         <br />
-        {(totalPatronage ++ (" " ++ unit))->restr}
+        {(totalPatronage ++ (" " ++ unit))->React.string}
         <br />
         {showEthWithUsdConversion
-          ? <small> {("(" ++ (totalPatronageUsd ++ " USD)"))->restr} </small>
+          ? <small> {("(" ++ (totalPatronageUsd ++ " USD)"))->React.string} </small>
           : React.null}
       </p>
       {switch definiteTime {
@@ -107,19 +107,19 @@ module ExpertView = {
         <p>
           <small>
             <strong>
-              {"Foreclosure date: "->restr}
+              {"Foreclosure date: "->React.string}
               <Rimble.Tooltip
                 message={"This is the date the deposit will run out and the current owner will lose guardianship of " ++
                 tokenName}
                 placement="top">
-                <span> {`ⓘ`->restr} </span>
+                <span> {`ⓘ`->React.string} </span>
               </Rimble.Tooltip>
             </strong>
           </small>
           <br />
-          {MomentRe.Moment.format("LLLL", date)->restr}
+          {MomentRe.Moment.format("LLLL", date)->React.string}
           <br />
-          <small> {"( "->restr} <CountDown endDateMoment=date /> {")"->restr} </small>
+          <small> {"( "->React.string} <CountDown endDateMoment=date /> {")"->React.string} </small>
         </p>
       | None => React.null
       }}
@@ -129,18 +129,18 @@ module ExpertView = {
         <p>
           <small>
             <strong>
-              {"Days Held: "->restr}
+              {"Days Held: "->React.string}
               <Rimble.Tooltip
                 message={"This is the amount of time " ++
                 (tokenName ++
                 (" has been held. It was acquired on the " ++ (timeAcquiredString ++ ".")))}
                 placement="top">
-                <span> {`ⓘ`->restr} </span>
+                <span> {`ⓘ`->React.string} </span>
               </Rimble.Tooltip>
             </strong>
           </small>
           <br />
-          {daysHeldFloat->Js.Float.toFixed->restr}
+          {daysHeldFloat->Js.Float.toFixed->React.string}
           <br />
         </p>
       | None => React.null
@@ -178,7 +178,7 @@ module SimpleView = {
           ReactEvent.Mouse.preventDefault(e)
           clearAndPush(j`/#user/$currentPatron`)
         }}>
-        {displayNameStr->restr}
+        {displayNameStr->React.string}
       </a>
 
     let orgLink =
@@ -188,7 +188,7 @@ module SimpleView = {
           ReactEvent.Mouse.preventDefault(e)
           clearAndPush(j`/#org/$orgId`)
         }}>
-        {orgName->restr}
+        {orgName->React.string}
       </a>
 
     <React.Fragment>
@@ -351,7 +351,9 @@ let make = (~chain, ~tokenId: TokenId.t) => {
             !translationModeContext.translationModeCrypto,
           )
         }}>
-        {(translationModeContext.translationModeCrypto ? "EXPERT MODE " : "DEFAULT MODE ")->restr}
+        {(
+          translationModeContext.translationModeCrypto ? "EXPERT MODE " : "DEFAULT MODE "
+        )->React.string}
       </small>
       <ReactSwitch
         onChange=translationModeContext.setTranslationModeCrypto
@@ -443,41 +445,41 @@ module Auction = {
     <React.Fragment>
       <div>
         {if ratio == 0. {
-          <p> {"The monthly pledge rate will be revealed at launch."->restr} </p>
+          <p> {"The monthly pledge rate will be revealed at launch."->React.string} </p>
         } else {
           <>
             <small>
               <strong>
-                {"Monthly Pledge Rate:"->restr}
+                {"Monthly Pledge Rate:"->React.string}
                 <Rimble.Tooltip
                   message={"This is the monthly percentage contribution of " ++
                   (tokenName ++
                   "'s sale price that will go towards conservation of at risk animals. This is deducted continuously from the deposit and paid by the guardian of the animal")}
                   placement="top">
-                  <span> {`ⓘ`->restr} </span>
+                  <span> {`ⓘ`->React.string} </span>
                 </Rimble.Tooltip>
               </strong>
             </small>
             <br />
-            {(monthlyRate ++ " %")->restr}
+            {(monthlyRate ++ " %")->React.string}
           </>
         }}
       </div>
       {abandoned
         ? <p>
             <strong>
-              {"The previous guardian was "->restr}
+              {"The previous guardian was "->React.string}
               <a
                 onClick={e => {
                   ReactEvent.Mouse.preventDefault(e)
                   clearAndPush(j`/#user/$currentPatron`)
                 }}>
-                {displayNameStr->restr}
+                {displayNameStr->React.string}
               </a>
               <Rimble.Tooltip
                 message=j`This happens when the user's deposit runs out for the wildcard.`
                 placement="top">
-                <span> {`ⓘ`->restr} </span>
+                <span> {`ⓘ`->React.string} </span>
               </Rimble.Tooltip>
             </strong>
             <br />
@@ -488,20 +490,20 @@ module Auction = {
       <p>
         <small>
           <strong>
-            {(tokenName ++ "'s Patronage: ")->restr}
+            {(tokenName ++ "'s Patronage: ")->React.string}
             <Rimble.Tooltip
               message={"This is the total contribution that has been raised thanks to " ++
               tokenName}
               placement="top">
-              <span> {`ⓘ`->restr} </span>
+              <span> {`ⓘ`->React.string} </span>
             </Rimble.Tooltip>
           </strong>
         </small>
         <br />
-        {(totalPatronage ++ (" " ++ unit))->restr}
+        {(totalPatronage ++ (" " ++ unit))->React.string}
         <br />
         {showEthWithUsdConversion
-          ? <small> {("(" ++ (totalPatronageUsd ++ " USD)"))->restr} </small>
+          ? <small> {("(" ++ (totalPatronageUsd ++ " USD)"))->React.string} </small>
           : React.null}
       </p>
       {abandoned
@@ -509,17 +511,17 @@ module Auction = {
             <p>
               <small>
                 <strong>
-                  {"Abandoned since: "->restr}
+                  {"Abandoned since: "->React.string}
                   <Rimble.Tooltip
                     message={"This is the date the deposit ran out and the current guardian will lose guardianship of " ++
                     tokenName}
                     placement="top">
-                    <span> {`ⓘ`->restr} </span>
+                    <span> {`ⓘ`->React.string} </span>
                   </Rimble.Tooltip>
                 </strong>
               </small>
               <br />
-              {MomentRe.Moment.format("LLLL", auctionStartTime)->restr}
+              {MomentRe.Moment.format("LLLL", auctionStartTime)->React.string}
               <br />
             </p>
             // TODO: show how long it was held by the previous patron
@@ -530,7 +532,7 @@ module Auction = {
             //     <p>
             //       <small>
             //         <strong>
-            //           "Days Held: "->restr
+            //           "Days Held: "->React.string
             //           <Rimble.Tooltip
             //             message={
             //               "This is the amount of time "
@@ -540,12 +542,12 @@ module Auction = {
             //               ++ "."
             //             }
             //             placement="top">
-            //             <span> {js|ⓘ|js}->restr </span>
+            //             <span> {js|ⓘ|js}->React.string </span>
             //           </Rimble.Tooltip>
             //         </strong>
             //       </small>
             //       <br />
-            //       {daysHeldFloat->Js.Float.toFixed->restr}
+            //       {daysHeldFloat->Js.Float.toFixed->React.string}
             //       <br />
             //     </p>;
             //   | None => React.null

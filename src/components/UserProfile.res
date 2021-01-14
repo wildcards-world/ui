@@ -79,7 +79,7 @@ module ClaimLoyaltyTokenButtons = {
             <a onClick={_ => redeemLoyaltyTokens()}>
               {("Redeem " ++
               (balanceAvailableOnTokens->Web3Utils.fromWeiBNToEthPrecision(~digits=5) ++
-              " loyalty tokens"))->restr}
+              " loyalty tokens"))->React.string}
             </a>
           </p>
         | DaiPermit(_)
@@ -87,21 +87,24 @@ module ClaimLoyaltyTokenButtons = {
         | ServerError(_)
         | SubmittedMetaTx
         | Created =>
-          <p> {"Transaction Created"->restr} </p>
+          <p> {"Transaction Created"->React.string} </p>
         | SignedAndSubmitted(txHash) =>
           <p>
-            {"Processing: "->restr}
+            {"Processing: "->React.string}
             <a
               target="_blank"
               rel="noopener noreferrer"
               href={"https://" ++ (etherScanUrl ++ ("/tx/" ++ txHash))}>
-              {"view transaction"->restr}
+              {"view transaction"->React.string}
             </a>
           </p>
-        | Declined(message) => <p> {("Submitting transaction failed: " ++ message)->restr} </p>
+        | Declined(message) =>
+          <p> {("Submitting transaction failed: " ++ message)->React.string} </p>
         | Complete(_txResult) =>
-          <p> {"Tokens claimed (please reload the page, this will be improved soon)"->restr} </p>
-        | Failed => <p> {"Transaction failed"->restr} </p>
+          <p>
+            {"Tokens claimed (please reload the page, this will be improved soon)"->React.string}
+          </p>
+        | Failed => <p> {"Transaction failed"->React.string} </p>
         }}
       </small>
     }
@@ -303,24 +306,24 @@ module UserDetails = {
           | BuyScreen(_)
           | AuctionScreen(_)
           | NoExtraState => <>
-              {optName->reactMap(name => <h2> {name->restr} </h2>)}
+              {optName->reactMap(name => <h2> {name->React.string} </h2>)}
               {optTwitter->reactMap(twitterHandle =>
                 <a
                   className=Styles.navListText
                   target="_blank"
                   rel="noopener noreferrer"
                   href={"https://twitter.com/" ++ twitterHandle}>
-                  {("@" ++ twitterHandle)->restr}
+                  {("@" ++ twitterHandle)->React.string}
                 </a>
               )}
               <br />
-              {optDescription->reactMap(description => <p> {description->restr} </p>)}
+              {optDescription->reactMap(description => <p> {description->React.string} </p>)}
               <a
                 className=Styles.navListText
                 target="_blank"
                 rel="noopener noreferrer"
                 href={"https://" ++ (etherScanUrl ++ ("/address/" ++ userAddress))}>
-                {Helper.elipsify(userAddress, 10)->restr}
+                {Helper.elipsify(userAddress, 10)->React.string}
               </a>
               <br />
               {// NOTE: the number of loyalty tokens of a user currently will always show.
@@ -335,7 +338,7 @@ module UserDetails = {
                           claimedLoyaltyTokens =>
                             claimedLoyaltyTokens->Web3Utils.fromWeiBNToEthPrecision(~digits=6),
                         ) ++
-                        " WLT"))->restr}
+                        " WLT"))->React.string}
                       </p>
                     </small>
                     {switch currentlyOwnedTokens {
@@ -349,7 +352,7 @@ module UserDetails = {
                         numberOfTokens={currentlyOwnedTokens->Array.length}
                       />
                     }}
-                    <a href="/#ethturin-quadratic-voting"> {"vote"->restr} </a>
+                    <a href="/#ethturin-quadratic-voting"> {"vote"->React.string} </a>
                   </>
                 : <small>
                     <p>
@@ -358,7 +361,7 @@ module UserDetails = {
                         totalLoyaltyTokens,
                         _,
                       )) => totalLoyaltyTokens->Web3Utils.fromWeiBNToEthPrecision(~digits=5)) ++
-                      " WLT"))->restr}
+                      " WLT"))->React.string}
                     </p>
                   </small>}
               {if isAddressCurrentUser {
@@ -372,17 +375,17 @@ module UserDetails = {
           }}
         </Rimble.Box>
         <Rimble.Box p=1 width=[1., 1., 0.3333]>
-          <h2> {"Monthly Contribution"->restr} </h2>
+          <h2> {"Monthly Contribution"->React.string} </h2>
           <Amounts.Basic mainnetEth=monthlyCotributionWei maticDai=monthlyCotributionDai />
-          <h2> {"Total Contributed"->restr} </h2>
+          <h2> {"Total Contributed"->React.string} </h2>
           <Amounts.AmountRaised mainnetEth=totalContributionWei maticDai=totalContributionDai />
         </Rimble.Box>
         <Rimble.Box p=1 width=[1., 1., 0.3333]>
           {switch currentlyOwnedTokens {
           | [] =>
             uniquePreviouslyOwnedTokens->Array.length > 0
-              ? <p> {"User currently doesn't currently own a wildcard."->restr} </p>
-              : <p> {"User has never owned a wildcard."->restr} </p>
+              ? <p> {"User currently doesn't currently own a wildcard."->React.string} </p>
+              : <p> {"User has never owned a wildcard."->React.string} </p>
           | currentlyOwnedTokens =>
             <React.Fragment>
               <Rimble.Heading> {"Currently owned Wildcards"->React.string} </Rimble.Heading>

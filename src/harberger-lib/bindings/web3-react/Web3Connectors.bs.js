@@ -5,10 +5,6 @@ import Web3CustomRoot from "./web3CustomRoot";
 
 var injected = Connectors.injected;
 
-function sideChainNetwork(prim) {
-  return Connectors.sideChainNetwork(prim);
-}
-
 var make = Web3CustomRoot;
 
 var Custom = {
@@ -17,7 +13,6 @@ var Custom = {
 
 export {
   injected ,
-  sideChainNetwork ,
   Custom ,
   
 }

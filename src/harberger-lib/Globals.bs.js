@@ -10,10 +10,6 @@ function toFixedWithPrecisionNoTrailingZeros(number, digits) {
   return String(Caml_format.caml_float_of_string(number.toFixed(digits)));
 }
 
-function restr(prim) {
-  return prim;
-}
-
 function reactMapWithDefault(opt, $$default, f) {
   if (opt !== undefined) {
     return Curry._1(f, Caml_option.valFromOption(opt));
@@ -50,7 +46,6 @@ export {
   asyncFromResult ,
   attemptMapAsync ,
   toFixedWithPrecisionNoTrailingZeros ,
-  restr ,
   reactMapWithDefault ,
   reactMap ,
   Opt ,

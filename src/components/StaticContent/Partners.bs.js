@@ -5,7 +5,6 @@ import * as CssJs from "bs-css-emotion/src/CssJs.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Styles from "../../Styles.bs.js";
-import * as Globals from "../../harberger-lib/Globals.bs.js";
 import * as CONSTANTS from "../../CONSTANTS.bs.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
@@ -151,49 +150,41 @@ function usePartners(param) {
   }
 }
 
-var blueBackground = Curry._1(Css.style, {
-      hd: Css.backgroundColor({
+var blueBackground = CssJs.style([CssJs.backgroundColor({
             NAME: "hex",
             VAL: "73C8D7"
-          }),
-      tl: /* [] */0
-    });
+          })]);
 
-var cardStyle = Curry._1(Css.style, {
-      hd: Css.height({
+var cardStyle = CssJs.style([
+      CssJs.height({
             NAME: "percent",
             VAL: 100
           }),
-      tl: {
-        hd: Css.display("flex"),
-        tl: {
-          hd: Css.important(Css.padding({
-                    NAME: "percent",
-                    VAL: 0
-                  })),
-          tl: /* [] */0
-        }
-      }
-    });
+      CssJs.display("flex"),
+      CssJs.important(CssJs.padding({
+                NAME: "percent",
+                VAL: 0
+              }))
+    ]);
 
-var logoStyle = Curry._1(Css.style, {
-      hd: Css.marginLeft({
+var logoStyle = CssJs.style([
+      CssJs.margin({
             NAME: "percent",
             VAL: 10
           }),
-      tl: {
-        hd: Css.width({
-              NAME: "percent",
-              VAL: 80
-            }),
-        tl: /* [] */0
-      }
-    });
+      CssJs.width({
+            NAME: "percent",
+            VAL: 80
+          })
+    ]);
 
-var centerText = Curry._1(Css.style, {
-      hd: Css.textAlign("center"),
-      tl: /* [] */0
-    });
+var corporatePartnerTextStyle = CssJs.style([
+      CssJs.textAlign("center"),
+      CssJs.marginBottom({
+            NAME: "percent",
+            VAL: 10
+          })
+    ]);
 
 function Partners$OrgDetails(Props) {
   var conservation = Props.conservation;
@@ -308,7 +299,7 @@ function Partners(Props) {
   return React.createElement("div", {
               width: "100%"
             }, React.createElement(RimbleUi.Flex, {
-                  children: React.createElement("h1", undefined, Globals.restr("Conservation Partners")),
+                  children: React.createElement("h1", undefined, "Conservation Partners"),
                   flexWrap: "wrap",
                   alignItems: "stretch",
                   justifyContent: "space-around",
@@ -332,7 +323,7 @@ function Partners(Props) {
                 }, React.createElement(RimbleUi.Flex, {
                       children: React.createElement("h1", {
                             className: CssJs.style([CssJs.unsafe("text-shadow", "0.25em 0.25em 0.5em #FFFFFF, -0.25em -0.25em 0.5em #FFFFFF, -0.25em 0.25em 0.5em #FFFFFF, 0.25em -0.25em 0.5em #FFFFFF;")])
-                          }, Globals.restr("Corporate partners")),
+                          }, "Corporate partners"),
                       flexWrap: "wrap",
                       alignItems: "stretch",
                       justifyContent: "space-around",
@@ -356,8 +347,8 @@ function Partners(Props) {
                                           alt: "ubisoft",
                                           src: ubisoftLogo
                                         }), React.createElement(RimbleUi.Text, {
-                                          children: Globals.restr("Ubisoft's Entrepreneurs Lab, Season 4, participants"),
-                                          className: centerText
+                                          children: "Ubisoft's Entrepreneurs Lab, Season 4, participants",
+                                          className: corporatePartnerTextStyle
                                         }))
                               }),
                           width: [
@@ -378,8 +369,8 @@ function Partners(Props) {
                                           alt: "eth-cape-town",
                                           src: ethCapeTownLogo
                                         }), React.createElement(RimbleUi.Text, {
-                                          children: Globals.restr("Overall winners of EthCapeTown hackathon"),
-                                          className: centerText
+                                          children: "Overall winners of EthCapeTown hackathon",
+                                          className: corporatePartnerTextStyle
                                         }))
                               }),
                           width: [
@@ -400,8 +391,8 @@ function Partners(Props) {
                                           alt: "cv-labs",
                                           src: cvLabsLogo
                                         }), React.createElement(RimbleUi.Text, {
-                                          children: Globals.restr("CV Labs Incubator Program, Batch 2"),
-                                          className: centerText
+                                          children: "CV Labs Incubator Program, Batch 2",
+                                          className: corporatePartnerTextStyle
                                         }))
                               }),
                           width: [
@@ -422,8 +413,8 @@ function Partners(Props) {
                                           alt: "Kernel Gitcoin",
                                           src: kernelLogo
                                         }), React.createElement(RimbleUi.Text, {
-                                          children: Globals.restr("Gitcoin Kernel genesis block participants"),
-                                          className: centerText
+                                          children: "Gitcoin Kernel genesis block participants",
+                                          className: corporatePartnerTextStyle
                                         }))
                               }),
                           width: [
@@ -447,7 +438,7 @@ export {
   blueBackground ,
   cardStyle ,
   logoStyle ,
-  centerText ,
+  corporatePartnerTextStyle ,
   OrgDetails ,
   make ,
   

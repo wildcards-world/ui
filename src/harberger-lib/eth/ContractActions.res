@@ -8,12 +8,12 @@ type tx = {
 }
 type parsedUnits
 type txOptions = {
-  @dead("txOptions.gasLimit") gasLimit: string,
-  @dead("txOptions.value") value: parsedUnits,
+  @live gasLimit: option<string>,
+  @live value: parsedUnits,
 }
 type tokenIdString = string
 type estimateBuy = {
-  @dead("estimateBuy.buy")
+  @live
   buy: // (. string, parsedUnits, txOptions) =>
   (. string, parsedUnits, parsedUnits, txOptions) => Promise.Js.t<string, string>,
 }
@@ -442,7 +442,7 @@ let useBuy = (
             oldPriceParsed,
             wildcardsPercentage,
             {
-              gasLimit: "500302", //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
+              gasLimit: None, //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
               value: value,
             },
           )->Promise.Js.toResult
@@ -549,7 +549,7 @@ let useBuyAuction = (~chain, animal, library: option<Web3.web3Library>, account,
             newPriceEncoded,
             wildcardsPercentage,
             {
-              gasLimit: "500302", //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
+              gasLimit: None, //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
               value: value,
             },
           )->Promise.Js.toResult
@@ -588,7 +588,7 @@ let useRedeemLoyaltyTokens = (patron: string) => {
       let claimLoyaltyTokenPromise = steward._collectPatronagePatron(.
         patron,
         {
-          gasLimit: "500302", //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
+          gasLimit: None, //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
           value: value,
         },
       )->Promise.Js.toResult
@@ -683,7 +683,7 @@ let useUpdateDeposit = (~chain, library: option<Web3.web3Library>, account, pare
         switch optSteward {
         | Some(steward) =>
           let updateDepositPromise = steward.depositWei(.{
-            gasLimit: "500302", //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
+            gasLimit: None, //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
             value: value,
           })->Promise.Js.toResult
           updateDepositPromise->Promise.getOk(tx => {
@@ -748,7 +748,7 @@ let useWithdrawDeposit = (~chain, library: option<Web3.web3Library>, account, pa
           let updateDepositPromise = steward.withdrawDeposit(.
             amountToWithdrawEncoded,
             {
-              gasLimit: "500302", //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
+              gasLimit: None, //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
               value: value,
             },
           )->Promise.Js.toResult
@@ -816,7 +816,7 @@ let useChangePrice = animal => {
           animalId,
           newPriceEncoded,
           {
-            gasLimit: "500302", //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
+            gasLimit: None, //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
             value: value,
           },
         )->Promise.Js.toResult
