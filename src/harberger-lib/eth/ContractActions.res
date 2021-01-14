@@ -190,7 +190,7 @@ type transactionState =
   | DaiPermit(BN.t)
   | SignMetaTx
   | Created
-  | @dead("transactionState.SubmittedMetaTx") SubmittedMetaTx
+  | SubmittedMetaTx
   | SignedAndSubmitted(txHash)
   // TODO: get the error message when it is declined.
   //      4001 - means the transaction was declined by the signer
@@ -307,6 +307,7 @@ let handleMetaTxSumbissionState = (
   >,
   setTxState,
   currentState,
+  setForceRefetch,
 ) => {
   let networkId = RootProvider.useNetworkId()
 
@@ -320,27 +321,41 @@ let handleMetaTxSumbissionState = (
     if success {
       @warning("-4")
       switch currentState {
-      | SignedAndSubmitted(_txHash) => ()
-      | _ => setTxState(_ => SignedAndSubmitted(txHash))
+      | Complete(_)
+      | Failed
+      | SignedAndSubmitted(_) => ()
+      | _ =>
+        setTxState(_ => {
+          Js.log("Setting the tx state!!!")
+          SignedAndSubmitted(txHash)
+        })
+        let providerUrl = switch networkId {
+        | Some(1) => "https://rpc-mainnet.matic.network"
+        | Some(4) => "https://goerli.infura.io/v3/c401b8ee3a324619a453f2b5b2122d7a"
+        | Some(5) => "https://rpc-mumbai.maticvigil.com/v1/bc87ce81f2f4695f31857297dc5458c336833a78"
+        // | Some(5) => "https://rpc-mumbai.matic.today"
+        | Some(_)
+        | None => "No Network"
+        }
+        let maticProvider = Ethers.makeProvider(providerUrl)
+
+        let waitForTx = maticProvider->Ethers.waitForTransaction(txHash)->Promise.Js.toResult
+
+        waitForTx->Promise.getOk(tx =>
+          setTxState(_ => {
+            setForceRefetch(_ => true)
+
+            // NOTE: Basic idea, the graph takes time to update sometimes. So strategy is to try re-fetch the data 3 seconds later.
+            // TODO: This is a bit hacky, should rather check that the re-fetched data has changed (do this in the parent function, check if the important value has changed, if not, try re-fetch it after waiting a few seconds)
+            Js.Global.setTimeout(() => setForceRefetch(_ => true), 3000)->ignore
+
+            Complete(tx)
+          })
+        )
+        waitForTx->Promise.getError(_error => {
+          setTxState(_ => Failed)
+        })
       }
-
-      let providerUrl = switch networkId {
-      | Some(1) => "https://rpc-mainnet.matic.network"
-      | Some(4) => "https://goerli.infura.io/v3/c401b8ee3a324619a453f2b5b2122d7a"
-      | Some(5) => "https://rpc-mumbai.matic.today"
-      | Some(_)
-      | None => "No Network"
-      }
-      let maticProvider = Ethers.makeProvider(providerUrl)
-
-      let waitForTx = maticProvider->Ethers.waitForTransaction(txHash)->Promise.Js.toResult
-
-      waitForTx->Promise.getOk(tx => setTxState(_ => Complete(tx)))
-      waitForTx->Promise.getError(error => {
-        setTxState(_ => Failed)
-        Js.log("GOT AN ERROR")
-        Js.log(error)
-      })
     } else {
       @warning("-4")
       switch currentState {
@@ -348,7 +363,12 @@ let handleMetaTxSumbissionState = (
       | _ => setTxState(_ => ServerError(errorMsg->Option.getWithDefault("Unknown error")))
       }
     }
-  | {data: None, _}
+  | {data: None, _} =>
+    @warning("-4")
+    switch currentState {
+    | SubmittedMetaTx => ()
+    | _ => setTxState(_ => SubmittedMetaTx)
+    }
   | {error: _, _} =>
     @warning("-4")
     switch currentState {
@@ -367,10 +387,19 @@ let useBuy = (
   let animalId = animal->TokenId.toString
 
   let optSteward = useStewardContract()
-  let (txState, setTxState) = React.useState(() => UnInitialised)
 
   let (mutate, result) = ExecuteMetaTxMutation.use()
-  handleMetaTxSumbissionState(result, setTxState, txState)
+  let (txState, setTxState) = React.useState(() => UnInitialised)
+
+  // The below code re-fetches the wildcard on successful transaction
+  let (forceRefreshData, setForceRefreshData) = React.useState(() => false)
+  let _ = QlHooks.useWildcardQuery(~chain, ~forceRefetch=forceRefreshData, animal)
+  React.useEffect1(() => {
+    setForceRefreshData(_ => false)
+    None
+  }, [forceRefreshData])
+
+  handleMetaTxSumbissionState(result, setTxState, txState, setForceRefreshData)
 
   let chainIdInt = parentChainId->getChildChainId
   let chainId = chainIdInt->BN.newInt_
@@ -378,10 +407,17 @@ let useBuy = (
   let spender = getStewardAddress(chain, chainIdInt)
   let networkName = chainIdInt->getMaticNetworkName
 
+  let (shouldRefreshNonce, setShouldRefreshNonce) = React.useState(_ => chain == MaticQuery)
+
   let maticState =
     account
     ->Option.getWithDefault(CONSTANTS.nullEthAddress)
-    ->QlHooks.useMaticState(~forceRefetch=false, networkName)
+    ->QlHooks.useMaticState(~forceRefetch=shouldRefreshNonce, networkName)
+
+  React.useEffect2(() => {
+    setShouldRefreshNonce(_ => false)
+    None
+  }, (account, networkName))
 
   switch chain {
   | Client.Neither
@@ -477,7 +513,14 @@ let useBuyAuction = (~chain, animal, library: option<Web3.web3Library>, account,
   let optSteward = useStewardContract()
 
   let (mutate, result) = ExecuteMetaTxMutation.use()
-  handleMetaTxSumbissionState(result, setTxState, txState)
+
+  let (forceRefreshData, setForceRefreshData) = React.useState(() => false)
+  let _ = QlHooks.useWildcardQuery(~chain, ~forceRefetch=forceRefreshData, animal)
+  React.useEffect1(() => {
+    setForceRefreshData(_ => false)
+    None
+  }, [forceRefreshData])
+  handleMetaTxSumbissionState(result, setTxState, txState, setForceRefreshData)
 
   let chainIdInt = parentChainId->getChildChainId
   let chainId = chainIdInt->BN.newInt_
@@ -620,7 +663,17 @@ let useUpdateDeposit = (~chain, library: option<Web3.web3Library>, account, pare
   let optSteward = useStewardContract()
 
   let (mutate, result) = ExecuteMetaTxMutation.use()
-  handleMetaTxSumbissionState(result, setTxState, txState)
+  let (forceRefreshData, setForceRefreshData) = React.useState(() => false)
+  React.useEffect1(() => {
+    setForceRefreshData(_ => false)
+    None
+  }, [forceRefreshData])
+  let _ = QlHooks.useQueryPatronQuery(
+    ~chain,
+    ~forceRefetch=forceRefreshData,
+    account->Option.getWithDefault(""),
+  )
+  handleMetaTxSumbissionState(result, setTxState, txState, setForceRefreshData)
 
   let chainIdInt = parentChainId->getChildChainId
   let chainId = chainIdInt->BN.newInt_

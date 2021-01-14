@@ -410,8 +410,8 @@ function UserProfile(Props) {
   var chain = Props.chain;
   var userAddress = Props.userAddress;
   var userAddressLowerCase = userAddress.toLowerCase();
-  var patronQuery = QlHooks.useQueryPatronQuery(/* MainnetQuery */2, userAddressLowerCase);
-  var patronQueryMatic = QlHooks.useQueryPatronQuery(/* MaticQuery */1, userAddressLowerCase);
+  var patronQuery = QlHooks.useQueryPatronQuery(/* MainnetQuery */2, undefined, userAddressLowerCase);
+  var patronQueryMatic = QlHooks.useQueryPatronQuery(/* MaticQuery */1, undefined, userAddressLowerCase);
   var userInfoContext = UserProvider.useUserInfoContext(undefined);
   Curry._2(userInfoContext.update, userAddressLowerCase, false);
   var optThreeBoxData = UserProvider.use3BoxUserData(userAddressLowerCase);

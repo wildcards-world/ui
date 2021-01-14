@@ -74,7 +74,7 @@ let useAnimalList = (~chain) => {
   )
 }
 
-module SubWildcardQuery = %graphql(`
+module WildcardChainDataQuery = %graphql(`
   query ($tokenId: String!) {
     wildcard(id: $tokenId) {
       id
@@ -272,10 +272,14 @@ let getQueryPrefix = (chain: Client.context) =>
   | MaticQuery => "matic"
   }
 
-let useWildcardQuery = (~chain, tokenId) => {
-  let wildcardQuery = SubWildcardQuery.use(
+let useWildcardQuery = (~chain, ~forceRefetch=false, tokenId) => {
+  let wildcardQuery = WildcardChainDataQuery.use(
     ~context={context: chain}->createContext,
-    SubWildcardQuery.makeVariables(~tokenId=chain->getQueryPrefix ++ tokenId->TokenId.toString, ()),
+    ~fetchPolicy=forceRefetch ? QueryFetchPolicy.CacheAndNetwork : QueryFetchPolicy.CacheFirst,
+    WildcardChainDataQuery.makeVariables(
+      ~tokenId=chain->getQueryPrefix ++ tokenId->TokenId.toString,
+      (),
+    ),
   )
 
   switch wildcardQuery {
@@ -480,9 +484,10 @@ let useTimeAcquired: (~chain: Client.context, TokenId.t) => option<MomentRe.Mome
     None
   }
 
-let useQueryPatronQuery = (~chain, patron) => {
+let useQueryPatronQuery = (~chain, ~forceRefetch=false, patron) => {
   LoadPatron.use(
     ~context={context: chain}->createContext,
+    ~fetchPolicy=forceRefetch ? QueryFetchPolicy.CacheAndNetwork : QueryFetchPolicy.CacheFirst,
     LoadPatron.makeVariables(~patronId=chain->getQueryPrefix ++ patron, ()),
   )
 }
