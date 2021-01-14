@@ -125,7 +125,7 @@ function Buy$Buy(Props) {
       return ;
     }
     var value$1 = match[0];
-    var patronage = (Accounting.defaultZeroF(Belt_Float.fromString(value$1)) * ratio).toString();
+    var patronage = Globals.toFixedWithPrecisionNoTrailingZeros(Accounting.defaultZeroF(Belt_Float.fromString(value$1)) * ratio, 2);
     Curry._1(setPatronage, (function (param) {
             return patronage;
           }));

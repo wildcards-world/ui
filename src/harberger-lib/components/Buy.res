@@ -174,7 +174,9 @@ module Buy = {
         value,
       )
       if didUpdate {
-        let patronage = Js.Float.toString(Float.fromString(value)->defaultZeroF *. ratio)
+        let patronage =
+          (Float.fromString(value)->defaultZeroF *. ratio)
+            ->toFixedWithPrecisionNoTrailingZeros(~digits=2)
         setPatronage(_ => patronage)
         let timeInSeconds = calculateDepositDuration(
           deposit->Web3Utils.toWeiFromEth,
