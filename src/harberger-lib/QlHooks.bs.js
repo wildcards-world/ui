@@ -430,7 +430,7 @@ function makeVariables$1(tokenId, param) {
         };
 }
 
-var SubWildcardQuery_inner = {
+var WildcardChainDataQuery_inner = {
   Raw: Raw$1,
   query: query$1,
   parse: parse$1,
@@ -449,24 +449,24 @@ var include$1 = ApolloClient__React_Hooks_UseQuery.Extend({
 
 var use$1 = include$1.use;
 
-var SubWildcardQuery_refetchQueryDescription = include$1.refetchQueryDescription;
+var WildcardChainDataQuery_refetchQueryDescription = include$1.refetchQueryDescription;
 
-var SubWildcardQuery_useLazy = include$1.useLazy;
+var WildcardChainDataQuery_useLazy = include$1.useLazy;
 
-var SubWildcardQuery_useLazyWithVariables = include$1.useLazyWithVariables;
+var WildcardChainDataQuery_useLazyWithVariables = include$1.useLazyWithVariables;
 
-var SubWildcardQuery = {
-  SubWildcardQuery_inner: SubWildcardQuery_inner,
+var WildcardChainDataQuery = {
+  WildcardChainDataQuery_inner: WildcardChainDataQuery_inner,
   Raw: Raw$1,
   query: query$1,
   parse: parse$1,
   serialize: serialize$1,
   serializeVariables: serializeVariables$1,
   makeVariables: makeVariables$1,
-  refetchQueryDescription: SubWildcardQuery_refetchQueryDescription,
+  refetchQueryDescription: WildcardChainDataQuery_refetchQueryDescription,
   use: use$1,
-  useLazy: SubWildcardQuery_useLazy,
-  useLazyWithVariables: SubWildcardQuery_useLazyWithVariables
+  useLazy: WildcardChainDataQuery_useLazy,
+  useLazyWithVariables: WildcardChainDataQuery_useLazyWithVariables
 };
 
 var Raw$2 = {};
@@ -1870,7 +1870,8 @@ function getQueryPrefix(chain) {
   }
 }
 
-function useWildcardQuery(chain, tokenId) {
+function useWildcardQuery(chain, forceRefetchOpt, tokenId) {
+  var forceRefetch = forceRefetchOpt !== undefined ? forceRefetchOpt : false;
   var wildcardQuery = Curry.app(use$1, [
         undefined,
         {
@@ -1878,7 +1879,7 @@ function useWildcardQuery(chain, tokenId) {
         },
         undefined,
         undefined,
-        undefined,
+        forceRefetch ? /* CacheAndNetwork */0 : /* CacheFirst */1,
         undefined,
         undefined,
         undefined,
@@ -2180,7 +2181,7 @@ function useLoadTopContributorsData(numberOfLeaders) {
 }
 
 function usePatron(chain, animal) {
-  var match = useWildcardQuery(chain, animal);
+  var match = useWildcardQuery(chain, undefined, animal);
   if (match === undefined) {
     return ;
   }
@@ -2202,7 +2203,7 @@ function useIsAnimalOwened(chain, ownedAnimal) {
 }
 
 function useTimeAcquired(chain, animal) {
-  var match = useWildcardQuery(chain, animal);
+  var match = useWildcardQuery(chain, undefined, animal);
   if (match === undefined) {
     return ;
   }
@@ -2213,7 +2214,8 @@ function useTimeAcquired(chain, animal) {
   
 }
 
-function useQueryPatronQuery(chain, patron) {
+function useQueryPatronQuery(chain, forceRefetchOpt, patron) {
+  var forceRefetch = forceRefetchOpt !== undefined ? forceRefetchOpt : false;
   return Curry.app(use$6, [
               undefined,
               {
@@ -2221,7 +2223,7 @@ function useQueryPatronQuery(chain, patron) {
               },
               undefined,
               undefined,
-              undefined,
+              forceRefetch ? /* CacheAndNetwork */0 : /* CacheFirst */1,
               undefined,
               undefined,
               undefined,
@@ -2237,7 +2239,7 @@ function useQueryPatronQuery(chain, patron) {
 }
 
 function useQueryPatron(chain, patron) {
-  var loadPatronQuery = useQueryPatronQuery(chain, patron);
+  var loadPatronQuery = useQueryPatronQuery(chain, undefined, patron);
   var match = loadPatronQuery.data;
   if (match !== undefined) {
     return match.patron;
@@ -2336,7 +2338,7 @@ function useAmountRaised(chain) {
 }
 
 function useTotalCollectedToken(chain, animal) {
-  var match = useWildcardQuery(chain, animal);
+  var match = useWildcardQuery(chain, undefined, animal);
   if (match === undefined) {
     return ;
   }
@@ -2352,7 +2354,7 @@ function useTotalCollectedToken(chain, animal) {
 }
 
 function usePatronageNumerator(chain, tokenId) {
-  var match = useWildcardQuery(chain, tokenId);
+  var match = useWildcardQuery(chain, undefined, tokenId);
   if (match === undefined) {
     return ;
   }
@@ -2487,7 +2489,7 @@ function useRemainingDepositEth(chain, patron) {
 }
 
 function usePrice(chain, tokenId) {
-  var wildcardData = useWildcardQuery(chain, tokenId);
+  var wildcardData = useWildcardQuery(chain, undefined, tokenId);
   var optCurrentPatron = usePatron(chain, tokenId);
   var currentPatron = Belt_Option.mapWithDefault(optCurrentPatron, "no-patron-defined", (function (a) {
           return a;
@@ -2560,7 +2562,7 @@ function useAuctioLength(chain, _tokenId) {
 }
 
 function useLaunchTimeBN(chain, tokenId) {
-  var match = useWildcardQuery(chain, tokenId);
+  var match = useWildcardQuery(chain, undefined, tokenId);
   if (match === undefined) {
     return ;
   }
@@ -2706,7 +2708,7 @@ export {
   createContext ,
   useInitialDataLoad ,
   useAnimalList ,
-  SubWildcardQuery ,
+  WildcardChainDataQuery ,
   WildcardDataQuery ,
   MaticStateQuery ,
   HomeAnimalsQuery ,

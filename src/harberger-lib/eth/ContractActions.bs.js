@@ -321,30 +321,49 @@ function execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, se
   
 }
 
-function handleMetaTxSumbissionState(result, setTxState, currentState) {
+function handleMetaTxSumbissionState(result, setTxState, currentState, setForceRefetch) {
   var networkId = RootProvider.useNetworkId(undefined);
-  var exit = 0;
   var data = result.data;
   if (!result.called) {
     return ;
   }
-  if (data !== undefined && result.error === undefined) {
+  if (data !== undefined) {
+    if (result.error !== undefined) {
+      if (typeof currentState !== "number" && currentState.TAG === /* ServerError */3) {
+        return ;
+      }
+      return Curry._1(setTxState, (function (param) {
+                    return {
+                            TAG: /* ServerError */3,
+                            _0: "Query Error"
+                          };
+                  }));
+    }
     var success = data.metaTx.success;
     var errorMsg = data.metaTx.errorMsg;
     var txHash = data.metaTx.txHash;
     if (success) {
-      var exit$1 = 0;
-      if (typeof currentState === "number" || currentState.TAG !== /* SignedAndSubmitted */1) {
-        exit$1 = 2;
+      if (typeof currentState === "number") {
+        if (currentState === /* Failed */4) {
+          return ;
+        }
+        
+      } else {
+        switch (currentState.TAG | 0) {
+          case /* SignedAndSubmitted */1 :
+          case /* Complete */4 :
+              return ;
+          default:
+            
+        }
       }
-      if (exit$1 === 2) {
-        Curry._1(setTxState, (function (param) {
-                return {
-                        TAG: /* SignedAndSubmitted */1,
-                        _0: txHash
-                      };
-              }));
-      }
+      Curry._1(setTxState, (function (param) {
+              console.log("Setting the tx state!!!");
+              return {
+                      TAG: /* SignedAndSubmitted */1,
+                      _0: txHash
+                    };
+            }));
       var providerUrl;
       if (networkId !== undefined) {
         switch (networkId) {
@@ -359,7 +378,7 @@ function handleMetaTxSumbissionState(result, setTxState, currentState) {
               providerUrl = "https://goerli.infura.io/v3/c401b8ee3a324619a453f2b5b2122d7a";
               break;
           case 5 :
-              providerUrl = "https://rpc-mumbai.matic.today";
+              providerUrl = "https://rpc-mumbai.maticvigil.com/v1/bc87ce81f2f4695f31857297dc5458c336833a78";
               break;
           default:
             providerUrl = "No Network";
@@ -371,74 +390,48 @@ function handleMetaTxSumbissionState(result, setTxState, currentState) {
       var waitForTx = $$Promise.Js.toResult(maticProvider.waitForTransaction(txHash));
       $$Promise.getOk(waitForTx, (function (tx) {
               return Curry._1(setTxState, (function (param) {
+                            Curry._1(setForceRefetch, (function (param) {
+                                    return true;
+                                  }));
+                            setTimeout((function (param) {
+                                    return Curry._1(setForceRefetch, (function (param) {
+                                                  return true;
+                                                }));
+                                  }), 3000);
                             return {
                                     TAG: /* Complete */4,
                                     _0: tx
                                   };
                           }));
             }));
-      return $$Promise.getError(waitForTx, (function (error) {
-                    Curry._1(setTxState, (function (param) {
-                            return /* Failed */4;
-                          }));
-                    console.log("GOT AN ERROR");
-                    console.log(error);
-                    
+      return $$Promise.getError(waitForTx, (function (_error) {
+                    return Curry._1(setTxState, (function (param) {
+                                  return /* Failed */4;
+                                }));
                   }));
     }
-    var exit$2 = 0;
-    if (typeof currentState === "number") {
-      exit$2 = 2;
-    } else {
-      if (currentState.TAG === /* ServerError */3) {
-        return ;
-      }
-      exit$2 = 2;
+    if (typeof currentState !== "number" && currentState.TAG === /* ServerError */3) {
+      return ;
     }
-    if (exit$2 === 2) {
-      return Curry._1(setTxState, (function (param) {
-                    return {
-                            TAG: /* ServerError */3,
-                            _0: Belt_Option.getWithDefault(errorMsg, "Unknown error")
-                          };
-                  }));
-    }
-    
-  } else {
-    exit = 1;
+    return Curry._1(setTxState, (function (param) {
+                  return {
+                          TAG: /* ServerError */3,
+                          _0: Belt_Option.getWithDefault(errorMsg, "Unknown error")
+                        };
+                }));
   }
-  if (exit === 1) {
-    var exit$3 = 0;
-    if (typeof currentState === "number") {
-      exit$3 = 2;
-    } else {
-      if (currentState.TAG === /* ServerError */3) {
-        return ;
-      }
-      exit$3 = 2;
-    }
-    if (exit$3 === 2) {
-      return Curry._1(setTxState, (function (param) {
-                    return {
-                            TAG: /* ServerError */3,
-                            _0: "Query Error"
-                          };
-                  }));
-    }
-    
+  if (typeof currentState === "number" && currentState === 3) {
+    return ;
   }
-  
+  return Curry._1(setTxState, (function (param) {
+                return /* SubmittedMetaTx */3;
+              }));
 }
 
 function useBuy(chain, animal, library, account, parentChainId) {
   var animalId = TokenId.toString(animal);
   var optSteward = useStewardContract(undefined);
-  var match = React.useState(function () {
-        return /* UnInitialised */0;
-      });
-  var setTxState = match[1];
-  var txState = match[0];
-  var match$1 = Curry.app(use, [
+  var match = Curry.app(use, [
         undefined,
         undefined,
         undefined,
@@ -453,14 +446,44 @@ function useBuy(chain, animal, library, account, parentChainId) {
         undefined,
         undefined
       ]);
-  var mutate = match$1[0];
-  handleMetaTxSumbissionState(match$1[1], setTxState, txState);
+  var mutate = match[0];
+  var match$1 = React.useState(function () {
+        return /* UnInitialised */0;
+      });
+  var setTxState = match$1[1];
+  var txState = match$1[0];
+  var match$2 = React.useState(function () {
+        return false;
+      });
+  var setForceRefreshData = match$2[1];
+  var forceRefreshData = match$2[0];
+  QlHooks.useWildcardQuery(chain, forceRefreshData, animal);
+  React.useEffect((function () {
+          Curry._1(setForceRefreshData, (function (param) {
+                  return false;
+                }));
+          
+        }), [forceRefreshData]);
+  handleMetaTxSumbissionState(match[1], setTxState, txState, setForceRefreshData);
   var chainIdInt = getChildChainId(parentChainId);
   var chainId = new BnJs(chainIdInt);
   var verifyingContract = getDaiContractAddress(chain, chainIdInt);
   var spender = getStewardAddress(chain, chainIdInt);
   var networkName = getMaticNetworkName(chainIdInt);
-  var maticState = QlHooks.useMaticState(false, Belt_Option.getWithDefault(account, CONSTANTS.nullEthAddress), networkName);
+  var match$3 = React.useState(function () {
+        return chain === /* MaticQuery */1;
+      });
+  var setShouldRefreshNonce = match$3[1];
+  var maticState = QlHooks.useMaticState(match$3[0], Belt_Option.getWithDefault(account, CONSTANTS.nullEthAddress), networkName);
+  React.useEffect((function () {
+          Curry._1(setShouldRefreshNonce, (function (param) {
+                  return false;
+                }));
+          
+        }), [
+        account,
+        networkName
+      ]);
   if (chain >= 2) {
     return [
             (function (newPrice, oldPrice, wildcardsPercentage, value) {
@@ -568,7 +591,19 @@ function useBuyAuction(chain, animal, library, account, parentChainId) {
         undefined
       ]);
   var mutate = match$1[0];
-  handleMetaTxSumbissionState(match$1[1], setTxState, txState);
+  var match$2 = React.useState(function () {
+        return false;
+      });
+  var setForceRefreshData = match$2[1];
+  var forceRefreshData = match$2[0];
+  QlHooks.useWildcardQuery(chain, forceRefreshData, animal);
+  React.useEffect((function () {
+          Curry._1(setForceRefreshData, (function (param) {
+                  return false;
+                }));
+          
+        }), [forceRefreshData]);
+  handleMetaTxSumbissionState(match$1[1], setTxState, txState, setForceRefreshData);
   var chainIdInt = getChildChainId(parentChainId);
   var chainId = new BnJs(chainIdInt);
   var verifyingContract = getDaiContractAddress(chain, chainIdInt);
@@ -736,7 +771,19 @@ function useUpdateDeposit(chain, library, account, parentChainId) {
         undefined
       ]);
   var mutate = match$1[0];
-  handleMetaTxSumbissionState(match$1[1], setTxState, txState);
+  var match$2 = React.useState(function () {
+        return false;
+      });
+  var setForceRefreshData = match$2[1];
+  var forceRefreshData = match$2[0];
+  React.useEffect((function () {
+          Curry._1(setForceRefreshData, (function (param) {
+                  return false;
+                }));
+          
+        }), [forceRefreshData]);
+  QlHooks.useQueryPatronQuery(chain, forceRefreshData, Belt_Option.getWithDefault(account, ""));
+  handleMetaTxSumbissionState(match$1[1], setTxState, txState, setForceRefreshData);
   var chainIdInt = getChildChainId(parentChainId);
   var chainId = new BnJs(chainIdInt);
   var verifyingContract = getDaiContractAddress(chain, chainIdInt);
