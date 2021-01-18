@@ -289,15 +289,13 @@ module Buy = {
                 maxAvailableDeposit
               />
             </>
-          : <Rimble.Box>
+          : <>
               <p>
                 {("Your current balance is: " ++ (paymentTokenBalance ++ (" " ++ currency)))
                   ->React.string}
               </p>
-              <p className=Styles.textOnlyModalText>
-                {`You do not have enough ${currency} to buy ${tokenIdName}.`->React.string}
-              </p>
-              <p className=Styles.textOnlyModalText>
+              <p> {`You do not have enough ${currency} to buy ${tokenIdName}.`->React.string} </p>
+              <p>
                 {`You can either move your mainnet Ethereum dai to matic network using `->React.string}
                 <a
                   className={
@@ -314,7 +312,7 @@ module Buy = {
                   {("Buy " ++ currency)->React.string}
                 </Rimble.Button>,
               )}
-            </Rimble.Box>}
+            </>}
       </TxTemplate>
     </TxTemplate>
   }

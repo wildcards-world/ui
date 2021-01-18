@@ -6,7 +6,6 @@ import BnJs from "bn.js";
 import * as React from "react";
 import * as Animal from "../Animal.bs.js";
 import * as Config from "../Config.bs.js";
-import * as Styles from "../../Styles.bs.js";
 import * as Globals from "../Globals.bs.js";
 import * as QlHooks from "../QlHooks.bs.js";
 import * as TokenId from "../TokenId.bs.js";
@@ -194,13 +193,7 @@ function Buy$Buy(Props) {
                               setNewPrice: setNewPrice,
                               setDeposit: setDeposit,
                               tokenIdName: tokenIdName
-                            })) : React.createElement(RimbleUi.Box, {
-                          children: null
-                        }, React.createElement("p", undefined, "Your current balance is: " + (paymentTokenBalance + (" " + currency))), React.createElement("p", {
-                              className: Styles.textOnlyModalText
-                            }, "You do not have enough " + currency + " to buy " + tokenIdName + "."), React.createElement("p", {
-                              className: Styles.textOnlyModalText
-                            }, "You can either move your mainnet Ethereum dai to matic network using ", React.createElement("a", {
+                            })) : React.createElement(React.Fragment, undefined, React.createElement("p", undefined, "Your current balance is: " + (paymentTokenBalance + (" " + currency))), React.createElement("p", undefined, "You do not have enough " + currency + " to buy " + tokenIdName + "."), React.createElement("p", undefined, "You can either move your mainnet Ethereum dai to matic network using ", React.createElement("a", {
                                   className: CssJs.style([
                                         CssJs.fontWeight("bold"),
                                         CssJs.textDecoration("underline")
