@@ -289,22 +289,30 @@ module Buy = {
                 maxAvailableDeposit
               />
             </>
-          : <Rimble.Box>
-              <p className=Styles.textOnlyModalText>
-                {React.string(
-                  "You do not have enough " ++ (currency ++ (" to buy " ++ (tokenIdName ++ "."))),
-                )}
-              </p>
+          : <>
               <p>
                 {("Your current balance is: " ++ (paymentTokenBalance ++ (" " ++ currency)))
                   ->React.string}
+              </p>
+              <p> {`You do not have enough ${currency} to buy ${tokenIdName}.`->React.string} </p>
+              <p>
+                {`You can either move your mainnet Ethereum dai to matic network using `->React.string}
+                <a
+                  className={
+                    open CssJs
+                    style(.[fontWeight(#bold), textDecoration(#underline)])
+                  }
+                  href="https://wallet.matic.network/">
+                  {"matic wallet"->React.string}
+                </a>
+                {` or use your credit card or a bank transfer using the button below:`->React.string}
               </p>
               {transakSteps(
                 <Rimble.Button onClick={_ => setShowTransakWarning(_ => true)}>
                   {("Buy " ++ currency)->React.string}
                 </Rimble.Button>,
               )}
-            </Rimble.Box>}
+            </>}
       </TxTemplate>
     </TxTemplate>
   }
