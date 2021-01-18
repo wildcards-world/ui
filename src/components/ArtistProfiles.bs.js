@@ -226,7 +226,7 @@ function ArtistProfiles$ArtistDetails(Props) {
                               }))), match$1[0] + "USD", React.createElement("br", undefined), React.createElement("small", undefined, match$1[1]), optArtistOrgs !== undefined ? (
                         optArtistOrgs.length !== 0 ? React.createElement(React.Fragment, undefined, React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("h4", undefined, Belt_Option.mapWithDefault(optArtistName, "", (function (artistName) {
                                           return "Organisations that " + artistName + " has contributed to:";
-                                        })), " has created artwork for:"), React.createElement(RimbleUi.Flex, {
+                                        }))), React.createElement(RimbleUi.Flex, {
                                     children: Belt_Array.map(optArtistOrgs, (function (org) {
                                             return React.createElement("div", {
                                                         className: CssJs.style([

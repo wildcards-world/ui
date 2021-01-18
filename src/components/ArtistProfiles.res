@@ -193,7 +193,6 @@ module ArtistDetails = {
                   `Organisations that ${artistName} has contributed to:`
                 )
                 ->React.string}
-                {" has created artwork for:"->React.string}
               </h4>
               <Rimble.Flex flexWrap="wrap" className=centreAlignOnMobile>
                 {orgList
