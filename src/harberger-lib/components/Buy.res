@@ -299,7 +299,14 @@ module Buy = {
               </p>
               <p className=Styles.textOnlyModalText>
                 {`You can either move your mainnet Ethereum dai to matic network using `->React.string}
-                <a href="https://wallet.matic.network/"> {"matic wallet"->React.string} </a>
+                <a
+                  className={
+                    open CssJs
+                    style(.[fontWeight(#bold), textDecoration(#underline)])
+                  }
+                  href="https://wallet.matic.network/">
+                  {"matic wallet"->React.string}
+                </a>
                 {` or use your credit card or a bank transfer using the button below:`->React.string}
               </p>
               {transakSteps(
