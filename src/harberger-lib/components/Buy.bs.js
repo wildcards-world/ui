@@ -195,9 +195,13 @@ function Buy$Buy(Props) {
                               tokenIdName: tokenIdName
                             })) : React.createElement(RimbleUi.Box, {
                           children: null
-                        }, React.createElement("p", {
+                        }, React.createElement("p", undefined, "Your current balance is: " + (paymentTokenBalance + (" " + currency))), React.createElement("p", {
                               className: Styles.textOnlyModalText
-                            }, "You do not have enough " + (currency + (" to buy " + (tokenIdName + ".")))), React.createElement("p", undefined, "Your current balance is: " + (paymentTokenBalance + (" " + currency))), transakSteps(React.createElement(RimbleUi.Button, {
+                            }, "You do not have enough " + currency + " to buy " + tokenIdName + "."), React.createElement("p", {
+                              className: Styles.textOnlyModalText
+                            }, "You can either move your mainnet Ethereum dai to matic network using ", React.createElement("a", {
+                                  href: "https://wallet.matic.network/"
+                                }, "matic wallet"), " or use your credit card or a bank transfer using the button below:"), transakSteps(React.createElement(RimbleUi.Button, {
                                   children: "Buy " + currency,
                                   onClick: (function (param) {
                                       return Curry._1(setShowTransakWarning, (function (param) {
