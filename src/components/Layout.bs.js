@@ -29,6 +29,7 @@ import * as Web3Connect from "../harberger-lib/components/Web3Connect.bs.js";
 import * as Announcement from "./Announcement.bs.js";
 import * as LeaderBoards from "./Leaderboards/LeaderBoards.bs.js";
 import * as RootProvider from "../harberger-lib/RootProvider.bs.js";
+import * as Organisations from "./StaticContent/Organisations.bs.js";
 import * as ArtistProfiles from "./ArtistProfiles.bs.js";
 import * as CustomerBenefit from "./StaticContent/CustomerBenefit.bs.js";
 import * as AnimalAnnouncement from "./AnimalAnnouncement.bs.js";
@@ -139,13 +140,16 @@ function Layout(Props) {
   var tmp;
   if (typeof urlState === "number") {
     switch (urlState) {
-      case /* Team */0 :
+      case /* Organisations */0 :
+          tmp = React.createElement(Organisations.make, {});
+          break;
+      case /* Team */1 :
           tmp = React.createElement(Team.make, {});
           break;
-      case /* IncreaseVoteIteration */1 :
+      case /* IncreaseVoteIteration */2 :
           tmp = null;
           break;
-      case /* VotePage */2 :
+      case /* VotePage */3 :
           tmp = React.createElement(VotePage.make, {
                 chain: /* MainnetQuery */2
               });

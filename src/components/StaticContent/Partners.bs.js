@@ -8,6 +8,7 @@ import * as Styles from "../../Styles.bs.js";
 import * as CONSTANTS from "../../CONSTANTS.bs.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
+import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as RootProvider from "../../harberger-lib/RootProvider.bs.js";
 import * as Css_Legacy_Core from "bs-css/src/Css_Legacy_Core.bs.js";
 import * as ApolloClient__React_Hooks_UseQuery from "reason-apollo-client/src/@apollo/client/react/hooks/ApolloClient__React_Hooks_UseQuery.bs.js";
@@ -24,11 +25,11 @@ var Raw = {};
 
 var query = (require("@apollo/client").gql`
   query ActivePartners  {
-    organisations(where: {onboarding_status: {_in: [live, signed, listed]}})  {
+    organisations(where: {id: {_neq: "wildcards"}, onboarding_status: {_in: [live, signed, listed]}})  {
       __typename
+      name
       logo
       id
-      name
     }
   }
 `);
@@ -39,9 +40,9 @@ function parse(value) {
           organisations: value$1.map(function (value) {
                 return {
                         __typename: value.__typename,
+                        name: value.name,
                         logo: value.logo,
-                        id: value.id,
-                        name: value.name
+                        id: value.id
                       };
               })
         };
@@ -50,15 +51,15 @@ function parse(value) {
 function serialize(value) {
   var value$1 = value.organisations;
   var organisations = value$1.map(function (value) {
-        var value$1 = value.name;
-        var value$2 = value.id;
-        var value$3 = value.logo;
+        var value$1 = value.id;
+        var value$2 = value.logo;
+        var value$3 = value.name;
         var value$4 = value.__typename;
         return {
                 __typename: value$4,
-                logo: value$3,
-                id: value$2,
-                name: value$1
+                name: value$3,
+                logo: value$2,
+                id: value$1
               };
       });
   return {
@@ -186,6 +187,21 @@ var corporatePartnerTextStyle = CssJs.style([
           })
     ]);
 
+var viewMoreButton = CssJs.style([
+      CssJs.margin(CssJs.auto),
+      CssJs.display(CssJs.block)
+    ]);
+
+var viewMoreButtonContainer = CssJs.style([CssJs.width({
+            NAME: "percent",
+            VAL: 100
+          })]);
+
+var orgContainerStyles = CssJs.style([CssJs.width({
+            NAME: "percent",
+            VAL: 100
+          })]);
+
 function Partners$OrgDetails(Props) {
   var conservation = Props.conservation;
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
@@ -281,44 +297,66 @@ var OrgDetails = {
 };
 
 function Partners(Props) {
-  var newConservationPartners = usePartners(undefined);
-  var orgBox = function (content, key) {
-    return React.createElement(RimbleUi.Box, {
-                mb: 20,
-                mt: 20,
-                children: content,
-                width: [
-                  0.45,
-                  0.45,
-                  0.18
-                ],
-                color: "black",
-                key: key
-              });
-  };
+  var allConservationPartners = usePartners(undefined);
+  var partnersToDisplay = Belt_Option.map(allConservationPartners, (function (partners) {
+          return Belt_Array.slice(Belt_Array.shuffle(partners), 0, 5);
+        }));
+  var numberOfPartners = Belt_Option.map(allConservationPartners, (function (partners) {
+          return partners.length;
+        }));
+  var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   return React.createElement("div", {
               width: "100%"
             }, React.createElement(RimbleUi.Flex, {
-                  children: React.createElement("h1", undefined, "Conservation Partners"),
+                  children: null,
                   flexWrap: "wrap",
                   alignItems: "stretch",
                   justifyContent: "space-around",
                   px: 50,
                   pt: 50,
                   className: blueBackground
-                }), React.createElement(RimbleUi.Flex, {
-                  children: newConservationPartners !== undefined ? React.createElement(React.Fragment, undefined, Belt_Array.map(newConservationPartners, (function (conservation) {
-                                return orgBox(React.createElement(Partners$OrgDetails, {
-                                                conservation: conservation
-                                              }), conservation.id);
-                              })), orgBox(null, "a"), orgBox(null, "b"), orgBox(null, "c"), orgBox(null, "d")) : null,
-                  flexWrap: "wrap",
-                  alignItems: "stretch",
-                  justifyContent: "space-around",
-                  px: 50,
-                  pb: 50,
-                  className: blueBackground
-                }), React.createElement("div", {
+                }, React.createElement("h1", undefined, "Conservation Partners"), React.createElement(RimbleUi.Flex, {
+                      children: partnersToDisplay !== undefined ? React.createElement(React.Fragment, undefined, Belt_Array.map(partnersToDisplay, (function (conservation) {
+                                    var content = React.createElement(Partners$OrgDetails, {
+                                          conservation: conservation
+                                        });
+                                    var key = conservation.id;
+                                    return React.createElement(RimbleUi.Box, {
+                                                mb: 20,
+                                                mt: 20,
+                                                children: content,
+                                                width: [
+                                                  0.45,
+                                                  0.45,
+                                                  0.18
+                                                ],
+                                                color: "black",
+                                                key: key
+                                              });
+                                  }))) : null,
+                      flexWrap: "wrap",
+                      alignItems: "stretch",
+                      justifyContent: "space-evenly",
+                      px: 50,
+                      pb: 10,
+                      className: orgContainerStyles
+                    }), React.createElement(RimbleUi.Flex, {
+                      children: React.createElement(RimbleUi.Button, {
+                            className: viewMoreButton,
+                            children: Belt_Option.mapWithDefault(numberOfPartners, "View All Partners", (function (numPartners) {
+                                    return "View All " + String(numPartners) + " Partners";
+                                  })),
+                            onClick: (function ($$event) {
+                                $$event.preventDefault();
+                                return Curry._1(clearAndPush, "#organisations");
+                              })
+                          }),
+                      flexWrap: "wrap",
+                      alignItems: "stretch",
+                      justifyContent: "center",
+                      pb: 30,
+                      className: viewMoreButtonContainer
+                    })), React.createElement("div", {
                   className: Styles.infoBackground
                 }, React.createElement(RimbleUi.Flex, {
                       children: React.createElement("h1", {
@@ -439,6 +477,9 @@ export {
   cardStyle ,
   logoStyle ,
   corporatePartnerTextStyle ,
+  viewMoreButton ,
+  viewMoreButtonContainer ,
+  orgContainerStyles ,
   OrgDetails ,
   make ,
   

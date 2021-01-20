@@ -26,9 +26,11 @@ function useUrlState(param) {
                         var match = urlArray[0];
                         switch (match) {
                           case "dao" :
-                              return /* VotePage */2;
+                              return /* VotePage */3;
                           case "increase-iteration" :
-                              return /* IncreaseVoteIteration */1;
+                              return /* IncreaseVoteIteration */2;
+                          case "organisations" :
+                              return /* Organisations */0;
                           default:
                             exit = 1;
                         }
@@ -187,7 +189,7 @@ function useUrlState(param) {
                                     _1: /* NormalView */0
                                   };
                         case "team" :
-                            return /* Team */0;
+                            return /* Team */1;
                         default:
                           return {
                                   TAG: /* Home */5,
