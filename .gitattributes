@@ -1,1 +1,1 @@
-*.bs.js diff=nodiff
+*.bs.js -diff
