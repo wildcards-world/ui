@@ -42,7 +42,7 @@ var flameImg = "/img/streak-flame.png";
 var make = ShareSocialMedia;
 
 var ShareSocial = {
-  make: make
+  make: make,
 };
 
 function Dapp$EditButton(Props) {
@@ -50,70 +50,94 @@ function Dapp$EditButton(Props) {
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   var isExplorer = Router.useIsExplorer(undefined);
   return React.createElement(RimbleUi.Button, {
-              children: "Edit",
-              onClick: (function ($$event) {
-                  $$event.preventDefault();
-                  return Curry._1(clearAndPush, "#" + (InputHelp.getPagePrefix(isExplorer) + ("details/" + TokenId.toString(animal))));
-                })
-            });
+    children: "Edit",
+    onClick: function ($$event) {
+      $$event.preventDefault();
+      return Curry._1(
+        clearAndPush,
+        "#" +
+          (InputHelp.getPagePrefix(isExplorer) +
+            ("details/" + TokenId.toString(animal)))
+      );
+    },
+  });
 }
 
 var EditButton = {
-  make: Dapp$EditButton
+  make: Dapp$EditButton,
 };
 
 function Dapp$Streak(Props) {
   var chain = Props.chain;
   var animal = Props.animal;
-  var animalName = Belt_Option.getWithDefault(QlHooks.useWildcardName(animal), "Loading");
+  var animalName = Belt_Option.getWithDefault(
+    QlHooks.useWildcardName(animal),
+    "Loading"
+  );
   var daysHeld = QlHooks.useDaysHeld(chain, animal);
   if (daysHeld === undefined) {
     return null;
   }
   var numDaysStr = daysHeld[0].toFixed();
   return React.createElement(RimbleUi.Tooltip, {
-              message: "" + animalName + " has been held for " + numDaysStr + " days by the same owner.",
-              children: React.createElement("div", {
-                    className: Styles.positionRelative,
-                    id: "inner"
-                  }, React.createElement("img", {
-                        className: Styles.flameImg,
-                        src: flameImg
-                      }), React.createElement("p", {
-                        className: Styles.streakText
-                      }, React.createElement("strong", undefined, numDaysStr)))
-            });
+    message:
+      "" +
+      animalName +
+      " has been held for " +
+      numDaysStr +
+      " days by the same owner.",
+    children: React.createElement(
+      "div",
+      {
+        className: Styles.positionRelative,
+        id: "inner",
+      },
+      React.createElement("img", {
+        className: Styles.flameImg,
+        src: flameImg,
+      }),
+      React.createElement(
+        "p",
+        {
+          className: Styles.streakText,
+        },
+        React.createElement("strong", undefined, numDaysStr)
+      )
+    ),
+  });
 }
 
 var Streak = {
-  make: Dapp$Streak
+  make: Dapp$Streak,
 };
 
 function Dapp$DisplayAfterDate(Props) {
   var endDateMoment = Props.endDateMoment;
   var beforeComponent = Props.beforeComponent;
   var afterComponent = Props.afterComponent;
-  var isBeforeDate = React.useCallback((function (param) {
-          return endDateMoment.diff(Moment(), "seconds") > 0;
-        }), [endDateMoment]);
+  var isBeforeDate = React.useCallback(
+    function (param) {
+      return endDateMoment.diff(Moment(), "seconds") > 0;
+    },
+    [endDateMoment]
+  );
   var match = React.useState(function () {
-        return Curry._1(isBeforeDate, undefined);
-      });
+    return Curry._1(isBeforeDate, undefined);
+  });
   var setIsBeforeDate = match[1];
-  React.useEffect((function () {
-          var timeout = setTimeout((function (param) {
-                  return Curry._1(setIsBeforeDate, (function (param) {
-                                return Curry._1(isBeforeDate, undefined);
-                              }));
-                }), 1500);
-          return (function (param) {
-                    clearTimeout(timeout);
-                    
-                  });
-        }), [
-        setIsBeforeDate,
-        isBeforeDate
-      ]);
+  React.useEffect(
+    function () {
+      var timeout = setTimeout(function (param) {
+        return Curry._1(setIsBeforeDate, function (param) {
+          return Curry._1(isBeforeDate, undefined);
+        });
+      }, 1500);
+      return function (param) {
+        clearTimeout(timeout);
+      };
+    },
+    [setIsBeforeDate, isBeforeDate]
+  );
   if (match[0]) {
     return beforeComponent;
   } else {
@@ -122,7 +146,7 @@ function Dapp$DisplayAfterDate(Props) {
 }
 
 var DisplayAfterDate = {
-  make: Dapp$DisplayAfterDate
+  make: Dapp$DisplayAfterDate,
 };
 
 function Dapp$AuctionDisplay(Props) {
@@ -133,39 +157,61 @@ function Dapp$AuctionDisplay(Props) {
   var optCurrentUsdEthPrice = UsdPriceProvider.useUsdPrice(undefined);
   var tmp;
   if (chain !== 1) {
-    var match = PriceDisplay.priceWeiToTuple(Belt_Option.getWithDefault(currentPriceWei, CONSTANTS.zeroBn), optCurrentUsdEthPrice);
+    var match = PriceDisplay.priceWeiToTuple(
+      Belt_Option.getWithDefault(currentPriceWei, CONSTANTS.zeroBn),
+      optCurrentUsdEthPrice
+    );
     tmp = React.createElement(PriceDisplay.PurePriceDisplay.make, {
-          priceEth: match[0],
-          optPriceUsd: match[1]
-        });
+      priceEth: match[0],
+      optPriceUsd: match[1],
+    });
   } else {
-    tmp = React.createElement("p", {
-          className: Styles.noMarginTop + (" " + Styles.noMarginBottom)
-        }, Belt_Option.mapWithDefault(currentPriceWei, "Loading", (function (price) {
-                return React.createElement(React.Fragment, undefined, Web3Utils.fromWeiBNToEthPrecision(price, 4) + " USD", React.createElement("small", undefined, " (DAI)"));
-              })));
+    tmp = React.createElement(
+      "p",
+      {
+        className: Styles.noMarginTop + (" " + Styles.noMarginBottom),
+      },
+      Belt_Option.mapWithDefault(currentPriceWei, "Loading", function (price) {
+        return React.createElement(
+          React.Fragment,
+          undefined,
+          Web3Utils.fromWeiBNToEthPrecision(price, 4) + " USD",
+          React.createElement("small", undefined, " (DAI)")
+        );
+      })
+    );
   }
-  return React.createElement(React.Fragment, undefined, React.createElement(ActionButtons.Auction.make, {
-                  animal: animal
-                }), React.createElement("br", undefined), React.createElement("br", undefined), tmp);
+  return React.createElement(
+    React.Fragment,
+    undefined,
+    React.createElement(ActionButtons.Auction.make, {
+      animal: animal,
+    }),
+    React.createElement("br", undefined),
+    React.createElement("br", undefined),
+    tmp
+  );
 }
 
 var AuctionDisplay = {
-  make: Dapp$AuctionDisplay
+  make: Dapp$AuctionDisplay,
 };
 
 function Dapp$AuctionDetails(Props) {
   var chain = Props.chain;
   var animal = Props.animal;
   var launchTimeOpt = QlHooks.useLaunchTimeBN(chain, animal);
-  var foreclosureTimeOpt = QlHooks.useForeclosureTimeBn(chain, TokenId.toString(animal));
+  var foreclosureTimeOpt = QlHooks.useForeclosureTimeBn(
+    chain,
+    TokenId.toString(animal)
+  );
   if (launchTimeOpt === undefined) {
     if (foreclosureTimeOpt !== undefined) {
       return React.createElement(Dapp$AuctionDisplay, {
-                  chain: chain,
-                  launchTime: Caml_option.valFromOption(foreclosureTimeOpt),
-                  animal: animal
-                });
+        chain: chain,
+        launchTime: Caml_option.valFromOption(foreclosureTimeOpt),
+        animal: animal,
+      });
     } else {
       return React.createElement("p", undefined, "Loading");
     }
@@ -173,36 +219,39 @@ function Dapp$AuctionDetails(Props) {
   var launchTime = Caml_option.valFromOption(launchTimeOpt);
   if (foreclosureTimeOpt === undefined) {
     return React.createElement(Dapp$AuctionDisplay, {
-                chain: chain,
-                launchTime: launchTime,
-                animal: animal
-              });
+      chain: chain,
+      launchTime: launchTime,
+      animal: animal,
+    });
   }
   var foreclosurTime = Caml_option.valFromOption(foreclosureTimeOpt);
   if (foreclosurTime.lt(launchTime)) {
     return React.createElement(Dapp$AuctionDisplay, {
-                chain: chain,
-                launchTime: launchTime,
-                animal: animal
-              });
+      chain: chain,
+      launchTime: launchTime,
+      animal: animal,
+    });
   } else {
     return React.createElement(Dapp$AuctionDisplay, {
-                chain: chain,
-                launchTime: foreclosurTime,
-                animal: animal
-              });
+      chain: chain,
+      launchTime: foreclosurTime,
+      animal: animal,
+    });
   }
 }
 
 var AuctionDetails = {
-  make: Dapp$AuctionDetails
+  make: Dapp$AuctionDetails,
 };
 
 function Dapp$BasicAnimalDisplay(Props) {
   var chain = Props.chain;
   var animal = Props.animal;
   var owned = QlHooks.useIsAnimalOwened(chain, animal);
-  var currentPatron = Belt_Option.getWithDefault(QlHooks.usePatron(chain, animal), "Loading");
+  var currentPatron = Belt_Option.getWithDefault(
+    QlHooks.usePatron(chain, animal),
+    "Loading"
+  );
   var displayName = UserProvider.useDisplayName(currentPatron);
   var displayNameStr = UserProvider.displayNameToString(displayName);
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
@@ -210,96 +259,118 @@ function Dapp$BasicAnimalDisplay(Props) {
   var isOnAuction = Animal.useIsOnAuction(chain, animal);
   if (isOnAuction) {
     return React.createElement(Dapp$AuctionDetails, {
-                chain: chain,
-                animal: animal
-              });
+      chain: chain,
+      animal: animal,
+    });
   }
   var tmp;
   var exit = 0;
   if (typeof nonUrlRouting === "number") {
-    if (nonUrlRouting === /* NoExtraState */2) {
+    if (nonUrlRouting === /* NoExtraState */ 2) {
       exit = 1;
     } else {
       tmp = null;
     }
-  } else if (nonUrlRouting.TAG === /* LoginScreen */0) {
+  } else if (nonUrlRouting.TAG === /* LoginScreen */ 0) {
     exit = 1;
   } else {
     tmp = null;
   }
   if (exit === 1) {
-    tmp = owned ? React.createElement(Dapp$EditButton, {
-            animal: animal
-          }) : React.createElement(ActionButtons.Buy.make, {
-            chain: chain,
-            animal: animal
-          });
+    tmp = owned
+      ? React.createElement(Dapp$EditButton, {
+          animal: animal,
+        })
+      : React.createElement(ActionButtons.Buy.make, {
+          chain: chain,
+          animal: animal,
+        });
   }
-  return React.createElement(React.Fragment, undefined, tmp, React.createElement("br", undefined), React.createElement("br", undefined), React.createElement(PriceDisplay.make, {
-                  chain: chain,
-                  animal: animal
-                }), React.createElement("a", {
-                  onClick: (function (e) {
-                      e.preventDefault();
-                      return Curry._1(clearAndPush, "/#user/" + currentPatron);
-                    })
-                }, displayNameStr));
+  return React.createElement(
+    React.Fragment,
+    undefined,
+    tmp,
+    React.createElement("br", undefined),
+    React.createElement("br", undefined),
+    React.createElement(PriceDisplay.make, {
+      chain: chain,
+      animal: animal,
+    }),
+    React.createElement(
+      "a",
+      {
+        onClick: function (e) {
+          e.preventDefault();
+          return Curry._1(clearAndPush, "/#user/" + currentPatron);
+        },
+      },
+      displayNameStr
+    )
+  );
 }
 
 var BasicAnimalDisplay = {
-  make: Dapp$BasicAnimalDisplay
+  make: Dapp$BasicAnimalDisplay,
 };
 
 function Dapp$SquareBox(Props) {
   var children = Props.children;
-  return React.createElement("div", {
-              className: Curry._1(Css.style, {
-                    hd: Css.width({
-                          NAME: "percent",
-                          VAL: 100
-                        }),
-                    tl: {
-                      hd: Css.position(Css.relative),
-                      tl: {
-                        hd: Css.after({
-                              hd: Css.unsafe("content", "\"\""),
-                              tl: {
-                                hd: Css.display(Css.block),
-                                tl: {
-                                  hd: Css.paddingBottom({
-                                        NAME: "percent",
-                                        VAL: 100
-                                      }),
-                                  tl: /* [] */0
-                                }
-                              }
-                            }),
-                        tl: /* [] */0
-                      }
-                    }
-                  })
-            }, React.createElement("div", {
-                  className: Curry._1(Css.style, {
-                        hd: Css.position(Css.absolute),
-                        tl: {
-                          hd: Css.width({
-                                NAME: "percent",
-                                VAL: 100
-                              }),
-                          tl: {
-                            hd: Css.height({
-                                  NAME: "percent",
-                                  VAL: 100
-                                }),
-                            tl: /* [] */0
-                          }
-                        }
-                      })
-                }, children));
+  return React.createElement(
+    "div",
+    {
+      className: Curry._1(Css.style, {
+        hd: Css.width({
+          NAME: "percent",
+          VAL: 100,
+        }),
+        tl: {
+          hd: Css.position(Css.relative),
+          tl: {
+            hd: Css.after({
+              hd: Css.unsafe("content", '""'),
+              tl: {
+                hd: Css.display(Css.block),
+                tl: {
+                  hd: Css.paddingBottom({
+                    NAME: "percent",
+                    VAL: 100,
+                  }),
+                  tl: /* [] */ 0,
+                },
+              },
+            }),
+            tl: /* [] */ 0,
+          },
+        },
+      }),
+    },
+    React.createElement(
+      "div",
+      {
+        className: Curry._1(Css.style, {
+          hd: Css.position(Css.absolute),
+          tl: {
+            hd: Css.width({
+              NAME: "percent",
+              VAL: 100,
+            }),
+            tl: {
+              hd: Css.height({
+                NAME: "percent",
+                VAL: 100,
+              }),
+              tl: /* [] */ 0,
+            },
+          },
+        }),
+      },
+      children
+    )
+  );
 }
 
 var SquareBox = {
-  make: Dapp$SquareBox
+  make: Dapp$SquareBox,
 };
 
 function Dapp$AnimalOnLandingPage(Props) {
@@ -311,7 +382,10 @@ function Dapp$AnimalOnLandingPage(Props) {
   var isGqlLoaded = Props.isGqlLoaded;
   var scalar = scalarOpt !== undefined ? scalarOpt : 1;
   var enlargement = enlargementOpt !== undefined ? enlargementOpt : 1;
-  var name = Belt_Option.getWithDefault(QlHooks.useWildcardName(animal), "Loading");
+  var name = Belt_Option.getWithDefault(
+    QlHooks.useWildcardName(animal),
+    "Loading"
+  );
   var isExplorer = Router.useIsExplorer(undefined);
   var orgBadge = Animal.useGetOrgBadgeImage(animal);
   var orgId = Belt_Option.getWithDefault(QlHooks.useWildcardOrgId(animal), "");
@@ -320,26 +394,26 @@ function Dapp$AnimalOnLandingPage(Props) {
   var image = Animal.useAvatar(animal);
   var normalImage = function (param) {
     return React.createElement(Dapp$SquareBox, {
-                children: React.createElement("img", {
-                      className: Curry._1(Css.style, {
-                            hd: Css.width({
-                                  NAME: "percent",
-                                  VAL: 100
-                                }),
-                            tl: {
-                              hd: Css.height({
-                                    NAME: "percent",
-                                    VAL: 100
-                                  }),
-                              tl: {
-                                hd: Css.objectFit("contain"),
-                                tl: /* [] */0
-                              }
-                            }
-                          }),
-                      src: image
-                    })
-              });
+      children: React.createElement("img", {
+        className: Curry._1(Css.style, {
+          hd: Css.width({
+            NAME: "percent",
+            VAL: 100,
+          }),
+          tl: {
+            hd: Css.height({
+              NAME: "percent",
+              VAL: 100,
+            }),
+            tl: {
+              hd: Css.objectFit("contain"),
+              tl: /* [] */ 0,
+            },
+          },
+        }),
+        src: image,
+      }),
+    });
   };
   var isOnAuction = Animal.useIsOnAuction(chain, animal);
   var componentWithoutImg = function (img, hideBadges) {
@@ -348,57 +422,122 @@ function Dapp$AnimalOnLandingPage(Props) {
       tmp = null;
     } else {
       var tmp$1;
-      tmp$1 = isGqlLoaded && !(optionEndDateMoment !== undefined || isOnAuction || typeof currentPriceWei === "number" || currentPriceWei.TAG === /* Foreclosed */0) ? React.createElement("div", {
-              className: Styles.overlayFlameImg
-            }, React.createElement(Dapp$Streak, {
-                  chain: chain,
-                  animal: animal
-                })) : null;
-      tmp = React.createElement(React.Fragment, undefined, tmp$1, React.createElement("div", {
-                className: Styles.overlayBadgeImg(100, 80),
-                onClick: (function (e) {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    return Curry._1(clearAndPush, "#org/" + orgId);
-                  })
-              }, React.createElement("img", {
-                    className: Styles.flameImg,
-                    src: orgBadge
-                  })));
+      tmp$1 =
+        isGqlLoaded &&
+        !(
+          optionEndDateMoment !== undefined ||
+          isOnAuction ||
+          typeof currentPriceWei === "number" ||
+          currentPriceWei.TAG === /* Foreclosed */ 0
+        )
+          ? React.createElement(
+              "div",
+              {
+                className: Styles.overlayFlameImg,
+              },
+              React.createElement(Dapp$Streak, {
+                chain: chain,
+                animal: animal,
+              })
+            )
+          : null;
+      tmp = React.createElement(
+        React.Fragment,
+        undefined,
+        tmp$1,
+        React.createElement(
+          "div",
+          {
+            className: Styles.overlayBadgeImg(100, 80),
+            onClick: function (e) {
+              e.stopPropagation();
+              e.preventDefault();
+              return Curry._1(clearAndPush, "#org/" + orgId);
+            },
+          },
+          React.createElement("img", {
+            className: Styles.flameImg,
+            src: orgBadge,
+          })
+        )
+      );
     }
-    return React.createElement(Dapp$SquareBox, {
-                children: null
-              }, React.createElement("div", {
-                    className: Styles.headerImg(enlargement, scalar)
-                  }, Curry._1(img, undefined)), tmp);
+    return React.createElement(
+      Dapp$SquareBox,
+      {
+        children: null,
+      },
+      React.createElement(
+        "div",
+        {
+          className: Styles.headerImg(enlargement, scalar),
+        },
+        Curry._1(img, undefined)
+      ),
+      tmp
+    );
   };
-  return React.createElement("div", {
-              className: Curry._1(Css.style, {
-                    hd: Css.textAlign(Css.center),
-                    tl: /* [] */0
-                  }),
-              id: "animalBox"
-            }, React.createElement("a", {
-                  className: Styles.clickableLink,
-                  onClick: (function ($$event) {
-                      $$event.preventDefault();
-                      return Curry._1(clearAndPush, "#" + (InputHelp.getPagePrefix(isExplorer) + ("details/" + TokenId.toString(animal))));
-                    })
-                }, componentWithoutImg(normalImage, false), React.createElement("div", undefined, React.createElement("h2", undefined, name))), optionEndDateMoment !== undefined ? React.createElement("div", undefined, React.createElement("h3", {
-                        className: Styles.colorGreen
-                      }, "COMING IN"), React.createElement(CountDown.make, {
-                        endDateMoment: Caml_option.valFromOption(optionEndDateMoment),
-                        displayUnits: false
-                      })) : (
-                isGqlLoaded ? React.createElement("div", undefined, React.createElement(Dapp$BasicAnimalDisplay, {
-                            chain: chain,
-                            animal: animal
-                          })) : null
-              ));
+  return React.createElement(
+    "div",
+    {
+      className: Curry._1(Css.style, {
+        hd: Css.textAlign(Css.center),
+        tl: /* [] */ 0,
+      }),
+      id: "animalBox",
+    },
+    React.createElement(
+      "a",
+      {
+        className: Styles.clickableLink,
+        onClick: function ($$event) {
+          $$event.preventDefault();
+          return Curry._1(
+            clearAndPush,
+            "#" +
+              (InputHelp.getPagePrefix(isExplorer) +
+                ("details/" + TokenId.toString(animal)))
+          );
+        },
+      },
+      componentWithoutImg(normalImage, false),
+      React.createElement(
+        "div",
+        undefined,
+        React.createElement("h2", undefined, name)
+      )
+    ),
+    optionEndDateMoment !== undefined
+      ? React.createElement(
+          "div",
+          undefined,
+          React.createElement(
+            "h3",
+            {
+              className: Styles.colorGreen,
+            },
+            "COMING IN"
+          ),
+          React.createElement(CountDown.make, {
+            endDateMoment: Caml_option.valFromOption(optionEndDateMoment),
+            displayUnits: false,
+          })
+        )
+      : isGqlLoaded
+      ? React.createElement(
+          "div",
+          undefined,
+          React.createElement(Dapp$BasicAnimalDisplay, {
+            chain: chain,
+            animal: animal,
+          })
+        )
+      : null
+  );
 }
 
 var AnimalOnLandingPage = {
-  make: Dapp$AnimalOnLandingPage
+  make: Dapp$AnimalOnLandingPage,
 };
 
 function Dapp$CarouselAnimal(Props) {
@@ -412,111 +551,117 @@ function Dapp$CarouselAnimal(Props) {
   var isLaunched = Animal.useIsLaunched(chain, animal);
   var makeAnimalOnLandingPage = function (optionEndDateMoment) {
     return React.createElement(Dapp$AnimalOnLandingPage, {
-                animal: animal,
-                scalar: scalar,
-                chain: chain,
-                enlargement: enlargement,
-                optionEndDateMoment: optionEndDateMoment,
-                isGqlLoaded: isGqlLoaded
-              });
+      animal: animal,
+      scalar: scalar,
+      chain: chain,
+      enlargement: enlargement,
+      optionEndDateMoment: optionEndDateMoment,
+      isGqlLoaded: isGqlLoaded,
+    });
   };
   if (typeof isLaunched === "number") {
     return makeAnimalOnLandingPage(undefined);
   }
   var endDateMoment = isLaunched._0;
   return React.createElement(Dapp$DisplayAfterDate, {
-              endDateMoment: endDateMoment,
-              beforeComponent: makeAnimalOnLandingPage(Caml_option.some(endDateMoment)),
-              afterComponent: makeAnimalOnLandingPage(undefined)
-            });
+    endDateMoment: endDateMoment,
+    beforeComponent: makeAnimalOnLandingPage(Caml_option.some(endDateMoment)),
+    afterComponent: makeAnimalOnLandingPage(undefined),
+  });
 }
 
 var CarouselAnimal = {
-  make: Dapp$CarouselAnimal
+  make: Dapp$CarouselAnimal,
 };
 
 function Dapp$AnimalCarousel(Props) {
   var isGqlLoaded = Props.isGqlLoaded;
   var match = React.useState(function () {
-        return 17;
-      });
+    return 17;
+  });
   var setCarouselIndex = match[1];
   var carouselIndex = match[0];
   var homePageAnimals = QlHooks.useHomePageAnimalArray(undefined);
   var numItems = homePageAnimals.length;
   return React.createElement(RimbleUi.Box, {
-              children: React.createElement(ReactCarousel, {
-                    children: Belt_Array.mapWithIndex(homePageAnimals, (function (index, animalInfo) {
-                            var match = index === Caml_int32.mod_(carouselIndex, numItems) ? [
-                                1,
-                                1.0
-                              ] : (
-                                index === Caml_int32.mod_(carouselIndex - 1 | 0, numItems) || index === Caml_int32.mod_(carouselIndex + 1 | 0, numItems) ? [
-                                    0.8,
-                                    0.8
-                                  ] : (
-                                    index === Caml_int32.mod_(carouselIndex - 2 | 0, numItems) || index === Caml_int32.mod_(carouselIndex + 2 | 0, numItems) ? [
-                                        0.1,
-                                        0.7
-                                      ] : [
-                                        0,
-                                        0.6
-                                      ]
-                                  )
-                              );
-                            return React.createElement("div", {
-                                        key: TokenId.toString(animalInfo.id),
-                                        className: Styles.fadeOut(match[0])
-                                      }, React.createElement(Dapp$CarouselAnimal, {
-                                            animal: animalInfo.id,
-                                            scalar: match[1],
-                                            enlargement: 1,
-                                            isGqlLoaded: isGqlLoaded,
-                                            chain: Animal.getChainIdFromAnimalId(animalInfo.id)
-                                          }));
-                          })),
-                    slidesPerPage: 5,
-                    centered: true,
-                    value: carouselIndex,
-                    animationSpeed: 1000,
-                    className: Styles.carousel,
-                    onChange: (function (test) {
-                        return Curry._1(setCarouselIndex, (function (param) {
-                                      return test;
-                                    }));
-                      }),
-                    infinite: true,
-                    autoPlay: 5000,
-                    arrowLeft: React.createElement("span", {
-                          className: Styles.carouselArrow(undefined, true),
-                          onClick: (function ($$event) {
-                              $$event.preventDefault();
-                              Curry._1(setCarouselIndex, (function (param) {
-                                      return carouselIndex - 1 | 0;
-                                    }));
-                              $$event.stopPropagation();
-                              
-                            })
-                        }, "◄"),
-                    arrowRight: React.createElement("span", {
-                          className: Styles.carouselArrow(undefined, false),
-                          onClick: (function ($$event) {
-                              $$event.preventDefault();
-                              Curry._1(setCarouselIndex, (function (param) {
-                                      return carouselIndex + 1 | 0;
-                                    }));
-                              $$event.stopPropagation();
-                              
-                            })
-                        }, "►"),
-                    arrows: true
-                  }),
-              className: Styles.positionRelative
+    children: React.createElement(ReactCarousel, {
+      children: Belt_Array.mapWithIndex(
+        homePageAnimals,
+        function (index, animalInfo) {
+          var match =
+            index === Caml_int32.mod_(carouselIndex, numItems)
+              ? [1, 1.0]
+              : index === Caml_int32.mod_((carouselIndex - 1) | 0, numItems) ||
+                index === Caml_int32.mod_((carouselIndex + 1) | 0, numItems)
+              ? [0.8, 0.8]
+              : index === Caml_int32.mod_((carouselIndex - 2) | 0, numItems) ||
+                index === Caml_int32.mod_((carouselIndex + 2) | 0, numItems)
+              ? [0.1, 0.7]
+              : [0, 0.6];
+          return React.createElement(
+            "div",
+            {
+              key: TokenId.toString(animalInfo.id),
+              className: Styles.fadeOut(match[0]),
+            },
+            React.createElement(Dapp$CarouselAnimal, {
+              animal: animalInfo.id,
+              scalar: match[1],
+              enlargement: 1,
+              isGqlLoaded: isGqlLoaded,
+              chain: Animal.getChainIdFromAnimalId(animalInfo.id),
+            })
+          );
+        }
+      ),
+      slidesPerPage: 5,
+      centered: true,
+      value: carouselIndex,
+      animationSpeed: 1000,
+      className: Styles.carousel,
+      onChange: function (test) {
+        return Curry._1(setCarouselIndex, function (param) {
+          return test;
+        });
+      },
+      infinite: true,
+      autoPlay: 5000,
+      arrowLeft: React.createElement(
+        "span",
+        {
+          className: Styles.carouselArrow(undefined, true),
+          onClick: function ($$event) {
+            $$event.preventDefault();
+            Curry._1(setCarouselIndex, function (param) {
+              return (carouselIndex - 1) | 0;
             });
+            $$event.stopPropagation();
+          },
+        },
+        "◄"
+      ),
+      arrowRight: React.createElement(
+        "span",
+        {
+          className: Styles.carouselArrow(undefined, false),
+          onClick: function ($$event) {
+            $$event.preventDefault();
+            Curry._1(setCarouselIndex, function (param) {
+              return (carouselIndex + 1) | 0;
+            });
+            $$event.stopPropagation();
+          },
+        },
+        "►"
+      ),
+      arrows: true,
+    }),
+    className: Styles.positionRelative,
+  });
 }
 
 var AnimalCarousel = {
-  make: Dapp$AnimalCarousel
+  make: Dapp$AnimalCarousel,
 };
 
 function Dapp$AnimalActionsOnDetailsPage$Unowned(Props) {
@@ -526,31 +671,37 @@ function Dapp$AnimalActionsOnDetailsPage$Unowned(Props) {
   var endDateMoment = Animal.useIsLaunched(chain, animal);
   var tmp;
   if (typeof endDateMoment === "number") {
-    tmp = endDateMoment !== 0 ? React.createElement(RimbleUi.Loader, {}) : Curry._1(price, undefined);
+    tmp =
+      endDateMoment !== 0
+        ? React.createElement(RimbleUi.Loader, {})
+        : Curry._1(price, undefined);
   } else {
     var endDateMoment$1 = endDateMoment._0;
     tmp = React.createElement(Dapp$DisplayAfterDate, {
+      endDateMoment: endDateMoment$1,
+      beforeComponent: React.createElement(React.Fragment, {
+        children: React.createElement(CountDown.make, {
           endDateMoment: endDateMoment$1,
-          beforeComponent: React.createElement(React.Fragment, {
-                children: React.createElement(CountDown.make, {
-                      endDateMoment: endDateMoment$1
-                    })
-              }),
-          afterComponent: Curry._1(price, undefined)
-        });
+        }),
+      }),
+      afterComponent: Curry._1(price, undefined),
+    });
   }
   return React.createElement(React.Fragment, undefined, tmp);
 }
 
 var Unowned = {
-  make: Dapp$AnimalActionsOnDetailsPage$Unowned
+  make: Dapp$AnimalActionsOnDetailsPage$Unowned,
 };
 
 function Dapp$AnimalActionsOnDetailsPage(Props) {
   var chain = Props.chain;
   var animal = Props.animal;
   var owned = QlHooks.useIsAnimalOwened(chain, animal);
-  var currentPatron = Belt_Option.getWithDefault(QlHooks.usePatron(chain, animal), "Loading");
+  var currentPatron = Belt_Option.getWithDefault(
+    QlHooks.usePatron(chain, animal),
+    "Loading"
+  );
   var displayName = UserProvider.useDisplayName(currentPatron);
   var displayNameStr = UserProvider.displayNameToString(displayName);
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
@@ -559,62 +710,90 @@ function Dapp$AnimalActionsOnDetailsPage(Props) {
   var price = function (param) {
     if (isOnAuction) {
       return React.createElement(Dapp$AuctionDetails, {
-                  chain: chain,
-                  animal: animal
-                });
+        chain: chain,
+        animal: animal,
+      });
     }
     var tmp;
     var exit = 0;
     if (typeof nonUrlRouting === "number") {
-      if (nonUrlRouting === /* NoExtraState */2) {
+      if (nonUrlRouting === /* NoExtraState */ 2) {
         exit = 1;
       } else {
         tmp = null;
       }
-    } else if (nonUrlRouting.TAG === /* LoginScreen */0) {
+    } else if (nonUrlRouting.TAG === /* LoginScreen */ 0) {
       exit = 1;
     } else {
       tmp = null;
     }
     if (exit === 1) {
       tmp = React.createElement(ActionButtons.Buy.make, {
-            chain: chain,
-            animal: animal
-          });
+        chain: chain,
+        animal: animal,
+      });
     }
-    return React.createElement(React.Fragment, {
-                children: null
-              }, React.createElement("p", undefined, "Owner: ", React.createElement("a", {
-                        onClick: (function (e) {
-                            e.preventDefault();
-                            return Curry._1(clearAndPush, "/#user/" + currentPatron);
-                          })
-                      }, displayNameStr)), React.createElement(PriceDisplay.make, {
-                    chain: chain,
-                    animal: animal
-                  }), tmp);
+    return React.createElement(
+      React.Fragment,
+      {
+        children: null,
+      },
+      React.createElement(
+        "p",
+        undefined,
+        "Owner: ",
+        React.createElement(
+          "a",
+          {
+            onClick: function (e) {
+              e.preventDefault();
+              return Curry._1(clearAndPush, "/#user/" + currentPatron);
+            },
+          },
+          displayNameStr
+        )
+      ),
+      React.createElement(PriceDisplay.make, {
+        chain: chain,
+        animal: animal,
+      }),
+      tmp
+    );
   };
   if (owned) {
-    return React.createElement(React.Fragment, {
-                children: null
-              }, React.createElement(PriceDisplay.make, {
-                    chain: chain,
-                    animal: animal
-                  }), React.createElement(ActionButtons.UpdatePrice.make, {
-                    animal: animal
-                  }), React.createElement("br", undefined), React.createElement(ActionButtons.UpdateDeposit.make, {}), React.createElement("br", undefined), React.createElement(Validate.make, {}));
+    return React.createElement(
+      React.Fragment,
+      {
+        children: null,
+      },
+      React.createElement(PriceDisplay.make, {
+        chain: chain,
+        animal: animal,
+      }),
+      React.createElement(ActionButtons.UpdatePrice.make, {
+        animal: animal,
+      }),
+      React.createElement("br", undefined),
+      React.createElement(ActionButtons.UpdateDeposit.make, {}),
+      React.createElement("br", undefined),
+      React.createElement(Validate.make, {})
+    );
   } else {
-    return React.createElement(React.Fragment, undefined, React.createElement(Dapp$AnimalActionsOnDetailsPage$Unowned, {
-                    chain: chain,
-                    animal: animal,
-                    price: price
-                  }));
+    return React.createElement(
+      React.Fragment,
+      undefined,
+      React.createElement(Dapp$AnimalActionsOnDetailsPage$Unowned, {
+        chain: chain,
+        animal: animal,
+        price: price,
+      })
+    );
   }
 }
 
 var AnimalActionsOnDetailsPage = {
   Unowned: Unowned,
-  make: Dapp$AnimalActionsOnDetailsPage
+  make: Dapp$AnimalActionsOnDetailsPage,
 };
 
 function Dapp$DetailsViewAnimal(Props) {
@@ -625,87 +804,163 @@ function Dapp$DetailsViewAnimal(Props) {
   var image = Animal.useAvatar(animal);
   var optArtistInfo = QlHooks.useWildcardArtist(animal);
   var ownedAnimalImg = CssJs.style([
-        CssJs.width({
-              NAME: "percent",
-              VAL: 100
-            }),
-        CssJs.height({
-              NAME: "percent",
-              VAL: 100
-            }),
-        CssJs.objectFit("contain")
-      ]);
+    CssJs.width({
+      NAME: "percent",
+      VAL: 100,
+    }),
+    CssJs.height({
+      NAME: "percent",
+      VAL: 100,
+    }),
+    CssJs.objectFit("contain"),
+  ]);
   var orgBadge = Animal.useGetOrgBadgeImage(animal);
   var displayAnimal = function (animalImage) {
-    return React.createElement(React.Fragment, undefined, React.createElement(Dapp$SquareBox, {
-                    children: null
-                  }, Curry._1(animalImage, undefined), React.createElement("div", {
-                        className: Styles.overlayBadgeImg(90, 90),
-                        onClick: (function (e) {
-                            e.stopPropagation();
-                            e.preventDefault();
-                            return Curry._1(clearAndPush, "#org/" + orgId);
-                          })
-                      }, React.createElement("img", {
-                            className: CssJs.style([
-                                  CssJs.width({
-                                        NAME: "percent",
-                                        VAL: 100
-                                      }),
-                                  CssJs.height({
-                                        NAME: "percent",
-                                        VAL: 100
-                                      }),
-                                  CssJs.objectFit("contain")
-                                ]),
-                            src: orgBadge
-                          }))), React.createElement("div", undefined, Belt_Option.mapWithDefault(optArtistInfo, null, (function (artistInfo) {
-                          return React.createElement("p", undefined, "Art by: ", React.createElement("a", {
-                                          onClick: (function (e) {
-                                              e.preventDefault();
-                                              return Curry._1(clearAndPush, "/#artist/" + artistInfo.id);
-                                            })
-                                        }, artistInfo.name));
-                        }))));
+    return React.createElement(
+      React.Fragment,
+      undefined,
+      React.createElement(
+        Dapp$SquareBox,
+        {
+          children: null,
+        },
+        Curry._1(animalImage, undefined),
+        React.createElement(
+          "div",
+          {
+            className: Styles.overlayBadgeImg(90, 90),
+            onClick: function (e) {
+              e.stopPropagation();
+              e.preventDefault();
+              return Curry._1(clearAndPush, "#org/" + orgId);
+            },
+          },
+          React.createElement("img", {
+            className: CssJs.style([
+              CssJs.width({
+                NAME: "percent",
+                VAL: 100,
+              }),
+              CssJs.height({
+                NAME: "percent",
+                VAL: 100,
+              }),
+              CssJs.objectFit("contain"),
+            ]),
+            src: orgBadge,
+          })
+        )
+      ),
+      React.createElement(
+        "div",
+        undefined,
+        Belt_Option.mapWithDefault(optArtistInfo, null, function (artistInfo) {
+          return React.createElement(
+            "p",
+            undefined,
+            "Art by: ",
+            React.createElement(
+              "a",
+              {
+                onClick: function (e) {
+                  e.preventDefault();
+                  return Curry._1(clearAndPush, "/#artist/" + artistInfo.id);
+                },
+              },
+              artistInfo.name
+            )
+          );
+        })
+      )
+    );
   };
   var match = QlHooks.useWildcardName(animal);
   var match$1 = QlHooks.useWildcardCommonName(animal);
-  return React.createElement(React.Fragment, {
-              children: null
-            }, displayAnimal(function (param) {
-                  return React.createElement("img", {
-                              className: ownedAnimalImg,
-                              src: image
-                            });
-                }), React.createElement("h2", undefined, match !== undefined ? (
-                    match$1 !== undefined ? React.createElement(React.Fragment, undefined, match, React.createElement("small", {
-                                className: CssJs.style([CssJs.fontWeight("thin")])
-                              }, " the " + match$1)) : match
-                  ) : "Loading"), React.createElement(Dapp$AnimalActionsOnDetailsPage, {
-                  chain: chain,
-                  animal: animal
-                }));
+  return React.createElement(
+    React.Fragment,
+    {
+      children: null,
+    },
+    displayAnimal(function (param) {
+      return React.createElement("img", {
+        className: ownedAnimalImg,
+        src: image,
+      });
+    }),
+    React.createElement(
+      "h2",
+      undefined,
+      match !== undefined
+        ? match$1 !== undefined
+          ? React.createElement(
+              React.Fragment,
+              undefined,
+              match,
+              React.createElement(
+                "small",
+                {
+                  className: CssJs.style([CssJs.fontWeight("thin")]),
+                },
+                " the " + match$1
+              )
+            )
+          : match
+        : "Loading"
+    ),
+    React.createElement(Dapp$AnimalActionsOnDetailsPage, {
+      chain: chain,
+      animal: animal,
+    })
+  );
 }
 
 var DetailsViewAnimal = {
-  make: Dapp$DetailsViewAnimal
+  make: Dapp$DetailsViewAnimal,
 };
 
 function Dapp$DetailsView(Props) {
   var chain = Props.chain;
   var optionAnimal = Props.optionAnimal;
+  Browser$ReScriptLogger.info1(
+    {
+      rootModule: "Dapp",
+      subModulePath: {
+        hd: "DetailsView",
+        tl: /* [] */ 0,
+      },
+      value: "make",
+      fullPath: "Dapp.DetailsView.make",
+      filePath:
+        "/Users/denham/Documents/projects/wildcards/ui/src/components/Dapp.res",
+    },
+    "optionAnimal",
+    ["a", optionAnimal]
+  );
   if (optionAnimal !== undefined) {
     return React.createElement(Dapp$DetailsViewAnimal, {
-                chain: chain,
-                animal: Caml_option.valFromOption(optionAnimal)
-              });
+      chain: chain,
+      animal: Caml_option.valFromOption(optionAnimal),
+    });
   } else {
-    return React.createElement("div", undefined, React.createElement("h1", undefined, "We are unable to find that animal in our system."), React.createElement("p", undefined, "Please check the spelling and try again."));
+    return React.createElement(
+      "div",
+      undefined,
+      React.createElement(
+        "h1",
+        undefined,
+        "We are unable to find that animal in our system."
+      ),
+      React.createElement(
+        "p",
+        undefined,
+        "Please check the spelling and try again."
+      )
+    );
   }
 }
 
 var DetailsView = {
-  make: Dapp$DetailsView
+  make: Dapp$DetailsView,
 };
 
 function Dapp$DefaultLook(Props) {
@@ -720,27 +975,44 @@ function Dapp$DefaultLook(Props) {
     exit = 1;
   } else {
     switch (len) {
-      case 0 :
-      case 1 :
+      case 0:
+      case 1:
+        exit = 1;
+        break;
+      case 2:
+        var match$1 = match[0];
+        if (match$1 === "details") {
+          var animalStr$1 = match[1];
+          animalStr = animalStr$1;
+          exit = 2;
+        } else {
           exit = 1;
-          break;
-      case 2 :
-          var match$1 = match[0];
-          if (match$1 === "details") {
-            var animalStr$1 = match[1];
-            animalStr = animalStr$1;
+        }
+        break;
+      case 3:
+        var match$2 = match[0];
+        if (match$2 === "explorer") {
+          var match$3 = match[1];
+          if (match$3 === "details") {
+            var animalStr$2 = match[2];
+            animalStr = animalStr$2;
             exit = 2;
           } else {
             exit = 1;
           }
-          break;
-      case 3 :
-          var match$2 = match[0];
-          if (match$2 === "explorer") {
-            var match$3 = match[1];
-            if (match$3 === "details") {
-              var animalStr$2 = match[2];
-              animalStr = animalStr$2;
+        } else {
+          exit = 1;
+        }
+        break;
+      case 4:
+        var match$4 = match[0];
+        if (match$4 === "explorer") {
+          var match$5 = match[1];
+          if (match$5 === "details") {
+            var animalStr$3 = match[2];
+            var match$6 = match[3];
+            if (match$6 === "") {
+              animalStr = animalStr$3;
               exit = 2;
             } else {
               exit = 1;
@@ -748,111 +1020,187 @@ function Dapp$DefaultLook(Props) {
           } else {
             exit = 1;
           }
-          break;
-      case 4 :
-          var match$4 = match[0];
-          if (match$4 === "explorer") {
-            var match$5 = match[1];
-            if (match$5 === "details") {
-              var animalStr$3 = match[2];
-              var match$6 = match[3];
-              if (match$6 === "") {
-                animalStr = animalStr$3;
-                exit = 2;
-              } else {
-                exit = 1;
-              }
-            } else {
-              exit = 1;
-            }
-          } else {
-            exit = 1;
-          }
-          break;
-      
+        } else {
+          exit = 1;
+        }
+        break;
     }
   }
   switch (exit) {
-    case 1 :
-        tmp = React.createElement(React.Fragment, {
-              children: null
-            }, React.createElement(Dapp$AnimalCarousel, {
-                  isGqlLoaded: isGqlLoaded
-                }), React.createElement(RimbleUi.Box, {
-                  children: isGqlLoaded ? React.createElement(TotalRaised.make, {}) : null,
-                  className: Styles.dappImagesCounteractOffset
-                }));
-        break;
-    case 2 :
-        var optionAnimal = TokenId.make(animalStr);
-        var chain = Belt_Option.mapWithDefault(optionAnimal, /* MainnetQuery */2, Animal.getChainIdFromAnimalId);
-        tmp = React.createElement(Dapp$DetailsView, {
-              chain: chain,
-              optionAnimal: TokenId.make(animalStr)
-            });
-        break;
-    
+    case 1:
+      tmp = React.createElement(
+        React.Fragment,
+        {
+          children: null,
+        },
+        React.createElement(Dapp$AnimalCarousel, {
+          isGqlLoaded: isGqlLoaded,
+        }),
+        React.createElement(RimbleUi.Box, {
+          children: isGqlLoaded
+            ? React.createElement(TotalRaised.make, {})
+            : null,
+          className: Styles.dappImagesCounteractOffset,
+        })
+      );
+      break;
+    case 2:
+      Browser$ReScriptLogger.info1(
+        {
+          rootModule: "Dapp",
+          subModulePath: {
+            hd: "DefaultLook",
+            tl: /* [] */ 0,
+          },
+          value: "make",
+          fullPath: "Dapp.DefaultLook.make",
+          filePath:
+            "/Users/denham/Documents/projects/wildcards/ui/src/components/Dapp.res",
+        },
+        "the animalString",
+        ["a", animalStr]
+      );
+      var optionAnimal = TokenId.make(animalStr);
+      var chain = Belt_Option.mapWithDefault(
+        optionAnimal,
+        /* MainnetQuery */ 2,
+        Animal.getChainIdFromAnimalId
+      );
+      tmp = React.createElement(Dapp$DetailsView, {
+        chain: chain,
+        optionAnimal: TokenId.make(animalStr),
+      });
+      break;
   }
-  return React.createElement("div", {
-              className: Styles.centerText
-            }, tmp);
+  return React.createElement(
+    "div",
+    {
+      className: Styles.centerText,
+    },
+    tmp
+  );
 }
 
 var DefaultLook = {
-  make: Dapp$DefaultLook
+  make: Dapp$DefaultLook,
 };
 
 function Dapp$DefaultLeftPanel(Props) {
-  return React.createElement(React.Fragment, {
-              children: null
-            }, React.createElement("h1", {
-                  className: Styles.heading
-                }, React.createElement("span", {
-                      className: Styles.colorBlue
-                    }, "Always"), React.createElement("br", undefined), "raising funds for", React.createElement("br", undefined), React.createElement("span", {
-                      className: Styles.colorGreen
-                    }, "conservation")), React.createElement("hr", undefined), React.createElement("h3", {
-                  className: Styles.subHeading
-                }, "Adopt an animal to start giving today."));
+  return React.createElement(
+    React.Fragment,
+    {
+      children: null,
+    },
+    React.createElement(
+      "h1",
+      {
+        className: Styles.heading,
+      },
+      React.createElement(
+        "span",
+        {
+          className: Styles.colorBlue,
+        },
+        "Always"
+      ),
+      React.createElement("br", undefined),
+      "raising funds for",
+      React.createElement("br", undefined),
+      React.createElement(
+        "span",
+        {
+          className: Styles.colorGreen,
+        },
+        "conservation"
+      )
+    ),
+    React.createElement("hr", undefined),
+    React.createElement(
+      "h3",
+      {
+        className: Styles.subHeading,
+      },
+      "Adopt an animal to start giving today."
+    )
+  );
 }
 
 var DefaultLeftPanel = {
-  make: Dapp$DefaultLeftPanel
+  make: Dapp$DefaultLeftPanel,
 };
 
 function Dapp$UnlaunchedAnimalInfo(Props) {
   var chain = Props.chain;
   var endDateMoment = Props.endDateMoment;
   var animal = Props.animal;
-  var animalName = Belt_Option.getWithDefault(QlHooks.useWildcardName(animal), "Loading");
+  var animalName = Belt_Option.getWithDefault(
+    QlHooks.useWildcardName(animal),
+    "Loading"
+  );
   var ratio = QlHooks.usePledgeRate(chain, animal);
   var monthlyRate = (ratio * 100).toString();
   return React.createElement(Dapp$DisplayAfterDate, {
-              endDateMoment: endDateMoment,
-              beforeComponent: React.createElement(React.Fragment, {
-                    children: null
-                  }, React.createElement("h2", undefined, "This animal will launch in:"), React.createElement(CountDown.make, {
-                        endDateMoment: endDateMoment
-                      }), React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("br", undefined), ratio === 0 ? React.createElement("p", undefined, "The monthly pledge rate will be revealed at launch.") : React.createElement(React.Fragment, undefined, React.createElement("small", undefined, React.createElement("strong", undefined, "Monthly Pledge Rate:", React.createElement(RimbleUi.Tooltip, {
-                                      message: "This is the monthly percentage contribution of " + (animalName + "'s sale price that will go towards conservation of at risk animals. This is deducted continuously from the deposit and paid by the owner of the animal"),
-                                      placement: "top",
-                                      children: React.createElement("span", undefined, "ⓘ")
-                                    }))), React.createElement("br", undefined), monthlyRate + " %")),
-              afterComponent: React.createElement(Info.make, {
-                    chain: chain,
-                    tokenId: animal
-                  })
-            });
+    endDateMoment: endDateMoment,
+    beforeComponent: React.createElement(
+      React.Fragment,
+      {
+        children: null,
+      },
+      React.createElement("h2", undefined, "This animal will launch in:"),
+      React.createElement(CountDown.make, {
+        endDateMoment: endDateMoment,
+      }),
+      React.createElement("br", undefined),
+      React.createElement("br", undefined),
+      React.createElement("br", undefined),
+      ratio === 0
+        ? React.createElement(
+            "p",
+            undefined,
+            "The monthly pledge rate will be revealed at launch."
+          )
+        : React.createElement(
+            React.Fragment,
+            undefined,
+            React.createElement(
+              "small",
+              undefined,
+              React.createElement(
+                "strong",
+                undefined,
+                "Monthly Pledge Rate:",
+                React.createElement(RimbleUi.Tooltip, {
+                  message:
+                    "This is the monthly percentage contribution of " +
+                    (animalName +
+                      "'s sale price that will go towards conservation of at risk animals. This is deducted continuously from the deposit and paid by the owner of the animal"),
+                  placement: "top",
+                  children: React.createElement("span", undefined, "ⓘ"),
+                })
+              )
+            ),
+            React.createElement("br", undefined),
+            monthlyRate + " %"
+          )
+    ),
+    afterComponent: React.createElement(Info.make, {
+      chain: chain,
+      tokenId: animal,
+    }),
+  });
 }
 
 var UnlaunchedAnimalInfo = {
-  make: Dapp$UnlaunchedAnimalInfo
+  make: Dapp$UnlaunchedAnimalInfo,
 };
 
 function Dapp$AnimalInfo(Props) {
   var chain = Props.chain;
   var animal = Props.animal;
-  var animalDescription = Belt_Option.getWithDefault(QlHooks.useWildcardDescription(animal), ["Loading"]);
+  var animalDescription = Belt_Option.getWithDefault(
+    QlHooks.useWildcardDescription(animal),
+    ["Loading"]
+  );
   var optAnimalMedia = Animal.useAlternateImage(animal);
   var animalStatus = Animal.useTokenStatus(chain, animal);
   var tmp;
@@ -860,97 +1208,140 @@ function Dapp$AnimalInfo(Props) {
     tmp = React.createElement(RimbleUi.Loader, {});
   } else {
     switch (animalStatus.TAG | 0) {
-      case /* WaitingForLaunch */0 :
-          tmp = React.createElement(Dapp$UnlaunchedAnimalInfo, {
-                chain: chain,
-                endDateMoment: animalStatus._0,
-                animal: animal
-              });
-          break;
-      case /* Launched */1 :
-          tmp = React.createElement(Info.Auction.make, {
-                chain: chain,
-                tokenId: animal,
-                abandoned: false,
-                auctionStartTime: animalStatus._0
-              });
-          break;
-      case /* Owned */2 :
-          tmp = React.createElement(Info.make, {
-                chain: chain,
-                tokenId: animal
-              });
-          break;
-      case /* Foreclosed */3 :
-          tmp = React.createElement(Info.Auction.make, {
-                chain: chain,
-                tokenId: animal,
-                abandoned: true,
-                auctionStartTime: animalStatus._0
-              });
-          break;
-      
+      case /* WaitingForLaunch */ 0:
+        tmp = React.createElement(Dapp$UnlaunchedAnimalInfo, {
+          chain: chain,
+          endDateMoment: animalStatus._0,
+          animal: animal,
+        });
+        break;
+      case /* Launched */ 1:
+        tmp = React.createElement(Info.Auction.make, {
+          chain: chain,
+          tokenId: animal,
+          abandoned: false,
+          auctionStartTime: animalStatus._0,
+        });
+        break;
+      case /* Owned */ 2:
+        tmp = React.createElement(Info.make, {
+          chain: chain,
+          tokenId: animal,
+        });
+        break;
+      case /* Foreclosed */ 3:
+        tmp = React.createElement(Info.Auction.make, {
+          chain: chain,
+          tokenId: animal,
+          abandoned: true,
+          auctionStartTime: animalStatus._0,
+        });
+        break;
     }
   }
   return React.createElement(RimbleUi.Box, {
-              m: 5,
-              children: React.createElement(ReactTabs.Tabs, {
-                    children: null
-                  }, React.createElement(ReactTabs.TabList, {
-                        children: null
-                      }, React.createElement(ReactTabs.Tab, {
-                            children: "Story"
-                          }), React.createElement(ReactTabs.Tab, {
-                            children: "Details"
-                          }), Belt_Option.mapWithDefault(optAnimalMedia, null, (function (param) {
-                              return React.createElement(ReactTabs.Tab, {
-                                          children: "Media"
-                                        });
-                            }))), React.createElement(ReactTabs.TabPanel, {
-                        children: null
-                      }, React.createElement("h2", undefined, "Story"), React.createElement("div", {
-                            className: Curry._1(Css.style, {
-                                  hd: Css.maxHeight({
-                                        NAME: "em",
-                                        VAL: 26
-                                      }),
-                                  tl: {
-                                    hd: Css.overflow("scroll"),
-                                    tl: /* [] */0
-                                  }
-                                })
-                          }, Belt_Array.mapWithIndex(animalDescription, (function (i, paragraphText) {
-                                  return React.createElement("p", {
-                                              key: String(i)
-                                            }, paragraphText);
-                                }))), TokenId.toString(animal) === "13" ? React.createElement("a", {
-                              href: "/#dao"
-                            }, React.createElement("span", {
-                                  className: Curry._1(Css.style, {
-                                        hd: Css.color(Css.hex("72c7d7")),
-                                        tl: /* [] */0
-                                      })
-                                }, "Vote for your favourite conservation")) : null), React.createElement(ReactTabs.TabPanel, {
-                        children: tmp
-                      }), React.createElement(ReactTabs.TabPanel, {
-                        children: Belt_Option.mapWithDefault(optAnimalMedia, null, (function (media) {
-                                return React.createElement("img", {
-                                            className: Curry._1(Css.style, {
-                                                  hd: Css.width({
-                                                        NAME: "percent",
-                                                        VAL: 100
-                                                      }),
-                                                  tl: /* [] */0
-                                                }),
-                                            src: CONSTANTS.cdnBase + media
-                                          });
-                              }))
-                      }))
+    m: 5,
+    children: React.createElement(
+      ReactTabs.Tabs,
+      {
+        children: null,
+      },
+      React.createElement(
+        ReactTabs.TabList,
+        {
+          children: null,
+        },
+        React.createElement(ReactTabs.Tab, {
+          children: "Story",
+        }),
+        React.createElement(ReactTabs.Tab, {
+          children: "Details",
+        }),
+        Belt_Option.mapWithDefault(optAnimalMedia, null, function (param) {
+          return React.createElement(ReactTabs.Tab, {
+            children: "Media",
+          });
+        })
+      ),
+      React.createElement(
+        ReactTabs.TabPanel,
+        {
+          children: null,
+        },
+        React.createElement("h2", undefined, "Story"),
+        React.createElement(
+          "div",
+          {
+            className: Curry._1(Css.style, {
+              hd: Css.maxHeight({
+                NAME: "em",
+                VAL: 26,
+              }),
+              tl: {
+                hd: Css.overflow("scroll"),
+                tl: /* [] */ 0,
+              },
+            }),
+          },
+          Belt_Array.mapWithIndex(
+            animalDescription,
+            function (i, paragraphText) {
+              return React.createElement(
+                "p",
+                {
+                  key: String(i),
+                },
+                paragraphText
+              );
+            }
+          )
+        ),
+        TokenId.toString(animal) === "13"
+          ? React.createElement(
+              "a",
+              {
+                href: "/#dao",
+              },
+              React.createElement(
+                "span",
+                {
+                  className: Curry._1(Css.style, {
+                    hd: Css.color(Css.hex("72c7d7")),
+                    tl: /* [] */ 0,
+                  }),
+                },
+                "Vote for your favourite conservation"
+              )
+            )
+          : null
+      ),
+      React.createElement(ReactTabs.TabPanel, {
+        children: tmp,
+      }),
+      React.createElement(ReactTabs.TabPanel, {
+        children: Belt_Option.mapWithDefault(
+          optAnimalMedia,
+          null,
+          function (media) {
+            return React.createElement("img", {
+              className: Curry._1(Css.style, {
+                hd: Css.width({
+                  NAME: "percent",
+                  VAL: 100,
+                }),
+                tl: /* [] */ 0,
+              }),
+              src: CONSTANTS.cdnBase + media,
             });
+          }
+        ),
+      })
+    ),
+  });
 }
 
 var AnimalInfo = {
-  make: Dapp$AnimalInfo
+  make: Dapp$AnimalInfo,
 };
 
 function Dapp(Props) {
@@ -962,197 +1353,223 @@ function Dapp(Props) {
   var tmp;
   if (typeof nonUrlRouting === "number") {
     switch (nonUrlRouting) {
-      case /* UserVerificationScreen */0 :
-          tmp = React.createElement("div", {
-                className: Curry._1(Css.style, {
-                      hd: Css.position("relative"),
-                      tl: /* [] */0
-                    })
-              }, React.createElement(RimbleUi.Button.Text, {
-                    onClick: (function (param) {
-                        return Curry._1(clearNonUrlState, undefined);
-                      }),
-                    icononly: true,
-                    icon: "Close",
-                    color: "moon-gray",
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    m: 1
-                  }), React.createElement(React.Suspense, {
-                    children: React.createElement(LazyThreeBoxUpdate.make, LazyThreeBoxUpdate.makeProps(undefined, undefined)),
-                    fallback: React.createElement(RimbleUi.Loader, {})
-                  }));
-          break;
-      case /* UpdateDepositScreen */1 :
-          tmp = React.createElement("div", {
-                className: Curry._1(Css.style, {
-                      hd: Css.position("relative"),
-                      tl: /* [] */0
-                    })
-              }, React.createElement(RimbleUi.Button.Text, {
-                    onClick: (function (param) {
-                        return Curry._1(clearNonUrlState, undefined);
-                      }),
-                    icononly: true,
-                    icon: "Close",
-                    color: "moon-gray",
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    m: 1
-                  }), React.createElement(UpdateDeposit.make, {
-                    closeButtonText: "Back to animal view",
-                    chain: Belt_Option.mapWithDefault(currentAnimal, /* MainnetQuery */2, Animal.getChainIdFromAnimalId)
-                  }));
-          break;
-      case /* NoExtraState */2 :
-          if (optAnimalForDetails !== undefined) {
-            var animal = Caml_option.valFromOption(optAnimalForDetails);
-            tmp = React.createElement(Dapp$AnimalInfo, {
-                  chain: Animal.getChainIdFromAnimalId(animal),
-                  animal: animal
-                });
-          } else {
-            tmp = React.createElement(Dapp$DefaultLeftPanel, {});
-          }
-          break;
-      
+      case /* UserVerificationScreen */ 0:
+        tmp = React.createElement(
+          "div",
+          {
+            className: Curry._1(Css.style, {
+              hd: Css.position("relative"),
+              tl: /* [] */ 0,
+            }),
+          },
+          React.createElement(RimbleUi.Button.Text, {
+            onClick: function (param) {
+              return Curry._1(clearNonUrlState, undefined);
+            },
+            icononly: true,
+            icon: "Close",
+            color: "moon-gray",
+            position: "absolute",
+            top: 0,
+            right: 0,
+            m: 1,
+          }),
+          React.createElement(React.Suspense, {
+            children: React.createElement(
+              LazyThreeBoxUpdate.make,
+              LazyThreeBoxUpdate.makeProps(undefined, undefined)
+            ),
+            fallback: React.createElement(RimbleUi.Loader, {}),
+          })
+        );
+        break;
+      case /* UpdateDepositScreen */ 1:
+        tmp = React.createElement(
+          "div",
+          {
+            className: Curry._1(Css.style, {
+              hd: Css.position("relative"),
+              tl: /* [] */ 0,
+            }),
+          },
+          React.createElement(RimbleUi.Button.Text, {
+            onClick: function (param) {
+              return Curry._1(clearNonUrlState, undefined);
+            },
+            icononly: true,
+            icon: "Close",
+            color: "moon-gray",
+            position: "absolute",
+            top: 0,
+            right: 0,
+            m: 1,
+          }),
+          React.createElement(UpdateDeposit.make, {
+            closeButtonText: "Back to animal view",
+            chain: Belt_Option.mapWithDefault(
+              currentAnimal,
+              /* MainnetQuery */ 2,
+              Animal.getChainIdFromAnimalId
+            ),
+          })
+        );
+        break;
+      case /* NoExtraState */ 2:
+        if (optAnimalForDetails !== undefined) {
+          var animal = Caml_option.valFromOption(optAnimalForDetails);
+          tmp = React.createElement(Dapp$AnimalInfo, {
+            chain: Animal.getChainIdFromAnimalId(animal),
+            animal: animal,
+          });
+        } else {
+          tmp = React.createElement(Dapp$DefaultLeftPanel, {});
+        }
+        break;
     }
   } else {
     switch (nonUrlRouting.TAG | 0) {
-      case /* LoginScreen */0 :
-          tmp = React.createElement(Login.make, {});
-          break;
-      case /* UpdatePriceScreen */1 :
-          var animal$1 = nonUrlRouting._0;
-          tmp = React.createElement("div", {
-                className: Curry._1(Css.style, {
-                      hd: Css.position("relative"),
-                      tl: /* [] */0
-                    })
-              }, React.createElement(RimbleUi.Button.Text, {
-                    onClick: (function (param) {
-                        return Curry._1(clearNonUrlState, undefined);
-                      }),
-                    icononly: true,
-                    icon: "Close",
-                    color: "moon-gray",
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    m: 1
-                  }), React.createElement(UpdatePrice.make, {
-                    tokenId: animal$1,
-                    chain: Animal.getChainIdFromAnimalId(animal$1)
-                  }));
-          break;
-      case /* BuyScreen */2 :
-          var animal$2 = nonUrlRouting._0;
-          tmp = React.createElement("div", {
-                className: Curry._1(Css.style, {
-                      hd: Css.position("relative"),
-                      tl: /* [] */0
-                    })
-              }, React.createElement(RimbleUi.Button.Text, {
-                    onClick: (function (param) {
-                        return Curry._1(clearNonUrlState, undefined);
-                      }),
-                    icononly: true,
-                    icon: "Close",
-                    color: "moon-gray",
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    m: 1
-                  }), React.createElement(Buy.make, {
-                    chain: Animal.getChainIdFromAnimalId(animal$2),
-                    tokenId: animal$2
-                  }));
-          break;
-      case /* AuctionScreen */3 :
-          var animal$3 = nonUrlRouting._0;
-          tmp = React.createElement("div", {
-                className: Curry._1(Css.style, {
-                      hd: Css.position("relative"),
-                      tl: /* [] */0
-                    })
-              }, React.createElement(RimbleUi.Button.Text, {
-                    onClick: (function (param) {
-                        return Curry._1(clearNonUrlState, undefined);
-                      }),
-                    icononly: true,
-                    icon: "Close",
-                    color: "moon-gray",
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    m: 1
-                  }), React.createElement(Buy.make, {
-                    chain: Animal.getChainIdFromAnimalId(animal$3),
-                    tokenId: animal$3
-                  }));
-          break;
-      
+      case /* LoginScreen */ 0:
+        tmp = React.createElement(Login.make, {});
+        break;
+      case /* UpdatePriceScreen */ 1:
+        var animal$1 = nonUrlRouting._0;
+        tmp = React.createElement(
+          "div",
+          {
+            className: Curry._1(Css.style, {
+              hd: Css.position("relative"),
+              tl: /* [] */ 0,
+            }),
+          },
+          React.createElement(RimbleUi.Button.Text, {
+            onClick: function (param) {
+              return Curry._1(clearNonUrlState, undefined);
+            },
+            icononly: true,
+            icon: "Close",
+            color: "moon-gray",
+            position: "absolute",
+            top: 0,
+            right: 0,
+            m: 1,
+          }),
+          React.createElement(UpdatePrice.make, {
+            tokenId: animal$1,
+            chain: Animal.getChainIdFromAnimalId(animal$1),
+          })
+        );
+        break;
+      case /* BuyScreen */ 2:
+        var animal$2 = nonUrlRouting._0;
+        tmp = React.createElement(
+          "div",
+          {
+            className: Curry._1(Css.style, {
+              hd: Css.position("relative"),
+              tl: /* [] */ 0,
+            }),
+          },
+          React.createElement(RimbleUi.Button.Text, {
+            onClick: function (param) {
+              return Curry._1(clearNonUrlState, undefined);
+            },
+            icononly: true,
+            icon: "Close",
+            color: "moon-gray",
+            position: "absolute",
+            top: 0,
+            right: 0,
+            m: 1,
+          }),
+          React.createElement(Buy.make, {
+            chain: Animal.getChainIdFromAnimalId(animal$2),
+            tokenId: animal$2,
+          })
+        );
+        break;
+      case /* AuctionScreen */ 3:
+        var animal$3 = nonUrlRouting._0;
+        tmp = React.createElement(
+          "div",
+          {
+            className: Curry._1(Css.style, {
+              hd: Css.position("relative"),
+              tl: /* [] */ 0,
+            }),
+          },
+          React.createElement(RimbleUi.Button.Text, {
+            onClick: function (param) {
+              return Curry._1(clearNonUrlState, undefined);
+            },
+            icononly: true,
+            icon: "Close",
+            color: "moon-gray",
+            position: "absolute",
+            top: 0,
+            right: 0,
+            m: 1,
+          }),
+          React.createElement(Buy.make, {
+            chain: Animal.getChainIdFromAnimalId(animal$3),
+            tokenId: animal$3,
+          })
+        );
+        break;
     }
   }
-  return React.createElement(RimbleUi.Flex, {
-              children: null,
-              flexWrap: isDetailView ? "wrap-reverse" : "wrap",
-              alignItems: "start"
-            }, React.createElement(RimbleUi.Box, {
-                  p: 1,
-                  children: React.createElement(React.Fragment, {
-                        children: tmp
-                      }),
-                  width: [
-                    1,
-                    1,
-                    0.5
-                  ]
-                }), React.createElement(RimbleUi.Box, {
-                  p: 1,
-                  children: React.createElement(Dapp$DefaultLook, {
-                        isGqlLoaded: true
-                      }),
-                  width: [
-                    1,
-                    1,
-                    0.5
-                  ],
-                  className: Curry._1(Css.style, {
-                        hd: Css.media("(max-width: 831px)", {
-                              hd: Css.overflow("hidden"),
-                              tl: /* [] */0
-                            }),
-                        tl: /* [] */0
-                      })
-                }));
+  return React.createElement(
+    RimbleUi.Flex,
+    {
+      children: null,
+      flexWrap: isDetailView ? "wrap-reverse" : "wrap",
+      alignItems: "start",
+    },
+    React.createElement(RimbleUi.Box, {
+      p: 1,
+      children: React.createElement(React.Fragment, {
+        children: tmp,
+      }),
+      width: [1, 1, 0.5],
+    }),
+    React.createElement(RimbleUi.Box, {
+      p: 1,
+      children: React.createElement(Dapp$DefaultLook, {
+        isGqlLoaded: true,
+      }),
+      width: [1, 1, 0.5],
+      className: Curry._1(Css.style, {
+        hd: Css.media("(max-width: 831px)", {
+          hd: Css.overflow("hidden"),
+          tl: /* [] */ 0,
+        }),
+        tl: /* [] */ 0,
+      }),
+    })
+  );
 }
 
 var make$1 = Dapp;
 
 export {
-  flameImg ,
-  ShareSocial ,
-  EditButton ,
-  Streak ,
-  DisplayAfterDate ,
-  AuctionDisplay ,
-  AuctionDetails ,
-  BasicAnimalDisplay ,
-  SquareBox ,
-  AnimalOnLandingPage ,
-  CarouselAnimal ,
-  AnimalCarousel ,
-  AnimalActionsOnDetailsPage ,
-  DetailsViewAnimal ,
-  DetailsView ,
-  DefaultLook ,
-  DefaultLeftPanel ,
-  UnlaunchedAnimalInfo ,
-  AnimalInfo ,
+  flameImg,
+  ShareSocial,
+  EditButton,
+  Streak,
+  DisplayAfterDate,
+  AuctionDisplay,
+  AuctionDetails,
+  BasicAnimalDisplay,
+  SquareBox,
+  AnimalOnLandingPage,
+  CarouselAnimal,
+  AnimalCarousel,
+  AnimalActionsOnDetailsPage,
+  DetailsViewAnimal,
+  DetailsView,
+  DefaultLook,
+  DefaultLeftPanel,
+  UnlaunchedAnimalInfo,
+  AnimalInfo,
   make$1 as make,
-  
-}
+};
 /* make Not a pure module */
