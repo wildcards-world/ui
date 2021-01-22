@@ -3,14 +3,15 @@ let ethCapeTownLogo = "/img/logos/EthCapeTown.png"
 let cvLabsLogo = "/img/logos/cvlabszug.jpg"
 let kernelLogo = "/img/logos/kernel.gif"
 
+// organisations(where: {onboarding_status: {_in: [live, signed, listed]}, id: {_neq: "wildcards"}, _and: {id: {_neq: "wildcards"}}}) {
 module LoadPatronNoDecode = %graphql(`
-  query ActivePartners {
-    organisations(where: {onboarding_status: {_in: [live,signed,listed]}}) {
-      logo
-      id
-      name
-    }
+query ActivePartners {
+  organisations(where: {id: {_neq: "wildcards"}, onboarding_status: {_in: [live, signed, listed]}}) {
+    name
+    logo
+    id
   }
+}
 `)
 type partner = {
   logo: string,
@@ -41,6 +42,18 @@ let logoStyle = {
 let corporatePartnerTextStyle = {
   open CssJs
   style(.[textAlign(#center), marginBottom(#percent(10.))])
+}
+let viewMoreButton = {
+  open CssJs
+  style(.[margin(auto), display(block)])
+}
+let viewMoreButtonContainer = {
+  open CssJs
+  style(.[width(#percent(100.))])
+}
+let orgContainerStyles = {
+  open CssJs
+  style(.[width(#percent(100.))])
 }
 
 module OrgDetails = {
@@ -89,7 +102,13 @@ module OrgDetails = {
 
 @react.component
 let make = () => {
-  let newConservationPartners = usePartners()
+  let allConservationPartners = usePartners()
+  let partnersToDisplay =
+    allConservationPartners->Option.map(partners =>
+      partners->Array.shuffle->Array.slice(~offset=0, ~len=5)
+    )
+  let numberOfPartners = allConservationPartners->Option.map(partners => partners->Array.length)
+  let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute()
 
   let orgBox = (content, ~key) =>
     <Rimble.Box key mt=20 mb=20 width=[0.45, 0.45, 0.18] color="black"> content </Rimble.Box>
@@ -103,27 +122,41 @@ let make = () => {
       px=50
       className=blueBackground>
       <h1> {"Conservation Partners"->React.string} </h1>
-    </Rimble.Flex>
-    <Rimble.Flex
-      flexWrap="wrap"
-      justifyContent="space-around"
-      alignItems="stretch"
-      className=blueBackground
-      pb=50
-      px=50>
-      {switch newConservationPartners {
-      | Some(conservationPartners) => <>
-          {conservationPartners
-          ->Array.map(conservation => orgBox(<OrgDetails conservation />, ~key=conservation.id))
-          ->React.array}
-          {// These empty org boxes keep positioning in a uniform grid
-          orgBox(React.null, ~key="a")}
-          {orgBox(React.null, ~key="b")}
-          {orgBox(React.null, ~key="c")}
-          {orgBox(React.null, ~key="d")}
-        </>
-      | None => React.null
-      }}
+      <Rimble.Flex
+        flexWrap="wrap"
+        justifyContent="space-evenly"
+        alignItems="stretch"
+        pb=10
+        px=50
+        className=orgContainerStyles>
+        {switch partnersToDisplay {
+        | Some(conservationPartners) => <>
+            {conservationPartners
+            ->Array.map(conservation => orgBox(<OrgDetails conservation />, ~key=conservation.id))
+            ->React.array}
+          </>
+        | None => React.null
+        }}
+      </Rimble.Flex>
+      <Rimble.Flex
+        flexWrap="wrap"
+        justifyContent="center"
+        alignItems="stretch"
+        className=viewMoreButtonContainer
+        pb=30>
+        <Rimble.Button
+          className=viewMoreButton
+          onClick={event => {
+            ReactEvent.Form.preventDefault(event)
+            clearAndPush("#organisations")
+          }}>
+          {numberOfPartners
+          ->Option.mapWithDefault("View All Partners", numPartners =>
+            `View All ${numPartners->string_of_int} Partners`
+          )
+          ->React.string}
+        </Rimble.Button>
+      </Rimble.Flex>
     </Rimble.Flex>
     <div className=Styles.infoBackground>
       <Rimble.Flex flexWrap="wrap" justifyContent="space-around" alignItems="stretch" pt=50 px=50>

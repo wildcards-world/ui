@@ -230,6 +230,7 @@ let make = () => {
       | User(userAddress) => <UserProfile chain=Client.MainnetQuery userAddress />
       | Artist(artistIdentifier) => <ArtistProfiles artistIdentifier />
       | Org(orgId) => <OrgProfile orgId />
+      | Organisations => <Organisations />
       | Leaderboards(leaderboardType) =>
         <Rimble.Flex
           flexWrap="wrap"

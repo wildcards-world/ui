@@ -14,6 +14,7 @@ type artistId = string
 type urlState =
   | User(Web3.ethAddress)
   | Artist(artistId)
+  | Organisations
   | Org(string)
   | Explorer(explorerTab, animalPageState)
   | Team
@@ -30,6 +31,7 @@ let useUrlState = () => {
     switch Js.String.split("/", url.hash) {
     | ["user", address] => User(address->Js.String.toLowerCase)
     | ["artist", id] => Artist(id)
+    | ["organisations"] => Organisations
     | ["org", orgId] => Org(orgId->Js.String.toLowerCase)
     | ["leaderboards", leaderboardType] =>
       switch leaderboardType {
@@ -92,6 +94,7 @@ let useIsExplorer = () => {
     | Leaderboards(_)
     | Home(_)
     | Org(_)
+    | Organisations
     | IncreaseVoteIteration
     | Team
     | VotePage => false
@@ -113,6 +116,7 @@ let useIsDetails = () => {
     | User(_)
     | Artist(_)
     | Org(_)
+    | Organisations
     | Leaderboards(_)
     | IncreaseVoteIteration
     | Team
@@ -130,6 +134,7 @@ let useIsHome = () => {
     | User(_)
     | Artist(_)
     | Org(_)
+    | Organisations
     | Explorer(_)
     | Leaderboards(_)
     | IncreaseVoteIteration
@@ -155,6 +160,7 @@ let useAnimalForDetails = () => {
     | User(_)
     | Artist(_)
     | Org(_)
+    | Organisations
     | Leaderboards(_)
     | Team
     | IncreaseVoteIteration
