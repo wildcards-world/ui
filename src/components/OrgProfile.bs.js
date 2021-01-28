@@ -18,6 +18,7 @@ import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Belt_Result from "bs-platform/lib/es6/belt_Result.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as UserProfile from "./UserProfile.bs.js";
+import * as RootProvider from "../harberger-lib/RootProvider.bs.js";
 import ReactPhotoGallery from "react-photo-gallery";
 import ReactResponsiveCarousel from "react-responsive-carousel";
 import YoutubeVideoJs from "./StaticContent//YoutubeVideo.js";
@@ -212,9 +213,7 @@ function OrgProfile$ComingSoonModal(Props) {
                                             
                                           }));
                             } else {
-                              return Curry._1(setSelectedComingSoonAnimal, (function (param) {
-                                            
-                                          }));
+                              return Curry._1(setSelectedComingSoonAnimal, undefined);
                             }
                           }),
                         icononly: true,
@@ -244,20 +243,23 @@ function OrgProfile$OrgPage(Props) {
   var orgDescription = Decco.arrayFromJson(Decco.stringFromJson, orgData.description);
   var orgAnimals = orgData.wildcard;
   var orgComingSoon = orgData.unlaunched;
-  var match = React.useState(function () {
-        return Belt_Option.flatMap(selectedWildcardKey, (function (wildcardKey) {
-                      return Belt_Array.getIndexBy(orgComingSoon, (function (orgAnimal) {
-                                    return wildcardKey === orgAnimal.key;
-                                  }));
-                    }));
-      });
-  var setSelectedComingSoonAnimal = match[1];
+  var selectedComingSoonAnimal = Belt_Option.flatMap(selectedWildcardKey, (function (wildcardKey) {
+          return Belt_Array.getIndexBy(orgComingSoon, (function (orgAnimal) {
+                        return wildcardKey === orgAnimal.key;
+                      }));
+        }));
+  var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
+  var setSelectedComingSoonAnimal = function (optKey) {
+    return Curry._1(clearAndPush, Belt_Option.mapWithDefault(optKey, "#org/" + orgId, (function (key) {
+                      return "#org/" + orgId + "/" + String(key);
+                    })));
+  };
   var orgAnimalsArray = Belt_Array.map(orgAnimals, (function (animal) {
           return Belt_Option.getWithDefault(animal.id, TokenId.makeFromInt(99999));
         }));
-  var match$1 = QlHooks.useTotalRaisedAnimalGroup(orgAnimalsArray);
-  var totalCollectMaticDai = match$1[1];
-  var totalCollectedMainnetEth = match$1[0];
+  var match = QlHooks.useTotalRaisedAnimalGroup(orgAnimalsArray);
+  var totalCollectMaticDai = match[1];
+  var totalCollectedMainnetEth = match[0];
   var orgWebsite = orgData.website;
   var optOrgYoutubeVid = orgData.youtube_vid;
   var orgImage = Animal.useGetOrgImage(orgId);
@@ -269,7 +271,7 @@ function OrgProfile$OrgPage(Props) {
                       }, paragraphText);
           })) : React.createElement("p", undefined, "error loading description");
   return React.createElement("div", undefined, React.createElement(OrgProfile$ComingSoonModal, {
-                  selectedComingSoonAnimal: match[0],
+                  selectedComingSoonAnimal: selectedComingSoonAnimal,
                   setSelectedComingSoonAnimal: setSelectedComingSoonAnimal,
                   orgComingSoon: orgComingSoon
                 }), React.createElement("div", {
@@ -415,9 +417,7 @@ function OrgProfile$OrgPage(Props) {
                                                         return React.createElement(OrgProfile$ComingSoonAnimal, {
                                                                     image: CONSTANTS.cdnBase + photos.image,
                                                                     onClick: (function (param) {
-                                                                        return Curry._1(setSelectedComingSoonAnimal, (function (param) {
-                                                                                      return key;
-                                                                                    }));
+                                                                        return setSelectedComingSoonAnimal(animal.key);
                                                                       }),
                                                                     key: String(key)
                                                                   });
