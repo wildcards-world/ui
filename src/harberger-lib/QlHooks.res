@@ -682,13 +682,7 @@ let useTotalRaisedAnimalGroup: array<TokenId.t> => (option<Eth.t>, option<Eth.t>
     switch detailsMainnet {
     | Some(detailsArray) =>
       Some(
-        detailsArray.wildcards->Array.reduce(CONSTANTS.zeroBn, (acc, animalDetails) => {
-          Js.log2("calculating ", animalDetails.id)
-          Js.log3(
-            "(collected, total): ",
-            animalDetails.totalCollected->Web3Utils.fromWeiBNToEthPrecision(~digits=4),
-            acc->Web3Utils.fromWeiBNToEthPrecision(~digits=4),
-          )
+        detailsArray.wildcards->Array.reduce(CONSTANTS.zeroBn, (acc, animalDetails) =>
           BN.add(
             calculateTotalRaised(
               currentTimestamp,
@@ -700,7 +694,7 @@ let useTotalRaisedAnimalGroup: array<TokenId.t> => (option<Eth.t>, option<Eth.t>
             ),
             acc,
           )
-        }),
+        ),
       )
     | None => None
     },
