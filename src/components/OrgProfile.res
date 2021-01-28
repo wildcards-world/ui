@@ -80,7 +80,7 @@ module ComingSoonModal = {
           onClick={_ =>
             switch openImage {
             | Some(_) => setOpenImage(_ => None)
-            | None => setSelectedComingSoonAnimal(_ => None)
+            | None => setSelectedComingSoonAnimal(None)
             }}
         />
         <Rimble.Box p=1 mb=1>
@@ -164,12 +164,22 @@ module OrgPage = {
   let make = (
     ~orgData: QlHooks.LoadOrganisationData.LoadOrganisationData_inner.t_organisations_by_pk,
     ~orgId,
+    ~selectedWildcardKey: option<int>,
   ) => {
     let orgName = orgData.name
     let orgDescription = orgData.description->orgDescriptionArray_decode
     let orgAnimals = orgData.wildcard
     let orgComingSoon = orgData.unlaunched
-    let (selectedComingSoonAnimal, setSelectedComingSoonAnimal) = React.useState(() => None)
+    let selectedComingSoonAnimal =
+      /* Find the index of the wildcard in the array and display that wildcard */
+      selectedWildcardKey->Option.flatMap(wildcardKey =>
+        orgComingSoon->Array.getIndexBy(orgAnimal => wildcardKey == orgAnimal.key)
+      )
+    let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute()
+    let setSelectedComingSoonAnimal = optKey =>
+      optKey
+      ->Option.mapWithDefault(`#org/${orgId}`, key => `#org/${orgId}/${key->Int.toString}`)
+      ->clearAndPush
     let orgAnimalsArray =
       orgAnimals->Array.map(animal => animal.id->Option.getWithDefault(TokenId.makeFromInt(99999)))
     let (totalCollectedMainnetEth, totalCollectMaticDai) = QlHooks.useTotalRaisedAnimalGroup(
@@ -315,7 +325,7 @@ module OrgPage = {
                         <ComingSoonAnimal
                           key={key->string_of_int}
                           image={CONSTANTS.cdnBase ++ photos.image}
-                          onClick={() => setSelectedComingSoonAnimal(_ => Some(key))}
+                          onClick={() => setSelectedComingSoonAnimal(Some(animal.key))}
                         />
                       )
                     ),
@@ -327,19 +337,18 @@ module OrgPage = {
         </Rimble.Flex>
       </div>
     </div>
-    //  {animal->Array.map(animal => animal##)}
   }
 }
 
 @react.component
-let make = (~orgId: string) => {
+let make = (~orgId: string, ~selectedWildcardKey) => {
   let orgData = QlHooks.useLoadOrganisationQuery(orgId)
 
   <Rimble.Flex flexWrap="wrap" alignItems="center" className=Styles.topBody>
     {switch orgData {
     | Some(organisations_by_pk) =>
       let orgData = organisations_by_pk
-      <OrgPage orgId orgData />
+      <OrgPage orgId orgData selectedWildcardKey />
     | None =>
       <div>
         <Rimble.Heading> {"Loading Organisation Profile"->React.string} </Rimble.Heading>

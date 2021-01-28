@@ -171,7 +171,8 @@ function Layout(Props) {
           break;
       case /* Org */2 :
           tmp = React.createElement(OrgProfile.make, {
-                orgId: urlState._0
+                orgId: urlState._0,
+                selectedWildcardKey: urlState._1
               });
           break;
       case /* Explorer */3 :

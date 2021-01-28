@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import * as Animal from "../harberger-lib/Animal.bs.js";
+import * as Belt_Int from "bs-platform/lib/es6/belt_Int.js";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.bs.js";
@@ -81,7 +82,8 @@ function useUrlState(param) {
                               var orgId = urlArray[1];
                               return {
                                       TAG: /* Org */2,
-                                      _0: orgId.toLowerCase()
+                                      _0: orgId.toLowerCase(),
+                                      _1: undefined
                                     };
                           case "user" :
                               var address = urlArray[1];
@@ -95,17 +97,27 @@ function useUrlState(param) {
                         break;
                     case 3 :
                         var match$2 = urlArray[0];
-                        if (match$2 === "explorer") {
-                          var match$3 = urlArray[1];
-                          if (match$3 === "details") {
-                            var animalStr$3 = urlArray[2];
-                            animalStr = animalStr$3;
-                            exit = 2;
-                          } else {
+                        switch (match$2) {
+                          case "explorer" :
+                              var match$3 = urlArray[1];
+                              if (match$3 === "details") {
+                                var animalStr$3 = urlArray[2];
+                                animalStr = animalStr$3;
+                                exit = 2;
+                              } else {
+                                exit = 1;
+                              }
+                              break;
+                          case "org" :
+                              var orgId$1 = urlArray[1];
+                              var wildcardId = urlArray[2];
+                              return {
+                                      TAG: /* Org */2,
+                                      _0: orgId$1.toLowerCase(),
+                                      _1: Belt_Int.fromString(wildcardId)
+                                    };
+                          default:
                             exit = 1;
-                          }
-                        } else {
-                          exit = 1;
                         }
                         break;
                     case 4 :
