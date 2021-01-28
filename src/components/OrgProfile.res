@@ -164,12 +164,18 @@ module OrgPage = {
   let make = (
     ~orgData: QlHooks.LoadOrganisationData.LoadOrganisationData_inner.t_organisations_by_pk,
     ~orgId,
+    ~selectedWildcardKey: option<int>,
   ) => {
     let orgName = orgData.name
     let orgDescription = orgData.description->orgDescriptionArray_decode
     let orgAnimals = orgData.wildcard
     let orgComingSoon = orgData.unlaunched
-    let (selectedComingSoonAnimal, setSelectedComingSoonAnimal) = React.useState(() => None)
+    let (selectedComingSoonAnimal, setSelectedComingSoonAnimal) = React.useState(() =>
+      /* Find the index of the wildcard in the array and display that wildcard */
+      selectedWildcardKey->Option.flatMap(wildcardKey =>
+        orgComingSoon->Array.getIndexBy(orgAnimal => wildcardKey == orgAnimal.key)
+      )
+    )
     let orgAnimalsArray =
       orgAnimals->Array.map(animal => animal.id->Option.getWithDefault(TokenId.makeFromInt(99999)))
     let (totalCollectedMainnetEth, totalCollectMaticDai) = QlHooks.useTotalRaisedAnimalGroup(
@@ -332,14 +338,14 @@ module OrgPage = {
 }
 
 @react.component
-let make = (~orgId: string) => {
+let make = (~orgId: string, ~selectedWildcardKey) => {
   let orgData = QlHooks.useLoadOrganisationQuery(orgId)
 
   <Rimble.Flex flexWrap="wrap" alignItems="center" className=Styles.topBody>
     {switch orgData {
     | Some(organisations_by_pk) =>
       let orgData = organisations_by_pk
-      <OrgPage orgId orgData />
+      <OrgPage orgId orgData selectedWildcardKey />
     | None =>
       <div>
         <Rimble.Heading> {"Loading Organisation Profile"->React.string} </Rimble.Heading>

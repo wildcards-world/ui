@@ -2426,6 +2426,8 @@ function useTotalRaisedAnimalGroup(animals) {
             })));
   return [
           detailsMainnet !== undefined ? Caml_option.some(Belt_Array.reduce(detailsMainnet.wildcards, CONSTANTS.zeroBn, (function (acc, animalDetails) {
+                        console.log("calculating ", animalDetails.id);
+                        console.log("(collected, total): ", Web3Utils.fromWeiBNToEthPrecision(animalDetails.totalCollected, 4), Web3Utils.fromWeiBNToEthPrecision(acc, 4));
                         return calculateTotalRaised(currentTimestamp, [
                                       animalDetails.totalCollected,
                                       animalDetails.timeCollected,

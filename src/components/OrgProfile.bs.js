@@ -239,12 +239,17 @@ var ComingSoonModal = {
 function OrgProfile$OrgPage(Props) {
   var orgData = Props.orgData;
   var orgId = Props.orgId;
+  var selectedWildcardKey = Props.selectedWildcardKey;
   var orgName = orgData.name;
   var orgDescription = Decco.arrayFromJson(Decco.stringFromJson, orgData.description);
   var orgAnimals = orgData.wildcard;
   var orgComingSoon = orgData.unlaunched;
   var match = React.useState(function () {
-        
+        return Belt_Option.flatMap(selectedWildcardKey, (function (wildcardKey) {
+                      return Belt_Array.getIndexBy(orgComingSoon, (function (orgAnimal) {
+                                    return wildcardKey === orgAnimal.key;
+                                  }));
+                    }));
       });
   var setSelectedComingSoonAnimal = match[1];
   var orgAnimalsArray = Belt_Array.map(orgAnimals, (function (animal) {
@@ -426,11 +431,13 @@ var OrgPage = {
 
 function OrgProfile(Props) {
   var orgId = Props.orgId;
+  var selectedWildcardKey = Props.selectedWildcardKey;
   var orgData = QlHooks.useLoadOrganisationQuery(orgId);
   return React.createElement(RimbleUi.Flex, {
               children: orgData !== undefined ? React.createElement(OrgProfile$OrgPage, {
                       orgData: orgData,
-                      orgId: orgId
+                      orgId: orgId,
+                      selectedWildcardKey: selectedWildcardKey
                     }) : React.createElement("div", undefined, React.createElement(RimbleUi.Heading, {
                           children: "Loading Organisation Profile"
                         }), React.createElement(RimbleUi.Loader, {})),

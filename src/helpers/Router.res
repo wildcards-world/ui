@@ -11,11 +11,12 @@ type leaderBoard =
   | Unknown
   | MonthlyContribution
 type artistId = string
+type selectedWildcard = option<int>
 type urlState =
   | User(Web3.ethAddress)
   | Artist(artistId)
   | Organisations
-  | Org(string)
+  | Org(string, selectedWildcard)
   | Explorer(explorerTab, animalPageState)
   | Team
   | Leaderboards(leaderBoard)
@@ -32,7 +33,9 @@ let useUrlState = () => {
     | ["user", address] => User(address->Js.String.toLowerCase)
     | ["artist", id] => Artist(id)
     | ["organisations"] => Organisations
-    | ["org", orgId] => Org(orgId->Js.String.toLowerCase)
+    // | ["org", orgId] => Org(orgId->Js.String.toLowerCase)
+    | ["org", orgId] => Org(orgId->Js.String.toLowerCase, None)
+    | ["org", orgId, wildcardId] => Org(orgId->Js.String.toLowerCase, wildcardId->Int.fromString)
     | ["leaderboards", leaderboardType] =>
       switch leaderboardType {
       | "monthly-contribution" => Leaderboards(MonthlyContribution)
