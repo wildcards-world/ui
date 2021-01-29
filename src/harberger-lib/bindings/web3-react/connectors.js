@@ -104,25 +104,25 @@ export default [
   {
     name: "Torus",
     connector: torus,
-    connectionPhrase: "Connect via a Torus",
+    connectionPhrase: "Connect via Torus",
     img: "/img/wallet-icons/torus.svg",
   },
   {
     name: "Portis",
     connector: portis,
-    connectionPhrase: "Connect via a Portis",
+    connectionPhrase: "Connect via Portis",
     img: "/img/wallet-icons/portis.svg",
   },
   {
     name: "Fortmatic",
     connector: fortmatic,
-    connectionPhrase: "Connect via a Fortmatic",
+    connectionPhrase: "Connect via Fortmatic",
     img: "/img/wallet-icons/fortmatic.svg",
   },
   {
     name: "Squarelink",
     connector: squarelink,
-    connectionPhrase: "Connect via a Squarelink",
+    connectionPhrase: "Connect via Squarelink",
     img: "/img/wallet-icons/squarelink.svg",
   },
 ];
