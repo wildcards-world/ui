@@ -125,6 +125,6 @@ module TotalRaised = {
       style(list{color(green), fontWeight(#bold)})
     }
 
-    <StringFloat stringFloat=totalRaised styleOnCountUp />
+    <StringFloat stringFloat={totalRaised} styleOnCountUp />
   }
 }
