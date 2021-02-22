@@ -101,7 +101,7 @@ module AmountRaised = {
       {populateElement(
         ~bigTextComponent={
           <>
-            <span> {raisedMainUnchanged->React.string} </span>
+            <span> {raisedMainUnchanged->FormatMoney.format->React.string} </span>
             <Countup.StringFloat stringFloat={raisedMainChanged} styleOnCountUp />
           </>
         },

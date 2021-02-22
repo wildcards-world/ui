@@ -26,3 +26,142 @@ external makeProvider: string => Web3.rawProvider = "JsonRpcProvider"
 @send
 external waitForTransaction: (Web3.rawProvider, string) => Promise.Js.t<txResult, txError> =
   "waitForTransaction"
+
+type ethAddressStr = string
+type ethAddress
+
+module Misc = {
+  let unsafeToOption: (unit => 'a) => option<'a> = unsafeFunc => {
+    try {
+      unsafeFunc()->Some
+    } catch {
+    | Js.Exn.Error(_obj) => None
+    }
+  }
+}
+
+type abi
+
+let makeAbi = (abiArray: array<string>): abi => abiArray->Obj.magic
+
+type ethersBigNumber
+
+module BigNumber = {
+  type t = ethersBigNumber
+
+  @module("ethers") @scope("BigNumber")
+  external fromUnsafe: string => t = "from"
+  @module("ethers") @scope("BigNumber")
+  external fromInt: int => t = "from"
+
+  @send external add: (t, t) => t = "add"
+  @send external sub: (t, t) => t = "sub"
+  @send external mul: (t, t) => t = "mul"
+  @send external div: (t, t) => t = "div"
+  @send external mod: (t, t) => t = "mod"
+  @send external pow: (t, t) => t = "pow"
+  @send external abs: t => t = "abs"
+
+  @send external gt: (t, t) => bool = "gt"
+  @send external gte: (t, t) => bool = "gte"
+  @send external lt: (t, t) => bool = "lt"
+  @send external lte: (t, t) => bool = "lte"
+  @send external eq: (t, t) => bool = "eq"
+
+  @send external toString: t => string = "toString"
+
+  @send external toNumber: t => int = "toNumber"
+  @send external toNumberFloat: t => float = "toNumber"
+}
+
+type providerType
+type walletType = {address: string, provider: providerType}
+
+module Wallet = {
+  type t = walletType
+
+  @new @module("ethers")
+  external makePrivKeyWallet: (string, providerType) => t = "Wallet"
+}
+
+module Providers = {
+  type t = providerType
+
+  @new @module("ethers") @scope("providers")
+  external makeProvider: string => Web3.rawProvider = "JsonRpcProvider"
+
+  external getSigner: (t, ethAddress) => option<Wallet.t> = "getSigner"
+}
+
+type providerOrSigner =
+  | Provider(Providers.t)
+  | Signer(Wallet.t)
+
+module Contract = {
+  type t
+
+  type txOptions = {
+    @live gasLimit: option<string>,
+    @live value: BigNumber.t,
+  }
+
+  @new @module("ethers")
+  external getContractSigner: (ethAddress, abi, Wallet.t) => t = "Contract"
+  @new @module("ethers")
+  external getContractProvider: (ethAddress, abi, Providers.t) => t = "Contract"
+
+  let make: (ethAddress, abi, providerOrSigner) => t = (address, abi, providerSigner) => {
+    switch providerSigner {
+    | Provider(provider) => getContractProvider(address, abi, provider)
+    | Signer(signer) => getContractSigner(address, abi, signer)
+    }
+  }
+}
+
+module Utils = {
+  type ethUnit = [
+    | #wei
+    | #kwei
+    | #mwei
+    | #gwei
+    | #microether
+    | #milliether
+    | #ether
+    | #kether
+    | #mether
+    | #geher
+    | #tether
+  ]
+  @module("ethers") @scope("utils")
+  external parseUnitsUnsafe: (. string, ethUnit) => BigNumber.t = "parseUnits"
+  let parseUnits = (~amount, ~unit) => Misc.unsafeToOption(() => parseUnitsUnsafe(. amount, unit))
+
+  let parseEther = (~amount) => parseUnits(~amount, ~unit=#ether)
+  let parseEtherUnsafe = (~amount) => parseUnitsUnsafe(. amount, #ether)
+
+  @module("ethers") @scope("utils")
+  external getAddressUnsafe: string => ethAddress = "getAddress"
+  let getAddress: string => option<ethAddress> = addressString =>
+    Misc.unsafeToOption(() => getAddressUnsafe(addressString))
+
+  @module("ethers") @scope("utils")
+  external formatUnits: (. BigNumber.t, ethUnit) => string = "formatUnits"
+
+  let formatEther = formatUnits(. _, #ether)
+
+  let formatEtherToPrecision = (number, digits) => {
+    let digitMultiplier = Js.Math.pow_float(~base=10.0, ~exp=digits->Float.fromInt)
+    number
+    ->formatEther
+    ->Float.fromString
+    ->Option.getExn
+    ->(x => x *. digitMultiplier)
+    ->Js.Math.floor_float
+    ->(x => x /. digitMultiplier)
+    ->Float.toString
+  }
+
+  let ethAdrToStr: ethAddress => string = Obj.magic
+  let ethAdrToLowerStr: ethAddress => string = address =>
+    address->ethAdrToStr->Js.String.toLowerCase
+}
