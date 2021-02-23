@@ -1,5 +1,3 @@
-open Globals
-
 @module("web3-utils")
 external fromWei: (string, string) => string = "fromWei"
 
@@ -17,6 +15,6 @@ let fromWeiBNToEthPrecision = (value, ~digits) =>
   ->fromWeiBNToEth
   ->Float.fromString
   ->Option.mapWithDefault(0., a => a)
-  ->toFixedWithPrecisionNoTrailingZeros(~digits)
+  ->FormatMoney.toFixedWithPrecisionNoTrailingZeros(~digits)
 
 let toWeiFromEth = value => toWei(value, "ether")

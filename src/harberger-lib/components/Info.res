@@ -1,5 +1,3 @@
-open Globals
-
 module ExpertView = {
   @react.component
   let make = (
@@ -266,11 +264,11 @@ let make = (~chain, ~tokenId: TokenId.t) => {
       ("Loading", "Loading"),
       a => (
         Option.getWithDefault(
-          a->Eth.get(Eth.Eth(#ether))->Float.fromString,
+          a->FormatMoney.getEthUnit(Eth.Eth(#ether))->Float.fromString,
           0.0,
-        )->toFixedWithPrecisionNoTrailingZeros(~digits=9),
+        )->FormatMoney.toFixedWithPrecisionNoTrailingZeros(~digits=9),
         currentUsdEthPrice->Option.mapWithDefault("Loading", usdEthRate =>
-          a->Eth.get(Eth.Usd(usdEthRate, 2))
+          a->FormatMoney.getEthUnit(Eth.Usd(usdEthRate, 2))
         ),
       ),
     )
@@ -280,11 +278,11 @@ let make = (~chain, ~tokenId: TokenId.t) => {
       ("Loading", "Loading"),
       a => (
         Option.getWithDefault(
-          a->Eth.get(Eth.Eth(#ether))->Float.fromString,
+          a->FormatMoney.getEthUnit(Eth.Eth(#ether))->Float.fromString,
           0.0,
-        )->toFixedWithPrecisionNoTrailingZeros(~digits=9),
+        )->FormatMoney.toFixedWithPrecisionNoTrailingZeros(~digits=9),
         currentUsdEthPrice->Option.mapWithDefault("Loading", usdEthRate =>
-          a->Eth.get(Eth.Usd(usdEthRate, 2))
+          a->FormatMoney.getEthUnit(Eth.Usd(usdEthRate, 2))
         ),
       ),
     )
@@ -298,7 +296,7 @@ let make = (~chain, ~tokenId: TokenId.t) => {
   let (optMonthlyPledgeEth, optMonthlyPledgeUsd) = switch optCurrentPrice {
   | Some((priceEth, optPriceUsd)) => (
       Some(
-        toFixedWithPrecisionNoTrailingZeros(
+        FormatMoney.toFixedWithPrecisionNoTrailingZeros(
           Float.fromString(priceEth)->Accounting.defaultZeroF *. ratio,
           ~digits=4,
         ),
@@ -422,11 +420,11 @@ module Auction = {
         ("Loading", "Loading"),
         a => (
           Option.getWithDefault(
-            a->Eth.get(Eth.Eth(#ether))->Float.fromString,
+            a->FormatMoney.getEthUnit(Eth.Eth(#ether))->Float.fromString,
             0.0,
-          )->toFixedWithPrecisionNoTrailingZeros(~digits=9),
+          )->FormatMoney.toFixedWithPrecisionNoTrailingZeros(~digits=9),
           currentUsdEthPrice->Option.mapWithDefault("Loading", usdEthRate =>
-            a->Eth.get(Eth.Usd(usdEthRate, 2))
+            a->FormatMoney.getEthUnit(Eth.Usd(usdEthRate, 2))
           ),
         ),
       )

@@ -9,3 +9,26 @@ let toCentsFixedNoRounding = floatString => floatString->Js.Float.fromString->fo
 
 @ocaml.doc(`Formats a BigNumber (10^18, wei) to 2 digits precision (ether) with groups of 3 decimals separated by a comma`)
 let formatEther = rawNumber => rawNumber->Ethers.Utils.formatEther->toCentsFixedNoRounding
+
+// TODO: Move these to use Ethers!
+// Float
+let toFixedWithPrecisionNoTrailingZeros = (number: float, ~digits) =>
+  number->Js.Float.toFixedWithPrecision(~digits)->float_of_string->Float.toString
+
+let toFixedWithPrecisionNoTrailingZerosEth = (~digits=9, eth) =>
+  eth
+  ->Eth.fromWeiEth
+  ->Float.fromString
+  ->Option.getWithDefault(0.)
+  ->toFixedWithPrecisionNoTrailingZeros(~digits)
+
+// Placed here because of a dependency cycle in `Eth.res`
+let getEthUnit = (value, unit) => {
+  open Eth
+  switch unit {
+  | Eth(unit) => fromWei(value, unit->ethUnitToJs)
+  | Usd(conversion, digits) =>
+    (fromWei(value, #ether->ethUnitToJs)->Js.Float.fromString *. conversion)
+      ->toFixedWithPrecisionNoTrailingZeros(~digits)
+  }
+}

@@ -4,7 +4,6 @@ import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Styles from "../Styles.bs.js";
-import * as Globals from "../harberger-lib/Globals.bs.js";
 import * as QlHooks from "../harberger-lib/QlHooks.bs.js";
 import * as TokenId from "../harberger-lib/TokenId.bs.js";
 import * as RimbleUi from "rimble-ui";
@@ -12,6 +11,7 @@ import * as Accounting from "../harberger-lib/Accounting.bs.js";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import * as Belt_Float from "bs-platform/lib/es6/belt_Float.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
+import * as FormatMoney from "../components/components/FormatMoney.bs.js";
 import * as PriceDisplay from "../harberger-lib/PriceDisplay.bs.js";
 
 var dragonImg = "/img/animals/Glen.svg";
@@ -189,7 +189,7 @@ function VotePage(Props) {
   var optCurrentPrice = PriceDisplay.usePrice(chain, glen);
   var match$1 = QlHooks.usePledgeRateDetailed(chain, glen);
   var match$2 = optCurrentPrice !== undefined ? [
-      Globals.toFixedWithPrecisionNoTrailingZeros(Accounting.defaultZeroF(Belt_Float.fromString(optCurrentPrice[0])) * match$1[2], 5),
+      FormatMoney.toFixedWithPrecisionNoTrailingZeros(Accounting.defaultZeroF(Belt_Float.fromString(optCurrentPrice[0])) * match$1[2], 5),
       undefined
     ] : [
       undefined,
