@@ -1,10 +1,6 @@
 // A collection of functions to make code cleaner.
 include Async
 
-// Float
-let toFixedWithPrecisionNoTrailingZeros = (number: float, ~digits) =>
-  number->Js.Float.toFixedWithPrecision(~digits)->float_of_string->Float.toString
-
 // React components
 let reactMapWithDefault: (option<'a>, React.element, 'a => React.element) => React.element = (
   opt,

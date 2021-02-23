@@ -1,5 +1,3 @@
-open Globals
-
 let dragonImg = "/img/animals/Glen.svg"
 let refreshImg = "/img/icons/refresh.svg"
 
@@ -131,7 +129,7 @@ let make = (~chain) => {
   let (optMonthlyPledgeEth, optMonthlyPledgeUsd) = switch optCurrentPrice {
   | Some((priceEth, optPriceUsd)) => (
       Some(
-        toFixedWithPrecisionNoTrailingZeros(
+        FormatMoney.toFixedWithPrecisionNoTrailingZeros(
           Float.fromString(priceEth)->Accounting.defaultZeroF *. ratio,
           ~digits=5,
         ),

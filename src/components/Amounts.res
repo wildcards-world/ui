@@ -1,10 +1,4 @@
 let stringToArray = str => str->Js.String.castToArrayLike->Js.Array.from
-let toDollarCentsFixedNoRounding = aFloat =>
-  aFloat
-  ->Float.toString
-  ->Js.String2.match_(%re("/^\d+[.]\d\d/g"))
-  ->Option.getWithDefault([""])
-  ->Array.getUnsafe(0)
 
 module AmountRaised = {
   @react.component
@@ -42,7 +36,7 @@ module AmountRaised = {
       ) +. maticDai->Eth.getFloat(Eth.Eth(#ether))
 
     let usdRaisedStr = usdRaisedFloat->Js.Float.toFixedWithPrecision(~digits=6)
-    let usdRaised2Precision = usdRaisedFloat->toDollarCentsFixedNoRounding
+    let usdRaised2Precision = usdRaisedFloat->FormatMoney.formatFloat
 
     React.useEffect1(() => {
       let usdRaisedDigitArray = usdRaisedStr->stringToArray
@@ -143,7 +137,7 @@ module Basic = {
         mainnetEth->Eth.getFloat(Eth.Usd(usdEthRate, 2))
       ) +. maticDai->Eth.getFloat(Eth.Eth(#ether))
 
-    let usdRaisedStr = usdRaisedFloat->Js.Float.toFixedWithPrecision(~digits=2)
+    let usdRaisedStr = usdRaisedFloat->FormatMoney.formatFloat
 
     let optExplainerString = switch (
       mainnetEth->Web3Utils.fromWeiBNToEthPrecision(~digits=4),
