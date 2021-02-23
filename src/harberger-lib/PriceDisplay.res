@@ -1,11 +1,9 @@
-open Globals
-
 let priceWeiToTuple = (wei, optCurrentUsdEthPrice) => {
-  let totalPatronageEth = wei->Eth.toFixedWithPrecisionNoTrailingZeros
+  let totalPatronageEth = wei->FormatMoney.toFixedWithPrecisionNoTrailingZerosEth
 
   let optTotaPatronageUsd =
     optCurrentUsdEthPrice->Option.map(currentUsdEthPrice =>
-      toFixedWithPrecisionNoTrailingZeros(
+      FormatMoney.toFixedWithPrecisionNoTrailingZeros(
         Float.fromString(totalPatronageEth)->Option.mapWithDefault(0., a => a) *.
           currentUsdEthPrice,
         ~digits=2,
@@ -50,7 +48,8 @@ module InUSD = {
     switch optPriceWei {
     | Price(totalPatronageWei) =>
       <p className={Styles.noMarginTop ++ (" " ++ Styles.noMarginBottom)}>
-        {(totalPatronageWei->Eth.toFixedWithPrecisionNoTrailingZeros ++ " USD")->React.string}
+        {(totalPatronageWei->FormatMoney.toFixedWithPrecisionNoTrailingZerosEth ++ " USD")
+          ->React.string}
       </p>
     | Foreclosed(_) =>
       <p className={Styles.noMarginTop ++ (" " ++ Styles.noMarginBottom)}>

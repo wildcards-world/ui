@@ -1,4 +1,3 @@
-open Globals
 open Accounting
 
 let calcPricePerSecond = (price, numerator, denominator) => {
@@ -99,11 +98,11 @@ module Buy = {
     let currentPriceEth = Web3Utils.fromWeiBNToEth(currentPriceWei)
     let currentPriceFloat = Float.fromString(currentPriceEth)->defaultZeroF
     let currentPriceFloatWithMinimum = Js.Math.max_float(currentPriceFloat, 0.005)
-    let defaultPriceValue = toFixedWithPrecisionNoTrailingZeros(
+    let defaultPriceValue = FormatMoney.toFixedWithPrecisionNoTrailingZeros(
       currentPriceFloatWithMinimum *. 1.5,
       ~digits=2,
     )
-    let defaultMonthlyPatronage = toFixedWithPrecisionNoTrailingZeros(
+    let defaultMonthlyPatronage = FormatMoney.toFixedWithPrecisionNoTrailingZeros(
       currentPriceFloatWithMinimum *. 1.5 *. ratio,
       ~digits=3,
     )
@@ -176,7 +175,7 @@ module Buy = {
       if didUpdate {
         let patronage =
           (Float.fromString(value)->defaultZeroF *. ratio)
-            ->toFixedWithPrecisionNoTrailingZeros(~digits=2)
+            ->FormatMoney.toFixedWithPrecisionNoTrailingZeros(~digits=2)
         setPatronage(_ => patronage)
         let timeInSeconds = calculateDepositDuration(
           deposit->Web3Utils.toWeiFromEth,

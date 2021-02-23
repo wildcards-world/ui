@@ -6,7 +6,6 @@ import BnJs from "bn.js";
 import * as React from "react";
 import * as Animal from "../Animal.bs.js";
 import * as Config from "../Config.bs.js";
-import * as Globals from "../Globals.bs.js";
 import * as QlHooks from "../QlHooks.bs.js";
 import * as TokenId from "../TokenId.bs.js";
 import * as Belt_Int from "bs-platform/lib/es6/belt_Int.js";
@@ -21,6 +20,7 @@ import * as TxTemplate from "../../components/components/TxTemplate.bs.js";
 import * as Web3Utils$1 from "web3-utils";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_format from "bs-platform/lib/es6/caml_format.js";
+import * as FormatMoney from "../../components/components/FormatMoney.bs.js";
 import * as RootProvider from "../RootProvider.bs.js";
 import * as ContractActions from "../eth/ContractActions.bs.js";
 import * as Core from "@web3-react/core";
@@ -77,8 +77,8 @@ function Buy$Buy(Props) {
   var currentPriceEth = Web3Utils.fromWeiBNToEth(currentPriceWei$1);
   var currentPriceFloat = Accounting.defaultZeroF(Belt_Float.fromString(currentPriceEth));
   var currentPriceFloatWithMinimum = Math.max(currentPriceFloat, 0.005);
-  var defaultPriceValue = Globals.toFixedWithPrecisionNoTrailingZeros(currentPriceFloatWithMinimum * 1.5, 2);
-  var defaultMonthlyPatronage = Globals.toFixedWithPrecisionNoTrailingZeros(currentPriceFloatWithMinimum * 1.5 * ratio, 3);
+  var defaultPriceValue = FormatMoney.toFixedWithPrecisionNoTrailingZeros(currentPriceFloatWithMinimum * 1.5, 2);
+  var defaultMonthlyPatronage = FormatMoney.toFixedWithPrecisionNoTrailingZeros(currentPriceFloatWithMinimum * 1.5 * ratio, 3);
   var defaultPriceWei = Web3Utils.toWeiFromEth(defaultPriceValue);
   var depositForAYear = calcRequiredDepositForTime(31536000, defaultPriceWei, numerator, denominator);
   var match$3 = Caml_format.caml_float_of_string(depositForAYear) < Caml_format.caml_float_of_string(maxAvailableDeposit) ? [
@@ -125,7 +125,7 @@ function Buy$Buy(Props) {
       return ;
     }
     var value$1 = match[0];
-    var patronage = Globals.toFixedWithPrecisionNoTrailingZeros(Accounting.defaultZeroF(Belt_Float.fromString(value$1)) * ratio, 2);
+    var patronage = FormatMoney.toFixedWithPrecisionNoTrailingZeros(Accounting.defaultZeroF(Belt_Float.fromString(value$1)) * ratio, 2);
     Curry._1(setPatronage, (function (param) {
             return patronage;
           }));

@@ -2,7 +2,6 @@
 
 import BnJs from "bn.js";
 import * as Helper from "./Helper.bs.js";
-import * as Globals from "./Globals.bs.js";
 import * as Belt_Float from "bs-platform/lib/es6/belt_Float.js";
 import * as Web3Utils from "web3-utils";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
@@ -27,14 +26,6 @@ function getFloat(value, unit) {
     return Number(Web3Utils.fromWei(value, unit._0));
   } else {
     return Number(Web3Utils.fromWei(value, "ether")) * unit._0;
-  }
-}
-
-function get(value, unit) {
-  if (unit.TAG === /* Eth */0) {
-    return Web3Utils.fromWei(value, unit._0);
-  } else {
-    return Globals.toFixedWithPrecisionNoTrailingZeros(Number(Web3Utils.fromWei(value, "ether")) * unit._0, unit._1);
   }
 }
 
@@ -64,22 +55,15 @@ function makeFromEthStr(eth) {
               }));
 }
 
-function toFixedWithPrecisionNoTrailingZeros(digitsOpt, eth) {
-  var digits = digitsOpt !== undefined ? digitsOpt : 9;
-  return Globals.toFixedWithPrecisionNoTrailingZeros(Belt_Option.getWithDefault(Belt_Float.fromString(Web3Utils.fromWei(eth, "ether")), 0), digits);
-}
-
 export {
   ethUnitToJs ,
   ethUnitFromJs ,
   fromWeiEth ,
   getFloat ,
-  get ,
   make ,
   makeWithDefault ,
   makeFromInt ,
   makeFromEthStr ,
-  toFixedWithPrecisionNoTrailingZeros ,
   
 }
 /* bn.js Not a pure module */

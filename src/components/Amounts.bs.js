@@ -10,14 +10,11 @@ import * as Web3Utils from "../harberger-lib/Web3Utils.bs.js";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
+import * as FormatMoney from "./components/FormatMoney.bs.js";
 import * as UsdPriceProvider from "../harberger-lib/components/UsdPriceProvider.bs.js";
 
 function stringToArray(str) {
   return Array.from(str);
-}
-
-function toDollarCentsFixedNoRounding(aFloat) {
-  return Belt_Option.getWithDefault(Caml_option.null_to_opt(String(aFloat).match(/^\d+[.]\d\d/g)), [""])[0];
 }
 
 function Amounts$AmountRaised(Props) {
@@ -57,7 +54,7 @@ function Amounts$AmountRaised(Props) {
         _0: "ether"
       });
   var usdRaisedStr = usdRaisedFloat.toFixed(6);
-  var usdRaised2Precision = toDollarCentsFixedNoRounding(usdRaisedFloat);
+  var usdRaised2Precision = FormatMoney.formatFloat(undefined, usdRaisedFloat);
   React.useEffect((function () {
           var usdRaisedDigitArray = Array.from(usdRaisedStr);
           var indexOfTheFirstChangedDigit = usdRaisedDigitArray.findIndex(function (newDigit, index) {
@@ -127,7 +124,7 @@ function Amounts$AmountRaised(Props) {
           stringFloat: raisedSubChanged,
           styleOnCountUp: styleOnCountUp
         });
-  return React.createElement(React.Fragment, undefined, Curry._3(populateElement, React.createElement(React.Fragment, undefined, React.createElement("span", undefined, match$2[0]), React.createElement(Countup.StringFloat.make, {
+  return React.createElement(React.Fragment, undefined, Curry._3(populateElement, React.createElement(React.Fragment, undefined, React.createElement("span", undefined, FormatMoney.format(match$2[0])), React.createElement(Countup.StringFloat.make, {
                           stringFloat: match$2[1],
                           styleOnCountUp: styleOnCountUp
                         })), React.createElement(React.Fragment, undefined, React.createElement("span", undefined, match$2[2]), tmp), Belt_Option.map(optExplainerString, (function (prim) {
@@ -157,7 +154,7 @@ function Amounts$Basic(Props) {
         TAG: /* Eth */0,
         _0: "ether"
       });
-  var usdRaisedStr = usdRaisedFloat.toFixed(2);
+  var usdRaisedStr = FormatMoney.formatFloat(undefined, usdRaisedFloat);
   var match = Web3Utils.fromWeiBNToEthPrecision(mainnetEth, 4);
   var match$1 = Web3Utils.fromWeiBNToEthPrecision(maticDai, 2);
   var optExplainerString;
@@ -183,7 +180,6 @@ var Basic = {
 
 export {
   stringToArray ,
-  toDollarCentsFixedNoRounding ,
   AmountRaised ,
   Basic ,
   

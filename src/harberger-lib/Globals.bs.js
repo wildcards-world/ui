@@ -3,12 +3,7 @@
 import * as Async from "./Async.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
-import * as Caml_format from "bs-platform/lib/es6/caml_format.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
-
-function toFixedWithPrecisionNoTrailingZeros(number, digits) {
-  return String(Caml_format.caml_float_of_string(number.toFixed(digits)));
-}
 
 function reactMapWithDefault(opt, $$default, f) {
   if (opt !== undefined) {
@@ -45,7 +40,6 @@ export {
   catchAsync ,
   asyncFromResult ,
   attemptMapAsync ,
-  toFixedWithPrecisionNoTrailingZeros ,
   reactMapWithDefault ,
   reactMap ,
   Opt ,
