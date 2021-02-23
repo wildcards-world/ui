@@ -32,7 +32,7 @@ ReactDOMRe.renderToElementWithId(
           mainnet: Option.getWithDefault(goerliApi, "https://goerli.api.wildcards.world/v1/graphq"),
           matic: Option.getWithDefault(
             maticTestnetApi,
-            "https://mumbai.graph.wildcards.world/subgraphs/name/wildcards-world/wildcards-matic",
+            "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-polygon-testnet",
           ),
           ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
         }
@@ -51,7 +51,7 @@ ReactDOMRe.renderToElementWithId(
           mainnet: Option.getWithDefault(mainnetApi, "https://api.wildcards.world/v1/graphq"),
           matic: Option.getWithDefault(
             maticApi,
-            "https://matic.graph.wildcards.world/subgraphs/name/wildcards-world/wildcards-matic",
+            "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-polygon",
           ),
           ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards",
         }

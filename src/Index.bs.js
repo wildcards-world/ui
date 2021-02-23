@@ -33,13 +33,13 @@ ReactDOMRe.renderToElementWithId(React.createElement(WildcardsProvider.make, {
                 if (networkId !== 5) {
                   return {
                           mainnet: Belt_Option.getWithDefault(process.env.REACT_APP_MAINNET_BE, "https://api.wildcards.world/v1/graphq"),
-                          matic: Belt_Option.getWithDefault(process.env.REACT_APP_MATIC_BE, "https://matic.graph.wildcards.world/subgraphs/name/wildcards-world/wildcards-matic"),
+                          matic: Belt_Option.getWithDefault(process.env.REACT_APP_MATIC_BE, "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-polygon"),
                           ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards"
                         };
                 } else {
                   return {
                           mainnet: Belt_Option.getWithDefault(process.env.REACT_APP_GOERLI_BE, "https://goerli.api.wildcards.world/v1/graphq"),
-                          matic: Belt_Option.getWithDefault(process.env.REACT_APP_MATIC_TESTNET, "https://mumbai.graph.wildcards.world/subgraphs/name/wildcards-world/wildcards-matic"),
+                          matic: Belt_Option.getWithDefault(process.env.REACT_APP_MATIC_TESTNET, "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-polygon-testnet"),
                           ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli"
                         };
                 }
