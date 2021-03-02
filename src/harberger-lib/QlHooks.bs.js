@@ -263,7 +263,7 @@ function useInitialDataLoad(chain) {
         undefined,
         undefined,
         {
-          amount: chain !== 1 ? 30 : 31,
+          amount: chain !== 1 ? 30 : 61,
           globalId: chain !== 1 ? "1" : "Matic-Global"
         }
       ]);

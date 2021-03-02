@@ -42,7 +42,7 @@ let useInitialDataLoad = (~chain) => {
     ~context={context: chain}->createContext,
     InitialLoad.makeVariables(
       ~amount=switch chain {
-      | Client.MaticQuery => 31
+      | Client.MaticQuery => 61
       | Client.Neither
       | Client.MainnetQuery => 30
       },
