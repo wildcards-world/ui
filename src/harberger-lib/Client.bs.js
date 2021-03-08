@@ -3,22 +3,15 @@
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as ApolloClient from "reason-apollo-client/src/ApolloClient.bs.js";
-import * as ApolloClient__Link_Ws from "reason-apollo-client/src/@apollo/client/link/ws/ApolloClient__Link_Ws.bs.js";
-import * as ApolloClient__Utilities from "reason-apollo-client/src/@apollo/client/utilities/ApolloClient__Utilities.bs.js";
 import * as ApolloClient__ApolloClient from "reason-apollo-client/src/@apollo/client/ApolloClient__ApolloClient.bs.js";
 import * as ReasonMLCommunity__ApolloClient from "reason-apollo-client/src/ReasonMLCommunity__ApolloClient.bs.js";
 import * as ApolloClient__Link_Http_HttpLink from "reason-apollo-client/src/@apollo/client/link/http/ApolloClient__Link_Http_HttpLink.bs.js";
-import * as ApolloClient__SubscriptionsTransportWs from "reason-apollo-client/src/subscriptions-transport-ws/ApolloClient__SubscriptionsTransportWs.bs.js";
 import * as ApolloClient__Cache_InMemory_InMemoryCache from "reason-apollo-client/src/@apollo/client/cache/inmemory/ApolloClient__Cache_InMemory_InMemoryCache.bs.js";
 
 function httpLink(uri) {
   return ApolloClient__Link_Http_HttpLink.make((function (param) {
                 return uri;
               }), undefined, undefined, undefined, undefined, undefined, undefined, undefined);
-}
-
-function wsLink(uri) {
-  return ApolloClient__Link_Ws.WebSocketLink.make(uri, ApolloClient__SubscriptionsTransportWs.ClientOptions.make(undefined, undefined, true, undefined, undefined, undefined, undefined, undefined), undefined, undefined);
 }
 
 function chainContextToStr(chain) {
@@ -33,34 +26,41 @@ function chainContextToStr(chain) {
   }
 }
 
-function webSocketHttpLink(uri, matic, subscriptions) {
-  return ReasonMLCommunity__ApolloClient.Link.split((function (param) {
-                var definition = ApolloClient__Utilities.getOperationDefinition(param.query);
-                if (definition !== undefined && definition.kind === "OperationDefinition") {
-                  return definition.operation === "subscription";
+function networkSwitcherHttpLink(uri, matic, mainnet) {
+  return ReasonMLCommunity__ApolloClient.Link.split((function (operation) {
+                var context = operation.getContext();
+                var dbQuery;
+                if (context !== undefined) {
+                  var actualContext = context.context;
+                  dbQuery = actualContext !== undefined ? actualContext === 0 : true;
                 } else {
-                  return false;
+                  dbQuery = true;
                 }
-              }), wsLink(subscriptions), ReasonMLCommunity__ApolloClient.Link.split((function (operation) {
+                console.log("making a query with", dbQuery, uri);
+                return dbQuery;
+              }), httpLink(uri), ReasonMLCommunity__ApolloClient.Link.split((function (operation) {
                     var context = operation.getContext();
-                    if (context !== undefined) {
-                      return context.context === 1;
+                    if (context === undefined) {
+                      return false;
+                    }
+                    var actualContext = context.context;
+                    if (actualContext !== undefined) {
+                      return actualContext === 1;
                     } else {
                       return false;
                     }
-                  }), httpLink(matic), httpLink(uri)));
+                  }), httpLink(matic), httpLink(mainnet)));
 }
 
 function instance(getGraphEndpoints) {
   var match = Curry._1(getGraphEndpoints, undefined);
-  return ApolloClient.make(undefined, undefined, undefined, Caml_option.some(webSocketHttpLink(match.mainnet, match.matic, match.ws)), ApolloClient__Cache_InMemory_InMemoryCache.make(undefined, undefined, undefined, undefined, undefined, undefined), undefined, undefined, true, undefined, ApolloClient__ApolloClient.DefaultOptions.make(ApolloClient__ApolloClient.DefaultMutateOptions.make(undefined, undefined, true, /* All */2, undefined, undefined), ApolloClient__ApolloClient.DefaultQueryOptions.make(undefined, /* All */2, undefined, undefined), ApolloClient__ApolloClient.DefaultWatchQueryOptions.make(undefined, /* All */2, undefined, undefined), undefined), undefined, undefined, undefined, undefined, undefined, undefined, undefined);
+  return ApolloClient.make(undefined, undefined, undefined, Caml_option.some(networkSwitcherHttpLink(match.db, match.matic, match.mainnet)), ApolloClient__Cache_InMemory_InMemoryCache.make(undefined, undefined, undefined, undefined, undefined, undefined), undefined, undefined, true, undefined, ApolloClient__ApolloClient.DefaultOptions.make(ApolloClient__ApolloClient.DefaultMutateOptions.make(undefined, undefined, true, /* All */2, undefined, undefined), ApolloClient__ApolloClient.DefaultQueryOptions.make(undefined, /* All */2, undefined, undefined), ApolloClient__ApolloClient.DefaultWatchQueryOptions.make(undefined, /* All */2, undefined, undefined), undefined), undefined, undefined, undefined, undefined, undefined, undefined, undefined);
 }
 
 export {
   httpLink ,
-  wsLink ,
   chainContextToStr ,
-  webSocketHttpLink ,
+  networkSwitcherHttpLink ,
   instance ,
   
 }

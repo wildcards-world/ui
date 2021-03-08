@@ -12,7 +12,7 @@ module Router = {
 }
 
 @val
-external mainnetApi: option<string> = "process.env.REACT_APP_MAINNET_BE"
+external dbApi: option<string> = "process.env.REACT_APP_MAINNET_BE"
 @val external goerliApi: option<string> = "process.env.REACT_APP_GOERLI_BE"
 @val
 external maticTestnetApi: option<string> = "process.env.REACT_APP_MATIC_TESTNET"
@@ -29,31 +29,28 @@ ReactDOMRe.renderToElementWithId(
 
       let endpoints = switch networkId {
       | 5 => {
-          mainnet: Option.getWithDefault(goerliApi, "https://goerli.api.wildcards.world/v1/graphq"),
+          db: Option.getWithDefault(goerliApi, "https://goerli.api.wildcards.world/v1/graphq"),
           matic: Option.getWithDefault(
             maticTestnetApi,
             "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-polygon-testnet",
           ),
-          ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
+          mainnet: "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
         }
       | 4 => {
-          mainnet: Option.getWithDefault(
-            rinkebyApi,
-            "https://rinkeby.api.wildcards.world/v1/graphq",
-          ),
+          db: Option.getWithDefault(rinkebyApi, "https://rinkeby.api.wildcards.world/v1/graphq"),
           matic: Option.getWithDefault(
             maticAltTestnetApi,
             "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-testnet",
           ),
-          ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
+          mainnet: "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-rinkeby",
         }
       | _ => {
-          mainnet: Option.getWithDefault(mainnetApi, "https://api.wildcards.world/v1/graphq"),
+          db: Option.getWithDefault(dbApi, "https://api.wildcards.world/v1/graphq"),
           matic: Option.getWithDefault(
             maticApi,
             "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-polygon",
           ),
-          ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards",
+          mainnet: "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards",
         }
       }
       endpoints

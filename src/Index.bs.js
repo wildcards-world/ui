@@ -32,22 +32,22 @@ ReactDOMRe.renderToElementWithId(React.createElement(WildcardsProvider.make, {
               if (networkId !== 4) {
                 if (networkId !== 5) {
                   return {
-                          mainnet: Belt_Option.getWithDefault(process.env.REACT_APP_MAINNET_BE, "https://api.wildcards.world/v1/graphq"),
+                          mainnet: "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards",
                           matic: Belt_Option.getWithDefault(process.env.REACT_APP_MATIC_BE, "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-polygon"),
-                          ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards"
+                          db: Belt_Option.getWithDefault(process.env.REACT_APP_MAINNET_BE, "https://api.wildcards.world/v1/graphq")
                         };
                 } else {
                   return {
-                          mainnet: Belt_Option.getWithDefault(process.env.REACT_APP_GOERLI_BE, "https://goerli.api.wildcards.world/v1/graphq"),
+                          mainnet: "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
                           matic: Belt_Option.getWithDefault(process.env.REACT_APP_MATIC_TESTNET, "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-polygon-testnet"),
-                          ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli"
+                          db: Belt_Option.getWithDefault(process.env.REACT_APP_GOERLI_BE, "https://goerli.api.wildcards.world/v1/graphq")
                         };
                 }
               } else {
                 return {
-                        mainnet: Belt_Option.getWithDefault(process.env.REACT_APP_RINKEBY_BE, "https://rinkeby.api.wildcards.world/v1/graphq"),
+                        mainnet: "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-rinkeby",
                         matic: Belt_Option.getWithDefault(process.env.REACT_APP_MATIC_TESTNET_ALT, "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-testnet"),
-                        ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli"
+                        db: Belt_Option.getWithDefault(process.env.REACT_APP_RINKEBY_BE, "https://rinkeby.api.wildcards.world/v1/graphq")
                       };
               }
             }),

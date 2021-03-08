@@ -28,14 +28,14 @@ let make = () =>
       open Client
       let endpoints = switch networkId {
       | 5 => {
-          mainnet: Option.getWithDefault(goerliApi, "https://goerli.api.wildcards.world/v1/graphq"),
+          db: Option.getWithDefault(goerliApi, "https://goerli.api.wildcards.world/v1/graphq"),
           matic: "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-polygon-testnet/graphql",
-          ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
+          mainnet: "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
         }
       | _ => {
-          mainnet: Option.getWithDefault(mainnetApi, "https://api.wildcards.world/v1/graphql"),
+          db: Option.getWithDefault(mainnetApi, "https://api.wildcards.world/v1/graphql"),
           matic: "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-polygon-testnet/graphql",
-          ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards",
+          mainnet: "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards",
         }
       }
       endpoints

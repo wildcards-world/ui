@@ -6,59 +6,65 @@ type dataObject = {"__typename": string, "id": string}
 
 /* Create an HTTP Link */
 let httpLink = (~uri) => ApolloClient.Link.HttpLink.make(~uri=_ => uri, ())
-/* Create an WS Link */
-let wsLink = (~uri) => {
-  open ApolloClient.Link.WebSocketLink
-  make(~uri, ~options=ClientOptions.make(~reconnect=true, ()), ())
-}
 
 type context =
   | @dead("context.Neither") Neither
   | MaticQuery
   | MainnetQuery
-@dead("+chainContextToStr") let chainContextToStr = chain =>
+@dead("+chainContextToStr")
+let chainContextToStr = chain =>
   switch chain {
   | Neither => "neither"
   | MaticQuery => "matic"
   | MainnetQuery => "mainnet"
   }
-type queryContext = {context: context}
+type queryContext = {context: option<context>}
 
 @send
 external getContext: ApolloClient__Link_Core_ApolloLink.Operation.Js_.t => option<queryContext> =
   "getContext"
 
 /* based on test, execute left or right */
-let webSocketHttpLink = (~uri, ~matic, ~subscriptions) =>
-  ApolloClient.Link.split(~test=({query, _}) => {
-    let definition = ApolloClient.Utilities.getOperationDefinition(query)
-    switch definition {
-    | Some({kind, operation, _}) => kind === "OperationDefinition" && operation === "subscription"
-    | None => false
+let networkSwitcherHttpLink = (~uri, ~matic, ~mainnet) =>
+  ApolloClient.Link.split(~test=operation => {
+    let context = operation->getContext
+
+    let dbQuery = switch context {
+    | Some({context: Some(actualContext)}) =>
+      switch actualContext {
+      | MaticQuery => false
+      | Neither => true
+      | MainnetQuery => false
+      }
+    | Some(_)
+    | None => true
     }
-  }, ~whenTrue=wsLink(~uri=subscriptions), ~whenFalse=ApolloClient.Link.split(~test=operation => {
+    Js.log3("making a query with", dbQuery, uri)
+    dbQuery
+  }, ~whenTrue=httpLink(~uri), ~whenFalse=ApolloClient.Link.split(~test=operation => {
     let context = operation->getContext
 
     let usingMatic = switch context {
-    | Some({context}) =>
-      switch context {
+    | Some({context: Some(actualContext)}) =>
+      switch actualContext {
       | MaticQuery => true
       | Neither => false
       | MainnetQuery => false
       }
+    | Some(_)
     | None => false
     }
     usingMatic
-  }, ~whenTrue=httpLink(~uri=matic), ~whenFalse=httpLink(~uri)))
+  }, ~whenTrue=httpLink(~uri=matic), ~whenFalse=httpLink(~uri=mainnet)))
 
 type qlEndpoints = {
   mainnet: string,
   matic: string,
-  ws: string,
+  db: string,
 }
 
 let instance = (~getGraphEndpoints: unit => qlEndpoints) => {
-  let {mainnet, matic, ws} = getGraphEndpoints()
+  let {mainnet, matic, db} = getGraphEndpoints()
 
   open ApolloClient
   make(
@@ -78,7 +84,7 @@ let instance = (~getGraphEndpoints: unit => qlEndpoints) => {
       ),
       (),
     ),
-    ~link=webSocketHttpLink(~uri=mainnet, ~matic, ~subscriptions=ws),
+    ~link=networkSwitcherHttpLink(~uri=db, ~mainnet, ~matic),
     (),
   )
 }

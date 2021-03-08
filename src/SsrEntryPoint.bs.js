@@ -43,15 +43,15 @@ function SsrEntryPoint(Props) {
               getGraphEndpoints: (function (networkId, param) {
                   if (networkId !== 5) {
                     return {
-                            mainnet: Belt_Option.getWithDefault(process.env.REACT_APP_MAINNET_BE, "https://api.wildcards.world/v1/graphql"),
+                            mainnet: "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards",
                             matic: "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-polygon-testnet/graphql",
-                            ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards"
+                            db: Belt_Option.getWithDefault(process.env.REACT_APP_MAINNET_BE, "https://api.wildcards.world/v1/graphql")
                           };
                   } else {
                     return {
-                            mainnet: Belt_Option.getWithDefault(process.env.REACT_APP_GOERLI_BE, "https://goerli.api.wildcards.world/v1/graphq"),
+                            mainnet: "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
                             matic: "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-polygon-testnet/graphql",
-                            ws: "wss://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli"
+                            db: Belt_Option.getWithDefault(process.env.REACT_APP_GOERLI_BE, "https://goerli.api.wildcards.world/v1/graphq")
                           };
                   }
                 }),
