@@ -1,0 +1,26 @@
+name: Deploy UI
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  push-ui-for-vercel:
+    name: Push UI to repo for Vercel deployment.
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks out a copy of your repository on the ubuntu-latest machine
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Pushes to another repository
+        uses: cpina/github-action-push-to-another-repository@master
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source-directory: "."
+          destination-github-username: "jasoons"
+          destination-repository-name: "wildcards-ui"
+          user-email: avolabsmachine@gmail.com
