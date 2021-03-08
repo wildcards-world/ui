@@ -11,8 +11,8 @@ module ArtistDetails = {
     ~optArtistEthAddress,
     ~optArtistName,
     ~optArtistWebsite,
-    ~optArtistLaunchedWildcards,
-    ~optArtistUnlaunchedWildcards,
+    ~optArtistLaunchedWildcards: option<array<QlHooks.WildcardMainData.t>>,
+    ~optArtistUnlaunchedWildcards: option<array<QlHooks.WildcardMainData.t>>,
     ~optArtistOrgs,
   ) => {
     let clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute()
@@ -46,9 +46,7 @@ module ArtistDetails = {
     let etherScanUrl = RootProvider.useEtherscanUrl()
 
     let artistsAnimalsArrayLaunched =
-      optArtistLaunchedWildcards->Option.mapWithDefault([], (
-        tokens: array<QlHooks.ArtistQuery.ArtistQuery_inner.t_artist_by_pk_launchedWildcards>,
-      ) =>
+      optArtistLaunchedWildcards->Option.mapWithDefault([], tokens =>
         tokens->Array.map(token => token.id->Option.getWithDefault("_")->TokenId.fromStringUnsafe)
       )
 
@@ -251,9 +249,7 @@ module ArtistDetails = {
               <Rimble.Heading> {"Coming soon"->React.string} </Rimble.Heading>
               <Rimble.Flex flexWrap="wrap" className=centreAlignOnMobile>
                 {React.array(
-                  unlaunchedWildcards->Array.map((
-                    token: QlHooks.ArtistQuery.ArtistQuery_inner.t_artist_by_pk_unlaunchedWildcards,
-                  ) =>
+                  unlaunchedWildcards->Array.map(token =>
                     token.image->Option.mapWithDefault(React.null, image =>
                       <OrgProfile.ComingSoonAnimal
                         key={token.key->string_of_int}

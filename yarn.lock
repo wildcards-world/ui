@@ -2880,10 +2880,10 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=
 
-"@reasonml-community/graphql-ppx@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@reasonml-community/graphql-ppx/-/graphql-ppx-1.0.1.tgz#aabbaa2d32b290c1576c4d4c53e26ffce4bed98c"
-  integrity sha512-lYPM6J5lth3VWyzOdAIEerStK70xm0jObC86iyhrfl7lm7RFls0W+QyxbOhajpzl8MwFtNGq5gYZAi/E9GL7bw==
+"@reasonml-community/graphql-ppx@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@reasonml-community/graphql-ppx/-/graphql-ppx-1.0.2.tgz#5641413a8873d412dc6a0b00a1fe273323406fb8"
+  integrity sha512-A4KURw/hpGWvW6Dkmg8LpF3GlWZ1FCyP3MhHLUlmViboZ51bRSnO0lU4hK8TE6x5/B2Uik59YACJZX47VqWmOw==
 
 "@rimble/icons@^1.0.2":
   version "1.1.0"

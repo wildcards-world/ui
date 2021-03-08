@@ -1,25 +1,53 @@
 open GqlConverters
 module QueryFetchPolicy = ApolloClient__React_Hooks_UseQuery.WatchQueryFetchPolicy
 
+%graphql(`
+fragment BlockchainWildcardData on Wildcard {
+  id
+  animal: tokenId @ppxCustom(module: "GqlTokenId")
+  owner {
+    id
+    address @ppxCustom(module: "GqlAddress")
+  }
+  price {
+    price @ppxCustom(module: "Price")
+    id
+  }
+  totalCollected @ppxCustom(module: "Price")
+  timeCollected @ppxCustom(module: "BigInt")
+  patronageNumerator @ppxCustom(module: "BigInt")
+  patronageNumeratorPriceScaled @ppxCustom(module: "BigInt")
+  timeAcquired @ppxCustom(module: "GqlMoment")
+  auctionStartPrice @ppxCustom(module: "BigInt")
+  launchTime @ppxCustom(module: "BigInt")
+}
+fragment WildcardMainData on wildcardData {
+  id
+  key
+  name
+  commonName
+  description
+  organization {
+    name
+    id
+    logo
+  }
+  image
+  real_wc_photos {
+    image
+    photographer
+  }
+  artistOfWildcard {
+    name
+    id
+  }
+}
+`)
+
 module InitialLoad = %graphql(`
   query($amount: Int!, $globalId: String!) {
     wildcards(first: $amount) {
-      id
-      animal: tokenId @ppxCustom(module: "GqlTokenId")
-      owner {
-        address
-        id
-      }
-      price {
-        price @ppxCustom(module: "Price")
-        id
-      }
-      totalCollected @ppxCustom(module: "Price")
-      timeCollected @ppxCustom(module: "BigInt")
-      patronageNumeratorPriceScaled @ppxCustom(module: "BigInt")
-      timeAcquired @ppxCustom(module: "GqlMoment")
-      auctionStartPrice @ppxCustom(module: "BigInt")
-      launchTime @ppxCustom(module: "BigInt")
+      ...BlockchainWildcardData
     }
     global(id: $globalId) {
       id
@@ -34,12 +62,12 @@ module InitialLoad = %graphql(`
 `)
 
 let createContext: Client.queryContext => Js.Json.t = Obj.magic
-
+let chainToContext = chain => {context: Some(chain)}->createContext
 let useInitialDataLoad = (~chain) => {
   let initLoadQuery = InitialLoad.use(
     ~notifyOnNetworkStatusChange=true,
     ~fetchPolicy=QueryFetchPolicy.CacheFirst,
-    ~context={context: chain}->createContext,
+    ~context=chain->chainToContext,
     InitialLoad.makeVariables(
       ~amount=switch chain {
       | Client.MaticQuery => 61
@@ -77,24 +105,7 @@ let useAnimalList = (~chain) => {
 module WildcardChainDataQuery = %graphql(`
   query ($tokenId: String!) {
     wildcard(id: $tokenId) {
-      id
-      animal: tokenId @ppxCustom(module: "GqlTokenId")
-      timeAcquired @ppxCustom(module: "GqlMoment")
-      totalCollected @ppxCustom(module: "Price")
-      patronageNumerator @ppxCustom(module: "BigInt")
-      patronageNumeratorPriceScaled @ppxCustom(module: "BigInt")
-      timeCollected @ppxCustom(module: "BigInt")
-      # timeCollected @ppxCustom(module: "GqlMoment")
-      price {
-        id
-        price @ppxCustom(module: "Price")
-      }
-      owner {
-        address @ppxCustom(module: "GqlAddress")
-        id
-      }
-      auctionStartPrice @ppxCustom(module: "BigInt")
-      launchTime @ppxCustom(module: "BigInt")
+      ...BlockchainWildcardData
     }
   }
 `)
@@ -103,23 +114,7 @@ module WildcardDataQuery = %graphql(`
   query ($tokenId: String!) {
     launchedWildcards_by_pk(id: $tokenId) {
       wildcard {
-        id
-        name
-        commonName
-        description
-        organization {
-          name
-          id
-        }
-        image
-        real_wc_photos {
-          image
-          photographer
-        }
-        artistOfWildcard {
-          name
-          id
-        }
+        ...WildcardMainData
       }
     }
   }
@@ -142,10 +137,7 @@ module HomeAnimalsQuery = %graphql(`
       next
       prev
       wildcardData {
-        description
-        id
-        name
-        organisationId
+        ...WildcardMainData
       }
     }
   }
@@ -159,25 +151,10 @@ module ArtistQuery = %graphql(`
       name
       website
       launchedWildcards: wildcardData (where: {id: { _is_null: false}}) {
-        key
-        id
-        name
-        image
-        organization {
-          id
-          name
-          logo
-        }
+        ...WildcardMainData
       }
       unlaunchedWildcards: wildcardData (where: {id: { _is_null: true}}) {
-        key
-        name
-        image
-        organization {
-          id
-          name
-          logo
-        }
+        ...WildcardMainData
       }
     }
   }
@@ -274,7 +251,7 @@ let getQueryPrefix = (chain: Client.context) =>
 
 let useWildcardQuery = (~chain, ~forceRefetch=false, tokenId) => {
   let wildcardQuery = WildcardChainDataQuery.use(
-    ~context={context: chain}->createContext,
+    ~context=chain->chainToContext,
     ~fetchPolicy=forceRefetch ? QueryFetchPolicy.CacheAndNetwork : QueryFetchPolicy.CacheFirst,
     WildcardChainDataQuery.makeVariables(
       ~tokenId=chain->getQueryPrefix ++ tokenId->TokenId.toString,
@@ -291,7 +268,7 @@ let useWildcardQuery = (~chain, ~forceRefetch=false, tokenId) => {
 
 let useLoadTokenDataArrayQuery = (~chain, tokenIdArray) => {
   let tokenDataQuery = LoadTokenDataArray.use(
-    ~context={context: chain}->createContext,
+    ~context=chain->chainToContext,
     LoadTokenDataArray.makeVariables(
       ~wildcardIdArray=tokenIdArray->Array.map(id => id->TokenId.toString),
       (),
@@ -486,7 +463,7 @@ let useTimeAcquired: (~chain: Client.context, TokenId.t) => option<MomentRe.Mome
 
 let useQueryPatronQuery = (~chain, ~forceRefetch=false, patron) => {
   LoadPatron.use(
-    ~context={context: chain}->createContext,
+    ~context=chain->chainToContext,
     ~fetchPolicy=forceRefetch ? QueryFetchPolicy.CacheAndNetwork : QueryFetchPolicy.CacheFirst,
     LoadPatron.makeVariables(~patronId=chain->getQueryPrefix ++ patron, ()),
   )
@@ -521,7 +498,7 @@ let useDaysHeld = (~chain, tokenId) =>
   ))
 let useTotalCollectedOrDue = (~chain) => {
   let subTotalRaisedQuery = SubTotalRaisedOrDueQuery.use(
-    ~context={{context: chain}->createContext},
+    ~context=chain->chainToContext,
     SubTotalRaisedOrDueQuery.makeVariables(
       ~id=switch chain {
       | Client.MaticQuery => "Matic-Global"
