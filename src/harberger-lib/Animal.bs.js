@@ -21,11 +21,7 @@ function useAvatar(animal) {
 }
 
 function useAlternateImage(animal) {
-  return Belt_Option.flatMap(Belt_Option.map(QlHooks.useRealImages(animal), (function (animalImages) {
-                    return Belt_Array.map(animalImages, (function (info) {
-                                  return info.image;
-                                }));
-                  })), (function (images) {
+  return Belt_Option.flatMap(QlHooks.useRealImages(animal), (function (images) {
                 return Belt_Array.get(images, 0);
               }));
 }

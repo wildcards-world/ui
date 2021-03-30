@@ -65,11 +65,13 @@ function OrgProfile$ImageCarousel(Props) {
   var selectedIndex = Props.selectedIndex;
   return React.createElement(ReactResponsiveCarousel, {
               children: Belt_Array.mapWithIndex(orgComingSoon, (function (key, animal) {
-                      return Belt_Option.mapWithDefault(Belt_Array.get(animal.real_wc_photos, 0), null, (function (photos) {
-                                    return React.createElement("img", {
-                                                key: String(key),
-                                                src: CONSTANTS.cdnBase + photos.image
-                                              });
+                      return Belt_Option.mapWithDefault(Belt_Array.get(animal.real_wc_photos, 0), null, (function (photo) {
+                                    return React.createElement(React.Fragment, undefined, React.createElement("img", {
+                                                    key: String(key),
+                                                    src: CONSTANTS.cdnBase + photo.image
+                                                  }), Belt_Option.mapWithDefault(photo.photographer, null, (function (photographer) {
+                                                      return React.createElement("p", undefined, "📸 by " + photographer);
+                                                    })));
                                   }));
                     })),
               showArrows: true,

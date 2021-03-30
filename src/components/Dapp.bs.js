@@ -961,16 +961,18 @@ function Dapp$AnimalInfo(Props) {
                         children: tmp
                       }), React.createElement(ReactTabs.TabPanel, {
                         children: Belt_Option.mapWithDefault(optAnimalMedia, null, (function (media) {
-                                return React.createElement("img", {
-                                            className: Curry._1(Css.style, {
-                                                  hd: Css.width({
-                                                        NAME: "percent",
-                                                        VAL: 100
-                                                      }),
-                                                  tl: /* [] */0
-                                                }),
-                                            src: CONSTANTS.cdnBase + media
-                                          });
+                                return React.createElement(React.Fragment, undefined, React.createElement("img", {
+                                                className: Curry._1(Css.style, {
+                                                      hd: Css.width({
+                                                            NAME: "percent",
+                                                            VAL: 100
+                                                          }),
+                                                      tl: /* [] */0
+                                                    }),
+                                                src: CONSTANTS.cdnBase + media.image
+                                              }), Belt_Option.mapWithDefault(media.photographer, null, (function (photographer) {
+                                                  return React.createElement("p", undefined, "📸 by " + photographer);
+                                                })));
                               }))
                       }))
             });

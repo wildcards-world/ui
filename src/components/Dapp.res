@@ -688,15 +688,18 @@ module AnimalInfo = {
           }}
         </ReactTabs.TabPanel>
         <ReactTabs.TabPanel>
-          {optAnimalMedia->Option.mapWithDefault(React.null, media =>
+          {optAnimalMedia->Option.mapWithDefault(React.null, media => <>
             <img
               className={
                 open Css
                 style(list{width(#percent(100.))})
               }
-              src={CONSTANTS.cdnBase ++ media}
+              src={CONSTANTS.cdnBase ++ media.image}
             />
-          )}
+            {media.photographer->Option.mapWithDefault(React.null, photographer =>
+              <p> {`📸 by ${photographer}`->React.string} </p>
+            )}
+          </>)}
         </ReactTabs.TabPanel>
       </ReactTabs>
     </Rimble.Box>
