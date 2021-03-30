@@ -10,11 +10,9 @@ let useAvatar = animal =>
     // |||| "./img/loading.gif";
   )
 
-// let getAlternateImage: t => array(string) = // TODO: I want to turn this into an array in the future, show a carousel of images instead.
-let useAlternateImage: TokenId.t => option<string> = animal =>
-  QlHooks.useRealImages(animal)
-  ->Option.map(animalImages => animalImages->Array.map(info => info.image))
-  ->Option.flatMap(images => images[0])
+// let getAlternateImage: t => array(QlHooks.WildcardMainData.t_real_wc_photos) = // TODO: I want to turn this into an array in the future, show a carousel of images instead.
+let useAlternateImage: TokenId.t => option<QlHooks.WildcardMainData.t_real_wc_photos> = animal =>
+  QlHooks.useRealImages(animal)->Option.flatMap(images => images[0])
 
 let useGetOrgImage: string => string = org =>
   Option.getWithDefault(

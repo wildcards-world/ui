@@ -48,9 +48,12 @@ module ImageCarousel = {
       selectedItem=selectedIndex>
       {React.array(
         orgComingSoon->Array.mapWithIndex((key, animal) =>
-          animal.real_wc_photos[0]->Option.mapWithDefault(React.null, photos =>
-            <img key={key->string_of_int} src={CONSTANTS.cdnBase ++ photos.image} />
-          )
+          animal.real_wc_photos[0]->Option.mapWithDefault(React.null, photo => <>
+            <img key={key->string_of_int} src={CONSTANTS.cdnBase ++ photo.image} />
+            {photo.photographer->Option.mapWithDefault(React.null, photographer =>
+              <p> {`📸 by ${photographer}`->React.string} </p>
+            )}
+          </>)
         ),
       )}
     </ResponsiveCarousel>
