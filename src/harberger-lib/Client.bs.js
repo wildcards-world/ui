@@ -29,15 +29,15 @@ function chainContextToStr(chain) {
 function networkSwitcherHttpLink(uri, matic, mainnet) {
   return ReasonMLCommunity__ApolloClient.Link.split((function (operation) {
                 var context = operation.getContext();
-                var dbQuery;
-                if (context !== undefined) {
-                  var actualContext = context.context;
-                  dbQuery = actualContext !== undefined ? actualContext === 0 : true;
-                } else {
-                  dbQuery = true;
+                if (context === undefined) {
+                  return true;
                 }
-                console.log("making a query with", dbQuery, uri);
-                return dbQuery;
+                var actualContext = context.context;
+                if (actualContext !== undefined) {
+                  return actualContext === 0;
+                } else {
+                  return true;
+                }
               }), httpLink(uri), ReasonMLCommunity__ApolloClient.Link.split((function (operation) {
                     var context = operation.getContext();
                     if (context === undefined) {

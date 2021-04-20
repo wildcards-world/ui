@@ -352,6 +352,7 @@ let useActivateConnector: unit => (connection, Web3Connectors.injectedType => un
       ->Promise.Js.catch(error => {
         Js.log("Error connecting to network:")
         Js.log(error)
+
         setConnectionStatus(_ => ErrorConnecting)
         Promise.resolved()
       })

@@ -39,7 +39,6 @@ let networkSwitcherHttpLink = (~uri, ~matic, ~mainnet) =>
     | Some(_)
     | None => true
     }
-    Js.log3("making a query with", dbQuery, uri)
     dbQuery
   }, ~whenTrue=httpLink(~uri), ~whenFalse=ApolloClient.Link.split(~test=operation => {
     let context = operation->getContext

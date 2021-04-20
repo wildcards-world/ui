@@ -119,7 +119,9 @@ let getMaticNetworkName = chainId =>
 
 let getChildChainId = parentChainId =>
   switch parentChainId {
+  | 137
   | 1 => 137
+  | 80001
   | 5 => 80001
   | 4
   | _ => 5

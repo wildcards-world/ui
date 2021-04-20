@@ -34,11 +34,22 @@ function Web3Connect(Props) {
   var deactivateWeb3 = RootProvider.useDeactivateWeb3(undefined);
   var networkIdOpt = RootProvider.useNetworkId(undefined);
   var connectedNetworkName = function (networkId) {
-    if (networkId >= 6) {
-      if (networkId !== 42) {
-        return "Unknown\xa0";
+    if (networkId >= 43) {
+      if (networkId !== 137) {
+        if (networkId !== 80001) {
+          return "Unknown\xa0";
+        } else {
+          return "MATIC Test\xa0";
+        }
       } else {
+        return "MATIC\xa0";
+      }
+    }
+    if (networkId >= 6) {
+      if (networkId >= 42) {
         return "KOVAN\xa0";
+      } else {
+        return "Unknown\xa0";
       }
     }
     if (networkId <= 0) {

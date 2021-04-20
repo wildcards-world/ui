@@ -237,7 +237,7 @@ module Buy = {
     }
 
     let openTransak = _ => {
-      let transak = Transak.new_(Config.Transak.getConfig(~chain, web3Context))
+      let transak = Transak.new_(TransakConfig.getConfig(~chain, web3Context))
       transak->Transak.init()
     }
 

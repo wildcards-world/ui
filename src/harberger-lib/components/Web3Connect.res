@@ -16,6 +16,8 @@ let make = (~clickAction=() => ()) => {
     | 4 => j`RINKEBY\\xa0`->React.string
     | 5 => j`GOERLI\\xa0`->React.string
     | 42 => j`KOVAN\\xa0`->React.string
+    | 137 => j`MATIC\\xa0`->React.string
+    | 80001 => j`MATIC Test\\xa0`->React.string
     | _ => j`Unknown\\xa0`->React.string
     }
 

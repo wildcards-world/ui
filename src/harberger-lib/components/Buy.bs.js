@@ -5,7 +5,6 @@ import * as Curry from "bs-platform/lib/es6/curry.js";
 import BnJs from "bn.js";
 import * as React from "react";
 import * as Animal from "../Animal.bs.js";
-import * as Config from "../Config.bs.js";
 import * as QlHooks from "../QlHooks.bs.js";
 import * as TokenId from "../TokenId.bs.js";
 import * as Belt_Int from "bs-platform/lib/es6/belt_Int.js";
@@ -22,6 +21,7 @@ import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_format from "bs-platform/lib/es6/caml_format.js";
 import * as FormatMoney from "../../components/components/FormatMoney.bs.js";
 import * as RootProvider from "../RootProvider.bs.js";
+import * as TransakConfig from "../TransakConfig.bs.js";
 import * as ContractActions from "../eth/ContractActions.bs.js";
 import * as Core from "@web3-react/core";
 import TransakSdk from "@transak/transak-sdk";
@@ -146,7 +146,7 @@ function Buy$Buy(Props) {
   };
   var currency = chain !== 1 ? "ether" : "DAI";
   var openTransak = function (param) {
-    var transak = new TransakSdk(Config.Transak.getConfig(chain, web3Context));
+    var transak = new TransakSdk(TransakConfig.getConfig(chain, web3Context));
     transak.init();
     
   };
