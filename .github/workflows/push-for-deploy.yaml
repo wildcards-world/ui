@@ -15,6 +15,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Add dummy file to force git to work (doesn't push anything if no changes commited)
+        run: |
+          echo "$(git rev-parse HEAD)" > commit.txt
+
       - name: Pushes to another repository
         uses: cpina/github-action-push-to-another-repository@master
         env:
