@@ -7,9 +7,74 @@ import * as React from "react";
 import * as Styles from "../Styles.bs.js";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import * as RootProvider from "./RootProvider.bs.js";
-import Connectors from "./bindings/web3-react/connectors";
+import * as Web3Connectors from "./bindings/web3-react/Web3Connectors.bs.js";
+import * as TorusConnector from "@web3-react/torus-connector";
+import * as PortisConnector from "@web3-react/portis-connector";
+import * as FortmaticConnector from "@web3-react/fortmatic-connector";
+import * as WalletconnectConnector from "@web3-react/walletconnect-connector";
 
-var connectors = Connectors;
+var mainnetRpcUrl = "https://mainnet.infura.io/v3/84842078b09946638c03157f83405213";
+
+var portisKey = "1456ad21-b5a7-4364-9eba-e6237a7cc1e9";
+
+var fortmaticKey = "pk_live_BE64CE1BB4A49C37";
+
+var ConnectorConfig = {
+  pollingInterval: 8000,
+  mainnetRpcUrl: mainnetRpcUrl,
+  goerliRpcUrl: "https://goerli.infura.io/v3/84842078b09946638c03157f83405213",
+  portisKey: portisKey,
+  fortmaticKey: fortmaticKey,
+  squarelinkKey: "3904cdd1b675af615ca9"
+};
+
+var connectors = [
+  {
+    name: "MetaMask",
+    connector: Web3Connectors.injected,
+    img: "/img/wallet-icons/metamask.svg",
+    connectionPhrase: "Connect to your MetaMask Wallet"
+  },
+  {
+    name: "WalletConnect",
+    connector: new WalletconnectConnector.WalletConnectConnector({
+          rpc: {
+            "1": mainnetRpcUrl
+          },
+          bridge: "https://bridge.walletconnect.org",
+          qrcode: true,
+          pollingInterval: 8000
+        }),
+    img: "/img/wallet-icons/walletConnect.svg",
+    connectionPhrase: "Connect via WalletConnect"
+  },
+  {
+    name: "Torus",
+    connector: new TorusConnector.TorusConnector({
+          chainId: 1
+        }),
+    img: "/img/wallet-icons/torus.svg",
+    connectionPhrase: "Connect via Torus"
+  },
+  {
+    name: "Portis",
+    connector: new PortisConnector.PortisConnector({
+          dAppId: portisKey,
+          networks: [1]
+        }),
+    img: "/img/wallet-icons/portis.svg",
+    connectionPhrase: "Connect via Portis"
+  },
+  {
+    name: "Fortmatic",
+    connector: new FortmaticConnector.FortmaticConnector({
+          apiKey: fortmaticKey,
+          chainId: 1
+        }),
+    img: "/img/wallet-icons/fortmatic.svg",
+    connectionPhrase: "Connect via Fortmatic"
+  }
+];
 
 function Login(Props) {
   var match = RootProvider.useActivateConnector(undefined);
@@ -121,6 +186,7 @@ function Login(Props) {
 var make = Login;
 
 export {
+  ConnectorConfig ,
   connectors ,
   make ,
   
