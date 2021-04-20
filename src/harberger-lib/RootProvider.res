@@ -152,32 +152,6 @@ module RootWithWeb3 = {
       None
     }, (context.activate, context.chainId, dispatch, setTriedLoginAlready, triedLoginAlready))
 
-    // React.useEffect3(
-    //   () => {
-    //     let maticChainId =
-    //       switch (context.chainId) {
-    //       | Some(4)
-    //       | Some(5) => 80001
-    //       | _ => 137
-    //       };
-    //     contextMatic.activate(
-    //       // Web3Connectors.injected,
-    //       Web3Connectors.sideChainNetwork(maticChainId),
-    //       () => (),
-    //       true,
-    //     )
-    //     ->Promise.Js.catch(e => {
-    //         Js.log("ERROR ACTIVATING MATIC CONNECTION");
-    //         Js.log(e);
-    //         Promise.resolved();
-    //       })
-    //     ->ignore;
-    //     None;
-    //   },
-    //   // intentionally only running on mount (make sure it's only mounted once :))
-    //   (contextMatic.activate, context.chainId, contextMatic.chainId),
-    // );
-
     //// This will never fire when metamask logs out unfortunately https://stackoverflow.com/a/59215775/3103033
     // React.useEffect1(
     //   () => {
@@ -221,7 +195,8 @@ module RootWithWeb3 = {
     <RootContext value=(rootState, dispatch)> children </RootContext>
   }
 }
-@dead("+useRootContext") let useRootContext: unit => RootProviderTypes.state = () => {
+@dead("+useRootContext")
+let useRootContext: unit => RootProviderTypes.state = () => {
   let (state, _) = React.useContext(RootContext.context)
   state
 }
@@ -252,7 +227,8 @@ let useIsAddressCurrentUser: Web3.ethAddress => bool = address => {
   }
 }
 
-@dead("+useIsProviderSelected") let useIsProviderSelected: unit => bool = () => {
+@dead("+useIsProviderSelected")
+let useIsProviderSelected: unit => bool = () => {
   let (state, _) = React.useContext(RootContext.context)
   switch state.ethState {
   | Connected(_address, _balance) => true
@@ -321,7 +297,8 @@ let useGoToBuy: (unit, TokenId.t) => unit = () => {
   let (_, dispatch) = React.useContext(RootContext.context)
   animal => dispatch(GoToBuy(animal))
 }
-@dead("+useGoToAuction") let useGoToAuction: (unit, TokenId.t) => unit = () => {
+@dead("+useGoToAuction")
+let useGoToAuction: (unit, TokenId.t) => unit = () => {
   let (_, dispatch) = React.useContext(RootContext.context)
   animal => dispatch(GoToAuction(animal))
 }
@@ -395,7 +372,3 @@ let make = (
       <UserProvider> <ThemeProvider> children </ThemeProvider> </UserProvider>
     </RootWithWeb3>
   </Web3ReactProvider>
-
-// Used to create matic provider
-// </Web3Connectors.Custom>
-// <Web3Connectors.Custom id="matic" getLibrary>

@@ -1,12 +1,69 @@
-type connectorObj = {
-  name: string,
-  connector: Web3Connectors.injectedType,
-  img: string,
-  connectionPhrase: string,
+open Web3Connectors
+
+module ConnectorConfig = {
+  let pollingInterval = 8000
+
+  let mainnetRpcUrl = "https://mainnet.infura.io/v3/84842078b09946638c03157f83405213"
+  let goerliRpcUrl = "https://goerli.infura.io/v3/84842078b09946638c03157f83405213"
+
+  let portisKey = "1456ad21-b5a7-4364-9eba-e6237a7cc1e9"
+  let fortmaticKey = "pk_live_BE64CE1BB4A49C37"
+  let squarelinkKey = "3904cdd1b675af615ca9"
 }
 
-@module("./bindings/web3-react/connectors")
-external connectors: Js.Array.t<connectorObj> = "default"
+let connectors = [
+  {
+    name: "MetaMask",
+    connector: injected,
+    img: "/img/wallet-icons/metamask.svg",
+    connectionPhrase: "Connect to your MetaMask Wallet",
+  },
+  {
+    name: "WalletConnect",
+    connector: WalletConnectConnector.make({
+      rpc: {"1": ConnectorConfig.mainnetRpcUrl},
+      bridge: "https://bridge.walletconnect.org",
+      qrcode: true,
+      pollingInterval: ConnectorConfig.pollingInterval,
+    }),
+    connectionPhrase: "Connect via WalletConnect",
+    img: "/img/wallet-icons/walletConnect.svg",
+  },
+  {
+    name: "Torus",
+    connector: TorusConnector.make({chainId: 1}),
+    connectionPhrase: "Connect via Torus",
+    img: "/img/wallet-icons/torus.svg",
+  },
+  {
+    name: "Portis",
+    connector: PortisConnector.make({
+      dAppId: ConnectorConfig.portisKey,
+      networks: [1],
+    }),
+    connectionPhrase: "Connect via Portis",
+    img: "/img/wallet-icons/portis.svg",
+  },
+  {
+    name: "Fortmatic",
+    connector: FortmaticConnector.make({
+      apiKey: ConnectorConfig.fortmaticKey,
+      chainId: 1,
+    }),
+    connectionPhrase: "Connect via Fortmatic",
+    img: "/img/wallet-icons/fortmatic.svg",
+  },
+  // NOTE: Squarelink seems to be broken
+  // {
+  //   name: "Squarelink",
+  //   connector: SquarelinkConnector.make({
+  //     clientId: ConnectorConfig.squarelinkKey,
+  //     networks: [1],
+  //   }),
+  //   connectionPhrase: "Connect via Squarelink",
+  //   img: "/img/wallet-icons/squarelink.svg",
+  // },
+]
 
 @react.component
 let make = () => {
