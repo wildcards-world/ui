@@ -15,6 +15,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Don't include gh-actions in this repo
+        run: |
+          rm -rf .github
+
       - name: Pushes to another repository
         uses: cpina/github-action-push-to-another-repository@master
         env:
