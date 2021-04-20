@@ -15,10 +15,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Add dummy file to force git to work (doesn't push anything if no changes commited)
-        run: |
-          rm -rf .git
-
       - name: Pushes to another repository
         uses: cpina/github-action-push-to-another-repository@master
         env:
