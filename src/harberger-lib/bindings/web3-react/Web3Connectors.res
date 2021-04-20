@@ -54,4 +54,4 @@ module SquarelinkConnector = {
   external make: connectorOptions => injectedType = "SquarelinkConnector"
 }
 
-let injected = InjectedConnector.make({supportedChainIds: [1, 3, 4, 5, 42, 137, 1337, 80001]})
+let injected = InjectedConnector.make({supportedChainIds: Config.availableNetworkIds})

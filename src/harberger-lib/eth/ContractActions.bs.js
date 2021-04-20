@@ -95,17 +95,29 @@ function getMaticNetworkName(chainId) {
 }
 
 function getChildChainId(parentChainId) {
-  switch (parentChainId) {
-    case 1 :
+  if (parentChainId === 137) {
+    return 137;
+  }
+  if (parentChainId >= 6) {
+    if (parentChainId !== 80001) {
+      return 5;
+    } else {
+      return 80001;
+    }
+  }
+  if (parentChainId <= 0) {
+    return 5;
+  }
+  switch (parentChainId - 1 | 0) {
+    case 0 :
         return 137;
+    case 1 :
     case 2 :
     case 3 :
-    case 4 :
         return 5;
-    case 5 :
+    case 4 :
         return 80001;
-    default:
-      return 5;
+    
   }
 }
 
