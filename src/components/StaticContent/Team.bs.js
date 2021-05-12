@@ -78,7 +78,8 @@ function Team(Props) {
       title: "Co-founder",
       linkedIn: "https://www.linkedin.com/in/jonathan-clark-637344143/",
       twitterHandle: "jonjonclark",
-      githubHandle: "moose-code"
+      githubHandle: "moose-code",
+      instagramHandle: undefined
     },
     {
       name: "Jason Smythe",
@@ -86,7 +87,8 @@ function Team(Props) {
       title: "Co-founder",
       linkedIn: "https://www.linkedin.com/in/jason-smythe-0501ab88/",
       twitterHandle: "jasoonsmythe",
-      githubHandle: "jasoons"
+      githubHandle: "jasoons",
+      instagramHandle: undefined
     },
     {
       name: "Denham Preen",
@@ -94,7 +96,8 @@ function Team(Props) {
       title: "Co-founder",
       linkedIn: "https://www.linkedin.com/in/denhampreen/",
       twitterHandle: "denhampreen",
-      githubHandle: "DenhamPreen"
+      githubHandle: "DenhamPreen",
+      instagramHandle: undefined
     },
     {
       name: "Rio Button",
@@ -102,7 +105,8 @@ function Team(Props) {
       title: "Lead conservationist",
       linkedIn: "https://www.linkedin.com/in/riob/",
       twitterHandle: "biologistbutton",
-      githubHandle: undefined
+      githubHandle: undefined,
+      instagramHandle: "biologistbutton"
     },
     {
       name: "Luke Gillott",
@@ -110,7 +114,8 @@ function Team(Props) {
       title: "Executive board",
       linkedIn: "https://www.linkedin.com/in/luke-gillott/",
       twitterHandle: undefined,
-      githubHandle: undefined
+      githubHandle: undefined,
+      instagramHandle: undefined
     }
   ];
   return React.createElement("div", undefined, React.createElement(RimbleUi.Flex, {
@@ -123,9 +128,10 @@ function Team(Props) {
                   pt: 20
                 }), React.createElement(RimbleUi.Flex, {
                   children: Belt_Array.mapWithIndex(teamMembers, (function (i, member) {
+                          var handle = member.instagramHandle;
                           var link = member.linkedIn;
-                          var handle = member.twitterHandle;
-                          var handle$1 = member.githubHandle;
+                          var handle$1 = member.twitterHandle;
+                          var handle$2 = member.githubHandle;
                           return React.createElement(RimbleUi.Box, {
                                       mb: 20,
                                       mt: 20,
@@ -138,7 +144,15 @@ function Team(Props) {
                                                 src: member.img
                                               }), React.createElement("p", undefined, member.name, React.createElement("br", undefined), React.createElement("span", {
                                                     className: titleStyle
-                                                  }, React.createElement("small", undefined, member.title))), link !== undefined ? React.createElement("a", {
+                                                  }, React.createElement("small", undefined, member.title))), handle !== undefined ? React.createElement("a", {
+                                                  href: "https://www.instagram.com/" + handle,
+                                                  rel: "noopener noreferrer",
+                                                  target: "_blank"
+                                                }, React.createElement("img", {
+                                                      className: iconStyle,
+                                                      alt: handle,
+                                                      src: "/img/socials/instagram.svg"
+                                                    })) : null, link !== undefined ? React.createElement("a", {
                                                   href: link,
                                                   rel: "noopener noreferrer",
                                                   target: "_blank"
@@ -146,21 +160,21 @@ function Team(Props) {
                                                       className: iconStyle,
                                                       alt: member.name,
                                                       src: "/img/socials/linkedin.svg"
-                                                    })) : null, handle !== undefined ? React.createElement("a", {
-                                                  href: "https://twitter.com/" + handle,
-                                                  rel: "noopener noreferrer",
-                                                  target: "_blank"
-                                                }, React.createElement("img", {
-                                                      className: iconStyle,
-                                                      alt: handle,
-                                                      src: "/img/socials/twitter.svg"
                                                     })) : null, handle$1 !== undefined ? React.createElement("a", {
-                                                  href: "https://github.com/" + handle$1,
+                                                  href: "https://twitter.com/" + handle$1,
                                                   rel: "noopener noreferrer",
                                                   target: "_blank"
                                                 }, React.createElement("img", {
                                                       className: iconStyle,
                                                       alt: handle$1,
+                                                      src: "/img/socials/twitter.svg"
+                                                    })) : null, handle$2 !== undefined ? React.createElement("a", {
+                                                  href: "https://github.com/" + handle$2,
+                                                  rel: "noopener noreferrer",
+                                                  target: "_blank"
+                                                }, React.createElement("img", {
+                                                      className: iconStyle,
+                                                      alt: handle$2,
                                                       src: "/img/socials/github.svg"
                                                     })) : null),
                                       width: [

@@ -5,6 +5,7 @@ type teamMember = {
   linkedIn: option<string>,
   twitterHandle: option<string>,
   githubHandle: option<string>,
+  instagramHandle: option<string>,
 }
 
 let cardStyle = {
@@ -48,6 +49,7 @@ let make = () => {
       linkedIn: Some("https://www.linkedin.com/in/jonathan-clark-637344143/"),
       twitterHandle: Some("jonjonclark"),
       githubHandle: Some("moose-code"),
+      instagramHandle: None,
     },
     {
       name: "Jason Smythe",
@@ -56,6 +58,7 @@ let make = () => {
       linkedIn: Some("https://www.linkedin.com/in/jason-smythe-0501ab88/"),
       twitterHandle: Some("jasoonsmythe"),
       githubHandle: Some("jasoons"),
+      instagramHandle: None,
     },
     {
       name: "Denham Preen",
@@ -64,6 +67,7 @@ let make = () => {
       linkedIn: Some("https://www.linkedin.com/in/denhampreen/"),
       twitterHandle: Some("denhampreen"),
       githubHandle: Some("DenhamPreen"),
+      instagramHandle: None,
     },
     {
       name: "Rio Button",
@@ -72,6 +76,7 @@ let make = () => {
       linkedIn: Some("https://www.linkedin.com/in/riob/"),
       twitterHandle: Some("biologistbutton"),
       githubHandle: None,
+      instagramHandle: Some("biologistbutton"),
     },
     {
       name: "Luke Gillott",
@@ -80,6 +85,7 @@ let make = () => {
       linkedIn: Some("https://www.linkedin.com/in/luke-gillott/"),
       twitterHandle: None,
       githubHandle: None,
+      instagramHandle: None,
     },
   ]
   <div>
@@ -98,6 +104,16 @@ let make = () => {
                 <br />
                 <span className=titleStyle> <small> {member.title->React.string} </small> </span>
               </p>
+              {switch member.instagramHandle {
+              | Some(handle) =>
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={"https://www.instagram.com/" ++ handle}>
+                  <img className=iconStyle src="/img/socials/instagram.svg" alt=handle />
+                </a>
+              | None => React.null
+              }}
               {switch member.linkedIn {
               | Some(link) =>
                 <a target="_blank" rel="noopener noreferrer" href=link>
