@@ -2,12 +2,12 @@
 
 import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Dapp from "./Dapp.bs.js";
-import * as Curry from "bs-platform/lib/es6/curry.js";
+import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
 import * as QlHooks from "../harberger-lib/QlHooks.bs.js";
 import * as TokenId from "../harberger-lib/TokenId.bs.js";
 import * as RimbleUi from "rimble-ui";
-import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
+import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as ReactTabs from "react-tabs";
 import * as RootProvider from "../harberger-lib/RootProvider.bs.js";
 

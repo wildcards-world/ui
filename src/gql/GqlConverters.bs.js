@@ -2,11 +2,11 @@
 
 import * as Eth from "../harberger-lib/Eth.bs.js";
 import BnJs from "bn.js";
-import * as Js_json from "bs-platform/lib/es6/js_json.js";
+import * as Js_json from "rescript/lib/es6/js_json.js";
 import * as TokenId from "../harberger-lib/TokenId.bs.js";
 import * as MomentRe from "bs-moment/src/MomentRe.bs.js";
-import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
-import * as Caml_format from "bs-platform/lib/es6/caml_format.js";
+import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
+import * as Caml_format from "rescript/lib/es6/caml_format.js";
 
 function parse(json) {
   var str = Js_json.decodeString(json);

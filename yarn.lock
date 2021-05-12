@@ -6086,11 +6086,6 @@ bs-moment@^0.6.0:
   resolved "https://registry.yarnpkg.com/bs-moment/-/bs-moment-0.6.0.tgz#b49c5580598ef277696494684fd274ea1f8b1019"
   integrity sha512-AYtL5j6hXHwA+SZut4uhvlhDrabpqwjuXIa/0qfVpEjR45HGBruSZFxUcXwjtOGy9eoRc1FKjRM0n+X21oJb+w==
 
-bs-platform@^8.4.2:
-  version "8.4.2"
-  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-8.4.2.tgz#778dabd1dfb3bc95e0086c58dabae74e4ebdee8a"
-  integrity sha512-9q7S4/LLV/a68CweN382NJdCCr/lOSsJR3oQYnmPK98ChfO/AdiA3lYQkQTp6T+U0I5Z5RypUAUprNstwDtMDQ==
-
 bs58@^4.0.0, bs58@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/bs58/-/bs58-4.0.1.tgz#be161e76c354f6f788ae4071f63f34e8c4f0a42a"
@@ -18085,11 +18080,6 @@ reanalyze@^2.12.0:
   resolved "https://registry.yarnpkg.com/reanalyze/-/reanalyze-2.12.0.tgz#8609008ce4e2070db056a1e4a58be2115906385a"
   integrity sha512-9EoOT4svMza62aIM/CUOHqPwSEURvTlyvlOSrCb/A5VNn/LByN+y+QWLG2YMj4C3I4jq8lmlvh2drrHC/us/aA==
 
-reason-apollo-client@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/reason-apollo-client/-/reason-apollo-client-1.0.0.tgz#8b1f59cae6d1727a8a61caf79af2a4f5ddc2ad18"
-  integrity sha512-kLQUf3czHDJoIlsCBrdGTGChc86mWLlAbMRaL16CWw8ukrrx1mdCzeQqkfavwJ45i1550K4N4tjpQ/ATGeyAxQ==
-
 reason-loadable@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/reason-loadable/-/reason-loadable-1.0.0.tgz#68f26ed26b097354532751a05cd321c28f119ae8"
@@ -18360,10 +18350,20 @@ requires-port@^1.0.0:
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
   integrity sha1-kl0mAdOaxIXgkc8NpcbmlNw9yv8=
 
+rescript-apollo-client@^1.0.0:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/rescript-apollo-client/-/rescript-apollo-client-1.1.1.tgz#1a7fa828e0d243999a042f01ea9270af4896d7b6"
+  integrity sha512-rivEbm0E9yw8LuA/Qf18UBCNrkBFsYNgj7FZWCyAHw7sQkWHx1BkZfkgTNkb+m/lw6dW2dlrkncfzdGFEquKYw==
+
 rescript-logger@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/rescript-logger/-/rescript-logger-2.0.0.tgz#3f0cb49b8704f1eb49dad60ae4827698535c760a"
   integrity sha512-gr4l6EBlwFedimRerFTiQQTGhCCHqukhF4/LCSDbPkSjqYOh/QURj5n0VxOEfZPN0R6v6blE2TQztH0Q3kfZkw==
+
+rescript@^9.1.2:
+  version "9.1.2"
+  resolved "https://registry.yarnpkg.com/rescript/-/rescript-9.1.2.tgz#a81f8a735f1a7006233bfc72eb081ca7182a0d79"
+  integrity sha512-4wHvTDv3nyYnAPJHcg1RGG8z7u3HDiBf6RN3P/dITDv859Qo35aKOzJWQtfBzbAs0EKNafLqei3TnUqiAv6BwQ==
 
 resize-observer-polyfill@1.5.0:
   version "1.5.0"

@@ -2,10 +2,10 @@
 
 import BnJs from "bn.js";
 import * as Helper from "./Helper.bs.js";
-import * as Belt_Float from "bs-platform/lib/es6/belt_Float.js";
+import * as Belt_Float from "rescript/lib/es6/belt_Float.js";
 import * as Web3Utils from "web3-utils";
-import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
-import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
+import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
+import * as Caml_option from "rescript/lib/es6/caml_option.js";
 
 var _map = {"wei":"wei","kwei":"kwei","mwei":"mwei","gwei":"gwei","microether":"microether","milliether":"milliether","ether":"ether","kether":"kether","mether":"mether","geher":"geher","tether":"tether"};
 

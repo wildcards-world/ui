@@ -1,3 +1,5 @@
+@@ocaml.warning("-20") // The ppx generates code with unused parameters
+
 open GqlConverters
 module QueryFetchPolicy = ApolloClient__React_Hooks_UseQuery.WatchQueryFetchPolicy
 
@@ -421,13 +423,14 @@ let useLoadTopContributorsData = numberOfLeaders =>
   | Some(topContributors) =>
     topContributors
     ->Array.map(patron => {
-      let monthlyContribution = patron.patronTokenCostScaledNumerator
-      ->BN.mul(CONSTANTS.secondsInAMonthBn) // A month with 30 days has 2592000 seconds
-      ->BN.div(
-        // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
-        CONSTANTS.secondsIn365DaysPrecisionScaled,
-      )
-      ->Web3Utils.fromWeiBNToEthPrecision(~digits=4)
+      let monthlyContribution =
+        patron.patronTokenCostScaledNumerator
+        ->BN.mul(CONSTANTS.secondsInAMonthBn) // A month with 30 days has 2592000 seconds
+        ->BN.div(
+          // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
+          CONSTANTS.secondsIn365DaysPrecisionScaled,
+        )
+        ->Web3Utils.fromWeiBNToEthPrecision(~digits=4)
       (patron.id, monthlyContribution)
     })
     ->Some

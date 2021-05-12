@@ -5,7 +5,7 @@ import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Dapp from "./Dapp.bs.js";
 import * as FAQs from "./StaticContent/FAQs.bs.js";
 import * as Team from "./StaticContent/Team.bs.js";
-import * as Curry from "bs-platform/lib/es6/curry.js";
+import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
 import * as Footer from "./StaticContent/Footer.bs.js";
 import * as Header from "./Header.bs.js";
@@ -21,7 +21,7 @@ import * as RimbleUi from "rimble-ui";
 import * as FeaturedIn from "./StaticContent/FeaturedIn.bs.js";
 import * as HowItWorks from "./StaticContent/HowItWorks.bs.js";
 import * as OrgProfile from "./OrgProfile.bs.js";
-import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
+import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as EmailSignup from "./StaticContent/EmailSignup.bs.js";
 import * as ProfileIcon from "../harberger-lib/components/ProfileIcon.bs.js";
 import * as UserProfile from "./UserProfile.bs.js";
@@ -244,6 +244,20 @@ function Layout(Props) {
                                               return Curry._1(clearAndPush, "#");
                                             })
                                         }, "HOME");
+                            })
+                        },
+                        {
+                          shouldDisplay: true,
+                          shouldDisplayMobile: true,
+                          component: (function (closeModal, param) {
+                              return React.createElement("a", {
+                                          className: Styles.navListText,
+                                          onClick: (function ($$event) {
+                                              Curry._1(closeModal, undefined);
+                                              $$event.preventDefault();
+                                              return Curry._1(clearAndPush, "/#team");
+                                            })
+                                        }, "TEAM");
                             })
                         },
                         {

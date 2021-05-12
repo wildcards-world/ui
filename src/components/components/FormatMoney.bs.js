@@ -2,10 +2,10 @@
 
 import * as Eth from "../../harberger-lib/Eth.bs.js";
 import * as Ethers from "../../harberger-lib/eth/Ethers.bs.js";
-import * as Belt_Float from "bs-platform/lib/es6/belt_Float.js";
+import * as Belt_Float from "rescript/lib/es6/belt_Float.js";
 import * as Web3Utils from "web3-utils";
-import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
-import * as Caml_format from "bs-platform/lib/es6/caml_format.js";
+import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
+import * as Caml_format from "rescript/lib/es6/caml_format.js";
 
 function format(__x) {
   return __x.replace(/\d(?=(\d{3})+\.)/g, "$&,");
