@@ -3,23 +3,23 @@
 import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Eth from "../harberger-lib/Eth.bs.js";
 import * as CssJs from "bs-css-emotion/src/CssJs.bs.js";
-import * as Curry from "bs-platform/lib/es6/curry.js";
+import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
 import * as Helper from "../harberger-lib/Helper.bs.js";
 import * as Styles from "../Styles.bs.js";
 import * as Blockie from "../harberger-lib/bindings/ethereum-blockies-base64/Blockie.bs.js";
 import * as Globals from "../harberger-lib/Globals.bs.js";
-import * as Js_dict from "bs-platform/lib/es6/js_dict.js";
+import * as Js_dict from "rescript/lib/es6/js_dict.js";
 import * as QlHooks from "../harberger-lib/QlHooks.bs.js";
 import * as TokenId from "../harberger-lib/TokenId.bs.js";
 import * as CONSTANTS from "../CONSTANTS.bs.js";
 import * as Web3Utils from "../harberger-lib/Web3Utils.bs.js";
 import BadWords from "bad-words";
 import * as RimbleUi from "rimble-ui";
-import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
+import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as OrgProfile from "./OrgProfile.bs.js";
-import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
-import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
+import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
+import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import * as UserProfile from "./UserProfile.bs.js";
 import * as RootProvider from "../harberger-lib/RootProvider.bs.js";
 import * as UserProvider from "../harberger-lib/js/user-provider/UserProvider.bs.js";
@@ -111,58 +111,6 @@ function ArtistProfiles$ArtistDetails(Props) {
   }
   var nonUrlState = RootProvider.useNonUrlState(undefined);
   var clearNonUrlState = RootProvider.useClearNonUrlState(undefined);
-  var tmp;
-  var exit = 0;
-  if (typeof nonUrlState === "number" && nonUrlState === 0) {
-    tmp = React.createElement("div", {
-          className: Curry._1(Css.style, {
-                hd: Css.position("relative"),
-                tl: /* [] */0
-              })
-        }, React.createElement(RimbleUi.Button.Text, {
-              onClick: (function (param) {
-                  return Curry._1(clearNonUrlState, undefined);
-                }),
-              icononly: true,
-              icon: "Close",
-              color: "moon-gray",
-              position: "absolute",
-              top: 0,
-              right: 0,
-              m: 1
-            }), React.createElement(React.Suspense, {
-              children: React.createElement(LazyThreeBoxUpdate.make, LazyThreeBoxUpdate.makeProps(undefined, undefined)),
-              fallback: React.createElement(RimbleUi.Loader, {})
-            }));
-  } else {
-    exit = 1;
-  }
-  if (exit === 1) {
-    tmp = React.createElement(React.Fragment, undefined, React.createElement("h2", undefined, Belt_Option.getWithDefault(optName, Belt_Option.getWithDefault(optArtistName, "Loading artist name"))), Globals.reactMap(optTwitter, (function (twitterHandle) {
-                return React.createElement("a", {
-                            className: Styles.navListText,
-                            href: "https://twitter.com/" + twitterHandle,
-                            rel: "noopener noreferrer",
-                            target: "_blank"
-                          }, "@" + twitterHandle);
-              })), React.createElement("br", undefined), Globals.reactMap(optDescription, (function (description) {
-                return React.createElement("p", undefined, new BadWords().clean(description));
-              })), Belt_Option.mapWithDefault(optArtistWebsite, null, (function (website) {
-                return React.createElement("a", {
-                            className: Styles.navListText,
-                            href: website,
-                            rel: "noopener noreferrer",
-                            target: "_blank"
-                          }, Belt_Option.getWithDefault(optArtistName, "Artist") + "'s website");
-              })), React.createElement("br", undefined), React.createElement("br", undefined), Globals.reactMap(optArtistEthAddress, (function (param) {
-                return React.createElement(React.Fragment, undefined, React.createElement("a", {
-                                className: Styles.navListText,
-                                href: "https://" + (etherScanUrl + ("/address/" + artistEthAddress)),
-                                rel: "noopener noreferrer",
-                                target: "_blank"
-                              }, Helper.elipsify(artistEthAddress, 10)), React.createElement("br", undefined));
-              })));
-  }
   return React.createElement("div", {
               className: Curry._1(Css.style, {
                     hd: Css.width({
@@ -213,7 +161,49 @@ function ArtistProfiles$ArtistDetails(Props) {
                                                 }),
                                             src: image
                                           }), React.createElement("br", undefined));
-                          })), tmp), React.createElement(RimbleUi.Box, {
+                          })), nonUrlState === 0 ? React.createElement("div", {
+                            className: Curry._1(Css.style, {
+                                  hd: Css.position("relative"),
+                                  tl: /* [] */0
+                                })
+                          }, React.createElement(RimbleUi.Button.Text, {
+                                onClick: (function (param) {
+                                    return Curry._1(clearNonUrlState, undefined);
+                                  }),
+                                icononly: true,
+                                icon: "Close",
+                                color: "moon-gray",
+                                position: "absolute",
+                                top: 0,
+                                right: 0,
+                                m: 1
+                              }), React.createElement(React.Suspense, {
+                                children: React.createElement(LazyThreeBoxUpdate.make, LazyThreeBoxUpdate.makeProps(undefined, undefined)),
+                                fallback: React.createElement(RimbleUi.Loader, {})
+                              })) : React.createElement(React.Fragment, undefined, React.createElement("h2", undefined, Belt_Option.getWithDefault(optName, Belt_Option.getWithDefault(optArtistName, "Loading artist name"))), Globals.reactMap(optTwitter, (function (twitterHandle) {
+                                  return React.createElement("a", {
+                                              className: Styles.navListText,
+                                              href: "https://twitter.com/" + twitterHandle,
+                                              rel: "noopener noreferrer",
+                                              target: "_blank"
+                                            }, "@" + twitterHandle);
+                                })), React.createElement("br", undefined), Globals.reactMap(optDescription, (function (description) {
+                                  return React.createElement("p", undefined, new BadWords().clean(description));
+                                })), Belt_Option.mapWithDefault(optArtistWebsite, null, (function (website) {
+                                  return React.createElement("a", {
+                                              className: Styles.navListText,
+                                              href: website,
+                                              rel: "noopener noreferrer",
+                                              target: "_blank"
+                                            }, Belt_Option.getWithDefault(optArtistName, "Artist") + "'s website");
+                                })), React.createElement("br", undefined), React.createElement("br", undefined), Globals.reactMap(optArtistEthAddress, (function (param) {
+                                  return React.createElement(React.Fragment, undefined, React.createElement("a", {
+                                                  className: Styles.navListText,
+                                                  href: "https://" + (etherScanUrl + ("/address/" + artistEthAddress)),
+                                                  rel: "noopener noreferrer",
+                                                  target: "_blank"
+                                                }, Helper.elipsify(artistEthAddress, 10)), React.createElement("br", undefined));
+                                })))), React.createElement(RimbleUi.Box, {
                       p: 1,
                       children: null,
                       width: [
@@ -222,7 +212,7 @@ function ArtistProfiles$ArtistDetails(Props) {
                         0.3333
                       ]
                     }, React.createElement("h2", undefined, Belt_Option.mapWithDefault(optArtistName, "Loading artists contribution:", (function (artistName) {
-                                return "Total generated by " + artistName + "\'s artwork:";
+                                return "Total generated by " + artistName + "'s artwork:";
                               }))), match$1[0] + "USD", React.createElement("br", undefined), React.createElement("small", undefined, match$1[1]), optArtistOrgs !== undefined ? (
                         optArtistOrgs.length !== 0 ? React.createElement(React.Fragment, undefined, React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("h4", undefined, Belt_Option.mapWithDefault(optArtistName, "", (function (artistName) {
                                           return "Organisations that " + artistName + " has contributed to:";

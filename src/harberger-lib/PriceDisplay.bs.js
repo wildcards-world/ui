@@ -4,8 +4,8 @@ import * as React from "react";
 import * as Styles from "../Styles.bs.js";
 import * as QlHooks from "./QlHooks.bs.js";
 import * as RimbleUi from "rimble-ui";
-import * as Belt_Float from "bs-platform/lib/es6/belt_Float.js";
-import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
+import * as Belt_Float from "rescript/lib/es6/belt_Float.js";
+import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as FormatMoney from "../components/components/FormatMoney.bs.js";
 import * as UsdPriceProvider from "./components/UsdPriceProvider.bs.js";
 

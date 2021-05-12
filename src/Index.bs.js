@@ -3,7 +3,7 @@
 import * as React from "react";
 import * as Layout from "./components/Layout.bs.js";
 import * as ReactDOMRe from "reason-react/src/legacy/ReactDOMRe.bs.js";
-import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
+import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as DiscordChat from "./components/DiscordChat.bs.js";
 import * as ReactTranslate from "./helpers/providers/ReactTranslate.bs.js";
 import * as UsdPriceProvider from "./harberger-lib/components/UsdPriceProvider.bs.js";

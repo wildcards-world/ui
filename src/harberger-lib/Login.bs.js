@@ -2,10 +2,10 @@
 
 import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as CssJs from "bs-css-emotion/src/CssJs.bs.js";
-import * as Curry from "bs-platform/lib/es6/curry.js";
+import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
 import * as Styles from "../Styles.bs.js";
-import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
+import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as RootProvider from "./RootProvider.bs.js";
 import * as Web3Connectors from "./bindings/web3-react/Web3Connectors.bs.js";
 import * as TorusConnector from "@web3-react/torus-connector";

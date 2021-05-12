@@ -2,8 +2,8 @@
 
 import * as Cn from "re-classnames/src/Cn.bs.js";
 import * as CssJs from "bs-css-emotion/src/CssJs.bs.js";
-import * as Belt_List from "bs-platform/lib/es6/belt_List.js";
-import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
+import * as Belt_List from "rescript/lib/es6/belt_List.js";
+import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as Css_Js_Core from "bs-css/src/Css_Js_Core.bs.js";
 
 var backgroundImageGorilla = "/img/wildcardsimages/wild-jungle-background.jpg";

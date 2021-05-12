@@ -8,9 +8,9 @@ import * as QlHooks from "./QlHooks.bs.js";
 import * as TokenId from "./TokenId.bs.js";
 import * as MomentRe from "bs-moment/src/MomentRe.bs.js";
 import * as CONSTANTS from "../CONSTANTS.bs.js";
-import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
-import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
-import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
+import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
+import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
+import * as Caml_option from "rescript/lib/es6/caml_option.js";
 
 var getAnimal = TokenId.make;
 

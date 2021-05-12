@@ -155,6 +155,20 @@ let make = () => {
                 onClick={event => {
                   closeModal()
                   ReactEvent.Mouse.preventDefault(event)
+                  clearAndPush(j`/#team`)
+                }}>
+                {"TEAM"->React.string}
+              </a>,
+          },
+          {
+            shouldDisplay: true,
+            shouldDisplayMobile: true,
+            component: (closeModal, _) =>
+              <a
+                className=Styles.navListText
+                onClick={event => {
+                  closeModal()
+                  ReactEvent.Mouse.preventDefault(event)
                   clearAndPush(j`/#leaderboards/monthly-contribution`)
                 }}>
                 {"TOP GUARDIANS"->React.string}

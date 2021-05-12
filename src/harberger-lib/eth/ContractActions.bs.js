@@ -3,7 +3,7 @@
 import * as Web3 from "../Web3.bs.js";
 import Web3$1 from "web3";
 import * as Async from "../Async.bs.js";
-import * as Curry from "bs-platform/lib/es6/curry.js";
+import * as Curry from "rescript/lib/es6/curry.js";
 import BnJs from "bn.js";
 import * as React from "react";
 import * as Ethers from "ethers";
@@ -14,13 +14,13 @@ import * as TokenId from "../TokenId.bs.js";
 import * as CONSTANTS from "../../CONSTANTS.bs.js";
 import * as DaiPermit from "./DaiPermit.bs.js";
 import * as Web3Utils from "../Web3Utils.bs.js";
-import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
-import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
+import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
+import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import * as ContractUtil from "./ContractUtil.bs.js";
 import * as RootProvider from "../RootProvider.bs.js";
 import * as Core from "@web3-react/core";
 import * as LoyaltyTokenJson from "./abi/loyaltyToken.json";
-import * as ApolloClient__React_Hooks_UseMutation from "reason-apollo-client/src/@apollo/client/react/hooks/ApolloClient__React_Hooks_UseMutation.bs.js";
+import * as ApolloClient__React_Hooks_UseMutation from "rescript-apollo-client/src/@apollo/client/react/hooks/ApolloClient__React_Hooks_UseMutation.bs.js";
 
 var loyaltyTokenAbi = LoyaltyTokenJson.loyaltyToken;
 
@@ -108,14 +108,14 @@ function getChildChainId(parentChainId) {
   if (parentChainId <= 0) {
     return 5;
   }
-  switch (parentChainId - 1 | 0) {
-    case 0 :
-        return 137;
+  switch (parentChainId) {
     case 1 :
+        return 137;
     case 2 :
     case 3 :
-        return 5;
     case 4 :
+        return 5;
+    case 5 :
         return 80001;
     
   }
@@ -339,104 +339,105 @@ function handleMetaTxSumbissionState(result, setTxState, currentState, setForceR
   if (!result.called) {
     return ;
   }
-  if (data !== undefined) {
-    if (result.error !== undefined) {
-      if (typeof currentState !== "number" && currentState.TAG === /* ServerError */3) {
-        return ;
-      }
+  if (data === undefined) {
+    if (currentState === 3) {
+      return ;
+    } else {
       return Curry._1(setTxState, (function (param) {
-                    return {
-                            TAG: /* ServerError */3,
-                            _0: "Query Error"
-                          };
+                    return /* SubmittedMetaTx */3;
                   }));
     }
-    var success = data.metaTx.success;
-    var errorMsg = data.metaTx.errorMsg;
-    var txHash = data.metaTx.txHash;
-    if (success) {
-      if (typeof currentState === "number") {
-        if (currentState === /* Failed */4) {
-          return ;
-        }
-        
-      } else {
-        switch (currentState.TAG | 0) {
-          case /* SignedAndSubmitted */1 :
-          case /* Complete */4 :
-              return ;
-          default:
-            
-        }
-      }
-      Curry._1(setTxState, (function (param) {
-              console.log("Setting the tx state!!!");
-              return {
-                      TAG: /* SignedAndSubmitted */1,
-                      _0: txHash
-                    };
-            }));
-      var providerUrl;
-      if (networkId !== undefined) {
-        switch (networkId) {
-          case 1 :
-              providerUrl = "https://rpc-mainnet.matic.network";
-              break;
-          case 2 :
-          case 3 :
-              providerUrl = "No Network";
-              break;
-          case 4 :
-              providerUrl = "https://goerli.infura.io/v3/c401b8ee3a324619a453f2b5b2122d7a";
-              break;
-          case 5 :
-              providerUrl = "https://rpc-mumbai.maticvigil.com/v1/bc87ce81f2f4695f31857297dc5458c336833a78";
-              break;
-          default:
-            providerUrl = "No Network";
-        }
-      } else {
-        providerUrl = "No Network";
-      }
-      var maticProvider = new (Ethers.providers.JsonRpcProvider)(providerUrl);
-      var waitForTx = $$Promise.Js.toResult(maticProvider.waitForTransaction(txHash));
-      $$Promise.getOk(waitForTx, (function (tx) {
-              return Curry._1(setTxState, (function (param) {
-                            Curry._1(setForceRefetch, (function (param) {
-                                    return true;
-                                  }));
-                            setTimeout((function (param) {
-                                    return Curry._1(setForceRefetch, (function (param) {
-                                                  return true;
-                                                }));
-                                  }), 3000);
-                            return {
-                                    TAG: /* Complete */4,
-                                    _0: tx
-                                  };
-                          }));
-            }));
-      return $$Promise.getError(waitForTx, (function (_error) {
-                    return Curry._1(setTxState, (function (param) {
-                                  return /* Failed */4;
-                                }));
-                  }));
-    }
+  }
+  if (result.error !== undefined) {
     if (typeof currentState !== "number" && currentState.TAG === /* ServerError */3) {
       return ;
     }
     return Curry._1(setTxState, (function (param) {
                   return {
                           TAG: /* ServerError */3,
-                          _0: Belt_Option.getWithDefault(errorMsg, "Unknown error")
+                          _0: "Query Error"
                         };
                 }));
   }
-  if (typeof currentState === "number" && currentState === 3) {
+  var success = data.metaTx.success;
+  var errorMsg = data.metaTx.errorMsg;
+  var txHash = data.metaTx.txHash;
+  if (success) {
+    if (typeof currentState === "number") {
+      if (currentState === /* Failed */4) {
+        return ;
+      }
+      
+    } else {
+      switch (currentState.TAG | 0) {
+        case /* SignedAndSubmitted */1 :
+        case /* Complete */4 :
+            return ;
+        default:
+          
+      }
+    }
+    Curry._1(setTxState, (function (param) {
+            console.log("Setting the tx state!!!");
+            return {
+                    TAG: /* SignedAndSubmitted */1,
+                    _0: txHash
+                  };
+          }));
+    var providerUrl;
+    if (networkId !== undefined) {
+      switch (networkId) {
+        case 1 :
+            providerUrl = "https://rpc-mainnet.matic.network";
+            break;
+        case 2 :
+        case 3 :
+            providerUrl = "No Network";
+            break;
+        case 4 :
+            providerUrl = "https://goerli.infura.io/v3/c401b8ee3a324619a453f2b5b2122d7a";
+            break;
+        case 5 :
+            providerUrl = "https://rpc-mumbai.maticvigil.com/v1/bc87ce81f2f4695f31857297dc5458c336833a78";
+            break;
+        default:
+          providerUrl = "No Network";
+      }
+    } else {
+      providerUrl = "No Network";
+    }
+    var maticProvider = new (Ethers.providers.JsonRpcProvider)(providerUrl);
+    var waitForTx = $$Promise.Js.toResult(maticProvider.waitForTransaction(txHash));
+    $$Promise.getOk(waitForTx, (function (tx) {
+            return Curry._1(setTxState, (function (param) {
+                          Curry._1(setForceRefetch, (function (param) {
+                                  return true;
+                                }));
+                          setTimeout((function (param) {
+                                  return Curry._1(setForceRefetch, (function (param) {
+                                                return true;
+                                              }));
+                                }), 3000);
+                          return {
+                                  TAG: /* Complete */4,
+                                  _0: tx
+                                };
+                        }));
+          }));
+    return $$Promise.getError(waitForTx, (function (_error) {
+                  return Curry._1(setTxState, (function (param) {
+                                return /* Failed */4;
+                              }));
+                }));
+  }
+  if (typeof currentState !== "number" && currentState.TAG === /* ServerError */3) {
     return ;
   }
   return Curry._1(setTxState, (function (param) {
-                return /* SubmittedMetaTx */3;
+                return {
+                        TAG: /* ServerError */3,
+                        _0: Belt_Option.getWithDefault(errorMsg, "Unknown error")
+                      };
               }));
 }
 

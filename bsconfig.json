@@ -54,7 +54,7 @@
     "re-classnames",
     "rescript-logger",
     "@glennsl/bs-jest",
-    "reason-apollo-client",
+    "rescript-apollo-client",
     "@reasonml-community/graphql-ppx"
   ]
 }

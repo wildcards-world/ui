@@ -2,10 +2,10 @@
 
 import * as Cn from "re-classnames/src/Cn.bs.js";
 import * as Css from "bs-css-emotion/src/Css.bs.js";
-import * as Curry from "bs-platform/lib/es6/curry.js";
+import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
 import * as Styles from "../Styles.bs.js";
-import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
+import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as RootProvider from "../harberger-lib/RootProvider.bs.js";
 import * as WildcardsLogo from "../img/logos/WildcardsLogo.bs.js";
 

@@ -2,9 +2,9 @@
 
 import * as React from "react";
 import * as Animal from "../harberger-lib/Animal.bs.js";
-import * as Belt_Int from "bs-platform/lib/es6/belt_Int.js";
-import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
-import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
+import * as Belt_Int from "rescript/lib/es6/belt_Int.js";
+import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
+import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.bs.js";
 
 function useUrlState(param) {

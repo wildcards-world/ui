@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import * as Layout from "./components/Layout.bs.js";
-import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
+import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as Client from "@apollo/client";
 import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.bs.js";
 import * as WildcardsProvider from "./harberger-lib/components/WildcardsProvider.bs.js";
