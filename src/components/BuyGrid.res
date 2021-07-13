@@ -14,9 +14,11 @@ module Grid = {
   @react.component
   let make = (~chain) => {
     let allAnimals = QlHooks.useAnimalList(~chain)
+    // Reverse order so that new animals are on top!
+    let allAnimalsReversed = allAnimals->Array.reverse
 
     <Rimble.Flex flexWrap="wrap" justifyContent="space-around" alignItems="stretch" px=50>
-      {allAnimals
+      {allAnimalsReversed
       ->Array.map(animal =>
         <Rimble.Box key={animal->TokenId.toString} fontSize=4 p=3 width=[1., 1., 0.3]>
           <Rimble.Card> <Dapp.CarouselAnimal chain animal scalar=1. /> </Rimble.Card>
