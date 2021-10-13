@@ -17,7 +17,7 @@ For development, using the [vs-code reason plugin](https://github.com/jaredly/re
 If however you don't use such a plugin you can still watch for file changes using the following command. (Sometimes it is useful to do this to see what is happening in the terminal.)
 
 ```
- run re:watch
+ yarn res:watch
 ```
 
 Sometimes VsCode stops working properly. In this case you can run `<ctrl+shift+p>` and then either `Developer: Reload Window` or `Restart Reason Language Server`. Another thing that you can do is run `npm run re:build` (which rebuilds everything, and might fix any buggy vscode behaviour.)

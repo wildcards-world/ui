@@ -2013,7 +2013,7 @@ function usePatron(chain, animal) {
   
 }
 
-function useIsAnimalOwened(chain, ownedAnimal) {
+function useIsAnimalOwned(chain, ownedAnimal) {
   var currentAccount = Belt_Option.mapWithDefault(RootProvider.useCurrentUser(undefined), "loading", (function (a) {
           return a;
         }));
@@ -2564,7 +2564,7 @@ export {
   useLoadTopContributors ,
   useLoadTopContributorsData ,
   usePatron ,
-  useIsAnimalOwened ,
+  useIsAnimalOwned ,
   useTimeAcquired ,
   useQueryPatronQuery ,
   useQueryPatron ,

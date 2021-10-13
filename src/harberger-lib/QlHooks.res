@@ -418,24 +418,31 @@ let useLoadTopContributors = numberOfLeaders => {
   | {data: None, _} => None
   }
 }
+
 let useLoadTopContributorsData = numberOfLeaders =>
   switch useLoadTopContributors(numberOfLeaders) {
   | Some(topContributors) =>
     topContributors
     ->Array.map(patron => {
+      // chris: WIP implement this check and only do the calc if the patron isn't foreclosed 
+      // problem: I can't call useIsForeclosed (a QLHook) from within a loop/map
+      // let isForeclosedMainnet = useIsForeclosed(~chain=Client.MainnetQuery, patron.id)
       let monthlyContribution =
-        patron.patronTokenCostScaledNumerator
-        ->BN.mul(CONSTANTS.secondsInAMonthBn) // A month with 30 days has 2592000 seconds
-        ->BN.div(
-          // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
-          CONSTANTS.secondsIn365DaysPrecisionScaled,
-        )
-        ->Web3Utils.fromWeiBNToEthPrecision(~digits=4)
+        // isForeclosedMainnet ?
+        //  "0.00" : 
+          patron.patronTokenCostScaledNumerator
+            ->BN.mul(CONSTANTS.secondsInAMonthBn) // A month with 30 days has 2592000 seconds
+            ->BN.div(
+              // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
+              CONSTANTS.secondsIn365DaysPrecisionScaled,
+            )
+            ->Web3Utils.fromWeiBNToEthPrecision(~digits=4)
       (patron.id, monthlyContribution)
     })
     ->Some
   | None => None
   }
+
 let usePatron: (~chain: Client.context, TokenId.t) => option<string> = (~chain, animal) =>
   switch useWildcardQuery(~chain, animal) {
   | Some({wildcard: Some({owner: {address, _}, _})}) => Some(address)
@@ -444,7 +451,7 @@ let usePatron: (~chain: Client.context, TokenId.t) => option<string> = (~chain, 
     None
   }
 
-let useIsAnimalOwened = (~chain, ownedAnimal) => {
+let useIsAnimalOwned = (~chain, ownedAnimal) => {
   let currentAccount = RootProvider.useCurrentUser()->Option.mapWithDefault("loading", a => a)
 
   let currentPatron =
