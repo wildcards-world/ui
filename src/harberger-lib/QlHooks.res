@@ -425,7 +425,7 @@ let useLoadTopContributorsData = numberOfLeaders =>
     topContributors
     ->Array.map(patron => {
       // chris: WIP implement this check and only do the calc if the patron isn't foreclosed 
-      // problem: I can't call useIsForeclosed (a QLHook) from within a loop/map
+      // problem: I can't call useIsForeclosed (a QLHook) from within a loop/map => possibly separate out like in UserProfile.res
       // let isForeclosedMainnet = useIsForeclosed(~chain=Client.MainnetQuery, patron.id)
       let monthlyContribution =
         // isForeclosedMainnet ?
