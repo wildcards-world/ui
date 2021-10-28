@@ -30,13 +30,14 @@ var headingStyle = Curry._1(Css.style, {
 function BuyGrid$Grid(Props) {
   var chain = Props.chain;
   var allAnimals = QlHooks.useAnimalList(chain);
+  var allAnimalsReversed = Belt_Array.reverse(allAnimals);
   return React.createElement(RimbleUi.Flex, {
               children: null,
               flexWrap: "wrap",
               alignItems: "stretch",
               justifyContent: "space-around",
               px: 50
-            }, Belt_Array.map(allAnimals, (function (animal) {
+            }, Belt_Array.map(allAnimalsReversed, (function (animal) {
                     return React.createElement(RimbleUi.Box, {
                                 p: 3,
                                 fontSize: 4,

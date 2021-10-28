@@ -288,7 +288,7 @@ function OrgProfile$OrgPage(Props) {
                       children: null,
                       flexWrap: "wrap",
                       alignItems: "start",
-                      alignContent: "space-arround"
+                      alignContent: "space-around"
                     }, React.createElement(RimbleUi.Box, {
                           children: null,
                           width: [
@@ -395,7 +395,7 @@ function OrgProfile$OrgPage(Props) {
                         }, orgAnimals.length !== 0 ? React.createElement(React.Fragment, {
                                 children: null
                               }, React.createElement(RimbleUi.Heading, {
-                                    children: "Organisations animals"
+                                    children: "Organisation's animals"
                                   }), React.createElement(RimbleUi.Flex, {
                                     children: Belt_Array.map(orgAnimals, (function (animal) {
                                             var tokenId = Belt_Option.getWithDefault(animal.id, TokenId.makeFromInt(99999));

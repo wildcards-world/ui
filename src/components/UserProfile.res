@@ -181,20 +181,26 @@ module UserDetails = {
     }
     let etherScanUrl = RootProvider.useEtherscanUrl()
 
-    let monthlyCotributionWei =
-      patronQueryResultMainnet->Option.mapWithDefault(CONSTANTS.zeroBn, patronMainnet =>
-        patronMainnet.patronTokenCostScaledNumerator
-        ->BN.mul(CONSTANTS.secondsInAMonthBn)
-        ->BN.div(CONSTANTS.secondsIn365DaysPrecisionScaled)
-      )
-    let monthlyCotributionDai =
-      patronQueryResultMatic->Option.mapWithDefault(CONSTANTS.zeroBn, patronMainnet =>
-        patronMainnet.patronTokenCostScaledNumerator
-        ->BN.mul(CONSTANTS.secondsInAMonthBn)
-        ->BN.div(CONSTANTS.secondsIn365DaysPrecisionScaled)
-      )
+    let monthlyContributionWei = 
+      isForeclosedMainnet ?  
+        CONSTANTS.zeroBn
+        : patronQueryResultMainnet->Option.mapWithDefault(CONSTANTS.zeroBn, patronMainnet =>
+          patronMainnet.patronTokenCostScaledNumerator
+           ->BN.mul(CONSTANTS.secondsInAMonthBn)
+           ->BN.div(CONSTANTS.secondsIn365DaysPrecisionScaled)
+          ) 
 
-    let currentTimestamp = QlHooks.useCurrentTime()
+    let monthlyContributionDai = 
+      isForeclosedMatic ?
+       CONSTANTS.zeroBn
+       : patronQueryResultMatic->Option.mapWithDefault(CONSTANTS.zeroBn, patronMainnet =>
+         patronMainnet.patronTokenCostScaledNumerator
+          ->BN.mul(CONSTANTS.secondsInAMonthBn)
+          ->BN.div(CONSTANTS.secondsIn365DaysPrecisionScaled)
+        )
+        
+    let currentTimestamp = QlHooks.useCurrentTime() 
+    
     let totalContributionWei = patronQueryResultMainnet->Option.mapWithDefault(CONSTANTS.zeroBn, ({
       patronTokenCostScaledNumerator,
       totalContributed,
@@ -376,7 +382,7 @@ module UserDetails = {
         </Rimble.Box>
         <Rimble.Box p=1 width=[1., 1., 0.3333]>
           <h2> {"Monthly Contribution"->React.string} </h2>
-          <Amounts.Basic mainnetEth=monthlyCotributionWei maticDai=monthlyCotributionDai />
+          <Amounts.Basic mainnetEth=monthlyContributionWei maticDai=monthlyContributionDai />
           <h2> {"Total Contributed"->React.string} </h2>
           <Amounts.AmountRaised mainnetEth=totalContributionWei maticDai=totalContributionDai />
         </Rimble.Box>
@@ -384,7 +390,7 @@ module UserDetails = {
           {switch currentlyOwnedTokens {
           | [] =>
             uniquePreviouslyOwnedTokens->Array.length > 0
-              ? <p> {"User currently doesn't currently own a wildcard."->React.string} </p>
+              ? <p> {"User currently doesn't own a wildcard."->React.string} </p>
               : <p> {"User has never owned a wildcard."->React.string} </p>
           | currentlyOwnedTokens =>
             <React.Fragment>
