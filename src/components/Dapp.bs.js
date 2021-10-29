@@ -201,7 +201,7 @@ var AuctionDetails = {
 function Dapp$BasicAnimalDisplay(Props) {
   var chain = Props.chain;
   var animal = Props.animal;
-  var owned = QlHooks.useIsAnimalOwened(chain, animal);
+  var owned = QlHooks.useIsAnimalOwned(chain, animal);
   var currentPatron = Belt_Option.getWithDefault(QlHooks.usePatron(chain, animal), "Loading");
   var displayName = UserProvider.useDisplayName(currentPatron);
   var displayNameStr = UserProvider.displayNameToString(displayName);
@@ -549,7 +549,7 @@ var Unowned = {
 function Dapp$AnimalActionsOnDetailsPage(Props) {
   var chain = Props.chain;
   var animal = Props.animal;
-  var owned = QlHooks.useIsAnimalOwened(chain, animal);
+  var owned = QlHooks.useIsAnimalOwned(chain, animal);
   var currentPatron = Belt_Option.getWithDefault(QlHooks.usePatron(chain, animal), "Loading");
   var displayName = UserProvider.useDisplayName(currentPatron);
   var displayNameStr = UserProvider.displayNameToString(displayName);

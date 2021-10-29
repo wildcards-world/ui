@@ -115,7 +115,7 @@ module AuctionDetails = {
 module BasicAnimalDisplay = {
   @react.component
   let make = (~chain, ~animal: TokenId.t) => {
-    let owned = animal->QlHooks.useIsAnimalOwened(~chain)
+    let owned = animal->QlHooks.useIsAnimalOwned(~chain)
     let currentPatron = Option.getWithDefault(QlHooks.usePatron(~chain, animal), "Loading")
     let displayName = UserProvider.useDisplayName(currentPatron)
 
@@ -379,7 +379,7 @@ module AnimalActionsOnDetailsPage = {
 
   @react.component
   let make = (~chain, ~animal) => {
-    let owned = animal->QlHooks.useIsAnimalOwened(~chain)
+    let owned = animal->QlHooks.useIsAnimalOwned(~chain)
     // let currentAccount =
     //   RootProvider.useCurrentUser()->mapWithDefault("loading", a => a);
     let currentPatron = Option.getWithDefault(QlHooks.usePatron(~chain, animal), "Loading")

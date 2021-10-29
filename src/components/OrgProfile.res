@@ -200,7 +200,7 @@ module OrgPage = {
           open Css
           style(list{width(#percent(100.))})
         }>
-        <Rimble.Flex flexWrap="wrap" alignItems="start" alignContent="space-arround">
+        <Rimble.Flex flexWrap="wrap" alignItems="start" alignContent="space-around">
           <Rimble.Box
             width=[1., 1., 0.3333]
             className={
@@ -304,7 +304,7 @@ module OrgPage = {
             | [] => <p> {"This organisation doesn't have any wildcards yet"->React.string} </p>
             | uniquePreviouslyOwnedTokens =>
               <React.Fragment>
-                <Rimble.Heading> {"Organisations animals"->React.string} </Rimble.Heading>
+                <Rimble.Heading> {"Organisation's animals"->React.string} </Rimble.Heading>
                 <Rimble.Flex flexWrap="wrap" className=UserProfile.centreAlignOnMobile>
                   {React.array(
                     uniquePreviouslyOwnedTokens->Array.map(animal => {

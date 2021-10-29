@@ -193,12 +193,12 @@ function UserProfile$UserDetails(Props) {
           return a.username;
         }));
   var etherScanUrl = RootProvider.useEtherscanUrl(undefined);
-  var monthlyCotributionWei = Belt_Option.mapWithDefault(patronQueryResultMainnet, CONSTANTS.zeroBn, (function (patronMainnet) {
-          return patronMainnet.patronTokenCostScaledNumerator.mul(CONSTANTS.secondsInAMonthBn).div(CONSTANTS.secondsIn365DaysPrecisionScaled);
-        }));
-  var monthlyCotributionDai = Belt_Option.mapWithDefault(patronQueryResultMatic, CONSTANTS.zeroBn, (function (patronMainnet) {
-          return patronMainnet.patronTokenCostScaledNumerator.mul(CONSTANTS.secondsInAMonthBn).div(CONSTANTS.secondsIn365DaysPrecisionScaled);
-        }));
+  var monthlyContributionWei = isForeclosedMainnet ? CONSTANTS.zeroBn : Belt_Option.mapWithDefault(patronQueryResultMainnet, CONSTANTS.zeroBn, (function (patronMainnet) {
+            return patronMainnet.patronTokenCostScaledNumerator.mul(CONSTANTS.secondsInAMonthBn).div(CONSTANTS.secondsIn365DaysPrecisionScaled);
+          }));
+  var monthlyContributionDai = isForeclosedMatic ? CONSTANTS.zeroBn : Belt_Option.mapWithDefault(patronQueryResultMatic, CONSTANTS.zeroBn, (function (patronMainnet) {
+            return patronMainnet.patronTokenCostScaledNumerator.mul(CONSTANTS.secondsInAMonthBn).div(CONSTANTS.secondsIn365DaysPrecisionScaled);
+          }));
   var currentTimestamp = QlHooks.useCurrentTime(undefined);
   var totalContributionWei = Belt_Option.mapWithDefault(patronQueryResultMainnet, CONSTANTS.zeroBn, (function (param) {
           var timeElapsed = new BnJs(currentTimestamp).sub(param.lastUpdated);
@@ -358,8 +358,8 @@ function UserProfile$UserDetails(Props) {
                         0.3333
                       ]
                     }, React.createElement("h2", undefined, "Monthly Contribution"), React.createElement(Amounts.Basic.make, {
-                          mainnetEth: monthlyCotributionWei,
-                          maticDai: monthlyCotributionDai
+                          mainnetEth: monthlyContributionWei,
+                          maticDai: monthlyContributionDai
                         }), React.createElement("h2", undefined, "Total Contributed"), React.createElement(Amounts.AmountRaised.make, {
                           mainnetEth: totalContributionWei,
                           maticDai: totalContributionDai
@@ -385,7 +385,7 @@ function UserProfile$UserDetails(Props) {
                                 flexWrap: "wrap",
                                 className: centreAlignOnMobile
                               }), React.createElement("br", undefined), React.createElement("br", undefined), React.createElement("br", undefined)) : (
-                        uniquePreviouslyOwnedTokens.length !== 0 ? React.createElement("p", undefined, "User currently doesn't currently own a wildcard.") : React.createElement("p", undefined, "User has never owned a wildcard.")
+                        uniquePreviouslyOwnedTokens.length !== 0 ? React.createElement("p", undefined, "User currently doesn't own a wildcard.") : React.createElement("p", undefined, "User has never owned a wildcard.")
                       ), uniquePreviouslyOwnedTokens.length !== 0 ? React.createElement(React.Fragment, {
                             children: null
                           }, React.createElement(RimbleUi.Heading, {
