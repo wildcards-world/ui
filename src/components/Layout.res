@@ -107,12 +107,12 @@ let make = () => {
           <a href="/#explorer/2nd-edition" className=AnimalAnnouncement.linkToAnimal>
             {"New wildcards"->React.string}
           </a>
-          {" launched on the "->React.string}
+          {" powered by the "->React.string}
           <a
-            href="https://matic.network"
+            href="https://polygon.technology/"
             rel="noopener noreferrer"
             className=AnimalAnnouncement.linkToAnimal>
-            {"MATIC network. "->React.string}
+            {"Polygon network. "->React.string}
           </a>
         </span>
       </Announcement>

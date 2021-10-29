@@ -1,4 +1,4 @@
-%bs.raw(`require("react-tabs/style/react-tabs.css")`)
+%raw(`require("react-tabs/style/react-tabs.css")`)
 
 module Router = {
   @react.component

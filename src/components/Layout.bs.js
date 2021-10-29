@@ -224,11 +224,11 @@ function Layout(Props) {
                       children: React.createElement("span", undefined, React.createElement("a", {
                                 className: AnimalAnnouncement.linkToAnimal,
                                 href: "/#explorer/2nd-edition"
-                              }, "New wildcards"), " launched on the ", React.createElement("a", {
+                              }, "New wildcards"), " powered by the ", React.createElement("a", {
                                 className: AnimalAnnouncement.linkToAnimal,
-                                href: "https://matic.network",
+                                href: "https://polygon.technology/",
                                 rel: "noopener noreferrer"
-                              }, "MATIC network. "))
+                              }, "Polygon network. "))
                     }), React.createElement(Header.make, {
                       navItems: [
                         {

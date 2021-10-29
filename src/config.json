@@ -1,4 +1,0 @@
-{
-  "graphEndpoint": "https://api.thegraph.com/subgraphs/name/float-capital/testnet",
-  "priceHistoryGraphEndpoint": "https://api.thegraph.com/subgraphs/name/float-capital/testnet-price-history"
-}
