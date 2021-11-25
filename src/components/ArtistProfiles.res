@@ -199,12 +199,12 @@ module ArtistDetails = {
                   <div
                     className={
                       open CssJs
-                      style(.[padding(em(0.4)), width(vh(12.)), cursor(#pointer)])
+                      style(. [padding(em(0.4)), width(vh(12.)), cursor(#pointer)])
                     }>
                     <img
                       className={
                         open CssJs
-                        style(.[width(#percent(100.))])
+                        style(. [width(#percent(100.))])
                       }
                       onClick={_e => clearAndPush("/#org/" ++ org.id)}
                       src={CONSTANTS.cdnBase ++ org.logo}
@@ -222,12 +222,7 @@ module ArtistDetails = {
           | Some([]) => <p> {"Artist doesn't have any launched wildcards"->React.string} </p>
           | Some(_) =>
             <React.Fragment>
-              <Rimble.Heading>
-                {"Wildcards created by "->React.string}
-                {optName
-                ->Option.getWithDefault(Option.getWithDefault(optArtistName, "Loading artist name"))
-                ->React.string}
-              </Rimble.Heading>
+              <Rimble.Heading> {"Artists Wildcards"->React.string} </Rimble.Heading>
               <Rimble.Flex flexWrap="wrap" className=centreAlignOnMobile>
                 {React.array(
                   artistsAnimalsArrayLaunched->Array.map(token => {

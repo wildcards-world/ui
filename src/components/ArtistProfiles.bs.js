@@ -250,8 +250,8 @@ function ArtistProfiles$ArtistDetails(Props) {
                         optArtistLaunchedWildcards.length !== 0 ? React.createElement(React.Fragment, {
                                 children: null
                               }, React.createElement(RimbleUi.Heading, {
-                                    children: null
-                                  }, "Wildcards created by ", Belt_Option.getWithDefault(optName, Belt_Option.getWithDefault(optArtistName, "Loading artist name"))), React.createElement(RimbleUi.Flex, {
+                                    children: "Artists Wildcards"
+                                  }), React.createElement(RimbleUi.Flex, {
                                     children: Belt_Array.map(artistsAnimalsArrayLaunched, (function (token) {
                                             var id = TokenId.toString(token);
                                             return React.createElement(UserProfile.Token.make, {
