@@ -34,7 +34,7 @@
     "isomorphic-unfetch": "^3.1.0",
     "isomorphic-ws": "^4.0.1",
     "moment": "^2.29.1",
-    "node-sass": "^5.0.0",
+    "node-sass": "^7.0.0",
     "re-classnames": "^5.0.1",
     "react-countup": "^4.3.3",
     "react-images": "^1.1.7",
