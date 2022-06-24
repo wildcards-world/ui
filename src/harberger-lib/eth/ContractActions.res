@@ -295,12 +295,15 @@ let execDaiPermitMetaTx = (
       ),
     )->Js.Promise.resolve
   }, _)
-  ->Js.Promise.catch(err => {
-    Js.log2("this error was caught", err)
-    Js.Promise.resolve(""->Obj.magic)
-  }, // TODO: This needs to be
+  ->Js.Promise.catch(
+    err => {
+      Js.log2("this error was caught", err)
+      Js.Promise.resolve(""->Obj.magic)
+    },
+    // TODO: This needs to be
 
-  _)
+    _,
+  )
   ->ignore
 
 let handleMetaTxSumbissionState = (
@@ -588,7 +591,6 @@ let useBuyAuction = (~chain, animal, library: option<Web3.web3Library>, account,
         setTxState(_ => Created)
         switch optSteward {
         | Some(steward) =>
-          // let buyPromise =
           let buyPromise = steward.buyAuction(.
             animalId,
             newPriceEncoded,
@@ -659,7 +661,13 @@ let useRedeemLoyaltyTokens = (patron: string) => {
   (buyFunction, txState)
 }
 
-let useUpdateDeposit = (~chain, library: option<Web3.web3Library>, account, parentChainId) => {
+let useUpdateDeposit = (
+  ~useMetaTransaction=false,
+  ~chain,
+  library: option<Web3.web3Library>,
+  account,
+  parentChainId,
+) => {
   let (txState, setTxState) = React.useState(() => UnInitialised)
 
   let optSteward = useStewardContract()
@@ -696,32 +704,51 @@ let useUpdateDeposit = (~chain, library: option<Web3.web3Library>, account, pare
         | (Some(lib), Some(userAddress), Some(maticState)) =>
           let daiNonce = maticState.daiNonce
           let stewardNonce = maticState.stewardNonce
-          setTxState(_ => DaiPermit(amountToAdd->BN.new_))
-          execDaiPermitMetaTx(
-            daiNonce,
-            networkName,
-            stewardNonce,
-            setTxState,
-            mutate,
-            userAddress,
-            spender,
-            lib,
-            (steward, v, r, s) =>
-              (
-                steward->Web3.Contract.MaticSteward.depositWithPermit(
-                  BN.new_(daiNonce),
-                  CONSTANTS.zeroBn,
-                  true,
-                  v,
-                  r,
-                  s,
-                  userAddress,
-                  BN.new_(amountToAdd),
-                )
-              ).encodeABI(),
-            chainId,
-            verifyingContract,
-          )
+          if useMetaTransaction {
+            setTxState(_ => DaiPermit(amountToAdd->BN.new_))
+            execDaiPermitMetaTx(
+              daiNonce,
+              networkName,
+              stewardNonce,
+              setTxState,
+              mutate,
+              userAddress,
+              spender,
+              lib,
+              (steward, v, r, s) =>
+                (
+                  steward->Web3.Contract.MaticSteward.depositWithPermit(
+                    BN.new_(daiNonce),
+                    CONSTANTS.zeroBn,
+                    true,
+                    v,
+                    r,
+                    s,
+                    userAddress,
+                    BN.new_(amountToAdd),
+                  )
+                ).encodeABI(),
+              chainId,
+              verifyingContract,
+            )
+          } else {
+            // setTxState(_ => Created)
+            // switch optSteward {
+            // | Some(steward) =>
+            //   updateDepositPromise->Promise.getOk(tx => {
+            //     setTxState(_ => SignedAndSubmitted(tx.hash))
+            //     let txMinedPromise = tx.wait(.)->Promise.Js.toResult
+            //     txMinedPromise->Promise.getOk(txOutcome => setTxState(_ => Complete(txOutcome)))
+            //     txMinedPromise->Promise.getError(_error => setTxState(_ => Failed))
+            //     ()
+            //   })
+            //   updateDepositPromise->Promise.getError(error =>
+            //     Js.log("error processing transaction: " ++ error.message)
+            //   )
+            //   ()
+            // }
+            ()->Obj.magic
+          }
 
         | _ =>
           Js.log("something important is null")
@@ -737,7 +764,7 @@ let useUpdateDeposit = (~chain, library: option<Web3.web3Library>, account, pare
         setTxState(_ => Created)
         switch optSteward {
         | Some(steward) =>
-          let updateDepositPromise = steward.depositWei(.{
+          let updateDepositPromise = steward.depositWei(. {
             gasLimit: None, //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
             value: value,
           })->Promise.Js.toResult

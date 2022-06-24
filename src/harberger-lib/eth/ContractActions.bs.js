@@ -761,7 +761,8 @@ function useRedeemLoyaltyTokens(patron) {
         ];
 }
 
-function useUpdateDeposit(chain, library, account, parentChainId) {
+function useUpdateDeposit(useMetaTransactionOpt, chain, library, account, parentChainId) {
+  var useMetaTransaction = useMetaTransactionOpt !== undefined ? useMetaTransactionOpt : false;
   var match = React.useState(function () {
         return /* UnInitialised */0;
       });
@@ -854,15 +855,19 @@ function useUpdateDeposit(chain, library, account, parentChainId) {
                 if (library !== undefined && account !== undefined && maticState !== undefined) {
                   var daiNonce = maticState.daiNonce;
                   var stewardNonce = maticState.stewardNonce;
-                  Curry._1(setTxState, (function (param) {
-                          return {
-                                  TAG: /* DaiPermit */0,
-                                  _0: new BnJs(amountToAdd)
-                                };
-                        }));
-                  return execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, mutate, account, spender, library, (function (steward, v, r, s) {
-                                return Curry._1(steward.methods.depositWithPermit(new BnJs(daiNonce), CONSTANTS.zeroBn, true, v, r, s, account, new BnJs(amountToAdd)).encodeABI, undefined);
-                              }), chainId, verifyingContract);
+                  if (useMetaTransaction) {
+                    Curry._1(setTxState, (function (param) {
+                            return {
+                                    TAG: /* DaiPermit */0,
+                                    _0: new BnJs(amountToAdd)
+                                  };
+                          }));
+                    return execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, mutate, account, spender, library, (function (steward, v, r, s) {
+                                  return Curry._1(steward.methods.depositWithPermit(new BnJs(daiNonce), CONSTANTS.zeroBn, true, v, r, s, account, new BnJs(amountToAdd)).encodeABI, undefined);
+                                }), chainId, verifyingContract);
+                  } else {
+                    return ;
+                  }
                 }
                 console.log("something important is null");
                 console.log(library, account, maticState);
