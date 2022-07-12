@@ -1,6 +1,25 @@
 @react.component
 let make = () => {
+  let (totalRaisedEthPaidOut, totalRaisedUsdEquivalent) =
+    Config.orgWtihdrawalsMapping
+    ->Js.Dict.values
+    ->Array.concatMany
+    ->Array.reduce((Ethers.BigNumber.fromInt(0), 0.), (
+      (totalRaisedEthPaidOut, totalRaisedUsdEquivalent),
+      payout,
+    ) => {
+      if payout.networkId == 1 {
+        (
+          totalRaisedEthPaidOut->Ethers.BigNumber.add(payout.amount),
+          totalRaisedUsdEquivalent +. payout.amountInUsd,
+        )
+      } else {
+        (totalRaisedEthPaidOut, totalRaisedUsdEquivalent)
+      }
+    })
+
   let optTotalPatronageWei = QlHooks.useAmountRaised(~chain=Client.MainnetQuery)
+
   let optTotalPatronageDai = QlHooks.useAmountRaised(~chain=Client.MaticQuery)
 
   switch (optTotalPatronageWei, optTotalPatronageDai) {
@@ -26,6 +45,8 @@ let make = () => {
         </span>
         <br />
         <Amounts.AmountRaised
+          ethPaidOut={totalRaisedEthPaidOut->Ethers.BigNumber.toString->BN.new_}
+          valueEthPaidOut=totalRaisedUsdEquivalent
           mainnetEth
           maticDai
           populateElement={(~bigTextComponent, ~smallTextComponent, ~optCommentTextComponent) => {

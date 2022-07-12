@@ -703,7 +703,7 @@ function Dapp$DetailsView(Props) {
         },
         value: "make",
         fullPath: "Dapp.DetailsView.make",
-        filePath: "/home/jasoons/Documents/code/ui/src/components/Dapp.res"
+        filePath: "/home/jasoons/Documents/code/wildcards/ui/src/components/Dapp.res"
       }, "optionAnimal", [
         "a",
         optionAnimal
@@ -806,7 +806,7 @@ function Dapp$DefaultLook(Props) {
               },
               value: "make",
               fullPath: "Dapp.DefaultLook.make",
-              filePath: "/home/jasoons/Documents/code/ui/src/components/Dapp.res"
+              filePath: "/home/jasoons/Documents/code/wildcards/ui/src/components/Dapp.res"
             }, "the animalString", [
               "a",
               animalStr

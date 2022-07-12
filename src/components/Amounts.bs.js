@@ -4,6 +4,7 @@ import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Eth from "../harberger-lib/Eth.bs.js";
 import * as CssJs from "bs-css-emotion/src/CssJs.bs.js";
 import * as Curry from "rescript/lib/es6/curry.js";
+import BnJs from "bn.js";
 import * as React from "react";
 import * as Countup from "./components/Countup.bs.js";
 import * as Web3Utils from "../harberger-lib/Web3Utils.bs.js";
@@ -21,11 +22,16 @@ function Amounts$AmountRaised(Props) {
   var populateElementOpt = Props.populateElement;
   var mainnetEth = Props.mainnetEth;
   var maticDai = Props.maticDai;
+  var ethPaidOutOpt = Props.ethPaidOut;
+  var valueEthPaidOutOpt = Props.valueEthPaidOut;
   var populateElement = populateElementOpt !== undefined ? populateElementOpt : (function (bigTextComponent, smallTextComponent, optCommentTextComponent) {
         return React.createElement("p", undefined, bigTextComponent, React.createElement("span", {
                         className: CssJs.style([CssJs.fontSize(CssJs.em(0.5))])
                       }, smallTextComponent), " USD", optCommentTextComponent !== undefined ? React.createElement(React.Fragment, undefined, React.createElement("br", undefined), React.createElement("small", undefined, Caml_option.valFromOption(optCommentTextComponent))) : null);
       });
+  var ethPaidOut = ethPaidOutOpt !== undefined ? Caml_option.valFromOption(ethPaidOutOpt) : new BnJs(0);
+  var valueEthPaidOut = valueEthPaidOutOpt !== undefined ? valueEthPaidOutOpt : 0;
+  console.log(ethPaidOut, valueEthPaidOut);
   var currentUsdEthPrice = UsdPriceProvider.useUsdPrice(undefined);
   var match = React.useState(function () {
         return [];
