@@ -23,7 +23,10 @@ let usePartners = () =>
   | {loading: true, _} => None
   | {error: Some(_error), _} => None
   | {data: Some({organisations}), _} =>
-    organisations->Array.map(org => {logo: org.logo, id: org.id, name: org.name})->Some
+    organisations
+    ->Array.keep(org => !Js.Array2.includes(Config.filterOutOrgs, org.id))
+    ->Array.map(org => {logo: org.logo, id: org.id, name: org.name})
+    ->Some
   | _ => None
   }
 

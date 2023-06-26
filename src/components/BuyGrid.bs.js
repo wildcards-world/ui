@@ -4,6 +4,7 @@ import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Dapp from "./Dapp.bs.js";
 import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
+import * as Config from "../Config.bs.js";
 import * as QlHooks from "../harberger-lib/QlHooks.bs.js";
 import * as TokenId from "../harberger-lib/TokenId.bs.js";
 import * as RimbleUi from "rimble-ui";
@@ -31,7 +32,9 @@ var headingStyle = Curry._1(Css.style, {
 function BuyGrid$Grid(props) {
   var chain = props.chain;
   var allAnimals = QlHooks.useAnimalList(chain);
-  var allAnimalsReversed = Belt_Array.reverse(allAnimals);
+  var allAnimalsReversed = Belt_Array.reverse(Belt_Array.keep(allAnimals, (function (animalId) {
+              return !Config.filterOutWildcards.includes(TokenId.toString(animalId));
+            })));
   return React.createElement(RimbleUi.Flex, {
               children: null,
               flexWrap: "wrap",
