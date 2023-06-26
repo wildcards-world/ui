@@ -62,6 +62,5 @@ export {
   chainContextToStr ,
   networkSwitcherHttpLink ,
   instance ,
-  
 }
 /* ApolloClient Not a pure module */

@@ -26,7 +26,7 @@ type urlState =
   | VotePage
 
 let useUrlState = () => {
-  let url = ReasonReactRouter.useUrl()
+  let url = RescriptReactRouter.useUrl()
 
   React.useMemo1(() =>
     switch Js.String.split("/", url.hash) {

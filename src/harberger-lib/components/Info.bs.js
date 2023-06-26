@@ -5,6 +5,7 @@ import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
 import * as Styles from "../../Styles.bs.js";
 import * as QlHooks from "../QlHooks.bs.js";
+import * as MomentRe from "bs-moment/src/MomentRe.bs.js";
 import * as CountDown from "../CountDown.bs.js";
 import * as Web3Utils from "../Web3Utils.bs.js";
 import * as RimbleUi from "rimble-ui";
@@ -20,22 +21,14 @@ import ReactSwitch from "react-switch";
 import * as ReactTranslate from "../../helpers/providers/ReactTranslate.bs.js";
 import * as UsdPriceProvider from "./UsdPriceProvider.bs.js";
 
-function Info$ExpertView(Props) {
-  var monthlyRate = Props.monthlyRate;
-  var tokenName = Props.tokenName;
-  var optMonthlyPledgeEth = Props.optMonthlyPledgeEth;
-  var unit = Props.unit;
-  var showEthWithUsdConversion = Props.showEthWithUsdConversion;
-  var optMonthlyPledgeUsd = Props.optMonthlyPledgeUsd;
-  var userIdType = Props.userIdType;
-  var currentPatron = Props.currentPatron;
-  var displayNameStr = Props.displayNameStr;
-  var depositAvailableToWithdrawEth = Props.depositAvailableToWithdrawEth;
-  var depositAvailableToWithdrawUsd = Props.depositAvailableToWithdrawUsd;
-  var totalPatronage = Props.totalPatronage;
-  var totalPatronageUsd = Props.totalPatronageUsd;
-  var definiteTime = Props.definiteTime;
-  var daysHeld = Props.daysHeld;
+function Info$ExpertView(props) {
+  var daysHeld = props.daysHeld;
+  var definiteTime = props.definiteTime;
+  var optMonthlyPledgeUsd = props.optMonthlyPledgeUsd;
+  var showEthWithUsdConversion = props.showEthWithUsdConversion;
+  var unit = props.unit;
+  var optMonthlyPledgeEth = props.optMonthlyPledgeEth;
+  var tokenName = props.tokenName;
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   var tmp;
   if (definiteTime !== undefined) {
@@ -44,7 +37,7 @@ function Info$ExpertView(Props) {
                       message: "This is the date the deposit will run out and the current owner will lose guardianship of " + tokenName,
                       placement: "top",
                       children: React.createElement("span", undefined, "ⓘ")
-                    }))), React.createElement("br", undefined), date.format("LLLL"), React.createElement("br", undefined), React.createElement("small", undefined, "( ", React.createElement(CountDown.make, {
+                    }))), React.createElement("br", undefined), MomentRe.Moment.format("LLLL", date), React.createElement("br", undefined), React.createElement("small", undefined, "( ", React.createElement(CountDown.make, {
                   endDateMoment: date
                 }), ")"));
   } else {
@@ -52,7 +45,7 @@ function Info$ExpertView(Props) {
   }
   var tmp$1;
   if (daysHeld !== undefined) {
-    var timeAcquiredString = daysHeld[1].toISOString(undefined);
+    var timeAcquiredString = MomentRe.Moment.toISOString(undefined, daysHeld[1]);
     tmp$1 = React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, "Days Held: ", React.createElement(RimbleUi.Tooltip, {
                       message: "This is the amount of time " + (tokenName + (" has been held. It was acquired on the " + (timeAcquiredString + "."))),
                       placement: "top",
@@ -63,48 +56,40 @@ function Info$ExpertView(Props) {
   }
   return React.createElement(React.Fragment, {
               children: null
-            }, React.createElement("div", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, "Monthly Pledge (at " + (monthlyRate + "%): "), React.createElement(RimbleUi.Tooltip, {
+            }, React.createElement("div", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, "Monthly Pledge (at " + (props.monthlyRate + "%): "), React.createElement(RimbleUi.Tooltip, {
                               message: "This is the monthly percentage contribution of " + (tokenName + "'s sale price that will go towards conservation of at risk animals. This is deducted continuously from the deposit and paid by the owner of the animal"),
                               placement: "top",
                               children: React.createElement("span", undefined, "ⓘ")
                             }))), React.createElement("br", undefined), optMonthlyPledgeEth !== undefined ? optMonthlyPledgeEth + (" " + unit) : React.createElement(RimbleUi.Loader, {}), React.createElement("br", undefined), showEthWithUsdConversion && optMonthlyPledgeUsd !== undefined ? React.createElement("small", undefined, "(" + (optMonthlyPledgeUsd + " USD)")) : null), React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, "Current Patron: ", React.createElement(RimbleUi.Tooltip, {
-                              message: "This is the " + userIdType + " of the current owner",
+                              message: "This is the $userIdType of the current owner",
                               placement: "top",
                               children: React.createElement("span", undefined, "ⓘ")
                             }))), React.createElement("br", undefined), React.createElement("a", {
                       onClick: (function (e) {
                           e.preventDefault();
-                          return Curry._1(clearAndPush, "/#user/" + currentPatron);
+                          Curry._1(clearAndPush, "/#user/$currentPatron");
                         })
-                    }, displayNameStr)), React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, "Available Deposit: ", React.createElement(RimbleUi.Tooltip, {
+                    }, props.displayNameStr)), React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, "Available Deposit: ", React.createElement(RimbleUi.Tooltip, {
                               message: "This is the amount the owner has deposited to pay their monthly contribution",
                               placement: "top",
                               children: React.createElement("span", undefined, "ⓘ")
-                            }))), React.createElement("br", undefined), depositAvailableToWithdrawEth + (" " + unit), React.createElement("br", undefined), showEthWithUsdConversion ? React.createElement("small", undefined, "(" + (depositAvailableToWithdrawUsd + " USD)")) : null), React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, tokenName + "'s Patronage: ", React.createElement(RimbleUi.Tooltip, {
+                            }))), React.createElement("br", undefined), props.depositAvailableToWithdrawEth + (" " + unit), React.createElement("br", undefined), showEthWithUsdConversion ? React.createElement("small", undefined, "(" + (props.depositAvailableToWithdrawUsd + " USD)")) : null), React.createElement("p", undefined, React.createElement("small", undefined, React.createElement("strong", undefined, tokenName + "'s Patronage: ", React.createElement(RimbleUi.Tooltip, {
                               message: "This is the total contribution that has been raised thanks to the wildcard, " + tokenName,
                               placement: "top",
                               children: React.createElement("span", undefined, "ⓘ")
-                            }))), React.createElement("br", undefined), totalPatronage + (" " + unit), React.createElement("br", undefined), showEthWithUsdConversion ? React.createElement("small", undefined, "(" + (totalPatronageUsd + " USD)")) : null), tmp, tmp$1);
+                            }))), React.createElement("br", undefined), props.totalPatronage + (" " + unit), React.createElement("br", undefined), showEthWithUsdConversion ? React.createElement("small", undefined, "(" + (props.totalPatronageUsd + " USD)")) : null), tmp, tmp$1);
 }
 
 var ExpertView = {
   make: Info$ExpertView
 };
 
-function Info$SimpleView(Props) {
-  var monthlyRate = Props.monthlyRate;
-  var tokenName = Props.tokenName;
-  var optMonthlyPledgeEth = Props.optMonthlyPledgeEth;
-  var unit = Props.unit;
-  var currentPatron = Props.currentPatron;
-  var displayNameStr = Props.displayNameStr;
-  var totalPatronage = Props.totalPatronage;
-  var definiteTime = Props.definiteTime;
-  var daysHeld = Props.daysHeld;
-  var orgId = Props.orgId;
-  var orgName = Props.orgName;
-  var priceString = Props.priceString;
-  var optionalSpecies = Props.optionalSpecies;
+function Info$SimpleView(props) {
+  var daysHeld = props.daysHeld;
+  var definiteTime = props.definiteTime;
+  var unit = props.unit;
+  var optMonthlyPledgeEth = props.optMonthlyPledgeEth;
+  var tokenName = props.tokenName;
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   var linkStyle = Curry._1(Css.style, {
         hd: Css.textDecoration(Css.underline),
@@ -114,34 +99,34 @@ function Info$SimpleView(Props) {
         className: linkStyle,
         onClick: (function (e) {
             e.preventDefault();
-            return Curry._1(clearAndPush, "/#user/" + currentPatron);
+            Curry._1(clearAndPush, "/#user/$currentPatron");
           })
-      }, displayNameStr);
+      }, props.displayNameStr);
   var orgLink = React.createElement("a", {
         className: linkStyle,
         onClick: (function (e) {
             e.preventDefault();
-            return Curry._1(clearAndPush, "/#org/" + orgId);
+            Curry._1(clearAndPush, "/#org/$orgId");
           })
-      }, orgName);
+      }, props.orgName);
   return React.createElement(React.Fragment, {
               children: null
-            }, React.createElement("p", undefined, tokenName + " is currently protected by ", userLink, " who values their guardianship of " + (tokenName + (" at " + (priceString + (". " + (tokenName + (" has a monthly pledge rate of " + (monthlyRate + "%. This means "))))))), userLink, " has to contribute " + ((
+            }, React.createElement("p", undefined, tokenName + " is currently protected by ", userLink, " who values their guardianship of " + (tokenName + (" at " + (props.priceString + (". " + (tokenName + (" has a monthly pledge rate of " + (props.monthlyRate + "%. This means "))))))), userLink, " has to contribute " + ((
                     optMonthlyPledgeEth !== undefined ? optMonthlyPledgeEth + (" " + unit) : "Loading"
-                  ) + " monthly to "), orgLink, " for the protection of " + (tokenName + (Belt_Option.mapWithDefault(optionalSpecies, "", (function (species) {
+                  ) + " monthly to "), orgLink, " for the protection of " + (tokenName + (Belt_Option.mapWithDefault(props.optionalSpecies, "", (function (species) {
                             return " the " + species;
                           })) + "."))), daysHeld !== undefined ? React.createElement("p", undefined, userLink, " has been the guardian of " + (tokenName + (" for " + (daysHeld[0].toFixed() + " days "))), definiteTime !== undefined ? React.createElement(React.Fragment, undefined, "and has enough deposit to last ", React.createElement(CountDown.make, {
                               endDateMoment: Caml_option.valFromOption(definiteTime)
-                            }), " - remember to keep topping up that deposit 😉.") : null) : null, React.createElement("p", undefined, "" + (tokenName + (" has earned " + (totalPatronage + (" " + (unit + " for "))))), orgLink, ". Congratulations to all the honourable and loyal patrons of " + (tokenName + "!")));
+                            }), " - remember to keep topping up that deposit 😉.") : null) : null, React.createElement("p", undefined, "" + (tokenName + (" has earned " + (props.totalPatronage + (" " + (unit + " for "))))), orgLink, ". Congratulations to all the honourable and loyal patrons of " + (tokenName + "!")));
 }
 
 var SimpleView = {
   make: Info$SimpleView
 };
 
-function Info(Props) {
-  var chain = Props.chain;
-  var tokenId = Props.tokenId;
+function Info(props) {
+  var tokenId = props.tokenId;
+  var chain = props.chain;
   var daysHeld = QlHooks.useDaysHeld(chain, tokenId);
   var currentPatron = Belt_Option.getWithDefault(QlHooks.usePatron(chain, tokenId), "Loading");
   var userId = UserProvider.useDisplayName(currentPatron);
@@ -241,7 +226,7 @@ function Info(Props) {
                 }, React.createElement("small", {
                       onClick: (function ($$event) {
                           $$event.preventDefault();
-                          return Curry._1(translationModeContext.setTranslationModeCrypto, !translationModeContext.translationModeCrypto);
+                          Curry._1(translationModeContext.setTranslationModeCrypto, !translationModeContext.translationModeCrypto);
                         })
                     }, translationModeContext.translationModeCrypto ? "EXPERT MODE " : "DEFAULT MODE "), React.createElement(ReactSwitch, {
                       onChange: translationModeContext.setTranslationModeCrypto,
@@ -288,11 +273,10 @@ function Info(Props) {
                   }));
 }
 
-function Info$Auction(Props) {
-  var chain = Props.chain;
-  var tokenId = Props.tokenId;
-  var abandoned = Props.abandoned;
-  var auctionStartTime = Props.auctionStartTime;
+function Info$Auction(props) {
+  var abandoned = props.abandoned;
+  var tokenId = props.tokenId;
+  var chain = props.chain;
   var currentPatron = Belt_Option.getWithDefault(QlHooks.usePatron(chain, tokenId), "Loading");
   var displayName = UserProvider.useDisplayName(currentPatron);
   var displayNameStr = UserProvider.displayNameToString(displayName);
@@ -330,7 +314,7 @@ function Info$Auction(Props) {
                                   }))), React.createElement("br", undefined), monthlyRate + " %")), abandoned ? React.createElement("p", undefined, React.createElement("strong", undefined, "The previous guardian was ", React.createElement("a", {
                             onClick: (function (e) {
                                 e.preventDefault();
-                                return Curry._1(clearAndPush, "/#user/" + currentPatron);
+                                Curry._1(clearAndPush, "/#user/$currentPatron");
                               })
                           }, displayNameStr), React.createElement(RimbleUi.Tooltip, {
                             message: "This happens when the user's deposit runs out for the wildcard.",
@@ -344,7 +328,7 @@ function Info$Auction(Props) {
                                     message: "This is the date the deposit ran out and the current guardian will lose guardianship of " + tokenName,
                                     placement: "top",
                                     children: React.createElement("span", undefined, "ⓘ")
-                                  }))), React.createElement("br", undefined), auctionStartTime.format("LLLL"), React.createElement("br", undefined))) : null);
+                                  }))), React.createElement("br", undefined), MomentRe.Moment.format("LLLL", props.auctionStartTime), React.createElement("br", undefined))) : null);
 }
 
 var Auction = {
@@ -358,6 +342,5 @@ export {
   SimpleView ,
   make ,
   Auction ,
-  
 }
 /* Css Not a pure module */

@@ -9,20 +9,27 @@ module AmountRaised = {
         <span
           className={
             open CssJs
-            style(.[fontSize(em(0.5))])
+            style(. [fontSize(em(0.5))])
           }>
           {smallTextComponent}
         </span>
         {" USD"->React.string}
         {switch optCommentTextComponent {
-        | Some(explainerString) => <> <br /> <small> {explainerString} </small> </>
+        | Some(explainerString) =>
+          <>
+            <br />
+            <small> {explainerString} </small>
+          </>
         | None => React.null
         }}
       </p>
     },
     ~mainnetEth,
     ~maticDai,
+    ~ethPaidOut=BN.newInt_(0),
+    ~valueEthPaidOut=0.,
   ) => {
+    Js.log2(ethPaidOut, valueEthPaidOut)
     let currentUsdEthPrice = UsdPriceProvider.useUsdPrice()
     let (prevUsdRaisedStrArray, setPrevUsdRaisedStrArray) = React.useState(_ => [])
     let (
@@ -49,14 +56,14 @@ module AmountRaised = {
       , usdRaisedDigitArray)
 
       switch (indexOfTheFirstChangedDigit, usdRaised2Precision->String.length) {
-      | (index, length) when index < 0 =>
+      | (index, length) if index < 0 =>
         setRaisedDisplay(_ => (
           usdRaised2Precision,
           "",
           Js.String.sliceToEnd(~from=length, usdRaisedStr),
           "",
         ))
-      | (index, length) when index > length =>
+      | (index, length) if index > length =>
         setRaisedDisplay(_ => (
           usdRaised2Precision,
           "",
@@ -122,7 +129,11 @@ module Basic = {
         {amountText}
         {" USD"->React.string}
         {switch optCommentTextComponent {
-        | Some(explainerString) => <> <br /> <small> {explainerString} </small> </>
+        | Some(explainerString) =>
+          <>
+            <br />
+            <small> {explainerString} </small>
+          </>
         | None => React.null
         }}
       </p>

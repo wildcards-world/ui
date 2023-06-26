@@ -3,16 +3,16 @@
 import * as Helper from "../../Helper.bs.js";
 import * as Js_dict from "rescript/lib/es6/js_dict.js";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
-import * as UserProvider from "./UserProvider";
+import * as UserProviderJs from "./UserProvider.js";
 
-var make = UserProvider.UserInfoProvider;
+var make = UserProviderJs.UserInfoProvider;
 
 function useUserInfoContext(prim) {
-  return UserProvider.useUserInfoContext();
+  return UserProviderJs.useUserInfoContext();
 }
 
 function useDisplayName(ethAddress) {
-  var userContext = UserProvider.useUserInfoContext();
+  var userContext = UserProviderJs.useUserInfoContext();
   var ethAddressLower = ethAddress.toLowerCase();
   var opt3box = Belt_Option.map(Js_dict.get(userContext.userInfo, ethAddressLower), (function (a) {
           return a.threeBox;
@@ -45,7 +45,7 @@ function useDisplayName(ethAddress) {
 }
 
 function use3BoxUserData(ethAddress) {
-  var userContext = UserProvider.useUserInfoContext();
+  var userContext = UserProviderJs.useUserInfoContext();
   var ethAddressLower = ethAddress.toLowerCase();
   var userInfo = Js_dict.get(userContext.userInfo, ethAddressLower);
   if (userInfo !== undefined) {
@@ -84,6 +84,5 @@ export {
   use3BoxUserData ,
   useIsUserValidated ,
   displayNameToString ,
-  
 }
 /* make Not a pure module */

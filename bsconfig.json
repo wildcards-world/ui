@@ -4,8 +4,6 @@
     "-open Belt",
     "-bs-super-errors"
   ],
-  // referenc: https://dev.to/yawaramin/ocaml-reasonml-best-practice-warnings-and-errors-4mkm
-  // TODO: when you get time, go through and remove "-40-42-4-11-12-32-33" fixing the issues as you go.
   "warnings": {
     "number": "+A",
     "error": "+A-44-26-20"
@@ -31,10 +29,10 @@
     "rescript-logger/ppx",
     "@reasonml-community/graphql-ppx/ppx"
   ],
-  "reason": {
-    "react-jsx": 3
+  "jsx": {
+    "version": 4,
+    "mode": "classic"
   },
-  "refmt": 3,
   "sources": [
     {
       "dir": "src",
@@ -43,18 +41,17 @@
   ],
   "suffix": ".bs.js",
   "bs-dependencies": [
+    "@rescript/react",
     "bs-css",
     "bs-css-emotion",
-    "bs-fetch",
+    "@glennsl/rescript-fetch",
     "bs-moment",
     "decco",
-    "reason-loadable",
     "reason-promise",
-    "reason-react",
-    "re-classnames",
+    "rescript-classnames",
     "rescript-logger",
     "@glennsl/bs-jest",
-    "rescript-apollo-client",
-    "@reasonml-community/graphql-ppx"
+    "@reasonml-community/graphql-ppx",
+    "rescript-apollo-client"
   ]
 }

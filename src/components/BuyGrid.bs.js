@@ -10,6 +10,7 @@ import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as ReactTabs from "react-tabs";
 import * as RootProvider from "../harberger-lib/RootProvider.bs.js";
+import * as JsxPPXReactSupport from "rescript/lib/es6/jsxPPXReactSupport.js";
 
 var backgroundStyle = Curry._1(Css.style, {
       hd: Css.paddingTop(Css.rem(1)),
@@ -27,8 +28,8 @@ var headingStyle = Curry._1(Css.style, {
       }
     });
 
-function BuyGrid$Grid(Props) {
-  var chain = Props.chain;
+function BuyGrid$Grid(props) {
+  var chain = props.chain;
   var allAnimals = QlHooks.useAnimalList(chain);
   var allAnimalsReversed = Belt_Array.reverse(allAnimals);
   return React.createElement(RimbleUi.Flex, {
@@ -38,7 +39,7 @@ function BuyGrid$Grid(Props) {
               justifyContent: "space-around",
               px: 50
             }, Belt_Array.map(allAnimalsReversed, (function (animal) {
-                    return React.createElement(RimbleUi.Box, {
+                    return JsxPPXReactSupport.createElementWithKey(TokenId.toString(animal), RimbleUi.Box, {
                                 p: 3,
                                 fontSize: 4,
                                 children: React.createElement(RimbleUi.Card, {
@@ -52,8 +53,7 @@ function BuyGrid$Grid(Props) {
                                   1,
                                   1,
                                   0.3
-                                ],
-                                key: TokenId.toString(animal)
+                                ]
                               });
                   })), React.createElement(RimbleUi.Box, {
                   p: 3,
@@ -92,10 +92,9 @@ function indexToType(tabIndex) {
   }
 }
 
-function BuyGrid(Props) {
-  var wildcardsEdition = Props.wildcardsEdition;
+function BuyGrid(props) {
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
-  var index = wildcardsEdition ? 1 : 0;
+  var index = props.wildcardsEdition ? 1 : 0;
   var selectLeaderBoard = function (newIndex, _oldIndex) {
     Curry._1(clearAndPush, "#explorer/" + indexToType(newIndex));
     return true;
@@ -133,6 +132,5 @@ export {
   Grid ,
   indexToType ,
   make ,
-  
 }
 /* backgroundStyle Not a pure module */

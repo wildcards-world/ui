@@ -1,7 +1,7 @@
 module Router = {
   @react.component
   let make = () => {
-    let url = ReasonReactRouter.useUrl()
+    let url = RescriptReactRouter.useUrl()
     switch url.path {
     // | ["new-data"] => <QlHooks />
     | list{_} => <p> {React.string("Unknown page")} </p>

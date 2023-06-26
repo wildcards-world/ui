@@ -19,6 +19,7 @@ import * as TxTemplate from "../../components/components/TxTemplate.bs.js";
 import * as Web3Utils$1 from "web3-utils";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as Caml_format from "rescript/lib/es6/caml_format.js";
+import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import * as FormatMoney from "../../components/components/FormatMoney.bs.js";
 import * as RootProvider from "../RootProvider.bs.js";
 import * as TransakConfig from "../TransakConfig.bs.js";
@@ -46,10 +47,10 @@ function calcRequiredDepositForTime(time, price, numerator, denominator) {
   return Web3Utils.fromWeiToEth(timeBn.mul(pricePerSecond).toString());
 }
 
-function Buy$Buy(Props) {
-  var chain = Props.chain;
-  var tokenId = Props.tokenId;
-  var availableBalance = Props.availableBalance;
+function Buy$Buy(props) {
+  var availableBalance = props.availableBalance;
+  var tokenId = props.tokenId;
+  var chain = props.chain;
   var web3Context = Core.useWeb3React();
   var match = ContractActions.useBuy(chain, tokenId, web3Context.library, web3Context.account, Belt_Option.getWithDefault(web3Context.chainId, 1));
   var buyFunc = match[0];
@@ -81,12 +82,12 @@ function Buy$Buy(Props) {
   var defaultMonthlyPatronage = FormatMoney.toFixedWithPrecisionNoTrailingZeros(currentPriceFloatWithMinimum * 1.5 * ratio, 3);
   var defaultPriceWei = Web3Utils.toWeiFromEth(defaultPriceValue);
   var depositForAYear = calcRequiredDepositForTime(31536000, defaultPriceWei, numerator, denominator);
-  var match$3 = Caml_format.caml_float_of_string(depositForAYear) < Caml_format.caml_float_of_string(maxAvailableDeposit) ? [
+  var match$3 = Caml_format.float_of_string(depositForAYear) < Caml_format.float_of_string(maxAvailableDeposit) ? [
       31536000,
       depositForAYear
     ] : [
       calculateDepositDuration(Web3Utils.toWeiFromEth(maxAvailableDeposit), defaultPriceWei, numerator, denominator),
-      Math.max(0, Caml_format.caml_float_of_string(maxAvailableDeposit)).toString()
+      Math.max(0, Caml_format.float_of_string(maxAvailableDeposit)).toString()
     ];
   var defaultDeposit = match$3[1];
   var defaultDepositTime = match$3[0];
@@ -117,7 +118,7 @@ function Buy$Buy(Props) {
         return Curry._3(buyFuncAuction, newPrice, "150000", amountToSend.add(new BnJs("1000000000000000")).toString());
       }
     }
-    return Curry._3(buyFuncAuction, newPrice, "150000", amountToSend.add(new BnJs("1000000000000000")).toString());
+    Curry._3(buyFuncAuction, newPrice, "150000", amountToSend.add(new BnJs("1000000000000000")).toString());
   };
   var setNewPrice = function (value) {
     var match = InputHelp.onlyUpdateValueIfPositiveFloat(newPrice, setInitialPrice, value);
@@ -130,25 +131,24 @@ function Buy$Buy(Props) {
             return patronage;
           }));
     var timeInSeconds = calculateDepositDuration(Web3Utils.toWeiFromEth(deposit), Web3Utils.toWeiFromEth(value$1), numerator, denominator);
-    return Curry._1(setDepositTimeInSeconds, (function (param) {
-                  return timeInSeconds;
-                }));
+    Curry._1(setDepositTimeInSeconds, (function (param) {
+            return timeInSeconds;
+          }));
   };
   var setDeposit = function (value) {
-    var match = InputHelp.onlyUpdateValueIfInRangeFloat(0, Caml_format.caml_float_of_string(maxAvailableDeposit), deposit, setInitialDeposit, value);
+    var match = InputHelp.onlyUpdateValueIfInRangeFloat(0, Caml_format.float_of_string(maxAvailableDeposit), deposit, setInitialDeposit, value);
     if (!match[1]) {
       return ;
     }
     var timeInSeconds = calculateDepositDuration(Web3Utils.toWeiFromEth(match[0]), Web3Utils.toWeiFromEth(newPrice), numerator, denominator);
-    return Curry._1(setDepositTimeInSeconds, (function (param) {
-                  return timeInSeconds;
-                }));
+    Curry._1(setDepositTimeInSeconds, (function (param) {
+            return timeInSeconds;
+          }));
   };
   var currency = chain !== 1 ? "ether" : "DAI";
   var openTransak = function (param) {
     var transak = new TransakSdk(TransakConfig.getConfig(chain, web3Context));
     transak.init();
-    
   };
   var match$8 = React.useState(function () {
         return false;
@@ -161,9 +161,9 @@ function Buy$Buy(Props) {
                       onClick: openTransak
                     }, "Continue"), React.createElement("button", {
                       onClick: (function (param) {
-                          return Curry._1(setShowTransakWarning, (function (param) {
-                                        return false;
-                                      }));
+                          Curry._1(setShowTransakWarning, (function (param) {
+                                  return false;
+                                }));
                         })
                     }, "Cancel"));
     } else {
@@ -179,9 +179,9 @@ function Buy$Buy(Props) {
                   }, React.createElement("p", undefined, "This wildcard uses " + currency), isAbleToBuy ? React.createElement(React.Fragment, undefined, React.createElement("p", undefined, "Your available balance is: " + (paymentTokenBalance + (" " + currency))), transakSteps(React.createElement(RimbleUi.Button, {
                                   children: "Buy More " + currency,
                                   onClick: (function (param) {
-                                      return Curry._1(setShowTransakWarning, (function (param) {
-                                                    return true;
-                                                  }));
+                                      Curry._1(setShowTransakWarning, (function (param) {
+                                              return true;
+                                            }));
                                     })
                                 })), React.createElement(BuyInput.make, {
                               patronage: match$5[0],
@@ -202,9 +202,9 @@ function Buy$Buy(Props) {
                                 }, "matic wallet"), " or use your credit card or a bank transfer using the button below:"), transakSteps(React.createElement(RimbleUi.Button, {
                                   children: "Buy " + currency,
                                   onClick: (function (param) {
-                                      return Curry._1(setShowTransakWarning, (function (param) {
-                                                    return true;
-                                                  }));
+                                      Curry._1(setShowTransakWarning, (function (param) {
+                                              return true;
+                                            }));
                                     })
                                 })))),
               txState: match$1[1],
@@ -217,9 +217,9 @@ var Buy = {
   make: Buy$Buy
 };
 
-function Buy$1(Props) {
-  var chain = Props.chain;
-  var tokenId = Props.tokenId;
+function Buy$1(props) {
+  var tokenId = props.tokenId;
+  var chain = props.chain;
   var web3Context = Core.useWeb3React();
   var optMaticState = QlHooks.useMaticState(false, Belt_Option.getWithDefault(web3Context.account, CONSTANTS.nullEthAddress), ContractActions.getMaticNetworkName(ContractActions.getChildChainId(Belt_Option.getWithDefault(web3Context.chainId, 1))));
   if (chain !== 1) {
@@ -239,7 +239,7 @@ function Buy$1(Props) {
     return React.createElement(Buy$Buy, {
                 chain: chain,
                 tokenId: tokenId,
-                availableBalance: new BnJs(optMaticState.balance)
+                availableBalance: Caml_option.some(new BnJs(optMaticState.balance))
               });
   }
 }
@@ -252,6 +252,5 @@ export {
   calcRequiredDepositForTime ,
   Buy ,
   make ,
-  
 }
 /* CssJs Not a pure module */

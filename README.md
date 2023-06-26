@@ -2,6 +2,8 @@
 
 ## Basic Usage
 
+_**NOTE: only tested on node 16.**_
+
 Make sure you have yarn [installed](https://classic.yarnpkg.com/en/docs/install#debian-stable). (Currently we are just using yarn v1. When v2 is more stable we can consider upgrading).
 
 ```

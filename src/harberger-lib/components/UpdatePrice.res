@@ -1,4 +1,5 @@
-@dead("+getToDisplay") let getToDisplay = (label, value) =>
+@dead("+getToDisplay")
+let getToDisplay = (label, value) =>
   React.string(label ++ (": " ++ value->Option.mapWithDefault("loading", a => a)))
 
 @react.component

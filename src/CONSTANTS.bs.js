@@ -21,6 +21,5 @@ export {
   secondsInAMonth ,
   secondsInAMonthBn ,
   zeroBn ,
-  
 }
 /* secondsIn365DaysPrecisionScaled Not a pure module */

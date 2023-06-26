@@ -15,19 +15,17 @@ function getToDisplay(label, value) {
                 })));
 }
 
-function UpdatePrice(Props) {
-  var tokenId = Props.tokenId;
-  var chain = Props.chain;
+function UpdatePrice(props) {
   var match = React.useState(function () {
         return "";
       });
   var setNewBuyPrice = match[1];
   var newBuyPrice = match[0];
-  var match$1 = ContractActions.useChangePrice(tokenId);
+  var match$1 = ContractActions.useChangePrice(props.tokenId);
   var updatePriceFunc = match$1[0];
   var onSubmitBuy = function ($$event) {
     $$event.preventDefault();
-    return Curry._1(updatePriceFunc, Web3Utils.toWei(newBuyPrice, "ether"));
+    Curry._1(updatePriceFunc, Web3Utils.toWei(newBuyPrice, "ether"));
   };
   return React.createElement(TxTemplate.make, {
               children: React.createElement(RimbleUi.Box, {
@@ -37,12 +35,11 @@ function UpdatePrice(Props) {
                   }, React.createElement(RimbleUi.Heading, {
                         children: "Update Price"
                       }), React.createElement(RimbleUi.Input, {
-                        type: "number",
+                        _type: "number",
                         placeholder: "New Sale Price",
                         onChange: (function ($$event) {
                             var value = Belt_Option.getWithDefault($$event.target.value, "");
                             InputHelp.onlyUpdateValueIfPositiveFloat(newBuyPrice, setNewBuyPrice, value);
-                            
                           }),
                         value: newBuyPrice
                       }), React.createElement("br", undefined), React.createElement(RimbleUi.Button, {
@@ -51,7 +48,7 @@ function UpdatePrice(Props) {
                       })),
               txState: match$1[1],
               closeButtonText: "Back to animal view",
-              chain: chain
+              chain: props.chain
             });
 }
 
@@ -60,6 +57,5 @@ var make = UpdatePrice;
 export {
   getToDisplay ,
   make ,
-  
 }
 /* react Not a pure module */

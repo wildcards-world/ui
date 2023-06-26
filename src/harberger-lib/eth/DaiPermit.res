@@ -7,7 +7,7 @@ let createPermitSig = (provider, verifyingContract, nonce, chainId, holder, spen
     name: "(PoS) Dai Stablecoin",
     // name: "Dai Stablecoin",
     version: "1",
-    verifyingContract: verifyingContract,
+    verifyingContract,
     salt: "0x" ++ chainId->BN.toStringRad(16)->padStart(64, "0"),
   }
 

@@ -86,7 +86,7 @@ let make = () => {
     <div
       className={
         open CssJs
-        style(.[
+        style(. [
           display(#grid),
           gridTemplateColumns([#repeat(#autoFit, #minmax(px(176), fr(0.6)))]),
           maxWidth(px(800)),
@@ -102,12 +102,12 @@ let make = () => {
           }}
           className={
             open CssJs
-            style(.[zIndex(1), border(px(1), #solid, rgba(195, 195, 195, #num(0.14)))])
+            style(. [zIndex(1), border(px(1), #solid, rgba(195, 195, 195, #num(0.14)))])
           }>
           <div
             className={
               open CssJs
-              style(.[
+              style(. [
                 margin(px(8)),
                 display(#flex),
                 justifyContent(#center),

@@ -4,18 +4,14 @@ import * as React from "react";
 import * as Layout from "./components/Layout.bs.js";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as Client from "@apollo/client";
-import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.bs.js";
 import * as WildcardsProvider from "./harberger-lib/components/WildcardsProvider.bs.js";
+import * as RescriptReactRouter from "@rescript/react/src/RescriptReactRouter.bs.js";
 
-function SsrEntryPoint$Router(Props) {
-  var url = ReasonReactRouter.useUrl(undefined, undefined);
+function SsrEntryPoint$Router(props) {
+  var url = RescriptReactRouter.useUrl(undefined, undefined);
   var match = url.path;
-  if (match) {
-    if (match.tl) {
-      return React.createElement(Layout.make, {});
-    } else {
-      return React.createElement("p", undefined, "Unknown page");
-    }
+  if (match && !match.tl) {
+    return React.createElement("p", undefined, "Unknown page");
   } else {
     return React.createElement(Layout.make, {});
   }
@@ -25,12 +21,10 @@ var Router = {
   make: SsrEntryPoint$Router
 };
 
-function SsrEntryPoint$ApolloProvider(Props) {
-  var children = Props.children;
-  var client = Props.client;
+function SsrEntryPoint$ApolloProvider(props) {
   return React.createElement(Client.ApolloProvider, {
-              client: client,
-              children: children
+              client: props.client,
+              children: props.children
             });
 }
 
@@ -38,7 +32,7 @@ var ApolloProvider = {
   make: SsrEntryPoint$ApolloProvider
 };
 
-function SsrEntryPoint(Props) {
+function SsrEntryPoint(props) {
   return React.createElement(WildcardsProvider.make, {
               getGraphEndpoints: (function (networkId, param) {
                   if (networkId !== 5) {
@@ -65,6 +59,5 @@ export {
   Router ,
   ApolloProvider ,
   make ,
-  
 }
 /* react Not a pure module */

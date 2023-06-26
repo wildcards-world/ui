@@ -65,7 +65,7 @@ module Basic = {
 
     if decimals >= 0 {
       <>
-        <span className={Cn.on(styleOnCountUp, showCountupStyles)}>
+        <span className={CnRe.on(styleOnCountUp, showCountupStyles)}>
           {prefixString->React.string}
           {(changeInDigitLength ? decimals : countUpObj.countUp)->string_of_int->React.string}
         </span>
@@ -87,9 +87,9 @@ module StringFloat = {
       )
 
     let mainLeadingZeros = switch res[0] {
-    | Some(initialString) when initialString != "0" =>
+    | Some(initialString) if initialString != "0" =>
       Js.String.match_(%re("/^0*/g"), initialString)
-      ->Option.flatMap(matches => matches[0])
+      ->Option.flatMap(matches => matches->Array.getUnsafe(0))
       ->Option.getWithDefault("")
     | Some(_)
     | None => ""
@@ -99,7 +99,7 @@ module StringFloat = {
     | Some(decimalsString) =>
       "." ++
       Js.String.match_(%re("/^0*/g"), decimalsString)
-      ->Option.flatMap(matches => matches[0])
+      ->Option.flatMap(matches => matches->Array.getUnsafe(0))
       ->Option.getWithDefault("")
     | None => "."
     }

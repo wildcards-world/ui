@@ -147,7 +147,7 @@ let make = (~navItems: array<navItem>) => {
           ? <li
               key={index->string_of_int}
               className={
-                open Cn
+                open CnRe
                 fromList(list{
                   on(navItemStyles, isMobile),
                   on(
@@ -187,7 +187,7 @@ let make = (~navItems: array<navItem>) => {
   <header className=Styles.header>
     <div className=Styles.navBox>
       <a
-        className={Cn.fromList(list{
+        className={CnRe.fromList(list{
           Styles.clickableLink,
           {
             open Css
@@ -198,10 +198,12 @@ let make = (~navItems: array<navItem>) => {
           ReactEvent.Mouse.preventDefault(event)
           clearAndPush("#")
         }}>
-        <div className=Styles.headerLogo> <WildcardsLogo maxWidth="258px" /> </div>
+        <div className=Styles.headerLogo>
+          <WildcardsLogo maxWidth="258px" />
+        </div>
       </a>
-      <nav className={Cn.fromList(list{headerNav, fullScreenMenu})}> {menuItems(false)} </nav>
-      <nav className={Cn.fromList(list{headerNav, hambergerMenu})}>
+      <nav className={CnRe.fromList(list{headerNav, fullScreenMenu})}> {menuItems(false)} </nav>
+      <nav className={CnRe.fromList(list{headerNav, hambergerMenu})}>
         <div
           className={
             open Css

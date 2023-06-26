@@ -44,7 +44,7 @@ let useIsLaunched: (~chain: Client.context, TokenId.t) => launchStatus = (~chain
   let currentTime = QlHooks.useCurrentTimestampBn()
 
   switch animal->TokenId.toInt {
-  | Some(id) when id > 29 =>
+  | Some(id) if id > 29 =>
     // LaunchDate(nextLaunchDate)
     switch optLaunchTime {
     | Some(launchTime) =>
@@ -158,7 +158,7 @@ let useAuctionPriceWei = (~chain, animal, launchTime) => {
 
 let getChainIdFromAnimalId = animalId =>
   switch Option.getWithDefault(animalId->TokenId.toInt, 0) {
-  | a when a < 26 || a == 42 => Client.MainnetQuery
+  | a if a < 26 || a == 42 => Client.MainnetQuery
   | _ => Client.MaticQuery
   }
 

@@ -12,12 +12,12 @@ module ComingSoonAnimal = {
     <div
       className={
         open CssJs
-        style(.[width(#percent(32.))])
+        style(. [width(#percent(32.))])
       }>
       <img
         className={
           open CssJs
-          style(.[width(#percent(100.)), Styles.imageHoverStyle])
+          style(. [width(#percent(100.)), Styles.imageHoverStyle])
         }
         onClick={_e => onClick()}
         src=image
@@ -50,8 +50,9 @@ module ImageCarousel = {
         orgComingSoon->Array.mapWithIndex((key, animal) =>
           animal.real_wc_photos[0]->Option.mapWithDefault(React.null, photo => <>
             <img key={key->string_of_int} src={CONSTANTS.cdnBase ++ photo.image} />
-            {photo.photographer->Option.mapWithDefault(React.null, photographer =>
-              <p> {`📸 by ${photographer}`->React.string} </p>
+            {photo.photographer->Option.mapWithDefault(
+              React.null,
+              photographer => <p> {`📸 by ${photographer}`->React.string} </p>,
             )}
           </>)
         ),
@@ -208,7 +209,7 @@ module OrgPage = {
               style(list{textAlign(#center), alignSelf(center), padding(em(2.))})
             }>
             <a
-              className={Cn.fromList(list{
+              className={CnRe.fromList(list{
                 Styles.navListText,
                 {
                   open Css
@@ -221,7 +222,7 @@ module OrgPage = {
               <img
                 className={
                   open CssJs
-                  style(.[
+                  style(. [
                     // borderRadius(`percent(100.)),
                     width(#vh(25.)),
                     height(#vh(25.)),
@@ -234,7 +235,7 @@ module OrgPage = {
             </a>
             <br />
             <a
-              className={Cn.fromList(list{
+              className={CnRe.fromList(list{
                 Styles.navListText,
                 {
                   open Css
@@ -250,7 +251,7 @@ module OrgPage = {
             <div
               className={
                 open CssJs
-                style(.[
+                style(. [
                   maxHeight(#em(15.)),
                   overflowY(#auto),
                   overflowX(#hidden),
@@ -267,7 +268,7 @@ module OrgPage = {
                       key={i->string_of_int}
                       className={
                         open CssJs
-                        style(.[textAlign(#justify)])
+                        style(. [textAlign(#justify)])
                       }>
                       {paragraphText->React.string}
                     </p>

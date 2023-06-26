@@ -102,7 +102,9 @@ let make = () => {
               <p>
                 {member.name->React.string}
                 <br />
-                <span className=titleStyle> <small> {member.title->React.string} </small> </span>
+                <span className=titleStyle>
+                  <small> {member.title->React.string} </small>
+                </span>
               </p>
               {switch member.instagramHandle {
               | Some(handle) =>

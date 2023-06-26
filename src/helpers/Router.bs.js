@@ -3,14 +3,15 @@
 import * as React from "react";
 import * as Animal from "../harberger-lib/Animal.bs.js";
 import * as Belt_Int from "rescript/lib/es6/belt_Int.js";
+import * as Js_string from "rescript/lib/es6/js_string.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
-import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.bs.js";
+import * as RescriptReactRouter from "@rescript/react/src/RescriptReactRouter.bs.js";
 
 function useUrlState(param) {
-  var url = ReasonReactRouter.useUrl(undefined, undefined);
+  var url = RescriptReactRouter.useUrl(undefined, undefined);
   return React.useMemo((function () {
-                var urlArray = url.hash.split("/");
+                var urlArray = Js_string.split("/", url.hash);
                 var exit = 0;
                 var animalStr;
                 var tab;
@@ -321,6 +322,5 @@ export {
   useIsHome ,
   getAnimalFormAnimalPageState ,
   useAnimalForDetails ,
-  
 }
 /* react Not a pure module */

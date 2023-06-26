@@ -6,7 +6,7 @@ import * as RimbleUi from "rimble-ui";
 
 var raisingHandsEmoji = "/img/emoji/raising_hands.png";
 
-function FinalNote$FinalNote(Props) {
+function FinalNote$FinalNote(props) {
   return React.createElement(RimbleUi.Box, {
               children: React.createElement(RimbleUi.Flex, {
                     children: React.createElement(RimbleUi.Box, {
@@ -45,6 +45,5 @@ var FinalNote = {
 export {
   raisingHandsEmoji ,
   FinalNote ,
-  
 }
 /* react Not a pure module */

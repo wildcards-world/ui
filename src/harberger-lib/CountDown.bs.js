@@ -68,10 +68,10 @@ function calculateCountdown(endDateMoment) {
   return endDateMoment.diff(Moment(), "seconds") | 0;
 }
 
-function CountDown(Props) {
-  var endDateMoment = Props.endDateMoment;
-  var displayUnitsOpt = Props.displayUnits;
-  var displayUnits = displayUnitsOpt !== undefined ? displayUnitsOpt : true;
+function CountDown(props) {
+  var displayUnits = props.displayUnits;
+  var endDateMoment = props.endDateMoment;
+  var displayUnits$1 = displayUnits !== undefined ? displayUnits : true;
   var match = React.useState(function () {
         return 0;
       });
@@ -84,20 +84,19 @@ function CountDown(Props) {
                 }));
           var interval = setInterval((function (param) {
                   var date = calculateCountdown(endDateMoment);
-                  return Curry._1(setCountdown, (function (param) {
-                                return date;
-                              }));
+                  Curry._1(setCountdown, (function (param) {
+                          return date;
+                        }));
                 }), 1000);
           return (function (param) {
                     clearInterval(interval);
-                    
                   });
         }), [
         endDateMoment,
         setCountdown
       ]);
   return React.createElement(React.Fragment, {
-              children: displayUnits ? displayTimeLeft(calculateTimeRemainingFromSeconds(countDown)) : displayTimeLeftSimple(calculateTimeRemainingFromSeconds(countDown))
+              children: displayUnits$1 ? displayTimeLeft(calculateTimeRemainingFromSeconds(countDown)) : displayTimeLeftSimple(calculateTimeRemainingFromSeconds(countDown))
             });
 }
 
@@ -127,6 +126,5 @@ export {
   displayTimeLeftHours ,
   calculateCountdown ,
   make ,
-  
 }
 /* react Not a pure module */

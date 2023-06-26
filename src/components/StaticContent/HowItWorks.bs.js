@@ -32,7 +32,7 @@ var infoModalStyle = Curry._1(Css.style, {
       }
     });
 
-function HowItWorks(Props) {
+function HowItWorks(props) {
   var match = React.useState(function () {
         return false;
       });
@@ -52,9 +52,9 @@ function HowItWorks(Props) {
                                         className: Styles.centerItemsMargin,
                                         children: "Read More",
                                         onClick: (function (param) {
-                                            return Curry._1(setModalOpen, (function (param) {
-                                                          return true;
-                                                        }));
+                                            Curry._1(setModalOpen, (function (param) {
+                                                    return true;
+                                                  }));
                                           })
                                       }),
                                   flexWrap: "wrap",
@@ -69,9 +69,9 @@ function HowItWorks(Props) {
                                         children: null
                                       }, React.createElement(RimbleUi.Button.Text, {
                                             onClick: (function (param) {
-                                                return Curry._1(setModalOpen, (function (param) {
-                                                              return false;
-                                                            }));
+                                                Curry._1(setModalOpen, (function (param) {
+                                                        return false;
+                                                      }));
                                               }),
                                             icononly: true,
                                             icon: "Close",
@@ -120,6 +120,5 @@ export {
   YoutubeVid ,
   infoModalStyle ,
   make$1 as make,
-  
 }
 /* make Not a pure module */

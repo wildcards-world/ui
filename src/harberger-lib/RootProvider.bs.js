@@ -10,7 +10,7 @@ import * as UserProvider from "./js/user-provider/UserProvider.bs.js";
 import * as ThemeProvider from "./bindings/rimble/ThemeProvider.bs.js";
 import * as Web3Connectors from "./bindings/web3-react/Web3Connectors.bs.js";
 import * as Core from "@web3-react/core";
-import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.bs.js";
+import * as RescriptReactRouter from "@rescript/react/src/RescriptReactRouter.bs.js";
 
 var Web3ReactProvider = {};
 
@@ -216,16 +216,13 @@ var RootContext = {
   makeProps: makeProps
 };
 
-function RootProvider$RootWithWeb3(Props) {
-  var children = Props.children;
-  var stewardContractAddress = Props.stewardContractAddress;
-  var stewardAbi = Props.stewardAbi;
+function RootProvider$RootWithWeb3(props) {
   var match = React.useReducer(reducer, {
         nonUrlState: /* NoExtraState */2,
         ethState: /* Disconnected */0,
         config: {
-          stewardContractAddress: stewardContractAddress,
-          stewardAbi: stewardAbi
+          stewardContractAddress: props.stewardContractAddress,
+          stewardAbi: props.stewardAbi
         }
       });
   var dispatch = match[1];
@@ -259,7 +256,6 @@ function RootProvider$RootWithWeb3(Props) {
           } else {
             Curry._1(dispatch, /* Logout */4);
           }
-          
         }), [
         context.activate,
         context.chainId,
@@ -286,13 +282,13 @@ function RootProvider$RootWithWeb3(Props) {
             $$Promise.get($$Promise.Js.$$catch(match.getBalance(match$1), (function (param) {
                         return $$Promise.resolved(undefined);
                       })), (function (newBalance) {
-                    return Curry._1(dispatch, {
-                                TAG: /* LoadAddress */4,
-                                _0: match$1,
-                                _1: Belt_Option.flatMap(newBalance, (function (balance) {
-                                        return Eth.make(balance.toString());
-                                      }))
-                              });
+                    Curry._1(dispatch, {
+                          TAG: /* LoadAddress */4,
+                          _0: match$1,
+                          _1: Belt_Option.flatMap(newBalance, (function (balance) {
+                                  return Eth.make(balance.toString());
+                                }))
+                        });
                   }));
             return ;
           }
@@ -303,10 +299,13 @@ function RootProvider$RootWithWeb3(Props) {
         context.chainId,
         dispatch
       ]);
-  return React.createElement(make, makeProps([
-                  match[0],
-                  dispatch
-                ], children, undefined));
+  return React.createElement(make, {
+              value: [
+                match[0],
+                dispatch
+              ],
+              children: props.children
+            });
 }
 
 var RootWithWeb3 = {
@@ -428,10 +427,10 @@ function useGoToBuy(param) {
   var match = React.useContext(context);
   var dispatch = match[1];
   return function (animal) {
-    return Curry._1(dispatch, {
-                TAG: /* GoToBuy */0,
-                _0: animal
-              });
+    Curry._1(dispatch, {
+          TAG: /* GoToBuy */0,
+          _0: animal
+        });
   };
 }
 
@@ -439,10 +438,10 @@ function useGoToAuction(param) {
   var match = React.useContext(context);
   var dispatch = match[1];
   return function (animal) {
-    return Curry._1(dispatch, {
-                TAG: /* GoToAuction */1,
-                _0: animal
-              });
+    Curry._1(dispatch, {
+          TAG: /* GoToAuction */1,
+          _0: animal
+        });
   };
 }
 
@@ -450,7 +449,7 @@ function useGoToDepositUpdate(param) {
   var match = React.useContext(context);
   var dispatch = match[1];
   return function (param) {
-    return Curry._1(dispatch, /* GoToDepositUpdate */1);
+    Curry._1(dispatch, /* GoToDepositUpdate */1);
   };
 }
 
@@ -458,10 +457,10 @@ function useGoToPriceUpdate(param) {
   var match = React.useContext(context);
   var dispatch = match[1];
   return function (animal) {
-    return Curry._1(dispatch, {
-                TAG: /* GoToPriceUpdate */2,
-                _0: animal
-              });
+    Curry._1(dispatch, {
+          TAG: /* GoToPriceUpdate */2,
+          _0: animal
+        });
   };
 }
 
@@ -469,7 +468,7 @@ function useVerifyUser(param) {
   var match = React.useContext(context);
   var dispatch = match[1];
   return function (param) {
-    return Curry._1(dispatch, /* GoToUserVerification */2);
+    Curry._1(dispatch, /* GoToUserVerification */2);
   };
 }
 
@@ -477,7 +476,7 @@ function useClearNonUrlState(param) {
   var match = React.useContext(context);
   var dispatch = match[1];
   return function (param) {
-    return Curry._1(dispatch, /* ClearNonUrlState */3);
+    Curry._1(dispatch, /* ClearNonUrlState */3);
   };
 }
 
@@ -485,10 +484,10 @@ function useConnectWeb3(param) {
   var match = React.useContext(context);
   var dispatch = match[1];
   return function (action) {
-    return Curry._1(dispatch, {
-                TAG: /* GoToWeb3Connect */3,
-                _0: action
-              });
+    Curry._1(dispatch, {
+          TAG: /* GoToWeb3Connect */3,
+          _0: action
+        });
   };
 }
 
@@ -496,7 +495,7 @@ function useCloseWeb3Login(param) {
   var match = React.useContext(context);
   var dispatch = match[1];
   return function (param) {
-    return Curry._1(dispatch, /* ClearNonUrlState */3);
+    Curry._1(dispatch, /* ClearNonUrlState */3);
   };
 }
 
@@ -504,7 +503,7 @@ function useClearNonUrlStateAndPushRoute(param) {
   var clearNonUrlState = useClearNonUrlState(undefined);
   return function (url) {
     Curry._1(clearNonUrlState, undefined);
-    return ReasonReactRouter.push(url);
+    RescriptReactRouter.push(url);
   };
 }
 
@@ -527,31 +526,28 @@ function useActivateConnector(param) {
                                 }));
                           return $$Promise.resolved(undefined);
                         })), (function (param) {
-                      return Curry._1(setConnectionStatus, (function (param) {
-                                    return /* Connected */1;
-                                  }));
+                      Curry._1(setConnectionStatus, (function (param) {
+                              return /* Connected */1;
+                            }));
                     }));
-              return Curry._1(setConnectionStatus, (function (param) {
-                            return /* Connecting */2;
-                          }));
+              Curry._1(setConnectionStatus, (function (param) {
+                      return /* Connecting */2;
+                    }));
             })
         ];
 }
 
-function RootProvider(Props) {
-  var children = Props.children;
-  var stewardContractAddress = Props.stewardContractAddress;
-  var stewardAbi = Props.stewardAbi;
+function RootProvider(props) {
   return React.createElement(Core.Web3ReactProvider, {
               getLibrary: getLibrary,
               children: React.createElement(RootProvider$RootWithWeb3, {
                     children: React.createElement(UserProvider.make, {
                           children: React.createElement(ThemeProvider.make, {
-                                children: children
+                                children: props.children
                               })
                         }),
-                    stewardContractAddress: stewardContractAddress,
-                    stewardAbi: stewardAbi
+                    stewardContractAddress: props.stewardContractAddress,
+                    stewardAbi: props.stewardAbi
                   })
             });
 }
@@ -590,6 +586,5 @@ export {
   useClearNonUrlStateAndPushRoute ,
   useActivateConnector ,
   make$1 as make,
-  
 }
 /* context Not a pure module */

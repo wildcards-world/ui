@@ -23,7 +23,9 @@ let infoTooltipStyle = {
   style(list{display(#inlineBlock)})
 }
 let infoIcon =
-  <div className=infoTooltipStyle> <Rimble.Icon color="green" name="Info" size="16" /> </div>
+  <div className=infoTooltipStyle>
+    <Rimble.Icon color="green" name="Info" size="16" />
+  </div>
 
 @react.component
 let make = (
@@ -65,7 +67,8 @@ let make = (
           message={`This is the amount of money you will receive if someone purchases ${tokenIdName} from you.`}
           placement="top">
           <Rimble.Text>
-            {`Set ${tokenIdName}'s new for sale price:`->React.string} infoIcon
+            {`Set ${tokenIdName}'s new for sale price:`->React.string}
+            infoIcon
           </Rimble.Text>
         </Rimble.Tooltip>
         <Rimble.Input
@@ -84,7 +87,8 @@ let make = (
           message="This is the monthly contribution that will go towards conservation of at risk animals. This will be deducted continuously from your deposit"
           placement="top">
           <Rimble.Text className=rightAlignText>
-            {"Your monthly contribution:"->React.string} infoIcon
+            {"Your monthly contribution:"->React.string}
+            infoIcon
           </Rimble.Text>
         </Rimble.Tooltip>
         <br />
@@ -96,7 +100,10 @@ let make = (
         <Rimble.Tooltip
           message="The deposit is the funds that will be used to cover your monthly contribution."
           placement="top">
-          <Rimble.Text> {"Set your deposit:"->React.string} infoIcon </Rimble.Text>
+          <Rimble.Text>
+            {"Set your deposit:"->React.string}
+            infoIcon
+          </Rimble.Text>
         </Rimble.Tooltip>
         <Rimble.Input
           _type="number"

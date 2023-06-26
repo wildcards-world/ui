@@ -1,7 +1,7 @@
 let flameImg = "/img/streak-flame.png"
 
 module ShareSocial = {
-  @dead("ShareSocial.+make") @module("./components/shareSocialMedia") @react.component
+  @dead("ShareSocial.+make") @module("./components/shareSocialMedia.js") @react.component
   external make: unit => React.element = "default"
 }
 module EditButton = {
@@ -25,18 +25,18 @@ module EditButton = {
 module Streak = {
   @react.component
   let make = (~chain, ~animal: TokenId.t) => {
-    let animalName = Option.getWithDefault(QlHooks.useWildcardName(animal), "Loading")
-
     let daysHeld = QlHooks.useDaysHeld(~chain, animal)
 
     switch daysHeld {
     | Some((daysHeldFloat, _timeAquired)) =>
       let numDaysStr = daysHeldFloat->Js.Float.toFixed
 
-      <Rimble.Tooltip message=j`$animalName has been held for $numDaysStr days by the same owner.`>
+      <Rimble.Tooltip message={`$animalName has been held for $numDaysStr days by the same owner.`}>
         <div id="inner" className=Styles.positionRelative>
           <img className=Styles.flameImg src=flameImg />
-          <p className=Styles.streakText> <strong> {React.string(numDaysStr)} </strong> </p>
+          <p className=Styles.streakText>
+            <strong> {React.string(numDaysStr)} </strong>
+          </p>
         </div>
       </Rimble.Tooltip>
     | None => React.null
@@ -144,7 +144,7 @@ module BasicAnimalDisplay = {
           <a
             onClick={e => {
               ReactEvent.Mouse.preventDefault(e)
-              clearAndPush(j`/#user/$currentPatron`)
+              clearAndPush(`/#user/$currentPatron`)
             }}>
             {displayNameStr->React.string}
           </a>
@@ -224,7 +224,9 @@ module AnimalOnLandingPage = {
                     ? React.null
                     : switch currentPriceWei {
                       | Price(_) =>
-                        <div className=Styles.overlayFlameImg> <Streak chain animal /> </div>
+                        <div className=Styles.overlayFlameImg>
+                          <Streak chain animal />
+                        </div>
                       | Loading
                       | Foreclosed(_) => React.null
                       }
@@ -260,7 +262,9 @@ module AnimalOnLandingPage = {
           )
         }}>
         {componentWithoutImg(normalImage, ~hideBadges=false)}
-        <div> <h2> {React.string(name)} </h2> </div>
+        <div>
+          <h2> {React.string(name)} </h2>
+        </div>
       </a>
       {switch optionEndDateMoment {
       | Some(endDateMoment) =>
@@ -268,7 +272,12 @@ module AnimalOnLandingPage = {
           <h3 className=Styles.colorGreen> {React.string("COMING IN")} </h3>
           <CountDown endDateMoment displayUnits=false />
         </div>
-      | None => isGqlLoaded ? <div> <BasicAnimalDisplay chain animal /> </div> : React.null
+      | None =>
+        isGqlLoaded
+          ? <div>
+              <BasicAnimalDisplay chain animal />
+            </div>
+          : React.null
       }}
     </div>
   }
@@ -334,13 +343,17 @@ module AnimalCarousel = {
         {React.array(
           homePageAnimals->Array.mapWithIndex((index, animalInfo) => {
             let (opacity, scalar) = switch index {
-            | x when x == mod(carouselIndex, numItems) => (1., 1.0)
+            | x if x == mod(carouselIndex, numItems) => (1., 1.0)
             | x
-              when x == mod(carouselIndex - 1, numItems) ||
-                x == mod(carouselIndex + 1, numItems) => (0.8, 0.8)
+              if x == mod(carouselIndex - 1, numItems) || x == mod(carouselIndex + 1, numItems) => (
+                0.8,
+                0.8,
+              )
             | x
-              when x == mod(carouselIndex - 2, numItems) ||
-                x == mod(carouselIndex + 2, numItems) => (0.1, 0.7)
+              if x == mod(carouselIndex - 2, numItems) || x == mod(carouselIndex + 2, numItems) => (
+                0.1,
+                0.7,
+              )
             | _ => (0., 0.6)
             }
 
@@ -369,7 +382,9 @@ module AnimalActionsOnDetailsPage = {
         <DisplayAfterDate
           endDateMoment
           afterComponent={price()}
-          beforeComponent={<React.Fragment> <CountDown endDateMoment /> </React.Fragment>}
+          beforeComponent={<React.Fragment>
+            <CountDown endDateMoment />
+          </React.Fragment>}
         />
       | Launched => price()
       | Loading => <Rimble.Loader />
@@ -429,7 +444,9 @@ module AnimalActionsOnDetailsPage = {
         <Validate />
       </React.Fragment>
     } else {
-      <> <Unowned chain animal price /> </>
+      <>
+        <Unowned chain animal price />
+      </>
     }
   }
 }
@@ -446,7 +463,7 @@ module DetailsViewAnimal = {
 
     let ownedAnimalImg = {
       open CssJs
-      style(.[
+      style(. [
         width(#percent(100.)),
         height(#percent(100.)),
         // top(#percent(50.)),
@@ -472,7 +489,7 @@ module DetailsViewAnimal = {
           <img
             className={
               open CssJs
-              style(.[width(#percent(100.)), height(#percent(100.)), objectFit(#contain)])
+              style(. [width(#percent(100.)), height(#percent(100.)), objectFit(#contain)])
             }
             src=orgBadge
           />
@@ -498,12 +515,13 @@ module DetailsViewAnimal = {
       {displayAnimal(() => normalImage())}
       <h2>
         {switch (QlHooks.useWildcardName(animal), QlHooks.useWildcardCommonName(animal)) {
-        | (Some(name), Some(commonName)) => <>
+        | (Some(name), Some(commonName)) =>
+          <>
             {name->React.string}
             <small
               className={
                 open CssJs
-                style(.[fontWeight(#thin)])
+                style(. [fontWeight(#thin)])
               }>
               {` the ${commonName}`->React.string}
             </small>
@@ -539,7 +557,7 @@ module DetailsView = {
 module DefaultLook = {
   @react.component
   let make = (~isGqlLoaded) => {
-    let url = ReasonReactRouter.useUrl()
+    let url = RescriptReactRouter.useUrl()
 
     <div className=Styles.centerText>
       {switch Js.String.split("/", url.hash) {
@@ -772,7 +790,9 @@ let make = (~currentAnimal) => {
               m=1
               onClick={_ => clearNonUrlState()}
             />
-            <React.Suspense fallback={<Rimble.Loader />}> <LazyThreeBoxUpdate /> </React.Suspense>
+            <React.Suspense fallback={<Rimble.Loader />}>
+              <LazyThreeBoxUpdate />
+            </React.Suspense>
           </div>
         | UpdateDepositScreen =>
           <div

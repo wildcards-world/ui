@@ -76,7 +76,7 @@ var connectors = [
   }
 ];
 
-function Login(Props) {
+function Login(props) {
   var match = RootProvider.useActivateConnector(undefined);
   var activateConnector = match[1];
   return React.createElement("div", undefined, React.createElement("p", undefined, "Use one of the wallet providers below. ", React.createElement("small", undefined, "(Not sure where to go from here? ", React.createElement("a", {
@@ -115,7 +115,7 @@ function Login(Props) {
                                         ]),
                                     onClick: (function (e) {
                                         e.stopPropagation();
-                                        return Curry._1(activateConnector, connector.connector);
+                                        Curry._1(activateConnector, connector.connector);
                                       })
                                   }, React.createElement("div", {
                                         className: CssJs.style([
@@ -189,6 +189,5 @@ export {
   ConnectorConfig ,
   connectors ,
   make ,
-  
 }
 /* connectors Not a pure module */

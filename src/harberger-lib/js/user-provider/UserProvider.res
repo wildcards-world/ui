@@ -1,4 +1,4 @@
-@module("./UserProvider") @react.component
+@module("./UserProvider.js") @react.component
 external make: (~children: React.element) => React.element = "UserInfoProvider"
 
 type threeBoxImageData = {
@@ -34,7 +34,7 @@ type userInfo = {
   update: (string, bool) => unit,
 }
 
-@module("./UserProvider")
+@module("./UserProvider.js")
 external useUserInfoContext: unit => userInfo = "useUserInfoContext"
 
 type displayName =
@@ -70,7 +70,8 @@ let use3BoxUserData: string => option<threeBoxUserInfo> = ethAddress => {
   }
 }
 
-@dead("+useIsUserValidated") let useIsUserValidated: string => bool = ethAddress =>
+@dead("+useIsUserValidated")
+let useIsUserValidated: string => bool = ethAddress =>
   switch useDisplayName(ethAddress) {
   | TwitterHandle(_) => true
   | ThreeBoxName(_)

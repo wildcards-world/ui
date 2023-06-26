@@ -8,15 +8,13 @@ import * as RimbleUi from "rimble-ui";
 import * as RootProvider from "../../harberger-lib/RootProvider.bs.js";
 import * as WildcardsLoader from "../StaticContent/WildcardsLoader.bs.js";
 
-function TxTemplate(Props) {
-  var children = Props.children;
-  var txState = Props.txState;
-  var closeButtonText = Props.closeButtonText;
-  var chain = Props.chain;
+function TxTemplate(props) {
+  var txState = props.txState;
+  var children = props.children;
   var etherscanUrl = RootProvider.useEtherscanUrl(undefined);
   var sidechainUrl = RootProvider.useSidechainEtherscanUrl(undefined);
   var clearNonUrlState = RootProvider.useClearNonUrlState(undefined);
-  var isSideChainTx = chain === 1;
+  var isSideChainTx = props.chain === 1;
   var txExplererUrl = isSideChainTx ? sidechainUrl : etherscanUrl;
   if (typeof txState === "number") {
     switch (txState) {
@@ -89,7 +87,7 @@ function TxTemplate(Props) {
                           children: null
                         }, "Processing Transaction ", React.createElement(WildcardsLoader.make, {})), React.createElement(RimbleUi.Text, {
                           children: React.createElement("a", {
-                                href: "https://" + txExplererUrl + "/tx/" + txState._0,
+                                href: "https://$txExplererUrl/tx/$txHash",
                                 rel: "noopener noreferrer",
                                 target: "_blank"
                               }, "View the transaction on " + txExplererUrl)
@@ -110,21 +108,20 @@ function TxTemplate(Props) {
                           children: "There was a server error when submitting your transaction."
                         }), React.createElement("p", undefined, "Failure reason: " + txState._0), children);
       case /* Complete */4 :
-          var txHash = txState._0.transactionHash;
           return React.createElement(React.Fragment, {
                       children: null
                     }, React.createElement(RimbleUi.Heading, {
                           children: null
                         }, "Transaction Complete ", React.createElement(WildcardsLoader.make, {})), React.createElement(RimbleUi.Text, {
                           children: React.createElement("a", {
-                                href: "https://" + txExplererUrl + "/tx/" + txHash,
+                                href: "https://$txExplererUrl/tx/$txHash",
                                 rel: "noopener noreferrer",
                                 target: "_blank"
                               }, "View the transaction on " + txExplererUrl)
                         }), React.createElement(RimbleUi.Button, {
-                          children: closeButtonText,
+                          children: props.closeButtonText,
                           onClick: (function (_e) {
-                              return Curry._1(clearNonUrlState, undefined);
+                              Curry._1(clearNonUrlState, undefined);
                             })
                         }));
       
@@ -136,6 +133,5 @@ var make = TxTemplate;
 
 export {
   make ,
-  
 }
 /* react Not a pure module */

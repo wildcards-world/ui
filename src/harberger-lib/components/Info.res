@@ -7,8 +7,8 @@ module ExpertView = {
     ~unit,
     ~showEthWithUsdConversion,
     ~optMonthlyPledgeUsd,
-    ~userIdType,
-    ~currentPatron,
+    ~userIdType as _,
+    ~currentPatron as _,
     ~displayNameStr,
     ~depositAvailableToWithdrawEth,
     ~depositAvailableToWithdrawUsd,
@@ -49,7 +49,8 @@ module ExpertView = {
         <small>
           <strong>
             {"Current Patron: "->React.string}
-            <Rimble.Tooltip message=j`This is the $userIdType of the current owner` placement="top">
+            <Rimble.Tooltip
+              message={`This is the $userIdType of the current owner`} placement="top">
               <span> {`ⓘ`->React.string} </span>
             </Rimble.Tooltip>
           </strong>
@@ -58,7 +59,7 @@ module ExpertView = {
         <a
           onClick={e => {
             ReactEvent.Mouse.preventDefault(e)
-            clearAndPush(j`/#user/$currentPatron`)
+            clearAndPush(`/#user/$currentPatron`)
           }}>
           {displayNameStr->React.string}
         </a>
@@ -117,7 +118,11 @@ module ExpertView = {
           <br />
           {MomentRe.Moment.format("LLLL", date)->React.string}
           <br />
-          <small> {"( "->React.string} <CountDown endDateMoment=date /> {")"->React.string} </small>
+          <small>
+            {"( "->React.string}
+            <CountDown endDateMoment=date />
+            {")"->React.string}
+          </small>
         </p>
       | None => React.null
       }}
@@ -153,12 +158,12 @@ module SimpleView = {
     ~tokenName,
     ~optMonthlyPledgeEth,
     ~unit,
-    ~currentPatron,
+    ~currentPatron as _,
     ~displayNameStr,
     ~totalPatronage,
     ~definiteTime,
     ~daysHeld,
-    ~orgId,
+    ~orgId as _,
     ~orgName,
     ~priceString,
     ~optionalSpecies,
@@ -174,7 +179,7 @@ module SimpleView = {
         className=linkStyle
         onClick={e => {
           ReactEvent.Mouse.preventDefault(e)
-          clearAndPush(j`/#user/$currentPatron`)
+          clearAndPush(`/#user/$currentPatron`)
         }}>
         {displayNameStr->React.string}
       </a>
@@ -184,7 +189,7 @@ module SimpleView = {
         className=linkStyle
         onClick={e => {
           ReactEvent.Mouse.preventDefault(e)
-          clearAndPush(j`/#org/$orgId`)
+          clearAndPush(`/#org/$orgId`)
         }}>
         {orgName->React.string}
       </a>
@@ -221,10 +226,11 @@ module SimpleView = {
           (tokenName ++
           (" for " ++ (daysHeldFloat->Js.Float.toFixed ++ " days "))))->React.string}
           {switch definiteTime {
-          | Some(date) => <>
+          | Some(date) =>
+            <>
               {"and has enough deposit to last "->React.string}
               <CountDown endDateMoment=date />
-              {j` - remember to keep topping up that deposit 😉.`->React.string}
+              {` - remember to keep topping up that deposit 😉.`->React.string}
             </>
           | None => React.null
           }}
@@ -470,12 +476,12 @@ module Auction = {
               <a
                 onClick={e => {
                   ReactEvent.Mouse.preventDefault(e)
-                  clearAndPush(j`/#user/$currentPatron`)
+                  clearAndPush(`/#user/$currentPatron`)
                 }}>
                 {displayNameStr->React.string}
               </a>
               <Rimble.Tooltip
-                message=j`This happens when the user's deposit runs out for the wildcard.`
+                message={`This happens when the user's deposit runs out for the wildcard.`}
                 placement="top">
                 <span> {`ⓘ`->React.string} </span>
               </Rimble.Tooltip>

@@ -6,6 +6,7 @@ import BnJs from "bn.js";
 import * as React from "react";
 import * as Helper from "../../harberger-lib/Helper.bs.js";
 import * as QlHooks from "../../harberger-lib/QlHooks.bs.js";
+import * as Js_array from "rescript/lib/es6/js_array.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
@@ -34,50 +35,50 @@ var query = (require("@apollo/client").gql`
 function parse(value) {
   var value$1 = value.patrons;
   return {
-          patrons: value$1.map(function (value) {
-                var value$1 = value.tokens;
-                return {
-                        __typename: value.__typename,
-                        id: value.id,
-                        totalTimeHeld: GqlConverters.$$BigInt.parse(value.totalTimeHeld),
-                        tokens: value$1.map(function (value) {
-                              return {
-                                      __typename: value.__typename,
-                                      id: value.id
-                                    };
-                            }),
-                        lastUpdated: GqlConverters.$$BigInt.parse(value.lastUpdated)
-                      };
-              })
+          patrons: Js_array.map((function (value) {
+                  var value$1 = value.tokens;
+                  return {
+                          __typename: value.__typename,
+                          id: value.id,
+                          totalTimeHeld: GqlConverters.$$BigInt.parse(value.totalTimeHeld),
+                          tokens: Js_array.map((function (value) {
+                                  return {
+                                          __typename: value.__typename,
+                                          id: value.id
+                                        };
+                                }), value$1),
+                          lastUpdated: GqlConverters.$$BigInt.parse(value.lastUpdated)
+                        };
+                }), value$1)
         };
 }
 
 function serialize(value) {
   var value$1 = value.patrons;
-  var patrons = value$1.map(function (value) {
-        var value$1 = value.lastUpdated;
-        var value$2 = GqlConverters.$$BigInt.serialize(value$1);
-        var value$3 = value.tokens;
-        var tokens = value$3.map(function (value) {
-              var value$1 = value.id;
-              var value$2 = value.__typename;
-              return {
-                      __typename: value$2,
-                      id: value$1
-                    };
-            });
-        var value$4 = value.totalTimeHeld;
-        var value$5 = GqlConverters.$$BigInt.serialize(value$4);
-        var value$6 = value.id;
-        var value$7 = value.__typename;
-        return {
-                __typename: value$7,
-                id: value$6,
-                totalTimeHeld: value$5,
-                tokens: tokens,
-                lastUpdated: value$2
-              };
-      });
+  var patrons = Js_array.map((function (value) {
+          var value$1 = value.lastUpdated;
+          var value$2 = GqlConverters.$$BigInt.serialize(value$1);
+          var value$3 = value.tokens;
+          var tokens = Js_array.map((function (value) {
+                  var value$1 = value.id;
+                  var value$2 = value.__typename;
+                  return {
+                          __typename: value$2,
+                          id: value$1
+                        };
+                }), value$3);
+          var value$4 = value.totalTimeHeld;
+          var value$5 = GqlConverters.$$BigInt.serialize(value$4);
+          var value$6 = value.id;
+          var value$7 = value.__typename;
+          return {
+                  __typename: value$7,
+                  id: value$6,
+                  totalTimeHeld: value$5,
+                  tokens: tokens,
+                  lastUpdated: value$2
+                };
+        }), value$1);
   return {
           patrons: patrons
         };
@@ -139,6 +140,7 @@ var LoadMostDaysHeld = {
 function useLoadMostDaysHeldData(param) {
   var currentTimestamp = QlHooks.useCurrentTime(undefined);
   var match = Curry.app(use, [
+        undefined,
         undefined,
         undefined,
         undefined,
@@ -315,10 +317,9 @@ function rankingColor(index) {
             });
 }
 
-function TotalDaysHeld$ContributorsRow(Props) {
-  var contributor = Props.contributor;
-  var amount = Props.amount;
-  var index = Props.index;
+function TotalDaysHeld$ContributorsRow(props) {
+  var index = props.index;
+  var contributor = props.contributor;
   Curry._2(UserProvider.useUserInfoContext(undefined).update, contributor, false);
   var optThreeBoxData = UserProvider.use3BoxUserData(contributor);
   var optUserName = Belt_Option.flatMap(Belt_Option.flatMap(optThreeBoxData, (function (threeBoxData) {
@@ -352,20 +353,19 @@ function TotalDaysHeld$ContributorsRow(Props) {
                         }, React.createElement("strong", undefined, "#", String(index + 1 | 0))))), React.createElement("td", undefined, React.createElement("a", {
                       onClick: (function (e) {
                           e.preventDefault();
-                          return Curry._1(clearAndPush, "/#user/" + contributor);
+                          Curry._1(clearAndPush, "/#user/$contributor");
                         })
                     }, optUserName !== undefined ? React.createElement("span", undefined, optUserName) : React.createElement("span", undefined, Helper.elipsify(contributor, 20)))), React.createElement("td", {
                   className: rankMetric
-                }, amount + " Days"));
+                }, props.amount + " Days"));
 }
 
 var ContributorsRow = {
   make: TotalDaysHeld$ContributorsRow
 };
 
-function TotalDaysHeld$MostDaysHeld(Props) {
-  var mostDaysHeld = Props.mostDaysHeld;
-  return Belt_Array.mapWithIndex(mostDaysHeld, (function (index, param) {
+function TotalDaysHeld$MostDaysHeld(props) {
+  return Belt_Array.mapWithIndex(props.mostDaysHeld, (function (index, param) {
                 return React.createElement(TotalDaysHeld$ContributorsRow, {
                             contributor: param[0],
                             amount: param[1].div(new BnJs("86400")).toString(),
@@ -378,12 +378,11 @@ var MostDaysHeld = {
   make: TotalDaysHeld$MostDaysHeld
 };
 
-function TotalDaysHeld(Props) {
-  var numberOfLeaders = Props.numberOfLeaders;
+function TotalDaysHeld(props) {
   var mostDaysHeldOpt = useLoadMostDaysHeldData(undefined);
   var tmp;
   if (mostDaysHeldOpt !== undefined) {
-    var mostDaysHeld = Belt_Array.slice(mostDaysHeldOpt, 0, numberOfLeaders);
+    var mostDaysHeld = Belt_Array.slice(mostDaysHeldOpt, 0, props.numberOfLeaders);
     tmp = React.createElement(TotalDaysHeld$MostDaysHeld, {
           mostDaysHeld: mostDaysHeld
         });
@@ -423,6 +422,5 @@ export {
   ContributorsRow ,
   MostDaysHeld ,
   make ,
-  
 }
 /* query Not a pure module */

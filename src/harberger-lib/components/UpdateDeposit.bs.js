@@ -8,11 +8,11 @@ import * as Web3Utils from "web3-utils";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as ContractActions from "../eth/ContractActions.bs.js";
 import * as Core from "@web3-react/core";
-import UpdateDepositInput from "./UpdateDepositInput";
+import UpdateDepositInputJs from "./UpdateDepositInput.js";
 
-var make = UpdateDepositInput;
+var make = UpdateDepositInputJs;
 
-var UpdateDepositInput$1 = {
+var UpdateDepositInput = {
   make: make
 };
 
@@ -22,9 +22,9 @@ function getToDisplay(label, value) {
                 })));
 }
 
-function UpdateDeposit(Props) {
-  var closeButtonText = Props.closeButtonText;
-  var chain = Props.chain;
+function UpdateDeposit(props) {
+  var chain = props.chain;
+  var closeButtonText = props.closeButtonText;
   var match = React.useState(function () {
         return "";
       });
@@ -54,9 +54,9 @@ function UpdateDeposit(Props) {
     return InputHelp.onlyUpdateIfPositiveFloat(depositChange, setDepositChange, $$event);
   };
   var updateIsAddDeposit = function (isDeposit) {
-    return Curry._1(setIsAddDeposit, (function (param) {
-                  return isDeposit;
-                }));
+    Curry._1(setIsAddDeposit, (function (param) {
+            return isDeposit;
+          }));
   };
   return React.createElement(TxTemplate.make, {
               children: React.createElement(TxTemplate.make, {
@@ -80,9 +80,8 @@ function UpdateDeposit(Props) {
 var make$1 = UpdateDeposit;
 
 export {
-  UpdateDepositInput$1 as UpdateDepositInput,
+  UpdateDepositInput ,
   getToDisplay ,
   make$1 as make,
-  
 }
 /* make Not a pure module */

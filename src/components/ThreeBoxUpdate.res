@@ -124,17 +124,19 @@ module ProfileDetails = {
               } else {
                 threeBoxInstance.public.set(. "description", editedDescription)->Promise.Js.toResult
               }
-              Promise.all2(namePromise, descriptionPromise)->Promise.get(a => {
-                let (nameSet, descriptionSet) = a
+              Promise.all2(namePromise, descriptionPromise)->Promise.get(
+                a => {
+                  let (nameSet, descriptionSet) = a
 
-                @warning("-4")
-                switch (nameSet, descriptionSet) {
-                | (Ok(), Ok()) =>
-                  reloadUser(true)
-                  setThreeBoxState(_ => DefaultView(Saved))
-                | _ => setThreeBoxState(_ => DefaultView(FailedToSave))
-                }
-              })
+                  @warning("-4")
+                  switch (nameSet, descriptionSet) {
+                  | (Ok(), Ok()) =>
+                    reloadUser(true)
+                    setThreeBoxState(_ => DefaultView(Saved))
+                  | _ => setThreeBoxState(_ => DefaultView(FailedToSave))
+                  }
+                },
+              )
               SyncedBox(threeBoxInstance)
             | Error(_) => Load3BoxError
             }
@@ -255,8 +257,6 @@ let getResult: string => option<string> = %raw(`
 module TwitterVerification = {
   @react.component
   let make = (~twitterVerification, ~threeBoxState, ~setThreeBoxState, ~reloadUser) => {
-    let currentUser = RootProvider.useCurrentUser()->Option.mapWithDefault("", a => a)
-
     let optEthereumWallet = RootProvider.useCurrentUser()
     let optWeb3Provider = RootProvider.useWeb3()
     let (twitterVerificationStep, setTwitterVerificationStep) = React.useState(_ => Uninitialized)
@@ -316,19 +316,18 @@ module TwitterVerification = {
       setTwitterVerificationStep(_ => VerifyWithServer(did))
       let _ = {
         open Js.Promise
-        Fetch.fetchWithInit(
+        Fetch.fetch(
           "https://wildcards.xyz/verification3boxTwitter",
-          Fetch.RequestInit.make(
-            ~method_=Post,
-            ~headers=Fetch.HeadersInit.make({"Content-Type": "application/json"}),
-            ~body=Fetch.BodyInit.make(
-              Js.Json.stringifyAny({
-                did: did,
-                twitterHandle: twitterHandle,
-              })->Option.mapWithDefault("{}", a => a),
-            ),
-            (),
-          ),
+          {
+            method: #POST,
+            headers: Fetch.Headers.fromObject({"Content-Type": "application/json"}),
+            body: Js.Json.stringifyAny({
+              did,
+              twitterHandle,
+            })
+            ->Belt.Option.getExn
+            ->Fetch.Body.string,
+          },
         )
         |> then_(Fetch.Response.text)
         |> then_(text => {
@@ -395,7 +394,7 @@ module TwitterVerification = {
         </React.Fragment>
       | PreparePostToTwitter => <p> {"Please login to 3box!"->React.string} </p>
       | PostToTwitter(did) =>
-        let link = j`https://twitter.com/intent/tweet?text=This Tweet links my Twitter account to my 3Box profile!\\n%0D%0A%0D%0Ahttps://wildcards.world/%23user/$currentUser\\n%0D%0A%0D%0ASupport Animal conservation @wildcards_world\\n%0D%0A✅\\n%0D%0A$did\\n%0D%0A✅` //twitter.com/intent/tweet?text=This Tweet links my Twitter account to my 3Box profile!\n%0D%0A%0D%0Ahttps://wildcards.world/%23user/$currentUser\n%0D%0A%0D%0ASupport Animal conservation @wildcards_world\n%0D%0A✅\n%0D%0A$did\n%0D%0A✅|j};
+        let link = `https://twitter.com/intent/tweet?text=This Tweet links my Twitter account to my 3Box profile!\\n%0D%0A%0D%0Ahttps://wildcards.world/%23user/$currentUser\\n%0D%0A%0D%0ASupport Animal conservation @wildcards_world\\n%0D%0A✅\\n%0D%0A$did\\n%0D%0A✅` //twitter.com/intent/tweet?text=This Tweet links my Twitter account to my 3Box profile!\n%0D%0A%0D%0Ahttps://wildcards.world/%23user/$currentUser\n%0D%0A%0D%0ASupport Animal conservation @wildcards_world\n%0D%0A✅\n%0D%0A$did\n%0D%0A✅|j};
 
         <React.Fragment>
           <p> {"Post the following proof to twitter"->React.string} </p>

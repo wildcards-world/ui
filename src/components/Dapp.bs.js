@@ -17,6 +17,7 @@ import * as Validate from "./Validate.bs.js";
 import * as CONSTANTS from "../CONSTANTS.bs.js";
 import * as CountDown from "../harberger-lib/CountDown.bs.js";
 import * as InputHelp from "../harberger-lib/InputHelp.bs.js";
+import * as Js_string from "rescript/lib/es6/js_string.js";
 import * as Web3Utils from "../harberger-lib/Web3Utils.bs.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
@@ -32,29 +33,29 @@ import * as UserProvider from "../harberger-lib/js/user-provider/UserProvider.bs
 import * as ActionButtons from "./ActionButtons.bs.js";
 import * as UpdateDeposit from "../harberger-lib/components/UpdateDeposit.bs.js";
 import * as UsdPriceProvider from "../harberger-lib/components/UsdPriceProvider.bs.js";
-import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.bs.js";
 import * as LazyThreeBoxUpdate from "./LazyThreeBoxUpdate.bs.js";
-import * as Browser$ReScriptLogger from "rescript-logger/src/Browser.bs.js";
+import * as RescriptReactRouter from "@rescript/react/src/RescriptReactRouter.bs.js";
+import * as Browser$ReScriptLogger from "rescript-logger/src/loggers/Browser.bs.js";
 import ReactCarousel from "@wildcards/react-carousel";
-import ShareSocialMedia from "./components/shareSocialMedia";
+import ShareSocialMediaJs from "./components/shareSocialMedia.js";
 
 var flameImg = "/img/streak-flame.png";
 
-var make = ShareSocialMedia;
+var make = ShareSocialMediaJs;
 
 var ShareSocial = {
   make: make
 };
 
-function Dapp$EditButton(Props) {
-  var animal = Props.animal;
+function Dapp$EditButton(props) {
+  var animal = props.animal;
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   var isExplorer = Router.useIsExplorer(undefined);
   return React.createElement(RimbleUi.Button, {
               children: "Edit",
               onClick: (function ($$event) {
                   $$event.preventDefault();
-                  return Curry._1(clearAndPush, "#" + (InputHelp.getPagePrefix(isExplorer) + ("details/" + TokenId.toString(animal))));
+                  Curry._1(clearAndPush, "#" + (InputHelp.getPagePrefix(isExplorer) + ("details/" + TokenId.toString(animal))));
                 })
             });
 }
@@ -63,17 +64,14 @@ var EditButton = {
   make: Dapp$EditButton
 };
 
-function Dapp$Streak(Props) {
-  var chain = Props.chain;
-  var animal = Props.animal;
-  var animalName = Belt_Option.getWithDefault(QlHooks.useWildcardName(animal), "Loading");
-  var daysHeld = QlHooks.useDaysHeld(chain, animal);
+function Dapp$Streak(props) {
+  var daysHeld = QlHooks.useDaysHeld(props.chain, props.animal);
   if (daysHeld === undefined) {
     return null;
   }
   var numDaysStr = daysHeld[0].toFixed();
   return React.createElement(RimbleUi.Tooltip, {
-              message: "" + animalName + " has been held for " + numDaysStr + " days by the same owner.",
+              message: "$animalName has been held for $numDaysStr days by the same owner.",
               children: React.createElement("div", {
                     className: Styles.positionRelative,
                     id: "inner"
@@ -90,10 +88,8 @@ var Streak = {
   make: Dapp$Streak
 };
 
-function Dapp$DisplayAfterDate(Props) {
-  var endDateMoment = Props.endDateMoment;
-  var beforeComponent = Props.beforeComponent;
-  var afterComponent = Props.afterComponent;
+function Dapp$DisplayAfterDate(props) {
+  var endDateMoment = props.endDateMoment;
   var isBeforeDate = React.useCallback((function (param) {
           return endDateMoment.diff(Moment(), "seconds") > 0;
         }), [endDateMoment]);
@@ -103,22 +99,21 @@ function Dapp$DisplayAfterDate(Props) {
   var setIsBeforeDate = match[1];
   React.useEffect((function () {
           var timeout = setTimeout((function (param) {
-                  return Curry._1(setIsBeforeDate, (function (param) {
-                                return Curry._1(isBeforeDate, undefined);
-                              }));
+                  Curry._1(setIsBeforeDate, (function (param) {
+                          return Curry._1(isBeforeDate, undefined);
+                        }));
                 }), 1500);
           return (function (param) {
                     clearTimeout(timeout);
-                    
                   });
         }), [
         setIsBeforeDate,
         isBeforeDate
       ]);
   if (match[0]) {
-    return beforeComponent;
+    return props.beforeComponent;
   } else {
-    return afterComponent;
+    return props.afterComponent;
   }
 }
 
@@ -126,11 +121,10 @@ var DisplayAfterDate = {
   make: Dapp$DisplayAfterDate
 };
 
-function Dapp$AuctionDisplay(Props) {
-  var chain = Props.chain;
-  var launchTime = Props.launchTime;
-  var animal = Props.animal;
-  var currentPriceWei = Animal.useAuctionPriceWei(chain, animal, launchTime);
+function Dapp$AuctionDisplay(props) {
+  var animal = props.animal;
+  var chain = props.chain;
+  var currentPriceWei = Animal.useAuctionPriceWei(chain, animal, props.launchTime);
   var optCurrentUsdEthPrice = UsdPriceProvider.useUsdPrice(undefined);
   var tmp;
   if (chain !== 1) {
@@ -155,9 +149,9 @@ var AuctionDisplay = {
   make: Dapp$AuctionDisplay
 };
 
-function Dapp$AuctionDetails(Props) {
-  var chain = Props.chain;
-  var animal = Props.animal;
+function Dapp$AuctionDetails(props) {
+  var animal = props.animal;
+  var chain = props.chain;
   var launchTimeOpt = QlHooks.useLaunchTimeBN(chain, animal);
   var foreclosureTimeOpt = QlHooks.useForeclosureTimeBn(chain, TokenId.toString(animal));
   if (launchTimeOpt === undefined) {
@@ -199,9 +193,9 @@ var AuctionDetails = {
   make: Dapp$AuctionDetails
 };
 
-function Dapp$BasicAnimalDisplay(Props) {
-  var chain = Props.chain;
-  var animal = Props.animal;
+function Dapp$BasicAnimalDisplay(props) {
+  var animal = props.animal;
+  var chain = props.chain;
   var owned = QlHooks.useIsAnimalOwned(chain, animal);
   var currentPatron = Belt_Option.getWithDefault(QlHooks.usePatron(chain, animal), "Loading");
   var displayName = UserProvider.useDisplayName(currentPatron);
@@ -242,7 +236,7 @@ function Dapp$BasicAnimalDisplay(Props) {
                 }), React.createElement("a", {
                   onClick: (function (e) {
                       e.preventDefault();
-                      return Curry._1(clearAndPush, "/#user/" + currentPatron);
+                      Curry._1(clearAndPush, "/#user/$currentPatron");
                     })
                 }, displayNameStr));
 }
@@ -251,8 +245,7 @@ var BasicAnimalDisplay = {
   make: Dapp$BasicAnimalDisplay
 };
 
-function Dapp$SquareBox(Props) {
-  var children = Props.children;
+function Dapp$SquareBox(props) {
   return React.createElement("div", {
               className: Curry._1(Css.style, {
                     hd: Css.width({
@@ -296,22 +289,22 @@ function Dapp$SquareBox(Props) {
                           }
                         }
                       })
-                }, children));
+                }, props.children));
 }
 
 var SquareBox = {
   make: Dapp$SquareBox
 };
 
-function Dapp$AnimalOnLandingPage(Props) {
-  var animal = Props.animal;
-  var scalarOpt = Props.scalar;
-  var chain = Props.chain;
-  var enlargementOpt = Props.enlargement;
-  var optionEndDateMoment = Props.optionEndDateMoment;
-  var isGqlLoaded = Props.isGqlLoaded;
-  var scalar = scalarOpt !== undefined ? scalarOpt : 1;
-  var enlargement = enlargementOpt !== undefined ? enlargementOpt : 1;
+function Dapp$AnimalOnLandingPage(props) {
+  var isGqlLoaded = props.isGqlLoaded;
+  var optionEndDateMoment = props.optionEndDateMoment;
+  var enlargement = props.enlargement;
+  var chain = props.chain;
+  var scalar = props.scalar;
+  var animal = props.animal;
+  var scalar$1 = scalar !== undefined ? scalar : 1;
+  var enlargement$1 = enlargement !== undefined ? enlargement : 1;
   var name = Belt_Option.getWithDefault(QlHooks.useWildcardName(animal), "Loading");
   var isExplorer = Router.useIsExplorer(undefined);
   var orgBadge = Animal.useGetOrgBadgeImage(animal);
@@ -360,7 +353,7 @@ function Dapp$AnimalOnLandingPage(Props) {
                 onClick: (function (e) {
                     e.stopPropagation();
                     e.preventDefault();
-                    return Curry._1(clearAndPush, "#org/" + orgId);
+                    Curry._1(clearAndPush, "#org/" + orgId);
                   })
               }, React.createElement("img", {
                     className: Styles.flameImg,
@@ -370,7 +363,7 @@ function Dapp$AnimalOnLandingPage(Props) {
     return React.createElement(Dapp$SquareBox, {
                 children: null
               }, React.createElement("div", {
-                    className: Styles.headerImg(enlargement, scalar)
+                    className: Styles.headerImg(enlargement$1, scalar$1)
                   }, Curry._1(img, undefined)), tmp);
   };
   return React.createElement("div", {
@@ -383,7 +376,7 @@ function Dapp$AnimalOnLandingPage(Props) {
                   className: Styles.clickableLink,
                   onClick: (function ($$event) {
                       $$event.preventDefault();
-                      return Curry._1(clearAndPush, "#" + (InputHelp.getPagePrefix(isExplorer) + ("details/" + TokenId.toString(animal))));
+                      Curry._1(clearAndPush, "#" + (InputHelp.getPagePrefix(isExplorer) + ("details/" + TokenId.toString(animal))));
                     })
                 }, componentWithoutImg(normalImage, false), React.createElement("div", undefined, React.createElement("h2", undefined, name))), optionEndDateMoment !== undefined ? React.createElement("div", undefined, React.createElement("h3", {
                         className: Styles.colorGreen
@@ -402,23 +395,23 @@ var AnimalOnLandingPage = {
   make: Dapp$AnimalOnLandingPage
 };
 
-function Dapp$CarouselAnimal(Props) {
-  var animal = Props.animal;
-  var scalar = Props.scalar;
-  var enlargementOpt = Props.enlargement;
-  var isGqlLoadedOpt = Props.isGqlLoaded;
-  var chain = Props.chain;
-  var enlargement = enlargementOpt !== undefined ? enlargementOpt : 1;
-  var isGqlLoaded = isGqlLoadedOpt !== undefined ? isGqlLoadedOpt : true;
+function Dapp$CarouselAnimal(props) {
+  var chain = props.chain;
+  var isGqlLoaded = props.isGqlLoaded;
+  var enlargement = props.enlargement;
+  var scalar = props.scalar;
+  var animal = props.animal;
+  var enlargement$1 = enlargement !== undefined ? enlargement : 1;
+  var isGqlLoaded$1 = isGqlLoaded !== undefined ? isGqlLoaded : true;
   var isLaunched = Animal.useIsLaunched(chain, animal);
   var makeAnimalOnLandingPage = function (optionEndDateMoment) {
     return React.createElement(Dapp$AnimalOnLandingPage, {
                 animal: animal,
                 scalar: scalar,
                 chain: chain,
-                enlargement: enlargement,
+                enlargement: enlargement$1,
                 optionEndDateMoment: optionEndDateMoment,
-                isGqlLoaded: isGqlLoaded
+                isGqlLoaded: isGqlLoaded$1
               });
   };
   if (typeof isLaunched === "number") {
@@ -436,8 +429,8 @@ var CarouselAnimal = {
   make: Dapp$CarouselAnimal
 };
 
-function Dapp$AnimalCarousel(Props) {
-  var isGqlLoaded = Props.isGqlLoaded;
+function Dapp$AnimalCarousel(props) {
+  var isGqlLoaded = props.isGqlLoaded;
   var match = React.useState(function () {
         return 17;
       });
@@ -482,34 +475,32 @@ function Dapp$AnimalCarousel(Props) {
                     animationSpeed: 1000,
                     className: Styles.carousel,
                     onChange: (function (test) {
-                        return Curry._1(setCarouselIndex, (function (param) {
-                                      return test;
-                                    }));
+                        Curry._1(setCarouselIndex, (function (param) {
+                                return test;
+                              }));
                       }),
                     infinite: true,
                     autoPlay: 5000,
-                    arrowLeft: React.createElement("span", {
-                          className: Styles.carouselArrow(undefined, true),
-                          onClick: (function ($$event) {
-                              $$event.preventDefault();
-                              Curry._1(setCarouselIndex, (function (param) {
-                                      return carouselIndex - 1 | 0;
-                                    }));
-                              $$event.stopPropagation();
-                              
-                            })
-                        }, "◄"),
-                    arrowRight: React.createElement("span", {
-                          className: Styles.carouselArrow(undefined, false),
-                          onClick: (function ($$event) {
-                              $$event.preventDefault();
-                              Curry._1(setCarouselIndex, (function (param) {
-                                      return carouselIndex + 1 | 0;
-                                    }));
-                              $$event.stopPropagation();
-                              
-                            })
-                        }, "►"),
+                    arrowLeft: Caml_option.some(React.createElement("span", {
+                              className: Styles.carouselArrow(undefined, true),
+                              onClick: (function ($$event) {
+                                  $$event.preventDefault();
+                                  Curry._1(setCarouselIndex, (function (param) {
+                                          return carouselIndex - 1 | 0;
+                                        }));
+                                  $$event.stopPropagation();
+                                })
+                            }, "◄")),
+                    arrowRight: Caml_option.some(React.createElement("span", {
+                              className: Styles.carouselArrow(undefined, false),
+                              onClick: (function ($$event) {
+                                  $$event.preventDefault();
+                                  Curry._1(setCarouselIndex, (function (param) {
+                                          return carouselIndex + 1 | 0;
+                                        }));
+                                  $$event.stopPropagation();
+                                })
+                            }, "►")),
                     arrows: true
                   }),
               className: Styles.positionRelative
@@ -520,11 +511,9 @@ var AnimalCarousel = {
   make: Dapp$AnimalCarousel
 };
 
-function Dapp$AnimalActionsOnDetailsPage$Unowned(Props) {
-  var chain = Props.chain;
-  var animal = Props.animal;
-  var price = Props.price;
-  var endDateMoment = Animal.useIsLaunched(chain, animal);
+function Dapp$AnimalActionsOnDetailsPage$Unowned(props) {
+  var price = props.price;
+  var endDateMoment = Animal.useIsLaunched(props.chain, props.animal);
   var tmp;
   if (typeof endDateMoment === "number") {
     tmp = endDateMoment !== 0 ? React.createElement(RimbleUi.Loader, {}) : Curry._1(price, undefined);
@@ -547,9 +536,9 @@ var Unowned = {
   make: Dapp$AnimalActionsOnDetailsPage$Unowned
 };
 
-function Dapp$AnimalActionsOnDetailsPage(Props) {
-  var chain = Props.chain;
-  var animal = Props.animal;
+function Dapp$AnimalActionsOnDetailsPage(props) {
+  var animal = props.animal;
+  var chain = props.chain;
   var owned = QlHooks.useIsAnimalOwned(chain, animal);
   var currentPatron = Belt_Option.getWithDefault(QlHooks.usePatron(chain, animal), "Loading");
   var displayName = UserProvider.useDisplayName(currentPatron);
@@ -588,7 +577,7 @@ function Dapp$AnimalActionsOnDetailsPage(Props) {
               }, React.createElement("p", undefined, "Owner: ", React.createElement("a", {
                         onClick: (function (e) {
                             e.preventDefault();
-                            return Curry._1(clearAndPush, "/#user/" + currentPatron);
+                            Curry._1(clearAndPush, "/#user/" + currentPatron + "");
                           })
                       }, displayNameStr)), React.createElement(PriceDisplay.make, {
                     chain: chain,
@@ -618,9 +607,8 @@ var AnimalActionsOnDetailsPage = {
   make: Dapp$AnimalActionsOnDetailsPage
 };
 
-function Dapp$DetailsViewAnimal(Props) {
-  var chain = Props.chain;
-  var animal = Props.animal;
+function Dapp$DetailsViewAnimal(props) {
+  var animal = props.animal;
   var orgId = Belt_Option.getWithDefault(QlHooks.useWildcardOrgId(animal), "");
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   var image = Animal.useAvatar(animal);
@@ -645,7 +633,7 @@ function Dapp$DetailsViewAnimal(Props) {
                         onClick: (function (e) {
                             e.stopPropagation();
                             e.preventDefault();
-                            return Curry._1(clearAndPush, "#org/" + orgId);
+                            Curry._1(clearAndPush, "#org/" + orgId);
                           })
                       }, React.createElement("img", {
                             className: CssJs.style([
@@ -664,7 +652,7 @@ function Dapp$DetailsViewAnimal(Props) {
                           return React.createElement("p", undefined, "Art by: ", React.createElement("a", {
                                           onClick: (function (e) {
                                               e.preventDefault();
-                                              return Curry._1(clearAndPush, "/#artist/" + artistInfo.id);
+                                              Curry._1(clearAndPush, "/#artist/" + artistInfo.id);
                                             })
                                         }, artistInfo.name));
                         }))));
@@ -681,9 +669,9 @@ function Dapp$DetailsViewAnimal(Props) {
                 }), React.createElement("h2", undefined, match !== undefined ? (
                     match$1 !== undefined ? React.createElement(React.Fragment, undefined, match, React.createElement("small", {
                                 className: CssJs.style([CssJs.fontWeight("thin")])
-                              }, " the " + match$1)) : match
+                              }, " the " + match$1 + "")) : match
                   ) : "Loading"), React.createElement(Dapp$AnimalActionsOnDetailsPage, {
-                  chain: chain,
+                  chain: props.chain,
                   animal: animal
                 }));
 }
@@ -692,9 +680,8 @@ var DetailsViewAnimal = {
   make: Dapp$DetailsViewAnimal
 };
 
-function Dapp$DetailsView(Props) {
-  var chain = Props.chain;
-  var optionAnimal = Props.optionAnimal;
+function Dapp$DetailsView(props) {
+  var optionAnimal = props.optionAnimal;
   Browser$ReScriptLogger.info1({
         rootModule: "Dapp",
         subModulePath: {
@@ -702,15 +689,14 @@ function Dapp$DetailsView(Props) {
           tl: /* [] */0
         },
         value: "make",
-        fullPath: "Dapp.DetailsView.make",
-        filePath: "/home/jasoons/Documents/code/ui/src/components/Dapp.res"
+        fullPath: "Dapp.DetailsView.make"
       }, "optionAnimal", [
         "a",
         optionAnimal
       ]);
   if (optionAnimal !== undefined) {
     return React.createElement(Dapp$DetailsViewAnimal, {
-                chain: chain,
+                chain: props.chain,
                 animal: Caml_option.valFromOption(optionAnimal)
               });
   } else {
@@ -722,10 +708,10 @@ var DetailsView = {
   make: Dapp$DetailsView
 };
 
-function Dapp$DefaultLook(Props) {
-  var isGqlLoaded = Props.isGqlLoaded;
-  var url = ReasonReactRouter.useUrl(undefined, undefined);
-  var match = url.hash.split("/");
+function Dapp$DefaultLook(props) {
+  var isGqlLoaded = props.isGqlLoaded;
+  var url = RescriptReactRouter.useUrl(undefined, undefined);
+  var match = Js_string.split("/", url.hash);
   var tmp;
   var exit = 0;
   var animalStr;
@@ -805,8 +791,7 @@ function Dapp$DefaultLook(Props) {
                 tl: /* [] */0
               },
               value: "make",
-              fullPath: "Dapp.DefaultLook.make",
-              filePath: "/home/jasoons/Documents/code/ui/src/components/Dapp.res"
+              fullPath: "Dapp.DefaultLook.make"
             }, "the animalString", [
               "a",
               animalStr
@@ -829,7 +814,7 @@ var DefaultLook = {
   make: Dapp$DefaultLook
 };
 
-function Dapp$DefaultLeftPanel(Props) {
+function Dapp$DefaultLeftPanel(props) {
   return React.createElement(React.Fragment, {
               children: null
             }, React.createElement("h1", {
@@ -847,10 +832,10 @@ var DefaultLeftPanel = {
   make: Dapp$DefaultLeftPanel
 };
 
-function Dapp$UnlaunchedAnimalInfo(Props) {
-  var chain = Props.chain;
-  var endDateMoment = Props.endDateMoment;
-  var animal = Props.animal;
+function Dapp$UnlaunchedAnimalInfo(props) {
+  var animal = props.animal;
+  var endDateMoment = props.endDateMoment;
+  var chain = props.chain;
   var animalName = Belt_Option.getWithDefault(QlHooks.useWildcardName(animal), "Loading");
   var ratio = QlHooks.usePledgeRate(chain, animal);
   var monthlyRate = (ratio * 100).toString();
@@ -876,9 +861,9 @@ var UnlaunchedAnimalInfo = {
   make: Dapp$UnlaunchedAnimalInfo
 };
 
-function Dapp$AnimalInfo(Props) {
-  var chain = Props.chain;
-  var animal = Props.animal;
+function Dapp$AnimalInfo(props) {
+  var animal = props.animal;
+  var chain = props.chain;
   var animalDescription = Belt_Option.getWithDefault(QlHooks.useWildcardDescription(animal), ["Loading"]);
   var optAnimalMedia = Animal.useAlternateImage(animal);
   var animalStatus = Animal.useTokenStatus(chain, animal);
@@ -971,7 +956,7 @@ function Dapp$AnimalInfo(Props) {
                                                     }),
                                                 src: CONSTANTS.cdnBase + media.image
                                               }), Belt_Option.mapWithDefault(media.photographer, null, (function (photographer) {
-                                                  return React.createElement("p", undefined, "📸 by " + photographer);
+                                                  return React.createElement("p", undefined, "📸 by " + photographer + "");
                                                 })));
                               }))
                       }))
@@ -982,8 +967,7 @@ var AnimalInfo = {
   make: Dapp$AnimalInfo
 };
 
-function Dapp(Props) {
-  var currentAnimal = Props.currentAnimal;
+function Dapp(props) {
   var nonUrlRouting = RootProvider.useNonUrlState(undefined);
   var clearNonUrlState = RootProvider.useClearNonUrlState(undefined);
   var isDetailView = Router.useIsDetails(undefined);
@@ -999,7 +983,7 @@ function Dapp(Props) {
                     })
               }, React.createElement(RimbleUi.Button.Text, {
                     onClick: (function (param) {
-                        return Curry._1(clearNonUrlState, undefined);
+                        Curry._1(clearNonUrlState, undefined);
                       }),
                     icononly: true,
                     icon: "Close",
@@ -1009,8 +993,8 @@ function Dapp(Props) {
                     right: 0,
                     m: 1
                   }), React.createElement(React.Suspense, {
-                    children: React.createElement(LazyThreeBoxUpdate.make, LazyThreeBoxUpdate.makeProps(undefined, undefined)),
-                    fallback: React.createElement(RimbleUi.Loader, {})
+                    children: Caml_option.some(React.createElement(LazyThreeBoxUpdate.make, {})),
+                    fallback: Caml_option.some(React.createElement(RimbleUi.Loader, {}))
                   }));
           break;
       case /* UpdateDepositScreen */1 :
@@ -1021,7 +1005,7 @@ function Dapp(Props) {
                     })
               }, React.createElement(RimbleUi.Button.Text, {
                     onClick: (function (param) {
-                        return Curry._1(clearNonUrlState, undefined);
+                        Curry._1(clearNonUrlState, undefined);
                       }),
                     icononly: true,
                     icon: "Close",
@@ -1032,7 +1016,7 @@ function Dapp(Props) {
                     m: 1
                   }), React.createElement(UpdateDeposit.make, {
                     closeButtonText: "Back to animal view",
-                    chain: Belt_Option.mapWithDefault(currentAnimal, /* MainnetQuery */2, Animal.getChainIdFromAnimalId)
+                    chain: Belt_Option.mapWithDefault(props.currentAnimal, /* MainnetQuery */2, Animal.getChainIdFromAnimalId)
                   }));
           break;
       case /* NoExtraState */2 :
@@ -1062,7 +1046,7 @@ function Dapp(Props) {
                     })
               }, React.createElement(RimbleUi.Button.Text, {
                     onClick: (function (param) {
-                        return Curry._1(clearNonUrlState, undefined);
+                        Curry._1(clearNonUrlState, undefined);
                       }),
                     icononly: true,
                     icon: "Close",
@@ -1085,7 +1069,7 @@ function Dapp(Props) {
                     })
               }, React.createElement(RimbleUi.Button.Text, {
                     onClick: (function (param) {
-                        return Curry._1(clearNonUrlState, undefined);
+                        Curry._1(clearNonUrlState, undefined);
                       }),
                     icononly: true,
                     icon: "Close",
@@ -1108,7 +1092,7 @@ function Dapp(Props) {
                     })
               }, React.createElement(RimbleUi.Button.Text, {
                     onClick: (function (param) {
-                        return Curry._1(clearNonUrlState, undefined);
+                        Curry._1(clearNonUrlState, undefined);
                       }),
                     icononly: true,
                     icon: "Close",
@@ -1182,6 +1166,5 @@ export {
   UnlaunchedAnimalInfo ,
   AnimalInfo ,
   make$1 as make,
-  
 }
 /* make Not a pure module */

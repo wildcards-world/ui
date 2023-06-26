@@ -1,7 +1,7 @@
 type translations
 
 @module("react-translate")
-external useTranslate: (. string, . string) => string = "useTranslate"
+external useTranslate: (. string) => (. string) => string = "useTranslate"
 
 type translationModeContext = {
   translationMode: string,
@@ -50,7 +50,7 @@ let make = (~children) => {
     <TranslationContext
       value={
         translationMode: translationModeCrypto ? "crypto" : "muggle",
-        translationModeCrypto: translationModeCrypto,
+        translationModeCrypto,
         setTranslationModeCrypto: newMode => setTranslationModeCrypto(_ => newMode),
       }>
       children

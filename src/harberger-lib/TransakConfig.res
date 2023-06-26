@@ -14,8 +14,8 @@ let getConfig = (~chain, web3Context: RootProvider.web3reactContext) => {
   }
 
   let transakConfig: Transak.initParams = {
-    environment: environment,
-    apiKey: apiKey,
+    environment,
+    apiKey,
     // apiKey: "e7f543f7-e12e-4257-ad04-682679f0404c",
     hostURL: windowLocation,
     defaultCryptoCurrency: Some(defaultCryptoCurrency),

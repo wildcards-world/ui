@@ -128,7 +128,7 @@ var footerSocailButtonLink = Curry._1(Css.style, {
       }
     });
 
-function Footer(Props) {
+function Footer(props) {
   return React.createElement(RimbleUi.Box, {
               children: React.createElement("div", {
                     className: footerWrapper
@@ -237,6 +237,5 @@ export {
   footerSocialButton ,
   footerSocailButtonLink ,
   make ,
-  
 }
 /* footer Not a pure module */

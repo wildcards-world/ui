@@ -10,6 +10,5 @@ var HoverToggle = {
 
 export {
   HoverToggle ,
-  
 }
 /* make Not a pure module */

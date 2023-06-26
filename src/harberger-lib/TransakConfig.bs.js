@@ -56,6 +56,5 @@ function getConfig(chain, web3Context) {
 
 export {
   getConfig ,
-  
 }
 /* No side effect */

@@ -4,7 +4,7 @@ import * as React from "react";
 import * as Styles from "../../Styles.bs.js";
 import * as RimbleUi from "rimble-ui";
 
-function CustomerBenefit(Props) {
+function CustomerBenefit(props) {
   return React.createElement(RimbleUi.Box, {
               children: null,
               className: Styles.horizantalBlueTile
@@ -21,6 +21,5 @@ var make = CustomerBenefit;
 
 export {
   make ,
-  
 }
 /* react Not a pure module */

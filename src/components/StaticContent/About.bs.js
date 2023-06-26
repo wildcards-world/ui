@@ -4,7 +4,7 @@ import * as React from "react";
 import * as Styles from "../../Styles.bs.js";
 import * as RimbleUi from "rimble-ui";
 
-function About(Props) {
+function About(props) {
   return React.createElement(RimbleUi.Box, {
               children: React.createElement("p", {
                     className: Styles.explainerMediumText
@@ -23,6 +23,5 @@ var make = About;
 
 export {
   make ,
-  
 }
 /* react Not a pure module */

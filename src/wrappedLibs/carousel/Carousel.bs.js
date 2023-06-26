@@ -5,6 +5,5 @@ var Dots = {};
 
 export {
   Dots ,
-  
 }
 /* No side effect */

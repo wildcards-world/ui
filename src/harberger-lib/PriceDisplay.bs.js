@@ -37,12 +37,11 @@ function usePrice(chain, animal) {
   }
 }
 
-function PriceDisplay$PurePriceDisplay(Props) {
-  var priceEth = Props.priceEth;
-  var optPriceUsd = Props.optPriceUsd;
+function PriceDisplay$PurePriceDisplay(props) {
+  var optPriceUsd = props.optPriceUsd;
   return React.createElement(React.Fragment, undefined, React.createElement("p", {
                   className: Styles.noMarginTop + (" " + Styles.noMarginBottom)
-                }, priceEth + " ETH"), optPriceUsd !== undefined ? React.createElement("p", {
+                }, props.priceEth + " ETH"), optPriceUsd !== undefined ? React.createElement("p", {
                     className: Styles.noMarginTop
                   }, React.createElement("small", undefined, "(" + (optPriceUsd + " USD)"))) : null);
 }
@@ -51,10 +50,8 @@ var PurePriceDisplay = {
   make: PriceDisplay$PurePriceDisplay
 };
 
-function PriceDisplay$InUSD(Props) {
-  var chain = Props.chain;
-  var animal = Props.animal;
-  var optPriceWei = QlHooks.usePrice(chain, animal);
+function PriceDisplay$InUSD(props) {
+  var optPriceWei = QlHooks.usePrice(props.chain, props.animal);
   if (typeof optPriceWei === "number") {
     return React.createElement(RimbleUi.Loader, {});
   } else if (optPriceWei.TAG === /* Foreclosed */0) {
@@ -72,10 +69,8 @@ var InUSD = {
   make: PriceDisplay$InUSD
 };
 
-function PriceDisplay$InEth(Props) {
-  var chain = Props.chain;
-  var animal = Props.animal;
-  var optCurrentPrice = usePrice(chain, animal);
+function PriceDisplay$InEth(props) {
+  var optCurrentPrice = usePrice(props.chain, props.animal);
   if (optCurrentPrice !== undefined) {
     return React.createElement(PriceDisplay$PurePriceDisplay, {
                 priceEth: optCurrentPrice[0],
@@ -90,9 +85,9 @@ var InEth = {
   make: PriceDisplay$InEth
 };
 
-function PriceDisplay(Props) {
-  var chain = Props.chain;
-  var animal = Props.animal;
+function PriceDisplay(props) {
+  var animal = props.animal;
+  var chain = props.chain;
   if (chain >= 2) {
     return React.createElement(PriceDisplay$InEth, {
                 chain: chain,
@@ -115,6 +110,5 @@ export {
   InUSD ,
   InEth ,
   make ,
-  
 }
 /* react Not a pure module */

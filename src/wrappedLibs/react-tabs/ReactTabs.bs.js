@@ -11,6 +11,5 @@ export {
   Tab ,
   TabList ,
   TabPanel ,
-  
 }
 /* No side effect */

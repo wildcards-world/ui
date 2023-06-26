@@ -61,7 +61,7 @@ module ContributorName = {
       <a
         onClick={e => {
           ReactEvent.Mouse.preventDefault(e)
-          clearAndPush(j`/#user/$contributor`)
+          clearAndPush(`/#user/$contributor`)
         }}>
         {switch optUserName {
         | Some(name) => <span> {name->React.string} </span>
@@ -111,12 +111,15 @@ let make = (~numberOfLeaders) => {
                             }}
                         <p className=rankText>
                           <strong>
-                            {"#"->React.string} {(index + 1)->string_of_int->React.string}
+                            {"#"->React.string}
+                            {(index + 1)->string_of_int->React.string}
                           </strong>
                         </p>
                       </span>
                     </td>
-                    <td> <ContributorName contributor /> </td>
+                    <td>
+                      <ContributorName contributor />
+                    </td>
                     //  <td>
                     //    <span className=centerFlame>
                     //      <img className=flameImgLeaderboard src=flameImg />

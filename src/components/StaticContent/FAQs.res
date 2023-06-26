@@ -28,7 +28,7 @@ let accordionSection = {
 
 /* FAQ Styles End */
 
-let inlineStyle = ReactDOMRe.Style.make
+let inlineStyle = ReactDOM.Style.make
 
 module Chevron = {
   @react.component
@@ -64,15 +64,18 @@ module FaqItem = {
     <Fragment>
       <div onClick={_ => toggleAccordion()}>
         <Text className="accordion-title">
-          {title->React.string} <Chevron className={rotate(isOpen ? 90. : 0.)} />
+          {title->React.string}
+          <Chevron className={rotate(isOpen ? 90. : 0.)} />
         </Text>
       </div>
       <div
         className=accordionContent
-        ref={ReactDOMRe.Ref.domRef(accordianContentRef)}
+        ref={ReactDOM.Ref.domRef(accordianContentRef)}
         style={inlineStyle(~maxHeight=height, ())}>
         <div>
-          <div className=faqExplainerText> <Text className=Styles.colorGrey> content </Text> </div>
+          <div className=faqExplainerText>
+            <Text className=Styles.colorGrey> content </Text>
+          </div>
         </div>
       </div>
     </Fragment>

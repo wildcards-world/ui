@@ -1,4 +1,3 @@
-
 type featuredMediaItemType = {
   imagePath: string,
   link: string,
@@ -50,7 +49,9 @@ let make = () =>
       {React.array(
         featuredMediaContent->Array.mapWithIndex((index, x) =>
           <Rimble.Box key={index->string_of_int} p=2 mb=2 width=[0.5, 0.5, 0.16]>
-            <a href=x.link> <img src=x.imagePath className=featuredItemImgStyle /> </a>
+            <a href=x.link>
+              <img src=x.imagePath className=featuredItemImgStyle />
+            </a>
           </Rimble.Box>
         ),
       )}

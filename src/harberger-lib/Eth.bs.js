@@ -64,6 +64,5 @@ export {
   makeWithDefault ,
   makeFromInt ,
   makeFromEthStr ,
-  
 }
 /* bn.js Not a pure module */

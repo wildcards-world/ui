@@ -4,7 +4,7 @@ import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
 
-function DiscordChat(Props) {
+function DiscordChat(props) {
   var match = React.useState(function () {
         return false;
       });
@@ -58,9 +58,9 @@ function DiscordChat(Props) {
                               }
                             }),
                         onClick: (function (param) {
-                            return Curry._1(setShowChat, (function (param) {
-                                          return false;
-                                        }));
+                            Curry._1(setShowChat, (function (param) {
+                                    return false;
+                                  }));
                           })
                       }, React.createElement("div", {
                             className: Curry._1(Css.style, {
@@ -98,9 +98,9 @@ function DiscordChat(Props) {
                         }),
                     src: "/img/icons/discord.svg",
                     onClick: (function (param) {
-                        return Curry._1(setShowChat, (function (param) {
-                                      return true;
-                                    }));
+                        Curry._1(setShowChat, (function (param) {
+                                return true;
+                              }));
                       })
                   }));
 }
@@ -109,6 +109,5 @@ var make = DiscordChat;
 
 export {
   make ,
-  
 }
 /* Css Not a pure module */

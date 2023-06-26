@@ -155,8 +155,8 @@ function rankingColor(index) {
             });
 }
 
-function MonthlyContribution$ContributorName(Props) {
-  var contributor = Props.contributor;
+function MonthlyContribution$ContributorName(props) {
+  var contributor = props.contributor;
   Curry._2(UserProvider.useUserInfoContext(undefined).update, contributor, false);
   var optThreeBoxData = UserProvider.use3BoxUserData(contributor);
   var optUserName = Belt_Option.flatMap(Belt_Option.flatMap(optThreeBoxData, (function (threeBoxData) {
@@ -168,7 +168,7 @@ function MonthlyContribution$ContributorName(Props) {
   return React.createElement("span", undefined, React.createElement("a", {
                   onClick: (function (e) {
                       e.preventDefault();
-                      return Curry._1(clearAndPush, "/#user/" + contributor);
+                      Curry._1(clearAndPush, "/#user/$contributor");
                     })
                 }, optUserName !== undefined ? React.createElement("span", undefined, optUserName) : React.createElement("span", undefined, Helper.elipsify(contributor, 20))));
 }
@@ -177,9 +177,8 @@ var ContributorName = {
   make: MonthlyContribution$ContributorName
 };
 
-function MonthlyContribution(Props) {
-  var numberOfLeaders = Props.numberOfLeaders;
-  var topContributorsOpt = QlHooks.useLoadTopContributorsData(numberOfLeaders);
+function MonthlyContribution(props) {
+  var topContributorsOpt = QlHooks.useLoadTopContributorsData(props.numberOfLeaders);
   return React.createElement("div", undefined, React.createElement(RimbleUi.Heading, {
                   children: "Wildcards Monthly Contribution Leaderboard"
                 }), React.createElement("br", undefined), React.createElement(RimbleUi.Table, {
@@ -245,6 +244,5 @@ export {
   rankingColor ,
   ContributorName ,
   make ,
-  
 }
 /* leaderboardTable Not a pure module */

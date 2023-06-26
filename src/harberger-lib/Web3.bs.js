@@ -22,6 +22,5 @@ var Contract = {
 
 export {
   Contract ,
-  
 }
 /* stewardMaticAbi Not a pure module */

@@ -118,14 +118,17 @@ module ArtistDetails = {
                 m=1
                 onClick={_ => clearNonUrlState()}
               />
-              <React.Suspense fallback={<Rimble.Loader />}> <LazyThreeBoxUpdate /> </React.Suspense>
+              <React.Suspense fallback={<Rimble.Loader />}>
+                <LazyThreeBoxUpdate />
+              </React.Suspense>
             </div>
           | UpdateDepositScreen
           | LoginScreen(_)
           | UpdatePriceScreen(_)
           | BuyScreen(_)
           | AuctionScreen(_)
-          | NoExtraState => <>
+          | NoExtraState =>
+            <>
               <h2>
                 {optName
                 ->Option.getWithDefault(Option.getWithDefault(optArtistName, "Loading artist name"))
@@ -182,7 +185,8 @@ module ArtistDetails = {
           {switch optArtistOrgs {
           | None => <h2> {"Loading orgs"->React.string} </h2>
           | Some([]) => React.null
-          | Some(orgList) => <>
+          | Some(orgList) =>
+            <>
               <br />
               <br />
               <h4>

@@ -2,6 +2,7 @@
 
 import * as Curry from "rescript/lib/es6/curry.js";
 import * as Js_exn from "rescript/lib/es6/js_exn.js";
+import * as Js_promise from "rescript/lib/es6/js_promise.js";
 
 global.Promise = require('bluebird')
 ;
@@ -12,13 +13,13 @@ Promise.config({
 ;
 
 function let_(p, cb) {
-  return p.then(Curry.__1(cb));
+  return Js_promise.then_(cb, p);
 }
 
 function mapAsync(p, cb) {
-  return p.then(function (a) {
-              return Promise.resolve(Curry._1(cb, a));
-            });
+  return Js_promise.then_((function (a) {
+                return Promise.resolve(Curry._1(cb, a));
+              }), p);
 }
 
 function async(a) {
@@ -26,7 +27,7 @@ function async(a) {
 }
 
 function catchAsync(p, cb) {
-  return p.catch(Curry.__1(cb));
+  return Js_promise.$$catch(cb, p);
 }
 
 function asyncFromResult(result) {
@@ -57,6 +58,5 @@ export {
   catchAsync ,
   asyncFromResult ,
   attemptMapAsync ,
-  
 }
 /*  Not a pure module */

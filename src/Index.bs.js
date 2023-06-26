@@ -2,62 +2,67 @@
 
 import * as React from "react";
 import * as Layout from "./components/Layout.bs.js";
-import * as ReactDOMRe from "reason-react/src/legacy/ReactDOMRe.bs.js";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as DiscordChat from "./components/DiscordChat.bs.js";
 import * as ReactTranslate from "./helpers/providers/ReactTranslate.bs.js";
 import * as UsdPriceProvider from "./harberger-lib/components/UsdPriceProvider.bs.js";
-import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.bs.js";
+import * as Client from "react-dom/client";
 import * as WildcardsProvider from "./harberger-lib/components/WildcardsProvider.bs.js";
+import * as RescriptReactRouter from "@rescript/react/src/RescriptReactRouter.bs.js";
 
 ((require("react-tabs/style/react-tabs.css")));
 
-function Index$Router(Props) {
-  var url = ReasonReactRouter.useUrl(undefined, undefined);
+function Index$Router(props) {
+  var url = RescriptReactRouter.useUrl(undefined, undefined);
   var match = url.path;
   if (match && !match.tl) {
     return React.createElement("p", undefined, "Unknown page");
+  } else {
+    return React.createElement(ReactTranslate.make, {
+                children: React.createElement(Layout.make, {})
+              });
   }
-  return React.createElement(ReactTranslate.make, {
-              children: React.createElement(Layout.make, {})
-            });
 }
 
 var Router = {
   make: Index$Router
 };
 
-ReactDOMRe.renderToElementWithId(React.createElement(WildcardsProvider.make, {
-          getGraphEndpoints: (function (networkId, param) {
-              if (networkId !== 4) {
-                if (networkId !== 5) {
-                  return {
-                          mainnet: "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards",
-                          matic: Belt_Option.getWithDefault(process.env.REACT_APP_MATIC_BE, "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-polygon"),
-                          db: Belt_Option.getWithDefault(process.env.REACT_APP_MAINNET_BE, "https://api.wildcards.world/v1/graphq")
-                        };
+var rootElement = document.querySelector("#root");
+
+if (!(rootElement == null)) {
+  var root = Client.createRoot(rootElement);
+  root.render(React.createElement(WildcardsProvider.make, {
+            getGraphEndpoints: (function (networkId, param) {
+                if (networkId !== 4) {
+                  if (networkId !== 5) {
+                    return {
+                            mainnet: "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards",
+                            matic: Belt_Option.getWithDefault(process.env.REACT_APP_MATIC_BE, "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-polygon"),
+                            db: Belt_Option.getWithDefault(process.env.REACT_APP_MAINNET_BE, "https://api.wildcards.world/v1/graphq")
+                          };
+                  } else {
+                    return {
+                            mainnet: "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
+                            matic: Belt_Option.getWithDefault(process.env.REACT_APP_MATIC_TESTNET, "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-polygon-testnet"),
+                            db: Belt_Option.getWithDefault(process.env.REACT_APP_GOERLI_BE, "https://goerli.api.wildcards.world/v1/graphq")
+                          };
+                  }
                 } else {
                   return {
-                          mainnet: "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-goerli",
-                          matic: Belt_Option.getWithDefault(process.env.REACT_APP_MATIC_TESTNET, "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-polygon-testnet"),
-                          db: Belt_Option.getWithDefault(process.env.REACT_APP_GOERLI_BE, "https://goerli.api.wildcards.world/v1/graphq")
+                          mainnet: "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-rinkeby",
+                          matic: Belt_Option.getWithDefault(process.env.REACT_APP_MATIC_TESTNET_ALT, "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-testnet"),
+                          db: Belt_Option.getWithDefault(process.env.REACT_APP_RINKEBY_BE, "https://rinkeby.api.wildcards.world/v1/graphq")
                         };
                 }
-              } else {
-                return {
-                        mainnet: "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-rinkeby",
-                        matic: Belt_Option.getWithDefault(process.env.REACT_APP_MATIC_TESTNET_ALT, "https://api.thegraph.com/subgraphs/name/wildcards-world/wildcards-testnet"),
-                        db: Belt_Option.getWithDefault(process.env.REACT_APP_RINKEBY_BE, "https://rinkeby.api.wildcards.world/v1/graphq")
-                      };
-              }
-            }),
-          children: null
-        }, React.createElement(UsdPriceProvider.make, {
-              children: React.createElement(Index$Router, {})
-            }), React.createElement(DiscordChat.make, {})), "root");
+              }),
+            children: null
+          }, React.createElement(UsdPriceProvider.make, {
+                children: React.createElement(Index$Router, {})
+              }), React.createElement(DiscordChat.make, {})));
+}
 
 export {
   Router ,
-  
 }
 /*  Not a pure module */
