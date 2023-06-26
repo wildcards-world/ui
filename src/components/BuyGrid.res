@@ -15,7 +15,12 @@ module Grid = {
   let make = (~chain) => {
     let allAnimals = QlHooks.useAnimalList(~chain)
     // Reverse order so that new animals are on top!
-    let allAnimalsReversed = allAnimals->Array.reverse
+    let allAnimalsReversed =
+      allAnimals
+      ->Array.keep(animalId =>
+        !Js.Array2.includes(Config.filterOutWildcards, animalId->TokenId.toString)
+      )
+      ->Array.reverse
 
     <Rimble.Flex flexWrap="wrap" justifyContent="space-around" alignItems="stretch" px=50>
       {allAnimalsReversed

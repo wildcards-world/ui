@@ -172,3 +172,6 @@ let orgWtihdrawalsMapping = Js.Dict.fromArray([
     ],
   ),
 ])
+
+let filterOutOrgs = ["sasharkconservancy"]
+let filterOutWildcards = ["66", "30", "52", "44", "47", "50"]

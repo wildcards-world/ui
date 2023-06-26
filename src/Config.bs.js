@@ -137,9 +137,22 @@ var orgWtihdrawalsMapping = Js_dict.fromArray([
       ]
     ]);
 
+var filterOutOrgs = ["sasharkconservancy"];
+
+var filterOutWildcards = [
+  "66",
+  "30",
+  "52",
+  "44",
+  "47",
+  "50"
+];
+
 export {
   isTestnet ,
   availableNetworkIds ,
   orgWtihdrawalsMapping ,
+  filterOutOrgs ,
+  filterOutWildcards ,
 }
 /* isTestnet Not a pure module */
