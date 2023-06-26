@@ -1,2 +1,2 @@
-@module("./WildcardsLoader") @react.component
+@module("./WildcardsLoader.js") @react.component
 external make: unit => React.element = "default"

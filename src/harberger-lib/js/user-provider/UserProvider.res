@@ -1,4 +1,4 @@
-@module("./UserProvider") @react.component
+@module("./UserProvider.js") @react.component
 external make: (~children: React.element) => React.element = "UserInfoProvider"
 
 type threeBoxImageData = {
@@ -34,7 +34,7 @@ type userInfo = {
   update: (string, bool) => unit,
 }
 
-@module("./UserProvider")
+@module("./UserProvider.js")
 external useUserInfoContext: unit => userInfo = "useUserInfoContext"
 
 type displayName =

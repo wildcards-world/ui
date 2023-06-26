@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useReducer } from "react";
 // import { useAppStatus } from "./RootProvider";
-import { useCurrentUser } from "../../RootProvider.bs";
+import { useCurrentUser } from "../../RootProvider.bs.js";
 export const UserInfoContext = createContext("");
 
 const {
