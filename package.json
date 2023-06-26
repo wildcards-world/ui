@@ -72,7 +72,7 @@
     "next-start": "next start",
     "start": "npm run res:build && REACT_APP_NETWORK=\"TEST\" react-scripts start",
     "build-js-only": "EXTEND_ESLINT=true REACT_APP_MAINNET_BE=https://api.wildcards.world/v1/graphql REACT_APP_GOERLI_BE=https://goerli.api.wildcards.world/v1/graphql react-scripts build --verbose",
-    "build": "npm run res:build && npm run build-js-only",
+    "build": "npm run res:build && npm run react-scripts build --verbose",
     "test": "react-scripts test",
     "lint": "eslint src",
     "res:clean": "rescript clean -with-deps",
