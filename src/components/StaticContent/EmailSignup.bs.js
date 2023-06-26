@@ -5,7 +5,7 @@ import * as React from "react";
 import * as Styles from "../../Styles.bs.js";
 import * as RimbleUi from "rimble-ui";
 
-function EmailSignup(Props) {
+function EmailSignup(props) {
   return React.createElement("div", {
               className: Styles.horizantalBlueTile,
               id: "signup"
@@ -32,10 +32,10 @@ function EmailSignup(Props) {
                                         flexWrap: "wrap"
                                       }, React.createElement(RimbleUi.Box, {
                                             children: React.createElement(RimbleUi.Form.Input, {
-                                                  type: "email",
+                                                  _type: "email",
                                                   name: "EMAIL",
                                                   onChange: (function (e) {
-                                                      return Curry._1(e.target.parentNode.classList.add, "was-validated");
+                                                      Curry._1(e.target.parentNode.classList.add, "was-validated");
                                                     }),
                                                   width: 1
                                                 }),
@@ -56,7 +56,7 @@ function EmailSignup(Props) {
                                             className: Styles.inputElements
                                           })),
                                   action: "https://world.us20.list-manage.com/subscribe/post?u=11056167825e6c3d276b0a362&id=66d23199dd",
-                                  method: "post"
+                                  _method: "post"
                                 }),
                             width: [
                               1,
@@ -75,6 +75,5 @@ var make = EmailSignup;
 export {
   gorillaOnVine ,
   make ,
-  
 }
 /* react Not a pure module */

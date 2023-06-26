@@ -122,8 +122,8 @@ module RootWithWeb3 = {
       {
         ...initialState,
         config: {
-          stewardContractAddress: stewardContractAddress,
-          stewardAbi: stewardAbi,
+          stewardContractAddress,
+          stewardAbi,
         },
       },
     )
@@ -135,10 +135,12 @@ module RootWithWeb3 = {
       Web3Connectors.injected.isAuthorized()->Promise.get(authorised =>
         if authorised && !triedLoginAlready {
           ignore(
-            context.activate(Web3Connectors.injected, () => (), true)->Promise.Js.catch(_ => {
-              setTriedLoginAlready(_ => true)
-              Promise.resolved()
-            }),
+            context.activate(Web3Connectors.injected, () => (), true)->Promise.Js.catch(
+              _ => {
+                setTriedLoginAlready(_ => true)
+                Promise.resolved()
+              },
+            ),
           )
           ()
         } else {
@@ -332,7 +334,7 @@ let useClearNonUrlStateAndPushRoute: (unit, string) => unit = () => {
   let clearNonUrlState = useClearNonUrlState()
   url => {
     clearNonUrlState()
-    ReasonReactRouter.push(url)
+    RescriptReactRouter.push(url)
   }
 }
 
@@ -370,6 +372,8 @@ let make = (
 ) =>
   <Web3ReactProvider getLibrary>
     <RootWithWeb3 stewardContractAddress stewardAbi>
-      <UserProvider> <ThemeProvider> children </ThemeProvider> </UserProvider>
+      <UserProvider>
+        <ThemeProvider> children </ThemeProvider>
+      </UserProvider>
     </RootWithWeb3>
   </Web3ReactProvider>

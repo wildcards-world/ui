@@ -6,6 +6,7 @@ import * as React from "react";
 import * as Styles from "../../Styles.bs.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
+import * as JsxPPXReactSupport from "rescript/lib/es6/jsxPPXReactSupport.js";
 
 var featuredMediaContent = [
   {
@@ -62,7 +63,7 @@ var featuredContainerStyles = Curry._1(Css.style, {
       }
     });
 
-function FeaturedIn(Props) {
+function FeaturedIn(props) {
   return React.createElement(RimbleUi.Box, {
               children: null,
               className: Styles.horizantalBlueTile
@@ -70,7 +71,7 @@ function FeaturedIn(Props) {
                   className: Styles.explainerLargeText
                 }, "Featured in "), React.createElement(RimbleUi.Flex, {
                   children: Belt_Array.mapWithIndex(featuredMediaContent, (function (index, x) {
-                          return React.createElement(RimbleUi.Box, {
+                          return JsxPPXReactSupport.createElementWithKey(String(index), RimbleUi.Box, {
                                       p: 2,
                                       mb: 2,
                                       children: React.createElement("a", {
@@ -83,8 +84,7 @@ function FeaturedIn(Props) {
                                         0.5,
                                         0.5,
                                         0.16
-                                      ],
-                                      key: String(index)
+                                      ]
                                     });
                         })),
                   flexWrap: "wrap",
@@ -101,6 +101,5 @@ export {
   featuredItemImgStyle ,
   featuredContainerStyles ,
   make ,
-  
 }
 /* featuredItemImgStyle Not a pure module */

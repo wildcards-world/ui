@@ -30,7 +30,7 @@ type krakenPriceResponse = {result: option<ethUsdPrice>}
 let getPrice = () => {
   open Fetch
   %Async({
-    let result = fetch("https://api.kraken.com/0/public/Ticker?pair=ETHUSD")
+    let result = fetch("https://api.kraken.com/0/public/Ticker?pair=ETHUSD", {})
     %Async({
       let response = result->Response.json
       let krakenPriceObj = response->krakenPriceResponse_decode

@@ -100,6 +100,5 @@ export {
   onlyUpdateValueIfInRangeFloat ,
   onlyUpdateIfPositiveFloat ,
   onlyUpdateIfInRangeFloat ,
-  
 }
 /* No side effect */

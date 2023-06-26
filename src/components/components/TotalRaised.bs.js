@@ -14,7 +14,7 @@ import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
 
-function TotalRaised(Props) {
+function TotalRaised(props) {
   var match = Belt_Array.reduce(Belt_Array.concatMany(Js_dict.values(Config.orgWtihdrawalsMapping)), [
         Ethers.BigNumber.from(0),
         0
@@ -73,17 +73,17 @@ function TotalRaised(Props) {
                           }),
                         mainnetEth: Caml_option.valFromOption(optTotalPatronageWei),
                         maticDai: Caml_option.valFromOption(optTotalPatronageDai),
-                        ethPaidOut: new BnJs(match[0].toString()),
+                        ethPaidOut: Caml_option.some(new BnJs(match[0].toString())),
                         valueEthPaidOut: match[1]
                       })));
+  } else {
+    return React.createElement(RimbleUi.Loader, {});
   }
-  return React.createElement(RimbleUi.Loader, {});
 }
 
 var make = TotalRaised;
 
 export {
   make ,
-  
 }
 /* Css Not a pure module */

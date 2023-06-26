@@ -5,12 +5,14 @@ import * as CssJs from "bs-css-emotion/src/CssJs.bs.js";
 import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
 import * as Styles from "../../Styles.bs.js";
+import * as Js_array from "rescript/lib/es6/js_array.js";
 import * as CONSTANTS from "../../CONSTANTS.bs.js";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as RootProvider from "../../harberger-lib/RootProvider.bs.js";
 import * as Css_Legacy_Core from "bs-css/src/Css_Legacy_Core.bs.js";
+import * as JsxPPXReactSupport from "rescript/lib/es6/jsxPPXReactSupport.js";
 import * as ApolloClient__React_Hooks_UseQuery from "rescript-apollo-client/src/@apollo/client/react/hooks/ApolloClient__React_Hooks_UseQuery.bs.js";
 
 var ubisoftLogo = "/img/logos/Ubisoft.png";
@@ -37,31 +39,31 @@ var query = (require("@apollo/client").gql`
 function parse(value) {
   var value$1 = value.organisations;
   return {
-          organisations: value$1.map(function (value) {
-                return {
-                        __typename: value.__typename,
-                        name: value.name,
-                        logo: value.logo,
-                        id: value.id
-                      };
-              })
+          organisations: Js_array.map((function (value) {
+                  return {
+                          __typename: value.__typename,
+                          name: value.name,
+                          logo: value.logo,
+                          id: value.id
+                        };
+                }), value$1)
         };
 }
 
 function serialize(value) {
   var value$1 = value.organisations;
-  var organisations = value$1.map(function (value) {
-        var value$1 = value.id;
-        var value$2 = value.logo;
-        var value$3 = value.name;
-        var value$4 = value.__typename;
-        return {
-                __typename: value$4,
-                name: value$3,
-                logo: value$2,
-                id: value$1
-              };
-      });
+  var organisations = Js_array.map((function (value) {
+          var value$1 = value.id;
+          var value$2 = value.logo;
+          var value$3 = value.name;
+          var value$4 = value.__typename;
+          return {
+                  __typename: value$4,
+                  name: value$3,
+                  logo: value$2,
+                  id: value$1
+                };
+        }), value$1);
   return {
           organisations: organisations
         };
@@ -122,6 +124,7 @@ var LoadPatronNoDecode = {
 
 function usePartners(param) {
   var match = Curry.app(use, [
+        undefined,
         undefined,
         undefined,
         undefined,
@@ -202,8 +205,8 @@ var orgContainerStyles = CssJs.style([CssJs.width({
             VAL: 100
           })]);
 
-function Partners$OrgDetails(Props) {
-  var conservation = Props.conservation;
+function Partners$OrgDetails(props) {
+  var conservation = props.conservation;
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   var id = conservation.id;
   return React.createElement(RimbleUi.Card, {
@@ -228,7 +231,7 @@ function Partners$OrgDetails(Props) {
                     onClick: (function (e) {
                         e.stopPropagation();
                         e.preventDefault();
-                        return Curry._1(clearAndPush, "#org/" + id);
+                        Curry._1(clearAndPush, "#org/" + id);
                       })
                   }, React.createElement("img", {
                         className: Curry._1(Css.style, {
@@ -296,7 +299,7 @@ var OrgDetails = {
   make: Partners$OrgDetails
 };
 
-function Partners(Props) {
+function Partners(props) {
   var allConservationPartners = usePartners(undefined);
   var partnersToDisplay = Belt_Option.map(allConservationPartners, (function (partners) {
           return Belt_Array.slice(Belt_Array.shuffle(partners), 0, 5);
@@ -321,7 +324,7 @@ function Partners(Props) {
                                           conservation: conservation
                                         });
                                     var key = conservation.id;
-                                    return React.createElement(RimbleUi.Box, {
+                                    return JsxPPXReactSupport.createElementWithKey(key, RimbleUi.Box, {
                                                 mb: 20,
                                                 mt: 20,
                                                 children: content,
@@ -330,8 +333,7 @@ function Partners(Props) {
                                                   0.45,
                                                   0.18
                                                 ],
-                                                color: "black",
-                                                key: key
+                                                color: "black"
                                               });
                                   }))) : null,
                       flexWrap: "wrap",
@@ -348,7 +350,7 @@ function Partners(Props) {
                                   })),
                             onClick: (function ($$event) {
                                 $$event.preventDefault();
-                                return Curry._1(clearAndPush, "#organisations");
+                                Curry._1(clearAndPush, "#organisations");
                               })
                           }),
                       flexWrap: "wrap",
@@ -482,6 +484,5 @@ export {
   orgContainerStyles ,
   OrgDetails ,
   make ,
-  
 }
 /* query Not a pure module */

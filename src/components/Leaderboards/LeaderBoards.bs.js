@@ -21,11 +21,10 @@ function indexToType(tabIndex) {
   }
 }
 
-function LeaderBoards(Props) {
-  var leaderboardType = Props.leaderboardType;
+function LeaderBoards(props) {
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   var index;
-  switch (leaderboardType) {
+  switch (props.leaderboardType) {
     case /* TotalContribution */0 :
         index = 1;
         break;
@@ -76,6 +75,5 @@ var make = LeaderBoards;
 export {
   indexToType ,
   make ,
-  
 }
 /* react Not a pure module */

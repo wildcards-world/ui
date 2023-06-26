@@ -29,31 +29,31 @@ let usePartners = () =>
 
 let blueBackground = {
   open CssJs
-  style(.[backgroundColor(#hex("73C8D7"))])
+  style(. [backgroundColor(#hex("73C8D7"))])
 }
 let cardStyle = {
   open CssJs
-  style(.[height(#percent(100.)), display(#flex), important(padding(#percent(0.)))])
+  style(. [height(#percent(100.)), display(#flex), important(padding(#percent(0.)))])
 }
 let logoStyle = {
   open CssJs
-  style(.[margin(#percent(10.)), width(#percent(80.))])
+  style(. [margin(#percent(10.)), width(#percent(80.))])
 }
 let corporatePartnerTextStyle = {
   open CssJs
-  style(.[textAlign(#center), marginBottom(#percent(10.))])
+  style(. [textAlign(#center), marginBottom(#percent(10.))])
 }
 let viewMoreButton = {
   open CssJs
-  style(.[margin(auto), display(block)])
+  style(. [margin(auto), display(block)])
 }
 let viewMoreButtonContainer = {
   open CssJs
-  style(.[width(#percent(100.))])
+  style(. [width(#percent(100.))])
 }
 let orgContainerStyles = {
   open CssJs
-  style(.[width(#percent(100.))])
+  style(. [width(#percent(100.))])
 }
 
 module OrgDetails = {
@@ -130,7 +130,8 @@ let make = () => {
         px=50
         className=orgContainerStyles>
         {switch partnersToDisplay {
-        | Some(conservationPartners) => <>
+        | Some(conservationPartners) =>
+          <>
             {conservationPartners
             ->Array.map(conservation => orgBox(<OrgDetails conservation />, ~key=conservation.id))
             ->React.array}
@@ -163,7 +164,7 @@ let make = () => {
         <h1
           className={
             open CssJs
-            style(.[
+            style(. [
               unsafe(
                 "text-shadow",
                 "0.25em 0.25em 0.5em #FFFFFF, -0.25em -0.25em 0.5em #FFFFFF, -0.25em 0.25em 0.5em #FFFFFF, 0.25em -0.25em 0.5em #FFFFFF;",

@@ -35,9 +35,7 @@ function announcementStyle(displayVal, announcementBannerColor) {
             });
 }
 
-function Announcement(Props) {
-  var announcementBannerColor = Props.announcementBannerColor;
-  var children = Props.children;
+function Announcement(props) {
   var closeButton = Curry._1(Css.style, {
         hd: Css.position(Css.absolute),
         tl: {
@@ -50,13 +48,13 @@ function Announcement(Props) {
       });
   var setShowAnnouncement = match[1];
   return React.createElement("div", {
-              className: announcementStyle(match[0], announcementBannerColor)
-            }, children, React.createElement("span", {
+              className: announcementStyle(match[0], props.announcementBannerColor)
+            }, props.children, React.createElement("span", {
                   className: closeButton,
                   onClick: (function (param) {
-                      return Curry._1(setShowAnnouncement, (function (param) {
-                                    return "none";
-                                  }));
+                      Curry._1(setShowAnnouncement, (function (param) {
+                              return "none";
+                            }));
                     })
                 }, "×"));
 }
@@ -66,6 +64,5 @@ var make = Announcement;
 export {
   announcementStyle ,
   make ,
-  
 }
 /* Css Not a pure module */

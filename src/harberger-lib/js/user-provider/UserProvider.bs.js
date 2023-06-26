@@ -84,6 +84,5 @@ export {
   use3BoxUserData ,
   useIsUserValidated ,
   displayNameToString ,
-  
 }
 /* make Not a pure module */

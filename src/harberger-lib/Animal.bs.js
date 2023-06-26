@@ -179,6 +179,5 @@ export {
   useAuctionPriceWei ,
   getChainIdFromAnimalId ,
   useChainIdFromAnimalId ,
-  
 }
 /* nextLaunchDate Not a pure module */

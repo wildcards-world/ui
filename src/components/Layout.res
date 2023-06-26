@@ -6,7 +6,7 @@ module AnimalFocusDetails = {
       Option.getWithDefault(currentAnimal, TokenId.fromStringUnsafe("0")),
     )
     <div
-      className={Cn.fromList(list{
+      className={CnRe.fromList(list{
         Styles.topBody,
         {
           open Css
@@ -155,7 +155,7 @@ let make = () => {
                 onClick={event => {
                   closeModal()
                   ReactEvent.Mouse.preventDefault(event)
-                  clearAndPush(j`/#team`)
+                  clearAndPush(`/#team`)
                 }}>
                 {"TEAM"->React.string}
               </a>,
@@ -169,7 +169,7 @@ let make = () => {
                 onClick={event => {
                   closeModal()
                   ReactEvent.Mouse.preventDefault(event)
-                  clearAndPush(j`/#leaderboards/monthly-contribution`)
+                  clearAndPush(`/#leaderboards/monthly-contribution`)
                 }}>
                 {"TOP GUARDIANS"->React.string}
               </a>,

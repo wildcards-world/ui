@@ -99,6 +99,5 @@ export {
   Providers ,
   Contract ,
   Utils ,
-  
 }
 /* ethers Not a pure module */

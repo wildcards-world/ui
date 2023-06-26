@@ -7,9 +7,8 @@ import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as RootProvider from "../RootProvider.bs.js";
 import * as Client$1 from "@apollo/client";
 
-function WildcardsProvider$GraphQl(Props) {
-  var getGraphEndpoints = Props.getGraphEndpoints;
-  var children = Props.children;
+function WildcardsProvider$GraphQl(props) {
+  var getGraphEndpoints = props.getGraphEndpoints;
   var networkId = Belt_Option.mapWithDefault(RootProvider.useNetworkId(undefined), 1, (function (a) {
           return a;
         }));
@@ -21,7 +20,7 @@ function WildcardsProvider$GraphQl(Props) {
       ]);
   return React.createElement(Client$1.ApolloProvider, {
               client: client,
-              children: children
+              children: props.children
             });
 }
 
@@ -29,18 +28,14 @@ var GraphQl = {
   make: WildcardsProvider$GraphQl
 };
 
-function WildcardsProvider(Props) {
-  var getGraphEndpoints = Props.getGraphEndpoints;
-  var children = Props.children;
-  var stewardContractAddress = Props.stewardContractAddress;
-  var stewardAbi = Props.stewardAbi;
+function WildcardsProvider(props) {
   return React.createElement(RootProvider.make, {
               children: React.createElement(WildcardsProvider$GraphQl, {
-                    getGraphEndpoints: getGraphEndpoints,
-                    children: children
+                    getGraphEndpoints: props.getGraphEndpoints,
+                    children: props.children
                   }),
-              stewardContractAddress: stewardContractAddress,
-              stewardAbi: stewardAbi
+              stewardContractAddress: props.stewardContractAddress,
+              stewardAbi: props.stewardAbi
             });
 }
 
@@ -49,6 +44,5 @@ var make = WildcardsProvider;
 export {
   GraphQl ,
   make ,
-  
 }
 /* react Not a pure module */

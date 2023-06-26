@@ -4,7 +4,7 @@ import * as React from "react";
 import * as Partners from "./Partners.bs.js";
 import * as RimbleUi from "rimble-ui";
 
-function Artists(Props) {
+function Artists(props) {
   return React.createElement("div", {
               width: "100%"
             }, React.createElement("div", {
@@ -23,6 +23,5 @@ var make = Artists;
 
 export {
   make ,
-  
 }
 /* react Not a pure module */

@@ -27,7 +27,7 @@ function elipsifyMiddle(inputString, maxLength, trailingCharacters) {
 }
 
 function bnToMoment(bn) {
-  return MomentRe.momentWithUnix(Caml_format.caml_int_of_string(bn.toString()));
+  return MomentRe.momentWithUnix(Caml_format.int_of_string(bn.toString()));
 }
 
 export {
@@ -35,6 +35,5 @@ export {
   elipsify ,
   elipsifyMiddle ,
   bnToMoment ,
-  
 }
 /* MomentRe Not a pure module */

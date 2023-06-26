@@ -27,6 +27,5 @@ export {
   FortmaticConnector ,
   SquarelinkConnector ,
   injected ,
-  
 }
 /* injected Not a pure module */

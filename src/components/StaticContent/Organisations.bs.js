@@ -10,6 +10,7 @@ import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as RootProvider from "../../harberger-lib/RootProvider.bs.js";
 import * as Css_Legacy_Core from "bs-css/src/Css_Legacy_Core.bs.js";
+import * as JsxPPXReactSupport from "rescript/lib/es6/jsxPPXReactSupport.js";
 
 var blueBackground = CssJs.style([CssJs.backgroundColor({
             NAME: "hex",
@@ -62,8 +63,8 @@ var orgContainerStyles = CssJs.style([CssJs.width({
             VAL: 100
           })]);
 
-function Organisations$OrgDetails(Props) {
-  var conservation = Props.conservation;
+function Organisations$OrgDetails(props) {
+  var conservation = props.conservation;
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   var id = conservation.id;
   return React.createElement(RimbleUi.Card, {
@@ -88,7 +89,7 @@ function Organisations$OrgDetails(Props) {
                     onClick: (function (e) {
                         e.stopPropagation();
                         e.preventDefault();
-                        return Curry._1(clearAndPush, "#org/" + id);
+                        Curry._1(clearAndPush, "#org/" + id);
                       })
                   }, React.createElement("img", {
                         className: Curry._1(Css.style, {
@@ -156,10 +157,10 @@ var OrgDetails = {
   make: Organisations$OrgDetails
 };
 
-function Organisations(Props) {
+function Organisations(props) {
   var newConservationPartners = Partners.usePartners(undefined);
   var orgBox = function (content, key) {
-    return React.createElement(RimbleUi.Box, {
+    return JsxPPXReactSupport.createElementWithKey(key, RimbleUi.Box, {
                 mb: 20,
                 mt: 20,
                 children: content,
@@ -168,8 +169,7 @@ function Organisations(Props) {
                   0.45,
                   0.18
                 ],
-                color: "black",
-                key: key
+                color: "black"
               });
   };
   return React.createElement("div", {
@@ -220,6 +220,5 @@ export {
   orgContainerStyles ,
   OrgDetails ,
   make ,
-  
 }
 /* blueBackground Not a pure module */

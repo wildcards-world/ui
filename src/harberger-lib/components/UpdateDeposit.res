@@ -1,5 +1,5 @@
 module UpdateDepositInput = {
-  @module("./UpdateDepositInput") @react.component
+  @module("./UpdateDepositInput.js") @react.component
   external make: (
     ~depositChange: string,
     ~updateDepositChange: ReactEvent.Form.t => (string, bool),
@@ -9,7 +9,8 @@ module UpdateDepositInput = {
   ) => React.element = "default"
 }
 
-@dead("+getToDisplay") let getToDisplay = (label, value) =>
+@dead("+getToDisplay")
+let getToDisplay = (label, value) =>
   React.string(label ++ (": " ++ value->Option.mapWithDefault("loading", a => a)))
 
 @react.component

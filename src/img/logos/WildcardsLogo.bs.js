@@ -2,10 +2,9 @@
 
 import * as React from "react";
 
-function WildcardsLogo(Props) {
-  var maxWidth = Props.maxWidth;
+function WildcardsLogo(props) {
   var style = {
-    maxWidth: maxWidth,
+    maxWidth: props.maxWidth,
     width: "100%"
   };
   return React.createElement("svg", {
@@ -46,6 +45,5 @@ var make = WildcardsLogo;
 
 export {
   make ,
-  
 }
 /* react Not a pure module */

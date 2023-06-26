@@ -28,8 +28,14 @@ let make = (~leaderboardType) => {
       <ReactTabs.Tab> {"Total Contribution"->React.string} </ReactTabs.Tab>
       <ReactTabs.Tab> {"Days Held"->React.string} </ReactTabs.Tab>
     </ReactTabs.TabList>
-    <ReactTabs.TabPanel> <MonthlyContribution numberOfLeaders=10 /> </ReactTabs.TabPanel>
-    <ReactTabs.TabPanel> <TotalContribution numberOfLeaders=10 /> </ReactTabs.TabPanel>
-    <ReactTabs.TabPanel> <TotalDaysHeld numberOfLeaders=10 /> </ReactTabs.TabPanel>
+    <ReactTabs.TabPanel>
+      <MonthlyContribution numberOfLeaders=10 />
+    </ReactTabs.TabPanel>
+    <ReactTabs.TabPanel>
+      <TotalContribution numberOfLeaders=10 />
+    </ReactTabs.TabPanel>
+    <ReactTabs.TabPanel>
+      <TotalDaysHeld numberOfLeaders=10 />
+    </ReactTabs.TabPanel>
   </ReactTabs>
 }

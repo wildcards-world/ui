@@ -15,7 +15,11 @@ module AmountRaised = {
         </span>
         {" USD"->React.string}
         {switch optCommentTextComponent {
-        | Some(explainerString) => <> <br /> <small> {explainerString} </small> </>
+        | Some(explainerString) =>
+          <>
+            <br />
+            <small> {explainerString} </small>
+          </>
         | None => React.null
         }}
       </p>
@@ -125,7 +129,11 @@ module Basic = {
         {amountText}
         {" USD"->React.string}
         {switch optCommentTextComponent {
-        | Some(explainerString) => <> <br /> <small> {explainerString} </small> </>
+        | Some(explainerString) =>
+          <>
+            <br />
+            <small> {explainerString} </small>
+          </>
         | None => React.null
         }}
       </p>

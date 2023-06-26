@@ -41,23 +41,25 @@ function useTranslationModeContext(param) {
   return React.useContext(translationContext);
 }
 
-function ReactTranslate$1(Props) {
-  var children = Props.children;
+function ReactTranslate$1(props) {
   var match = React.useState(function () {
         return false;
       });
   var setTranslationModeCrypto = match[1];
   var translationModeCrypto = match[0];
   return React.createElement(ReactTranslate.TranslatorProvider, {
-              children: React.createElement(make, makeProps({
-                        translationMode: translationModeCrypto ? "crypto" : "muggle",
-                        translationModeCrypto: translationModeCrypto,
-                        setTranslationModeCrypto: (function (newMode) {
-                            return Curry._1(setTranslationModeCrypto, (function (param) {
-                                          return newMode;
-                                        }));
-                          })
-                      }, children, undefined)),
+              children: React.createElement(make, {
+                    value: {
+                      translationMode: translationModeCrypto ? "crypto" : "muggle",
+                      translationModeCrypto: translationModeCrypto,
+                      setTranslationModeCrypto: (function (newMode) {
+                          Curry._1(setTranslationModeCrypto, (function (param) {
+                                  return newMode;
+                                }));
+                        })
+                    },
+                    children: props.children
+                  }),
               translations: cryptoMuggleTranslations
             });
 }
@@ -70,6 +72,5 @@ export {
   TranslationContext ,
   useTranslationModeContext ,
   make$1 as make,
-  
 }
 /* translationContext Not a pure module */

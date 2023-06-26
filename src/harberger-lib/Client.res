@@ -26,35 +26,39 @@ external getContext: ApolloClient__Link_Core_ApolloLink.Operation.Js_.t => optio
 
 /* based on test, execute left or right */
 let networkSwitcherHttpLink = (~uri, ~matic, ~mainnet) =>
-  ApolloClient.Link.split(~test=operation => {
-    let context = operation->getContext
+  ApolloClient.Link.split(
+    ~test=operation => {
+      let context = operation->getContext
 
-    let dbQuery = switch context {
-    | Some({context: Some(actualContext)}) =>
-      switch actualContext {
-      | MaticQuery => false
-      | Neither => true
-      | MainnetQuery => false
+      let dbQuery = switch context {
+      | Some({context: Some(actualContext)}) =>
+        switch actualContext {
+        | MaticQuery => false
+        | Neither => true
+        | MainnetQuery => false
+        }
+      | Some(_)
+      | None => true
       }
-    | Some(_)
-    | None => true
-    }
-    dbQuery
-  }, ~whenTrue=httpLink(~uri), ~whenFalse=ApolloClient.Link.split(~test=operation => {
-    let context = operation->getContext
+      dbQuery
+    },
+    ~whenTrue=httpLink(~uri),
+    ~whenFalse=ApolloClient.Link.split(~test=operation => {
+      let context = operation->getContext
 
-    let usingMatic = switch context {
-    | Some({context: Some(actualContext)}) =>
-      switch actualContext {
-      | MaticQuery => true
-      | Neither => false
-      | MainnetQuery => false
+      let usingMatic = switch context {
+      | Some({context: Some(actualContext)}) =>
+        switch actualContext {
+        | MaticQuery => true
+        | Neither => false
+        | MainnetQuery => false
+        }
+      | Some(_)
+      | None => false
       }
-    | Some(_)
-    | None => false
-    }
-    usingMatic
-  }, ~whenTrue=httpLink(~uri=matic), ~whenFalse=httpLink(~uri=mainnet)))
+      usingMatic
+    }, ~whenTrue=httpLink(~uri=matic), ~whenFalse=httpLink(~uri=mainnet)),
+  )
 
 type qlEndpoints = {
   mainnet: string,

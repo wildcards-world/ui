@@ -29,6 +29,5 @@ export {
   defaultZeroI ,
   defaultZeroS ,
   dummyTimes2 ,
-  
 }
 /* No side effect */

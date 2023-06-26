@@ -45,14 +45,12 @@ function createPermitSig(provider, verifyingContract, nonce, chainId, holder, sp
                           return resolve(ContractUtil.getEthSig(sigString));
                         }
                         console.log("There was an error", err);
-                        return reject(err);
+                        reject(err);
                       }));
-                
               }));
 }
 
 export {
   createPermitSig ,
-  
 }
 /* ContractUtil Not a pure module */

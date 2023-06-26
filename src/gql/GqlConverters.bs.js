@@ -80,7 +80,7 @@ var Price = {
 };
 
 function parse$5(moment) {
-  return MomentRe.momentWithUnix(Belt_Option.mapWithDefault(Js_json.decodeString(moment), 0, Caml_format.caml_int_of_string));
+  return MomentRe.momentWithUnix(Belt_Option.mapWithDefault(Js_json.decodeString(moment), 0, Caml_format.int_of_string));
 }
 
 function serialize$5(moment) {
@@ -115,6 +115,5 @@ export {
   Price ,
   GqlMoment ,
   GqlAddress ,
-  
 }
 /* Eth Not a pure module */

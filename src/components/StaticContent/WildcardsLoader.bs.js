@@ -6,6 +6,5 @@ var make = WildcardsLoader;
 
 export {
   make ,
-  
 }
 /* make Not a pure module */

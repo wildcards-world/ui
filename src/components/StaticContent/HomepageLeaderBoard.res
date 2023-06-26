@@ -8,7 +8,9 @@ let make = () => {
 
   <Box className=Styles.infoBackground>
     <Flex flexWrap="wrap">
-      <Box width=[0.28] className=Styles.animalImage> <img src=gorillaOnVine width="100%" /> </Box>
+      <Box width=[0.28] className=Styles.animalImage>
+        <img src=gorillaOnVine width="100%" />
+      </Box>
       <Box width=[1., 1., 0.67] className=Styles.infoCardContainer>
         <Card className=Styles.infoCardStyles>
           <MonthlyContribution numberOfLeaders=6 />
@@ -18,7 +20,7 @@ let make = () => {
               className=Styles.centerItemsMargin
               onClick={e => {
                 ReactEvent.Form.preventDefault(e)
-                clearAndPush(j`/#leaderboards/monthly-contribution`)
+                clearAndPush(`/#leaderboards/monthly-contribution`)
               }}>
               {"View Other Leaderboards"->React.string}
             </Button>

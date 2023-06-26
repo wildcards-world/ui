@@ -99,7 +99,7 @@ function ethUsdPrice_decode(v) {
   return {
           TAG: /* Error */1,
           _0: {
-            path: ".XETHZUSD" + e.path,
+            path: "." + ("XETHZUSD" + e.path),
             message: e.message,
             value: e.value
           }
@@ -146,7 +146,7 @@ function krakenPriceResponse_decode(v) {
 }
 
 function getPrice(param) {
-  return Async.let_(fetch("https://api.kraken.com/0/public/Ticker?pair=ETHUSD"), (function (result) {
+  return Async.let_(fetch("https://api.kraken.com/0/public/Ticker?pair=ETHUSD", {}), (function (result) {
                 return Async.let_(result.json(), (function (response) {
                               var krakenPriceObj = krakenPriceResponse_decode(response);
                               var tmp;
@@ -164,8 +164,7 @@ function getPrice(param) {
               }));
 }
 
-function UsdPriceProvider(Props) {
-  var children = Props.children;
+function UsdPriceProvider(props) {
   var match = React.useState(function () {
         
       });
@@ -174,9 +173,9 @@ function UsdPriceProvider(Props) {
   React.useEffect((function () {
           if (etherUsdPrice === undefined) {
             Globals.mapAsync(getPrice(undefined), (function (newPrice) {
-                    return Curry._1(setEtherUsdPrice, (function (param) {
-                                  return Belt_Option.flatMap(newPrice, Belt_Float.fromString);
-                                }));
+                    Curry._1(setEtherUsdPrice, (function (param) {
+                            return Belt_Option.flatMap(newPrice, Belt_Float.fromString);
+                          }));
                   }));
           }
           
@@ -184,7 +183,10 @@ function UsdPriceProvider(Props) {
         setEtherUsdPrice,
         etherUsdPrice
       ]);
-  return React.createElement(make, makeProps(etherUsdPrice, children, undefined));
+  return React.createElement(make, {
+              value: etherUsdPrice,
+              children: props.children
+            });
 }
 
 function useUsdPrice(param) {
@@ -212,6 +214,5 @@ export {
   getPrice ,
   make$1 as make,
   useUsdPrice ,
-  
 }
 /* context Not a pure module */

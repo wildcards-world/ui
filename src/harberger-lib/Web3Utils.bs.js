@@ -28,6 +28,5 @@ export {
   fromWeiBNToEth ,
   fromWeiBNToEthPrecision ,
   toWeiFromEth ,
-  
 }
 /* web3-utils Not a pure module */

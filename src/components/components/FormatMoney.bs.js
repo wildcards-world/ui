@@ -26,7 +26,7 @@ function formatEther(rawNumber) {
 }
 
 function toFixedWithPrecisionNoTrailingZeros(number, digits) {
-  return String(Caml_format.caml_float_of_string(number.toFixed(digits)));
+  return String(Caml_format.float_of_string(number.toFixed(digits)));
 }
 
 function toFixedWithPrecisionNoTrailingZerosEth(digitsOpt, eth) {
@@ -50,6 +50,5 @@ export {
   toFixedWithPrecisionNoTrailingZeros ,
   toFixedWithPrecisionNoTrailingZerosEth ,
   getEthUnit ,
-  
 }
 /* Eth Not a pure module */

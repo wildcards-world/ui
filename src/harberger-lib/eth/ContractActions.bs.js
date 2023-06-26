@@ -14,6 +14,7 @@ import * as TokenId from "../TokenId.bs.js";
 import * as CONSTANTS from "../../CONSTANTS.bs.js";
 import * as DaiPermit from "./DaiPermit.bs.js";
 import * as Web3Utils from "../Web3Utils.bs.js";
+import * as Js_promise from "rescript/lib/es6/js_promise.js";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import * as ContractUtil from "./ContractUtil.bs.js";
@@ -306,31 +307,30 @@ var ExecuteMetaTxMutation = {
 
 function execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, sendMetaTx, userAddress, spender, lib, generateFunctionSignature, chainId, verifyingContract) {
   var __x = DaiPermit.createPermitSig(lib.provider, verifyingContract, daiNonce, chainId, userAddress, spender);
-  var __x$1 = __x.then(function (rsvSig) {
-        Curry._1(setTxState, (function (param) {
-                return /* SignMetaTx */1;
-              }));
-        var web3 = new Web3$1(lib.provider);
-        var steward = Curry._2(Web3.Contract.MaticSteward.getStewardContract, web3, spender);
-        var functionSignature = Curry._4(generateFunctionSignature, steward, rsvSig.v, rsvSig.r, rsvSig.s);
-        var messageToSign = ContractUtil.constructMetaTransactionMessage(stewardNonce, chainId.toString(), functionSignature, spender);
-        var __x = web3.eth.personal.sign(messageToSign, userAddress);
-        return __x.then(function (signature) {
-                    return Promise.resolve([
-                                functionSignature,
-                                signature
-                              ]);
-                  });
-      });
-  var __x$2 = __x$1.then(function (param) {
-        var match = ContractUtil.getEthSig(param[1]);
-        return Promise.resolve(Curry._8(sendMetaTx, undefined, undefined, undefined, undefined, undefined, undefined, undefined, makeVariables(networkName, match.r, match.s, match.v, userAddress, param[0], undefined)));
-      });
-  __x$2.catch(function (err) {
-        console.log("this error was caught", err);
-        return Promise.resolve("");
-      });
-  
+  var __x$1 = Js_promise.then_((function (rsvSig) {
+          Curry._1(setTxState, (function (param) {
+                  return /* SignMetaTx */1;
+                }));
+          var web3 = new Web3$1(lib.provider);
+          var steward = Curry._2(Web3.Contract.MaticSteward.getStewardContract, web3, spender);
+          var functionSignature = Curry._4(generateFunctionSignature, steward, rsvSig.v, rsvSig.r, rsvSig.s);
+          var messageToSign = ContractUtil.constructMetaTransactionMessage(stewardNonce, chainId.toString(), functionSignature, spender);
+          var __x = web3.eth.personal.sign(messageToSign, userAddress);
+          return Js_promise.then_((function (signature) {
+                        return Promise.resolve([
+                                    functionSignature,
+                                    signature
+                                  ]);
+                      }), __x);
+        }), __x);
+  var __x$2 = Js_promise.then_((function (param) {
+          var match = ContractUtil.getEthSig(param[1]);
+          return Promise.resolve(Curry._8(sendMetaTx, undefined, undefined, undefined, undefined, undefined, undefined, undefined, makeVariables(networkName, match.r, match.s, match.v, userAddress, param[0], undefined)));
+        }), __x$1);
+  Js_promise.$$catch((function (err) {
+          console.log("this error was caught", err);
+          return Promise.resolve("");
+        }), __x$2);
 }
 
 function handleMetaTxSumbissionState(result, setTxState, currentState, setForceRefetch) {
@@ -409,36 +409,36 @@ function handleMetaTxSumbissionState(result, setTxState, currentState, setForceR
     var maticProvider = new (Ethers.providers.JsonRpcProvider)(providerUrl);
     var waitForTx = $$Promise.Js.toResult(maticProvider.waitForTransaction(txHash));
     $$Promise.getOk(waitForTx, (function (tx) {
-            return Curry._1(setTxState, (function (param) {
-                          Curry._1(setForceRefetch, (function (param) {
-                                  return true;
-                                }));
-                          setTimeout((function (param) {
-                                  return Curry._1(setForceRefetch, (function (param) {
-                                                return true;
-                                              }));
-                                }), 3000);
-                          return {
-                                  TAG: /* Complete */4,
-                                  _0: tx
-                                };
-                        }));
+            Curry._1(setTxState, (function (param) {
+                    Curry._1(setForceRefetch, (function (param) {
+                            return true;
+                          }));
+                    setTimeout((function (param) {
+                            Curry._1(setForceRefetch, (function (param) {
+                                    return true;
+                                  }));
+                          }), 3000);
+                    return {
+                            TAG: /* Complete */4,
+                            _0: tx
+                          };
+                  }));
           }));
     return $$Promise.getError(waitForTx, (function (_error) {
-                  return Curry._1(setTxState, (function (param) {
-                                return /* Failed */4;
-                              }));
+                  Curry._1(setTxState, (function (param) {
+                          return /* Failed */4;
+                        }));
                 }));
   }
   if (typeof currentState !== "number" && currentState.TAG === /* ServerError */3) {
     return ;
   }
-  return Curry._1(setTxState, (function (param) {
-                return {
-                        TAG: /* ServerError */3,
-                        _0: Belt_Option.getWithDefault(errorMsg, "Unknown error")
-                      };
-              }));
+  Curry._1(setTxState, (function (param) {
+          return {
+                  TAG: /* ServerError */3,
+                  _0: Belt_Option.getWithDefault(errorMsg, "Unknown error")
+                };
+        }));
 }
 
 function useBuy(chain, animal, library, account, parentChainId) {
@@ -475,7 +475,6 @@ function useBuy(chain, animal, library, account, parentChainId) {
           Curry._1(setForceRefreshData, (function (param) {
                   return false;
                 }));
-          
         }), [forceRefreshData]);
   handleMetaTxSumbissionState(match[1], setTxState, txState, setForceRefreshData);
   var chainIdInt = getChildChainId(parentChainId);
@@ -492,7 +491,6 @@ function useBuy(chain, animal, library, account, parentChainId) {
           Curry._1(setShouldRefreshNonce, (function (param) {
                   return false;
                 }));
-          
         }), [
         account,
         networkName
@@ -523,31 +521,28 @@ function useBuy(chain, animal, library, account, parentChainId) {
                         var txMinedPromise = $$Promise.Js.toResult(tx.wait());
                         $$Promise.getOk(txMinedPromise, (function (txOutcome) {
                                 console.log(txOutcome);
-                                return Curry._1(setTxState, (function (param) {
-                                              return {
-                                                      TAG: /* Complete */4,
-                                                      _0: txOutcome
-                                                    };
-                                            }));
+                                Curry._1(setTxState, (function (param) {
+                                        return {
+                                                TAG: /* Complete */4,
+                                                _0: txOutcome
+                                              };
+                                      }));
                               }));
                         $$Promise.getError(txMinedPromise, (function (error) {
                                 Curry._1(setTxState, (function (param) {
                                         return /* Failed */4;
                                       }));
                                 console.log(error);
-                                
                               }));
-                        
                       }));
                 $$Promise.getError(buyPromise, (function (error) {
-                        return Curry._1(setTxState, (function (param) {
-                                      return {
-                                              TAG: /* Declined */2,
-                                              _0: error.message
-                                            };
-                                    }));
+                        Curry._1(setTxState, (function (param) {
+                                return {
+                                        TAG: /* Declined */2,
+                                        _0: error.message
+                                      };
+                              }));
                       }));
-                
               }),
             txState
           ];
@@ -571,9 +566,9 @@ function useBuy(chain, animal, library, account, parentChainId) {
                                 _0: new BnJs(value)
                               };
                       }));
-                return execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, mutate, account, spender, library, (function (steward, v, r, s) {
-                              return Curry._1(steward.methods.buyWithPermit(new BnJs(daiNonce), CONSTANTS.zeroBn, true, v, r, s, animalId, Web3Utils.toWeiFromEth(newPrice), oldPrice, wildcardsPercentage, value).encodeABI, undefined);
-                            }), chainId, verifyingContract);
+                execDaiPermitMetaTx(daiNonce, networkName, stewardNonce, setTxState, mutate, account, spender, library, (function (steward, v, r, s) {
+                        return Curry._1(steward.methods.buyWithPermit(new BnJs(daiNonce), CONSTANTS.zeroBn, true, v, r, s, animalId, Web3Utils.toWeiFromEth(newPrice), oldPrice, wildcardsPercentage, value).encodeABI, undefined);
+                      }), chainId, verifyingContract);
               }),
             txState
           ];
@@ -614,7 +609,6 @@ function useBuyAuction(chain, animal, library, account, parentChainId) {
           Curry._1(setForceRefreshData, (function (param) {
                   return false;
                 }));
-          
         }), [forceRefreshData]);
   handleMetaTxSumbissionState(match$1[1], setTxState, txState, setForceRefreshData);
   var chainIdInt = getChildChainId(parentChainId);
@@ -648,31 +642,28 @@ function useBuyAuction(chain, animal, library, account, parentChainId) {
                         var txMinedPromise = $$Promise.Js.toResult(tx.wait());
                         $$Promise.getOk(txMinedPromise, (function (txOutcome) {
                                 console.log(txOutcome);
-                                return Curry._1(setTxState, (function (param) {
-                                              return {
-                                                      TAG: /* Complete */4,
-                                                      _0: txOutcome
-                                                    };
-                                            }));
+                                Curry._1(setTxState, (function (param) {
+                                        return {
+                                                TAG: /* Complete */4,
+                                                _0: txOutcome
+                                              };
+                                      }));
                               }));
                         $$Promise.getError(txMinedPromise, (function (error) {
                                 Curry._1(setTxState, (function (param) {
                                         return /* Failed */4;
                                       }));
                                 console.log(error);
-                                
                               }));
-                        
                       }));
                 $$Promise.getError(buyPromise, (function (error) {
-                        return Curry._1(setTxState, (function (param) {
-                                      return {
-                                              TAG: /* Declined */2,
-                                              _0: error.message
-                                            };
-                                    }));
+                        Curry._1(setTxState, (function (param) {
+                                return {
+                                        TAG: /* Declined */2,
+                                        _0: error.message
+                                      };
+                              }));
                       }));
-                
               }),
             txState
           ];
@@ -694,7 +685,6 @@ function useBuyAuction(chain, animal, library, account, parentChainId) {
                 }
                 console.log("something important is null");
                 console.log(library, account, maticState);
-                
               }),
             txState
           ];
@@ -729,31 +719,28 @@ function useRedeemLoyaltyTokens(patron) {
             var txMinedPromise = $$Promise.Js.toResult(tx.wait());
             $$Promise.getOk(txMinedPromise, (function (txOutcome) {
                     console.log(txOutcome);
-                    return Curry._1(setTxState, (function (param) {
-                                  return {
-                                          TAG: /* Complete */4,
-                                          _0: txOutcome
-                                        };
-                                }));
+                    Curry._1(setTxState, (function (param) {
+                            return {
+                                    TAG: /* Complete */4,
+                                    _0: txOutcome
+                                  };
+                          }));
                   }));
             $$Promise.getError(txMinedPromise, (function (error) {
                     Curry._1(setTxState, (function (param) {
                             return /* Failed */4;
                           }));
                     console.log(error);
-                    
                   }));
-            
           }));
     $$Promise.getError(claimLoyaltyTokenPromise, (function (error) {
-            return Curry._1(setTxState, (function (param) {
-                          return {
-                                  TAG: /* Declined */2,
-                                  _0: error.message
-                                };
-                        }));
+            Curry._1(setTxState, (function (param) {
+                    return {
+                            TAG: /* Declined */2,
+                            _0: error.message
+                          };
+                  }));
           }));
-    
   };
   return [
           buyFunction,
@@ -794,7 +781,6 @@ function useUpdateDeposit(useMetaTransactionOpt, chain, library, account, parent
           Curry._1(setForceRefreshData, (function (param) {
                   return false;
                 }));
-          
         }), [forceRefreshData]);
   QlHooks.useQueryPatronQuery(chain, forceRefreshData, Belt_Option.getWithDefault(account, ""));
   handleMetaTxSumbissionState(match$1[1], setTxState, txState, setForceRefreshData);
@@ -827,25 +813,22 @@ function useUpdateDeposit(useMetaTransactionOpt, chain, library, account, parent
                               }));
                         var txMinedPromise = $$Promise.Js.toResult(tx.wait());
                         $$Promise.getOk(txMinedPromise, (function (txOutcome) {
-                                return Curry._1(setTxState, (function (param) {
-                                              return {
-                                                      TAG: /* Complete */4,
-                                                      _0: txOutcome
-                                                    };
-                                            }));
+                                Curry._1(setTxState, (function (param) {
+                                        return {
+                                                TAG: /* Complete */4,
+                                                _0: txOutcome
+                                              };
+                                      }));
                               }));
                         $$Promise.getError(txMinedPromise, (function (_error) {
-                                return Curry._1(setTxState, (function (param) {
-                                              return /* Failed */4;
-                                            }));
+                                Curry._1(setTxState, (function (param) {
+                                        return /* Failed */4;
+                                      }));
                               }));
-                        
                       }));
                 $$Promise.getError(updateDepositPromise, (function (error) {
                         console.log("error processing transaction: " + error.message);
-                        
                       }));
-                
               }),
             txState
           ];
@@ -871,7 +854,6 @@ function useUpdateDeposit(useMetaTransactionOpt, chain, library, account, parent
                 }
                 console.log("something important is null");
                 console.log(library, account, maticState);
-                
               }),
             txState
           ];
@@ -912,31 +894,28 @@ function useWithdrawDeposit(chain, library, account, parentChainId) {
                         var txMinedPromise = $$Promise.Js.toResult(tx.wait());
                         $$Promise.getOk(txMinedPromise, (function (txOutcome) {
                                 console.log(txOutcome);
-                                return Curry._1(setTxState, (function (param) {
-                                              return {
-                                                      TAG: /* Complete */4,
-                                                      _0: txOutcome
-                                                    };
-                                            }));
+                                Curry._1(setTxState, (function (param) {
+                                        return {
+                                                TAG: /* Complete */4,
+                                                _0: txOutcome
+                                              };
+                                      }));
                               }));
                         $$Promise.getError(txMinedPromise, (function (error) {
                                 Curry._1(setTxState, (function (param) {
                                         return /* Failed */4;
                                       }));
                                 console.log(error);
-                                
                               }));
-                        
                       }));
                 $$Promise.getError(updateDepositPromise, (function (error) {
-                        return Curry._1(setTxState, (function (param) {
-                                      return {
-                                              TAG: /* Declined */2,
-                                              _0: error.message
-                                            };
-                                    }));
+                        Curry._1(setTxState, (function (param) {
+                                return {
+                                        TAG: /* Declined */2,
+                                        _0: error.message
+                                      };
+                              }));
                       }));
-                
               }),
             txState
           ];
@@ -954,11 +933,10 @@ function useWithdrawDeposit(chain, library, account, parentChainId) {
                 var __x = Curry._1(steward.methods.withdrawDeposit(amountToWithdraw).send, {
                       from: account
                     });
-                __x.catch(function (err) {
-                      console.log("this error was caught", err);
-                      return Promise.resolve("");
-                    });
-                
+                Js_promise.$$catch((function (err) {
+                        console.log("this error was caught", err);
+                        return Promise.resolve("");
+                      }), __x);
               }),
             txState
           ];
@@ -996,9 +974,9 @@ function useUserLoyaltyTokenBalance(address) {
   return [
           match[0],
           (function (param) {
-              return Curry._1(setCounter, (function (param) {
-                            return counter + 1 | 0;
-                          }));
+              Curry._1(setCounter, (function (param) {
+                      return counter + 1 | 0;
+                    }));
             })
         ];
 }
@@ -1034,31 +1012,28 @@ function useChangePrice(animal) {
                       var txMinedPromise = $$Promise.Js.toResult(tx.wait());
                       $$Promise.getOk(txMinedPromise, (function (txOutcome) {
                               console.log(txOutcome);
-                              return Curry._1(setTxState, (function (param) {
-                                            return {
-                                                    TAG: /* Complete */4,
-                                                    _0: txOutcome
-                                                  };
-                                          }));
+                              Curry._1(setTxState, (function (param) {
+                                      return {
+                                              TAG: /* Complete */4,
+                                              _0: txOutcome
+                                            };
+                                    }));
                             }));
                       $$Promise.getError(txMinedPromise, (function (error) {
                               Curry._1(setTxState, (function (param) {
                                       return /* Failed */4;
                                     }));
                               console.log(error);
-                              
                             }));
-                      
                     }));
               $$Promise.getError(updatePricePromise, (function (error) {
-                      return Curry._1(setTxState, (function (param) {
-                                    return {
-                                            TAG: /* Declined */2,
-                                            _0: error.message
-                                          };
-                                  }));
+                      Curry._1(setTxState, (function (param) {
+                              return {
+                                      TAG: /* Declined */2,
+                                      _0: error.message
+                                    };
+                            }));
                     }));
-              
             }),
           match[0]
         ];
@@ -1105,6 +1080,5 @@ export {
   useWithdrawDeposit ,
   useUserLoyaltyTokenBalance ,
   useChangePrice ,
-  
 }
 /* loyaltyTokenAbi Not a pure module */

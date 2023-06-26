@@ -6,6 +6,5 @@ var makeBlockie = BlockieDefaultJs;
 
 export {
   makeBlockie ,
-  
 }
 /* makeBlockie Not a pure module */

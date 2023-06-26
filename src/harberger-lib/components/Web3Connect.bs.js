@@ -6,7 +6,7 @@ import * as React from "react";
 import * as Styles from "../../Styles.bs.js";
 import * as RimbleUi from "rimble-ui";
 import * as RootProvider from "../RootProvider.bs.js";
-import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.bs.js";
+import * as RescriptReactRouter from "@rescript/react/src/RescriptReactRouter.bs.js";
 
 var infoModalStyle = Curry._1(Css.style, {
       hd: Css.padding(Css.rem(3)),
@@ -25,9 +25,9 @@ var infoModalStyle = Curry._1(Css.style, {
       }
     });
 
-function Web3Connect(Props) {
-  var clickActionOpt = Props.clickAction;
-  var clickAction = clickActionOpt !== undefined ? clickActionOpt : (function (param) {
+function Web3Connect(props) {
+  var clickAction = props.clickAction;
+  var clickAction$1 = clickAction !== undefined ? clickAction : (function (param) {
         
       });
   var connectWeb3 = RootProvider.useConnectWeb3(undefined);
@@ -37,35 +37,35 @@ function Web3Connect(Props) {
     if (networkId >= 43) {
       if (networkId !== 137) {
         if (networkId !== 80001) {
-          return "Unknown\xa0";
+          return "Unknown\\xa0";
         } else {
-          return "MATIC Test\xa0";
+          return "MATIC Test\\xa0";
         }
       } else {
-        return "MATIC\xa0";
+        return "MATIC\\xa0";
       }
     }
     if (networkId >= 6) {
       if (networkId >= 42) {
-        return "KOVAN\xa0";
+        return "KOVAN\\xa0";
       } else {
-        return "Unknown\xa0";
+        return "Unknown\\xa0";
       }
     }
     if (networkId <= 0) {
-      return "Unknown\xa0";
+      return "Unknown\\xa0";
     }
     switch (networkId) {
       case 1 :
-          return "MAINNET\xa0";
+          return "MAINNET\\xa0";
       case 2 :
-          return "Unknown\xa0";
+          return "Unknown\\xa0";
       case 3 :
-          return "ROPSTEN\xa0";
+          return "ROPSTEN\\xa0";
       case 4 :
-          return "RINKEBY\xa0";
+          return "RINKEBY\\xa0";
       case 5 :
-          return "GOERLI\xa0";
+          return "GOERLI\\xa0";
       
     }
   };
@@ -73,8 +73,8 @@ function Web3Connect(Props) {
           mainColor: "#72C7D7",
           children: null,
           onClick: (function (_e) {
-              Curry._1(clickAction, undefined);
-              return Curry._1(deactivateWeb3, undefined);
+              Curry._1(clickAction$1, undefined);
+              Curry._1(deactivateWeb3, undefined);
             })
         }, connectedNetworkName(networkIdOpt), React.createElement(RimbleUi.Icon, {
               name: "ExitToApp",
@@ -83,9 +83,9 @@ function Web3Connect(Props) {
           mainColor: "#72C7D7",
           children: "Log In",
           onClick: (function (_e) {
-              Curry._1(clickAction, undefined);
-              ReasonReactRouter.push("#");
-              return Curry._1(connectWeb3, /* NoAction */0);
+              Curry._1(clickAction$1, undefined);
+              RescriptReactRouter.push("#");
+              Curry._1(connectWeb3, /* NoAction */0);
             })
         });
   return React.createElement("div", {
@@ -98,6 +98,5 @@ var make = Web3Connect;
 export {
   infoModalStyle ,
   make ,
-  
 }
 /* infoModalStyle Not a pure module */

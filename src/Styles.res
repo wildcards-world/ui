@@ -18,31 +18,31 @@ global(. "a", [color(hex("303030")), textDecoration(none)])
 global(. "a:hover", [textDecoration(underline)])
 global(. "a:active", [color(hex("303030"))])
 
-let app = style(.[
+let app = style(. [
   boxSizing(#borderBox),
   // Make a global default font size
   fontSize(px(16)),
 ])
 
-let textOnlyModalText = style(.[padding(em(2.))])
-let totalRaisedText = size => style(.[fontSize(em(size))])
+let textOnlyModalText = style(. [padding(em(2.))])
+let totalRaisedText = size => style(. [fontSize(em(size))])
 
-let copyButton = style(.[CssJs.float(#right), zIndex(50)])
+let copyButton = style(. [CssJs.float(#right), zIndex(50)])
 
 // Use flex box to center
-let centerItems = style(.[display(#flex), alignItems(center), width(#percent(100.))])
+let centerItems = style(. [display(#flex), alignItems(center), width(#percent(100.))])
 // Use margin to center
-let centerItemsMargin = style(.[display(block), margin(auto)])
+let centerItemsMargin = style(. [display(block), margin(auto)])
 
-let translationSwitch = style(.[padding(rem(0.))])
+let translationSwitch = style(. [padding(rem(0.))])
 
-let topBody = style(.[
+let topBody = style(. [
   // zIndex(50),
   // display(`flex),
   // flexDirection(`row),
   justifyContent(#spaceBetween),
   // alignItems(center),
-  media("(max-width: 831px)", [textAlign(center)]),
+  media(. "(max-width: 831px)", [textAlign(center)]),
   // flexWrap(`wrap),
   paddingLeft(px(15)),
   paddingRight(px(15)),
@@ -51,13 +51,13 @@ let topBody = style(.[
   margin(auto),
 ])
 
-let header = style(.[position(relative)])
-let noMarginBottom = style(.[marginBottom(px(0))])
-let noMarginTop = style(.[marginTop(px(0))])
+let header = style(. [position(relative)])
+let noMarginBottom = style(. [marginBottom(px(0))])
+let noMarginTop = style(. [marginTop(px(0))])
 
-let headerLogo = style(.[media("(max-width: 630px)", [textAlign(center), display(#block)])])
+let headerLogo = style(. [media(. "(max-width: 630px)", [textAlign(center), display(#block)])])
 
-let nav = style(.[
+let nav = style(. [
   position(absolute),
   maxWidth(px(1200)),
   zIndex(200),
@@ -67,19 +67,19 @@ let nav = style(.[
   margin2(~v=em(0.), ~h=auto),
 ])
 
-let navBox = style(.[display(#flex), justifyContent(#spaceBetween), alignItems(center)])
+let navBox = style(. [display(#flex), justifyContent(#spaceBetween), alignItems(center)])
 
-let navList = style(.[
+let navList = style(. [
   display(#flex),
   alignItems(#center),
-  media("(max-width: 630px)", [display(none)]),
+  media(. "(max-width: 630px)", [display(none)]),
   marginLeft(#auto),
   listStyle(#none, #inside, #none),
 ])
 
-let positionRelative = style(.[position(relative)])
+let positionRelative = style(. [position(relative)])
 let overlayImg = (topPosition, leftPosition) =>
-  style(.[
+  style(. [
     position(absolute),
     zIndex(2),
     top(#percent(topPosition)),
@@ -102,27 +102,27 @@ let imageHoverStyle = {
   ])
 }
 let overlayBadgeImg = (~x, ~y) =>
-  Cn.fromList(list{overlayImg(x, y), style(.[borderRadius(#percent(100.)), imageHoverStyle])})
+  CnRe.fromList(list{overlayImg(x, y), style(. [borderRadius(#percent(100.)), imageHoverStyle])})
 
-let streakText = style(.[
+let streakText = style(. [
   position(absolute),
   zIndex(100),
   bottom(#percent(-30.)),
   right(#percent(50.)),
   transform(translateX(#percent(50.))),
 ])
-let smallImage = imageMaxWidth => style(.[width(#percent(100.)), maxWidth(imageMaxWidth)])
+let smallImage = imageMaxWidth => style(. [width(#percent(100.)), maxWidth(imageMaxWidth)])
 let flameImg = smallImage(em(2.1))
 
-let navListItem = style(.[display(inlineBlock)])
+let navListItem = style(. [display(inlineBlock)])
 
-let navListItemToggle = style(.[display(#flex), justifyContent(center), alignItems(center)])
+let navListItemToggle = style(. [display(#flex), justifyContent(center), alignItems(center)])
 
-let someMarginRight = style(.[marginRight(px(6))])
+let someMarginRight = style(. [marginRight(px(6))])
 
-let navListText = style(.[color(rgb(136, 136, 136)), padding(rem(1.)), fontWeight(bold)])
+let navListText = style(. [color(rgb(136, 136, 136)), padding(rem(1.)), fontWeight(bold)])
 
-let leftTopHeader = style(.[
+let leftTopHeader = style(. [
   position(relative),
   width(px(550)),
   maxWidth(px(550)),
@@ -133,25 +133,28 @@ let leftTopHeader = style(.[
   // padding(px(0)),
 ])
 
-let centerText = style(.[textAlign(center)])
+let centerText = style(. [textAlign(center)])
 
 /// NOTE: the padding of 4% is calculated as 12/3 since there is a right padding of 12% and 3 animal images shown.
-let dappImagesCounteractOffset = style(.[marginLeft(#percent(4.))])
+let dappImagesCounteractOffset = style(. [marginLeft(#percent(4.))])
 
-let heading = style(.[fontSize(em(3.)), media("(min-width: 768px)", [paddingTop(#rem(3.))])])
+let heading = style(. [fontSize(em(3.)), media(. "(min-width: 768px)", [paddingTop(#rem(3.))])])
 
-let subHeading = style(.[fontSize(em(1.8)), fontWeight(#num(200))])
+let subHeading = style(. [fontSize(em(1.8)), fontWeight(#num(200))])
 
 let wildCardGreen = rgb(107, 173, 62)
 let wildCardBlue = rgb(114, 199, 215)
 let wildCardGrey = rgb(100, 100, 100)
-let colorGreen = style(.[color(wildCardGreen)])
-let colorBlue = style(.[color(wildCardBlue)])
-let colorGrey = style(.[color(wildCardGrey)])
+let colorGreen = style(. [color(wildCardGreen)])
+let colorBlue = style(. [color(wildCardBlue)])
+let colorGrey = style(. [color(wildCardGrey)])
 
-let animalBox = style(.[marginRight(#percent(12.))])
+let animalBox = style(. [marginRight(#percent(12.))])
 
-let clickableLink = style(.[media("(max-width: 630px)", [width(#percent(100.))]), cursor(#pointer)])
+let clickableLink = style(. [
+  media(. "(max-width: 630px)", [width(#percent(100.))]),
+  cursor(#pointer),
+])
 
 let mainImageHoverStyle = scalar =>
   hover([
@@ -162,7 +165,7 @@ let mainImageHoverStyle = scalar =>
     transition(~duration=100, ~delay=0, ~timingFunction=ease, "all"),
   ])
 let headerImg = (enlargement, scalar) =>
-  style(.[
+  style(. [
     position(#relative),
     zIndex(1),
     maxHeight(px(500)),
@@ -174,7 +177,7 @@ let headerImg = (enlargement, scalar) =>
     mainImageHoverStyle(scalar),
   ])
 
-let horizantalBlueTile = style(.[
+let horizantalBlueTile = style(. [
   width(#percent(100.)),
   padding2(~v=em(2.), ~h=em(0.)),
   backgroundColor(#hex("73c7d7ff")),
@@ -182,16 +185,16 @@ let horizantalBlueTile = style(.[
   textAlign(#center),
 ])
 
-let explainerLargeText = style(.[
+let explainerLargeText = style(. [
   fontSize(rem(2.)),
   color(#hex("486269")),
   padding2(~v=em(0.), ~h=em(6.)),
   margin2(~v=em(0.), ~h=auto),
   maxWidth(px(1200)),
-  media("(max-width: 760px)", [fontSize(rem(1.2)), padding2(~v=em(0.), ~h=em(2.))]),
+  media(. "(max-width: 760px)", [fontSize(rem(1.2)), padding2(~v=em(0.), ~h=em(2.))]),
 ])
-let explainerMediumText = style(.[
-  media("(max-width: 760px)", [fontSize(rem(1.1)), padding2(~v=em(0.), ~h=em(2.))]),
+let explainerMediumText = style(. [
+  media(. "(max-width: 760px)", [fontSize(rem(1.1)), padding2(~v=em(0.), ~h=em(2.))]),
   padding2(~v=em(0.), ~h=em(3.)),
   margin2(~v=em(0.), ~h=auto),
   maxWidth(px(1200)),
@@ -200,13 +203,16 @@ let explainerMediumText = style(.[
   textAlign(#center),
 ])
 
-let boldExplainerText = style(.[color(#hex("303030")), fontWeight(#bold)])
+let boldExplainerText = style(. [color(#hex("303030")), fontWeight(#bold)])
 
-let infoBackground = style(.[
+let infoBackground = style(. [
   backgrounds([
     #linearGradient(
       deg(0.),
-      list{(zero, #rgba(255, 255, 255, #num(0.2))), (zero, #rgba(255, 255, 255, #num(0.2)))},
+      [
+        (#percent(0.), #rgba(255, 255, 255, #num(0.2))),
+        (#percent(100.), #rgba(255, 255, 255, #num(0.2))),
+      ],
     ),
     #url(backgroundImageGorilla),
   ]),
@@ -215,30 +221,30 @@ let infoBackground = style(.[
   height(#percent(100.)),
 ])
 
-let infoCardContainer = style(.[padding(#rem(1.))])
+let infoCardContainer = style(. [padding(#rem(1.))])
 
-let infoCardStyles = style(.[
+let infoCardStyles = style(. [
   margin(#rem(4.)),
-  media("(max-width: 831px)", [margin(#rem(0.)), textAlign(center)]),
+  media(. "(max-width: 831px)", [margin(#rem(0.)), textAlign(center)]),
 ])
 
-let animalImage = style(.[media("(max-width: 831px)", [display(none)])])
+let animalImage = style(. [media(. "(max-width: 831px)", [display(none)])])
 
-let redDisclaimer = style(.[fontSize(#rem(0.9)), color(#hex("e85723"))])
+let redDisclaimer = style(. [fontSize(#rem(0.9)), color(#hex("e85723"))])
 
-let floatingSignupBox = style(.[
+let floatingSignupBox = style(. [
   maxWidth(px(900)),
   margin2(~v=em(0.), ~h=auto),
   // backgroundColor(`hex("fff")),
   // boxShadow10(px(0), px(2), px(4), px(0), `rgba((136,144,195,0.2)), px(0), px(5), px(15), px(0), `rgba((37,44,97,0.15)))
 ])
-let floatingSignupBoxInner = style(.[padding(em(3.))])
-let emailSignupHeader = style(.[fontSize(px(24))])
-let emailTextBox = style(.[])
+let floatingSignupBoxInner = style(. [padding(em(3.))])
+let emailSignupHeader = style(. [fontSize(px(24))])
+let emailTextBox = style(. [])
 
-let inputElements = style(.[padding(em(0.1))])
+let inputElements = style(. [padding(em(0.1))])
 
-let extraInfoFooterBox = style(.[
+let extraInfoFooterBox = style(. [
   textAlign(center),
   maxWidth(px(600)),
   backgroundColor(rgb(107, 173, 62)),
@@ -246,7 +252,7 @@ let extraInfoFooterBox = style(.[
   position(relative),
 ])
 
-let emoticonHeader = style(.[
+let emoticonHeader = style(. [
   position(absolute),
   left(px(0)),
   right(px(0)),
@@ -256,7 +262,7 @@ let emoticonHeader = style(.[
   textAlign(center),
 ])
 
-let emojiStyles = style(.[
+let emojiStyles = style(. [
   height(px(55)),
   maxHeight(#percent(100.)),
   position(relative),
@@ -264,11 +270,11 @@ let emojiStyles = style(.[
   bottom(px(1)),
 ])
 
-let finalNoteContent = style(.[padding(rem(1.5)), margin(ex(4.))])
+let finalNoteContent = style(. [padding(rem(1.5)), margin(ex(4.))])
 
-let whiteText = style(.[important(color(white))])
+let whiteText = style(. [important(color(white))])
 
-let linkPillBox = style(.[
+let linkPillBox = style(. [
   marginTop(px(25)),
   boxSizing(borderBox),
   minHeight(px(25)),
@@ -277,11 +283,11 @@ let linkPillBox = style(.[
   color(hex("fff")),
   backgroundColor(rgba(48, 48, 48, #num(0.12))),
 ])
-let linkPillText = style(.[margin(px(10)), marginBottom(px(1)), color(hex("fff"))])
+let linkPillText = style(. [margin(px(10)), marginBottom(px(1)), color(hex("fff"))])
 
-let loginButton = style(.[paddingLeft(#px(10))])
+let loginButton = style(. [paddingLeft(#px(10))])
 
-let forwardBackButton = style(.[width(#percent(100.)), height(#em(5.))])
+let forwardBackButton = style(. [width(#percent(100.)), height(#em(5.))])
 
 // let mapStylesFunction = [%raw (prev, next) => "`${prev] ${next]`"];
 @dead("+mergeStyles")
@@ -289,13 +295,13 @@ let mergeStyles: list<string> => string = styles =>
   /* styles->List.reduce("", mapStylesFunction); */
   styles->List.reduce("", (prev, next) => prev ++ (" " ++ next))
 
-let wrapText = style(.[overflowWrap(#breakWord), wordWrap(#breakWord)])
+let wrapText = style(. [overflowWrap(#breakWord), wordWrap(#breakWord)])
 
-let fiftyPercentWidth = style(.[width(#percent(50.))])
+let fiftyPercentWidth = style(. [width(#percent(50.))])
 
-let carousel = style(.[position(#relative), width(#percent(150.)), left(#percent(-25.))])
+let carousel = style(. [position(#relative), width(#percent(150.)), left(#percent(-25.))])
 
-let invisibleGorilla = style(.[display(#none)])
+let invisibleGorilla = style(. [display(#none)])
 
 let fadeOut = targetOpacity =>
   style(.

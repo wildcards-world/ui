@@ -62,7 +62,9 @@ let make = (~clickAction=() => (), ~isMobile=false) => {
             style(list{display(#flex), flexDirection(#row)})
           }>
           <div>
-            <p> <strong> {"View Your Profile:"->React.string} </strong> </p>
+            <p>
+              <strong> {"View Your Profile:"->React.string} </strong>
+            </p>
             <p> {message->React.string} </p>
           </div>
           profileIcon

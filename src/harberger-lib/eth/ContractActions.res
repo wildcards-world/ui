@@ -484,7 +484,7 @@ let useBuy = (
             wildcardsPercentage,
             {
               gasLimit: None, //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
-              value: value,
+              value,
             },
           )->Promise.Js.toResult
           buyPromise->Promise.getOk(tx => {
@@ -597,7 +597,7 @@ let useBuyAuction = (~chain, animal, library: option<Web3.web3Library>, account,
             wildcardsPercentage,
             {
               gasLimit: None, //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
-              value: value,
+              value,
             },
           )->Promise.Js.toResult
           buyPromise->Promise.getOk(tx => {
@@ -636,7 +636,7 @@ let useRedeemLoyaltyTokens = (patron: string) => {
         patron,
         {
           gasLimit: None, //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
-          value: value,
+          value,
         },
       )->Promise.Js.toResult
       claimLoyaltyTokenPromise->Promise.getOk(tx => {
@@ -766,7 +766,7 @@ let useUpdateDeposit = (
         | Some(steward) =>
           let updateDepositPromise = steward.depositWei(. {
             gasLimit: None, //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
-            value: value,
+            value,
           })->Promise.Js.toResult
           updateDepositPromise->Promise.getOk(tx => {
             setTxState(_ => SignedAndSubmitted(tx.hash))
@@ -831,7 +831,7 @@ let useWithdrawDeposit = (~chain, library: option<Web3.web3Library>, account, pa
             amountToWithdrawEncoded,
             {
               gasLimit: None, //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
-              value: value,
+              value,
             },
           )->Promise.Js.toResult
           updateDepositPromise->Promise.getOk(tx => {
@@ -899,7 +899,7 @@ let useChangePrice = animal => {
           newPriceEncoded,
           {
             gasLimit: None, //calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
-            value: value,
+            value,
           },
         )->Promise.Js.toResult
         updatePricePromise->Promise.getOk(tx => {

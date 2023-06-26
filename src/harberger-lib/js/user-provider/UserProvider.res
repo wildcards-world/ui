@@ -70,7 +70,8 @@ let use3BoxUserData: string => option<threeBoxUserInfo> = ethAddress => {
   }
 }
 
-@dead("+useIsUserValidated") let useIsUserValidated: string => bool = ethAddress =>
+@dead("+useIsUserValidated")
+let useIsUserValidated: string => bool = ethAddress =>
   switch useDisplayName(ethAddress) {
   | TwitterHandle(_) => true
   | ThreeBoxName(_)

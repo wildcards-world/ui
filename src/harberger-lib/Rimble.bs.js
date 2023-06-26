@@ -58,6 +58,5 @@ export {
   Table ,
   Slider ,
   Form ,
-  
 }
 /* No side effect */

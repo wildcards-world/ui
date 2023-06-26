@@ -4,51 +4,51 @@ import * as Jest from "@glennsl/bs-jest/src/jest.bs.js";
 import * as Helper from "../harberger-lib/Helper.bs.js";
 
 Jest.describe("Expect", (function (param) {
-        return Jest.testAll("isPositiveStringInteger", {
+        Jest.testAll("isPositiveStringInteger", {
+              hd: [
+                "003",
+                true
+              ],
+              tl: {
+                hd: [
+                  "302",
+                  true
+                ],
+                tl: {
+                  hd: [
+                    "3546674266447602",
+                    true
+                  ],
+                  tl: {
                     hd: [
-                      "003",
+                      "1250000000000000000",
                       true
                     ],
                     tl: {
                       hd: [
-                        "302",
-                        true
+                        "302.2",
+                        false
                       ],
                       tl: {
                         hd: [
-                          "3546674266447602",
-                          true
+                          "-5",
+                          false
                         ],
                         tl: {
                           hd: [
-                            "1250000000000000000",
-                            true
+                            "",
+                            false
                           ],
-                          tl: {
-                            hd: [
-                              "302.2",
-                              false
-                            ],
-                            tl: {
-                              hd: [
-                                "-5",
-                                false
-                              ],
-                              tl: {
-                                hd: [
-                                  "",
-                                  false
-                                ],
-                                tl: /* [] */0
-                              }
-                            }
-                          }
+                          tl: /* [] */0
                         }
                       }
                     }
-                  }, (function (param) {
-                      return Jest.Expect.toBe(param[1], Jest.Expect.expect(Helper.isPositiveStringInteger(param[0])));
-                    }));
+                  }
+                }
+              }
+            }, (function (param) {
+                return Jest.Expect.toBe(param[1], Jest.Expect.expect(Helper.isPositiveStringInteger(param[0])));
+              }));
       }));
 
 export {

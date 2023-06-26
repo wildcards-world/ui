@@ -7,6 +7,8 @@ import * as Curry from "rescript/lib/es6/curry.js";
 import BnJs from "bn.js";
 import * as React from "react";
 import * as Countup from "./components/Countup.bs.js";
+import * as Js_array from "rescript/lib/es6/js_array.js";
+import * as Js_string from "rescript/lib/es6/js_string.js";
 import * as Web3Utils from "../harberger-lib/Web3Utils.bs.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
@@ -18,20 +20,20 @@ function stringToArray(str) {
   return Array.from(str);
 }
 
-function Amounts$AmountRaised(Props) {
-  var populateElementOpt = Props.populateElement;
-  var mainnetEth = Props.mainnetEth;
-  var maticDai = Props.maticDai;
-  var ethPaidOutOpt = Props.ethPaidOut;
-  var valueEthPaidOutOpt = Props.valueEthPaidOut;
-  var populateElement = populateElementOpt !== undefined ? populateElementOpt : (function (bigTextComponent, smallTextComponent, optCommentTextComponent) {
+function Amounts$AmountRaised(props) {
+  var valueEthPaidOut = props.valueEthPaidOut;
+  var ethPaidOut = props.ethPaidOut;
+  var maticDai = props.maticDai;
+  var mainnetEth = props.mainnetEth;
+  var populateElement = props.populateElement;
+  var populateElement$1 = populateElement !== undefined ? populateElement : (function (bigTextComponent, smallTextComponent, optCommentTextComponent) {
         return React.createElement("p", undefined, bigTextComponent, React.createElement("span", {
                         className: CssJs.style([CssJs.fontSize(CssJs.em(0.5))])
                       }, smallTextComponent), " USD", optCommentTextComponent !== undefined ? React.createElement(React.Fragment, undefined, React.createElement("br", undefined), React.createElement("small", undefined, Caml_option.valFromOption(optCommentTextComponent))) : null);
       });
-  var ethPaidOut = ethPaidOutOpt !== undefined ? Caml_option.valFromOption(ethPaidOutOpt) : new BnJs(0);
-  var valueEthPaidOut = valueEthPaidOutOpt !== undefined ? valueEthPaidOutOpt : 0;
-  console.log(ethPaidOut, valueEthPaidOut);
+  var ethPaidOut$1 = ethPaidOut !== undefined ? Caml_option.valFromOption(ethPaidOut) : new BnJs(0);
+  var valueEthPaidOut$1 = valueEthPaidOut !== undefined ? valueEthPaidOut : 0;
+  console.log(ethPaidOut$1, valueEthPaidOut$1);
   var currentUsdEthPrice = UsdPriceProvider.useUsdPrice(undefined);
   var match = React.useState(function () {
         return [];
@@ -63,21 +65,21 @@ function Amounts$AmountRaised(Props) {
   var usdRaised2Precision = FormatMoney.formatFloat(undefined, usdRaisedFloat);
   React.useEffect((function () {
           var usdRaisedDigitArray = Array.from(usdRaisedStr);
-          var indexOfTheFirstChangedDigit = usdRaisedDigitArray.findIndex(function (newDigit, index) {
-                var digit = Belt_Array.get(prevUsdRaisedStrArray, index);
-                if (digit !== undefined) {
-                  return digit !== newDigit;
-                } else {
-                  return false;
-                }
-              });
+          var indexOfTheFirstChangedDigit = Js_array.findIndexi((function (newDigit, index) {
+                  var digit = Belt_Array.get(prevUsdRaisedStrArray, index);
+                  if (digit !== undefined) {
+                    return digit !== newDigit;
+                  } else {
+                    return false;
+                  }
+                }), usdRaisedDigitArray);
           var match = usdRaised2Precision.length;
           if (indexOfTheFirstChangedDigit < 0) {
             Curry._1(setRaisedDisplay, (function (param) {
                     return [
                             usdRaised2Precision,
                             "",
-                            usdRaisedStr.slice(match),
+                            Js_string.sliceToEnd(match, usdRaisedStr),
                             ""
                           ];
                   }));
@@ -86,24 +88,23 @@ function Amounts$AmountRaised(Props) {
                     return [
                             usdRaised2Precision,
                             "",
-                            usdRaisedStr.slice(match, indexOfTheFirstChangedDigit),
-                            usdRaisedStr.slice(indexOfTheFirstChangedDigit)
+                            Js_string.slice(match, indexOfTheFirstChangedDigit, usdRaisedStr),
+                            Js_string.sliceToEnd(indexOfTheFirstChangedDigit, usdRaisedStr)
                           ];
                   }));
           } else {
             Curry._1(setRaisedDisplay, (function (param) {
                     return [
-                            usdRaised2Precision.slice(0, indexOfTheFirstChangedDigit),
-                            usdRaised2Precision.slice(indexOfTheFirstChangedDigit),
+                            Js_string.slice(0, indexOfTheFirstChangedDigit, usdRaised2Precision),
+                            Js_string.sliceToEnd(indexOfTheFirstChangedDigit, usdRaised2Precision),
                             "",
-                            usdRaisedStr.slice(match)
+                            Js_string.sliceToEnd(match, usdRaisedStr)
                           ];
                   }));
           }
           Curry._1(setPrevUsdRaisedStrArray, (function (param) {
                   return usdRaisedDigitArray;
                 }));
-          
         }), [usdRaisedStr]);
   var match$3 = Web3Utils.fromWeiBNToEthPrecision(mainnetEth, 4);
   var match$4 = Web3Utils.fromWeiBNToEthPrecision(maticDai, 2);
@@ -130,7 +131,7 @@ function Amounts$AmountRaised(Props) {
           stringFloat: raisedSubChanged,
           styleOnCountUp: styleOnCountUp
         });
-  return React.createElement(React.Fragment, undefined, Curry._3(populateElement, React.createElement(React.Fragment, undefined, React.createElement("span", undefined, FormatMoney.format(match$2[0])), React.createElement(Countup.StringFloat.make, {
+  return React.createElement(React.Fragment, undefined, Curry._3(populateElement$1, React.createElement(React.Fragment, undefined, React.createElement("span", undefined, FormatMoney.format(match$2[0])), React.createElement(Countup.StringFloat.make, {
                           stringFloat: match$2[1],
                           styleOnCountUp: styleOnCountUp
                         })), React.createElement(React.Fragment, undefined, React.createElement("span", undefined, match$2[2]), tmp), Belt_Option.map(optExplainerString, (function (prim) {
@@ -142,11 +143,11 @@ var AmountRaised = {
   make: Amounts$AmountRaised
 };
 
-function Amounts$Basic(Props) {
-  var populateElementOpt = Props.populateElement;
-  var mainnetEth = Props.mainnetEth;
-  var maticDai = Props.maticDai;
-  var populateElement = populateElementOpt !== undefined ? populateElementOpt : (function (amountText, optCommentTextComponent) {
+function Amounts$Basic(props) {
+  var maticDai = props.maticDai;
+  var mainnetEth = props.mainnetEth;
+  var populateElement = props.populateElement;
+  var populateElement$1 = populateElement !== undefined ? populateElement : (function (amountText, optCommentTextComponent) {
         return React.createElement("p", undefined, amountText, " USD", optCommentTextComponent !== undefined ? React.createElement(React.Fragment, undefined, React.createElement("br", undefined), React.createElement("small", undefined, Caml_option.valFromOption(optCommentTextComponent))) : null);
       });
   var currentUsdEthPrice = UsdPriceProvider.useUsdPrice(undefined);
@@ -175,7 +176,7 @@ function Amounts$Basic(Props) {
         match === "0" ? undefined : "(" + match + " ETH + " + match$1 + "DAI)"
       );
   }
-  return React.createElement(React.Fragment, undefined, Curry._2(populateElement, usdRaisedStr, Belt_Option.map(optExplainerString, (function (prim) {
+  return React.createElement(React.Fragment, undefined, Curry._2(populateElement$1, usdRaisedStr, Belt_Option.map(optExplainerString, (function (prim) {
                         return prim;
                       }))));
 }
@@ -188,6 +189,5 @@ export {
   stringToArray ,
   AmountRaised ,
   Basic ,
-  
 }
 /* Css Not a pure module */

@@ -41,6 +41,5 @@ export {
   makeFromInt ,
   toString ,
   toInt ,
-  
 }
 /* Helper Not a pure module */

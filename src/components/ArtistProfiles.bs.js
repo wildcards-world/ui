@@ -24,6 +24,7 @@ import * as UserProfile from "./UserProfile.bs.js";
 import * as RootProvider from "../harberger-lib/RootProvider.bs.js";
 import * as UserProvider from "../harberger-lib/js/user-provider/UserProvider.bs.js";
 import * as UsdPriceProvider from "../harberger-lib/components/UsdPriceProvider.bs.js";
+import * as JsxPPXReactSupport from "rescript/lib/es6/jsxPPXReactSupport.js";
 import * as LazyThreeBoxUpdate from "./LazyThreeBoxUpdate.bs.js";
 
 var centreAlignOnMobile = Curry._1(Css.style, {
@@ -37,13 +38,12 @@ var centreAlignOnMobile = Curry._1(Css.style, {
       tl: /* [] */0
     });
 
-function ArtistProfiles$ArtistDetails(Props) {
-  var optArtistEthAddress = Props.optArtistEthAddress;
-  var optArtistName = Props.optArtistName;
-  var optArtistWebsite = Props.optArtistWebsite;
-  var optArtistLaunchedWildcards = Props.optArtistLaunchedWildcards;
-  var optArtistUnlaunchedWildcards = Props.optArtistUnlaunchedWildcards;
-  var optArtistOrgs = Props.optArtistOrgs;
+function ArtistProfiles$ArtistDetails(props) {
+  var optArtistOrgs = props.optArtistOrgs;
+  var optArtistUnlaunchedWildcards = props.optArtistUnlaunchedWildcards;
+  var optArtistLaunchedWildcards = props.optArtistLaunchedWildcards;
+  var optArtistName = props.optArtistName;
+  var optArtistEthAddress = props.optArtistEthAddress;
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   var artistEthAddress = Belt_Option.getWithDefault(optArtistEthAddress, CONSTANTS.nullEthAddress).toLowerCase();
   var userInfoContext = UserProvider.useUserInfoContext(undefined);
@@ -168,7 +168,7 @@ function ArtistProfiles$ArtistDetails(Props) {
                                 })
                           }, React.createElement(RimbleUi.Button.Text, {
                                 onClick: (function (param) {
-                                    return Curry._1(clearNonUrlState, undefined);
+                                    Curry._1(clearNonUrlState, undefined);
                                   }),
                                 icononly: true,
                                 icon: "Close",
@@ -178,8 +178,8 @@ function ArtistProfiles$ArtistDetails(Props) {
                                 right: 0,
                                 m: 1
                               }), React.createElement(React.Suspense, {
-                                children: React.createElement(LazyThreeBoxUpdate.make, LazyThreeBoxUpdate.makeProps(undefined, undefined)),
-                                fallback: React.createElement(RimbleUi.Loader, {})
+                                children: Caml_option.some(React.createElement(LazyThreeBoxUpdate.make, {})),
+                                fallback: Caml_option.some(React.createElement(RimbleUi.Loader, {}))
                               })) : React.createElement(React.Fragment, undefined, React.createElement("h2", undefined, Belt_Option.getWithDefault(optName, Belt_Option.getWithDefault(optArtistName, "Loading artist name"))), Globals.reactMap(optTwitter, (function (twitterHandle) {
                                   return React.createElement("a", {
                                               className: Styles.navListText,
@@ -189,7 +189,7 @@ function ArtistProfiles$ArtistDetails(Props) {
                                             }, "@" + twitterHandle);
                                 })), React.createElement("br", undefined), Globals.reactMap(optDescription, (function (description) {
                                   return React.createElement("p", undefined, new BadWords().clean(description));
-                                })), Belt_Option.mapWithDefault(optArtistWebsite, null, (function (website) {
+                                })), Belt_Option.mapWithDefault(props.optArtistWebsite, null, (function (website) {
                                   return React.createElement("a", {
                                               className: Styles.navListText,
                                               href: website,
@@ -231,7 +231,7 @@ function ArtistProfiles$ArtistDetails(Props) {
                                                                       })]),
                                                             src: CONSTANTS.cdnBase + org.logo,
                                                             onClick: (function (_e) {
-                                                                return Curry._1(clearAndPush, "/#org/" + org.id);
+                                                                Curry._1(clearAndPush, "/#org/" + org.id);
                                                               })
                                                           }));
                                           })),
@@ -254,9 +254,8 @@ function ArtistProfiles$ArtistDetails(Props) {
                                   }), React.createElement(RimbleUi.Flex, {
                                     children: Belt_Array.map(artistsAnimalsArrayLaunched, (function (token) {
                                             var id = TokenId.toString(token);
-                                            return React.createElement(UserProfile.Token.make, {
-                                                        tokenId: token,
-                                                        key: id
+                                            return JsxPPXReactSupport.createElementWithKey(id, UserProfile.Token.make, {
+                                                        tokenId: token
                                                       });
                                           })),
                                     flexWrap: "wrap",
@@ -269,12 +268,11 @@ function ArtistProfiles$ArtistDetails(Props) {
                               }), React.createElement(RimbleUi.Flex, {
                                 children: Belt_Array.map(optArtistUnlaunchedWildcards, (function (token) {
                                         return Belt_Option.mapWithDefault(token.image, null, (function (image) {
-                                                      return React.createElement(OrgProfile.ComingSoonAnimal.make, {
+                                                      return JsxPPXReactSupport.createElementWithKey(String(token.key), OrgProfile.ComingSoonAnimal.make, {
                                                                   image: CONSTANTS.cdnBase + image,
                                                                   onClick: (function (param) {
                                                                       
-                                                                    }),
-                                                                  key: String(token.key)
+                                                                    })
                                                                 });
                                                     }));
                                       })),
@@ -287,8 +285,8 @@ var ArtistDetails = {
   make: ArtistProfiles$ArtistDetails
 };
 
-function ArtistProfiles(Props) {
-  var artistIdentifier = Props.artistIdentifier;
+function ArtistProfiles(props) {
+  var artistIdentifier = props.artistIdentifier;
   var optArtistEthAddress = QlHooks.useArtistEthAddress(artistIdentifier);
   var optArtistName = QlHooks.useArtistName(artistIdentifier);
   var optArtistWebsite = QlHooks.useArtistWebsite(artistIdentifier);
@@ -316,6 +314,5 @@ export {
   centreAlignOnMobile ,
   ArtistDetails ,
   make ,
-  
 }
 /* centreAlignOnMobile Not a pure module */

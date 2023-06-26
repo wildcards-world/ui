@@ -9,6 +9,7 @@ import * as Moment from "moment";
 import * as Js_dict from "rescript/lib/es6/js_dict.js";
 import * as Js_math from "rescript/lib/es6/js_math.js";
 import * as TokenId from "./TokenId.bs.js";
+import * as Js_array from "rescript/lib/es6/js_array.js";
 import * as CONSTANTS from "../CONSTANTS.bs.js";
 import * as Web3Utils from "./Web3Utils.bs.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
@@ -198,14 +199,14 @@ function parse$1(value) {
                 logo: value$4.logo
               }) : undefined,
           image: !(value$5 == null) ? value$5 : undefined,
-          real_wc_photos: value$6.map(function (value) {
-                var value$1 = value.photographer;
-                return {
-                        __typename: value.__typename,
-                        image: value.image,
-                        photographer: !(value$1 == null) ? value$1 : undefined
-                      };
-              }),
+          real_wc_photos: Js_array.map((function (value) {
+                  var value$1 = value.photographer;
+                  return {
+                          __typename: value.__typename,
+                          image: value.image,
+                          photographer: !(value$1 == null) ? value$1 : undefined
+                        };
+                }), value$6),
           artistOfWildcard: !(value$7 == null) ? ({
                 __typename: value$7.__typename,
                 name: value$7.name,
@@ -230,17 +231,17 @@ function serialize$1(value) {
     artistOfWildcard = null;
   }
   var value$5 = value.real_wc_photos;
-  var real_wc_photos = value$5.map(function (value) {
-        var value$1 = value.photographer;
-        var photographer = value$1 !== undefined ? value$1 : null;
-        var value$2 = value.image;
-        var value$3 = value.__typename;
-        return {
-                __typename: value$3,
-                image: value$2,
-                photographer: photographer
-              };
-      });
+  var real_wc_photos = Js_array.map((function (value) {
+          var value$1 = value.photographer;
+          var photographer = value$1 !== undefined ? value$1 : null;
+          var value$2 = value.image;
+          var value$3 = value.__typename;
+          return {
+                  __typename: value$3,
+                  image: value$2,
+                  photographer: photographer
+                };
+        }), value$5);
   var value$6 = value.image;
   var image = value$6 !== undefined ? value$6 : null;
   var value$7 = value.organization;
@@ -324,7 +325,7 @@ function parse$2(value) {
   var value$1 = value.wildcards;
   var value$2 = value.global;
   return {
-          wildcards: value$1.map(parse),
+          wildcards: Js_array.map(parse, value$1),
           global: !(value$2 == null) ? ({
                 __typename: value$2.__typename,
                 id: value$2.id,
@@ -370,7 +371,7 @@ function serialize$2(value) {
     $$global = null;
   }
   var value$16 = value.wildcards;
-  var wildcards = value$16.map(serialize);
+  var wildcards = Js_array.map(serialize, value$16);
   return {
           wildcards: wildcards,
           global: $$global
@@ -449,6 +450,7 @@ function useInitialDataLoad(chain) {
         undefined,
         undefined,
         /* CacheFirst */1,
+        undefined,
         undefined,
         true,
         undefined,
@@ -775,36 +777,36 @@ var query$6 = ((frag_0) => require("@apollo/client").gql`
 function parse$6(value) {
   var value$1 = value.homeAnimals;
   return {
-          homeAnimals: value$1.map(function (value) {
-                var value$1 = value.wildcardData;
-                return {
-                        __typename: value.__typename,
-                        id: value.id,
-                        next: value.next,
-                        prev: value.prev,
-                        wildcardData: !(value$1 == null) ? parse$1(value$1) : undefined
-                      };
-              })
+          homeAnimals: Js_array.map((function (value) {
+                  var value$1 = value.wildcardData;
+                  return {
+                          __typename: value.__typename,
+                          id: value.id,
+                          next: value.next,
+                          prev: value.prev,
+                          wildcardData: !(value$1 == null) ? parse$1(value$1) : undefined
+                        };
+                }), value$1)
         };
 }
 
 function serialize$6(value) {
   var value$1 = value.homeAnimals;
-  var homeAnimals = value$1.map(function (value) {
-        var value$1 = value.wildcardData;
-        var wildcardData = value$1 !== undefined ? serialize$1(value$1) : null;
-        var value$2 = value.prev;
-        var value$3 = value.next;
-        var value$4 = value.id;
-        var value$5 = value.__typename;
-        return {
-                __typename: value$5,
-                id: value$4,
-                next: value$3,
-                prev: value$2,
-                wildcardData: wildcardData
-              };
-      });
+  var homeAnimals = Js_array.map((function (value) {
+          var value$1 = value.wildcardData;
+          var wildcardData = value$1 !== undefined ? serialize$1(value$1) : null;
+          var value$2 = value.prev;
+          var value$3 = value.next;
+          var value$4 = value.id;
+          var value$5 = value.__typename;
+          return {
+                  __typename: value$5,
+                  id: value$4,
+                  next: value$3,
+                  prev: value$2,
+                  wildcardData: wildcardData
+                };
+        }), value$1);
   return {
           homeAnimals: homeAnimals
         };
@@ -900,8 +902,8 @@ function parse$7(value) {
       id: value$1.id,
       name: value$1.name,
       website: !(value$3 == null) ? value$3 : undefined,
-      launchedWildcards: value$4.map(parse$1),
-      unlaunchedWildcards: value$5.map(parse$1)
+      launchedWildcards: Js_array.map(parse$1, value$4),
+      unlaunchedWildcards: Js_array.map(parse$1, value$5)
     };
   }
   return {
@@ -914,9 +916,9 @@ function serialize$7(value) {
   var artist_by_pk;
   if (value$1 !== undefined) {
     var value$2 = value$1.unlaunchedWildcards;
-    var unlaunchedWildcards = value$2.map(serialize$1);
+    var unlaunchedWildcards = Js_array.map(serialize$1, value$2);
     var value$3 = value$1.launchedWildcards;
-    var launchedWildcards = value$3.map(serialize$1);
+    var launchedWildcards = Js_array.map(serialize$1, value$3);
     var value$4 = value$1.website;
     var website = value$4 !== undefined ? value$4 : null;
     var value$5 = value$1.name;
@@ -1030,18 +1032,18 @@ function parse$8(value) {
     tmp = {
       __typename: value$1.__typename,
       id: value$1.id,
-      previouslyOwnedTokens: value$2.map(function (value) {
-            return {
-                    __typename: value.__typename,
-                    tokenId: value.tokenId
-                  };
-          }),
-      tokens: value$3.map(function (value) {
-            return {
-                    __typename: value.__typename,
-                    tokenId: value.tokenId
-                  };
-          }),
+      previouslyOwnedTokens: Js_array.map((function (value) {
+              return {
+                      __typename: value.__typename,
+                      tokenId: value.tokenId
+                    };
+            }), value$2),
+      tokens: Js_array.map((function (value) {
+              return {
+                      __typename: value.__typename,
+                      tokenId: value.tokenId
+                    };
+            }), value$3),
       availableDeposit: GqlConverters.Price.parse(value$1.availableDeposit),
       patronTokenCostScaledNumerator: GqlConverters.$$BigInt.parse(value$1.patronTokenCostScaledNumerator),
       foreclosureTime: GqlConverters.$$BigInt.parse(value$1.foreclosureTime),
@@ -1078,23 +1080,23 @@ function serialize$8(value) {
     var value$16 = value$1.availableDeposit;
     var value$17 = GqlConverters.Price.serialize(value$16);
     var value$18 = value$1.tokens;
-    var tokens = value$18.map(function (value) {
-          var value$1 = value.tokenId;
-          var value$2 = value.__typename;
-          return {
-                  __typename: value$2,
-                  tokenId: value$1
-                };
-        });
+    var tokens = Js_array.map((function (value) {
+            var value$1 = value.tokenId;
+            var value$2 = value.__typename;
+            return {
+                    __typename: value$2,
+                    tokenId: value$1
+                  };
+          }), value$18);
     var value$19 = value$1.previouslyOwnedTokens;
-    var previouslyOwnedTokens = value$19.map(function (value) {
-          var value$1 = value.tokenId;
-          var value$2 = value.__typename;
-          return {
-                  __typename: value$2,
-                  tokenId: value$1
-                };
-        });
+    var previouslyOwnedTokens = Js_array.map((function (value) {
+            var value$1 = value.tokenId;
+            var value$2 = value.__typename;
+            return {
+                    __typename: value$2,
+                    tokenId: value$1
+                  };
+          }), value$19);
     var value$20 = value$1.id;
     var value$21 = value$1.__typename;
     patron = {
@@ -1187,37 +1189,37 @@ var query$9 = (require("@apollo/client").gql`
 function parse$9(value) {
   var value$1 = value.wildcards;
   return {
-          wildcards: value$1.map(function (value) {
-                return {
-                        __typename: value.__typename,
-                        id: value.id,
-                        totalCollected: GqlConverters.Price.parse(value.totalCollected),
-                        patronageNumeratorPriceScaled: GqlConverters.$$BigInt.parse(value.patronageNumeratorPriceScaled),
-                        timeCollected: GqlConverters.$$BigInt.parse(value.timeCollected)
-                      };
-              })
+          wildcards: Js_array.map((function (value) {
+                  return {
+                          __typename: value.__typename,
+                          id: value.id,
+                          totalCollected: GqlConverters.Price.parse(value.totalCollected),
+                          patronageNumeratorPriceScaled: GqlConverters.$$BigInt.parse(value.patronageNumeratorPriceScaled),
+                          timeCollected: GqlConverters.$$BigInt.parse(value.timeCollected)
+                        };
+                }), value$1)
         };
 }
 
 function serialize$9(value) {
   var value$1 = value.wildcards;
-  var wildcards = value$1.map(function (value) {
-        var value$1 = value.timeCollected;
-        var value$2 = GqlConverters.$$BigInt.serialize(value$1);
-        var value$3 = value.patronageNumeratorPriceScaled;
-        var value$4 = GqlConverters.$$BigInt.serialize(value$3);
-        var value$5 = value.totalCollected;
-        var value$6 = GqlConverters.Price.serialize(value$5);
-        var value$7 = value.id;
-        var value$8 = value.__typename;
-        return {
-                __typename: value$8,
-                id: value$7,
-                totalCollected: value$6,
-                patronageNumeratorPriceScaled: value$4,
-                timeCollected: value$2
-              };
-      });
+  var wildcards = Js_array.map((function (value) {
+          var value$1 = value.timeCollected;
+          var value$2 = GqlConverters.$$BigInt.serialize(value$1);
+          var value$3 = value.patronageNumeratorPriceScaled;
+          var value$4 = GqlConverters.$$BigInt.serialize(value$3);
+          var value$5 = value.totalCollected;
+          var value$6 = GqlConverters.Price.serialize(value$5);
+          var value$7 = value.id;
+          var value$8 = value.__typename;
+          return {
+                  __typename: value$8,
+                  id: value$7,
+                  totalCollected: value$6,
+                  patronageNumeratorPriceScaled: value$4,
+                  timeCollected: value$2
+                };
+        }), value$1);
   return {
           wildcards: wildcards
         };
@@ -1226,9 +1228,9 @@ function serialize$9(value) {
 function serializeVariables$7(inp) {
   var a = inp.wildcardIdArray;
   return {
-          wildcardIdArray: a.map(function (b) {
-                return b;
-              })
+          wildcardIdArray: Js_array.map((function (b) {
+                  return b;
+                }), a)
         };
 }
 
@@ -1324,33 +1326,33 @@ function parse$10(value) {
       description: value$1.description,
       name: value$1.name,
       website: value$1.website,
-      wildcard: value$2.map(function (value) {
-            var value$1 = value.id;
-            return {
-                    __typename: value.__typename,
-                    id: !(value$1 == null) ? Caml_option.some(GqlConverters.GqlTokenIdStr.parse(value$1)) : undefined
-                  };
-          }),
-      unlaunched: value$3.map(function (value) {
-            var value$1 = value.real_wc_photos;
-            var value$2 = value.name;
-            var value$3 = value.commonName;
-            return {
-                    __typename: value.__typename,
-                    key: value.key,
-                    real_wc_photos: value$1.map(function (value) {
-                          var value$1 = value.photographer;
-                          return {
-                                  __typename: value.__typename,
-                                  image: value.image,
-                                  photographer: !(value$1 == null) ? value$1 : undefined
-                                };
-                        }),
-                    name: !(value$2 == null) ? value$2 : undefined,
-                    commonName: !(value$3 == null) ? value$3 : undefined,
-                    description: value.description
-                  };
-          }),
+      wildcard: Js_array.map((function (value) {
+              var value$1 = value.id;
+              return {
+                      __typename: value.__typename,
+                      id: !(value$1 == null) ? Caml_option.some(GqlConverters.GqlTokenIdStr.parse(value$1)) : undefined
+                    };
+            }), value$2),
+      unlaunched: Js_array.map((function (value) {
+              var value$1 = value.real_wc_photos;
+              var value$2 = value.name;
+              var value$3 = value.commonName;
+              return {
+                      __typename: value.__typename,
+                      key: value.key,
+                      real_wc_photos: Js_array.map((function (value) {
+                              var value$1 = value.photographer;
+                              return {
+                                      __typename: value.__typename,
+                                      image: value.image,
+                                      photographer: !(value$1 == null) ? value$1 : undefined
+                                    };
+                            }), value$1),
+                      name: !(value$2 == null) ? value$2 : undefined,
+                      commonName: !(value$3 == null) ? value$3 : undefined,
+                      description: value.description
+                    };
+            }), value$3),
       logo: value$1.logo,
       logo_badge: !(value$4 == null) ? value$4 : undefined,
       youtube_vid: !(value$5 == null) ? value$5 : undefined
@@ -1371,45 +1373,45 @@ function serialize$10(value) {
     var logo_badge = value$3 !== undefined ? value$3 : null;
     var value$4 = value$1.logo;
     var value$5 = value$1.unlaunched;
-    var unlaunched = value$5.map(function (value) {
-          var value$1 = value.description;
-          var value$2 = value.commonName;
-          var commonName = value$2 !== undefined ? value$2 : null;
-          var value$3 = value.name;
-          var name = value$3 !== undefined ? value$3 : null;
-          var value$4 = value.real_wc_photos;
-          var real_wc_photos = value$4.map(function (value) {
-                var value$1 = value.photographer;
-                var photographer = value$1 !== undefined ? value$1 : null;
-                var value$2 = value.image;
-                var value$3 = value.__typename;
-                return {
-                        __typename: value$3,
-                        image: value$2,
-                        photographer: photographer
-                      };
-              });
-          var value$5 = value.key;
-          var value$6 = value.__typename;
-          return {
-                  __typename: value$6,
-                  key: value$5,
-                  real_wc_photos: real_wc_photos,
-                  name: name,
-                  commonName: commonName,
-                  description: value$1
-                };
-        });
+    var unlaunched = Js_array.map((function (value) {
+            var value$1 = value.description;
+            var value$2 = value.commonName;
+            var commonName = value$2 !== undefined ? value$2 : null;
+            var value$3 = value.name;
+            var name = value$3 !== undefined ? value$3 : null;
+            var value$4 = value.real_wc_photos;
+            var real_wc_photos = Js_array.map((function (value) {
+                    var value$1 = value.photographer;
+                    var photographer = value$1 !== undefined ? value$1 : null;
+                    var value$2 = value.image;
+                    var value$3 = value.__typename;
+                    return {
+                            __typename: value$3,
+                            image: value$2,
+                            photographer: photographer
+                          };
+                  }), value$4);
+            var value$5 = value.key;
+            var value$6 = value.__typename;
+            return {
+                    __typename: value$6,
+                    key: value$5,
+                    real_wc_photos: real_wc_photos,
+                    name: name,
+                    commonName: commonName,
+                    description: value$1
+                  };
+          }), value$5);
     var value$6 = value$1.wildcard;
-    var wildcard = value$6.map(function (value) {
-          var value$1 = value.id;
-          var id = value$1 !== undefined ? GqlConverters.GqlTokenIdStr.serialize(Caml_option.valFromOption(value$1)) : null;
-          var value$2 = value.__typename;
-          return {
-                  __typename: value$2,
-                  id: id
-                };
-        });
+    var wildcard = Js_array.map((function (value) {
+            var value$1 = value.id;
+            var id = value$1 !== undefined ? GqlConverters.GqlTokenIdStr.serialize(Caml_option.valFromOption(value$1)) : null;
+            var value$2 = value.__typename;
+            return {
+                    __typename: value$2,
+                    id: id
+                  };
+          }), value$6);
     var value$7 = value$1.website;
     var value$8 = value$1.name;
     var value$9 = value$1.description;
@@ -1499,29 +1501,29 @@ var query$11 = (require("@apollo/client").gql`
 function parse$11(value) {
   var value$1 = value.patrons;
   return {
-          patrons: value$1.map(function (value) {
-                return {
-                        __typename: value.__typename,
-                        id: value.id,
-                        patronTokenCostScaledNumerator: GqlConverters.$$BigInt.parse(value.patronTokenCostScaledNumerator)
-                      };
-              })
+          patrons: Js_array.map((function (value) {
+                  return {
+                          __typename: value.__typename,
+                          id: value.id,
+                          patronTokenCostScaledNumerator: GqlConverters.$$BigInt.parse(value.patronTokenCostScaledNumerator)
+                        };
+                }), value$1)
         };
 }
 
 function serialize$11(value) {
   var value$1 = value.patrons;
-  var patrons = value$1.map(function (value) {
-        var value$1 = value.patronTokenCostScaledNumerator;
-        var value$2 = GqlConverters.$$BigInt.serialize(value$1);
-        var value$3 = value.id;
-        var value$4 = value.__typename;
-        return {
-                __typename: value$4,
-                id: value$3,
-                patronTokenCostScaledNumerator: value$2
-              };
-      });
+  var patrons = Js_array.map((function (value) {
+          var value$1 = value.patronTokenCostScaledNumerator;
+          var value$2 = GqlConverters.$$BigInt.serialize(value$1);
+          var value$3 = value.id;
+          var value$4 = value.__typename;
+          return {
+                  __typename: value$4,
+                  id: value$3,
+                  patronTokenCostScaledNumerator: value$2
+                };
+        }), value$1);
   return {
           patrons: patrons
         };
@@ -1709,6 +1711,7 @@ function useWildcardQuery(chain, forceRefetchOpt, tokenId) {
         undefined,
         undefined,
         undefined,
+        undefined,
         {
           tokenId: getQueryPrefix(chain) + TokenId.toString(tokenId)
         }
@@ -1737,6 +1740,7 @@ function useLoadTokenDataArrayQuery(chain, tokenIdArray) {
         undefined,
         undefined,
         undefined,
+        undefined,
         {
           wildcardIdArray: Belt_Array.map(tokenIdArray, TokenId.toString)
         }
@@ -1750,6 +1754,7 @@ function useLoadTokenDataArrayQuery(chain, tokenIdArray) {
 
 function useWildcardDataQuery(tokenId) {
   var wildcardQuery = Curry.app(use$2, [
+        undefined,
         undefined,
         undefined,
         undefined,
@@ -1790,6 +1795,7 @@ function useHomeAnimalsQuery(param) {
         undefined,
         undefined,
         undefined,
+        undefined,
         undefined
       ]);
   var match$1 = match.data;
@@ -1802,6 +1808,7 @@ function useHomeAnimalsQuery(param) {
 
 function useLoadOrganisationQuery(orgId) {
   var orgQuery = Curry.app(use$8, [
+        undefined,
         undefined,
         undefined,
         undefined,
@@ -1975,6 +1982,7 @@ function useLoadTopContributors(numberOfLeaders) {
         undefined,
         undefined,
         undefined,
+        undefined,
         {
           numberOfLeaders: numberOfLeaders
         }
@@ -2053,6 +2061,7 @@ function useQueryPatronQuery(chain, forceRefetchOpt, patron) {
               undefined,
               undefined,
               undefined,
+              undefined,
               {
                 patronId: getQueryPrefix(chain) + patron
               }
@@ -2110,6 +2119,7 @@ function useTotalCollectedOrDue(chain) {
         undefined,
         undefined,
         undefined,
+        undefined,
         {
           id: chain !== 1 ? "1" : "Matic-Global"
         }
@@ -2133,13 +2143,12 @@ function useCurrentTime(param) {
   var setTimeLeft = match[1];
   React.useEffect((function () {
           var interval = setInterval((function (param) {
-                  return Curry._1(setTimeLeft, (function (param) {
-                                return getCurrentTimestamp(undefined);
-                              }));
+                  Curry._1(setTimeLeft, (function (param) {
+                          return getCurrentTimestamp(undefined);
+                        }));
                 }), 2000);
           return (function (param) {
                     clearInterval(interval);
-                    
                   });
         }), [setTimeLeft]);
   return match[0];
@@ -2409,6 +2418,7 @@ function useMaticState(forceRefetch, address, network) {
         undefined,
         undefined,
         undefined,
+        undefined,
         {
           address: address,
           network: network
@@ -2424,6 +2434,7 @@ function useMaticState(forceRefetch, address, network) {
 
 function useArtistData(artistIdentifier) {
   var artistQuery = Curry.app(use$5, [
+        undefined,
         undefined,
         undefined,
         undefined,
@@ -2515,7 +2526,6 @@ function useArtistOrgs(artistIdentifier) {
                           logo: org.logo,
                           wildcards: [wildcard.key]
                         };
-                        
                       }));
                 return Js_dict.values(dict);
               }));
@@ -2603,6 +2613,5 @@ export {
   useArtistLaunchedWildcards ,
   useArtistUnlaunchedWildcards ,
   useArtistOrgs ,
-  
 }
 /* query Not a pure module */

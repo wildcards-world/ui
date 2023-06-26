@@ -264,54 +264,56 @@ module Buy = {
     <TxTemplate chain txState=txBuyAuctionState closeButtonText="Back to view Animal">
       <TxTemplate chain txState=txBuyState closeButtonText="Back to view Animal">
         <p> {("This wildcard uses " ++ currency)->React.string} </p>
-        {// TODO: add link to an explainer of what "ether" or "DAI" is.
-        isAbleToBuy
-          ? <>
-              <p>
-                {("Your available balance is: " ++ (paymentTokenBalance ++ (" " ++ currency)))
-                  ->React.string}
-              </p>
-              {transakSteps(
-                <Rimble.Button onClick={_ => setShowTransakWarning(_ => true)}>
-                  {("Buy More " ++ currency)->React.string}
-                </Rimble.Button>,
-              )}
-              <BuyInput
-                onSubmitBuy
-                setNewPrice
-                newPrice
-                deposit
-                depositTimeInSeconds
-                setDeposit
-                patronage
-                tokenIdName
-                maxAvailableDeposit
-              />
-            </>
-          : <>
-              <p>
-                {("Your current balance is: " ++ (paymentTokenBalance ++ (" " ++ currency)))
-                  ->React.string}
-              </p>
-              <p> {`You do not have enough ${currency} to buy ${tokenIdName}.`->React.string} </p>
-              <p>
-                {`You can either move your mainnet Ethereum dai to matic network using `->React.string}
-                <a
-                  className={
-                    open CssJs
-                    style(.[fontWeight(#bold), textDecoration(#underline)])
-                  }
-                  href="https://wallet.matic.network/">
-                  {"matic wallet"->React.string}
-                </a>
-                {` or use your credit card or a bank transfer using the button below:`->React.string}
-              </p>
-              {transakSteps(
-                <Rimble.Button onClick={_ => setShowTransakWarning(_ => true)}>
-                  {("Buy " ++ currency)->React.string}
-                </Rimble.Button>,
-              )}
-            </>}
+        {
+          // TODO: add link to an explainer of what "ether" or "DAI" is.
+          isAbleToBuy
+            ? <>
+                <p>
+                  {("Your available balance is: " ++ (paymentTokenBalance ++ (" " ++ currency)))
+                    ->React.string}
+                </p>
+                {transakSteps(
+                  <Rimble.Button onClick={_ => setShowTransakWarning(_ => true)}>
+                    {("Buy More " ++ currency)->React.string}
+                  </Rimble.Button>,
+                )}
+                <BuyInput
+                  onSubmitBuy
+                  setNewPrice
+                  newPrice
+                  deposit
+                  depositTimeInSeconds
+                  setDeposit
+                  patronage
+                  tokenIdName
+                  maxAvailableDeposit
+                />
+              </>
+            : <>
+                <p>
+                  {("Your current balance is: " ++ (paymentTokenBalance ++ (" " ++ currency)))
+                    ->React.string}
+                </p>
+                <p> {`You do not have enough ${currency} to buy ${tokenIdName}.`->React.string} </p>
+                <p>
+                  {`You can either move your mainnet Ethereum dai to matic network using `->React.string}
+                  <a
+                    className={
+                      open CssJs
+                      style(. [fontWeight(#bold), textDecoration(#underline)])
+                    }
+                    href="https://wallet.matic.network/">
+                    {"matic wallet"->React.string}
+                  </a>
+                  {` or use your credit card or a bank transfer using the button below:`->React.string}
+                </p>
+                {transakSteps(
+                  <Rimble.Button onClick={_ => setShowTransakWarning(_ => true)}>
+                    {("Buy " ++ currency)->React.string}
+                  </Rimble.Button>,
+                )}
+              </>
+        }
       </TxTemplate>
     </TxTemplate>
   }

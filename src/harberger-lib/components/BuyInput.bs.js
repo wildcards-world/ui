@@ -34,16 +34,13 @@ var infoIcon = React.createElement("div", {
           size: "16"
         }));
 
-function BuyInput(Props) {
-  var patronage = Props.patronage;
-  var onSubmitBuy = Props.onSubmitBuy;
-  var newPrice = Props.newPrice;
-  var deposit = Props.deposit;
-  var depositTimeInSeconds = Props.depositTimeInSeconds;
-  var maxAvailableDeposit = Props.maxAvailableDeposit;
-  var setNewPrice = Props.setNewPrice;
-  var setDeposit = Props.setDeposit;
-  var tokenIdName = Props.tokenIdName;
+function BuyInput(props) {
+  var tokenIdName = props.tokenIdName;
+  var setDeposit = props.setDeposit;
+  var setNewPrice = props.setNewPrice;
+  var deposit = props.deposit;
+  var newPrice = props.newPrice;
+  var onSubmitBuy = props.onSubmitBuy;
   var match = React.useState(function () {
         return newPrice;
       });
@@ -52,7 +49,6 @@ function BuyInput(Props) {
           Curry._1(setDepositSlider, (function (param) {
                   return deposit;
                 }));
-          
         }), [
         deposit,
         setDepositSlider
@@ -68,7 +64,7 @@ function BuyInput(Props) {
                         p: 2,
                         mb: 2,
                         children: React.createElement(RimbleUi.Heading, {
-                              children: "Purchase " + tokenIdName
+                              children: "Purchase " + tokenIdName + ""
                             })
                       })
                 }), React.createElement(RimbleUi.Flex, {
@@ -88,11 +84,11 @@ function BuyInput(Props) {
                                 children: null
                               }, "Set " + tokenIdName + "'s new for sale price:", infoIcon)
                         }), React.createElement(RimbleUi.Input, {
-                          type: "number",
+                          _type: "number",
                           placeholder: "Your Initial Sale Price",
                           className: inputStyle,
                           onChange: (function ($$event) {
-                              return Curry._1(setNewPrice, Belt_Option.getWithDefault($$event.target.value, ""));
+                              Curry._1(setNewPrice, Belt_Option.getWithDefault($$event.target.value, ""));
                             }),
                           value: newPrice
                         })), React.createElement(RimbleUi.Box, {
@@ -111,7 +107,7 @@ function BuyInput(Props) {
                                 className: rightAlignText
                               }, "Your monthly contribution:", infoIcon)
                         }), React.createElement("br", undefined), React.createElement(RimbleUi.Text, {
-                          children: patronage,
+                          children: props.patronage,
                           className: rightAlignText
                         }))), React.createElement(RimbleUi.Flex, {
                   children: null,
@@ -132,11 +128,11 @@ function BuyInput(Props) {
                                 children: null
                               }, "Set your deposit:", infoIcon)
                         }), React.createElement(RimbleUi.Input, {
-                          type: "number",
+                          _type: "number",
                           placeholder: "Your Initial Deposit",
                           className: inputStyle,
                           onChange: (function ($$event) {
-                              return Curry._1(setDeposit, Belt_Option.getWithDefault($$event.target.value, ""));
+                              Curry._1(setDeposit, Belt_Option.getWithDefault($$event.target.value, ""));
                             }),
                           value: deposit
                         })), React.createElement(RimbleUi.Box, {
@@ -150,24 +146,24 @@ function BuyInput(Props) {
                                 Curry._1(setDepositSlider, (function (param) {
                                         return value;
                                       }));
-                                return Curry._1(debouncedSetDeposit, value);
+                                Curry._1(debouncedSetDeposit, value);
                               }),
                             min: "0.0001",
-                            max: maxAvailableDeposit,
+                            max: props.maxAvailableDeposit,
                             step: "0.0000001"
                           }),
                       width: [
                         1,
                         0.7
                       ]
-                    })), React.createElement("p", undefined, "This deposit will last " + (CountDown.displayTimeLeftHours(depositTimeInSeconds) + " for your monthly contribution")), React.createElement(RimbleUi.Flex, {
+                    })), React.createElement("p", undefined, "This deposit will last " + (CountDown.displayTimeLeftHours(props.depositTimeInSeconds) + " for your monthly contribution")), React.createElement(RimbleUi.Flex, {
                   children: React.createElement(RimbleUi.Box, {
                         p: 2,
                         mb: 2,
                         children: React.createElement(RimbleUi.Button, {
                               children: "Buy",
                               onClick: (function (param) {
-                                  return Curry._1(onSubmitBuy, undefined);
+                                  Curry._1(onSubmitBuy, undefined);
                                 })
                             }),
                         width: [
@@ -186,6 +182,5 @@ export {
   infoTooltipStyle ,
   infoIcon ,
   make ,
-  
 }
 /* inputStyle Not a pure module */

@@ -21,7 +21,9 @@ module Grid = {
       {allAnimalsReversed
       ->Array.map(animal =>
         <Rimble.Box key={animal->TokenId.toString} fontSize=4 p=3 width=[1., 1., 0.3]>
-          <Rimble.Card> <Dapp.CarouselAnimal chain animal scalar=1. /> </Rimble.Card>
+          <Rimble.Card>
+            <Dapp.CarouselAnimal chain animal scalar=1. />
+          </Rimble.Card>
         </Rimble.Box>
       )
       ->React.array}
@@ -62,8 +64,12 @@ let make = (~wildcardsEdition) => {
           <ReactTabs.Tab> {"First edition"->React.string} </ReactTabs.Tab>
           <ReactTabs.Tab> {"Second edition"->React.string} </ReactTabs.Tab>
         </ReactTabs.TabList>
-        <ReactTabs.TabPanel> <Grid chain=Client.MainnetQuery /> </ReactTabs.TabPanel>
-        <ReactTabs.TabPanel> <Grid chain=Client.MaticQuery /> </ReactTabs.TabPanel>
+        <ReactTabs.TabPanel>
+          <Grid chain=Client.MainnetQuery />
+        </ReactTabs.TabPanel>
+        <ReactTabs.TabPanel>
+          <Grid chain=Client.MaticQuery />
+        </ReactTabs.TabPanel>
       </ReactTabs>
     </div>
   </div>

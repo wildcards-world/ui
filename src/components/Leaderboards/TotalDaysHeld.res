@@ -104,7 +104,10 @@ module ContributorsRow = {
                   : <div className=trophyImg />
               }}
           <p className=rankText>
-            <strong> {"#"->React.string} {(index + 1)->string_of_int->React.string} </strong>
+            <strong>
+              {"#"->React.string}
+              {(index + 1)->string_of_int->React.string}
+            </strong>
           </p>
         </span>
       </td>
@@ -112,7 +115,7 @@ module ContributorsRow = {
         <a
           onClick={e => {
             ReactEvent.Mouse.preventDefault(e)
-            clearAndPush(j`/#user/$contributor`)
+            clearAndPush(`/#user/$contributor`)
           }}>
           {switch optUserName {
           | Some(name) => <span> {name->React.string} </span>

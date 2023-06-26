@@ -141,6 +141,5 @@ export {
   isTestnet ,
   availableNetworkIds ,
   orgWtihdrawalsMapping ,
-  
 }
 /* isTestnet Not a pure module */

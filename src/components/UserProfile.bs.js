@@ -29,6 +29,7 @@ import * as UpdateDeposit from "../harberger-lib/components/UpdateDeposit.bs.js"
 import * as Belt_SetString from "rescript/lib/es6/belt_SetString.js";
 import * as ContractActions from "../harberger-lib/eth/ContractActions.bs.js";
 import * as TotalContribution from "./Leaderboards/TotalContribution.bs.js";
+import * as JsxPPXReactSupport from "rescript/lib/es6/jsxPPXReactSupport.js";
 import * as LazyThreeBoxUpdate from "./LazyThreeBoxUpdate.bs.js";
 
 var centreAlignOnMobile = Curry._1(Css.style, {
@@ -42,8 +43,8 @@ var centreAlignOnMobile = Curry._1(Css.style, {
       tl: /* [] */0
     });
 
-function UserProfile$Token(Props) {
-  var tokenId = Props.tokenId;
+function UserProfile$Token(props) {
+  var tokenId = props.tokenId;
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   var image = Animal.useAvatar(tokenId);
   return React.createElement("div", {
@@ -62,7 +63,7 @@ function UserProfile$Token(Props) {
                       }),
                   src: image,
                   onClick: (function (_e) {
-                      return Curry._1(clearAndPush, "/#details/" + TokenId.toString(tokenId));
+                      Curry._1(clearAndPush, "/#details/" + TokenId.toString(tokenId));
                     })
                 }));
 }
@@ -71,17 +72,13 @@ var Token = {
   make: UserProfile$Token
 };
 
-function UserProfile$ClaimLoyaltyTokenButtons(Props) {
-  var chain = Props.chain;
-  var userAddress = Props.userAddress;
-  var id = Props.id;
-  var refreshLoyaltyTokenBalance = Props.refreshLoyaltyTokenBalance;
-  var numberOfTokens = Props.numberOfTokens;
-  var tokenId = TokenId.fromStringUnsafe(id);
-  var match = ContractActions.useRedeemLoyaltyTokens(userAddress);
+function UserProfile$ClaimLoyaltyTokenButtons(props) {
+  var refreshLoyaltyTokenBalance = props.refreshLoyaltyTokenBalance;
+  var tokenId = TokenId.fromStringUnsafe(props.id);
+  var match = ContractActions.useRedeemLoyaltyTokens(props.userAddress);
   var transactionStatus = match[1];
   var redeemLoyaltyTokens = match[0];
-  var balanceAvailableOnTokens = QlHooks.useUnredeemedLoyaltyTokenDueForUser(chain, tokenId, numberOfTokens);
+  var balanceAvailableOnTokens = QlHooks.useUnredeemedLoyaltyTokenDueForUser(props.chain, tokenId, props.numberOfTokens);
   var etherScanUrl = RootProvider.useEtherscanUrl(undefined);
   React.useEffect((function () {
           if (typeof transactionStatus !== "number" && transactionStatus.TAG === /* Complete */4) {
@@ -101,7 +98,7 @@ function UserProfile$ClaimLoyaltyTokenButtons(Props) {
       case /* UnInitialised */0 :
           tmp = React.createElement("p", undefined, React.createElement("a", {
                     onClick: (function (param) {
-                        return Curry._1(redeemLoyaltyTokens, undefined);
+                        Curry._1(redeemLoyaltyTokens, undefined);
                       })
                   }, "Redeem " + (Web3Utils.fromWeiBNToEthPrecision(Caml_option.valFromOption(balanceAvailableOnTokens), 5) + " loyalty tokens")));
           break;
@@ -137,12 +134,11 @@ var ClaimLoyaltyTokenButtons = {
   make: UserProfile$ClaimLoyaltyTokenButtons
 };
 
-function UserProfile$UserDetails(Props) {
-  var chain = Props.chain;
-  var patronQueryResultMainnet = Props.patronQueryResultMainnet;
-  var patronQueryResultMatic = Props.patronQueryResultMatic;
-  var optThreeBoxData = Props.optThreeBoxData;
-  var userAddress = Props.userAddress;
+function UserProfile$UserDetails(props) {
+  var userAddress = props.userAddress;
+  var optThreeBoxData = props.optThreeBoxData;
+  var patronQueryResultMatic = props.patronQueryResultMatic;
+  var patronQueryResultMainnet = props.patronQueryResultMainnet;
   var isForeclosedMainnet = QlHooks.useIsForeclosed(/* MainnetQuery */2, userAddress);
   var isForeclosedMatic = QlHooks.useIsForeclosed(/* MaticQuery */1, userAddress);
   var isAddressCurrentUser = RootProvider.useIsAddressCurrentUser(userAddress);
@@ -224,7 +220,7 @@ function UserProfile$UserDetails(Props) {
                     })
               }, React.createElement(RimbleUi.Button.Text, {
                     onClick: (function (param) {
-                        return Curry._1(clearNonUrlState, undefined);
+                        Curry._1(clearNonUrlState, undefined);
                       }),
                     icononly: true,
                     icon: "Close",
@@ -234,8 +230,8 @@ function UserProfile$UserDetails(Props) {
                     right: 0,
                     m: 1
                   }), React.createElement(React.Suspense, {
-                    children: React.createElement(LazyThreeBoxUpdate.make, LazyThreeBoxUpdate.makeProps(undefined, undefined)),
-                    fallback: React.createElement(RimbleUi.Loader, {})
+                    children: Caml_option.some(React.createElement(LazyThreeBoxUpdate.make, {})),
+                    fallback: Caml_option.some(React.createElement(RimbleUi.Loader, {}))
                   }));
           break;
       case /* UpdateDepositScreen */1 :
@@ -246,7 +242,7 @@ function UserProfile$UserDetails(Props) {
                     })
               }, React.createElement(RimbleUi.Button.Text, {
                     onClick: (function (param) {
-                        return Curry._1(clearNonUrlState, undefined);
+                        Curry._1(clearNonUrlState, undefined);
                       }),
                     icononly: true,
                     icon: "Close",
@@ -288,7 +284,7 @@ function UserProfile$UserDetails(Props) {
             }, Helper.elipsify(userAddress, 10)), React.createElement("br", undefined), isAddressCurrentUser ? React.createElement(React.Fragment, undefined, React.createElement("small", undefined, React.createElement("p", undefined, "Claimed Loyalty Token Balance: " + (Belt_Option.mapWithDefault(match[0], "Loading", (function (claimedLoyaltyTokens) {
                                 return Web3Utils.fromWeiBNToEthPrecision(claimedLoyaltyTokens, 6);
                               })) + " WLT"))), currentlyOwnedTokens.length !== 0 ? React.createElement(UserProfile$ClaimLoyaltyTokenButtons, {
-                      chain: chain,
+                      chain: props.chain,
                       userAddress: userAddress,
                       id: currentlyOwnedTokens[0],
                       refreshLoyaltyTokenBalance: match[1],
@@ -377,9 +373,8 @@ function UserProfile$UserDetails(Props) {
                                 children: "Currently owned Wildcards"
                               }), React.createElement(RimbleUi.Flex, {
                                 children: Belt_Array.map(currentlyOwnedTokens, (function (tokenId) {
-                                        return React.createElement(UserProfile$Token, {
-                                                    tokenId: TokenId.fromStringUnsafe(tokenId),
-                                                    key: tokenId
+                                        return JsxPPXReactSupport.createElementWithKey(tokenId, UserProfile$Token, {
+                                                    tokenId: TokenId.fromStringUnsafe(tokenId)
                                                   });
                                       })),
                                 flexWrap: "wrap",
@@ -392,9 +387,8 @@ function UserProfile$UserDetails(Props) {
                                 children: "Previously owned Wildcards"
                               }), React.createElement(RimbleUi.Flex, {
                                 children: Belt_Array.map(uniquePreviouslyOwnedTokens, (function (tokenId) {
-                                        return React.createElement(UserProfile$Token, {
-                                                    tokenId: TokenId.fromStringUnsafe(tokenId),
-                                                    key: tokenId
+                                        return JsxPPXReactSupport.createElementWithKey(tokenId, UserProfile$Token, {
+                                                    tokenId: TokenId.fromStringUnsafe(tokenId)
                                                   });
                                       })),
                                 flexWrap: "wrap",
@@ -406,9 +400,8 @@ var UserDetails = {
   make: UserProfile$UserDetails
 };
 
-function UserProfile(Props) {
-  var chain = Props.chain;
-  var userAddress = Props.userAddress;
+function UserProfile(props) {
+  var userAddress = props.userAddress;
   var userAddressLowerCase = userAddress.toLowerCase();
   var patronQuery = QlHooks.useQueryPatronQuery(/* MainnetQuery */2, undefined, userAddressLowerCase);
   var patronQueryMatic = QlHooks.useQueryPatronQuery(/* MaticQuery */1, undefined, userAddressLowerCase);
@@ -421,7 +414,7 @@ function UserProfile(Props) {
     exit = 1;
   } else {
     tmp = patronQueryMatic.error !== undefined || patronQuery.error !== undefined ? "There was an error loading some of this user's data" : React.createElement(UserProfile$UserDetails, {
-            chain: chain,
+            chain: props.chain,
             patronQueryResultMainnet: Belt_Option.flatMap(patronQuery.data, (function (param) {
                     return param.patron;
                   })),
@@ -453,6 +446,5 @@ export {
   ClaimLoyaltyTokenButtons ,
   UserDetails ,
   make ,
-  
 }
 /* centreAlignOnMobile Not a pure module */

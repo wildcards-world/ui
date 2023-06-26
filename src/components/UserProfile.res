@@ -17,7 +17,7 @@ module Token = {
       className={
         open CssJs
 
-        style(.[width(vh(12.)), cursor(#pointer), Styles.imageHoverStyle])
+        style(. [width(vh(12.)), cursor(#pointer), Styles.imageHoverStyle])
       }>
       <img
         className={
@@ -181,26 +181,24 @@ module UserDetails = {
     }
     let etherScanUrl = RootProvider.useEtherscanUrl()
 
-    let monthlyContributionWei = 
-      isForeclosedMainnet ?  
-        CONSTANTS.zeroBn
-        : patronQueryResultMainnet->Option.mapWithDefault(CONSTANTS.zeroBn, patronMainnet =>
+    let monthlyContributionWei = isForeclosedMainnet
+      ? CONSTANTS.zeroBn
+      : patronQueryResultMainnet->Option.mapWithDefault(CONSTANTS.zeroBn, patronMainnet =>
           patronMainnet.patronTokenCostScaledNumerator
-           ->BN.mul(CONSTANTS.secondsInAMonthBn)
-           ->BN.div(CONSTANTS.secondsIn365DaysPrecisionScaled)
-          ) 
-
-    let monthlyContributionDai = 
-      isForeclosedMatic ?
-       CONSTANTS.zeroBn
-       : patronQueryResultMatic->Option.mapWithDefault(CONSTANTS.zeroBn, patronMainnet =>
-         patronMainnet.patronTokenCostScaledNumerator
           ->BN.mul(CONSTANTS.secondsInAMonthBn)
           ->BN.div(CONSTANTS.secondsIn365DaysPrecisionScaled)
         )
-        
-    let currentTimestamp = QlHooks.useCurrentTime() 
-    
+
+    let monthlyContributionDai = isForeclosedMatic
+      ? CONSTANTS.zeroBn
+      : patronQueryResultMatic->Option.mapWithDefault(CONSTANTS.zeroBn, patronMainnet =>
+          patronMainnet.patronTokenCostScaledNumerator
+          ->BN.mul(CONSTANTS.secondsInAMonthBn)
+          ->BN.div(CONSTANTS.secondsIn365DaysPrecisionScaled)
+        )
+
+    let currentTimestamp = QlHooks.useCurrentTime()
+
     let totalContributionWei = patronQueryResultMainnet->Option.mapWithDefault(CONSTANTS.zeroBn, ({
       patronTokenCostScaledNumerator,
       totalContributed,
@@ -287,7 +285,9 @@ module UserDetails = {
                 m=1
                 onClick={_ => clearNonUrlState()}
               />
-              <React.Suspense fallback={<Rimble.Loader />}> <LazyThreeBoxUpdate /> </React.Suspense>
+              <React.Suspense fallback={<Rimble.Loader />}>
+                <LazyThreeBoxUpdate />
+              </React.Suspense>
             </div>
           | UpdateDepositScreen =>
             <div
@@ -311,7 +311,8 @@ module UserDetails = {
           | UpdatePriceScreen(_)
           | BuyScreen(_)
           | AuctionScreen(_)
-          | NoExtraState => <>
+          | NoExtraState =>
+            <>
               {optName->reactMap(name => <h2> {name->React.string} </h2>)}
               {optTwitter->reactMap(twitterHandle =>
                 <a
@@ -332,47 +333,53 @@ module UserDetails = {
                 {Helper.elipsify(userAddress, 10)->React.string}
               </a>
               <br />
-              {// NOTE: the number of loyalty tokens of a user currently will always show.
-              //       We are thinking of making this "private" only to the current logged in user. To enable this remove the `|| true` from the line below
-              isAddressCurrentUser
-                ? <>
-                    <small>
+              {
+                // NOTE: the number of loyalty tokens of a user currently will always show.
+                //       We are thinking of making this "private" only to the current logged in user. To enable this remove the `|| true` from the line below
+                isAddressCurrentUser
+                  ? <>
+                      <small>
+                        <p>
+                          {("Claimed Loyalty Token Balance: " ++
+                          (totalLoyaltyTokensOpt->Option.mapWithDefault(
+                            "Loading",
+                            claimedLoyaltyTokens =>
+                              claimedLoyaltyTokens->Web3Utils.fromWeiBNToEthPrecision(~digits=6),
+                          ) ++
+                          " WLT"))->React.string}
+                        </p>
+                      </small>
+                      {switch currentlyOwnedTokens {
+                      | [] => React.null
+                      | currentlyOwnedTokens =>
+                        <ClaimLoyaltyTokenButtons
+                          id={currentlyOwnedTokens->Array.getUnsafe(0)}
+                          chain
+                          refreshLoyaltyTokenBalance=updateFunction
+                          userAddress
+                          numberOfTokens={currentlyOwnedTokens->Array.length}
+                        />
+                      }}
+                      <a href="/#ethturin-quadratic-voting"> {"vote"->React.string} </a>
+                    </>
+                  : <small>
                       <p>
-                        {("Claimed Loyalty Token Balance: " ++
-                        (totalLoyaltyTokensOpt->Option.mapWithDefault(
+                        {("Loyalty Token Balance Generated: " ++
+                        (totalLoyaltyTokensAvailableAndClaimedOpt->Option.mapWithDefault(
                           "Loading",
-                          claimedLoyaltyTokens =>
-                            claimedLoyaltyTokens->Web3Utils.fromWeiBNToEthPrecision(~digits=6),
+                          ((totalLoyaltyTokens, _)) =>
+                            totalLoyaltyTokens->Web3Utils.fromWeiBNToEthPrecision(~digits=5),
                         ) ++
                         " WLT"))->React.string}
                       </p>
                     </small>
-                    {switch currentlyOwnedTokens {
-                    | [] => React.null
-                    | currentlyOwnedTokens =>
-                      <ClaimLoyaltyTokenButtons
-                        id={currentlyOwnedTokens->Array.getUnsafe(0)}
-                        chain
-                        refreshLoyaltyTokenBalance=updateFunction
-                        userAddress
-                        numberOfTokens={currentlyOwnedTokens->Array.length}
-                      />
-                    }}
-                    <a href="/#ethturin-quadratic-voting"> {"vote"->React.string} </a>
-                  </>
-                : <small>
-                    <p>
-                      {("Loyalty Token Balance Generated: " ++
-                      (totalLoyaltyTokensAvailableAndClaimedOpt->Option.mapWithDefault("Loading", ((
-                        totalLoyaltyTokens,
-                        _,
-                      )) => totalLoyaltyTokens->Web3Utils.fromWeiBNToEthPrecision(~digits=5)) ++
-                      " WLT"))->React.string}
-                    </p>
-                  </small>}
+              }
               {if isAddressCurrentUser {
                 <React.Fragment>
-                  <br /> <ActionButtons.UpdateDeposit /> <br /> <Validate />
+                  <br />
+                  <ActionButtons.UpdateDeposit />
+                  <br />
+                  <Validate />
                 </React.Fragment>
               } else {
                 React.null
@@ -442,7 +449,8 @@ let make = (~chain, ~userAddress: string) => {
     | ({loading: true, _}, _)
     | (_, {loading: true, _}) =>
       <div>
-        <Rimble.Heading> {"Loading user profile:"->React.string} </Rimble.Heading> <Rimble.Loader />
+        <Rimble.Heading> {"Loading user profile:"->React.string} </Rimble.Heading>
+        <Rimble.Loader />
       </div>
     | (_, {error: Some(_error), _})
     | ({error: Some(_error), _}, _) =>

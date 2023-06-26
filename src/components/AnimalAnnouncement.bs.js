@@ -32,9 +32,8 @@ var linkToAnimal = Curry._1(Css.style, {
       }
     });
 
-function AnimalAnnouncement(Props) {
-  var nextReleasedAnimals = Props.nextReleasedAnimals;
-  var announcementBannerColor = Props.announcementBannerColor;
+function AnimalAnnouncement(props) {
+  var nextReleasedAnimals = props.nextReleasedAnimals;
   var isLaunched = Animal.nextLaunchDate.diff(Moment(), "seconds") < 0;
   var closeButton = Curry._1(Css.style, {
         hd: Css.position(Css.absolute),
@@ -50,7 +49,7 @@ function AnimalAnnouncement(Props) {
   var numberOfAnimalsToLaunch = nextReleasedAnimals.length;
   var isPlural = numberOfAnimalsToLaunch > 1;
   return React.createElement("div", {
-              className: Announcement.announcementStyle(match[0], announcementBannerColor)
+              className: Announcement.announcementStyle(match[0], props.announcementBannerColor)
             }, "New Wildcard" + ((
                 isPlural ? "s" : ""
               ) + " "), Belt_Array.mapWithIndex(nextReleasedAnimals, (function (index, animal) {
@@ -71,9 +70,9 @@ function AnimalAnnouncement(Props) {
                       }), "!"), React.createElement("span", {
                   className: closeButton,
                   onClick: (function (param) {
-                      return Curry._1(setShowAnnouncement, (function (param) {
-                                    return "none";
-                                  }));
+                      Curry._1(setShowAnnouncement, (function (param) {
+                              return "none";
+                            }));
                     })
                 }, "×"));
 }
@@ -83,6 +82,5 @@ var make = AnimalAnnouncement;
 export {
   linkToAnimal ,
   make ,
-  
 }
 /* linkToAnimal Not a pure module */

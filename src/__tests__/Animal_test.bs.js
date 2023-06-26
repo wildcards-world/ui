@@ -3,9 +3,9 @@
 import * as Jest from "@glennsl/bs-jest/src/jest.bs.js";
 
 Jest.describe("Expect", (function (param) {
-        return Jest.test("toBe", (function (param) {
-                      return Jest.Expect.toEqual(true, Jest.Expect.expect(true));
-                    }));
+        Jest.test("toBe", (function (param) {
+                return Jest.Expect.toEqual(true, Jest.Expect.expect(true));
+              }));
       }));
 
 export {

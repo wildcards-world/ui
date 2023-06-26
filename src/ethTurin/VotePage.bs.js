@@ -13,6 +13,7 @@ import * as Belt_Float from "rescript/lib/es6/belt_Float.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import * as FormatMoney from "../components/components/FormatMoney.bs.js";
 import * as PriceDisplay from "../harberger-lib/PriceDisplay.bs.js";
+import * as JsxPPXReactSupport from "rescript/lib/es6/jsxPPXReactSupport.js";
 
 var dragonImg = "/img/animals/Glen.svg";
 
@@ -53,13 +54,12 @@ var conservationPartners = [
   }
 ];
 
-function VotePage$HackyComponentThatCallsAFunctionOnce(Props) {
-  var reloadFunction = Props.reloadFunction;
+function VotePage$HackyComponentThatCallsAFunctionOnce(props) {
   var match = React.useState(function () {
         return false;
       });
   if (!match[0]) {
-    Curry._1(reloadFunction, undefined);
+    Curry._1(props.reloadFunction, undefined);
     Curry._1(match[1], (function (param) {
             return true;
           }));
@@ -71,9 +71,9 @@ var HackyComponentThatCallsAFunctionOnce = {
   make: VotePage$HackyComponentThatCallsAFunctionOnce
 };
 
-function VotePage$HackyComponentThatReloadsOnTimeout(Props) {
-  var reloadFunction = Props.reloadFunction;
-  var timeoutTime = Props.timeoutTime;
+function VotePage$HackyComponentThatReloadsOnTimeout(props) {
+  var timeoutTime = props.timeoutTime;
+  var reloadFunction = props.reloadFunction;
   var match = React.useState(function () {
         return false;
       });
@@ -91,7 +91,6 @@ function VotePage$HackyComponentThatReloadsOnTimeout(Props) {
                 }), timeoutTime);
           return (function (param) {
                     clearTimeout(timeout);
-                    
                   });
         }), [
         reloadFunction,
@@ -106,10 +105,10 @@ var HackyComponentThatReloadsOnTimeout = {
   make: VotePage$HackyComponentThatReloadsOnTimeout
 };
 
-function VotePage$OrganisationVote(Props) {
-  var conservationPartner = Props.conservationPartner;
-  var selectConservation = Props.selectConservation;
-  var index = Props.index;
+function VotePage$OrganisationVote(props) {
+  var index = props.index;
+  var selectConservation = props.selectConservation;
+  var conservationPartner = props.conservationPartner;
   return React.createElement(RimbleUi.Box, {
               children: null,
               width: [
@@ -157,7 +156,7 @@ function VotePage$OrganisationVote(Props) {
                   disabled: true,
                   children: "Voting Disabled",
                   onClick: (function (param) {
-                      return Curry._1(selectConservation, index);
+                      Curry._1(selectConservation, index);
                     })
                 }));
 }
@@ -166,24 +165,24 @@ var OrganisationVote = {
   make: VotePage$OrganisationVote
 };
 
-function VotePage(Props) {
-  var chain = Props.chain;
+function VotePage(props) {
+  var chain = props.chain;
   var match = React.useState(function () {
         return /* DefaultView */0;
       });
   var setVoteStep = match[1];
   var selectConservation = function (conservationArrayIndex) {
     var submitVoteFunction = function (param) {
-      return Curry._1(setVoteStep, (function (param) {
-                    return /* ProcessTransaction */1;
-                  }));
+      Curry._1(setVoteStep, (function (param) {
+              return /* ProcessTransaction */1;
+            }));
     };
-    return Curry._1(setVoteStep, (function (param) {
-                  return /* SelectedOrganisationToVote */{
-                          _0: conservationArrayIndex,
-                          _1: submitVoteFunction
-                        };
-                }));
+    Curry._1(setVoteStep, (function (param) {
+            return /* SelectedOrganisationToVote */{
+                    _0: conservationArrayIndex,
+                    _1: submitVoteFunction
+                  };
+          }));
   };
   var glen = TokenId.makeFromInt(13);
   var optCurrentPrice = PriceDisplay.usePrice(chain, glen);
@@ -282,17 +281,16 @@ function VotePage(Props) {
                                             }),
                                         src: refreshImg,
                                         onClick: (function (param) {
-                                            return Curry._1(setVoteStep, (function (param) {
-                                                          return /* DefaultView */0;
-                                                        }));
+                                            Curry._1(setVoteStep, (function (param) {
+                                                    return /* DefaultView */0;
+                                                  }));
                                           })
                                       }) : null), React.createElement("small", undefined, React.createElement("p", undefined, "Unfortunately we have decided to stop running our DAO on mainnet ethereum. We are moving all of this code to Matic where voting will be much cheaper and more frictionless")), React.createElement(RimbleUi.Flex, {
                                   children: Belt_Array.mapWithIndex(conservationPartners, (function (index, conservationPartner) {
-                                          return React.createElement(VotePage$OrganisationVote, {
+                                          return JsxPPXReactSupport.createElementWithKey(conservationPartner.name, VotePage$OrganisationVote, {
                                                       conservationPartner: conservationPartner,
                                                       selectConservation: selectConservation,
-                                                      index: index,
-                                                      key: conservationPartner.name
+                                                      index: index
                                                     });
                                         })),
                                   flexWrap: "wrap",
@@ -317,6 +315,5 @@ export {
   HackyComponentThatReloadsOnTimeout ,
   OrganisationVote ,
   make ,
-  
 }
 /* Css Not a pure module */

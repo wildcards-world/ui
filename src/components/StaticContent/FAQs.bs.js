@@ -8,6 +8,7 @@ import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
+import * as JsxPPXReactSupport from "rescript/lib/es6/jsxPPXReactSupport.js";
 
 var faqExplainerText = Curry._1(Css.style, {
       hd: Css.paddingTop({
@@ -58,1056 +59,1058 @@ var accordionSection = Curry._1(Css.style, {
       }
     });
 
-function inlineStyle(prim0, prim1, prim2, prim3, prim4, prim5, prim6, prim7, prim8, prim9, prim10, prim11, prim12, prim13, prim14, prim15, prim16, prim17, prim18, prim19, prim20, prim21, prim22, prim23, prim24, prim25, prim26, prim27, prim28, prim29, prim30, prim31, prim32, prim33, prim34, prim35, prim36, prim37, prim38, prim39, prim40, prim41, prim42, prim43, prim44, prim45, prim46, prim47, prim48, prim49, prim50, prim51, prim52, prim53, prim54, prim55, prim56, prim57, prim58, prim59, prim60, prim61, prim62, prim63, prim64, prim65, prim66, prim67, prim68, prim69, prim70, prim71, prim72, prim73, prim74, prim75, prim76, prim77, prim78, prim79, prim80, prim81, prim82, prim83, prim84, prim85, prim86, prim87, prim88, prim89, prim90, prim91, prim92, prim93, prim94, prim95, prim96, prim97, prim98, prim99, prim100, prim101, prim102, prim103, prim104, prim105, prim106, prim107, prim108, prim109, prim110, prim111, prim112, prim113, prim114, prim115, prim116, prim117, prim118, prim119, prim120, prim121, prim122, prim123, prim124, prim125, prim126, prim127, prim128, prim129, prim130, prim131, prim132, prim133, prim134, prim135, prim136, prim137, prim138, prim139, prim140, prim141, prim142, prim143, prim144, prim145, prim146, prim147, prim148, prim149, prim150, prim151, prim152, prim153, prim154, prim155, prim156, prim157, prim158, prim159, prim160, prim161, prim162, prim163, prim164, prim165, prim166, prim167, prim168, prim169, prim170, prim171, prim172, prim173, prim174, prim175, prim176, prim177, prim178, prim179, prim180, prim181, prim182, prim183, prim184, prim185, prim186, prim187, prim188, prim189, prim190, prim191, prim192, prim193, prim194, prim195, prim196, prim197, prim198, prim199, prim200, prim201, prim202, prim203, prim204, prim205, prim206, prim207, prim208, prim209, prim210, prim211, prim212, prim213, prim214, prim215, prim216, prim217, prim218, prim219, prim220, prim221, prim222, prim223, prim224, prim225, prim226, prim227, prim228, prim229, prim230, prim231, prim232, prim233, prim234, prim235, prim236, prim237, prim238, prim239, prim240, prim241, prim242, prim243, prim244, prim245, prim246, prim247, prim248, prim249, prim250, prim251, prim252, prim253, prim254, prim255, prim256, prim257, prim258, prim259, prim260, prim261, prim262, prim263, prim264, prim265, prim266, prim267, prim268, prim269, prim270, prim271, prim272, prim273, prim274, prim275, prim276, prim277, prim278, prim279, prim280, prim281, prim282, prim283, prim284, prim285, prim286, prim287, prim288, prim289, prim290, prim291, prim292, prim293, prim294, prim295, prim296, prim297, prim298, prim299, prim300, prim301, prim302, prim303, prim304, prim305, prim306, prim307, prim308, prim309, prim310, prim311, prim312, prim313, prim314, prim315, prim316, prim317, prim318, prim319, prim320, prim321, prim322, prim323, prim324, prim325, prim326, prim327, prim328, prim329, prim330, prim331, prim332, prim333, prim334, prim335, prim336, prim337, prim338, prim339, prim340, prim341, prim342, prim343, prim344, prim345, prim346, prim347) {
+function inlineStyle(prim0, prim1, prim2, prim3, prim4, prim5, prim6, prim7, prim8, prim9, prim10, prim11, prim12, prim13, prim14, prim15, prim16, prim17, prim18, prim19, prim20, prim21, prim22, prim23, prim24, prim25, prim26, prim27, prim28, prim29, prim30, prim31, prim32, prim33, prim34, prim35, prim36, prim37, prim38, prim39, prim40, prim41, prim42, prim43, prim44, prim45, prim46, prim47, prim48, prim49, prim50, prim51, prim52, prim53, prim54, prim55, prim56, prim57, prim58, prim59, prim60, prim61, prim62, prim63, prim64, prim65, prim66, prim67, prim68, prim69, prim70, prim71, prim72, prim73, prim74, prim75, prim76, prim77, prim78, prim79, prim80, prim81, prim82, prim83, prim84, prim85, prim86, prim87, prim88, prim89, prim90, prim91, prim92, prim93, prim94, prim95, prim96, prim97, prim98, prim99, prim100, prim101, prim102, prim103, prim104, prim105, prim106, prim107, prim108, prim109, prim110, prim111, prim112, prim113, prim114, prim115, prim116, prim117, prim118, prim119, prim120, prim121, prim122, prim123, prim124, prim125, prim126, prim127, prim128, prim129, prim130, prim131, prim132, prim133, prim134, prim135, prim136, prim137, prim138, prim139, prim140, prim141, prim142, prim143, prim144, prim145, prim146, prim147, prim148, prim149, prim150, prim151, prim152, prim153, prim154, prim155, prim156, prim157, prim158, prim159, prim160, prim161, prim162, prim163, prim164, prim165, prim166, prim167, prim168, prim169, prim170, prim171, prim172, prim173, prim174, prim175, prim176, prim177, prim178, prim179, prim180, prim181, prim182, prim183, prim184, prim185, prim186, prim187, prim188, prim189, prim190, prim191, prim192, prim193, prim194, prim195, prim196, prim197, prim198, prim199, prim200, prim201, prim202, prim203, prim204, prim205, prim206, prim207, prim208, prim209, prim210, prim211, prim212, prim213, prim214, prim215, prim216, prim217, prim218, prim219, prim220, prim221, prim222, prim223, prim224, prim225, prim226, prim227, prim228, prim229, prim230, prim231, prim232, prim233, prim234, prim235, prim236, prim237, prim238, prim239, prim240, prim241, prim242, prim243, prim244, prim245, prim246, prim247, prim248, prim249, prim250, prim251, prim252, prim253, prim254, prim255, prim256, prim257, prim258, prim259, prim260, prim261, prim262, prim263, prim264, prim265, prim266, prim267, prim268, prim269, prim270, prim271, prim272, prim273, prim274, prim275, prim276, prim277, prim278, prim279, prim280, prim281, prim282, prim283, prim284, prim285, prim286, prim287, prim288, prim289, prim290, prim291, prim292, prim293, prim294, prim295, prim296, prim297, prim298, prim299, prim300, prim301, prim302, prim303, prim304, prim305, prim306, prim307, prim308, prim309, prim310, prim311, prim312, prim313, prim314, prim315, prim316, prim317, prim318, prim319, prim320, prim321, prim322, prim323, prim324, prim325, prim326, prim327, prim328, prim329, prim330, prim331, prim332, prim333, prim334, prim335, prim336, prim337, prim338, prim339, prim340, prim341, prim342, prim343, prim344, prim345, prim346, prim347, prim348) {
   var tmp = {};
   if (prim0 !== undefined) {
     tmp.azimuth = prim0;
   }
   if (prim1 !== undefined) {
-    tmp.background = prim1;
+    tmp.backdropFilter = prim1;
   }
   if (prim2 !== undefined) {
-    tmp.backgroundAttachment = prim2;
+    tmp.background = prim2;
   }
   if (prim3 !== undefined) {
-    tmp.backgroundColor = prim3;
+    tmp.backgroundAttachment = prim3;
   }
   if (prim4 !== undefined) {
-    tmp.backgroundImage = prim4;
+    tmp.backgroundColor = prim4;
   }
   if (prim5 !== undefined) {
-    tmp.backgroundPosition = prim5;
+    tmp.backgroundImage = prim5;
   }
   if (prim6 !== undefined) {
-    tmp.backgroundRepeat = prim6;
+    tmp.backgroundPosition = prim6;
   }
   if (prim7 !== undefined) {
-    tmp.border = prim7;
+    tmp.backgroundRepeat = prim7;
   }
   if (prim8 !== undefined) {
-    tmp.borderCollapse = prim8;
+    tmp.border = prim8;
   }
   if (prim9 !== undefined) {
-    tmp.borderColor = prim9;
+    tmp.borderCollapse = prim9;
   }
   if (prim10 !== undefined) {
-    tmp.borderSpacing = prim10;
+    tmp.borderColor = prim10;
   }
   if (prim11 !== undefined) {
-    tmp.borderStyle = prim11;
+    tmp.borderSpacing = prim11;
   }
   if (prim12 !== undefined) {
-    tmp.borderTop = prim12;
+    tmp.borderStyle = prim12;
   }
   if (prim13 !== undefined) {
-    tmp.borderRight = prim13;
+    tmp.borderTop = prim13;
   }
   if (prim14 !== undefined) {
-    tmp.borderBottom = prim14;
+    tmp.borderRight = prim14;
   }
   if (prim15 !== undefined) {
-    tmp.borderLeft = prim15;
+    tmp.borderBottom = prim15;
   }
   if (prim16 !== undefined) {
-    tmp.borderTopColor = prim16;
+    tmp.borderLeft = prim16;
   }
   if (prim17 !== undefined) {
-    tmp.borderRightColor = prim17;
+    tmp.borderTopColor = prim17;
   }
   if (prim18 !== undefined) {
-    tmp.borderBottomColor = prim18;
+    tmp.borderRightColor = prim18;
   }
   if (prim19 !== undefined) {
-    tmp.borderLeftColor = prim19;
+    tmp.borderBottomColor = prim19;
   }
   if (prim20 !== undefined) {
-    tmp.borderTopStyle = prim20;
+    tmp.borderLeftColor = prim20;
   }
   if (prim21 !== undefined) {
-    tmp.borderRightStyle = prim21;
+    tmp.borderTopStyle = prim21;
   }
   if (prim22 !== undefined) {
-    tmp.borderBottomStyle = prim22;
+    tmp.borderRightStyle = prim22;
   }
   if (prim23 !== undefined) {
-    tmp.borderLeftStyle = prim23;
+    tmp.borderBottomStyle = prim23;
   }
   if (prim24 !== undefined) {
-    tmp.borderTopWidth = prim24;
+    tmp.borderLeftStyle = prim24;
   }
   if (prim25 !== undefined) {
-    tmp.borderRightWidth = prim25;
+    tmp.borderTopWidth = prim25;
   }
   if (prim26 !== undefined) {
-    tmp.borderBottomWidth = prim26;
+    tmp.borderRightWidth = prim26;
   }
   if (prim27 !== undefined) {
-    tmp.borderLeftWidth = prim27;
+    tmp.borderBottomWidth = prim27;
   }
   if (prim28 !== undefined) {
-    tmp.borderWidth = prim28;
+    tmp.borderLeftWidth = prim28;
   }
   if (prim29 !== undefined) {
-    tmp.bottom = prim29;
+    tmp.borderWidth = prim29;
   }
   if (prim30 !== undefined) {
-    tmp.captionSide = prim30;
+    tmp.bottom = prim30;
   }
   if (prim31 !== undefined) {
-    tmp.clear = prim31;
+    tmp.captionSide = prim31;
   }
   if (prim32 !== undefined) {
-    tmp.clip = prim32;
+    tmp.clear = prim32;
   }
   if (prim33 !== undefined) {
-    tmp.color = prim33;
+    tmp.clip = prim33;
   }
   if (prim34 !== undefined) {
-    tmp.content = prim34;
+    tmp.color = prim34;
   }
   if (prim35 !== undefined) {
-    tmp.counterIncrement = prim35;
+    tmp.content = prim35;
   }
   if (prim36 !== undefined) {
-    tmp.counterReset = prim36;
+    tmp.counterIncrement = prim36;
   }
   if (prim37 !== undefined) {
-    tmp.cue = prim37;
+    tmp.counterReset = prim37;
   }
   if (prim38 !== undefined) {
-    tmp.cueAfter = prim38;
+    tmp.cue = prim38;
   }
   if (prim39 !== undefined) {
-    tmp.cueBefore = prim39;
+    tmp.cueAfter = prim39;
   }
   if (prim40 !== undefined) {
-    tmp.cursor = prim40;
+    tmp.cueBefore = prim40;
   }
   if (prim41 !== undefined) {
-    tmp.direction = prim41;
+    tmp.cursor = prim41;
   }
   if (prim42 !== undefined) {
-    tmp.display = prim42;
+    tmp.direction = prim42;
   }
   if (prim43 !== undefined) {
-    tmp.elevation = prim43;
+    tmp.display = prim43;
   }
   if (prim44 !== undefined) {
-    tmp.emptyCells = prim44;
+    tmp.elevation = prim44;
   }
   if (prim45 !== undefined) {
-    tmp.float = prim45;
+    tmp.emptyCells = prim45;
   }
   if (prim46 !== undefined) {
-    tmp.font = prim46;
+    tmp.float = prim46;
   }
   if (prim47 !== undefined) {
-    tmp.fontFamily = prim47;
+    tmp.font = prim47;
   }
   if (prim48 !== undefined) {
-    tmp.fontSize = prim48;
+    tmp.fontFamily = prim48;
   }
   if (prim49 !== undefined) {
-    tmp.fontSizeAdjust = prim49;
+    tmp.fontSize = prim49;
   }
   if (prim50 !== undefined) {
-    tmp.fontStretch = prim50;
+    tmp.fontSizeAdjust = prim50;
   }
   if (prim51 !== undefined) {
-    tmp.fontStyle = prim51;
+    tmp.fontStretch = prim51;
   }
   if (prim52 !== undefined) {
-    tmp.fontVariant = prim52;
+    tmp.fontStyle = prim52;
   }
   if (prim53 !== undefined) {
-    tmp.fontWeight = prim53;
+    tmp.fontVariant = prim53;
   }
   if (prim54 !== undefined) {
-    tmp.height = prim54;
+    tmp.fontWeight = prim54;
   }
   if (prim55 !== undefined) {
-    tmp.left = prim55;
+    tmp.height = prim55;
   }
   if (prim56 !== undefined) {
-    tmp.letterSpacing = prim56;
+    tmp.left = prim56;
   }
   if (prim57 !== undefined) {
-    tmp.lineHeight = prim57;
+    tmp.letterSpacing = prim57;
   }
   if (prim58 !== undefined) {
-    tmp.listStyle = prim58;
+    tmp.lineHeight = prim58;
   }
   if (prim59 !== undefined) {
-    tmp.listStyleImage = prim59;
+    tmp.listStyle = prim59;
   }
   if (prim60 !== undefined) {
-    tmp.listStylePosition = prim60;
+    tmp.listStyleImage = prim60;
   }
   if (prim61 !== undefined) {
-    tmp.listStyleType = prim61;
+    tmp.listStylePosition = prim61;
   }
   if (prim62 !== undefined) {
-    tmp.margin = prim62;
+    tmp.listStyleType = prim62;
   }
   if (prim63 !== undefined) {
-    tmp.marginTop = prim63;
+    tmp.margin = prim63;
   }
   if (prim64 !== undefined) {
-    tmp.marginRight = prim64;
+    tmp.marginTop = prim64;
   }
   if (prim65 !== undefined) {
-    tmp.marginBottom = prim65;
+    tmp.marginRight = prim65;
   }
   if (prim66 !== undefined) {
-    tmp.marginLeft = prim66;
+    tmp.marginBottom = prim66;
   }
   if (prim67 !== undefined) {
-    tmp.markerOffset = prim67;
+    tmp.marginLeft = prim67;
   }
   if (prim68 !== undefined) {
-    tmp.marks = prim68;
+    tmp.markerOffset = prim68;
   }
   if (prim69 !== undefined) {
-    tmp.maxHeight = prim69;
+    tmp.marks = prim69;
   }
   if (prim70 !== undefined) {
-    tmp.maxWidth = prim70;
+    tmp.maxHeight = prim70;
   }
   if (prim71 !== undefined) {
-    tmp.minHeight = prim71;
+    tmp.maxWidth = prim71;
   }
   if (prim72 !== undefined) {
-    tmp.minWidth = prim72;
+    tmp.minHeight = prim72;
   }
   if (prim73 !== undefined) {
-    tmp.orphans = prim73;
+    tmp.minWidth = prim73;
   }
   if (prim74 !== undefined) {
-    tmp.outline = prim74;
+    tmp.orphans = prim74;
   }
   if (prim75 !== undefined) {
-    tmp.outlineColor = prim75;
+    tmp.outline = prim75;
   }
   if (prim76 !== undefined) {
-    tmp.outlineStyle = prim76;
+    tmp.outlineColor = prim76;
   }
   if (prim77 !== undefined) {
-    tmp.outlineWidth = prim77;
+    tmp.outlineStyle = prim77;
   }
   if (prim78 !== undefined) {
-    tmp.overflow = prim78;
+    tmp.outlineWidth = prim78;
   }
   if (prim79 !== undefined) {
-    tmp.overflowX = prim79;
+    tmp.overflow = prim79;
   }
   if (prim80 !== undefined) {
-    tmp.overflowY = prim80;
+    tmp.overflowX = prim80;
   }
   if (prim81 !== undefined) {
-    tmp.padding = prim81;
+    tmp.overflowY = prim81;
   }
   if (prim82 !== undefined) {
-    tmp.paddingTop = prim82;
+    tmp.padding = prim82;
   }
   if (prim83 !== undefined) {
-    tmp.paddingRight = prim83;
+    tmp.paddingTop = prim83;
   }
   if (prim84 !== undefined) {
-    tmp.paddingBottom = prim84;
+    tmp.paddingRight = prim84;
   }
   if (prim85 !== undefined) {
-    tmp.paddingLeft = prim85;
+    tmp.paddingBottom = prim85;
   }
   if (prim86 !== undefined) {
-    tmp.page = prim86;
+    tmp.paddingLeft = prim86;
   }
   if (prim87 !== undefined) {
-    tmp.pageBreakAfter = prim87;
+    tmp.page = prim87;
   }
   if (prim88 !== undefined) {
-    tmp.pageBreakBefore = prim88;
+    tmp.pageBreakAfter = prim88;
   }
   if (prim89 !== undefined) {
-    tmp.pageBreakInside = prim89;
+    tmp.pageBreakBefore = prim89;
   }
   if (prim90 !== undefined) {
-    tmp.pause = prim90;
+    tmp.pageBreakInside = prim90;
   }
   if (prim91 !== undefined) {
-    tmp.pauseAfter = prim91;
+    tmp.pause = prim91;
   }
   if (prim92 !== undefined) {
-    tmp.pauseBefore = prim92;
+    tmp.pauseAfter = prim92;
   }
   if (prim93 !== undefined) {
-    tmp.pitch = prim93;
+    tmp.pauseBefore = prim93;
   }
   if (prim94 !== undefined) {
-    tmp.pitchRange = prim94;
+    tmp.pitch = prim94;
   }
   if (prim95 !== undefined) {
-    tmp.playDuring = prim95;
+    tmp.pitchRange = prim95;
   }
   if (prim96 !== undefined) {
-    tmp.position = prim96;
+    tmp.playDuring = prim96;
   }
   if (prim97 !== undefined) {
-    tmp.quotes = prim97;
+    tmp.position = prim97;
   }
   if (prim98 !== undefined) {
-    tmp.richness = prim98;
+    tmp.quotes = prim98;
   }
   if (prim99 !== undefined) {
-    tmp.right = prim99;
+    tmp.richness = prim99;
   }
   if (prim100 !== undefined) {
-    tmp.size = prim100;
+    tmp.right = prim100;
   }
   if (prim101 !== undefined) {
-    tmp.speak = prim101;
+    tmp.size = prim101;
   }
   if (prim102 !== undefined) {
-    tmp.speakHeader = prim102;
+    tmp.speak = prim102;
   }
   if (prim103 !== undefined) {
-    tmp.speakNumeral = prim103;
+    tmp.speakHeader = prim103;
   }
   if (prim104 !== undefined) {
-    tmp.speakPunctuation = prim104;
+    tmp.speakNumeral = prim104;
   }
   if (prim105 !== undefined) {
-    tmp.speechRate = prim105;
+    tmp.speakPunctuation = prim105;
   }
   if (prim106 !== undefined) {
-    tmp.stress = prim106;
+    tmp.speechRate = prim106;
   }
   if (prim107 !== undefined) {
-    tmp.tableLayout = prim107;
+    tmp.stress = prim107;
   }
   if (prim108 !== undefined) {
-    tmp.textAlign = prim108;
+    tmp.tableLayout = prim108;
   }
   if (prim109 !== undefined) {
-    tmp.textDecoration = prim109;
+    tmp.textAlign = prim109;
   }
   if (prim110 !== undefined) {
-    tmp.textIndent = prim110;
+    tmp.textDecoration = prim110;
   }
   if (prim111 !== undefined) {
-    tmp.textShadow = prim111;
+    tmp.textIndent = prim111;
   }
   if (prim112 !== undefined) {
-    tmp.textTransform = prim112;
+    tmp.textShadow = prim112;
   }
   if (prim113 !== undefined) {
-    tmp.top = prim113;
+    tmp.textTransform = prim113;
   }
   if (prim114 !== undefined) {
-    tmp.unicodeBidi = prim114;
+    tmp.top = prim114;
   }
   if (prim115 !== undefined) {
-    tmp.verticalAlign = prim115;
+    tmp.unicodeBidi = prim115;
   }
   if (prim116 !== undefined) {
-    tmp.visibility = prim116;
+    tmp.verticalAlign = prim116;
   }
   if (prim117 !== undefined) {
-    tmp.voiceFamily = prim117;
+    tmp.visibility = prim117;
   }
   if (prim118 !== undefined) {
-    tmp.volume = prim118;
+    tmp.voiceFamily = prim118;
   }
   if (prim119 !== undefined) {
-    tmp.whiteSpace = prim119;
+    tmp.volume = prim119;
   }
   if (prim120 !== undefined) {
-    tmp.widows = prim120;
+    tmp.whiteSpace = prim120;
   }
   if (prim121 !== undefined) {
-    tmp.width = prim121;
+    tmp.widows = prim121;
   }
   if (prim122 !== undefined) {
-    tmp.wordSpacing = prim122;
+    tmp.width = prim122;
   }
   if (prim123 !== undefined) {
-    tmp.zIndex = prim123;
+    tmp.wordSpacing = prim123;
   }
   if (prim124 !== undefined) {
-    tmp.opacity = prim124;
+    tmp.zIndex = prim124;
   }
   if (prim125 !== undefined) {
-    tmp.backgroundOrigin = prim125;
+    tmp.opacity = prim125;
   }
   if (prim126 !== undefined) {
-    tmp.backgroundSize = prim126;
+    tmp.backgroundOrigin = prim126;
   }
   if (prim127 !== undefined) {
-    tmp.backgroundClip = prim127;
+    tmp.backgroundSize = prim127;
   }
   if (prim128 !== undefined) {
-    tmp.borderRadius = prim128;
+    tmp.backgroundClip = prim128;
   }
   if (prim129 !== undefined) {
-    tmp.borderTopLeftRadius = prim129;
+    tmp.borderRadius = prim129;
   }
   if (prim130 !== undefined) {
-    tmp.borderTopRightRadius = prim130;
+    tmp.borderTopLeftRadius = prim130;
   }
   if (prim131 !== undefined) {
-    tmp.borderBottomLeftRadius = prim131;
+    tmp.borderTopRightRadius = prim131;
   }
   if (prim132 !== undefined) {
-    tmp.borderBottomRightRadius = prim132;
+    tmp.borderBottomLeftRadius = prim132;
   }
   if (prim133 !== undefined) {
-    tmp.borderImage = prim133;
+    tmp.borderBottomRightRadius = prim133;
   }
   if (prim134 !== undefined) {
-    tmp.borderImageSource = prim134;
+    tmp.borderImage = prim134;
   }
   if (prim135 !== undefined) {
-    tmp.borderImageSlice = prim135;
+    tmp.borderImageSource = prim135;
   }
   if (prim136 !== undefined) {
-    tmp.borderImageWidth = prim136;
+    tmp.borderImageSlice = prim136;
   }
   if (prim137 !== undefined) {
-    tmp.borderImageOutset = prim137;
+    tmp.borderImageWidth = prim137;
   }
   if (prim138 !== undefined) {
-    tmp.borderImageRepeat = prim138;
+    tmp.borderImageOutset = prim138;
   }
   if (prim139 !== undefined) {
-    tmp.boxShadow = prim139;
+    tmp.borderImageRepeat = prim139;
   }
   if (prim140 !== undefined) {
-    tmp.columns = prim140;
+    tmp.boxShadow = prim140;
   }
   if (prim141 !== undefined) {
-    tmp.columnCount = prim141;
+    tmp.columns = prim141;
   }
   if (prim142 !== undefined) {
-    tmp.columnFill = prim142;
+    tmp.columnCount = prim142;
   }
   if (prim143 !== undefined) {
-    tmp.columnGap = prim143;
+    tmp.columnFill = prim143;
   }
   if (prim144 !== undefined) {
-    tmp.columnRule = prim144;
+    tmp.columnGap = prim144;
   }
   if (prim145 !== undefined) {
-    tmp.columnRuleColor = prim145;
+    tmp.columnRule = prim145;
   }
   if (prim146 !== undefined) {
-    tmp.columnRuleStyle = prim146;
+    tmp.columnRuleColor = prim146;
   }
   if (prim147 !== undefined) {
-    tmp.columnRuleWidth = prim147;
+    tmp.columnRuleStyle = prim147;
   }
   if (prim148 !== undefined) {
-    tmp.columnSpan = prim148;
+    tmp.columnRuleWidth = prim148;
   }
   if (prim149 !== undefined) {
-    tmp.columnWidth = prim149;
+    tmp.columnSpan = prim149;
   }
   if (prim150 !== undefined) {
-    tmp.breakAfter = prim150;
+    tmp.columnWidth = prim150;
   }
   if (prim151 !== undefined) {
-    tmp.breakBefore = prim151;
+    tmp.breakAfter = prim151;
   }
   if (prim152 !== undefined) {
-    tmp.breakInside = prim152;
+    tmp.breakBefore = prim152;
   }
   if (prim153 !== undefined) {
-    tmp.rest = prim153;
+    tmp.breakInside = prim153;
   }
   if (prim154 !== undefined) {
-    tmp.restAfter = prim154;
+    tmp.rest = prim154;
   }
   if (prim155 !== undefined) {
-    tmp.restBefore = prim155;
+    tmp.restAfter = prim155;
   }
   if (prim156 !== undefined) {
-    tmp.speakAs = prim156;
+    tmp.restBefore = prim156;
   }
   if (prim157 !== undefined) {
-    tmp.voiceBalance = prim157;
+    tmp.speakAs = prim157;
   }
   if (prim158 !== undefined) {
-    tmp.voiceDuration = prim158;
+    tmp.voiceBalance = prim158;
   }
   if (prim159 !== undefined) {
-    tmp.voicePitch = prim159;
+    tmp.voiceDuration = prim159;
   }
   if (prim160 !== undefined) {
-    tmp.voiceRange = prim160;
+    tmp.voicePitch = prim160;
   }
   if (prim161 !== undefined) {
-    tmp.voiceRate = prim161;
+    tmp.voiceRange = prim161;
   }
   if (prim162 !== undefined) {
-    tmp.voiceStress = prim162;
+    tmp.voiceRate = prim162;
   }
   if (prim163 !== undefined) {
-    tmp.voiceVolume = prim163;
+    tmp.voiceStress = prim163;
   }
   if (prim164 !== undefined) {
-    tmp.objectFit = prim164;
+    tmp.voiceVolume = prim164;
   }
   if (prim165 !== undefined) {
-    tmp.objectPosition = prim165;
+    tmp.objectFit = prim165;
   }
   if (prim166 !== undefined) {
-    tmp.imageResolution = prim166;
+    tmp.objectPosition = prim166;
   }
   if (prim167 !== undefined) {
-    tmp.imageOrientation = prim167;
+    tmp.imageResolution = prim167;
   }
   if (prim168 !== undefined) {
-    tmp.alignContent = prim168;
+    tmp.imageOrientation = prim168;
   }
   if (prim169 !== undefined) {
-    tmp.alignItems = prim169;
+    tmp.alignContent = prim169;
   }
   if (prim170 !== undefined) {
-    tmp.alignSelf = prim170;
+    tmp.alignItems = prim170;
   }
   if (prim171 !== undefined) {
-    tmp.flex = prim171;
+    tmp.alignSelf = prim171;
   }
   if (prim172 !== undefined) {
-    tmp.flexBasis = prim172;
+    tmp.flex = prim172;
   }
   if (prim173 !== undefined) {
-    tmp.flexDirection = prim173;
+    tmp.flexBasis = prim173;
   }
   if (prim174 !== undefined) {
-    tmp.flexFlow = prim174;
+    tmp.flexDirection = prim174;
   }
   if (prim175 !== undefined) {
-    tmp.flexGrow = prim175;
+    tmp.flexFlow = prim175;
   }
   if (prim176 !== undefined) {
-    tmp.flexShrink = prim176;
+    tmp.flexGrow = prim176;
   }
   if (prim177 !== undefined) {
-    tmp.flexWrap = prim177;
+    tmp.flexShrink = prim177;
   }
   if (prim178 !== undefined) {
-    tmp.justifyContent = prim178;
+    tmp.flexWrap = prim178;
   }
   if (prim179 !== undefined) {
-    tmp.order = prim179;
+    tmp.justifyContent = prim179;
   }
   if (prim180 !== undefined) {
-    tmp.textDecorationColor = prim180;
+    tmp.order = prim180;
   }
   if (prim181 !== undefined) {
-    tmp.textDecorationLine = prim181;
+    tmp.textDecorationColor = prim181;
   }
   if (prim182 !== undefined) {
-    tmp.textDecorationSkip = prim182;
+    tmp.textDecorationLine = prim182;
   }
   if (prim183 !== undefined) {
-    tmp.textDecorationStyle = prim183;
+    tmp.textDecorationSkip = prim183;
   }
   if (prim184 !== undefined) {
-    tmp.textEmphasis = prim184;
+    tmp.textDecorationStyle = prim184;
   }
   if (prim185 !== undefined) {
-    tmp.textEmphasisColor = prim185;
+    tmp.textEmphasis = prim185;
   }
   if (prim186 !== undefined) {
-    tmp.textEmphasisPosition = prim186;
+    tmp.textEmphasisColor = prim186;
   }
   if (prim187 !== undefined) {
-    tmp.textEmphasisStyle = prim187;
+    tmp.textEmphasisPosition = prim187;
   }
   if (prim188 !== undefined) {
-    tmp.textUnderlinePosition = prim188;
+    tmp.textEmphasisStyle = prim188;
   }
   if (prim189 !== undefined) {
-    tmp.fontFeatureSettings = prim189;
+    tmp.textUnderlinePosition = prim189;
   }
   if (prim190 !== undefined) {
-    tmp.fontKerning = prim190;
+    tmp.fontFeatureSettings = prim190;
   }
   if (prim191 !== undefined) {
-    tmp.fontLanguageOverride = prim191;
+    tmp.fontKerning = prim191;
   }
   if (prim192 !== undefined) {
-    tmp.fontSynthesis = prim192;
+    tmp.fontLanguageOverride = prim192;
   }
   if (prim193 !== undefined) {
-    tmp.forntVariantAlternates = prim193;
+    tmp.fontSynthesis = prim193;
   }
   if (prim194 !== undefined) {
-    tmp.fontVariantCaps = prim194;
+    tmp.forntVariantAlternates = prim194;
   }
   if (prim195 !== undefined) {
-    tmp.fontVariantEastAsian = prim195;
+    tmp.fontVariantCaps = prim195;
   }
   if (prim196 !== undefined) {
-    tmp.fontVariantLigatures = prim196;
+    tmp.fontVariantEastAsian = prim196;
   }
   if (prim197 !== undefined) {
-    tmp.fontVariantNumeric = prim197;
+    tmp.fontVariantLigatures = prim197;
   }
   if (prim198 !== undefined) {
-    tmp.fontVariantPosition = prim198;
+    tmp.fontVariantNumeric = prim198;
   }
   if (prim199 !== undefined) {
-    tmp.all = prim199;
+    tmp.fontVariantPosition = prim199;
   }
   if (prim200 !== undefined) {
-    tmp.glyphOrientationVertical = prim200;
+    tmp.all = prim200;
   }
   if (prim201 !== undefined) {
-    tmp.textCombineUpright = prim201;
+    tmp.glyphOrientationVertical = prim201;
   }
   if (prim202 !== undefined) {
-    tmp.textOrientation = prim202;
+    tmp.textCombineUpright = prim202;
   }
   if (prim203 !== undefined) {
-    tmp.writingMode = prim203;
+    tmp.textOrientation = prim203;
   }
   if (prim204 !== undefined) {
-    tmp.shapeImageThreshold = prim204;
+    tmp.writingMode = prim204;
   }
   if (prim205 !== undefined) {
-    tmp.shapeMargin = prim205;
+    tmp.shapeImageThreshold = prim205;
   }
   if (prim206 !== undefined) {
-    tmp.shapeOutside = prim206;
+    tmp.shapeMargin = prim206;
   }
   if (prim207 !== undefined) {
-    tmp.clipPath = prim207;
+    tmp.shapeOutside = prim207;
   }
   if (prim208 !== undefined) {
-    tmp.clipRule = prim208;
+    tmp.clipPath = prim208;
   }
   if (prim209 !== undefined) {
-    tmp.mask = prim209;
+    tmp.clipRule = prim209;
   }
   if (prim210 !== undefined) {
-    tmp.maskBorder = prim210;
+    tmp.mask = prim210;
   }
   if (prim211 !== undefined) {
-    tmp.maskBorderMode = prim211;
+    tmp.maskBorder = prim211;
   }
   if (prim212 !== undefined) {
-    tmp.maskBorderOutset = prim212;
+    tmp.maskBorderMode = prim212;
   }
   if (prim213 !== undefined) {
-    tmp.maskBorderRepeat = prim213;
+    tmp.maskBorderOutset = prim213;
   }
   if (prim214 !== undefined) {
-    tmp.maskBorderSlice = prim214;
+    tmp.maskBorderRepeat = prim214;
   }
   if (prim215 !== undefined) {
-    tmp.maskBorderSource = prim215;
+    tmp.maskBorderSlice = prim215;
   }
   if (prim216 !== undefined) {
-    tmp.maskBorderWidth = prim216;
+    tmp.maskBorderSource = prim216;
   }
   if (prim217 !== undefined) {
-    tmp.maskClip = prim217;
+    tmp.maskBorderWidth = prim217;
   }
   if (prim218 !== undefined) {
-    tmp.maskComposite = prim218;
+    tmp.maskClip = prim218;
   }
   if (prim219 !== undefined) {
-    tmp.maskImage = prim219;
+    tmp.maskComposite = prim219;
   }
   if (prim220 !== undefined) {
-    tmp.maskMode = prim220;
+    tmp.maskImage = prim220;
   }
   if (prim221 !== undefined) {
-    tmp.maskOrigin = prim221;
+    tmp.maskMode = prim221;
   }
   if (prim222 !== undefined) {
-    tmp.maskPosition = prim222;
+    tmp.maskOrigin = prim222;
   }
   if (prim223 !== undefined) {
-    tmp.maskRepeat = prim223;
+    tmp.maskPosition = prim223;
   }
   if (prim224 !== undefined) {
-    tmp.maskSize = prim224;
+    tmp.maskRepeat = prim224;
   }
   if (prim225 !== undefined) {
-    tmp.maskType = prim225;
+    tmp.maskSize = prim225;
   }
   if (prim226 !== undefined) {
-    tmp.backgroundBlendMode = prim226;
+    tmp.maskType = prim226;
   }
   if (prim227 !== undefined) {
-    tmp.isolation = prim227;
+    tmp.backgroundBlendMode = prim227;
   }
   if (prim228 !== undefined) {
-    tmp.mixBlendMode = prim228;
+    tmp.isolation = prim228;
   }
   if (prim229 !== undefined) {
-    tmp.boxDecorationBreak = prim229;
+    tmp.mixBlendMode = prim229;
   }
   if (prim230 !== undefined) {
-    tmp.boxSizing = prim230;
+    tmp.boxDecorationBreak = prim230;
   }
   if (prim231 !== undefined) {
-    tmp.caretColor = prim231;
+    tmp.boxSizing = prim231;
   }
   if (prim232 !== undefined) {
-    tmp.navDown = prim232;
+    tmp.caretColor = prim232;
   }
   if (prim233 !== undefined) {
-    tmp.navLeft = prim233;
+    tmp.navDown = prim233;
   }
   if (prim234 !== undefined) {
-    tmp.navRight = prim234;
+    tmp.navLeft = prim234;
   }
   if (prim235 !== undefined) {
-    tmp.navUp = prim235;
+    tmp.navRight = prim235;
   }
   if (prim236 !== undefined) {
-    tmp.outlineOffset = prim236;
+    tmp.navUp = prim236;
   }
   if (prim237 !== undefined) {
-    tmp.resize = prim237;
+    tmp.outlineOffset = prim237;
   }
   if (prim238 !== undefined) {
-    tmp.textOverflow = prim238;
+    tmp.resize = prim238;
   }
   if (prim239 !== undefined) {
-    tmp.grid = prim239;
+    tmp.textOverflow = prim239;
   }
   if (prim240 !== undefined) {
-    tmp.gridArea = prim240;
+    tmp.grid = prim240;
   }
   if (prim241 !== undefined) {
-    tmp.gridAutoColumns = prim241;
+    tmp.gridArea = prim241;
   }
   if (prim242 !== undefined) {
-    tmp.gridAutoFlow = prim242;
+    tmp.gridAutoColumns = prim242;
   }
   if (prim243 !== undefined) {
-    tmp.gridAutoRows = prim243;
+    tmp.gridAutoFlow = prim243;
   }
   if (prim244 !== undefined) {
-    tmp.gridColumn = prim244;
+    tmp.gridAutoRows = prim244;
   }
   if (prim245 !== undefined) {
-    tmp.gridColumnEnd = prim245;
+    tmp.gridColumn = prim245;
   }
   if (prim246 !== undefined) {
-    tmp.gridColumnGap = prim246;
+    tmp.gridColumnEnd = prim246;
   }
   if (prim247 !== undefined) {
-    tmp.gridColumnStart = prim247;
+    tmp.gridColumnGap = prim247;
   }
   if (prim248 !== undefined) {
-    tmp.gridGap = prim248;
+    tmp.gridColumnStart = prim248;
   }
   if (prim249 !== undefined) {
-    tmp.gridRow = prim249;
+    tmp.gridGap = prim249;
   }
   if (prim250 !== undefined) {
-    tmp.gridRowEnd = prim250;
+    tmp.gridRow = prim250;
   }
   if (prim251 !== undefined) {
-    tmp.gridRowGap = prim251;
+    tmp.gridRowEnd = prim251;
   }
   if (prim252 !== undefined) {
-    tmp.gridRowStart = prim252;
+    tmp.gridRowGap = prim252;
   }
   if (prim253 !== undefined) {
-    tmp.gridTemplate = prim253;
+    tmp.gridRowStart = prim253;
   }
   if (prim254 !== undefined) {
-    tmp.gridTemplateAreas = prim254;
+    tmp.gridTemplate = prim254;
   }
   if (prim255 !== undefined) {
-    tmp.gridTemplateColumns = prim255;
+    tmp.gridTemplateAreas = prim255;
   }
   if (prim256 !== undefined) {
-    tmp.gridTemplateRows = prim256;
+    tmp.gridTemplateColumns = prim256;
   }
   if (prim257 !== undefined) {
-    tmp.willChange = prim257;
+    tmp.gridTemplateRows = prim257;
   }
   if (prim258 !== undefined) {
-    tmp.hangingPunctuation = prim258;
+    tmp.willChange = prim258;
   }
   if (prim259 !== undefined) {
-    tmp.hyphens = prim259;
+    tmp.hangingPunctuation = prim259;
   }
   if (prim260 !== undefined) {
-    tmp.lineBreak = prim260;
+    tmp.hyphens = prim260;
   }
   if (prim261 !== undefined) {
-    tmp.overflowWrap = prim261;
+    tmp.lineBreak = prim261;
   }
   if (prim262 !== undefined) {
-    tmp.tabSize = prim262;
+    tmp.overflowWrap = prim262;
   }
   if (prim263 !== undefined) {
-    tmp.textAlignLast = prim263;
+    tmp.tabSize = prim263;
   }
   if (prim264 !== undefined) {
-    tmp.textJustify = prim264;
+    tmp.textAlignLast = prim264;
   }
   if (prim265 !== undefined) {
-    tmp.wordBreak = prim265;
+    tmp.textJustify = prim265;
   }
   if (prim266 !== undefined) {
-    tmp.wordWrap = prim266;
+    tmp.wordBreak = prim266;
   }
   if (prim267 !== undefined) {
-    tmp.animation = prim267;
+    tmp.wordWrap = prim267;
   }
   if (prim268 !== undefined) {
-    tmp.animationDelay = prim268;
+    tmp.animation = prim268;
   }
   if (prim269 !== undefined) {
-    tmp.animationDirection = prim269;
+    tmp.animationDelay = prim269;
   }
   if (prim270 !== undefined) {
-    tmp.animationDuration = prim270;
+    tmp.animationDirection = prim270;
   }
   if (prim271 !== undefined) {
-    tmp.animationFillMode = prim271;
+    tmp.animationDuration = prim271;
   }
   if (prim272 !== undefined) {
-    tmp.animationIterationCount = prim272;
+    tmp.animationFillMode = prim272;
   }
   if (prim273 !== undefined) {
-    tmp.animationName = prim273;
+    tmp.animationIterationCount = prim273;
   }
   if (prim274 !== undefined) {
-    tmp.animationPlayState = prim274;
+    tmp.animationName = prim274;
   }
   if (prim275 !== undefined) {
-    tmp.animationTimingFunction = prim275;
+    tmp.animationPlayState = prim275;
   }
   if (prim276 !== undefined) {
-    tmp.transition = prim276;
+    tmp.animationTimingFunction = prim276;
   }
   if (prim277 !== undefined) {
-    tmp.transitionDelay = prim277;
+    tmp.transition = prim277;
   }
   if (prim278 !== undefined) {
-    tmp.transitionDuration = prim278;
+    tmp.transitionDelay = prim278;
   }
   if (prim279 !== undefined) {
-    tmp.transitionProperty = prim279;
+    tmp.transitionDuration = prim279;
   }
   if (prim280 !== undefined) {
-    tmp.transitionTimingFunction = prim280;
+    tmp.transitionProperty = prim280;
   }
   if (prim281 !== undefined) {
-    tmp.backfaceVisibility = prim281;
+    tmp.transitionTimingFunction = prim281;
   }
   if (prim282 !== undefined) {
-    tmp.perspective = prim282;
+    tmp.backfaceVisibility = prim282;
   }
   if (prim283 !== undefined) {
-    tmp.perspectiveOrigin = prim283;
+    tmp.perspective = prim283;
   }
   if (prim284 !== undefined) {
-    tmp.transform = prim284;
+    tmp.perspectiveOrigin = prim284;
   }
   if (prim285 !== undefined) {
-    tmp.transformOrigin = prim285;
+    tmp.transform = prim285;
   }
   if (prim286 !== undefined) {
-    tmp.transformStyle = prim286;
+    tmp.transformOrigin = prim286;
   }
   if (prim287 !== undefined) {
-    tmp.justifyItems = prim287;
+    tmp.transformStyle = prim287;
   }
   if (prim288 !== undefined) {
-    tmp.justifySelf = prim288;
+    tmp.justifyItems = prim288;
   }
   if (prim289 !== undefined) {
-    tmp.placeContent = prim289;
+    tmp.justifySelf = prim289;
   }
   if (prim290 !== undefined) {
-    tmp.placeItems = prim290;
+    tmp.placeContent = prim290;
   }
   if (prim291 !== undefined) {
-    tmp.placeSelf = prim291;
+    tmp.placeItems = prim291;
   }
   if (prim292 !== undefined) {
-    tmp.appearance = prim292;
+    tmp.placeSelf = prim292;
   }
   if (prim293 !== undefined) {
-    tmp.caret = prim293;
+    tmp.appearance = prim293;
   }
   if (prim294 !== undefined) {
-    tmp.caretAnimation = prim294;
+    tmp.caret = prim294;
   }
   if (prim295 !== undefined) {
-    tmp.caretShape = prim295;
+    tmp.caretAnimation = prim295;
   }
   if (prim296 !== undefined) {
-    tmp.userSelect = prim296;
+    tmp.caretShape = prim296;
   }
   if (prim297 !== undefined) {
-    tmp.maxLines = prim297;
+    tmp.userSelect = prim297;
   }
   if (prim298 !== undefined) {
-    tmp.marqueeDirection = prim298;
+    tmp.maxLines = prim298;
   }
   if (prim299 !== undefined) {
-    tmp.marqueeLoop = prim299;
+    tmp.marqueeDirection = prim299;
   }
   if (prim300 !== undefined) {
-    tmp.marqueeSpeed = prim300;
+    tmp.marqueeLoop = prim300;
   }
   if (prim301 !== undefined) {
-    tmp.marqueeStyle = prim301;
+    tmp.marqueeSpeed = prim301;
   }
   if (prim302 !== undefined) {
-    tmp.overflowStyle = prim302;
+    tmp.marqueeStyle = prim302;
   }
   if (prim303 !== undefined) {
-    tmp.rotation = prim303;
+    tmp.overflowStyle = prim303;
   }
   if (prim304 !== undefined) {
-    tmp.rotationPoint = prim304;
+    tmp.rotation = prim304;
   }
   if (prim305 !== undefined) {
-    tmp.alignmentBaseline = prim305;
+    tmp.rotationPoint = prim305;
   }
   if (prim306 !== undefined) {
-    tmp.baselineShift = prim306;
+    tmp.alignmentBaseline = prim306;
   }
   if (prim307 !== undefined) {
-    tmp.clip = prim307;
+    tmp.baselineShift = prim307;
   }
   if (prim308 !== undefined) {
-    tmp.clipPath = prim308;
+    tmp.clip = prim308;
   }
   if (prim309 !== undefined) {
-    tmp.clipRule = prim309;
+    tmp.clipPath = prim309;
   }
   if (prim310 !== undefined) {
-    tmp.colorInterpolation = prim310;
+    tmp.clipRule = prim310;
   }
   if (prim311 !== undefined) {
-    tmp.colorInterpolationFilters = prim311;
+    tmp.colorInterpolation = prim311;
   }
   if (prim312 !== undefined) {
-    tmp.colorProfile = prim312;
+    tmp.colorInterpolationFilters = prim312;
   }
   if (prim313 !== undefined) {
-    tmp.colorRendering = prim313;
+    tmp.colorProfile = prim313;
   }
   if (prim314 !== undefined) {
-    tmp.cursor = prim314;
+    tmp.colorRendering = prim314;
   }
   if (prim315 !== undefined) {
-    tmp.dominantBaseline = prim315;
+    tmp.cursor = prim315;
   }
   if (prim316 !== undefined) {
-    tmp.fill = prim316;
+    tmp.dominantBaseline = prim316;
   }
   if (prim317 !== undefined) {
-    tmp.fillOpacity = prim317;
+    tmp.fill = prim317;
   }
   if (prim318 !== undefined) {
-    tmp.fillRule = prim318;
+    tmp.fillOpacity = prim318;
   }
   if (prim319 !== undefined) {
-    tmp.filter = prim319;
+    tmp.fillRule = prim319;
   }
   if (prim320 !== undefined) {
-    tmp.floodColor = prim320;
+    tmp.filter = prim320;
   }
   if (prim321 !== undefined) {
-    tmp.floodOpacity = prim321;
+    tmp.floodColor = prim321;
   }
   if (prim322 !== undefined) {
-    tmp.glyphOrientationHorizontal = prim322;
+    tmp.floodOpacity = prim322;
   }
   if (prim323 !== undefined) {
-    tmp.glyphOrientationVertical = prim323;
+    tmp.glyphOrientationHorizontal = prim323;
   }
   if (prim324 !== undefined) {
-    tmp.imageRendering = prim324;
+    tmp.glyphOrientationVertical = prim324;
   }
   if (prim325 !== undefined) {
-    tmp.kerning = prim325;
+    tmp.imageRendering = prim325;
   }
   if (prim326 !== undefined) {
-    tmp.lightingColor = prim326;
+    tmp.kerning = prim326;
   }
   if (prim327 !== undefined) {
-    tmp.markerEnd = prim327;
+    tmp.lightingColor = prim327;
   }
   if (prim328 !== undefined) {
-    tmp.markerMid = prim328;
+    tmp.markerEnd = prim328;
   }
   if (prim329 !== undefined) {
-    tmp.markerStart = prim329;
+    tmp.markerMid = prim329;
   }
   if (prim330 !== undefined) {
-    tmp.pointerEvents = prim330;
+    tmp.markerStart = prim330;
   }
   if (prim331 !== undefined) {
-    tmp.shapeRendering = prim331;
+    tmp.pointerEvents = prim331;
   }
   if (prim332 !== undefined) {
-    tmp.stopColor = prim332;
+    tmp.shapeRendering = prim332;
   }
   if (prim333 !== undefined) {
-    tmp.stopOpacity = prim333;
+    tmp.stopColor = prim333;
   }
   if (prim334 !== undefined) {
-    tmp.stroke = prim334;
+    tmp.stopOpacity = prim334;
   }
   if (prim335 !== undefined) {
-    tmp.strokeDasharray = prim335;
+    tmp.stroke = prim335;
   }
   if (prim336 !== undefined) {
-    tmp.strokeDashoffset = prim336;
+    tmp.strokeDasharray = prim336;
   }
   if (prim337 !== undefined) {
-    tmp.strokeLinecap = prim337;
+    tmp.strokeDashoffset = prim337;
   }
   if (prim338 !== undefined) {
-    tmp.strokeLinejoin = prim338;
+    tmp.strokeLinecap = prim338;
   }
   if (prim339 !== undefined) {
-    tmp.strokeMiterlimit = prim339;
+    tmp.strokeLinejoin = prim339;
   }
   if (prim340 !== undefined) {
-    tmp.strokeOpacity = prim340;
+    tmp.strokeMiterlimit = prim340;
   }
   if (prim341 !== undefined) {
-    tmp.strokeWidth = prim341;
+    tmp.strokeOpacity = prim341;
   }
   if (prim342 !== undefined) {
-    tmp.textAnchor = prim342;
+    tmp.strokeWidth = prim342;
   }
   if (prim343 !== undefined) {
-    tmp.textRendering = prim343;
+    tmp.textAnchor = prim343;
   }
   if (prim344 !== undefined) {
-    tmp.rubyAlign = prim344;
+    tmp.textRendering = prim344;
   }
   if (prim345 !== undefined) {
-    tmp.rubyMerge = prim345;
+    tmp.rubyAlign = prim345;
   }
   if (prim346 !== undefined) {
-    tmp.rubyPosition = prim346;
+    tmp.rubyMerge = prim346;
+  }
+  if (prim347 !== undefined) {
+    tmp.rubyPosition = prim347;
   }
   return tmp;
 }
 
-function FAQs$Chevron(Props) {
-  var className = Props.className;
+function FAQs$Chevron(props) {
   return React.createElement("svg", {
-              className: className,
+              className: props.className,
               height: "14px",
               width: "14px",
               viewBox: "0 0 320 512"
@@ -1121,11 +1124,9 @@ var Chevron = {
   make: FAQs$Chevron
 };
 
-function FAQs$FaqItem(Props) {
-  var isOpen = Props.isOpen;
-  var toggleAccordion = Props.toggleAccordion;
-  var title = Props.title;
-  var content = Props.content;
+function FAQs$FaqItem(props) {
+  var toggleAccordion = props.toggleAccordion;
+  var isOpen = props.isOpen;
   var match = React.useState(function () {
         return "0px";
       });
@@ -1144,7 +1145,6 @@ function FAQs$FaqItem(Props) {
                     return "0px";
                   }
                 }));
-          
         }), [
         isOpen,
         setHeight
@@ -1153,21 +1153,21 @@ function FAQs$FaqItem(Props) {
               children: null
             }, React.createElement("div", {
                   onClick: (function (param) {
-                      return Curry._1(toggleAccordion, undefined);
+                      Curry._1(toggleAccordion, undefined);
                     })
                 }, React.createElement(RimbleUi.Text, {
                       children: null,
                       className: "accordion-title"
-                    }, title, React.createElement(FAQs$Chevron, {
+                    }, props.title, React.createElement(FAQs$Chevron, {
                           className: rotate(isOpen ? 90 : 0)
                         }))), React.createElement("div", {
-                  ref: accordianContentRef,
+                  ref: Caml_option.some(accordianContentRef),
                   className: accordionContent,
-                  style: inlineStyle(undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, match[0], undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined)
+                  style: inlineStyle(undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, match[0], undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined)
                 }, React.createElement("div", undefined, React.createElement("div", {
                           className: faqExplainerText
                         }, React.createElement(RimbleUi.Text, {
-                              children: content,
+                              children: props.content,
                               className: Styles.colorGrey
                             })))));
 }
@@ -1207,7 +1207,7 @@ var content = [
   },
   {
     title: "What does 'always for sale' mean?",
-    content: "Always for sale means exactly what it says, the asset or thing in question can be bought by any person at anytime, and is hence, always for sale. How this functions in practice is very interesting. The owner of the asset is required to always have a listed selling price for this asset at which anyone could buy this asset from them at any point in time. The owner won\xe2\x80\x99t set the selling price too high because they are required to continually pay a percentage of the selling price in order to keep ownership of the asset."
+    content: "Always for sale means exactly what it says, the asset or thing in question can be bought by any person at anytime, and is hence, always for sale. How this functions in practice is very interesting. The owner of the asset is required to always have a listed selling price for this asset at which anyone could buy this asset from them at any point in time. The owner won’t set the selling price too high because they are required to continually pay a percentage of the selling price in order to keep ownership of the asset."
   },
   {
     title: "What is a deposit and what happens if my deposit runs out?",
@@ -1219,7 +1219,7 @@ var content = [
   }
 ];
 
-function FAQs(Props) {
+function FAQs(props) {
   var match = React.useState(function () {
         return -1;
       });
@@ -1237,7 +1237,7 @@ function FAQs(Props) {
                                       }), React.createElement("div", {
                                         className: accordionSection
                                       }, Belt_Array.mapWithIndex(content, (function (index, param) {
-                                              return React.createElement(FAQs$FaqItem, {
+                                              return JsxPPXReactSupport.createElementWithKey(String(index), FAQs$FaqItem, {
                                                           isOpen: index === activeIndex,
                                                           toggleAccordion: (function (param) {
                                                               return Curry._1(setActiveIndex, (function (param) {
@@ -1249,8 +1249,7 @@ function FAQs(Props) {
                                                                           }));
                                                             }),
                                                           title: param.title,
-                                                          content: param.content,
-                                                          key: String(index)
+                                                          content: param.content
                                                         });
                                             })))),
                               width: [1]
@@ -1275,6 +1274,5 @@ export {
   FaqItem ,
   content ,
   make ,
-  
 }
 /* faqExplainerText Not a pure module */

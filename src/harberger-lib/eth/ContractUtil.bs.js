@@ -37,6 +37,5 @@ export {
   getProviderOrSigner ,
   constructMetaTransactionMessage ,
   getEthSig ,
-  
 }
 /* ethereumjs-abi Not a pure module */

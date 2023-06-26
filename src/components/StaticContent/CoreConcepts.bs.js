@@ -5,6 +5,5 @@ var gorillaOnVine = "/img/wildcardsimages/gorilla-on-vine.png";
 
 export {
   gorillaOnVine ,
-  
 }
 /* No side effect */

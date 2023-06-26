@@ -9,7 +9,7 @@ import * as MonthlyContribution from "../Leaderboards/MonthlyContribution.bs.js"
 
 var gorillaOnVine = "/img/wildcardsimages/gorilla-on-vine.png";
 
-function HomepageLeaderBoard(Props) {
+function HomepageLeaderBoard(props) {
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   return React.createElement(RimbleUi.Box, {
               children: React.createElement(RimbleUi.Flex, {
@@ -34,7 +34,7 @@ function HomepageLeaderBoard(Props) {
                                         children: "View Other Leaderboards",
                                         onClick: (function (e) {
                                             e.preventDefault();
-                                            return Curry._1(clearAndPush, "/#leaderboards/monthly-contribution");
+                                            Curry._1(clearAndPush, "/#leaderboards/monthly-contribution");
                                           })
                                       }),
                                   width: [1]
@@ -55,6 +55,5 @@ var make = HomepageLeaderBoard;
 export {
   gorillaOnVine ,
   make ,
-  
 }
 /* react Not a pure module */

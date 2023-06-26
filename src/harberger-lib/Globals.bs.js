@@ -43,6 +43,5 @@ export {
   reactMapWithDefault ,
   reactMap ,
   Opt ,
-  
 }
 /* Async Not a pure module */

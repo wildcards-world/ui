@@ -11,14 +11,14 @@ let make = (~clickAction=() => ()) => {
 
   let connectedNetworkName = networkId =>
     switch networkId {
-    | 1 => j`MAINNET\\xa0`->React.string
-    | 3 => j`ROPSTEN\\xa0`->React.string
-    | 4 => j`RINKEBY\\xa0`->React.string
-    | 5 => j`GOERLI\\xa0`->React.string
-    | 42 => j`KOVAN\\xa0`->React.string
-    | 137 => j`MATIC\\xa0`->React.string
-    | 80001 => j`MATIC Test\\xa0`->React.string
-    | _ => j`Unknown\\xa0`->React.string
+    | 1 => `MAINNET\\xa0`->React.string
+    | 3 => `ROPSTEN\\xa0`->React.string
+    | 4 => `RINKEBY\\xa0`->React.string
+    | 5 => `GOERLI\\xa0`->React.string
+    | 42 => `KOVAN\\xa0`->React.string
+    | 137 => `MATIC\\xa0`->React.string
+    | 80001 => `MATIC Test\\xa0`->React.string
+    | _ => `Unknown\\xa0`->React.string
     }
 
   let web3Button = switch networkIdOpt {
@@ -29,14 +29,15 @@ let make = (~clickAction=() => ()) => {
         clickAction()
         deactivateWeb3()
       }}>
-      {connectedNetworkName(networkId)} <Rimble.Icon name="ExitToApp" size="16px" />
+      {connectedNetworkName(networkId)}
+      <Rimble.Icon name="ExitToApp" size="16px" />
     </Rimble.Button>
   | None =>
     <Rimble.Button
       mainColor="#72C7D7"
       onClick={_e => {
         clickAction()
-        ReasonReactRouter.push("#")
+        RescriptReactRouter.push("#")
         connectWeb3(RootProviderTypes.NoAction)
       }}>
       {"Log In"->React.string}

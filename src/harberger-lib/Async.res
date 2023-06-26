@@ -3,8 +3,8 @@
 
 // Using Bluebird for the global promise implementation allows actually useful
 // stack traces to be generated for debugging runtime issues.
-%%bs.raw(`global.Promise = require('bluebird')`)
-%%bs.raw(`
+%%raw(`global.Promise = require('bluebird')`)
+%%raw(`
 Promise.config({
   warnings: false
 })
@@ -20,7 +20,8 @@ type promise<'a> = Js.Promise.t<'a>
 
 @dead("+catchAsync") let catchAsync = (p, cb) => Js.Promise.catch(cb, p)
 
-@dead("+asyncFromResult") let asyncFromResult = result =>
+@dead("+asyncFromResult")
+let asyncFromResult = result =>
   // Lift it into a promise in case the original caller wasn't already in the promise. We want to use Promise's error catching behavior, and not Javascript's error catching behavior.
   result
   ->async
@@ -31,7 +32,8 @@ type promise<'a> = Js.Promise.t<'a>
     }
   )
 
-@dead("+attemptMapAsync") let attemptMapAsync = (
+@dead("+attemptMapAsync")
+let attemptMapAsync = (
   promise: Js.Promise.t<'a>,
   attempter: 'a => result<'b, 'error>,
 ): Js.Promise.t<'b> =>

@@ -46,6 +46,5 @@ var eip712Domain = [
 export {
   permit ,
   eip712Domain ,
-  
 }
 /* No side effect */

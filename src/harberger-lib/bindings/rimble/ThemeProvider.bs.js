@@ -6,6 +6,5 @@ var make = ThemeProvider;
 
 export {
   make ,
-  
 }
 /* make Not a pure module */

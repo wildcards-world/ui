@@ -12,13 +12,13 @@ import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as RootProvider from "../RootProvider.bs.js";
 import * as UserProvider from "../js/user-provider/UserProvider.bs.js";
 
-function ProfileIcon(Props) {
-  var clickActionOpt = Props.clickAction;
-  var isMobileOpt = Props.isMobile;
-  var clickAction = clickActionOpt !== undefined ? clickActionOpt : (function (param) {
+function ProfileIcon(props) {
+  var isMobile = props.isMobile;
+  var clickAction = props.clickAction;
+  var clickAction$1 = clickAction !== undefined ? clickAction : (function (param) {
         
       });
-  var isMobile = isMobileOpt !== undefined ? isMobileOpt : false;
+  var isMobile$1 = isMobile !== undefined ? isMobile : false;
   var currentUser = RootProvider.useCurrentUser(undefined);
   var networkIdOpt = RootProvider.useNetworkId(undefined);
   var displayName = UserProvider.useDisplayName(Belt_Option.mapWithDefault(currentUser, "loading", (function (a) {
@@ -74,7 +74,7 @@ function ProfileIcon(Props) {
       });
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   if (networkIdOpt !== undefined) {
-    if (isMobile) {
+    if (isMobile$1) {
       return React.createElement("div", {
                   className: Curry._1(Css.style, {
                         hd: Css.display("flex"),
@@ -84,8 +84,8 @@ function ProfileIcon(Props) {
                         }
                       }),
                   onClick: (function (param) {
-                      Curry._1(clickAction, undefined);
-                      return Curry._1(clearAndPush, "#user/" + userAddressLowerCase);
+                      Curry._1(clickAction$1, undefined);
+                      Curry._1(clearAndPush, "#user/" + userAddressLowerCase);
                     })
                 }, React.createElement("div", undefined, React.createElement("p", undefined, React.createElement("strong", undefined, "View Your Profile:")), React.createElement("p", undefined, message)), profileIcon);
     } else {
@@ -94,8 +94,8 @@ function ProfileIcon(Props) {
                   placement: "bottom",
                   children: React.createElement("div", {
                         onClick: (function (param) {
-                            Curry._1(clickAction, undefined);
-                            return Curry._1(clearAndPush, "#user/" + userAddressLowerCase);
+                            Curry._1(clickAction$1, undefined);
+                            Curry._1(clearAndPush, "#user/" + userAddressLowerCase);
                           })
                       }, profileIcon)
                 });
@@ -109,6 +109,5 @@ var make = ProfileIcon;
 
 export {
   make ,
-  
 }
 /* Css Not a pure module */

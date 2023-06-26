@@ -5,6 +5,7 @@ import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
 import * as RimbleUi from "rimble-ui";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
+import * as JsxPPXReactSupport from "rescript/lib/es6/jsxPPXReactSupport.js";
 
 var cardStyle = Curry._1(Css.style, {
       hd: Css.height({
@@ -70,7 +71,7 @@ var iconStyle = Curry._1(Css.style, {
       }
     });
 
-function Team(Props) {
+function Team(props) {
   var teamMembers = [
     {
       name: "JonJon Clark",
@@ -132,7 +133,7 @@ function Team(Props) {
                           var link = member.linkedIn;
                           var handle$1 = member.twitterHandle;
                           var handle$2 = member.githubHandle;
-                          return React.createElement(RimbleUi.Box, {
+                          return JsxPPXReactSupport.createElementWithKey(String(i), RimbleUi.Box, {
                                       mb: 20,
                                       mt: 20,
                                       children: React.createElement(RimbleUi.Card, {
@@ -181,8 +182,7 @@ function Team(Props) {
                                         0.45,
                                         0.45,
                                         0.18
-                                      ],
-                                      key: String(i)
+                                      ]
                                     });
                         })),
                   flexWrap: "wrap",
@@ -214,6 +214,5 @@ export {
   plantStyle ,
   iconStyle ,
   make ,
-  
 }
 /* cardStyle Not a pure module */

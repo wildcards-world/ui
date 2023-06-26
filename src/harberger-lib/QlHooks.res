@@ -424,19 +424,19 @@ let useLoadTopContributorsData = numberOfLeaders =>
   | Some(topContributors) =>
     topContributors
     ->Array.map(patron => {
-      // chris: WIP implement this check and only do the calc if the patron isn't foreclosed 
+      // chris: WIP implement this check and only do the calc if the patron isn't foreclosed
       // problem: I can't call useIsForeclosed (a QLHook) from within a loop/map => possibly separate out like in UserProfile.res
       // let isForeclosedMainnet = useIsForeclosed(~chain=Client.MainnetQuery, patron.id)
       let monthlyContribution =
         // isForeclosedMainnet ?
-        //  "0.00" : 
-          patron.patronTokenCostScaledNumerator
-            ->BN.mul(CONSTANTS.secondsInAMonthBn) // A month with 30 days has 2592000 seconds
-            ->BN.div(
-              // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
-              CONSTANTS.secondsIn365DaysPrecisionScaled,
-            )
-            ->Web3Utils.fromWeiBNToEthPrecision(~digits=4)
+        //  "0.00" :
+        patron.patronTokenCostScaledNumerator
+        ->BN.mul(CONSTANTS.secondsInAMonthBn) // A month with 30 days has 2592000 seconds
+        ->BN.div(
+          // BN.new_("1000000000000")->BN.mul( BN.new_("31536000")),
+          CONSTANTS.secondsIn365DaysPrecisionScaled,
+        )
+        ->Web3Utils.fromWeiBNToEthPrecision(~digits=4)
       (patron.id, monthlyContribution)
     })
     ->Some

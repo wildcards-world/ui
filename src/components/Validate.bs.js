@@ -5,7 +5,7 @@ import * as React from "react";
 import * as RimbleUi from "rimble-ui";
 import * as RootProvider from "../harberger-lib/RootProvider.bs.js";
 
-function Validate(Props) {
+function Validate(props) {
   var goToVerifyUser = RootProvider.useVerifyUser(undefined);
   return React.createElement(React.Fragment, {
               children: React.createElement(RimbleUi.Box, {
@@ -13,7 +13,7 @@ function Validate(Props) {
                     children: React.createElement(RimbleUi.Button, {
                           children: "Profile",
                           onClick: (function (_e) {
-                              return Curry._1(goToVerifyUser, undefined);
+                              Curry._1(goToVerifyUser, undefined);
                             })
                         })
                   })
@@ -24,6 +24,5 @@ var make = Validate;
 
 export {
   make ,
-  
 }
 /* react Not a pure module */
