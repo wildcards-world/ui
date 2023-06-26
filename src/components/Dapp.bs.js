@@ -35,7 +35,6 @@ import * as UpdateDeposit from "../harberger-lib/components/UpdateDeposit.bs.js"
 import * as UsdPriceProvider from "../harberger-lib/components/UsdPriceProvider.bs.js";
 import * as LazyThreeBoxUpdate from "./LazyThreeBoxUpdate.bs.js";
 import * as RescriptReactRouter from "@rescript/react/src/RescriptReactRouter.bs.js";
-import * as Browser$ReScriptLogger from "rescript-logger/src/loggers/Browser.bs.js";
 import ReactCarousel from "@wildcards/react-carousel";
 import ShareSocialMediaJs from "./components/shareSocialMedia.js";
 
@@ -682,18 +681,6 @@ var DetailsViewAnimal = {
 
 function Dapp$DetailsView(props) {
   var optionAnimal = props.optionAnimal;
-  Browser$ReScriptLogger.info1({
-        rootModule: "Dapp",
-        subModulePath: {
-          hd: "DetailsView",
-          tl: /* [] */0
-        },
-        value: "make",
-        fullPath: "Dapp.DetailsView.make"
-      }, "optionAnimal", [
-        "a",
-        optionAnimal
-      ]);
   if (optionAnimal !== undefined) {
     return React.createElement(Dapp$DetailsViewAnimal, {
                 chain: props.chain,
@@ -784,18 +771,6 @@ function Dapp$DefaultLook(props) {
                 }));
         break;
     case 2 :
-        Browser$ReScriptLogger.info1({
-              rootModule: "Dapp",
-              subModulePath: {
-                hd: "DefaultLook",
-                tl: /* [] */0
-              },
-              value: "make",
-              fullPath: "Dapp.DefaultLook.make"
-            }, "the animalString", [
-              "a",
-              animalStr
-            ]);
         var optionAnimal = TokenId.make(animalStr);
         var chain = Belt_Option.mapWithDefault(optionAnimal, /* MainnetQuery */2, Animal.getChainIdFromAnimalId);
         tmp = React.createElement(Dapp$DetailsView, {

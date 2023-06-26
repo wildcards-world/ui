@@ -4,6 +4,7 @@ import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as CssJs from "bs-css-emotion/src/CssJs.bs.js";
 import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
+import * as Config from "../../Config.bs.js";
 import * as Styles from "../../Styles.bs.js";
 import * as Js_array from "rescript/lib/es6/js_array.js";
 import * as CONSTANTS from "../../CONSTANTS.bs.js";
@@ -144,7 +145,9 @@ function usePartners(param) {
   if (match.loading || match.error !== undefined || match$1 === undefined) {
     return ;
   } else {
-    return Belt_Array.map(match$1.organisations, (function (org) {
+    return Belt_Array.map(Belt_Array.keep(match$1.organisations, (function (org) {
+                      return !Config.filterOutOrgs.includes(org.id);
+                    })), (function (org) {
                   return {
                           logo: org.logo,
                           id: org.id,
