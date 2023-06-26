@@ -1,4 +1,4 @@
-@decco.decode
+@spice.decode
 type orgDescriptionArray = array<string>
 
 module YoutubeVid = {

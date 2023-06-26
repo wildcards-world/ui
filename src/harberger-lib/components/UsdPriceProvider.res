@@ -17,14 +17,14 @@ module PriceProvider = {
     }
 }
 
-@decco @deriving(accessors)
+@spice @deriving(accessors)
 type price = {c: array<string>}
-@decco @deriving(accessors)
+@spice @deriving(accessors)
 type ethUsdPrice = {
-  @decco.key("XETHZUSD")
+  @spice.key("XETHZUSD")
   ethUsd: option<price>,
 }
-@decco @deriving(accessors)
+@spice @deriving(accessors)
 type krakenPriceResponse = {result: option<ethUsdPrice>}
 
 let getPrice = () => {

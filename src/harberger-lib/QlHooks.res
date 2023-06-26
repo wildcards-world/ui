@@ -360,7 +360,7 @@ let useDetailsPageNextPrevious = (currentToken: TokenId.t) => {
   )
 }
 
-@decco.decode
+@spice.decode
 type animalDescription = array<string>
 let useWildcardDescription = tokenId =>
   switch useWildcardDataQuery(tokenId) {
