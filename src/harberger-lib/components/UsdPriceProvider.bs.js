@@ -2,7 +2,7 @@
 
 import * as Async from "../Async.bs.js";
 import * as Curry from "rescript/lib/es6/curry.js";
-import * as Decco from "decco/src/Decco.bs.js";
+import * as Spice from "@greenlabs/ppx-spice/src/rescript/Spice.bs.js";
 import * as React from "react";
 import * as Globals from "../Globals.bs.js";
 import * as Js_dict from "rescript/lib/es6/js_dict.js";
@@ -33,21 +33,22 @@ function c(param) {
 }
 
 function price_encode(v) {
-  return Js_dict.fromArray([[
-                "c",
-                Decco.arrayToJson(Decco.stringToJson, v.c)
-              ]]);
+  return Js_dict.fromArray(Spice.filterOptional([[
+                    "c",
+                    false,
+                    Spice.arrayToJson(Spice.stringToJson, v.c)
+                  ]]));
 }
 
 function price_decode(v) {
   var dict = Js_json.classify(v);
   if (typeof dict === "number") {
-    return Decco.error(undefined, "Not an object", v);
+    return Spice.error(undefined, "Not an object", v);
   }
   if (dict.TAG !== /* JSONObject */2) {
-    return Decco.error(undefined, "Not an object", v);
+    return Spice.error(undefined, "Not an object", v);
   }
-  var c = Decco.arrayFromJson(Decco.stringFromJson, Belt_Option.getWithDefault(Js_dict.get(dict._0, "c"), null));
+  var c = Spice.arrayFromJson(Spice.stringFromJson, Belt_Option.getWithDefault(Js_dict.get(dict._0, "c"), null));
   if (c.TAG === /* Ok */0) {
     return {
             TAG: /* Ok */0,
@@ -72,21 +73,22 @@ function ethUsd(param) {
 }
 
 function ethUsdPrice_encode(v) {
-  return Js_dict.fromArray([[
-                "XETHZUSD",
-                Decco.optionToJson(price_encode, v.ethUsd)
-              ]]);
+  return Js_dict.fromArray(Spice.filterOptional([[
+                    "XETHZUSD",
+                    false,
+                    Spice.optionToJson(price_encode, v.ethUsd)
+                  ]]));
 }
 
 function ethUsdPrice_decode(v) {
   var dict = Js_json.classify(v);
   if (typeof dict === "number") {
-    return Decco.error(undefined, "Not an object", v);
+    return Spice.error(undefined, "Not an object", v);
   }
   if (dict.TAG !== /* JSONObject */2) {
-    return Decco.error(undefined, "Not an object", v);
+    return Spice.error(undefined, "Not an object", v);
   }
-  var ethUsd = Decco.optionFromJson(price_decode, Belt_Option.getWithDefault(Js_dict.get(dict._0, "XETHZUSD"), null));
+  var ethUsd = Spice.optionFromJson(price_decode, Belt_Option.getWithDefault(Js_dict.get(dict._0, "XETHZUSD"), null));
   if (ethUsd.TAG === /* Ok */0) {
     return {
             TAG: /* Ok */0,
@@ -111,21 +113,22 @@ function result(param) {
 }
 
 function krakenPriceResponse_encode(v) {
-  return Js_dict.fromArray([[
-                "result",
-                Decco.optionToJson(ethUsdPrice_encode, v.result)
-              ]]);
+  return Js_dict.fromArray(Spice.filterOptional([[
+                    "result",
+                    false,
+                    Spice.optionToJson(ethUsdPrice_encode, v.result)
+                  ]]));
 }
 
 function krakenPriceResponse_decode(v) {
   var dict = Js_json.classify(v);
   if (typeof dict === "number") {
-    return Decco.error(undefined, "Not an object", v);
+    return Spice.error(undefined, "Not an object", v);
   }
   if (dict.TAG !== /* JSONObject */2) {
-    return Decco.error(undefined, "Not an object", v);
+    return Spice.error(undefined, "Not an object", v);
   }
-  var result = Decco.optionFromJson(ethUsdPrice_decode, Belt_Option.getWithDefault(Js_dict.get(dict._0, "result"), null));
+  var result = Spice.optionFromJson(ethUsdPrice_decode, Belt_Option.getWithDefault(Js_dict.get(dict._0, "result"), null));
   if (result.TAG === /* Ok */0) {
     return {
             TAG: /* Ok */0,

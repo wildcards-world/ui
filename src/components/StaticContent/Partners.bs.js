@@ -39,46 +39,46 @@ var query = (require("@apollo/client").gql`
 function parse(value) {
   var value$1 = value.organisations;
   return {
-    organisations: Js_array.map((function (value) {
-      return {
-        __typename: value.__typename,
-        name: value.name,
-        logo: value.logo,
-        id: value.id
-      };
-    }), value$1)
-  };
+          organisations: Js_array.map((function (value) {
+                  return {
+                          __typename: value.__typename,
+                          name: value.name,
+                          logo: value.logo,
+                          id: value.id
+                        };
+                }), value$1)
+        };
 }
 
 function serialize(value) {
   var value$1 = value.organisations;
   var organisations = Js_array.map((function (value) {
-    var value$1 = value.id;
-    var value$2 = value.logo;
-    var value$3 = value.name;
-    var value$4 = value.__typename;
-    return {
-      __typename: value$4,
-      name: value$3,
-      logo: value$2,
-      id: value$1
-    };
-  }), value$1);
+          var value$1 = value.id;
+          var value$2 = value.logo;
+          var value$3 = value.name;
+          var value$4 = value.__typename;
+          return {
+                  __typename: value$4,
+                  name: value$3,
+                  logo: value$2,
+                  id: value$1
+                };
+        }), value$1);
   return {
-    organisations: organisations
-  };
+          organisations: organisations
+        };
 }
 
 function serializeVariables(param) {
-
+  
 }
 
 function makeVariables(param) {
-
+  
 }
 
 function makeDefaultVariables(param) {
-
+  
 }
 
 var LoadPatronNoDecode_inner = {
@@ -92,12 +92,12 @@ var LoadPatronNoDecode_inner = {
 };
 
 var include = ApolloClient__React_Hooks_UseQuery.Extend({
-  query: query,
-  Raw: Raw,
-  parse: parse,
-  serialize: serialize,
-  serializeVariables: serializeVariables
-});
+      query: query,
+      Raw: Raw,
+      parse: parse,
+      serialize: serialize,
+      serializeVariables: serializeVariables
+    });
 
 var use = include.use;
 
@@ -124,175 +124,175 @@ var LoadPatronNoDecode = {
 
 function usePartners(param) {
   var match = Curry.app(use, [
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined
-  ]);
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+      ]);
   var match$1 = match.data;
   if (match.loading || match.error !== undefined || match$1 === undefined) {
-    return;
+    return ;
   } else {
     return Belt_Array.map(match$1.organisations, (function (org) {
-      return {
-        logo: org.logo,
-        id: org.id,
-        name: org.name
-      };
-    }));
+                  return {
+                          logo: org.logo,
+                          id: org.id,
+                          name: org.name
+                        };
+                }));
   }
 }
 
 var blueBackground = CssJs.style([CssJs.backgroundColor({
-  NAME: "hex",
-  VAL: "73C8D7"
-})]);
+            NAME: "hex",
+            VAL: "73C8D7"
+          })]);
 
 var cardStyle = CssJs.style([
-  CssJs.height({
-    NAME: "percent",
-    VAL: 100
-  }),
-  CssJs.display("flex"),
-  CssJs.important(CssJs.padding({
-    NAME: "percent",
-    VAL: 0
-  }))
-]);
+      CssJs.height({
+            NAME: "percent",
+            VAL: 100
+          }),
+      CssJs.display("flex"),
+      CssJs.important(CssJs.padding({
+                NAME: "percent",
+                VAL: 0
+              }))
+    ]);
 
 var logoStyle = CssJs.style([
-  CssJs.margin({
-    NAME: "percent",
-    VAL: 10
-  }),
-  CssJs.width({
-    NAME: "percent",
-    VAL: 80
-  })
-]);
+      CssJs.margin({
+            NAME: "percent",
+            VAL: 10
+          }),
+      CssJs.width({
+            NAME: "percent",
+            VAL: 80
+          })
+    ]);
 
 var corporatePartnerTextStyle = CssJs.style([
-  CssJs.textAlign("center"),
-  CssJs.marginBottom({
-    NAME: "percent",
-    VAL: 10
-  })
-]);
+      CssJs.textAlign("center"),
+      CssJs.marginBottom({
+            NAME: "percent",
+            VAL: 10
+          })
+    ]);
 
 var viewMoreButton = CssJs.style([
-  CssJs.margin(CssJs.auto),
-  CssJs.display(CssJs.block)
-]);
+      CssJs.margin(CssJs.auto),
+      CssJs.display(CssJs.block)
+    ]);
 
 var viewMoreButtonContainer = CssJs.style([CssJs.width({
-  NAME: "percent",
-  VAL: 100
-})]);
+            NAME: "percent",
+            VAL: 100
+          })]);
 
 var orgContainerStyles = CssJs.style([CssJs.width({
-  NAME: "percent",
-  VAL: 100
-})]);
+            NAME: "percent",
+            VAL: 100
+          })]);
 
 function Partners$OrgDetails(props) {
   var conservation = props.conservation;
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   var id = conservation.id;
   return React.createElement(RimbleUi.Card, {
-    className: cardStyle,
-    children: React.createElement("a", {
-      className: Curry._1(Css.style, {
-        hd: Css.display("flex"),
-        tl: {
-          hd: Css.width({
-            NAME: "percent",
-            VAL: 100
-          }),
-          tl: {
-            hd: Css.height({
-              NAME: "percent",
-              VAL: 100
-            }),
-            tl: /* [] */0
-          }
-        }
-      }),
-      onClick: (function (e) {
-        e.stopPropagation();
-        e.preventDefault();
-        Curry._1(clearAndPush, "#org/" + id);
-      })
-    }, React.createElement("img", {
-      className: Curry._1(Css.style, {
-        hd: Css.margin({
-          NAME: "percent",
-          VAL: 1
-        }),
-        tl: {
-          hd: Css.objectFit("contain"),
-          tl: {
-            hd: Css.width({
-              NAME: "percent",
-              VAL: 98
-            }),
-            tl: {
-              hd: Css.justifyContent("center"),
-              tl: {
-                hd: Css.alignItems("center"),
-                tl: {
-                  hd: Css.hover({
-                    hd: Css.filter({
-                      hd: {
-                        NAME: "saturate",
-                        VAL: 150
-                      },
-                      tl: {
-                        hd: {
-                          NAME: "brightness",
-                          VAL: 110
-                        },
-                        tl: /* [] */0
-                      }
-                    }),
-                    tl: {
-                      hd: Css.overflow(Css.visible),
-                      tl: {
-                        hd: Css.boxShadow(Css_Legacy_Core.Shadow.box(undefined, undefined, Css.px(20), Css.px(20), undefined, Css.rgba(121, 181, 80, {
-                          NAME: "num",
-                          VAL: 0.5
-                        }))),
-                        tl: {
-                          hd: Css.transform(Css.scale(1.01, 1.01)),
+              className: cardStyle,
+              children: React.createElement("a", {
+                    className: Curry._1(Css.style, {
+                          hd: Css.display("flex"),
                           tl: {
-                            hd: Css.transition(100, 0, Css.ease, "all"),
-                            tl: /* [] */0
+                            hd: Css.width({
+                                  NAME: "percent",
+                                  VAL: 100
+                                }),
+                            tl: {
+                              hd: Css.height({
+                                    NAME: "percent",
+                                    VAL: 100
+                                  }),
+                              tl: /* [] */0
+                            }
                           }
-                        }
-                      }
-                    }
-                  }),
-                  tl: /* [] */0
-                }
-              }
-            }
-          }
-        }
-      }),
-      alt: conservation.name,
-      src: CONSTANTS.cdnBase + conservation.logo
-    }))
-  });
+                        }),
+                    onClick: (function (e) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        Curry._1(clearAndPush, "#org/" + id);
+                      })
+                  }, React.createElement("img", {
+                        className: Curry._1(Css.style, {
+                              hd: Css.margin({
+                                    NAME: "percent",
+                                    VAL: 1
+                                  }),
+                              tl: {
+                                hd: Css.objectFit("contain"),
+                                tl: {
+                                  hd: Css.width({
+                                        NAME: "percent",
+                                        VAL: 98
+                                      }),
+                                  tl: {
+                                    hd: Css.justifyContent("center"),
+                                    tl: {
+                                      hd: Css.alignItems("center"),
+                                      tl: {
+                                        hd: Css.hover({
+                                              hd: Css.filter({
+                                                    hd: {
+                                                      NAME: "saturate",
+                                                      VAL: 150
+                                                    },
+                                                    tl: {
+                                                      hd: {
+                                                        NAME: "brightness",
+                                                        VAL: 110
+                                                      },
+                                                      tl: /* [] */0
+                                                    }
+                                                  }),
+                                              tl: {
+                                                hd: Css.overflow(Css.visible),
+                                                tl: {
+                                                  hd: Css.boxShadow(Css_Legacy_Core.Shadow.box(undefined, undefined, Css.px(20), Css.px(20), undefined, Css.rgba(121, 181, 80, {
+                                                                NAME: "num",
+                                                                VAL: 0.5
+                                                              }))),
+                                                  tl: {
+                                                    hd: Css.transform(Css.scale(1.01, 1.01)),
+                                                    tl: {
+                                                      hd: Css.transition(100, 0, Css.ease, "all"),
+                                                      tl: /* [] */0
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }),
+                                        tl: /* [] */0
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }),
+                        alt: conservation.name,
+                        src: CONSTANTS.cdnBase + conservation.logo
+                      }))
+            });
 }
 
 var OrgDetails = {
@@ -302,187 +302,187 @@ var OrgDetails = {
 function Partners(props) {
   var allConservationPartners = usePartners(undefined);
   var partnersToDisplay = Belt_Option.map(allConservationPartners, (function (partners) {
-    return Belt_Array.slice(Belt_Array.shuffle(partners), 0, 5);
-  }));
+          return Belt_Array.slice(Belt_Array.shuffle(partners), 0, 5);
+        }));
   var numberOfPartners = Belt_Option.map(allConservationPartners, (function (partners) {
-    return partners.length;
-  }));
+          return partners.length;
+        }));
   var clearAndPush = RootProvider.useClearNonUrlStateAndPushRoute(undefined);
   return React.createElement("div", {
-    width: "100%"
-  }, React.createElement(RimbleUi.Flex, {
-    children: null,
-    flexWrap: "wrap",
-    alignItems: "stretch",
-    justifyContent: "space-around",
-    px: 50,
-    pt: 50,
-    className: blueBackground
-  }, React.createElement("h1", undefined, "Conservation Partners"), React.createElement(RimbleUi.Flex, {
-    children: partnersToDisplay !== undefined ? React.createElement(React.Fragment, undefined, Belt_Array.map(partnersToDisplay, (function (conservation) {
-      var content = React.createElement(Partners$OrgDetails, {
-        conservation: conservation
-      });
-      var key = conservation.id;
-      return JsxPPXReactSupport.createElementWithKey(key, RimbleUi.Box, {
-        mb: 20,
-        mt: 20,
-        children: content,
-        width: [
-          0.45,
-          0.45,
-          0.18
-        ],
-        color: "black"
-      });
-    }))) : null,
-    flexWrap: "wrap",
-    alignItems: "stretch",
-    justifyContent: "space-evenly",
-    px: 50,
-    pb: 10,
-    className: orgContainerStyles
-  }), React.createElement(RimbleUi.Flex, {
-    children: React.createElement(RimbleUi.Button, {
-      className: viewMoreButton,
-      children: Belt_Option.mapWithDefault(numberOfPartners, "View All Partners", (function (numPartners) {
-        return "View All " + String(numPartners) + " Partners";
-      })),
-      onClick: (function ($$event) {
-        $$event.preventDefault();
-        Curry._1(clearAndPush, "#organisations");
-      })
-    }),
-    flexWrap: "wrap",
-    alignItems: "stretch",
-    justifyContent: "center",
-    pb: 30,
-    className: viewMoreButtonContainer
-  })), React.createElement("div", {
-    className: Styles.infoBackground
-  }, React.createElement(RimbleUi.Flex, {
-    children: React.createElement("h1", {
-      className: CssJs.style([CssJs.unsafe("text-shadow", "0.25em 0.25em 0.5em #FFFFFF, -0.25em -0.25em 0.5em #FFFFFF, -0.25em 0.25em 0.5em #FFFFFF, 0.25em -0.25em 0.5em #FFFFFF;")])
-    }, "Corporate partners"),
-    flexWrap: "wrap",
-    alignItems: "stretch",
-    justifyContent: "space-around",
-    px: 50,
-    pt: 50
-  }), React.createElement(RimbleUi.Flex, {
-    children: null,
-    flexWrap: "wrap",
-    alignItems: "stretch",
-    justifyContent: "space-around",
-    px: 50
-  }, React.createElement(RimbleUi.Box, {
-    mb: 70,
-    mt: 70,
-    children: React.createElement(RimbleUi.Card, {
-      className: cardStyle,
-      children: React.createElement("a", {
-        href: "https://www.ubisoft.com/en-us/company/start-ups/station-f.aspx"
-      }, React.createElement("img", {
-        className: logoStyle,
-        alt: "ubisoft",
-        src: ubisoftLogo
-      }), React.createElement(RimbleUi.Text, {
-        children: "Ubisoft's Entrepreneurs Lab, Season 4, participants",
-        className: corporatePartnerTextStyle
-      }))
-    }),
-    width: [
-      1,
-      1,
-      0.2
-    ],
-    color: "black"
-  }), React.createElement(RimbleUi.Box, {
-    mb: 70,
-    mt: 70,
-    children: React.createElement(RimbleUi.Card, {
-      className: cardStyle,
-      children: React.createElement("a", {
-        href: "https://ethcapetown.com/"
-      }, React.createElement("img", {
-        className: logoStyle,
-        alt: "eth-cape-town",
-        src: ethCapeTownLogo
-      }), React.createElement(RimbleUi.Text, {
-        children: "Overall winners of EthCapeTown hackathon",
-        className: corporatePartnerTextStyle
-      }))
-    }),
-    width: [
-      1,
-      1,
-      0.2
-    ],
-    color: "black"
-  }), React.createElement(RimbleUi.Box, {
-    mb: 70,
-    mt: 70,
-    children: React.createElement(RimbleUi.Card, {
-      className: cardStyle,
-      children: React.createElement("a", {
-        href: "https://cvvc.com/index.php"
-      }, React.createElement("img", {
-        className: logoStyle,
-        alt: "cv-labs",
-        src: cvLabsLogo
-      }), React.createElement(RimbleUi.Text, {
-        children: "CV Labs Incubator Program, Batch 2",
-        className: corporatePartnerTextStyle
-      }))
-    }),
-    width: [
-      1,
-      1,
-      0.2
-    ],
-    color: "black"
-  }), React.createElement(RimbleUi.Box, {
-    mb: 70,
-    mt: 70,
-    children: React.createElement(RimbleUi.Card, {
-      className: cardStyle,
-      children: React.createElement("a", {
-        href: "https://kernel.community/"
-      }, React.createElement("img", {
-        className: logoStyle,
-        alt: "Kernel Gitcoin",
-        src: kernelLogo
-      }), React.createElement(RimbleUi.Text, {
-        children: "Gitcoin Kernel genesis block participants",
-        className: corporatePartnerTextStyle
-      }))
-    }),
-    width: [
-      1,
-      1,
-      0.2
-    ],
-    color: "black"
-  }))));
+              width: "100%"
+            }, React.createElement(RimbleUi.Flex, {
+                  children: null,
+                  flexWrap: "wrap",
+                  alignItems: "stretch",
+                  justifyContent: "space-around",
+                  px: 50,
+                  pt: 50,
+                  className: blueBackground
+                }, React.createElement("h1", undefined, "Conservation Partners"), React.createElement(RimbleUi.Flex, {
+                      children: partnersToDisplay !== undefined ? React.createElement(React.Fragment, undefined, Belt_Array.map(partnersToDisplay, (function (conservation) {
+                                    var content = React.createElement(Partners$OrgDetails, {
+                                          conservation: conservation
+                                        });
+                                    var key = conservation.id;
+                                    return JsxPPXReactSupport.createElementWithKey(key, RimbleUi.Box, {
+                                                mb: 20,
+                                                mt: 20,
+                                                children: content,
+                                                width: [
+                                                  0.45,
+                                                  0.45,
+                                                  0.18
+                                                ],
+                                                color: "black"
+                                              });
+                                  }))) : null,
+                      flexWrap: "wrap",
+                      alignItems: "stretch",
+                      justifyContent: "space-evenly",
+                      px: 50,
+                      pb: 10,
+                      className: orgContainerStyles
+                    }), React.createElement(RimbleUi.Flex, {
+                      children: React.createElement(RimbleUi.Button, {
+                            className: viewMoreButton,
+                            children: Belt_Option.mapWithDefault(numberOfPartners, "View All Partners", (function (numPartners) {
+                                    return "View All " + String(numPartners) + " Partners";
+                                  })),
+                            onClick: (function ($$event) {
+                                $$event.preventDefault();
+                                Curry._1(clearAndPush, "#organisations");
+                              })
+                          }),
+                      flexWrap: "wrap",
+                      alignItems: "stretch",
+                      justifyContent: "center",
+                      pb: 30,
+                      className: viewMoreButtonContainer
+                    })), React.createElement("div", {
+                  className: Styles.infoBackground
+                }, React.createElement(RimbleUi.Flex, {
+                      children: React.createElement("h1", {
+                            className: CssJs.style([CssJs.unsafe("text-shadow", "0.25em 0.25em 0.5em #FFFFFF, -0.25em -0.25em 0.5em #FFFFFF, -0.25em 0.25em 0.5em #FFFFFF, 0.25em -0.25em 0.5em #FFFFFF;")])
+                          }, "Corporate partners"),
+                      flexWrap: "wrap",
+                      alignItems: "stretch",
+                      justifyContent: "space-around",
+                      px: 50,
+                      pt: 50
+                    }), React.createElement(RimbleUi.Flex, {
+                      children: null,
+                      flexWrap: "wrap",
+                      alignItems: "stretch",
+                      justifyContent: "space-around",
+                      px: 50
+                    }, React.createElement(RimbleUi.Box, {
+                          mb: 70,
+                          mt: 70,
+                          children: React.createElement(RimbleUi.Card, {
+                                className: cardStyle,
+                                children: React.createElement("a", {
+                                      href: "https://www.ubisoft.com/en-us/company/start-ups/station-f.aspx"
+                                    }, React.createElement("img", {
+                                          className: logoStyle,
+                                          alt: "ubisoft",
+                                          src: ubisoftLogo
+                                        }), React.createElement(RimbleUi.Text, {
+                                          children: "Ubisoft's Entrepreneurs Lab, Season 4, participants",
+                                          className: corporatePartnerTextStyle
+                                        }))
+                              }),
+                          width: [
+                            1,
+                            1,
+                            0.2
+                          ],
+                          color: "black"
+                        }), React.createElement(RimbleUi.Box, {
+                          mb: 70,
+                          mt: 70,
+                          children: React.createElement(RimbleUi.Card, {
+                                className: cardStyle,
+                                children: React.createElement("a", {
+                                      href: "https://ethcapetown.com/"
+                                    }, React.createElement("img", {
+                                          className: logoStyle,
+                                          alt: "eth-cape-town",
+                                          src: ethCapeTownLogo
+                                        }), React.createElement(RimbleUi.Text, {
+                                          children: "Overall winners of EthCapeTown hackathon",
+                                          className: corporatePartnerTextStyle
+                                        }))
+                              }),
+                          width: [
+                            1,
+                            1,
+                            0.2
+                          ],
+                          color: "black"
+                        }), React.createElement(RimbleUi.Box, {
+                          mb: 70,
+                          mt: 70,
+                          children: React.createElement(RimbleUi.Card, {
+                                className: cardStyle,
+                                children: React.createElement("a", {
+                                      href: "https://cvvc.com/index.php"
+                                    }, React.createElement("img", {
+                                          className: logoStyle,
+                                          alt: "cv-labs",
+                                          src: cvLabsLogo
+                                        }), React.createElement(RimbleUi.Text, {
+                                          children: "CV Labs Incubator Program, Batch 2",
+                                          className: corporatePartnerTextStyle
+                                        }))
+                              }),
+                          width: [
+                            1,
+                            1,
+                            0.2
+                          ],
+                          color: "black"
+                        }), React.createElement(RimbleUi.Box, {
+                          mb: 70,
+                          mt: 70,
+                          children: React.createElement(RimbleUi.Card, {
+                                className: cardStyle,
+                                children: React.createElement("a", {
+                                      href: "https://kernel.community/"
+                                    }, React.createElement("img", {
+                                          className: logoStyle,
+                                          alt: "Kernel Gitcoin",
+                                          src: kernelLogo
+                                        }), React.createElement(RimbleUi.Text, {
+                                          children: "Gitcoin Kernel genesis block participants",
+                                          className: corporatePartnerTextStyle
+                                        }))
+                              }),
+                          width: [
+                            1,
+                            1,
+                            0.2
+                          ],
+                          color: "black"
+                        }))));
 }
 
 var make = Partners;
 
 export {
-  ubisoftLogo,
-  ethCapeTownLogo,
-  cvLabsLogo,
-  kernelLogo,
-  LoadPatronNoDecode,
-  usePartners,
-  blueBackground,
-  cardStyle,
-  logoStyle,
-  corporatePartnerTextStyle,
-  viewMoreButton,
-  viewMoreButtonContainer,
-  orgContainerStyles,
-  OrgDetails,
-  make,
+  ubisoftLogo ,
+  ethCapeTownLogo ,
+  cvLabsLogo ,
+  kernelLogo ,
+  LoadPatronNoDecode ,
+  usePartners ,
+  blueBackground ,
+  cardStyle ,
+  logoStyle ,
+  corporatePartnerTextStyle ,
+  viewMoreButton ,
+  viewMoreButtonContainer ,
+  orgContainerStyles ,
+  OrgDetails ,
+  make ,
 }
 /* query Not a pure module */

@@ -25,9 +25,9 @@
   ],
   "ppx-flags": [
     "bs-let/ppx",
-    "decco/ppx",
     "rescript-logger/ppx",
-    "@reasonml-community/graphql-ppx/ppx"
+    "@reasonml-community/graphql-ppx/ppx",
+    "@greenlabs/ppx-spice/ppx"
   ],
   "jsx": {
     "version": 4,
@@ -46,9 +46,9 @@
     "bs-css-emotion",
     "@glennsl/rescript-fetch",
     "bs-moment",
-    "decco",
     "reason-promise",
     "rescript-classnames",
+    "@greenlabs/ppx-spice",
     "rescript-logger",
     "@glennsl/bs-jest",
     "@reasonml-community/graphql-ppx",

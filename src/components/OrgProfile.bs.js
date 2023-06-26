@@ -4,7 +4,7 @@ import * as Css from "bs-css-emotion/src/Css.bs.js";
 import * as CnRe from "rescript-classnames/src/CnRe.bs.js";
 import * as CssJs from "bs-css-emotion/src/CssJs.bs.js";
 import * as Curry from "rescript/lib/es6/curry.js";
-import * as Decco from "decco/src/Decco.bs.js";
+import * as Spice from "@greenlabs/ppx-spice/src/rescript/Spice.bs.js";
 import * as React from "react";
 import * as Animal from "../harberger-lib/Animal.bs.js";
 import * as Styles from "../Styles.bs.js";
@@ -25,7 +25,7 @@ import ReactResponsiveCarousel from "react-responsive-carousel";
 import YoutubeVideoJs from "./StaticContent//YoutubeVideo.js";
 
 function orgDescriptionArray_decode(v) {
-  return Decco.arrayFromJson(Decco.stringFromJson, v);
+  return Spice.arrayFromJson(Spice.stringFromJson, v);
 }
 
 var make = YoutubeVideoJs;
@@ -239,7 +239,7 @@ function OrgProfile$OrgPage(props) {
   var orgId = props.orgId;
   var orgData = props.orgData;
   var orgName = orgData.name;
-  var orgDescription = Decco.arrayFromJson(Decco.stringFromJson, orgData.description);
+  var orgDescription = Spice.arrayFromJson(Spice.stringFromJson, orgData.description);
   var orgAnimals = orgData.wildcard;
   var orgComingSoon = orgData.unlaunched;
   var selectedComingSoonAnimal = Belt_Option.flatMap(props.selectedWildcardKey, (function (wildcardKey) {

@@ -107,6 +107,7 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@babel/plugin-transform-modules-commonjs": "^7.12.1",
     "@glennsl/bs-jest": "^0.6.0",
+    "@greenlabs/ppx-spice": "^0.1.14",
     "@reasonml-community/graphql-ppx": "^1.2.3",
     "babel-plugin-styled-components": "^1.12.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
